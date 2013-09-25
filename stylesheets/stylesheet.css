@@ -1,6 +1,7 @@
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
+   Modified by Riccardo
 */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -50,17 +51,17 @@ table {
 body {
   font-size: 1em;
   line-height: 1.5; 
-  background: #e7e7e7 url(../images/body-bg.png) 0 0 repeat;
+  background: #c7c7c7 url(../images/body-bg.png) 0 0 repeat;
   font-family: 'Helvetica Neue', Helvetica, Arial, serif;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
   color: #6d6d6d;
 }
 
 a {
-  color: #aec93b;
+  color: #9eb92b;
 }
 a:hover {
-  color: #c5000c;
+  color: #3a9947;
 }
 
 header {
@@ -79,7 +80,7 @@ header h1 {
 header h2 {
   letter-spacing: -1px;
   font-size: 24px;
-  color: #aec93b;
+  color: #3a9947;
   font-weight: normal;
   line-height: 1.3;
 }
@@ -110,7 +111,7 @@ a.button {
   border-left: solid 1px #b7b7b7;
   border-right: solid 1px #b7b7b7;
   border-bottom: solid 1px #b3b3b3;
-  color: #3a9947;
+  color: #9eb92b;
   line-height: 25px;
   font-weight: bold;
   font-size: 15px;
@@ -132,11 +133,11 @@ a.button {
   box-shadow: 0px 1px 5px #e8e8e8;
 }
 a.button:hover {
-  border-top: solid 1px #b7b7b7;
-  border-left: solid 1px #b3b3b3;
-  border-right: solid 1px #b3b3b3;
-  border-bottom: solid 1px #b3b3b3;
-  background: #fafafa; /* Old browsers */
+  border-top: solid 1px #3a9947;
+  border-left: solid 1px #3a9947;
+  border-right: solid 1px #3a9947;
+  border-bottom: solid 1px #3a9947;
+  background: #3a9947; /* Old browsers */
   background: -moz-linear-gradient(top,  #fdfdfd 0%, #f6f6f6 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fdfdfd), color-stop(100%,#f6f6f6)); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top,  #fdfdfd 0%,#f6f6f6 100%); /* Chrome10+,Safari5.1+ */
@@ -155,6 +156,11 @@ a.button span {
 #download-zip span {
   background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;
 }
+
+#getstarted span {
+  background: transparent url(../images/getstarted.PNG) 12px 50% no-repeat;
+}
+
 #download-tar-gz span {
   background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;
 }
@@ -249,7 +255,21 @@ h2 {
   font-weight: bold;
   color: #3a9947;
   margin-bottom: 8px;
-} 
+}
+
+.subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #3a9947;
+  margin-bottom: 8px;
+}
+
+.subtitle2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #aec93b;
+  margin-bottom: 8px;
+}    
 
 h3 {
   color: #3a9947;
