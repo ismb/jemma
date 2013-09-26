@@ -1,3 +1,13 @@
+# Sections
+
+- Meet Jemma
+	- overview/index
+- Get Started
+	- documentazione, tutorials, link to the documentation
+- Get in Contact
+	- mailing list, blogs, etc
+
+
 ## Free notes
 
 Base colors from the e@h theme:

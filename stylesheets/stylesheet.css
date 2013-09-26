@@ -58,7 +58,7 @@ body {
 }
 
 a {
-  color: #9eb92b;
+  color: #7ea70b;
 }
 a:hover {
   color: #3a9947;
@@ -73,7 +73,7 @@ header h1 {
   font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 900;
   letter-spacing: -1px;
   font-size: 48px;
-  color: #303030;
+  color: #3a9947;
   line-height: 1.2;
 }
 
@@ -153,23 +153,41 @@ a.button span {
   height: 23px;
 }
 
-#download-zip span {
-  background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;
+/*#download-zip span {*/
+/*  background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;*/
+/*}*/
+
+
+
+#meetjemma span {
+  background: transparent url(../images/jemma.png) 12px 50% no-repeat;
 }
 
 #getstarted span {
   background: transparent url(../images/getstarted.PNG) 12px 50% no-repeat;
 }
 
-#download-tar-gz span {
-  background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;
-}
-#view-on-github span {
+#getcontact span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
-#view-on-github {
+#getcontact {
   margin-right: 0;
 }
+
+/*#download-tar-gz span {*/
+/*  background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;*/
+/*}*/
+
+
+
+/*#view-on-github span {*/
+/*  background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;*/
+/*}*/
+/*#view-on-github {*/
+/*  margin-right: 0;*/
+/*}*/
+
+
 
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
@@ -248,6 +266,7 @@ form {
 
 h1 {
   font-size: 32px;
+  font-weight: bold;
 } 
 
 h2 {
