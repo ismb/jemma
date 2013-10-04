@@ -177,7 +177,7 @@ textarea.eah-textbox { font-family: Arial; font-size: 10pt; height: 70px; }
 #eah-members { height: 44px; background-image: url("/_layouts/images/energyathome/footer-bg.png"); background-repeat: repeat-x; border-top: 1px solid #c7c7c7; }
 #eah-members .scrollable { width: 950px; height: 44px; overflow: hidden; position: relative; margin-left: auto; margin-right: auto; }
 #eah-members .scrollable .items { width: 20000em; position: absolute; }
-#eah-members .scrollable .items div { width: 950px; height: 32px; padding-top: 12px; float: left; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -o-box; display: flex; -ms-flex-direction: row; -ms-flex-pack: justify; -webkit-justify-content: space-around; -ms-flex-pack: justify; justify-content: space-around; }
+#eah-members .scrollable .items div { width: 475px; height: 32px; padding-top: 12px; float: left; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -o-box; display: flex; -ms-flex-direction: row; -ms-flex-pack: justify; -webkit-justify-content: space-around; -ms-flex-pack: justify; justify-content: space-around; }
 #eah-members .scrollable .items div a { display: block; text-align: center; -webkit-box-flex: 1; -ms-flex: 1; box-flex: 1; }
 #eah-members img { height: 20px; border: none; }
 #eah-footer-content { width: 950px; margin-left: auto; margin-right: auto; color: #fff; padding-top: 00px; }
