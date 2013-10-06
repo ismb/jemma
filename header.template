@@ -97,27 +97,77 @@
 			  
             <div class="eah-navigationitem head">
               <div class="symbol"></div>
-              <a href="index.html">XXXA</a>
+              <a href="index.html"> JEMMA at a glance</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">XXXB</a>
+              <a href="index.html">What is JEMMA ?</a>
             </div>
             
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">sub</a>
-            </div>
-
-            <div class="eah-navigationitem head">
-              <div class="symbol"></div>
-              <a href="index.html">XXXF</a>
+              <a href="index.html">Technologies</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">XXXG</a>
+              <a href="index.html">Key Features</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">Versions</a>
+            </div>
+
+            <div class="eah-navigationitem head">
+              <div class="symbol"></div>
+              <a href="index.html">Documentation</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">Tutorials</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">Developers docs</a>
+            </div>
+
+            <div class="eah-navigationitem head">
+              <div class="symbol"></div>
+              <a href="index.html">Get Involved</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">How to Contribute</a>
+            </div>
+
+            <!--<div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">How to Contribute</a>
+            </div>-->
+
+            <!--<div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">Contacts</a>
+            </div>-->
+
+            <div class="eah-navigationitem head">
+              <div class="symbol"></div>
+              <a href="index.html">Credits</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">Development team</a>
+            </div>
+
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="index.html">License</a>
             </div>
 
           </div>
