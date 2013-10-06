@@ -97,52 +97,49 @@
 			  
             <div class="eah-navigationitem head">
               <div class="symbol"></div>
-              <a href="index.html"> JEMMA at a glance</a>
+              <a href="overview.html"> JEMMA at a glance</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">What is JEMMA ?</a>
+              <a href="overview.html">What is JEMMA ?</a>
             </div>
             
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">Technologies</a>
+              <a href="techs.html">Technologies</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">Key Features</a>
+              <a href="features.html">Key Features</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">Versions</a>
+              <a href="versions.html">Versions</a>
             </div>
 
             <div class="eah-navigationitem head">
               <div class="symbol"></div>
-              <a href="index.html">Documentation</a>
+              <a href="docs.html">Documentation</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">Tutorials</a>
+              <a href="docs.html">HOWTOs & tutorials</a>
             </div>
 
-            <div class="eah-navigationitem">
-              <div class="symbol"></div>
-              <a href="index.html">Developers docs</a>
-            </div>
+
 
             <div class="eah-navigationitem head">
               <div class="symbol"></div>
-              <a href="index.html">Get Involved</a>
+              <a href="getinvl.html">Get Involved</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">How to Contribute</a>
+              <a href="howtoc.html">How to Contribute</a>
             </div>
 
             <!--<div class="eah-navigationitem">
@@ -157,17 +154,17 @@
 
             <div class="eah-navigationitem head">
               <div class="symbol"></div>
-              <a href="index.html">Credits</a>
+              <a href="credits.html">Credits</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">Development team</a>
+              <a href="credits.html">Development team</a>
             </div>
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>
-              <a href="index.html">License</a>
+              <a href="license.html">License</a>
             </div>
 
           </div>
