@@ -3,10 +3,8 @@
 
 #PAGETITLETOBERENAMED3194810948ALKFJALKFJLKJFAIE1OIJ3
 
-all: *.html
-	
-%.html : *.tt
-	echo header.template $^ footer.template $<
+all: 
+	@bash generate-site.sh
 	
 clean:
 	@rm -rf *~ *.html	
