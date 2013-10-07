@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <div id="s4-workspace" class="s4-nosetwidth" style="height: 292px;">
+  <div id="s4-workspace" class="s4-nosetwidth" style="height: 500px;">
     <div id="s4-bodyContainer">
       <div id="s4-statusbarcontainer">
         <div id="pageStatusBar" class="s4-status-s1"></div>

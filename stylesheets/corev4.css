@@ -2468,7 +2468,7 @@ display:block !important;
 body #s4-workspace{
 overflow:visible !important;
 width:auto !important;
-height:auto !important;
+/*height:auto !important;*/
 }
 body.v4master{
 overflow:visible !important;
