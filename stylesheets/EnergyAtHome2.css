@@ -201,3 +201,11 @@ textarea.eah-textbox { font-family: Arial; font-size: 10pt; height: 70px; }
 /* tooltip */
 .tooltip { display: none; background: url("/_layouts/images/energyathome/tooltip-bg.png"); background-repeat: repeat; padding: 10px; width: 360px; font-family: Arial; font-size: 12px; color: #3f3d3f; z-index: 100; }
 .tooltip img { width: 80px; }
+
+
+h3 {
+
+	font-size: 13px;
+	font-style: italic;
+
+}
