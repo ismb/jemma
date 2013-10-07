@@ -6,6 +6,24 @@
 	- documentazione, tutorials, link to the documentation
 - Get in Contact
 	- mailing list, blogs, etc
+	
+## to be tested
+	
+-rw-rw-r-- 1 tomasi tomasi  208 ott  7 15:39 credits.md
+-rw-rw-r-- 1 tomasi tomasi  217 ott  7 15:39 devteam.md
+-rw-rw-r-- 1 tomasi tomasi  214 ott  7 15:39 docs.md
+-rw-rw-r-- 1 tomasi tomasi  236 ott  7 15:39 faqs.md
+-rw-rw-r-- 1 tomasi tomasi  213 ott  7 15:39 features.md
+-rw-rw-r-- 1 tomasi tomasi  213 ott  7 15:39 getinvl.md
+-rw-rw-r-- 1 tomasi tomasi  218 ott  7 15:39 howtoc.md
+-rw-rw-r-- 1 tomasi tomasi  221 ott  7 15:39 howtos.md
+-rw-rw-r-- 1 tomasi tomasi  217 ott  7 15:39 index.md
+-rw-rw-r-- 1 tomasi tomasi  216 ott  7 15:39 overview.md
+-rw-rw-r-- 1 tomasi tomasi  210 ott  7 15:39 resources.md
+-rw-rw-r-- 1 tomasi tomasi  214 ott  7 15:39 roadmap.md
+-rw-rw-r-- 1 tomasi tomasi  213 ott  7 15:39 techs.md
+-rw-rw-r-- 1 tomasi tomasi  209 ott  7 15:39 versions.md
+	
 
 
 ## Free notes
