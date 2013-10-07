@@ -8,4 +8,6 @@ all:
 	
 clean:
 	@rm -rf *~ *.html	
-	
+
+todo:
+	@grep -n TODO *.md

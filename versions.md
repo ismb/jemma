@@ -2,8 +2,6 @@ Versions
 <!-- Remember: the first line always goes with the title-->
 <!-- Please use h3 headers (###) inside these files -->
 
-The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which released it as open-source in October, 2013.
-
 ### Current version
 
 The current stable version of JEMMA is version **0.0.1**.
