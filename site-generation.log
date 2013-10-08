@@ -1,11 +1,11 @@
-Auto-generated site: 201310081844
+Auto-generated site: 201310081903
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
-# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 6 commits.
+# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 7 commits.
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
@@ -15,30 +15,33 @@ Git status
 #	modified:   devteam.html
 #	modified:   features.html
 #	modified:   footer.template
-#	modified:   header.template
 #	modified:   howtoc.html
 #	modified:   howtos.html
-#	modified:   images/ISMB.jpg
-#	modified:   images/jemma-arch.png
-#	modified:   images/jemma-arch.pptx
 #	modified:   index.html
-#	modified:   index.md
 #	modified:   license.html
 #	modified:   notes.html
 #	modified:   resources.html
 #	modified:   site-generation.log
+#	modified:   stylesheets/EnergyAtHome2.css
 #	modified:   techs.html
 #	modified:   versions.html
 #
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
 #
+#	images/footer-bg.png
 #	images/~$jemma-arch.pptx
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 23928e03e1a2faf9d6232b7a5db3d6512d246825
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 18:45:54 2013 +0200
+
+    image modified
 
 commit 3ac350a7e927811e77ebb7a697c605d679dbb82d
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -63,10 +66,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 16:39:10 2013 +0200
 
     just test generation
-
-commit 441cf8b8d4ec13d5f68a273452e21446676137a1
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 16:12:07 2013 +0200
-
-    version avoding continuous update of html files
 
