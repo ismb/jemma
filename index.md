@@ -4,8 +4,8 @@ Welcome to JEMMA
 
 Welcome to the home page of **JEMMA** (**J**ava **E**nergy **M**anage**M**ent **A**pplication framework).
 
-JEMMA is a open-source (LGPL) framework which supports any kind energy monitoring and management application.
-You just need to deploy it at home using any low-power gateway running Linux. JEMMA will seamlessly discover all your ZigBee-compliant devices (e.g. smart Plugs, Smart appliances, energy storages, energy sources, etc.) and virtualize them as REST resources.
+JEMMA is a open-source (LGPL) framework which includes and supports energy monitoring and management application.
+You just need to deploy it at home using any low-power gateway running Linux: JEMMA will seamlessly discover all your ZigBee-compliant devices (e.g. smart Plugs, Smart appliances, energy storages, energy sources, etc.), virtualize them as REST resources and use them to optimize your CO~2~ emissions and your energy bill.
 
 With JEMMA you can develop advanced energy management applications either running locally or in the cloud.
 
