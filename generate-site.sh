@@ -25,7 +25,7 @@ do
 	htmlfile="$noextfile.html"
 	echo -e "\\t Template $mdfile -> $noextfile -> generating $htmlfile -> title $title"
 	#echo "<!-- Auto-generated site - version $DATE-->" > $htmlfile
-	cat header.template >> $htmlfile
+	cat header.template > $htmlfile
 	sed -i "s/PAGETITLETOBERENAMED3194810948ALKFJALKFJLKJFAIE1OIJ3/$title/g" $htmlfile
 	tail -n +2 "$mdfile" |pandoc >> $htmlfile
 	cat footer.template >> $htmlfile 
