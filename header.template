@@ -104,15 +104,17 @@
               <a href="index.html"> What is JEMMA ?</a>
             </div>
             
+   	    <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="features.html">Key Features</a>
+            </div>
+            
             <div class="eah-navigationitem">
               <div class="symbol"></div>
               <a href="techs.html">Technologies</a>
             </div>
 
-            <div class="eah-navigationitem">
-              <div class="symbol"></div>
-              <a href="features.html">Key Features</a>
-            </div>
+
 
             <div class="eah-navigationitem">
               <div class="symbol"></div>

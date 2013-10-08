@@ -1,11 +1,11 @@
-Auto-generated site: 201310081809
+Auto-generated site: 201310081844
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
-# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 5 commits.
+# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 6 commits.
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
@@ -13,14 +13,14 @@ Git status
 #
 #	modified:   credits.html
 #	modified:   devteam.html
-#	modified:   devteam.md
 #	modified:   features.html
-#	modified:   features.md
 #	modified:   footer.template
 #	modified:   header.template
 #	modified:   howtoc.html
-#	modified:   howtoc.md
 #	modified:   howtos.html
+#	modified:   images/ISMB.jpg
+#	modified:   images/jemma-arch.png
+#	modified:   images/jemma-arch.pptx
 #	modified:   index.html
 #	modified:   index.md
 #	modified:   license.html
@@ -28,14 +28,23 @@ Git status
 #	modified:   resources.html
 #	modified:   site-generation.log
 #	modified:   techs.html
-#	modified:   techs.md
 #	modified:   versions.html
 #
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	images/~$jemma-arch.pptx
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 3ac350a7e927811e77ebb7a697c605d679dbb82d
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 18:11:21 2013 +0200
+
+    new website content: we now just miss fixing figures, logos fix and interconnection with the Wiki
 
 commit 2c4c24a523c932735991100025b0e820adef4e85
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -60,10 +69,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 16:12:07 2013 +0200
 
     version avoding continuous update of html files
-
-commit f22ae6ce76e955bb03c3ea5ea7310f08a0ed9031
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Mon Oct 7 21:53:13 2013 +0200
-
-    Script to archive site
 
