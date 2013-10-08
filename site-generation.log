@@ -1,11 +1,11 @@
-Auto-generated site: 201310081642
+Auto-generated site: 201310081659
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
-# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 3 commits.
+# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 4 commits.
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
@@ -14,7 +14,7 @@ Git status
 #	modified:   credits.html
 #	modified:   devteam.html
 #	modified:   features.html
-#	modified:   generate-site.sh
+#	modified:   header.template
 #	modified:   howtoc.html
 #	modified:   howtos.html
 #	modified:   index.html
@@ -30,6 +30,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit c9c35b4f5dcfc1283bc891660f9945d27cd6d6db
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 16:42:13 2013 +0200
+
+    fix in the script
 
 commit ce2b3ef88042a4bfa2ef12cb7d4e3db65c4aec89
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -54,10 +60,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Mon Oct 7 19:58:46 2013 +0200
 
     added contents to the website
-
-commit b04ed5b7ff7e148cdf3bb59ba983a01df8fafccb
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Mon Oct 7 18:40:44 2013 +0200
-
-    local test
 
