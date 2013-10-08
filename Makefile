@@ -11,3 +11,6 @@ clean:
 
 todo:
 	@grep -n TODO *.md
+	
+archive:
+	@bash archive.sh
