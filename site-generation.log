@@ -1,41 +1,47 @@
-Auto-generated site: 201310081903
+Auto-generated site: 201310081926
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
-# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 7 commits.
-#
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   credits.html
-#	modified:   devteam.html
-#	modified:   features.html
-#	modified:   footer.template
-#	modified:   howtoc.html
 #	modified:   howtos.html
-#	modified:   index.html
-#	modified:   license.html
-#	modified:   notes.html
-#	modified:   resources.html
+#	modified:   howtos.md
 #	modified:   site-generation.log
-#	modified:   stylesheets/EnergyAtHome2.css
-#	modified:   techs.html
 #	modified:   versions.html
+#	modified:   versions.md
 #
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
 #
-#	images/footer-bg.png
 #	images/~$jemma-arch.pptx
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 258894d44db7438ce599394b0966cfa26fa48d61
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 19:09:21 2013 +0200
+
+    minor fix
+
+commit 1ff6951bbaa0db61200f4ca159f135fdfced5b79
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 19:04:54 2013 +0200
+
+    added footer
+
+commit e596fb81bf4ec5ad6b14c344146c03c1dea9a0e4
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 19:03:55 2013 +0200
+
+    minor fixes in the design
 
 commit 23928e03e1a2faf9d6232b7a5db3d6512d246825
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -48,22 +54,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 18:11:21 2013 +0200
 
     new website content: we now just miss fixing figures, logos fix and interconnection with the Wiki
-
-commit 2c4c24a523c932735991100025b0e820adef4e85
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 16:59:55 2013 +0200
-
-    changed ribbon
-
-commit c9c35b4f5dcfc1283bc891660f9945d27cd6d6db
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 16:42:13 2013 +0200
-
-    fix in the script
-
-commit ce2b3ef88042a4bfa2ef12cb7d4e3db65c4aec89
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 16:39:10 2013 +0200
-
-    just test generation
 
