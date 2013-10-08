@@ -1,27 +1,19 @@
-Auto-generated site: 201310081611
+Auto-generated site: 201310081638
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
-# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 1 commit.
-#
-# Changes to be committed:
-#   (use "git reset HEAD <file>..." to unstage)
-#
-#	new file:   site-generation.log
+# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 2 commits.
 #
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   Makefile
-#	modified:   archive.sh
 #	modified:   credits.html
 #	modified:   devteam.html
 #	modified:   features.html
-#	modified:   generate-site.sh
 #	modified:   howtoc.html
 #	modified:   howtos.html
 #	modified:   index.html
@@ -32,10 +24,17 @@ Git status
 #	modified:   techs.html
 #	modified:   versions.html
 #
+no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 441cf8b8d4ec13d5f68a273452e21446676137a1
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Tue Oct 8 16:12:07 2013 +0200
+
+    version avoding continuous update of html files
 
 commit f22ae6ce76e955bb03c3ea5ea7310f08a0ed9031
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -60,10 +59,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Mon Oct 7 16:01:55 2013 +0200
 
     license file modifications
-
-commit fdd2b8711f99f3d1bb7ac6c21c4fa24ba6c39a50
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Mon Oct 7 15:48:10 2013 +0200
-
-    minor modification
 
