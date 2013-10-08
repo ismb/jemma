@@ -194,7 +194,7 @@ textarea.eah-textbox { font-family: Arial; font-size: 10pt; height: 70px; }
 .eah-footeritem a:hover { color: #aec93b; }
 .eah-footeritem img { float: left; margin-right: 6px; }
 .eah-footerdate { font-weight: bold; color: #aec93b; }
-#eah-copyright { width: 100%; height: 22px; line-height: 22px; background-color: #fff; font-size: 10px; }
+#eah-copyright { width: 100%; height: 22px; line-height: 22px; background-color: #f7f7f7; font-size: 10px; }
 #eah-copyright table { width: 950px; margin: 5px auto 0 auto; }
 #eah-copyright a { color: #3f3d3f; }
 
