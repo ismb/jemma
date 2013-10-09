@@ -2,15 +2,13 @@ Credits
 <!-- Remember: the first line always goes with the title-->
 <!-- Please use h3 headers (###) inside these files -->
 
-The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which released it as open-source in October, 2013.
+The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which holds the Copyright on the original code base. The first release of JEMMA has been made in October, 2013 by [Telecom Italia](http://www.telecomitalia.it/) and [Istituto Superiore Mario Boella (ISMB)](http://www.ismb.it/) in cooperation with the whole [Energy@home](http://www.energy-home.it/) community. 
 
-The first release of JEMMA has been jointly managed by [Telecom Italia](http://www.telecomitalia.it/) and [Istituto Superiore Mario Boella (ISMB)](http://www.ismb.it/) in cooperation with the whole [Energy@home](http://www.energy-home.it/) community. 
+[Istituto Superiore Mario Boella (ISMB)](http://www.ismb.it/) is currently supporting the project by animating the open source community and contributing with new developments.
 
 ### Development Team
 
-- [Ivan Grimaldi]() *(TBD)*
-- [Giampiero Bono]() *(TBD)*
-- [Riccardo Tomasi]() *(TBD)*
+The JEMMA open source community is animated by a small team @ *[ISMB](http://www.ismb.it/)* : [Ivan Grimaldi](http://www.ismb.it/ivan.grimaldi), [Giampiero Bono](http://www.ismb.it/node/1590), [Riccardo Tomasi](http://www.ismb.it/riccardo.tomasi). 
 
 ### Key Contributors
 

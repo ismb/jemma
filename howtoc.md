@@ -6,7 +6,7 @@ How to Contribute
 
 The best way to learn about JEMMA and its features is to follow the wiki-based tutorials, HOWTOs and manuals indexed in the [Documentation](howtos.html) section. More generic technical and research-oriented documentation (e.g. papers, white-papers, etc.) is available [here](resources.html).
 
-Moreover, announcements, articles and related news about JEMMA are available from the [JEMMA Developers Blog](http://jemma-sw.blogspot.com/).
+
 
 The JEMMA source code can always be accessed from the official [JEMMA GitHub page](https://github.com/ismb/jemma). You can also download the latest snapshot of the full code repository in [.zip](https://github.com/ismb/jemma/zipball/master) or [.tar.gz](https://github.com/ismb/jemma/tarball/master) format.
 

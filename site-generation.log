@@ -1,23 +1,35 @@
-Auto-generated site: 201310091801
+Auto-generated site: 201310091839
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages-0.0.1-prerelease
+# Your branch is ahead of 'origin/gh-pages-0.0.1-prerelease' by 1 commit.
+#
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   news.html
+#	new file:   news.md
+#
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
 #	modified:   credits.html
+#	modified:   credits.md
 #	modified:   devteam.html
 #	modified:   features.html
 #	modified:   header.template
 #	modified:   howtoc.html
+#	modified:   howtoc.md
 #	modified:   howtos.html
 #	modified:   index.html
-#	modified:   index.md
 #	modified:   license.html
+#	modified:   license.md
+#	modified:   news.html
+#	modified:   news.md
 #	modified:   notes.html
 #	modified:   resources.html
 #	modified:   site-generation.log
@@ -28,13 +40,16 @@ Git status
 #   (use "git add <file>..." to include in what will be committed)
 #
 #	images/jemma-archposter.jpg
-#	images/logo3.png
-#	images/logo3.xcf
-no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 44244994cca86c547d8ef992a0f4b7ee77eb388d
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Wed Oct 9 18:02:02 2013 +0200
+
+    cleaning template
 
 commit 4d426b7cda5b881518ee4962f4850d1cea419f56
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -59,10 +74,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 19:09:21 2013 +0200
 
     minor fix
-
-commit 1ff6951bbaa0db61200f4ca159f135fdfced5b79
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 19:04:54 2013 +0200
-
-    added footer
 
