@@ -4,9 +4,9 @@ HOWTOS and Tutorials
 
 The JEMMA documentation is hosted on the [JEMMA Wiki](https://github.com/ismb/jemma/wiki). 
 
-If you are just interested in using JEMMA in your applications, you can refer to the [user documentation](https://github.com/ismb/jemma/wiki/User-Documentation).
+If you are just interested in using JEMMA in your applications, you can refer to the [User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation).
 
-[Technical documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) for developers is also available.
+[Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) is also available.
 
 
 

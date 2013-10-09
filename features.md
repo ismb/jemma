@@ -11,12 +11,12 @@ Key Features
 
 - **Open**: JEMMA can be used freely also in commercial applications under the [LGPL license](license.html). 
 
-- **Standard**: JEMMA has been already tested for compliance with standard ZigBee devices including devices compliant with the [ZigBee Home Automation 1.2](http://www.zigbee.org/Standards/ZigBeeHomeAutomation/Overview.aspx) and the [ZigBee Gateway Device](http://www.zigbee.org/Standards/ZigbeeTelecomServices/Features.aspx) standards
+- **Standards-friendly**: JEMMA implements the  [Energy@home specifications](http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf) and has been already tested for compliance with standard ZigBee devices including devices compliant with the [ZigBee Home Automation 1.2](http://www.zigbee.org/Standards/ZigBeeHomeAutomation/Overview.aspx) and the [ZigBee Gateway Device](http://www.zigbee.org/Standards/ZigbeeTelecomServices/Features.aspx) standards
 
 - **Web-oriented**: All JEMMA features can be accessed remotely through its web-based RESTful APIs. JEMMA can also expose and virtualize as REST resources any smart appliance, energy storage or generation devices.
 
 - **Modular**: JEMMA can be freely extended by deploying additional [OSGi](http://www.osgi.org/) bundles or by developing applications based on its open API.
 
-- **Cloud-enabled**: JEMMA allows synchronizing your energy data with Cloud service offered by [Telecom Italia](http://www.telecomitalia.it/) (*generalization and support for other cloud service provider is foreseen in next releases*)
+- **Cloud-enabled**: JEMMA allows synchronizing your energy data with Cloud service offered by [Telecom Italia](http://www.telecomitalia.it/) (*generalization and support for other cloud service providers is foreseen in next releases*)
 
 
