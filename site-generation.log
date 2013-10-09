@@ -1,4 +1,4 @@
-Auto-generated site: 201310091538
+Auto-generated site: 201310091801
 
 ##########################
 Git status
@@ -10,20 +10,14 @@ Git status
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
 #	modified:   credits.html
-#	modified:   credits.md
 #	modified:   devteam.html
-#	modified:   devteam.md
 #	modified:   features.html
-#	modified:   features.md
-#	modified:   footer.template
+#	modified:   header.template
 #	modified:   howtoc.html
 #	modified:   howtos.html
-#	modified:   howtos.md
-#	modified:   images/jemma-arch.png
 #	modified:   index.html
 #	modified:   index.md
 #	modified:   license.html
-#	modified:   license.md
 #	modified:   notes.html
 #	modified:   resources.html
 #	modified:   site-generation.log
@@ -34,11 +28,19 @@ Git status
 #   (use "git add <file>..." to include in what will be committed)
 #
 #	images/jemma-archposter.jpg
+#	images/logo3.png
+#	images/logo3.xcf
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 4d426b7cda5b881518ee4962f4850d1cea419f56
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Wed Oct 9 15:44:22 2013 +0200
+
+    modifiche viste durante la riunione
 
 commit 7dc6ab1108649bab668193814767f66efc6b676a
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -63,10 +65,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 19:04:54 2013 +0200
 
     added footer
-
-commit e596fb81bf4ec5ad6b14c344146c03c1dea9a0e4
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 19:03:55 2013 +0200
-
-    minor fixes in the design
 
