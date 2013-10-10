@@ -1,4 +1,4 @@
-Auto-generated site: 201310101148
+Auto-generated site: 201310101543
 
 ##########################
 Git status
@@ -11,37 +11,20 @@ Git status
 #
 #	modified:   credits.html
 #	modified:   credits.md
-#	modified:   devteam.html
-#	modified:   features.html
-#	modified:   features.md
-#	modified:   footer.template
-#	modified:   howtoc.html
-#	modified:   howtos.html
-#	modified:   images/jemma-arch.png
-#	modified:   index.html
-#	modified:   index.md
-#	modified:   license.html
-#	modified:   news.html
-#	modified:   news.md
 #	modified:   notes.html
-#	modified:   notes.md
-#	modified:   resources.html
-#	modified:   resources.md
 #	modified:   site-generation.log
-#	modified:   stylesheets/EnergyAtHome2.css
-#	modified:   techs.html
-#	modified:   versions.html
 #
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	images/jemma-arch-lowres.png
-#	images/jemma-archposter.jpg
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 227537b52bdaa76c059f406409c8de220c91b10f
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Thu Oct 10 12:00:57 2013 +0200
+
+    Changed pics, RSS reader, etc
 
 commit 654730c541368e3b4f9d92a38cb5b1bcfcd793de
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -66,10 +49,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Tue Oct 8 19:38:35 2013 +0200
 
     minor fix
-
-commit c27399b1a00d3440a66ae7b585abd7ecfe120a70
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 19:26:23 2013 +0200
-
-    fixing links towards wiki
 

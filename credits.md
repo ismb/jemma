@@ -14,11 +14,12 @@ The JEMMA dopen source community is animated by a team @ *[ISMB](http://www.ismb
 
 The JEMMA project acknowledges the contribution of the following developers, who have been involved in the development of JEMMA before its release as open source project.
 
-- [Fabio Luigi Bellifemine]() *(who inspired the initial idea of the project)*
+- [Fabio Luigi Bellifemine]() *(who inspired the entire project)*
 - [Andrea Ranalli](), [Claudio Borean]() *(who provided ZigBee-related implementations)* 
 - [Pino Castrogiovanni](), [Ennio Grasso]() *(who provided Energy@home-related implementations)*
 - [Nicola Portinaro](), *(who made the project work with OSGi)*
 - [Marco Ferrero]() *(who developed cloud/server-side components)*
+- and all the other people who contributed, including Giuseppe Cua, Luigina Mascherpa, and Davide Topazzini.
 
 
 
