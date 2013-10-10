@@ -1,4 +1,70 @@
+<style>
+.mysite_title1 {
+background-color: #3a9947;
+Font-Weight: bold;
+font-family: verdana;
+color: #FFFFFF;
+padding:3px;
+margin:3px;}
+
+td.mysite_title1 {
+	padding:6px;
+}
+
+a.mysite_title_link1{
+color:#ffffff;
+font-size : 13px;
+font-family: verdana;
+}
+
+.mysite_content1 {
+background : #f2f2f2;
+border : 1 solid #EF9F2F;
+padding : 3px;
+margin : 3px;
+color : #000000;
+font-family : verdana;
+font-size : 12;
+width: 600px;
+valign : top;
+}
+
+li {
+	margin:3px;
+}
+
+a.mysite_item_links1{
+color:#003399;
+font-size : 12px;
+font-family : verdana;
+line-height: 25px;
+}
+</style>
+	<table class='mysite_content1' cellspacing='0' cellpadding='0'>
+	<tr>
+		<td class='mysite_title1' valign='top' height='10' width='70%'>
+		<a class='mysite_title_link1' href='http://jemma-sw.blogspot.com/'>
+		{=SOURCE_TITLE=}</a>
+		</td>
+		<td class='mysite_title1' valign='middle' align='right'>
+		{=ADD_TO_MYSIT=}{=icon=}
+		</td>
+		</tr>
+		<tr>
+		<td colspan='3'>
+		<font size='1' color='gray' face='arial'>{=DATE=}</font><br>
+
+		</td>
+	</tr>
+</table>
+										  
+
+											  
+
+
 # Sections
+
+
 
 - Meet Jemma
 	- overview/index

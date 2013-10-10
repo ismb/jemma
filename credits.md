@@ -8,7 +8,7 @@ The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www
 
 ### Development Team
 
-The JEMMA open source community is animated by a small team @ *[ISMB](http://www.ismb.it/)* : [Ivan Grimaldi](http://www.ismb.it/ivan.grimaldi), [Giampiero Bono](http://www.ismb.it/node/1590), [Riccardo Tomasi](http://www.ismb.it/riccardo.tomasi). 
+The JEMMA dopen source community is animated by a team @ *[ISMB](http://www.ismb.it/)* including [Ivan Grimaldi](http://www.ismb.it/ivan.grimaldi), [Giampiero Bono](http://www.ismb.it/node/1590), [Riccardo Tomasi](http://www.ismb.it/riccardo.tomasi). 
 
 ### Key Contributors
 

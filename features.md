@@ -5,7 +5,9 @@ Key Features
 <!--<span style="color:red;">**This page is under construction**</span>: We expect to update this page along with the release of JEMMA [version 0.0.2](https://github.com/ismb/jemma/wiki/Milestone-0.0.2).-->
 
 
-- **Green**: JEMMA core feature is the ability to support energy monitoring and management applications: after you deploy JEMMA in your home gateway it can discover all the available smart appliances (e.g. Smart Plugs, etc.) and make them available for internal or external applications
+- **Green**: JEMMA core feature is the ability to support energy monitoring and management applications: after you deploy JEMMA in your home gateway it can discover all the available smart appliances (e.g. Smart Plugs, etc.) and make them available for internal or external applications.
+
+- **Autonomous**: You just need to deploy it at home using any low-power gateway running Linux: JEMMA will seamlessly discover all your ZigBee-compliant devices, virtualize them as REST resources and use them to optimize your CO~2~ emissions and your energy bill. 
 
 - **Smart**: JEMMA includes specific features for energy optimization, enhancement of energy awareness, deman-side management and other useful features to make your home more green and more inter-connected with the Smart Grid. 
 
@@ -17,6 +19,7 @@ Key Features
 
 - **Modular**: JEMMA can be freely extended by deploying additional [OSGi](http://www.osgi.org/) bundles or by developing applications based on its open API.
 
-- **Cloud-enabled**: JEMMA allows synchronizing your energy data with Cloud service offered by [Telecom Italia](http://www.telecomitalia.it/) (*generalization and support for other cloud service providers is foreseen in next releases*)
+- **Cloud-enabled**: JEMMA allows synchronizing your energy data with Cloud service offered by [Telecom Italia](http://www.telecomitalia.it/) (*support for other cloud service providers is foreseen in next releases*)
+
 
 

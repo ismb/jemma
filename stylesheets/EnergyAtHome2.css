@@ -83,7 +83,8 @@ body #s4-mainarea { min-height: 450px; }
 .eah-highlight.right .button { left: 40px; }
 
 .ms-wikicontent { overflow: hidden; }
-#layoutsTable td { padding: 0; }
+
+/*#layoutsTable td { padding: 3px; }*/
 .ms-listedit { margin-left: 0; }
 
 .eah-newsoftheday { height: 64px; line-height: 64px; background-image: url("/_layouts/images/energyathome/news-bg.png"); background-repeat: repeat-x; }
@@ -105,7 +106,7 @@ body #s4-mainarea { min-height: 450px; }
 .home .ms-rte-layoutszone-inner img { max-width: none; }
 .ms-rte-layoutszone-inner span { font-family: Helvetica Neue,Arial !important; }
 .ms-rte-layoutszone-inner ul { list-style-image: url("/_layouts/images/energyathome/arrow_green.png"); }
-.ms-rte-layoutszone-inner li { margin-bottom: 15px; }
+/*.ms-rte-layoutszone-inner li { margin-bottom: 15px; }*/
 .ms-rte-layoutszone-inner ul ul { list-style-type: square; list-style-image: none; padding-left: 18px; }
 .ms-rte-layoutszone-inner ul ul li { margin-bottom: 5px; margin-left: 0; }
 
