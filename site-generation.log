@@ -1,25 +1,30 @@
-Auto-generated site: 201310111749
+Auto-generated site: 201310112143
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
+# Sul branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   news.html
-#	modified:   news.md
-#	modified:   site-generation.log
-#	modified:   versions.html
-#	modified:   versions.md
+#	modificato:   credits.md
+#	modificato:   index.html
+#	modificato:   notes.html
+#	modificato:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit e28d2346880efdddd755cb19338b36b11c693043
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Fri Oct 11 17:50:22 2013 +0200
+
+    minor fix + adding subscription by email
 
 commit 16ada3e7c58bdfa52e2c0ffeda5106a79a9997ee
 Merge: aadb8d8 0bfabf8
@@ -45,9 +50,3 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Fri Oct 11 17:30:05 2013 +0200
 
     minor fix
-
-commit 0c6fd84121800794e7b446ff91837d0ef3ec1e12
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Thu Oct 10 15:44:08 2013 +0200
-
-    modified credits

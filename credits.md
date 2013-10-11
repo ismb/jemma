@@ -18,7 +18,7 @@ The JEMMA project acknowledges the contribution of the following developers, who
 - [Andrea Ranalli](), [Claudio Borean]() *(who provided ZigBee-related implementations)* 
 - [Pino Castrogiovanni](), [Ennio Grasso]() *(who provided Energy@home-related implementations)*
 - [Nicola Portinaro](), *(who handled the energy management application and OSGi-related issues)*
-- [Marco Ferrero]() *(who developed cloud/server-side components)*
+- [Marco Ferrero](),[Paolo Garbin]() *(who developed cloud/server-side components)*
 - and all the other people who contributed, including Giuseppe Cua, Luigina Mascherpa, and Davide Topazzini.
 
 
