@@ -1,0 +1,96 @@
+Auto-generated site: 201310111737
+
+##########################
+Git status
+##########################
+
+# On branch gh-pages
+# Changes to be committed:
+#
+#	new file:   Makefile
+#	new file:   archive.sh
+#	new file:   credits.html
+#	new file:   credits.md
+#	new file:   devteam.html
+#	new file:   devteam.md
+#	new file:   example.html.template
+#	new file:   features.html
+#	new file:   features.md
+#	new file:   footer.template
+#	new file:   generate-site.sh
+#	new file:   header.template
+#	new file:   howtoc.html
+#	new file:   howtoc.md
+#	new file:   howtos.html
+#	new file:   howtos.md
+#	new file:   images/ISMB.jpg
+#	new file:   images/footer-bg.png
+#	new file:   images/img_mainachiviments.png
+#	new file:   images/jemma-arch-lowres.png
+#	new file:   images/jemma-arch.png
+#	new file:   images/jemma-arch.pptx
+#	new file:   images/jemma-archposter.jpg
+#	new file:   images/logo2.png
+#	new file:   images/logo3.png
+#	new file:   images/logo3.xcf
+#	new file:   images/telecom.png
+#	new file:   index.html
+#	new file:   index.md
+#	new file:   license.html
+#	new file:   license.md
+#	new file:   news.html
+#	new file:   news.md
+#	new file:   notes.html
+#	new file:   notes.md
+#	new file:   resources.html
+#	new file:   resources.md
+#	new file:   site-generation.log
+#	new file:   stylesheets/EnergyAtHome2.css
+#	new file:   stylesheets/corev4.css
+#	new file:   stylesheets/wiki.css
+#	new file:   techs.html
+#	new file:   techs.md
+#	new file:   versions.html
+#	new file:   versions.md
+#
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   site-generation.log
+#
+
+##########################
+Git log (first 30 lines)
+##########################
+
+commit aadb8d82ed03aaacf475a2672128914d9bf739e8
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Fri Oct 11 17:34:52 2013 +0200
+
+    cleaning up master
+
+commit 4c0b71fbc0e4ec245fa48fb74844661ee755a4d7
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Mon Oct 7 15:33:15 2013 +0200
+
+    wait for release page
+
+commit 0bd8c1db259dc4a09ef4d111e8b8e7328e717592
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Fri Sep 27 17:34:29 2013 +0200
+
+    added footer
+
+commit 1bf71c2af9a32cc2a809f2dbb26d2c6b304d24fe
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Fri Sep 27 17:02:01 2013 +0200
+
+    minor fixes to the draft website
+
+commit 2aca89c1005a06283831fdbaf6d274e8be46beca
+Author: Bluewind <riccardo.to@gmail.com>
+Date:   Thu Sep 26 19:37:01 2013 +0200
+
+    ML subscribe link
+

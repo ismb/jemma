@@ -1,0 +1,53 @@
+/* _lcid="1033" _version="14.0.4762"
+_LocalBinding */
+.ms-wikieditouter
+{
+height:23px;
+font-size:8pt;
+font-family:verdana,arial,sans-serif;
+position:absolute;
+right:9px;
+top:30px;
+/* [ReplaceColor(themeColor:"Dark1-Medium")] */ border:1px solid #6393D4;
+border-bottom:none;
+text-align:center;
+border-right-width:2px;
+background:url("/_layouts/images/bgximg.png") repeat-x -BGXIMG_TOOLGRAD_BOXLEFTpx -BGXIMG_TOOLGRAD_BOXTOPpx;
+padding-left:3px;
+}
+.ms-wikieditorangeinnera
+{
+height:0px;
+font-size:0px;
+line-height:0px;
+}
+.ms-wikitoolbar a:hover.ms-toolbar
+{
+text-decoration:underline;
+/* [ReplaceColor(themeColor:"Dark1")] */ color:#000000;
+}
+.ms-wikicontent a{
+text-decoration:underline;
+}
+.ms-wikicontent a:hover{
+text-decoration:underline;
+}
+.ms-recentchanges
+{
+vertical-align:top;
+padding:7px 1px 9px 4px;
+}
+.ms-WikiPageNameEditor-Display
+{
+}
+.ms-WikiPageNameEditor-DisplayClickable
+{
+/* [ReplaceColor(themeColor:"Dark1-Lightest")] */ border:thin solid #bbbbbb;
+}
+.ms-WikiPageNameEditor-DisplayHover
+{
+/* [ReplaceColor(themeColor:"Dark1")] */ border:thin solid #000000;
+}
+.ms-WikiPageNameEditor-Edit
+{
+}
