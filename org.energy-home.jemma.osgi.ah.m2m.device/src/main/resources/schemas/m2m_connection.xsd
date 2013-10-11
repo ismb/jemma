@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified"
+        targetNamespace="http://schemas.telecomitalia.it/m2m/connection" 
+        xmlns:conn="http://schemas.telecomitalia.it/m2m/connection" 
+        xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+        jxb:version="2.0">
+
+    <element name="ConnectionParameters">
+        <annotation>
+            <appinfo>
+                <jxb:class>
+                    <jxb:javadoc>
+Parameters sent by the M2M Core Platform to the M2M Device during the registration phase and 
+the connection keepalive interactions. 
+                    </jxb:javadoc>
+                </jxb:class>
+            </appinfo>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element minOccurs="0" name="Id" type="anyURI">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The id property is the relative URI of the SCL resource exposed by the M2M Core Platform and 
+associated to the M2M Device (the base URI is specified by the nwkSclBaseId property). This 
+property is not null only in registration successful responses.
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>
+                </element>
+                <element minOccurs="0" name="Token" type="string">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The token property is used for authentication of all requests sent by the M2M Device after the 
+registration phase. This property is not null only in registration successful responses. 
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>
+                </element>
+                <element minOccurs="1" name="Time" type="long">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The time property specifies the M2M Core Platform time as UTC milliseconds from the Epoch 
+(January 1, 1970 00:00:00.000 GMT)  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>
+				</element>
+                <element minOccurs="1" name="TimeOffset" type="int">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The timeOffset property specifies the offset of M2M Core Platform time zone from UTC.  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                    
+				</element>
+                <element minOccurs="1" name="KeepAliveTimeout" type="long">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The keepAliveTimeout property specifies the keepalive timeout in milliseconds. This value 
+is used to monitor the M2M Device connection. If this value is 0, no keepalive messages are 
+sent by the M2M Device.  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                     
+				</element>
+                <element minOccurs="0" name="NwkSclBaseId" type="anyURI">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The nwkSclBaseId property specifies the M2M Core Platform Network SCL base resource URI. This 
+property is not null only in registration successful responses. 
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                     
+				</element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="DeviceConnectionParameters">
+        <annotation>
+            <appinfo>
+                <jxb:class>
+                    <jxb:javadoc>
+Parameters sent by the M2M Device to the M2M Core Platform during the registration phase and 
+the connection keepalive interactions.
+                    </jxb:javadoc>
+                </jxb:class>
+            </appinfo>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element minOccurs="0" name="Version" type="string">
+                     <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The version property is used in the registration phase to specify the protocol version used by 
+the M2M Device (some old versions of M2M Device may not specify any protocol version)                               
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                   
+				</element>
+
+                <element minOccurs="1" name="Restarted" type="boolean">
+                     <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The restarted property is used in the registration phase to specify if a connection request is 
+the first one after a M2M Device restart.
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                   
+				</element>
+                <element minOccurs="1" name="Time" type="long">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The time property specifies the M2M Device time as UTC milliseconds from the Epoch 
+(January 1, 1970 00:00:00.000 GMT)  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>
+				</element>
+                <element minOccurs="1" name="TimeOffset" type="int">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The timeOffset property specifies the offset of M2M Device time zone from UTC.   
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>
+				</element>
+                <element minOccurs="0" name="ListeningPort" type="unsignedShort">
+                    <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The listeningPort property specifies the TCP port used by the by the M2M Device to expose its 
+Service Capabilities.  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                    
+				</element>
+                <element minOccurs="0" name="KeepAliveTimeout" type="long">
+                     <annotation>
+                        <appinfo>
+                            <jxb:property>
+                                <jxb:javadoc>
+The KeepAliveTimeout property specifies the M2M Device's preferred value for the keepalive timeout. 
+This timeout, expressed in milliseconds, is used to monitor the M2M Device connection. A 0 value for
+this timeout the M2M Device preference to not send keepalive messages.                                  
+                                </jxb:javadoc>
+                            </jxb:property>
+                        </appinfo>
+                    </annotation>                   
+				</element>
+            </sequence>
+        </complexType>
+    </element>
+        
+</schema>

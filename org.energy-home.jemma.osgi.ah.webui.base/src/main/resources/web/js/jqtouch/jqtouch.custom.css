@@ -1,0 +1,98 @@
+#progress {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+	background: rgba(0,0,0,.6);
+	font-family: Helvetica;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    height: 80px;
+    left: 0px;
+    right: 0px;
+    line-height: 80px;
+    position: absolute;
+    text-align: center;
+    top: 120px;
+    width: 200px;
+    z-index: 3;
+  	margin-left: auto;
+  	margin-right: auto;
+}
+
+#jqt li.arrow span {
+	margin-right:23px;
+	color:#324F85;
+	float:right;
+	font-weight:normal;
+}
+
+/* image on arrows */
+
+#jqt ul li img {
+	float:left;
+	margin: -5px 10px -20px -4px;
+	border:0 none;
+	height: 30px;
+	width: 30px;
+}
+
+#jqt img.background {
+	background: #ccc;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+.state_unknown {
+    background-color: lightgray;
+}
+  
+@-webkit-keyframes signal_warning {
+	from {
+    	background-color: #ffff00;
+    }
+	to {
+    	background-color: transparent;
+    }
+}
+				
+@-webkit-keyframes signal_alert {
+	from {
+		background-color: #ff0000;
+    }
+	to {
+		background-color: transparent;
+	}
+}
+							
+ul li.status_warning {
+	-webkit-animation-name: signal_warning;
+	-webkit-animation-duration: 0.8s;
+	-webkit-animation-iteration-count: infinite;
+}
+			
+ul li.status_alert{
+	-webkit-animation-name: signal_alert;
+	-webkit-animation-duration: 0.8s;
+	-webkit-animation-iteration-count: infinite;
+}     
+img.move{
+	position:absolute;
+	left:90%;		
+}		
+
+@-webkit-keyframes blinking_blue {
+	from {
+		background-color: #a0a0ff;
+    }
+	to {
+		background-color: transparent;
+	}
+}
+
+ul li.blinking{
+	-webkit-animation-name: blinking_blue;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 1;
+} 
+
+			

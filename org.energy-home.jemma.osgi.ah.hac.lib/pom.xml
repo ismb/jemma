@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+	<packaging>bundle</packaging>
+	<version>3.1.2</version>
+	<name>Home Automation Core Service libs</name>
+
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>
+	</properties>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Import-Package>org.apache.commons.logging;version="1.0.4",
+							org.eclipse.osgi.framework.console;version="1.0.0",
+							org.osgi.framework;version="1.5.0",
+							org.osgi.service.cm;version="1.2.0",
+							org.osgi.service.component;version="1.1.0",
+							org.osgi.service.device,
+							org.osgi.service.event;version="1.2.0",
+							org.osgi.util.tracker
+						</Import-Package>
+						<Export-Package>org.energy_home.jemma.ah.cluster.ah;version="3.0.1",
+							org.energy_home.jemma.ah.cluster.zigbee.closures;version="1.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.custom;version="3.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.eh;version="3.1.0",
+							org.energy_home.jemma.ah.cluster.zigbee.general;version="3.1.0",
+							org.energy_home.jemma.ah.cluster.zigbee.hvac;version="3.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.measurement;version="3.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.metering;version="3.1.0",
+							org.energy_home.jemma.ah.cluster.zigbee.security;version="3.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.wulian;version="1.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.zll;version="1.0.0",
+							org.energy_home.jemma.ah.hac;version="3.0.2";uses:="org.osgi.service.device,org.osgi.service.cm",
+							org.energy_home.jemma.ah.hac.lib;version="3.0.1",
+							org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0"
+							org.energy_home.jemma.ah.hac.lib.internal;version="3.4.0"
+						</Export-Package>
+						<Service-Component>OSGI-INF/application_proxy.xml</Service-Component>
+						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
+						<Bundle-Category>Automation@Home</Bundle-Category>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>${org.eclipse.osgi.version}</version>
+		</dependency>
+			    
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi.services</artifactId>
+			<version>${org.eclipse.osgi.services.version}</version>
+		</dependency>
+		    
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+	</dependencies>
+
+
+</project>

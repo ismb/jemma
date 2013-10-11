@@ -1,0 +1,42 @@
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+     <OCD description="Locations DB" 
+       	name="Locations"
+       	id="it.telecomitalia.osgi.ah.hac.locations">
+    	<AD name="Name"  id="it.telecomitalia.ah.location.name" type="String" default=""/>
+    	<AD name="Icon"  id="it.telecomitalia.ah.location.icon" type="String" default=""/>
+    	<AD name="Pid"  id="it.telecomitalia.ah.location.pid" type="String" default=""/>
+	</OCD>
+  
+   	<Designate pid="it.telecomitalia.osgi.ah.hac.locations" factoryPid="it.telecomitalia.osgi.ah.hac.locations" >
+        <Object ocdref="it.telecomitalia.osgi.ah.hac.locations">
+    	</Object>
+  	</Designate> 
+  	
+  	<OCD description="Connection Admin Manager" 
+       	name="Connection Admin Manager"
+       	id="it.telecomitalia.osgi.ah.connection.admin">
+    	<AD name="Rule"  id="it.telecomitalia.ah.connadmin.rules" type="String" cardinality="10"/>  
+	</OCD>
+  
+     <Designate pid="it.telecomitalia.osgi.ah.connection.admin">
+        <Object ocdref="it.telecomitalia.osgi.ah.connection.admin">
+    	</Object>
+  	</Designate>
+</metatype:MetaData>

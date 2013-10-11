@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<profiles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ha.xsd">
+	<profile id="0x0104" name="Home Automation Profile">
+
+		<!--
+			Imports ZigBee Cluster Library to get cluster definitions used below
+		-->
+
+		<xi:include href="/xml/zigbee/zcl.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+		<device id="0x0000" name="On/Off Switch">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="On/Off Switch Configuration" />
+			</server>
+			<client>
+				<clusterRef name="On/Off" />
+			</client>
+		</device>
+
+		<device id="0x0001" name="Level Control Switch">
+			<server>
+				<clusterRef name="On/Off Switch Configuration" />
+			</server>
+			<client>
+				<clusterRef name="On/Off" />
+				<clusterRef name="Level Control" />
+			</client>
+		</device>
+
+		<device id="0x0002" name="On/Off Output">
+			<server>
+				<clusterRef name="On/Off" />
+				<clusterRef name="Scenes" />
+				<clusterRef name="Groups" />
+			</server>
+		</device>
+		
+		<device id="0x0009" name="Mains Power Outlet">
+			<server>
+				<clusterRef name="On/Off" />
+				<clusterRef name="Scenes" />
+				<clusterRef name="Groups" />
+			</server>
+		</device>
+
+		<device id="0x0006" name="Remote Control" />
+		<device id="0x0100" name="On/Off Light" />
+		<device id="0x0103" name="On/Off light Switch" />
+		<device id="0x0200" name="Shade">
+			<server>
+				<clusterRef name="Shade Configuration" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Level Control" />
+				<clusterRef name="Scenes" />
+				<clusterRef name="Groups" />
+			</server>
+		</device>
+		<device id="0x0201" name="Shade Controller">
+			<client>
+				<clusterRef name="On/Off" />
+				<clusterRef name="Level Control" />
+				<clusterRef name="Shade Configuration" />
+				<clusterRef name="Scenes" />
+				<clusterRef name="Identify" />
+			</client>
+		</device>
+		<device id="0x0300" name="Heating/Cooling Unit" />
+		<device id="0x0302" name="Temperature Sensor">
+			<server>
+				<clusterRef name="Temperature Measurement" />
+			</server>
+		</device>
+
+		<!--  Indesit CECED applicances -->
+
+		<device id="0x0A00" name="White Goods">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		
+		<device id="0x0A01" name="Dishwasher">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		
+		<device id="0x0A02" name="Tumble Dryer">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		
+		<device id="0x0A03" name="Washer Dryer">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+
+		<device id="0x0A04" name="Washing Machine">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+
+		<device id="0x0A05" name="Hobs">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		
+		<device id="0x0A06" name="Induction Hobs">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>		
+
+		<device id="0x0A07" name="Oven">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		<device id="0x0A08" name="Electrical Oven">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+		
+		<device id="0x0A09" name="Refrigerator Freezer">
+			<server>
+				<clusterRef name="Basic" />
+				<clusterRef name="Identify" />
+				<clusterRef name="Groups" />
+				<clusterRef name="On/Off" />
+				<clusterRef name="Appliance Identification" />
+				<clusterRef name="Appliance Control" />
+				<clusterRef name="Appliance Events and Alerts" />
+				<clusterRef name="Indesit Bridge" />
+				<clusterRef name="Simple Metering" mandatory="false" />
+				<clusterRef name="Applicance Statistics" mandatory="false" />
+				<clusterRef name="Alarms" mandatory="false" />
+				<clusterRef name="Temperature Measurement" mandatory="false" />
+			</server>
+			<client>
+				<clusterRef name="Power Levelling" mandatory="false" />			
+			</client>
+		</device>
+	</profile>
+
+	<profile id="0xC044" name="4Noks Profile">
+
+		<!--
+			Imports ZigBee Cluster Library to get cluster definitions used below
+		-->
+		<xi:include href="/xml/zigbee/zcl.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+		<device id="0x000C" name="On/Off Push Button">
+			<server>
+				<clusterRef name="On/Off Switch Configuration" />
+			</server>
+			<client>
+				<clusterRef name="On/Off" />
+			</client>
+		</device>
+		
+		
+		<device id="0x0501" name="SmartPlug">
+			<server>
+				<clusterRef name="On/Off Switch Configuration" />
+				<clusterRef name="Simple Metering 4Noks" />
+				<clusterRef name="On/Off" />
+			</server>
+		</device>
+	</profile>
+	<profile id="0xC045" name="Telecom Italia">
+
+		<!--
+			Imports ZigBee Cluster Library to get cluster definitions used below
+		-->
+		<xi:include href="/xml/zigbee/zcl.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+		<device id="0x0000" name="Overload Manager">
+			<server>
+				<clusterRef name="On/Off Switch Configuration" />
+				<clusterRef name="Simple Metering" />				
+			</server>
+			<client>
+				<clusterRef name="On/Off" />
+			</client>
+		</device>
+
+		<device id="0x0000" name="Toggle">
+			<server>
+				<clusterRef name="On/Off" />
+			</server>
+			<client>
+				<clusterRef name="Simple Metering" />
+			</client>
+		</device>
+		<device id="0x0000" name="Standby Manager">
+			<server>
+				<clusterRef name="On/Off" />
+			</server>
+			<client>
+				<clusterRef name="Simple Metering" />
+			</client>
+		</device>
+	</profile>
+</profiles>

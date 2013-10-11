@@ -1,0 +1,81 @@
+====
+     * This file is part of JEMMA - http://jemma.energy-home.org
+     * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
+     *
+     * JEMMA is free software: you can redistribute it and/or modify
+     * it under the terms of the GNU Lesser General Public License (LGPL) version 3
+     * or later as published by the Free Software Foundation, which accompanies
+     * this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+     *
+     * JEMMA is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     * GNU Lesser General Public License (LGPL) for more details.
+     *
+
+====
+
+This file contains the release notes of the it.telecomitalia.osgi.gal bundle:
+
+Version 1.1.15:
+
+** New Features
+	* Backported to OSGi Minimum 1.2 (replaced String.replaceFirst)
+	* Ported to Prosyst (changes in the order mBS 7.2 calls the callbacks 
+	  of the bundleListener.
+	* Added Classes GalCMProperties and CMProperties to manage gal configuration
+	  parameters.
+
+** Bugs:
+	* changed the locking scheme.
+
+Version 1.1.14:
+	* Default channel is now 0 (the ZigBee adapter must choose the channel)
+
+Version 1.1.13:
+
+*** Bugs:
+	* Works fine on windows and Linux OS
+
+** New Features
+	* Channel mask set to 0 (scan all channels) in config.ini
+	
+	
+
+Bundle Version 1.1.12:
+	set LD_LIBRARY_PATH of extracted gal to '.' 
+	the gal is launched using a relative path.
+	
+Bundle Version 1.1.11:
+	keepAliveThreshold param changed to 90s
+	
+Bundle Version 1.1.10:
+	PANid set to 0xFFFF in config.ini
+	Changed a parameter meaning from keepAliveTimeout to keepAliveNumberOfAttempt.
+	Ported to Felix and Prosyst
+	Autodiscovery is now enabled by default
+
+Bundle Version 1.1.9:
+	Autodiscovery disabled by default
+	
+Bundle Version 1.1.8;
+
+	Features:
+	- Added zgd.autodiscovery property to enable disable autodiscovery
+	  from Equinox config.ini and configuration admin
+	- Stop and start should behave more smootly
+	- Fragment bundle updates are detected (after refresh).
+
+Bundle Version 1.0.4:
+
+	Features:
+	- It is possible to change the zigbee channel from ConfigAdmin
+	  
+Bundle Version 1.0.0:
+
+	Features:
+	- Expose interface IGal when the gal is running. The IGal interface is removed
+	  if the gal crashes or if the bundle is stopped.
+	- The watchdogTimeout permits to restart the Gal if it crashes.
+	- Integrated with the configuration admin service. It is possible to dynamically
+	  reconfigure the gal.

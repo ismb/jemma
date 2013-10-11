@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://schemas.telecomitalia.it/ah" xmlns:ah="http://schemas.telecomitalia.it/ah" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="ApplianceLog">
+    <xs:sequence>
+      <xs:element name="LogId" type="xs:long"/>
+      <xs:element name="LogPayload" type="xs:base64Binary" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DoubleCDV">
+    <xs:complexContent>
+      <xs:extension base="ah:DoubleDV">
+        <xs:sequence>
+          <xs:element name="Min" type="xs:double" minOccurs="0"/>
+          <xs:element name="Max" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DoubleDV">
+    <xs:sequence>
+      <xs:element name="Value" type="xs:double" minOccurs="0"/>
+      <xs:element name="Duration" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EnergyCostPowerInfo">
+    <xs:sequence>
+      <xs:element name="Duration" type="xs:long"/>
+      <xs:element name="DeltaEnergy" type="xs:float" minOccurs="0"/>
+      <xs:element name="Cost" type="xs:float" minOccurs="0"/>
+      <xs:element name="MinCost" type="xs:float" minOccurs="0"/>
+      <xs:element name="MaxCost" type="xs:float" minOccurs="0"/>
+      <xs:element name="PowerInfo" type="ah:MinMaxPowerInfo" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MinMaxPowerInfo">
+    <xs:sequence>
+      <xs:element name="MinPower" type="xs:float"/>
+      <xs:element name="MinPowerTime" type="xs:long"/>
+      <xs:element name="MaxPower" type="xs:float"/>
+      <xs:element name="MaxPowerTime" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FloatCDV">
+    <xs:complexContent>
+      <xs:extension base="ah:FloatDV">
+        <xs:sequence>
+          <xs:element name="Min" type="xs:float" minOccurs="0"/>
+          <xs:element name="Max" type="xs:float" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FloatDV">
+    <xs:sequence>
+      <xs:element name="Value" type="xs:float" minOccurs="0"/>
+      <xs:element name="Duration" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma.osgi.ah.felix.console.web</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.0.7</version>
+	<name>AH Felix Web Console</name>
+
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Require-Bundle>jemma.osgi.ah.hac.lib;bundle-version="[3.1.0,3.2.0)"</Require-Bundle>
+						<Import-Package>org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)",
+							 org.energy_home.jemma.ah.hac.lib.ext;version="[3.4.0,3.5.0)",
+							 org.energy_home.jemma.ah.hac;version="[3.0.0,3.1.0)",
+							 javax.servlet,
+							 javax.servlet.http,
+							 org.apache.commons.logging,
+							 org.apache.felix.webconsole,
+							 org.osgi.framework,*
+						</Import-Package>
+						<Export-Package>!*</Export-Package>
+						<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+						<Private-Package>org.energy_home.jemma.osgi.ah.felix.console.web</Private-Package>
+						<Service-Component>OSGI-INF/HacWebCommandProvider.xml</Service-Component>
+						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
+						<Bundle-Category>Automation@Home</Bundle-Category>
+						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>${org.eclipse.osgi.version}</version>
+		</dependency>		    
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi.services</artifactId>
+			<version>${org.eclipse.osgi.services.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.util</artifactId>
+			<version>${org.eclipse.equinox.util.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet</artifactId>
+			<version>${javax.servlet.version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.webconsole</artifactId>
+			<version>${org.apache.felix.webconsole.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.webconsole.plugins.event</artifactId>
+			<version>${org.apache.felix.webconsole.plugins.event.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.webconsole.plugins.memoryusage</artifactId>
+			<version>${org.apache.felix.webconsole.plugins.memoryusage.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.webconsole.plugins.upnp</artifactId>
+			<version>${org.apache.felix.webconsole.plugins.upnp.version}</version>
+		</dependency>
+		<!--
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr</artifactId>
+			<version>${org.apache.felix.scr.version}</version>
+		</dependency> 
+		-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.io</artifactId>
+			<version>${org.apache.commons.io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.fileupload</artifactId>
+			<version>${org.apache.commons.fileupload.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>org.json.simple</artifactId>
+			<version>${org.json.simple.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>org.json</artifactId>
+			<version>${org.json.version}</version>
+		</dependency>
+	</dependencies>
+
+
+</project>
