@@ -1,4 +1,4 @@
-Auto-generated site: 201310101543
+Auto-generated site: 201310111729
 
 ##########################
 Git status
@@ -9,9 +9,7 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   credits.html
 #	modified:   credits.md
-#	modified:   notes.html
 #	modified:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -19,6 +17,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 0c6fd84121800794e7b446ff91837d0ef3ec1e12
+Author: Riccardo T <riccardo.to@gmail.com>
+Date:   Thu Oct 10 15:44:08 2013 +0200
+
+    modified credits
 
 commit 227537b52bdaa76c059f406409c8de220c91b10f
 Author: Riccardo T <riccardo.to@gmail.com>
@@ -43,10 +47,4 @@ Author: Riccardo T <riccardo.to@gmail.com>
 Date:   Wed Oct 9 15:44:22 2013 +0200
 
     modifiche viste durante la riunione
-
-commit 7dc6ab1108649bab668193814767f66efc6b676a
-Author: Riccardo T <riccardo.to@gmail.com>
-Date:   Tue Oct 8 19:38:35 2013 +0200
-
-    minor fix
 
