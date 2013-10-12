@@ -1,4 +1,4 @@
-Auto-generated site: 201310112143
+Auto-generated site: 201310121020
 
 ##########################
 Git status
@@ -10,8 +10,6 @@ Git status
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
 #	modificato:   credits.md
-#	modificato:   index.html
-#	modificato:   notes.html
 #	modificato:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -19,6 +17,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit dba029df5004c100fe8224abd89584bf3e764a01
+Author: Bluewind <riccardo.to@gmail.com>
+Date:   Fri Oct 11 21:44:19 2013 +0200
+
+    mod requested by Fabio
 
 commit e28d2346880efdddd755cb19338b36b11c693043
 Author: riccardo <riccardo.to@gmail.com>
@@ -44,9 +48,3 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Fri Oct 11 17:34:52 2013 +0200
 
     cleaning up master
-
-commit 0bfabf8f9a6fa5ba090233367f16a15379890098
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Fri Oct 11 17:30:05 2013 +0200
-
-    minor fix
