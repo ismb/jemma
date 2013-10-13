@@ -23,7 +23,10 @@ A summary of the latest news is available below.
 <!-- WebRSS.com NOTE: Do not modify code below this line  -->
 <script language="JavaScript" src='http://www.webrss.com/get_mysite.php?lang=js&mysiteId=66870'></script>
 
-You can also subscribe to the JEMMA news by e-mail by entering your address below:
+You can also subscribe to the JEMMA announcements by entering your e-mail address below:
 
-<form style="border:0px solid #ccc;padding:3px;text-align:center;" action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=Jemma', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true"><p>Your email address:</p><p><input type="text" name="email"/></p><input type="hidden" value="Jemma" name="uri"/><input type="hidden" name="loc" value="en_US"/><input type="submit" value="Subscribe" /><p>Delivered by <a href="http://feedburner.google.com" target="_blank">FeedBurner</a></p></form>
+<form style="border:0px solid #ccc;padding:3px;text-align:center;" action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=Jemma', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true"><p>Your email address:</p><p><input type="text" name="email"/></p><input type="hidden" value="Jemma" name="uri"/><input type="hidden" name="loc" value="en_US"/><input type="submit" value="Subscribe" /><p>JEMMA Announcements, delivered by <a href="http://feedburner.google.com" target="_blank">FeedBurner</a></p></form>
+
+
+*Note: the form above will only subscribe you to JEMMA announcements. If you are interested in the JEMMA General Mailing List you can [click here](https://groups.google.com/forum/#!forum/jemma-general/join) to subscribe (more details [here](howtoc.html)).*
 

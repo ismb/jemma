@@ -6,11 +6,13 @@ How to Contribute
 
 The best way to learn about JEMMA and its features is to follow the wiki-based tutorials, HOWTOs and manuals indexed in the [Documentation](howtos.html) section. More generic technical and research-oriented documentation (e.g. papers, white-papers, etc.) is available [here](resources.html).
 
-
-
 The JEMMA source code can always be accessed from the official [JEMMA GitHub page](https://github.com/ismb/jemma). You can also download the latest snapshot of the full code repository in [.zip](https://github.com/ismb/jemma/zipball/master) or [.tar.gz](https://github.com/ismb/jemma/tarball/master) format.
 
-Questions ? Feel free to post them on the [JEMMA General Mailing list](https://groups.google.com/forum/#!forum/jemma-general) (you can [click here](https://groups.google.com/forum/#!forum/jemma-general/join) to subscribe). This is the preferred way to get in direct contact with the JEMMA develolpers.
+### Discuss on the Mailing List
+
+Ideas ? Questions ? Feel free to post them on the [JEMMA General Mailing list](https://groups.google.com/forum/#!forum/jemma-general) (hosted by Google Groups).
+
+[Click here](https://groups.google.com/forum/#!forum/jemma-general/join) to subscribe from any e-mail address. 
 
 ### Interested in contributing ?
 

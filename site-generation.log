@@ -1,4 +1,4 @@
-Auto-generated site: 201310121020
+Auto-generated site: 201310131115
 
 ##########################
 Git status
@@ -9,7 +9,10 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   credits.md
+#	modificato:   howtoc.html
+#	modificato:   howtoc.md
+#	modificato:   news.html
+#	modificato:   news.md
 #	modificato:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -17,6 +20,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 73ad219ce8162582ef37e7cae036d5b57f9e804f
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Sat Oct 12 10:21:37 2013 +0200
+
+    minor fix
 
 commit dba029df5004c100fe8224abd89584bf3e764a01
 Author: Bluewind <riccardo.to@gmail.com>
@@ -42,9 +51,3 @@ Date:   Fri Oct 11 17:37:15 2013 +0200
     	notes.md
     
     (Solved)
-
-commit aadb8d82ed03aaacf475a2672128914d9bf739e8
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Fri Oct 11 17:34:52 2013 +0200
-
-    cleaning up master
