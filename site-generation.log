@@ -1,22 +1,39 @@
-Auto-generated site: 201310141932
+Auto-generated site: 201310142037
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
+# Sul branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   site-generation.log
-#	modified:   versions.md
+#	modificato:   credits.html
+#	modificato:   credits.md
+#	modificato:   devteam.md
+#	modificato:   index.html
+#	modificato:   notes.html
+#	modificato:   site-generation.log
+#	modificato:   versions.html
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 6c1bb89176e8ee809265029e93bbb77abeecaed1
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 20:23:11 2013 +0200
+
+    testing parent links
+
+commit 8eacc9af24b63742665818c8cb0d487836ea6908
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 19:32:44 2013 +0200
+
+    test fix links
 
 commit 97a5540b1dff9285051762e23f5f463154cfe50d
 Author: riccardo <riccardo.to@gmail.com>
@@ -35,16 +52,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Sun Oct 13 11:16:57 2013 +0200
 
     increased visibility of the mailing list
-
-commit 73ad219ce8162582ef37e7cae036d5b57f9e804f
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Sat Oct 12 10:21:37 2013 +0200
-
-    minor fix
-
-commit dba029df5004c100fe8224abd89584bf3e764a01
-Author: Bluewind <riccardo.to@gmail.com>
-Date:   Fri Oct 11 21:44:19 2013 +0200
-
-    mod requested by Fabio
 
