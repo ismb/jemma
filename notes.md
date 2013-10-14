@@ -1,3 +1,28 @@
+<a href="" target="_parent"></a>
+
+
+Ciao Fabio,
+
+Non so se hai ricevuto l'SMS - in ogni caso ripeto via mail:
+
+Il dominio jemma.energy-home.org ora sembra raggiungibile correttamente. In serata abbiamo scoperto un problema su alcuni link esterni che non si aprivano correttamente, che ora è risolto (era un problema del provider che gestisce il dominio redirect, ma l'abbiamo potuto risolvere con una modifica lato nostro).
+
+(PS. Grazie a Pino e Nicola che ci hanno segnalato la cosa).
+
+Il dominio jemma.energy-home.it invece forse è da ri-configurare  - non so se sia un problema di tempo di propagazione sul DNS o di configurazione, ma per qualche motivo sembra puntare ancora alla pagina vecchia.
+
+
+R.
+
+
+Bellifemine Fabio Luigi <fabioluigi.bellifemine@telecomitalia.it>
+
+
+Portinaro Nicola <nicola.portinaro@telecomitalia.it>
+Giampiero Bono <bono@ismb.it>,
+Riccardo Tomasi <tomasi@ismb.it>
+Castrogiovanni Pino <pino.castrogiovanni@telecomitalia.it>
+
 <style>
 .mysite_title1 {
 background-color: #3a9947;

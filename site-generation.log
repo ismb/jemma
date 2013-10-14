@@ -1,4 +1,4 @@
-Auto-generated site: 201310142039
+Auto-generated site: 201310142048
 
 ##########################
 Git status
@@ -9,7 +9,9 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   index.md
+#	modificato:   features.md
+#	modificato:   howtoc.md
+#	modificato:   notes.md
 #	modificato:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -17,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit ebffbbc909597eb72bfb6ca92b44a4cb79d09271
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 20:39:32 2013 +0200
+
+    minor test
 
 commit 3863c7bd3bc08e4d1daa05f52409693997c7e522
 Author: riccardo <riccardo.to@gmail.com>
@@ -41,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 19:22:03 2013 +0200
 
     hotfixing links
-
-commit 75f1d0f2b6abb11f72dcf3c30b707e0f3bf61942
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 19:16:10 2013 +0200
-
-    test new tab
 
