@@ -8,7 +8,7 @@ Welcome to the home page of **JEMMA** - **J**ava **E**nergy **M**anage**M**ent *
 
 <img style="margin-left:5%; margin-right:5%;" width="90%" src="images/jemma-arch-lowres.png">
 
-JEMMA is a open-source (LGPL) framework which implements the [Energy@home specifications](http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf) for energy monitoring and management application. JEMMA currently supports the [ZigBee Home Automation 1.2](http://www.zigbee.org/Standards/ZigBeeHomeAutomation/Overview.aspx) and the [ZigBee Gateway Device](http://www.zigbee.org/Standards/ZigbeeTelecomServices/Features.aspx) standards resulting from of a collaboration between the [Energy@home Association](http://www.energy-home.it/) and the [ZigBee Alliance](http://www.zigbee.org/).
+JEMMA is a open-source (LGPL) framework which implements the <a href="http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf" target="_parent">Energy@home specifications</a> for energy monitoring and management application. JEMMA currently supports the <a href="http://www.zigbee.org/Standards/ZigBeeHomeAutomation/Overview.aspx" target="_parent">ZigBee Home Automation 1.2</a> and the <a href="http://www.zigbee.org/Standards/ZigbeeTelecomServices/Features.aspx" target="_parent">ZigBee Gateway Device</a> standards resulting from of a collaboration between the <a href="http://www.energy-home.it/" target="_parent">Energy@home Association</a> and the <a href="http://www.zigbee.org/" target="_parent">ZigBee Alliance</a>.
 
 
 

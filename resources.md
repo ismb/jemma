@@ -6,19 +6,19 @@ Papers and Resources
 
 ### Standards and related documents
 
-- [Energy@home specifications *(v0.95)*](http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf)
+- <a href="http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf" target="_parent">Energy@home specifications *(v0.95)*</a>
 
-- [ZigBee Home Automation 1.2 standard](http://www.zigbee.org/Standards/ZigBeeHomeAutomation/download.aspx)
+- <a href="http://www.zigbee.org/Standards/ZigBeeHomeAutomation/download.aspx" target="_parent">ZigBee Home Automation 1.2 standard</a>
 
-- [ZigBee Gateway Device](http://www.zigbee.org/Standards/ZigbeeTelecomServices/download.aspx)
+- <a href="http://www.zigbee.org/Standards/ZigbeeTelecomServices/download.aspx" target="_parent">ZigBee Gateway Device</a>
 
-- [Energy@home use cases *(v1.2)*](http://www.energy-home.it/Documents/Technical%20Specifications/Energy@Home%20Use%20Cases_v_1_2.pdf)
+- <a href="http://www.energy-home.it/Documents/Technical%20Specifications/Energy@Home%20Use%20Cases_v_1_2.pdf" target="_parent">Energy@home use cases *(v1.2)*</a>
 
 ### Related Resources and Papers
 
-- *Bellifemine, Fabio Luigi, et al. "A Home Manager Application for ZigBee Smart Home Networks."* [(pdf)](http://www.open-zb.net/publications/A%20Home%20Manager%20Application%20for%20ZigBee%20Smart%20Home%20Networks.pdf)
+- *Bellifemine, Fabio Luigi, et al. "A Home Manager Application for ZigBee Smart Home Networks."* <a href="http://www.open-zb.net/publications/A%20Home%20Manager%20Application%20for%20ZigBee%20Smart%20Home%20Networks.pdf" target="_parent">(pdf)</a>.
 
-- *Borean, C., and C. Pastrone. "GAL: A Gateway Abstraction Layer for fast application development in ZigBee Networks." 2nd European ZigBee Developers Conference. 2008.* [(pdf)](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5076853&tag=1)
+- *Borean, C., and C. Pastrone. "GAL: A Gateway Abstraction Layer for fast application development in ZigBee Networks." 2nd European ZigBee Developers Conference. 2008.* <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5076853&tag=1" target="_parent">(pdf)</a>
 
 
 
