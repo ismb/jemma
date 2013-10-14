@@ -1,25 +1,40 @@
-Auto-generated site: 201310131115
+Auto-generated site: 201310141915
 
 ##########################
 Git status
 ##########################
 
-# Sul branch gh-pages
+# On branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   howtoc.html
-#	modificato:   howtoc.md
-#	modificato:   news.html
-#	modificato:   news.md
-#	modificato:   site-generation.log
+#	modified:   credits.html
+#	modified:   devteam.html
+#	modified:   features.html
+#	modified:   header.template
+#	modified:   howtoc.html
+#	modified:   howtos.html
+#	modified:   index.html
+#	modified:   license.html
+#	modified:   news.html
+#	modified:   notes.html
+#	modified:   resources.html
+#	modified:   site-generation.log
+#	modified:   techs.html
+#	modified:   versions.html
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit a7642ab0ba40557dc53bd872ad3efd3322959554
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Sun Oct 13 11:16:57 2013 +0200
+
+    increased visibility of the mailing list
 
 commit 73ad219ce8162582ef37e7cae036d5b57f9e804f
 Author: riccardo <riccardo.to@gmail.com>
@@ -45,9 +60,3 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Fri Oct 11 17:37:15 2013 +0200
 
     Merge branch 'gh-pages-0.0.1-prerelease' into gh-pages
-    
-    Conflicts:
-    	index.html
-    	notes.md
-    
-    (Solved)
