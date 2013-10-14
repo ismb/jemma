@@ -1,4 +1,4 @@
-Auto-generated site: 201310141921
+Auto-generated site: 201310141932
 
 ##########################
 Git status
@@ -9,22 +9,7 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   features.html
-#	modified:   features.md
-#	modified:   howtoc.html
-#	modified:   howtoc.md
-#	modified:   howtos.html
-#	modified:   howtos.md
-#	modified:   license.html
-#	modified:   license.md
-#	modified:   news.html
-#	modified:   news.md
-#	modified:   notes.html
-#	modified:   notes.md
-#	modified:   resources.html
-#	modified:   resources.md
 #	modified:   site-generation.log
-#	modified:   versions.html
 #	modified:   versions.md
 #
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -32,6 +17,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 97a5540b1dff9285051762e23f5f463154cfe50d
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 19:22:03 2013 +0200
+
+    hotfixing links
 
 commit 75f1d0f2b6abb11f72dcf3c30b707e0f3bf61942
 Author: riccardo <riccardo.to@gmail.com>
@@ -56,10 +47,4 @@ Author: Bluewind <riccardo.to@gmail.com>
 Date:   Fri Oct 11 21:44:19 2013 +0200
 
     mod requested by Fabio
-
-commit e28d2346880efdddd755cb19338b36b11c693043
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Fri Oct 11 17:50:22 2013 +0200
-
-    minor fix + adding subscription by email
 
