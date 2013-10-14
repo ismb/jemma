@@ -1,32 +1,44 @@
-Auto-generated site: 201310142057
+Auto-generated site: 201310142059
 
 ##########################
 Git status
 ##########################
 
 # Sul branch gh-pages
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	rinominato:    notes.md -> notes.txt
+#
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
+#	modificato:   credits.html
+#	modificato:   devteam.html
+#	modificato:   features.html
+#	modificato:   header.template
+#	modificato:   howtoc.html
 #	modificato:   howtos.html
-#	modificato:   howtos.md
 #	modificato:   index.html
-#	modificato:   index.md
 #	modificato:   license.html
-#	modificato:   license.md
 #	modificato:   news.html
-#	modificato:   news.md
+#	modificato:   notes.html
 #	modificato:   resources.html
-#	modificato:   resources.md
 #	modificato:   site-generation.log
-#	modificato:   techs.md
+#	modificato:   techs.html
+#	modificato:   versions.html
 #
-no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 5e984116243abf1c8fa43fb870559082aa3e622d
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 20:57:05 2013 +0200
+
+    finished moving links - to be tested
 
 commit 0f8c145be0b492fda0fbde665b594f8a733023f7
 Author: riccardo <riccardo.to@gmail.com>
@@ -51,10 +63,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 20:23:11 2013 +0200
 
     testing parent links
-
-commit 8eacc9af24b63742665818c8cb0d487836ea6908
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 19:32:44 2013 +0200
-
-    test fix links
 
