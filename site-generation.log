@@ -1,4 +1,4 @@
-Auto-generated site: 201310142037
+Auto-generated site: 201310142039
 
 ##########################
 Git status
@@ -9,19 +9,20 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   credits.html
-#	modificato:   credits.md
-#	modificato:   devteam.md
-#	modificato:   index.html
-#	modificato:   notes.html
+#	modificato:   index.md
 #	modificato:   site-generation.log
-#	modificato:   versions.html
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 3863c7bd3bc08e4d1daa05f52409693997c7e522
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 20:37:59 2013 +0200
+
+    another test for links
 
 commit 6c1bb89176e8ee809265029e93bbb77abeecaed1
 Author: riccardo <riccardo.to@gmail.com>
@@ -46,10 +47,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 19:16:10 2013 +0200
 
     test new tab
-
-commit a7642ab0ba40557dc53bd872ad3efd3322959554
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Sun Oct 13 11:16:57 2013 +0200
-
-    increased visibility of the mailing list
 

@@ -2,7 +2,7 @@ Welcome to JEMMA
 <!-- Remember: the first line always goes with the title-->
 <!-- Please use h3 headers (###) inside these files -->
 
-Welcome to the home page of **JEMMA** (**J**ava **E**nergy **M**anage**M**ent **A**pplication framework).
+Welcome to the home page of **JEMMA** - **J**ava **E**nergy **M**anage**M**ent **A**pplication framework.
 
 <!--![](images/jemma-arch.png)-->
 
