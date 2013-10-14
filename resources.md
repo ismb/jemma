@@ -18,7 +18,7 @@ Papers and Resources
 
 - *Bellifemine, Fabio Luigi, et al. "A Home Manager Application for ZigBee Smart Home Networks."* <a href="http://www.open-zb.net/publications/A%20Home%20Manager%20Application%20for%20ZigBee%20Smart%20Home%20Networks.pdf" target="_parent">(pdf)</a>.
 
-- *Borean, C., and C. Pastrone. "GAL: A Gateway Abstraction Layer for fast application development in ZigBee Networks." 2nd European ZigBee Developers Conference. 2008.* <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5076853&tag=1" target="_parent">(pdf)</a>
+- *Borean, C., and C. Pastrone. "GAL: A Gateway Abstraction Layer for fast application development in ZigBee Networks." 2nd European ZigBee Developers Conference. 2008.* <a href="http://www.ismb.it/node/950" target="_parent">(pdf)</a>
 
 
 
