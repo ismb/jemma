@@ -2,7 +2,7 @@ Key Features
 <!-- Remember: the first line always goes with the title-->
 <!-- Please use h3 headers (###) inside these files -->
 
-<!--<span style="color:red;">**This page is under construction**</span>: We expect to update this page along with the release of JEMMA [version 0.0.2](https://github.com/ismb/jemma/wiki/Milestone-0.0.2).-->
+<!--<span style="color:red;">**This page is under construction**</span>: We expect to update this page along with the release of JEMMA [version 0.0.2](http://github.com/ismb/jemma/wiki/Milestone-0.0.2).-->
 
 
 - **Green**: JEMMA core feature is the ability to support energy monitoring and management applications: after you deploy JEMMA in your home gateway it can discover all the available smart appliances (e.g. Smart Plugs, etc.) and make them available for internal or external applications.
