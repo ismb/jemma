@@ -1,34 +1,33 @@
-Auto-generated site: 201310142205
+Auto-generated site: 201310202200
 
 ##########################
 Git status
 ##########################
 
-# Sul branch gh-pages
+# On branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   credits.html
-#	modificato:   devteam.html
-#	modificato:   features.html
-#	modificato:   howtoc.html
-#	modificato:   howtos.html
-#	modificato:   index.html
-#	modificato:   license.html
-#	modificato:   news.html
-#	modificato:   resources.html
-#	modificato:   resources.md
-#	modificato:   site-generation.log
-#	modificato:   techs.html
-#	modificato:   techs.md
-#	modificato:   versions.html
+#	modified:   credits.md
+#	modified:   site-generation.log
 #
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	images/Thumbs.db
+#	images/Thumbs.db:encryptable
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 274716979527a250382197513fa52928ecf04b88
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Oct 14 22:05:35 2013 +0200
+
+    minor fix on header
 
 commit 2abb8a6bb4146dcaddabc1674a46ce68832e48a5
 Author: riccardo <riccardo.to@gmail.com>
@@ -53,10 +52,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 20:57:05 2013 +0200
 
     finished moving links - to be tested
-
-commit 0f8c145be0b492fda0fbde665b594f8a733023f7
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 20:48:43 2013 +0200
-
-    fixing links - test
 

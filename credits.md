@@ -6,6 +6,14 @@ The JEMMA code-base has been developed since 2010 by <a href="http://www.telecom
 
 <a href="http://www.ismb.it/" target="_parent">Istituto Superiore Mario Boella (ISMB)</a> is currently supporting the project by animating the open source community and contributing with new developments.
 
+Telecom Italia acknowledges that the JEMMA Open Source Project was partially supported by the following public projects:
+
+- <a href="http://www.eitictlabs.eu/" target="_parent">KIC EIT ICT Labs</a>, Activity A13030 SecSES - Secure Energy Systems, year 2013, for software developments related to the smart home gateway and the cloud platform
+
+- eKitchen, Ministry of Economic Development Industria 2015, years 2012-2014, for software developments related to the software framework that abstract the home devices
+
+- Intrepid, FP7 ICT European project, for the home energy management and control algorithms
+
 ### Development Team
 
 The JEMMA dopen source community is animated by a team @ *[ISMB](http://www.ismb.it/)* including <a href="http://www.ismb.it/ivan.grimaldi" target="_parent">Ivan Grimaldi</a>, <a href="http://www.ismb.it/node/1590" target="_parent">Giampiero Bono</a>, <a href="http://www.ismb.it/riccardo.tomasi" target="_parent">Riccardo Tomasi</a>. 
