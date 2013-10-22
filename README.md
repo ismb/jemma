@@ -6,7 +6,12 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 
 ## Get Started
 
-[User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation) (tutorials, etc.) is available on the project wiki. [Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) is also available.
+**Quick Links:**
+
+* If you want to run the code, follow [this guide](https://github.com/ismb/jemma/wiki/RunOnPc)
+* If you want to set up your eclipse development environment and contribute to the project follow [this guide](https://github.com/ismb/jemma/wiki/Contribute)
+
+More [User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation) (tutorials, etc.) and [Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) will be available soon on the project wiki.
 
 (Note: the documentation for the JEMMA project is still under construction).
 
