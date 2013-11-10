@@ -1,4 +1,4 @@
-Auto-generated site: 201310241729
+Auto-generated site: 201311101255
 
 ##########################
 Git status
@@ -11,14 +11,19 @@ Git status
 #
 #	modificato:   credits.html
 #	modificato:   devteam.html
+#	modificato:   devteam.md
 #	modificato:   features.html
+#	modificato:   getrel.html
+#	modificato:   getrel.md
 #	modificato:   header.template
 #	modificato:   howtoc.html
 #	modificato:   howtoc.md
 #	modificato:   howtos.html
 #	modificato:   index.html
+#	modificato:   index.md
 #	modificato:   license.html
 #	modificato:   news.html
+#	modificato:   news.md
 #	modificato:   resources.html
 #	modificato:   site-generation.log
 #	modificato:   techs.html
@@ -27,13 +32,19 @@ Git status
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
 #
-#	getrel.html
-#	getrel.md
+#	.devteam.md.swp
+#	images/download.png
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit ac2b6a96b1ca7acb619ab42d6d948bc38ce5b9cd
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Thu Oct 24 17:30:04 2013 +0200
+
+    Added references to wiki guides to run last release and set-up Eclipse PDE.
 
 commit 77b966af7e12271cc95e3c938a0f2ef15f56c44b
 Author: riccardo <riccardo.to@gmail.com>
@@ -58,10 +69,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 21:12:43 2013 +0200
 
     regeneration
-
-commit e3b48a70888da05d0f19f5f0c986e5e38a84f39f
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 20:59:09 2013 +0200
-
-    changed template
 
