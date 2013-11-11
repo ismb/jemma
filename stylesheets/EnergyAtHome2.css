@@ -36,8 +36,8 @@ a > img { border: none; }
 
 /* navigation panel */
 .eah-navigation { position: fixed; width: 315px; z-index: 1; }
-.eah-navigationheader { height: 34px; font-size: 18px; font-weight: bold; line-height: 34px; border: 1px solid #e4e5e5; background-image: url("/_layouts/images/energyathome/navigation-header.png"); background-repeat: repeat-x; color: #1f9ed5; text-align: center; }
-.eah-navigationtree { border-left: 1px solid #e4e5e5; border-right: 1px solid #e4e5e5; border-bottom: 1px solid #e4e5e5; background-color: #fff; background-image: url("/_layouts/images/energyathome/navigation-bg.png"); background-position: center bottom; background-repeat: no-repeat; padding-bottom: 20px; }
+.eah-navigationheader { height: 34px; font-size: 18px; font-weight: bold; line-height: 34px; border: 1px solid #e4e5e5; background-repeat: repeat-x; color: #1f9ed5; text-align: center; }
+.eah-navigationtree { border-left: 1px solid #e4e5e5; border-right: 1px solid #e4e5e5; border-bottom: 1px solid #e4e5e5; background-color: #fff; background-position: center bottom; background-repeat: no-repeat; padding-bottom: 20px; }
 .eah-navigationitem { width: 220px; padding-top: 8px; margin-left: 64px; font-size: 12px; }
 .eah-navigationtree .head { position: relative; padding-top: 20px; font-weight: bold; font-size: 14px; }
 .eah-navigationtree .head.selected a { text-decoration: underline; }
@@ -45,7 +45,7 @@ a > img { border: none; }
 .eah-navigationtree a { color: #3f3d3f; }
 .eah-navigationtree .selected a { text-decoration: underline; font-weight: bold; }
 .eah-navigationtree .head a { color: #3a9947; }
-.eah-navigationfooter { height: 12px; background-image: url("/_layouts/images/energyathome/navigation-footer.png"); }
+.eah-navigationfooter { height: 12px; }
 .eah-navigation~.s4-ca { margin-left: 350px; }
 
 /* main area */

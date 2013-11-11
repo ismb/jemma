@@ -1,44 +1,66 @@
-Auto-generated site: 201311101255
+Auto-generated site: 201311111558
 
 ##########################
 Git status
 ##########################
 
 # Sul branch gh-pages
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	nuovo file:   images/documentation.png
+#	nuovo file:   images/navigation-bg.png
+#	nuovo file:   images/navigation-footer.png
+#	nuovo file:   images/navigation-header.png
+#	nuovo file:   images/source.png
+#	modificato:   stylesheets/EnergyAtHome2.css
+#	nuovo file:   stylesheets/blueprint/ie.css
+#	nuovo file:   stylesheets/blueprint/print.css
+#	nuovo file:   stylesheets/blueprint/screen.css
+#
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
 #	modificato:   credits.html
 #	modificato:   devteam.html
-#	modificato:   devteam.md
 #	modificato:   features.html
+#	modificato:   footer.template
 #	modificato:   getrel.html
-#	modificato:   getrel.md
 #	modificato:   header.template
 #	modificato:   howtoc.html
-#	modificato:   howtoc.md
 #	modificato:   howtos.html
 #	modificato:   index.html
 #	modificato:   index.md
 #	modificato:   license.html
 #	modificato:   news.html
-#	modificato:   news.md
 #	modificato:   resources.html
 #	modificato:   site-generation.log
+#	modificato:   stylesheets/EnergyAtHome2.css
 #	modificato:   techs.html
 #	modificato:   versions.html
 #
 # Untracked files:
 #   (use "git add <file>..." to include in what will be committed)
 #
-#	.devteam.md.swp
-#	images/download.png
-no changes added to commit (use "git add" and/or "git commit -a")
+#	stylesheets/.EnergyAtHome2.css.swp
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit c29ed9d235910100275ec9c64ed8e932110c1b82
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Sun Nov 10 13:00:54 2013 +0100
+
+    Added download arrow image
+
+commit 1c47fa40ba7c4309c327172f97fbd4cc84a9847d
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Sun Nov 10 12:56:47 2013 +0100
+
+    Added "Download" box in the homepage
+    Modified devteam and howtoc pages (mailing list related stuff)
 
 commit ac2b6a96b1ca7acb619ab42d6d948bc38ce5b9cd
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -57,16 +79,3 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Oct 14 22:05:35 2013 +0200
 
     minor fix on header
-
-commit 2abb8a6bb4146dcaddabc1674a46ce68832e48a5
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 21:51:09 2013 +0200
-
-    this should be the last fix
-
-commit ea83f0c2342b764abaf036f295aa36e28171b2ce
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 21:12:43 2013 +0200
-
-    regeneration
-
