@@ -49,6 +49,8 @@
 							 javax.xml.bind.annotation.adapters,
 							 javax.xml.bind.helpers,
 							 javax.xml.namespace,
+							 javax.crypto,
+							 javax.crypto.spec,
 							 org.apache.commons.codec,
 							 org.apache.commons.logging,
 							 org.eclipse.osgi.framework.console;version="1.0.0",
