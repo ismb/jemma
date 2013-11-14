@@ -1,41 +1,28 @@
-Auto-generated site: 201311141251
+Auto-generated site: 201311141304
 
 ##########################
 Git status
 ##########################
 
 # On branch gh-pages
-# Your branch is ahead of 'origin/gh-pages' by 18 commits.
-#
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   credits.html
-#	modified:   credits.md
-#	modified:   devteam.html
 #	modified:   devteam.md
-#	modified:   features.html
-#	modified:   getrel.html
-#	modified:   getrel.md
-#	modified:   header.template
-#	modified:   howtoc.html
-#	modified:   howtoc.md
-#	modified:   howtos.html
-#	modified:   index.html
-#	modified:   license.html
-#	modified:   news.html
-#	modified:   news.md
-#	modified:   resources.html
 #	modified:   site-generation.log
-#	modified:   techs.html
-#	modified:   versions.html
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 05ef4b15debcea398bf7600d3804da5f0e2c0899
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Thu Nov 14 12:51:17 2013 +0100
+
+    several improvements
 
 commit aabd76de6f0dab7c12bafb55be12096449d53644
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -61,9 +48,3 @@ Date:   Sun Nov 10 12:56:47 2013 +0100
 commit ac2b6a96b1ca7acb619ab42d6d948bc38ce5b9cd
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
 Date:   Thu Oct 24 17:30:04 2013 +0200
-
-    Added references to wiki guides to run last release and set-up Eclipse PDE.
-
-commit 77b966af7e12271cc95e3c938a0f2ef15f56c44b
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Sun Oct 20 22:01:08 2013 +0200
