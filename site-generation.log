@@ -1,53 +1,36 @@
-Auto-generated site: 201311111558
+Auto-generated site: 201311141304
 
 ##########################
 Git status
 ##########################
 
-# Sul branch gh-pages
-# Changes to be committed:
-#   (use "git reset HEAD <file>..." to unstage)
-#
-#	nuovo file:   images/documentation.png
-#	nuovo file:   images/navigation-bg.png
-#	nuovo file:   images/navigation-footer.png
-#	nuovo file:   images/navigation-header.png
-#	nuovo file:   images/source.png
-#	modificato:   stylesheets/EnergyAtHome2.css
-#	nuovo file:   stylesheets/blueprint/ie.css
-#	nuovo file:   stylesheets/blueprint/print.css
-#	nuovo file:   stylesheets/blueprint/screen.css
-#
+# On branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   credits.html
-#	modificato:   devteam.html
-#	modificato:   features.html
-#	modificato:   footer.template
-#	modificato:   getrel.html
-#	modificato:   header.template
-#	modificato:   howtoc.html
-#	modificato:   howtos.html
-#	modificato:   index.html
-#	modificato:   index.md
-#	modificato:   license.html
-#	modificato:   news.html
-#	modificato:   resources.html
-#	modificato:   site-generation.log
-#	modificato:   stylesheets/EnergyAtHome2.css
-#	modificato:   techs.html
-#	modificato:   versions.html
+#	modified:   devteam.md
+#	modified:   site-generation.log
 #
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	stylesheets/.EnergyAtHome2.css.swp
+no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 05ef4b15debcea398bf7600d3804da5f0e2c0899
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Thu Nov 14 12:51:17 2013 +0100
+
+    several improvements
+
+commit aabd76de6f0dab7c12bafb55be12096449d53644
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Mon Nov 11 17:31:58 2013 +0100
+
+    Added download/doc/source boxes in homepage.
+    Switched to blueprint css.
+    Fixed some errors in css.
 
 commit c29ed9d235910100275ec9c64ed8e932110c1b82
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -65,17 +48,3 @@ Date:   Sun Nov 10 12:56:47 2013 +0100
 commit ac2b6a96b1ca7acb619ab42d6d948bc38ce5b9cd
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
 Date:   Thu Oct 24 17:30:04 2013 +0200
-
-    Added references to wiki guides to run last release and set-up Eclipse PDE.
-
-commit 77b966af7e12271cc95e3c938a0f2ef15f56c44b
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Sun Oct 20 22:01:08 2013 +0200
-
-    credit on website, as requested by Fabio (mail on 18/10)
-
-commit 274716979527a250382197513fa52928ecf04b88
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 14 22:05:35 2013 +0200
-
-    minor fix on header
