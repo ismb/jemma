@@ -24,12 +24,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+//import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.useradmin.Authorization;
+//import org.osgi.service.http.HttpContext;
+//import org.osgi.service.useradmin.Authorization;
 
 public class CustomJsonServlet extends HttpServlet {
 
@@ -46,12 +46,12 @@ public class CustomJsonServlet extends HttpServlet {
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		Authorization a = (Authorization) req.getAttribute(HttpContext.AUTHORIZATION);
+	//UNUSED: Authorization a = (Authorization) req.getAttribute(HttpContext.AUTHORIZATION);
 
 		String objectid;
 		String methodName;
 		
-		HttpSession session = req.getSession(true);
+	//UNUSED: HttpSession session = req.getSession(true);
 		//log.debug("Session is " + session.getId());
 
 //		Counter counter;
@@ -77,7 +77,7 @@ public class CustomJsonServlet extends HttpServlet {
 		/* paramValues array contains pararm0, param1 .... param<params> */
 		// process parameters
 		int params = 0;
-		ArrayList paramValues = new ArrayList();
+		ArrayList<Object> paramValues = new ArrayList<Object>();
 
 		Object targetObject = null;
 

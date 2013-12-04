@@ -52,7 +52,7 @@ public class JsonRPC extends HttpServlet {
 			String id = rpcObject.getString("id");
 
 			JSONArray paramsArray = rpcObject.getJSONArray("params");
-			ArrayList paramValues = new ArrayList();
+			ArrayList<Object> paramValues = new ArrayList<Object>();
 
 			JSONObject response = new JSONObject();
 

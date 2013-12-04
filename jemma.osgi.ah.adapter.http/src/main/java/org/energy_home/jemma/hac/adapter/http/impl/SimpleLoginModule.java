@@ -65,6 +65,7 @@ public class SimpleLoginModule implements LoginModule {
 		};
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void initialize(Subject subject, final CallbackHandler handler,
 			Map arg2, Map arg3) {
 		this.handler = handler;

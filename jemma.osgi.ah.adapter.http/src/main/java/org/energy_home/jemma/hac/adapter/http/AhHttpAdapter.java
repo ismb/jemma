@@ -56,8 +56,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
 
 public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImplementor {
 
-	private static final long serialVersionUID = 1L;
-
 	int counter = 0;
 
 	private HttpService httpService = null;
@@ -103,7 +101,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 	protected void activate(ComponentContext ctxt) {
 		String[] topics = new String[] { "org/telecomitalia/HacEvent/*", };
 
-		Dictionary d = new Hashtable();
+		Dictionary<String, String[]> d = new Hashtable<String, String[]>();
 		d.put(EventConstants.EVENT_TOPIC, topics);
 		// d.put(EventConstants.EVENT_FILTER, "(bundle.symbolicName=com.acme.*)"
 		// );
@@ -186,7 +184,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 		log.debug("unregistered http resources");
 	}
 
-	public Object invokeMethod(Object targetObject, String methodName, ArrayList paramValues) throws IllegalArgumentException,
+	public Object invokeMethod(Object targetObject, String methodName, ArrayList<Object> paramValues) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		int params = paramValues.size();
 
@@ -194,7 +192,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 		for (int i = 0; i < methods.length; i++) {
 			Method method = methods[i];
 			if (method.getName().compareTo(methodName) == 0) {
-				Class[] paramTypes = method.getParameterTypes();
+				Class<?>[] paramTypes = method.getParameterTypes();
 				if (paramTypes.length == params) {
 
 					// HTTP GET params number matches method param number
@@ -202,7 +200,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 
 					boolean signatureMach = true;
 					for (int j = 0; j < params; j++) {
-						Class paramT = paramTypes[j];
+						Class<?> paramT = paramTypes[j];
 						String typename = paramTypes[j].getName();
 
 						/*
@@ -240,7 +238,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 								}
 
 								// convert the json array into a Vector
-								Vector v = new Vector();
+								Vector<Object> v = new Vector<Object>();
 
 								for (int k = 0; k < outer.length(); k++) {
 									try {
@@ -297,6 +295,8 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 		return data;
 	}
 
+	@SuppressWarnings("unchecked")
+	//TODO: use Jackson to marshall / unmarshall JSON files
 	private String resultToJSON(Object o) {
 		String out = "";
 
@@ -304,7 +304,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			out = "null"; // legacy with void returning methods in python
 		} else if ((o instanceof List) || (o instanceof Vector)) {
 			out += "[ ";
-			Iterator it = ((List) o).iterator();
+			Iterator<Object> it = ((List<Object>) o).iterator(); //FIX IT: i don't know how to fix this warning because "o" is not a list but just an object so it is an unchecked cast warning
 			boolean first = true;
 
 			while (it.hasNext()) {
@@ -322,7 +322,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			out += "[ ";
 			boolean first = true;
 
-			Enumeration e = (Enumeration) o;
+			Enumeration<?> e = (Enumeration<?>) o;
 
 			while (e.hasMoreElements()) {
 				if (!first) {
@@ -335,8 +335,8 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			}
 			out += " ]";
 		} else if (o instanceof Hashtable) {
-			Hashtable ht = (Hashtable) o;
-			Enumeration keys = ht.keys();
+			Hashtable<?, ?> ht = (Hashtable<?, ?>) o;
+			Enumeration<?> keys = ht.keys();
 			boolean first = true;
 			out = "{ ";
 			while (keys.hasMoreElements()) {
@@ -466,7 +466,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 	}
 
 	protected int lastUpdate = 0;
-	protected Vector lastDevicesList = null;
+	//protected Vector lastDevicesList = null;
 
 	public Object getImplementor() {
 		return implementor;

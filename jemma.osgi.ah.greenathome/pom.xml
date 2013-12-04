@@ -104,11 +104,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.adapter.http</artifactId>
-			<version>${org.energy-home.jemma.osgi.ah.adapter.http.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.m2m.device</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.m2m.device.version}</version>
 		</dependency>
