@@ -16,6 +16,11 @@
 package org.energy_home.jemma.shal;
 
 public class DeviceServiceException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public DeviceServiceException() {
 		super();
 	}

@@ -51,8 +51,6 @@ public class ESPServlet extends HttpServlet {
 	private URI userRegistrationGetUri;
 	private URI remoteAuthTokenUri;
 
-	private ESPService espService;
-
 	private static RestClient restClient;
 	
 	private void releaseRequestResources(HttpResponse response) {
@@ -143,11 +141,9 @@ public class ESPServlet extends HttpServlet {
 	}
 	
 	public void setESPService(ESPService espService) {
-		this.espService = espService;
 	}
 	
 	public void unsetESPService(ESPService espService) {
-		this.espService = null;
 	}
 	
 }

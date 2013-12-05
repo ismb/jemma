@@ -45,8 +45,6 @@ public class TimeSeriesEnergyLoad {
 		int slot = 24 * currentTime.get(Calendar.HOUR_OF_DAY) + currentTime.get(Calendar.MINUTE);
 		slot /= MINUTES_IN_ONE_SLOT;
 		
-		// mybe trigger a recomputation of the forecast
-		boolean differentSlot = currentSlot != slot;
 		slot += midnightSlot;
 		if (slot >= timeSeries.length) {
 			slideOneDayBack();

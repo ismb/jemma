@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain.algo;
 
-import java.util.Calendar;
 import java.util.Random;
 
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;

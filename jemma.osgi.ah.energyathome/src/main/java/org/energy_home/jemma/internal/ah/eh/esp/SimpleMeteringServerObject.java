@@ -23,14 +23,10 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyBrainCore;
 import org.energy_home.jemma.ah.ebrain.IMeteringProxy;
 
 public class SimpleMeteringServerObject extends ServiceCluster implements SimpleMeteringServer {
-	private static final Log log = LogFactory.getLog(SimpleMeteringServerObject.class);
-	
 	private EnergyBrainCore energyBrain;
 	
 	public SimpleMeteringServerObject(EnergyBrainCore energyBrain) throws ApplianceException {

@@ -79,16 +79,15 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.energy_home.jemma.ah.configurator.IConfigurator;
 
-//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
+//FIXME: OutputFormat and XMLSerializer are deprecated! Consider code revision to resolve
+@SuppressWarnings(value = { "all" })
 public class Configuratore implements FrameworkListener, IConfigurator {
 
 	/**
 	 * Dictionary that permits to retrieve the IManagedAppliance service from
 	 * its pid
 	 */
-	private Hashtable pid2appliance = new Hashtable();
+	private Hashtable<String, IManagedAppliance> pid2appliance = new Hashtable<String, IManagedAppliance>();
 
 	/** DB for Locations */
 	// private Locations locations = new Locations();
@@ -97,8 +96,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	private DocumentBuilderFactory factory;
 	private BundleContext bc;
 
-	private Vector configurationsVector = new Vector();
-	private Vector rules = new Vector();
+	private Vector<Hashtable<String, Object>> configurationsVector = new Vector<Hashtable<String, Object>>();
+	private Vector<String> rules = new Vector<String>();
 
 	private final static String SCENARIOS_PATH = "xml/scenarios/";
 
@@ -108,8 +107,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 
 	private IConnectionAdminService connAdmin;
 
-	private Vector categories = new Vector();
-	private Vector locations = new Vector();
+	private Vector<Category> categories = new Vector<Category>();
+	private Vector<Location> locations = new Vector<Location>();
 
 	private static final Log log = LogFactory.getLog(Configuratore.class);
 
@@ -134,7 +133,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		log.debug("deactivated");
 	}
 
-	public void modified(ComponentContext ctxt, Map props) {
+	//Is this method usefull???
+	public void modified(ComponentContext ctxt, Map<String, String> props) {
 		update(props);
 	}
 
@@ -196,6 +196,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setUserCredentials(User user, String password) {
 		Object currentCredential = user.getProperties().get("org.energy_home.jemma.username");
 		if (currentCredential == null) {
@@ -243,7 +244,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		homeEnergyPortalConfiguration.addMember(administratorsGroup);
 	}
 
-	protected void createAppliance(String appliancePid, Dictionary props) throws ApplianceException {
+	protected void createAppliance(String appliancePid, Dictionary<String, Object> props) throws ApplianceException {
 		try {
 			this.hacService.createAppliance(appliancePid, props);
 		} catch (HacException e) {
@@ -251,7 +252,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 	}
 
-	public void update(Map props) {
+	//Is this method useful? No operations...
+	public void update(Map<String, String> props) {
 		log.debug("received configuration");
 	}
 
@@ -337,6 +339,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		return true;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary props) throws ConfigurationException {
 		log.debug("received props");
 	}
@@ -381,7 +384,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	}
 
 	Node lastNode;
-	Hashtable props;
+	Hashtable<String, Object> props;
 	Object prop;
 
 	private boolean loadLocations = true;
@@ -433,9 +436,9 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					log.error(e);
 				}
 			} else if ((tag == "appliance") && (loadAppliances)) {
-				props = new Hashtable();
+				props = new Hashtable<String, Object>();
 			} else if ((tag == "configuration")) {
-				props = new Hashtable();
+				props = new Hashtable<String, Object>();
 			} else if ((tag == "property") && (lastNode != null) && (props != null)) {
 				// log.debug("last node is " + lastNode.getNodeName());
 				String name = attrs.getNamedItem("name").getNodeValue();
@@ -536,16 +539,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 				} catch (Exception e) {
 					log.error(e);
 				}
-			} else if (tag == "connect") {
-				try {
-					String pid1 = attrs.getNamedItem("pid1").getNodeValue();
-					String pid2 = attrs.getNamedItem("pid2").getNodeValue();
-					//this.connAdmin.createConnection(pid1, pid2);
-				} catch (Exception e) {
-					log.error(e);
-				}
 			} else if ((tag == "appliance") && (loadAppliances)) {
-				props = new Hashtable();
+				props = new Hashtable<String, Object>();
 			} else if ((tag == "property") && (lastNode != null) && (props != null)) {
 				// log.debug("last node is " + lastNode.getNodeName());
 				String name = attrs.getNamedItem("name").getNodeValue();
@@ -577,10 +572,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 						String type = (String) props.get(IAppliance.APPLIANCE_TYPE_PROPERTY);
 
 						if ((appliancePid != null) && (type != null)) {
-							String locationPid = (String) props.get(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY);
-							String categoryPid = (String) props.get(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY);
 							createAppliance(appliancePid, props);
-							// }
 						} else {
 							log.error("during reading configuration: unable to retrieve driver pid");
 						}

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApplianceProxyList {
-	private Map<String, ApplianceProxy> applianceProxyMap = new HashMap(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
+	private Map<String, ApplianceProxy> applianceProxyMap = new HashMap<String, ApplianceProxy>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 	
 	public ApplianceProxy getApplianceProxy(String appliancePid) {
 		return applianceProxyMap.get(appliancePid);

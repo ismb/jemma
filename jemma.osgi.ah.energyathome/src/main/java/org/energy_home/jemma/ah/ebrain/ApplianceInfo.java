@@ -88,7 +88,6 @@ public class ApplianceInfo {
 	private long lastValidEnergyTime;
 	
 	private MinMaxPowerInfo powerInfo = new MinMaxPowerInfo();
-	private EnergyCostInfo lastCostEnergy = new EnergyCostInfo(); // last value of the energy in the cost calculation
 	private EnergyCostInfo accumulatedEnergyCost = new EnergyCostInfo();
 
 	//private PowerProfileInfo[] powerProfileInfos = EMPTY_PROFILES;

@@ -49,9 +49,6 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	IM2MHapService hapService = null;
 	private ESPHapServiceCache espHapCache = null;
 	private ESPGwTodayCache espGwTodayCache = null;
-	// Photovoltaic production meter cached data
-	private ESPGwTodayCache espGwTodayProductionCache = null;
-
 	public ESPHapServiceObject(IM2MHapService hapService) {
 		this.hapService = hapService;		
 	}

@@ -321,10 +321,9 @@ public class EnergyBrain implements IBasicApplianceListener {
 		return appliance;
 	}
 	
-
-	
+	//FIXME: this method is useless
 	public void notifyApplianceAvailability(String applianceId, boolean isAvailable, ApplianceType category) {
-		ApplianceInfo appliance= getApplianceInfo(applianceId);
+	 	//ApplianceInfo appliance= getApplianceInfo(applianceId);
 		//appliance.setAvailable(isAvailable);
 	}
 

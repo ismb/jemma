@@ -245,7 +245,7 @@ public class ESPContainersDataUtils {
 	public static ContentInstance getDefaultContentInstance(String attributeName, long id) {
 		ContentInstance ci = null;
 		try {
-			Class clazz = EHContainers.getAttributeIdClass(attributeName);
+			Class<?> clazz = EHContainers.getAttributeIdClass(attributeName);
 			FloatDV content = (FloatDV) clazz.newInstance();
 			content.setValue(0f);
 			content.setDuration(0);

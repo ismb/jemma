@@ -17,14 +17,11 @@ package org.energy_home.jemma.ah.ebrain.algo;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.TwoTierDailyTariff;
 
 public abstract class DailyTariff {
-	private static final Log log = LogFactory.getLog(DailyTariff.class);
 
 	private static DailyTariff instance;
 	//private static List<DailyTariff> singletons = new ArrayList<DailyTariff>();

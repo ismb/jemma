@@ -57,8 +57,11 @@ public class ESPHapServiceCache {
 	}
 	
 	private ESPHapServiceObject hapObject;	
+	@SuppressWarnings("rawtypes")
 	private Map<AHContainerAddress, QueryResult> cacheItemsMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
+	@SuppressWarnings("rawtypes")
 	private Map<AHContainerAddress, QueryResult> cacheItemsListMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
+	@SuppressWarnings("rawtypes")
 	private Map<AHContainerAddress, QueryResult> cacheWeekDayItemsMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 
 	private static int getCurrentCacheResolution(Calendar calendar, AHContainerAddress containerId, long startTime, long endTime, int resolution) {
@@ -121,6 +124,7 @@ public class ESPHapServiceCache {
 		return cacheLimitResolution;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private static QueryResult getCachedQueryResult(Map<AHContainerAddress, QueryResult> cacheMap, Calendar calendar, AHContainerAddress containerId)  {
 		QueryResult cache = cacheMap.get(containerId);
 		if (cache != null) {
@@ -175,6 +179,7 @@ public class ESPHapServiceCache {
 		if (cacheResolution == ESPService.NO_VALID_RESOLUTION)
 			return null;			
 
+		@SuppressWarnings("unchecked")
 		QueryResult<ContentInstanceItems> cache = getCachedQueryResult(cacheItemsMap, calendar, containerId);
 		long now = System.currentTimeMillis();
 		if (cache == null) {
@@ -198,6 +203,7 @@ public class ESPHapServiceCache {
 		if (cacheResolution == ESPService.NO_VALID_RESOLUTION)
 			return null;			
 
+		@SuppressWarnings("unchecked")
 		QueryResult<ContentInstanceItemsList> cache = getCachedQueryResult(cacheItemsListMap, calendar, containerId);
 		long now = System.currentTimeMillis();
 		long cacheStartTime = ESPHapServiceObject.getNormalizedStartTime(calendar, now, cacheResolution);
@@ -217,6 +223,7 @@ public class ESPHapServiceCache {
 	}
 	
 	public ContentInstanceItems getWeekDayCachedItems(AHContainerAddress containerId, long startId, long endId) throws M2MHapException {
+		@SuppressWarnings("unchecked")
 		QueryResult<ContentInstanceItems> cache = getCachedQueryResult(cacheWeekDayItemsMap, Calendar.getInstance(), containerId);		
 		if (cache == null) {
 			ContentInstanceItems items = hapObject.getWeekDayItems(containerId, 0, ONE_WEEK_IN_HOUR-1);

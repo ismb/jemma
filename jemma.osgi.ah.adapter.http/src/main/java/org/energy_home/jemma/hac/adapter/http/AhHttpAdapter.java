@@ -304,7 +304,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			out = "null"; // legacy with void returning methods in python
 		} else if ((o instanceof List) || (o instanceof Vector)) {
 			out += "[ ";
-			Iterator<Object> it = ((List<Object>) o).iterator(); //FIX IT: i don't know how to fix this warning because "o" is not a list but just an object so it is an unchecked cast warning
+			Iterator<Object> it = ((List<Object>) o).iterator(); 
 			boolean first = true;
 
 			while (it.hasNext()) {

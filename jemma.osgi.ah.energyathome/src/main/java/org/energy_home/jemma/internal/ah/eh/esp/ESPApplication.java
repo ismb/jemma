@@ -25,7 +25,6 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +49,13 @@ import org.energy_home.jemma.shal.internal.DeviceConfigurationImpl;
 import org.energy_home.jemma.shal.internal.DeviceDescriptorImpl;
 import org.energy_home.jemma.shal.internal.DeviceInfoImpl;
 import org.energy_home.jemma.utils.thread.ExecutorService;
-import org.osgi.service.http.HttpService;
 
 public class ESPApplication extends HttpServlet implements IApplicationService, ESPService {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Log log = LogFactory.getLog(ESPApplication.class);
 	
 	private static final long PERIODIC_TASK_TIMEOUT = 60000;
@@ -65,7 +68,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 //	public static final String APPLIANCE_FRIENDLY_NAME = "Energy Service Portal";
 //	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
 //			APPLIANCE_FRIENDLY_NAME);
-	private static Hashtable APPLIANCE_INITIAL_CONFIG = new Hashtable(1);
+	//private static Hashtable<?, ?> APPLIANCE_INITIAL_CONFIG = new Hashtable(1);
 	public static final float FIRST_POWER_THRESHOLD_FACTOR = 1.1f;
 
 	// Application constants
@@ -86,8 +89,6 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			log.error("", e);
 		throw new ESPException(msg);
 	}
-	
-	private HttpService httpService;
 	
 	private ApplianceProxyList applianceProxyList = new ApplianceProxyList();
 	private EnergyBrainCore energyBrain = null;
@@ -141,20 +142,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	private Boolean started = false;
 	
-	// Hack used to limit periodic requests for users without microgeneration plants
-	private long lastPeriodicRequestTime = 0;
-	private static long MIN_PERIODIC_REQUEST_TIME_INTERVAL = 60 * 5 * 1000; // 5 minutes
-	
 	protected void periodicTask() {
 		try {
 			long startTime = System.currentTimeMillis();
 			log.info(String.format("Periodic task execution -> START %s", startTime));
-			// Hack used to limit periodic requests for users without microgeneration plants
-/*			if (ESPConfiguration.getConfigParameters().getPeakProducedPower() == 0 &&
-					(startTime - lastPeriodicRequestTime < MIN_PERIODIC_REQUEST_TIME_INTERVAL)) {
-				log.info(String.format("Periodic task execution -> FILTERED"));		
-			}*/
-			lastPeriodicRequestTime = System.currentTimeMillis();		
+			System.currentTimeMillis();		
 			energyBrain.periodicTask();
 			log.info(String.format("Periodic task execution -> END %s", System.currentTimeMillis()));
 		} catch (Exception e) {

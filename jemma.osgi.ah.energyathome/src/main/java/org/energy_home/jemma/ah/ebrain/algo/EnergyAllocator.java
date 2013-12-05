@@ -18,8 +18,6 @@ package org.energy_home.jemma.ah.ebrain.algo;
 
 import java.util.*;
 
-import javax.crypto.SealedObject;
-
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 
 public final class EnergyAllocator {
@@ -31,7 +29,6 @@ public final class EnergyAllocator {
 	}
 	
 	private float[] energyForecast = newEnergyAllocation();
-	private float[] energyRealAllocation = newEnergyAllocation();
 	private float[] energyAllocation = newEnergyAllocation(); // three days are necessary in scheduling to avoid the chance of overflow
 	private float powerThreshold;
 	private float oneSlotEnergyThreshold;

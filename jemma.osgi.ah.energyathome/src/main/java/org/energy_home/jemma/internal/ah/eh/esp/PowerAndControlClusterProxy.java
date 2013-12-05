@@ -414,9 +414,10 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void overloadResume(String applianceId) {
 		try {
 			log.debug(String.format("ApplianceControlServer[%s].execOverloadPauseResume()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			//FIXME: Useless variables declaration. Commented to avoid warning.
+//			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
+//			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
+//			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -450,7 +450,6 @@ public class TripleExponentialSmoothing {
 			EnergyAllocator ea = new EnergyAllocator();
 		
 			int period = t.getPeriod();
-			int offset = period * t.getSeasons();
 			ea.interpolateEnergyForecast(pred, 0, period);
 			
 			System.exit(0);
@@ -467,16 +466,6 @@ public class TripleExponentialSmoothing {
 			TripleExponentialSmoothing tes = new TripleExponentialSmoothing();
 			double[] prediction = tes.forecast(timeSeries, alpha, beta, gamma, period, k, true);
 
-			// These are the expected results
-			double[] expected = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			        594.8043646513713, 357.12171044215734, 410.9203094983815,
-			        444.67743912921156, 550.9296957593741, 421.1681718160631,
-			        565.905732450577, 639.2910221068818, 688.8541669002238,
-			        532.7122406111591, 620.5492369959037, 668.5662327429854,
-			        773.5946568453546, 629.0602103529998, 717.0290609530134,
-			        836.4643466657625, 884.1797655866865, 617.6686414831381,
-			        599.1184450128665, 733.227872348479, 949.0708357438998,
-			        748.6618488792186 };
 			for (int i = 0; i < prediction.length; ++i) {
 				//System.out.printf("%12.13f - %12.13f\n", prediction[i], i < expected.length ? expected[i] : 0);
 			}

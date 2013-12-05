@@ -25,7 +25,7 @@ import java.util.Hashtable;
 
 public class Activator implements BundleActivator, EnergyAtHomeApp {
 	private ServiceRegistration service = null;
-	private Dictionary properties = new Hashtable();
+	private Dictionary<String, String> properties = new Hashtable<String, String>();
 
 	public void start(BundleContext context) throws Exception {
 		// Imposta le proprieta' del servizio
