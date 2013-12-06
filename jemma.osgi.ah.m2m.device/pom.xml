@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.m2m.device</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.m2m.device</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.2.13</version>
 	<name>M2M Device</name>
@@ -173,7 +173,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.utils</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.utils</artifactId>
 			<version>${org.energy-home.jemma.osgi.utils.version}</version>
 		</dependency>
 		<dependency>

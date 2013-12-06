@@ -40,18 +40,18 @@
       <useProjectArtifact>false</useProjectArtifact>
       <scope>runtime</scope>
       <excludes>
-	 <exclude>org.energy-home:jemma.osgi.ah.adapter.http</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.hac</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.m2m.device</exclude>
-	 <exclude>org.energy-home:jemma.osgi.device.zgd</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.configurator</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.hac.lib</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.webui.base</exclude>
-	 <exclude>org.energy-home:jemma.osgi.utils</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.energyathome</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.hap.client</exclude>
-	 <exclude>org.energy-home:jemma.osgi.ah.zigbee</exclude>
-	 <exclude>org.energy-home:jemma.osgi.zgd</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.adapter.http</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.hac</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.m2m.device</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.device.zgd</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.configurator</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.hac.lib</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.webui.base</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.utils</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.energyathome</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.hap.client</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.ah.zigbee</exclude>
+	 <exclude>org.energy-home:org.energy-home.jemma.osgi.zgd</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>

@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.adapter.http</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.adapter.http</artifactId>
 	<packaging>bundle</packaging>
 	<version>2.0.2</version>
 	<name>Hac Http Service Manager</name>
@@ -74,7 +74,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>

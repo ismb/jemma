@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.energyathome</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.energyathome</artifactId>
 	<packaging>bundle</packaging>
 	<version>2.2.22</version>
 	<name>Energyathome</name>
@@ -92,22 +92,22 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.m2m.device</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.m2m.device</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.m2m.device.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.utils</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.utils</artifactId>
 			<version>${org.energy-home.jemma.osgi.utils.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hap.client</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hap.client</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hap.client.version}</version>
 		</dependency>
 

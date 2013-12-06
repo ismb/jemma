@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.zgd</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.zgd</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.4.1</version>
 	<name>jGAL Service</name>

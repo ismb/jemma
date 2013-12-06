@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.utils</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.utils</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.6</version>
 	<name>Osgi Utils</name>

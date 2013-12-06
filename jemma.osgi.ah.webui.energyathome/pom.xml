@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.webui.energyathome</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.webui.energyathome</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.44</version>
 	<name>Energy@Home Web Application</name>
@@ -46,7 +46,7 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Require-Bundle>jemma.osgi.ah.webui.base;bundle-version="2.0.2"</Require-Bundle>
+						<Require-Bundle>org.energy-home.jemma.osgi.ah.webui.base;bundle-version="2.0.2"</Require-Bundle>
 						<Import-Package>org.energy_home.jemma.ah.hac,
 							 javax.servlet,
 							 javax.servlet.http,
@@ -78,17 +78,17 @@
 	<dependencies>
 	<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.adapter.http</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.adapter.http</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.adapter.http.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.webui.base</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.webui.base</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.webui.base.version}</version>
 		</dependency>
 

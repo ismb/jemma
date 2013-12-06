@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.hap.client</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.hap.client</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.2.13</version>
 	<name>Hap Client</name>
@@ -46,7 +46,7 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
+						<Require-Bundle>org.energy-home.jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Import-Package>org.energy_home.jemma.ah.cluster.zigbee.eh;version="[3.1.0,3.2.0)",
 							 org.energy_home.jemma.ah.cluster.zigbee.general;version="[3.1.0,3.2.0)",
 							 org.energy_home.jemma.ah.cluster.zigbee.metering;version="[3.1.0,3.2.0)",
@@ -89,19 +89,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.m2m.device</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.m2m.device</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.m2m.device.version}</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.utils</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.utils</artifactId>
 			<version>${org.energy-home.jemma.osgi.utils.version}</version>
 			<type>bundle</type>
 		</dependency>

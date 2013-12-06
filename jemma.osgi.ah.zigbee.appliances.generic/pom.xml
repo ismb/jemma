@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.zigbee.appliances.generic</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.zigbee.appliances.generic</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.1</version>
 	<name>ZigBee Generic Appliances</name>
@@ -45,6 +45,7 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-SymbolicName>${project.artifactId};singleton=true</Bundle-SymbolicName>
 						<Import-Package> org.energy_home.jemma.ah.cluster.ah,
 							 org.energy_home.jemma.ah.cluster.zigbee.security,
 							 org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)",
@@ -58,7 +59,7 @@
 						<Export-Package>!*
 						</Export-Package>
 						<Bundle-Activator>org.energy_home.jemma.osgi.ah.zigbee.appliances.generic.Activator</Bundle-Activator>
-						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
+						<Require-Bundle>org.energy-home.jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
@@ -72,13 +73,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.zigbee</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.zigbee</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.zigbee.version}</version>
 		</dependency>
 		<dependency>

@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.webui.base</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.webui.base</artifactId>
 	<packaging>bundle</packaging>
 	<version>2.0.12</version>
 	<name>Web UI Base</name>

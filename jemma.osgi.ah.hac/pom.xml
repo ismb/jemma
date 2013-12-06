@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.hac</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.hac</artifactId>
 	<packaging>bundle</packaging>
 	<version>3.1.1</version>
 	<name>Home Automation Core Service</name>
@@ -83,7 +83,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>

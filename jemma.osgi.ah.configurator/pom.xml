@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.configurator</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.configurator</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.6</version>
 	<name>A@H configurator</name>
@@ -76,7 +76,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>

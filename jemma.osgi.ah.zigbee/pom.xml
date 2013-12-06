@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.zigbee</artifactId>
+	<artifactId>org.energy-home.jemma.osgi.ah.zigbee</artifactId>
 	<packaging>bundle</packaging>
 	<version>2.1.24.qualifier</version>
 	<name>ZigBee Network Manager</name>
@@ -76,7 +76,7 @@
 							 org.energy_home.jemma.ah.zigbee.zcl.lib;version="3.0.0",
 							 org.energy_home.jemma.ah.zigbee.zcl.lib.types;version="3.0.0"
 						</Export-Package>
-						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
+						<Require-Bundle>org.energy-home.jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
 						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
@@ -91,19 +91,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac.lib</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.ah.hac</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.ah.hac</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.hac.version}</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
-			<artifactId>jemma.osgi.zgd</artifactId>
+			<artifactId>org.energy-home.jemma.osgi.zgd</artifactId>
 			<version>${org.energy-home.jemma.osgi.zgd.version}</version>
 			<type>bundle</type>
 		</dependency>
