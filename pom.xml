@@ -151,11 +151,11 @@
 				      <supportedProjectType>war</supportedProjectType>
 			        </supportedProjectTypes>
 				<manifestLocation>META-INF</manifestLocation>
-				<instructions>
+				<!--<instructions>
 				    <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 				    <DynamicImport-Package>com.sun.xml.internal.bind.*</DynamicImport-Package>
-				    <Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
-				</instructions>
+				    <Bundle-ClassPath>${maven-dependencies}</Bundle-ClassPath>
+				</instructions>-->
 				
 			    </configuration>
 			</plugin>
