@@ -1,3 +1,8 @@
+jGAL Service
+============
+
+This bundles is a GAL wrapper. It wraps all the GAL functions into the OSGi environment.
+```
 -Declipse.ignoreApp=true 
 -Dosgi.noShutdown=true
 
@@ -48,3 +53,4 @@
 -Dorg.apache.commons.logging.simplelog.log.httpclient.wire.header=ERROR
 -Dorg.apache.commons.logging.simplelog.log.org.apache.http=ERROR
 -Dorg.apache.commons.logging.simplelog.log.org.apache.http.wire=ERROR
+```
