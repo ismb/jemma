@@ -1,0 +1,33 @@
+
+
+Version 1.0.0.qualifier:
+
+** Bug	  
+	* Added correct package version to exported packages it.telecomitalia.zgd and 
+	  it.telecomitalia.zgd.jaxb in MANIFEST.MF. All the other packages MUST have
+	  a version if they are exported as well
+	  
+	
+** New Features
+	* Added Feature A
+
+** Changes
+	* Added changelog.txt file
+	* The project is both an OSGi bundle or a java jar file so a 
+	  MANIFEST.MF and an Activator have been added
+	* Renamed the javagal.properties file into config.ini
+	* Created resources folder and moved there the config.ini
+	* Using the getDataFile() method to access the config.ini file
+	* In class FlexGridRxTx setting property gnu.io.rxtx.SerialPorts to the
+	  port to open, to speed-up the RXTX port opening process.
+	* Changed the Status class to be backward compatible. Some modifications
+	  are still necessary.
+	* In Starter class changed attribute configPath into configUrl (now of URL type)
+	  to be compatible with OSGi getEntity return value.
+	* Adapted PropertiesManager to use the configUrl. 
+	
+	
+	
+	Rinominato config.ini in config.properties
+	Config.properties con impostazioni relative al gateway zigbee, eliminata gestione rest
+	
