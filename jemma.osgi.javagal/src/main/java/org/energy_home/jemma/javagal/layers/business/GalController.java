@@ -73,6 +73,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
  * Actual JavaGal Controller. Only one instance of this object can exists at any time. All the clients can
  * access this instance via their dedicated proxies. See
  * {@link GalExtenderProxy}.
+ * 
  */
 
 /**
