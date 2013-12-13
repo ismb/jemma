@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3
@@ -26,6 +26,7 @@ import org.energy_home.jemma.zgd.jaxb.DescriptorCapability;
 import org.energy_home.jemma.zgd.jaxb.Device;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult.ScannedChannel;
+import org.energy_home.jemma.zgd.jaxb.Group;
 import org.energy_home.jemma.zgd.jaxb.LogicalType;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
@@ -67,7 +68,8 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
  * Freescale implementation of {@link IDataLayer}.
  */
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class DataFreescale implements IDataLayer {
@@ -682,93 +684,34 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
-			/* APSME-BIND.Confirm */
-			else if (message[0] == 0x98 && message[1] == 0x07) {
+			/* ZDP-BIND.Response */
+			else if (message[0] == 0xA0 && message[1] == 0xA1) {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					DataManipulation.logArrayHexRadix(
-							"Received APSME-BIND.Confirm", message);
+							"Received ZDP-BIND.Response", message);
 
-				String Key = "";
-				short status = message[3];
-				short _index = 3;
-				long src_longAddress = DataManipulation.toLong(
-						(byte) message[_index + 8], (byte) message[_index + 7],
-						(byte) message[_index + 6], (byte) message[_index + 5],
-						(byte) message[_index + 4], (byte) message[_index + 3],
-						(byte) message[_index + 2], (byte) message[_index + 1]);
-				short _srcEP = message[_index + 9];
-
-				int _cluster = DataManipulation.toIntFromShort(
-						(byte) message[_index + 11],
-						(byte) message[_index + 10]);
-
-				Key += String.format("%16X", src_longAddress)
-						+ String.format("%02X", _srcEP)
-						+ String.format("%04X", _cluster);
-				short _DestinationMode = message[_index + 12];
-
-				if (_DestinationMode == 0x03) {
-
-					long dst_longAddress = DataManipulation.toLong(
-							(byte) message[_index + 20],
-							(byte) message[_index + 19],
-							(byte) message[_index + 18],
-							(byte) message[_index + 17],
-							(byte) message[_index + 16],
-							(byte) message[_index + 15],
-							(byte) message[_index + 14],
-							(byte) message[_index + 13]);
-
-					short _dstEP = message[_index + 21];
-					Key += String.format("%16X", dst_longAddress)
-							+ String.format("%02X", _dstEP);
-
-				} else if (_DestinationMode == 0x01) {
-					int _groupId = DataManipulation.toIntFromShort(
-							(byte) message[_index + 14],
-							(byte) message[_index + 13]);
-					Key += String.format("%04X", _groupId);
-
-				}
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
-						if ((pl.getType() == TypeMessage.ADD_BINDING && pl
-								.get_Key().equalsIgnoreCase(Key))) {
+						if ((pl.getType() == TypeMessage.ADD_BINDING)) {
 							synchronized (pl) {
-								pl.getStatus().setCode(status);
+								pl.getStatus().setCode(message[3]);
 								switch (pl.getStatus().getCode()) {
 								case GatewayConstants.SUCCESS:
-									
+
 									break;
-								case 0x01:
-									pl.getStatus().setMessage("ILLEGAL DEVICE");
-									break;
-								case 0xa3:
-									pl.getStatus()
-											.setMessage("ILLEGAL REQUEST");
-									break;
-								case 0x03:
-									pl.getStatus()
-											.setMessage("INVALID BINDING");
-									break;
-								case 0xae:
-									pl.getStatus()
-											.setMessage("BIND TABLE FULL");
-									break;
-								case 0x09:
-									pl.getStatus().setMessage("NOT SUPPORTED");
-									break;
-								case 0x0A:
-									pl.getStatus().setMessage(
-											"INVALID PARAMETER");
-									break;
+								
 								case 0x84:
 									pl.getStatus().setMessage(
-											"gApsNotSupported");
+											"NOT_SUPPORTED (NOT SUPPORTED)");
 									break;
-								case 0x82:
+
+								case 0x8C:
 									pl.getStatus().setMessage(
-											"Wrong Ieee");
+											"TABLE_FULL (TABLE FULL)");
+									break;
+								case 0x8D:
+									pl.getStatus().setMessage(
+											"NOT_AUTHORIZED (NOT AUTHORIZED)");
 									break;
 								}
 								pl.notify();
@@ -779,89 +722,33 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
-			/* APSME-UNBIND.Confirm */
-			else if (message[0] == 0x98 && message[1] == 0x08) {
+			/* ZDP-UNBIND.Response */
+			else if (message[0] == 0xA0 && message[1] == 0xA2) {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					DataManipulation.logArrayHexRadix(
-							"Received APSME-UNBIND.Confirm", message);
+							"Received ZDP-UNBIND.Response", message);
 
-				String Key = "";
-				short status = message[3];
-				short _index = 3;
-				long src_longAddress = DataManipulation.toLong(
-						(byte) message[_index + 8], (byte) message[_index + 7],
-						(byte) message[_index + 6], (byte) message[_index + 5],
-						(byte) message[_index + 4], (byte) message[_index + 3],
-						(byte) message[_index + 2], (byte) message[_index + 1]);
-				short _srcEP = message[_index + 9];
-
-				int _cluster = DataManipulation.toIntFromShort(
-						(byte) message[_index + 11],
-						(byte) message[_index + 10]);
-
-				Key += String.format("%16X", src_longAddress)
-						+ String.format("%02X", _srcEP)
-						+ String.format("%04X", _cluster);
-				short _DestinationMode = message[_index + 12];
-
-				if (_DestinationMode == 0x03) {
-
-					long dst_longAddress = DataManipulation.toLong(
-							(byte) message[_index + 20],
-							(byte) message[_index + 19],
-							(byte) message[_index + 18],
-							(byte) message[_index + 17],
-							(byte) message[_index + 16],
-							(byte) message[_index + 15],
-							(byte) message[_index + 14],
-							(byte) message[_index + 13]);
-
-					short _dstEP = message[_index + 21];
-					Key += String.format("%16X", dst_longAddress)
-							+ String.format("%02X", _dstEP);
-
-				} else if (_DestinationMode == 0x01) {
-					int _groupId = DataManipulation.toIntFromShort(
-							(byte) message[_index + 14],
-							(byte) message[_index + 13]);
-					Key += String.format("%04X", _groupId);
-
-				}
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
-						if ((pl.getType() == TypeMessage.REMOVE_BINDING && pl
-								.get_Key().equalsIgnoreCase(Key))) {
+						if ((pl.getType() == TypeMessage.REMOVE_BINDING)) {
 							synchronized (pl) {
-								pl.getStatus().setCode(status);
+								pl.getStatus().setCode(message[3]);
 								switch (pl.getStatus().getCode()) {
 								case GatewayConstants.SUCCESS:
-									
+
 									break;
-								case 0x01:
-									pl.getStatus().setMessage("ILLEGAL DEVICE");
-									break;
-								case 0xa3:
-									pl.getStatus()
-											.setMessage("ILLEGAL REQUEST");
-									break;
-								case 0xa4:
-									pl.getStatus()
-											.setMessage("INVALID BINDING");
-									break;
-								case 0x08:
-									pl.getStatus()
-											.setMessage("BIND TABLE FULL");
-									break;
-								case 0x09:
-									pl.getStatus().setMessage("NOT SUPPORTED");
-									break;
-								case 0x0A:
-									pl.getStatus().setMessage(
-											"INVALID PARAMETER");
-									break;
+
 								case 0x84:
 									pl.getStatus().setMessage(
-											"gApsNotSupported");
+											"NOT_SUPPORTED (NOT SUPPORTED)");
+									break;
+								case 0x88:
+									pl.getStatus().setMessage(
+											"No_Entry (No Entry)");
+									break;
+								case 0x8D:
+									pl.getStatus().setMessage(
+											"NOT_AUTHORIZED (NOT AUTHORIZED");
 									break;
 								}
 								pl.notify();
@@ -884,6 +771,7 @@ public class DataFreescale implements IDataLayer {
 							synchronized (pl) {
 								pl.getStatus().setCode(message[3]);
 								BindingList _res = new BindingList();
+								
 								if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
 									short length = message[6];
 									int _index = 6;
@@ -924,7 +812,7 @@ public class DataFreescale implements IDataLayer {
 											_dev.setAddress(BigInteger
 													.valueOf(dst_longAddress));
 											_dev.setEndpoint(_dstEP);
-											_index = _index + 20;
+											_index = _index + 21;
 										} else if (_DestinationMode == 0x01) {
 
 											int _groupId = DataManipulation
@@ -1533,7 +1421,7 @@ public class DataFreescale implements IDataLayer {
 
 				switch (status) {
 				case 0x00:
-					
+
 					break;
 				case 0x80:
 					mess = "InvRequestType";
@@ -1576,7 +1464,7 @@ public class DataFreescale implements IDataLayer {
 				String mess = "";
 				switch (status) {
 				case 0x00:
-					
+
 					break;
 				}
 				synchronized (listLocker) {
@@ -1604,7 +1492,7 @@ public class DataFreescale implements IDataLayer {
 				String mess = "";
 				switch (status) {
 				case 0x00:
-					
+
 					break;
 				}
 				synchronized (listLocker) {
@@ -2727,7 +2615,7 @@ public class DataFreescale implements IDataLayer {
 		addToSendDataQueue(_res);
 		Status status = new Status();
 		status.setCode((short) GatewayConstants.SUCCESS);
-		
+
 		return status;
 	}
 
@@ -2966,7 +2854,7 @@ public class DataFreescale implements IDataLayer {
 				.getNetworkAddress().shortValue()), 2);/*
 														 * Short Network Address
 														 */
-		byte[] deviceAddress = DataManipulation.toByteVect(gal.get_GalNode()
+		byte[] deviceAddress = DataManipulation.toByteVect(gal.get_GalNode().get_node()
 				.getAddress().getNetworkAddress(), 8);
 		byte[] _reversed = DataManipulation.reverseBytes(deviceAddress);
 		for (byte b : _reversed)
@@ -3018,7 +2906,7 @@ public class DataFreescale implements IDataLayer {
 
 		Status status = new Status();
 		status.setCode((short) GatewayConstants.SUCCESS);
-		
+
 		return status;
 	}
 
@@ -3275,9 +3163,15 @@ public class DataFreescale implements IDataLayer {
 			Exception, GatewayException {
 		byte[] _reversed;
 
-		String Key = "";
-
 		ByteArrayObject _res = new ByteArrayObject();
+		_res.addBytesShort(
+				Short.reverseBytes(gal.getShortAddress_FromNetworkCache(
+						binding.getSourceIEEEAddress()).shortValue()), 2);
+
+		
+		
+		
+
 		byte[] ieeeAddress = DataManipulation.toByteVect(
 				binding.getSourceIEEEAddress(), 8);
 		_reversed = DataManipulation.reverseBytes(ieeeAddress);
@@ -3289,10 +3183,6 @@ public class DataFreescale implements IDataLayer {
 
 		Integer _clusterID = binding.getClusterID();
 		_res.addBytesShort(Short.reverseBytes(_clusterID.shortValue()), 2);/* ClusterID */
-
-		Key += String.format("%16X", binding.getSourceIEEEAddress())
-				+ String.format("%02X", binding.getSourceEndpoint())
-				+ String.format("%04X", binding.getClusterID());
 
 		if (binding.getDeviceDestination().size() > 0
 				&& binding.getGroupDestination().size() > 0)
@@ -3314,10 +3204,6 @@ public class DataFreescale implements IDataLayer {
 					.getEndpoint());/*
 									 * Destination EndPoint
 									 */
-			Key += String.format("%16X", binding.getDeviceDestination().get(0)
-					.getAddress())
-					+ String.format("%02X",
-							binding.getDeviceDestination().get(0).getEndpoint());
 
 		} else if (binding.getGroupDestination().size() == 1) {
 			_res.addByte((byte) 0x01);/* Destination AddressMode Group */
@@ -3329,23 +3215,20 @@ public class DataFreescale implements IDataLayer {
 				/* Destination Group */
 				_res.addByte(b);
 
-			Key += String.format("%04X", binding.getGroupDestination().get(0)
-					.intValue());
-
 		} else {
 			throw new GatewayException(
 					"The Address mode can only be one Group or one Device!");
 
 		}
 
-		_res = Set_SequenceStart_And_FSC(_res, (byte) 0x99, (byte) 0x00);/*
+		_res = Set_SequenceStart_And_FSC(_res, (byte) 0xA2, (byte) 0x21);/*
 																		 * StartSequence
 																		 * +
 																		 * Control
 																		 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ADD_BINDING);
-		lock.set_Key(Key);
+
 		synchronized (listLocker) {
 			listLocker.add(lock);
 		}
@@ -3364,16 +3247,16 @@ public class DataFreescale implements IDataLayer {
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.error("Timeout expired in APSME-BIND.Confirm");
+				logger.error("Timeout expired in ZDP-BIND.Response");
 			}
-			throw new GatewayException("Timeout expired in APSME-BIND.Request");
+			throw new GatewayException("Timeout expired in ZDP-BIND.Request");
 		} else {
 			if (status.getCode() != 0) {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Returned Status: " + status.getCode());
 				}
 				throw new GatewayException(
-						"Error on APSME-BIND.Request. Status code:"
+						"Error on ZDP-BIND.Request. Status code:"
 								+ status.getCode() + " Status Message: "
 								+ status.getMessage());
 			} else {
@@ -3388,9 +3271,12 @@ public class DataFreescale implements IDataLayer {
 			throws IOException, Exception, GatewayException {
 		byte[] _reversed;
 
-		String Key = "";
-
 		ByteArrayObject _res = new ByteArrayObject();
+
+		_res.addBytesShort(
+				Short.reverseBytes(gal.getShortAddress_FromNetworkCache(
+						binding.getSourceIEEEAddress()).shortValue()), 2);
+
 		byte[] ieeeAddress = DataManipulation.toByteVect(
 				binding.getSourceIEEEAddress(), 8);
 		_reversed = DataManipulation.reverseBytes(ieeeAddress);
@@ -3402,10 +3288,6 @@ public class DataFreescale implements IDataLayer {
 
 		Integer _clusterID = binding.getClusterID();
 		_res.addBytesShort(Short.reverseBytes(_clusterID.shortValue()), 2);/* ClusterID */
-
-		Key += String.format("%16X", binding.getSourceIEEEAddress())
-				+ String.format("%02X", binding.getSourceEndpoint())
-				+ String.format("%04X", binding.getClusterID());
 
 		if (binding.getDeviceDestination().size() > 0
 				&& binding.getGroupDestination().size() > 0)
@@ -3427,10 +3309,6 @@ public class DataFreescale implements IDataLayer {
 					.getEndpoint());/*
 									 * Destination EndPoint
 									 */
-			Key += String.format("%16X", binding.getDeviceDestination().get(0)
-					.getAddress())
-					+ String.format("%02X",
-							binding.getDeviceDestination().get(0).getEndpoint());
 
 		} else if (binding.getGroupDestination().size() == 1) {
 			_res.addByte((byte) 0x01);/* Destination AddressMode Group */
@@ -3442,23 +3320,20 @@ public class DataFreescale implements IDataLayer {
 				/* Destination Group */
 				_res.addByte(b);
 
-			Key += String.format("%04X", binding.getGroupDestination().get(0)
-					.intValue());
-
 		} else {
 			throw new GatewayException(
 					"The Address mode can only be one Group or one Device!");
 
 		}
 
-		_res = Set_SequenceStart_And_FSC(_res, (byte) 0x99, (byte) 0x09);/*
+		_res = Set_SequenceStart_And_FSC(_res, (byte) 0xA2, (byte) 0x22);/*
 																		 * StartSequence
 																		 * +
 																		 * Control
 																		 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.REMOVE_BINDING);
-		lock.set_Key(Key);
+
 		synchronized (listLocker) {
 			listLocker.add(lock);
 		}
@@ -3477,17 +3352,16 @@ public class DataFreescale implements IDataLayer {
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.error("Timeout expired in APSME-UNBIND.Confirm");
+				logger.error("Timeout expired in ZDP-UNBIND.Response");
 			}
-			throw new GatewayException(
-					"Timeout expired in APSME-UNBIND.Request");
+			throw new GatewayException("Timeout expired in ZDP-UNBIND.Request");
 		} else {
 			if (status.getCode() != 0) {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Returned Status: " + status.getCode());
 				}
 				throw new GatewayException(
-						"Error on APSME-UNBIND.Request. Status code:"
+						"Error on ZDP-UNBIND.Request. Status code:"
 								+ status.getCode() + " Status Message: "
 								+ status.getMessage());
 			} else {
@@ -3522,7 +3396,7 @@ public class DataFreescale implements IDataLayer {
 		addToSendDataQueue(_bodyCommand);
 		Status _st = new Status();
 		_st.setCode((short) GatewayConstants.SUCCESS);
-		
+
 		return _st;
 		/*
 		 * synchronized (lock) { try { lock.wait(timeout); } catch

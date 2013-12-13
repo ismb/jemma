@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3

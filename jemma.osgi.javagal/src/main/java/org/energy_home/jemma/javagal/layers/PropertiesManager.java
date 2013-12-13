@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3
@@ -38,8 +38,9 @@ import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
  */
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class PropertiesManager {
 
@@ -325,8 +326,7 @@ public class PropertiesManager {
 				.toString());
 
 		/* StartupSet */
-		props.setProperty("StartupSet", sai.getStartupAttributeSetIndex()
-				.toString());
+		props.setProperty("StartupSet",String.valueOf(sai.getStartupAttributeSetIndex()));
 
 		/* networkKey */
 		props.setProperty("networkKey", sai.getNetworkKey().toString());

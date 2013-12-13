@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3
@@ -759,7 +759,7 @@ public interface GatewayInterface {
 			throws IOException, Exception, GatewayException;
 
 	/**
-	 * Returns the list of neighbor of all nodes of the network
+	 * Returns the list of neighbor of related nodes of the network
 	 * 
 	 * @throws IOException
 	 * @throws Exception
@@ -768,6 +768,19 @@ public interface GatewayInterface {
 	public LQIInformation getLQIInformation(Address aoi) throws IOException,
 			Exception, GatewayException;
 
+	
+	/**
+	 * Returns the list of neighbor of all nodes of the network
+	 * 
+	 * @throws IOException
+	 * @throws Exception
+	 * @throws GatewayException
+	 */
+	public LQIInformation getLQIInformation() throws IOException,
+			Exception, GatewayException;
+
+	
+	
 	/**
 	 * Sends a ZCL Command to a node in an asynchronous mode
 	 * 

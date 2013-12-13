@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3
@@ -36,8 +36,9 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
  */
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class ZdoManager /* implements APSMessageListener */{
 	private static Log logger = LogFactory.getLog(ZdoManager.class);
@@ -200,7 +201,6 @@ public class ZdoManager /* implements APSMessageListener */{
 			}
 			Status _s = new Status();
 			_s.setCode((short) 0x00);
-			_s.setMessage("Successful - Device Announcement");
 			try {
 				gal.get_gatewayEventManager().nodeDiscovered(_s,
 						_Node.get_node());
@@ -209,8 +209,13 @@ public class ZdoManager /* implements APSMessageListener */{
 				e.printStackTrace();
 			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("Received ZDP Device_announcement: "
-						+ _Node.get_node().getAddress().getNetworkAddress());
+				{
+					logger.info("Received ZDP Device_announcement: "
+							+ _Node.get_node().getAddress().getNetworkAddress());
+				
+					
+			
+				}
 			}
 
 		}

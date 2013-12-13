@@ -1,6 +1,6 @@
 /**
  * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+ * (C) Copyright 2010 Telecom Italia (http://www.telecomitalia.it)
  *
  * JEMMA is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License (LGPL) version 3
@@ -13,11 +13,13 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
+
 package org.energy_home.jemma.javagal.layers.business;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -56,6 +58,7 @@ import org.energy_home.jemma.zgd.jaxb.LQIInformation;
 import org.energy_home.jemma.zgd.jaxb.LQINode;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.Neighbor;
+import org.energy_home.jemma.zgd.jaxb.NeighborList;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.NodeServices.ActiveEndpoints;
@@ -242,7 +245,7 @@ public class GalController {
 		return _gatewayEventManager;
 	}
 
-	private WSNNode GalNode = null;
+	private WrapperWSNNode GalNode = null;
 
 	public short configureEndpoint(long timeout, SimpleDescriptor desc)
 			throws IOException, Exception, GatewayException {
@@ -259,11 +262,11 @@ public class GalController {
 	public NodeServices getLocalServices() throws IOException, Exception,
 			GatewayException {
 		NodeServices result = DataLayer.getLocalServices();
-		if (GalNode != null && GalNode.getAddress() != null)
-			result.setAddress(GalNode.getAddress());
+		if (GalNode != null && GalNode.get_node().getAddress() != null)
+			result.setAddress(GalNode.get_node().getAddress());
 		for (WrapperWSNNode o : getNetworkcache()) {
 			if (o.get_node().getAddress().getNetworkAddress() == get_GalNode()
-					.getAddress().getNetworkAddress()) {
+					.get_node().getAddress().getNetworkAddress()) {
 				o.set_nodeServices(result);
 				result = o.get_nodeServices();
 				break;
@@ -343,19 +346,21 @@ public class GalController {
 				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
 				_lqinode.setNodeAddress(x.get_node().getAddress()
 						.getIeeeAddress());
+				
 				if (_rsp.NeighborTableList != null) {
 					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-
 						Neighbor e = new Neighbor();
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._RxOnWhenIdle);
+						/*
 						e.setExtendedPANId(BigInteger
 								.valueOf(_n1._Extended_PAN_Id));
+						*/
 						e.setIeeeAddress(BigInteger
 								.valueOf(_n1._Extended_Address));
 						e.setLQI((short) _n1._LQI);
-						e.setPermitJoining((short) _n1._Permitting_Joining);
-						_lqinode.getNeighborList().add(e);
+						/*e.setPermitJoining((short) _n1._Permitting_Joining);*/
+						_lqinode.getNeighborList().getNeighbor().add(e);
 					}
 				}
 
@@ -367,6 +372,41 @@ public class GalController {
 		} else
 			throw new Exception("Address not found!");
 
+	}
+
+	public LQIInformation getAllLQIInformations() throws IOException,
+			Exception, GatewayException {
+		LQIInformation _lqi = new LQIInformation();
+		for (WrapperWSNNode x : getNetworkcache()) {
+			if (x.is_discoveryCompleted()) {
+				LQINode _lqinode = new LQINode();
+				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
+				_lqinode.setNodeAddress(x.get_node().getAddress()
+						.getIeeeAddress());
+				if (_rsp.NeighborTableList != null) {
+					NeighborList _list = new NeighborList();
+					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
+
+						Neighbor e = new Neighbor();
+					
+						e.setDepth((short) _n1._Depth);
+						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._RxOnWhenIdle);
+						/*
+						e.setExtendedPANId(BigInteger
+								.valueOf(_n1._Extended_PAN_Id));
+						*/
+						e.setIeeeAddress(BigInteger
+								.valueOf(_n1._Extended_Address));
+						e.setLQI((short) _n1._LQI);
+						_list.getNeighbor().add(e);
+						//e.setPermitJoining((short) _n1._Permitting_Joining);
+						_lqinode.setNeighborList(_list);
+					}
+				}
+				_lqi.getLQINode().add(_lqinode);
+			}
+		}
+		return _lqi;
 	}
 
 	public NodeDescriptor getNodeDescriptor(final long timeout,
@@ -462,8 +502,6 @@ public class GalController {
 			throw new GatewayException("Gal is not in running state!");
 
 	}
-
-	
 
 	public Status startGatewayDevice(final long timeout,
 			final int _requestIdentifier, final StartupAttributeInfo sai,
@@ -726,26 +764,26 @@ public class GalController {
 		}
 	}
 
-	public String APSME_GETSync(short attrId)
-			throws Exception, GatewayException {
+	public String APSME_GETSync(short attrId) throws Exception,
+			GatewayException {
 		return DataLayer.APSME_GETSync(IDataLayer.INTERNAL_TIMEOUT, attrId);
 	}
 
-	public void APSME_SETSync(short attrId, String value)
-			throws Exception, GatewayException {
+	public void APSME_SETSync(short attrId, String value) throws Exception,
+			GatewayException {
 		DataLayer.APSME_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 	}
 
 	public String NMLE_GetSync(short ilb) throws IOException, Exception,
-	GatewayException {
-return DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, ilb);
+			GatewayException {
+		return DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, ilb);
 
-}
+	}
 
-public void NMLE_SetSync(short attrId, String value) throws Exception,
-	GatewayException {
-DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
-}
+	public void NMLE_SetSync(short attrId, String value) throws Exception,
+			GatewayException {
+		DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
+	}
 
 	public long createCallback(int proxyIdentifier, Callback callback,
 			APSMessageListener listener) throws IOException, Exception,
@@ -1181,7 +1219,6 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 						_s2.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_s2.setMessage("Gal is not in running state!");
 						get_gatewayEventManager().notifypermitJoinResult(_s2);
-
 					}
 
 				}
@@ -1203,16 +1240,28 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 
 	public void startNodeDiscovery(long timeout, int requestIdentifier,
 			int discoveryMask) throws GatewayException {
-		int _index = -1;
 
+		int _index = -1;
+		if (PropertiesManager.getDebugEnabled())
+			logger.info("\n\rCalled startNodeDiscovery Mask: " + discoveryMask
+					+ " - Timeout:" + timeout);
 		synchronized (get_gatewayEventManager()) {
 			if ((_index = existIntolistGatewayEventListener(requestIdentifier)) != -1) {
 
-				listGatewayEventListener.get(_index).setDiscoveryMask(
-						discoveryMask);
-				if (!get_Gal_in_Dyscovery_state()) {
+				if (((discoveryMask & GatewayConstants.DISCOVERY_ANNOUNCEMENTS) > 0)
+						|| (discoveryMask == GatewayConstants.DISCOVERY_STOP)) {
+					listGatewayEventListener.get(_index).setDiscoveryMask(
+							discoveryMask);
+				}
+				if (((discoveryMask & GatewayConstants.DISCOVERY_LQI) > 0)
+						&& (timeout > 1)) {
 
-					if (discoveryMask != 0 && timeout > 1) {
+					if (!get_Gal_in_Dyscovery_state()) {
+
+						/* Clear the Network Cache */
+						getNetworkcache().clear();
+						getNetworkcache().add(GalNode);
+
 						long __timeout = 0;
 
 						if (timeout == 0)
@@ -1227,6 +1276,17 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 										+ " seconds.");
 						_timeoutGlobalDiscovery.schedule(
 								new stopTaskDiscovery(), timeout);
+						Status _st = new Status();
+						_st.setCode((short) GatewayConstants.SUCCESS);
+						try {
+							get_gatewayEventManager().nodeDiscovered(_st,
+									GalNode.get_node());
+						} catch (Exception e) {
+							if (PropertiesManager.getDebugEnabled()) {
+								logger.error("\n\rError on nodeDiscovered: "
+										+ e.getMessage() + "\n\r");
+							}
+						}
 						for (WrapperWSNNode x : getNetworkcache()) {
 							x.setTimerDiscovery(0, false);
 						}
@@ -1234,49 +1294,51 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 							logger.info("\n\rGlobal Discovery Started("
 									+ __timeout + " seconds)!\n\r");
 						}
-					}
 
-				} else {
-					if (discoveryMask == 0) {
-						if (_timeoutGlobalDiscovery != null) {
-							_timeoutGlobalDiscovery.cancel();
-
-						}
-						set_Gal_in_Dyscovery_state(false);
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.info("\n\rGlobal Discovery Stopped!\n\r");
-						}
 					} else {
 						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("\n\rError on discovery: Gal is already on discovery, but your listener is saved!\n\r");
+							logger.error("\n\rGal is already on discovery, but your listener is saved!\n\r");
 						}
-						throw new GatewayException(
-								"Gal is already on discovery, but your listener is saved!");
+
 					}
+				} else if ((discoveryMask == GatewayConstants.DISCOVERY_STOP)
+						|| (timeout == 1)) {
+					if (_timeoutGlobalDiscovery != null)
+						_timeoutGlobalDiscovery.cancel();
+
+					set_Gal_in_Dyscovery_state(false);
+					if (PropertiesManager.getDebugEnabled())
+						logger.info("\n\rGlobal Discovery Stopped!\n\r");
+
 				}
 			} else {
-				if (PropertiesManager.getDebugEnabled()) {
-					logger.error("\n\rError on discovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
-				}
+				if (PropertiesManager.getDebugEnabled())
+					logger.error("\n\rError on startNodeDiscovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
+
 				throw new GatewayException(
 						"No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 			}
 		}
-
 	}
 
 	public void subscribeNodeRemoval(long timeout, int requestIdentifier,
 			int discoveryFreshness_mask) throws GatewayException {
+		if (PropertiesManager.getDebugEnabled())
+			logger.info("\n\rCalled startNodeDiscovery Mask: "
+					+ discoveryFreshness_mask + " - Timeout:" + timeout);
 		int _index = -1;
 		synchronized (getListGatewayEventListener()) {
 			if ((_index = existIntolistGatewayEventListener(requestIdentifier)) != -1) {
 
-				listGatewayEventListener.get(_index).setFreshnessMask(
-						discoveryFreshness_mask);
+				if (((discoveryFreshness_mask & GatewayConstants.DISCOVERY_LEAVE) > 0)
+						|| (discoveryFreshness_mask == GatewayConstants.DISCOVERY_STOP)) {
+					listGatewayEventListener.get(_index).setFreshnessMask(
+							discoveryFreshness_mask);
+				}
+				if (((discoveryFreshness_mask & GatewayConstants.DISCOVERY_FRESHNESS) > 0)
+						&& (timeout > 1)) {
+					if (!get_Gal_in_Freshness_state()) {
 
-				if (!get_Gal_in_Freshness_state()) {
-
-					if (discoveryFreshness_mask > 0 && timeout > 1) {
 						set_Gal_in_Freshness_state(true);
 						for (WrapperWSNNode x : getNetworkcache()) {
 							x.setTimerFreshness(0);
@@ -1285,28 +1347,28 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 						if (PropertiesManager.getDebugEnabled()) {
 							logger.info("\n\rGlobal Freshness Started!\n\r");
 						}
-					}
 
-				} else {
-					if (discoveryFreshness_mask == 0) {
-
-						set_Gal_in_Freshness_state(false);
-
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.info("\n\rGlobal Freshness Stopped!\n\r");
-						}
 					} else {
+
 						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("\n\rError on discovery: Gal is already on freshness, but your listener is saved!\n\r");
+							logger.error("\n\rGal is already on freshness, but your listener is saved!\n\r");
 						}
-						throw new GatewayException(
-								"Gal is already on freshness, but your listener is saved!");
+
 					}
+				} else if ((discoveryFreshness_mask == GatewayConstants.DISCOVERY_STOP)
+						|| (timeout == 1)) {
+
+					set_Gal_in_Freshness_state(false);
+
+					if (PropertiesManager.getDebugEnabled()) {
+						logger.info("\n\rGlobal Freshness Stopped!\n\r");
+					}
+
 				}
 
 			} else {
 				if (PropertiesManager.getDebugEnabled()) {
-					logger.error("\n\rError on discovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
+					logger.error("\n\rError on subscribeNodeRemoval: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
 				}
 				throw new GatewayException(
 						"No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
@@ -1381,7 +1443,7 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 					_add.setIeeeAddress(_IeeeAdd);
 					galNode.setAddress(_add);
 					galNodeWrapper.set_node(galNode);
-					set_GalNode(galNode);
+					set_GalNode(galNodeWrapper);
 					try {
 
 						Status _permitjoin = DataLayer.permitJoinSync(
@@ -1496,6 +1558,17 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 						_lockerStartDevice.setId(1);
 						_lockerStartDevice.notify();
 					}
+
+					Status _s = new Status();
+					_s.setCode((short) GatewayConstants.SUCCESS);
+					try {
+						get_gatewayEventManager().nodeDiscovered(_s,
+								getNetworkcache().get(_index).get_node());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						logger.error("Error on setgatewaystatus:nodeannouncement");
+					}
+
 				}
 			};
 
@@ -1526,7 +1599,7 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 		}
 	}
 
-	public synchronized WSNNode get_GalNode() {
+	public synchronized WrapperWSNNode get_GalNode() {
 		return GalNode;
 	}
 
@@ -1536,7 +1609,7 @@ DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
 		return _s;
 	}
 
-	public synchronized void set_GalNode(WSNNode _GalNode) {
+	public synchronized void set_GalNode(WrapperWSNNode _GalNode) {
 		GalNode = _GalNode;
 	}
 
