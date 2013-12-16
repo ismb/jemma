@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import org.energy_home.jemma.zgd.GatewayException;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.Address;
@@ -25,6 +26,7 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.TxOptions;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,10 +40,12 @@ import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
+import com.sun.org.apache.xml.internal.utils.BoolStack;
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class Discovery_Freshness {
 	GalController gal = null;
@@ -408,6 +412,7 @@ public class Discovery_Freshness {
 
 			/* Check no confirm received */
 			if (_stat == null || _stat.getCode() != 0) {
+				boolean _toremove = false;
 				synchronized (_parent) {
 					_parent.set_numberOfAttempt();
 
@@ -430,10 +435,17 @@ public class Discovery_Freshness {
 							gal.get_gatewayEventManager().nodeRemoved(_st,
 									_parent.get_node());
 						}
-						synchronized (gal.getNetworkcache()) {
-							gal.getNetworkcache().remove(_indexParent);
 
-						}
+						/* Clear NodeCache */
+						Status _st0 = gal.getDataLayer().ClearDeviceKeyPairSet(
+								IDataLayer.INTERNAL_TIMEOUT,
+								_parent.get_node().getAddress());
+						Status _st1 = gal.getDataLayer()
+								.ClearNeighborTableEntry(
+										IDataLayer.INTERNAL_TIMEOUT,
+										_parent.get_node().getAddress());
+						_toremove = true;
+
 					} else {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0
 								&& gal.get_Gal_in_Freshness_state()) {
@@ -449,6 +461,13 @@ public class Discovery_Freshness {
 					}
 				}
 
+				if (_toremove) {
+					synchronized (gal.getNetworkcache()) {
+						gal.getNetworkcache().remove(_indexParent);
+
+					}
+				}
+
 			} else/* Confirm Received -- Waiting Response */
 			{
 				synchronized (_newDsc) {
@@ -459,6 +478,7 @@ public class Discovery_Freshness {
 					}
 				}
 				if (_newDsc.get_response() == null) {
+					boolean _toremove = false;
 					synchronized (_parent) {
 						_parent.set_numberOfAttempt();
 						if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -480,10 +500,18 @@ public class Discovery_Freshness {
 								gal.get_gatewayEventManager().nodeRemoved(_st,
 										_parent.get_node());
 							}
-							synchronized (gal.getNetworkcache()) {
-								gal.getNetworkcache().remove(_indexParent);
 
-							}
+							/* Clear NodeCache */
+							Status _st0 = gal.getDataLayer()
+									.ClearDeviceKeyPairSet(
+											IDataLayer.INTERNAL_TIMEOUT,
+											_parent.get_node().getAddress());
+							Status _st1 = gal.getDataLayer()
+									.ClearNeighborTableEntry(
+											IDataLayer.INTERNAL_TIMEOUT,
+											_parent.get_node().getAddress());
+							_toremove = true;
+
 						} else {
 							if (gal.getPropertiesManager()
 									.getKeepAliveThreshold() > 0
@@ -503,6 +531,12 @@ public class Discovery_Freshness {
 						}
 					}
 
+					if (_toremove) {
+						synchronized (gal.getNetworkcache()) {
+							gal.getNetworkcache().remove(_indexParent);
+
+						}
+					}
 				} else /* Response Received */
 				{
 					AssociatedDevices _AssociatedDevices = new AssociatedDevices();
@@ -553,8 +587,8 @@ public class Discovery_Freshness {
 							Status _st = new Status();
 							_st.setCode((short) 0x00);
 							_st.setMessage("Freshness");
-							gal.get_gatewayEventManager()
-							.nodeDiscovered(_st, _parent.get_node());
+							gal.get_gatewayEventManager().nodeDiscovered(_st,
+									_parent.get_node());
 						} else
 							return;
 					}
@@ -563,6 +597,7 @@ public class Discovery_Freshness {
 			}
 
 		} catch (Exception e) {
+			boolean _toremove = false;
 			synchronized (_parent) {
 				_parent.set_numberOfAttempt();
 
@@ -597,9 +632,28 @@ public class Discovery_Freshness {
 							}
 						}
 					}
-					synchronized (gal.getNetworkcache()) {
-						gal.getNetworkcache().remove(_indexParent);
+
+					/* Clear NodeCache */
+					try {
+						Status _st0 = gal.getDataLayer().ClearDeviceKeyPairSet(
+								IDataLayer.INTERNAL_TIMEOUT,
+								_parent.get_node().getAddress());
+						Status _st1 = gal.getDataLayer().ClearNeighborTableEntry(
+								IDataLayer.INTERNAL_TIMEOUT,
+								_parent.get_node().getAddress());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (GatewayException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+					
+					_toremove = true;
+
 				} else {
 					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0
 							&& gal.get_Gal_in_Freshness_state()) {
@@ -611,6 +665,12 @@ public class Discovery_Freshness {
 						_parent.setTimerFreshness(gal.getPropertiesManager()
 								.getForcePingTimeout());
 					}
+				}
+			}
+			if (_toremove) {
+
+				synchronized (gal.getNetworkcache()) {
+					gal.getNetworkcache().remove(_indexParent);
 				}
 			}
 

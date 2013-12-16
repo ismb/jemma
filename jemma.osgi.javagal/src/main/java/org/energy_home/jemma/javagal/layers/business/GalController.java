@@ -389,7 +389,7 @@ public class GalController {
 						Neighbor e = new Neighbor();
 					
 						e.setDepth((short) _n1._Depth);
-						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._RxOnWhenIdle);
+						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
 						/*
 						e.setExtendedPANId(BigInteger
 								.valueOf(_n1._Extended_PAN_Id));
