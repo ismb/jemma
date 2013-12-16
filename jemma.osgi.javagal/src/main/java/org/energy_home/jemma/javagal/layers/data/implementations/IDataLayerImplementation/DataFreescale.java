@@ -2423,7 +2423,18 @@ public class DataFreescale implements IDataLayer {
 
 		res.addBytesShort(Short.reverseBytes(sai.getPANId().shortValue()), 2);
 
+		
+			
 		byte[] _channel = Utils.buildChannelMask(sai.getChannelMask());
+		
+		
+		if (gal.getPropertiesManager().getDebugEnabled()) 
+			logger.info("Channel readed from PropertiesManager:"
+					+ sai.getChannelMask());
+
+		if (gal.getPropertiesManager().getDebugEnabled()) 
+					DataManipulation.logArrayHexRadix("Channel after conversion", _channel);
+		
 		for (byte x : _channel)
 			res.addByte(x);
 
