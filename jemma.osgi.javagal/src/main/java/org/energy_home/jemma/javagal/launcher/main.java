@@ -53,9 +53,6 @@ public class main {
 	 * 
 	 * @param args startup arguments
 	 */
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		logger.info("\n\rStarting Gal:Java!\n\r");
 		PropertiesManager PropertiesManager = null;
