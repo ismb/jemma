@@ -51,7 +51,7 @@ public class main {
 	/**
 	 * Static main class.
 	 * 
-	 * @param args startup arguments
+	 * @param args startup arguments.
 	 */
 	public static void main(String[] args) {
 		logger.info("\n\rStarting Gal:Java!\n\r");
