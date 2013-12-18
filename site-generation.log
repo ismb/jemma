@@ -1,4 +1,4 @@
-Auto-generated site: 201312181900
+Auto-generated site: 201312181928
 
 ##########################
 Git status
@@ -9,16 +9,25 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   index.html
 #	modificato:   site-generation.log
-#	modificato:   techs.html
-#	modificato:   techs.md
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit c6426f7c521a1966bba745a9d37403815b78b53b
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Wed Dec 18 19:22:38 2013 +0100
+
+    Fixed bad character
+
+commit bad9b4acda85984ddda10c0366fe2e0e6d743116
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Wed Dec 18 19:03:03 2013 +0100
+
+    Added javagal content in techs page
 
 commit 5aab560a92935346f655bec544ed1544b4dfd9ea
 Merge: aabd76d ccac254
@@ -38,15 +47,3 @@ Date:   Thu Nov 14 13:05:00 2013 +0100
 commit 05ef4b15debcea398bf7600d3804da5f0e2c0899
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Thu Nov 14 12:51:17 2013 +0100
-
-    several improvements
-
-commit aabd76de6f0dab7c12bafb55be12096449d53644
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Mon Nov 11 17:31:58 2013 +0100
-
-    Added download/doc/source boxes in homepage.
-    Switched to blueprint css.
-    Fixed some errors in css.
-
-commit c29ed9d235910100275ec9c64ed8e932110c1b82
