@@ -2333,6 +2333,11 @@ public class DataFreescale implements IDataLayer {
 			else if (devType == LogicalType.ROUTER)
 				_res.addByte((byte) 0x80);/* Router */
 
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.error("StartupSet value read from PropertiesManager:" + gal.getPropertiesManager().getStartupSet());
+				logger.error("StartupControlMode value read from PropertiesManager:" + gal.getPropertiesManager().getSturtupAttributeInfo()
+						.getStartupControl().byteValue());
+			}
 			_res.addByte((byte) gal.getPropertiesManager().getStartupSet());
 			_res.addByte(gal.getPropertiesManager().getSturtupAttributeInfo()
 					.getStartupControl().byteValue());
@@ -2407,6 +2412,7 @@ public class DataFreescale implements IDataLayer {
 			logger.info("Extended PanID:"
 					+ DataManipulation.convertBytesToString(ExtendedPaniId));
 		}
+		
 		for (byte b : DataManipulation.reverseBytes(ExtendedPaniId))
 			res.addByte(b);
 
@@ -2420,13 +2426,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		for (byte b : DataManipulation.reverseBytes(APSUseExtendedPANId))
 			res.addByte(b);
-
 		res.addBytesShort(Short.reverseBytes(sai.getPANId().shortValue()), 2);
-
-		
-			
-		byte[] _channel = Utils.buildChannelMask(sai.getChannelMask());
-		
+		byte[] _channel = Utils.buildChannelMask(sai.getChannelMask().shortValue());
 		
 		if (gal.getPropertiesManager().getDebugEnabled()) 
 			logger.info("Channel readed from PropertiesManager:"
@@ -2435,7 +2436,7 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled()) 
 					DataManipulation.logArrayHexRadix("Channel after conversion", _channel);
 		
-		for (byte x : _channel)
+		for (byte x : DataManipulation.reverseBytes(_channel))
 			res.addByte(x);
 
 		res.addByte(sai.getProtocolVersion().byteValue());
@@ -2484,7 +2485,7 @@ public class DataFreescale implements IDataLayer {
 					+ DataManipulation
 							.convertBytesToString(PreconfiguredLinkKey));
 		}
-		for (byte b : PreconfiguredLinkKey)
+		for (byte b : DataManipulation.reverseBytes(PreconfiguredLinkKey))
 			res.addByte(b);
 
 		res.addByte(sai.getNetworkKeySeqNum().byteValue());
@@ -3389,7 +3390,7 @@ public class DataFreescale implements IDataLayer {
 		_bodyCommand.addByte((byte) 0xFD);
 		_bodyCommand.addByte((byte) 0xFF);
 		byte[] _channel = Utils.buildChannelMask(scanChannel);
-		for (byte x : _channel)
+		for (byte x : DataManipulation.reverseBytes(_channel))
 			_bodyCommand.addByte(x);
 		_bodyCommand.addByte((byte) scanDuration);
 		_bodyCommand.addByte((byte) 0x00);// Add parameter nwkupdate

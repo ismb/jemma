@@ -354,7 +354,7 @@ public class PropertiesManager {
 	 *            the StartupControlMode value to set.
 	 */
 	public void setStartupControlMode(Short startupControlMode) {
-		props.setProperty("StartupControlMode", startupControlMode.toString());
+		props.setProperty("StartupControlMode", String.format("%02X", startupControlMode));
 
 	}
 
@@ -364,7 +364,7 @@ public class PropertiesManager {
 	 * @return the StartupSet value.
 	 */
 	public short getStartupSet() {
-		short startupSet = readShortHex("StartupSet");
+		short startupSet = sai.getStartupAttributeSetIndex();
 		return startupSet;
 	}
 
@@ -375,7 +375,7 @@ public class PropertiesManager {
 	 *            the StartupSet value to set.
 	 */
 	public void setStartupSet(Short startupSet) {
-		props.setProperty("StartupSet", startupSet.toString());
+		props.setProperty("StartupSet", String.format("%02X",startupSet));
 
 	}
 
