@@ -1,22 +1,39 @@
-Auto-generated site: 201311141304
+Auto-generated site: 201312181900
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
+# Sul branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   devteam.md
-#	modified:   site-generation.log
+#	modificato:   index.html
+#	modificato:   site-generation.log
+#	modificato:   techs.html
+#	modificato:   techs.md
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 5aab560a92935346f655bec544ed1544b4dfd9ea
+Merge: aabd76d ccac254
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Thu Nov 14 04:08:03 2013 -0800
+
+    Merge pull request #41 from riccardo/gh-pages
+    
+    several improvements on the website
+
+commit ccac2545cd71850e6661a6fbeedb97dea669dd9e
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Thu Nov 14 13:05:00 2013 +0100
+
+    fixing as for pull request review
 
 commit 05ef4b15debcea398bf7600d3804da5f0e2c0899
 Author: riccardo <riccardo.to@gmail.com>
@@ -33,18 +50,3 @@ Date:   Mon Nov 11 17:31:58 2013 +0100
     Fixed some errors in css.
 
 commit c29ed9d235910100275ec9c64ed8e932110c1b82
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Sun Nov 10 13:00:54 2013 +0100
-
-    Added download arrow image
-
-commit 1c47fa40ba7c4309c327172f97fbd4cc84a9847d
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Sun Nov 10 12:56:47 2013 +0100
-
-    Added "Download" box in the homepage
-    Modified devteam and howtoc pages (mailing list related stuff)
-
-commit ac2b6a96b1ca7acb619ab42d6d948bc38ce5b9cd
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Thu Oct 24 17:30:04 2013 +0200
