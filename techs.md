@@ -34,7 +34,7 @@ The Java-GAL is a project copyright of Telecom Italia under the financial suppor
 - Implemented in Java. JDK 1.5
 - Equinox OSGi framework compliant
 - Based on standard Zigbee Gateway Device specification
-- Modular structure for different hardware support; the Freescale MC13226V ZigBeePRO – USB module is actually developed
+- Modular structure for different hardware support; the Freescale MC13226V ZigBeePRO - USB module is actually developed
 - J-GAL interface for OSGi client packages 
 - REST interface for IP client applications
 - Discovery ad Freshness procedures for guarantee the consistency of the managed ZigBee network.
