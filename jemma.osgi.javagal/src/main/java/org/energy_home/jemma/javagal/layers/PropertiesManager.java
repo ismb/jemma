@@ -35,9 +35,7 @@ import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
  * Properties manager class. Loads/saves from/to a ".properties" file the
  * desired values for JavaGal execution. It's THE way to control a number of
  * parameters at startup.
- */
-
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */

@@ -25,9 +25,7 @@ import org.energy_home.jemma.zgd.GatewayInterface;
  * object created by this factory is a separate and independent
  * proxy to the unique {@link GalController} instance and is
  * identified by its own proxy identifier id.
- */
-
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */

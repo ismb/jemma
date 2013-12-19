@@ -62,9 +62,7 @@ import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
  * adds its identifier to that request. After a while, when the response will
  * become available to the Gal controller, it uses that identifier to find the
  * right proxy destination (the client) to dispatch the response to it.
- */
-
-/**
+ * 
  * @author 
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
