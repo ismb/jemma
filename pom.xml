@@ -19,7 +19,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma</artifactId>
 	<packaging>pom</packaging>
@@ -28,9 +27,7 @@
 
 	<properties>
 		<main.dir>${project.basedir}</main.dir>
-		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<!--successfuttly moved to local repo -->
 		<org.eclipse.equinox.ds.version>1.1.1</org.eclipse.equinox.ds.version>
 		<org.eclipse.equinox.device.version>1.0.100</org.eclipse.equinox.device.version>
@@ -78,7 +75,6 @@
 		<org.apache.felix.scr.version>1.6.0</org.apache.felix.scr.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 		<commons.jabsorb.version>1.3.1</commons.jabsorb.version>
-		
 		<maven.license.plugin.version>2.5</maven.license.plugin.version>
 		<maven.clean.plugin.version>2.5</maven.clean.plugin.version>
 		<felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version>
@@ -155,10 +151,9 @@
 				<manifestLocation>META-INF</manifestLocation>
 				<instructions>
 				    <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-				    <DynamicImport-Package>com.sun.xml.internal.bind.*</DynamicImport-Package>
+				    <!--<DynamicImport-Package>com.sun.xml.internal.bind.*</DynamicImport-Package>-->
 				    <Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
 				</instructions>
-				
 			    </configuration>
 			</plugin>
 <!-- Deprecated, now assembly plugins is used to esport dependencies
@@ -267,10 +262,23 @@
 		</plugins>
 	</build>
 	<repositories>
+		
+		
+  
 		<repository>
-			<id>localRepository</id>
-			<name>Local repository</name>
-			<url>http://130.192.85.149:8888/maven</url>
+				<id>localRepository</id>
+				<name>Local repository</name>
+				<url>http://130.192.85.149:8888/maven</url>
+		</repository>
+		<repository>
+				<id>maven-Jaxb</id>
+				<name>JAXB-NamespacePrefixMapper-Interfaces</name>
+				<url>http://mvnrepository.com/</url>
+		</repository>
+		<repository>
+		   <id>maven-restlet</id>  
+		   <name>Public online Restlet repository</name>  
+		   <url>http://maven.restlet.org</url>  
 		</repository>
 	</repositories>
 	<dependencies>
@@ -304,6 +312,17 @@
 			<artifactId>jaxb-osgi</artifactId>
 			<version>${jaxb-osgi.version}</version>
 			<scope>compile</scope>
+		</dependency> 
+		<dependency>
+		  <groupId>org.restlet</groupId>
+		  <artifactId>org.restlet</artifactId>
+		  <version>2.1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
+			<artifactId>JAXBNamespacePrefixMapper</artifactId>
+			<version>2.2.4</version>
 		</dependency> 
 	</dependencies>
 </project>

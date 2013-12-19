@@ -20,6 +20,8 @@ import java.util.Map;
 
 import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
 
+
+
 public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 	private static final String[] EMPTY_STRING = new String[0];
 
