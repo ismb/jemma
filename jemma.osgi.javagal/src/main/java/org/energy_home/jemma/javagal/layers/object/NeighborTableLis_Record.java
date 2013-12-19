@@ -25,6 +25,7 @@ public class NeighborTableLis_Record {
 	public long _Extended_PAN_Id;
 	public long _Extended_Address;
 	public int _Network_Address;
+	public byte _Device_Type_RxOnWhenIdle_Relationship;
 	public byte _Device_Type;
 	public byte _RxOnWhenIdle;
 	public byte _Relationship;
@@ -43,13 +44,14 @@ public class NeighborTableLis_Record {
 			_Network_Address = DataManipulation.toIntFromShort(_data[17],
 					_data[16]);
 			byte _DRRR = _data[18];
+			_Device_Type_RxOnWhenIdle_Relationship = _DRRR;
 			_Device_Type = (byte) (_DRRR & 0x03);/* 0 and 1 bit */
 			_RxOnWhenIdle = (byte) ((_DRRR & 0x0C) >> 0x02);/* 2 and 3 bit */
 			_Relationship = (byte) ((_DRRR & 0x70) >> 0x04);/* 4 and 5 and 6 bit */
 			byte _PR = _data[19];
 			_Permitting_Joining = (byte) (_PR & 0x03);/* 0 and 1 bit */
-			_Depth = _data[20];
-			_LQI = _data[21];
+			_Depth = (_data[20] &0xFF);
+			_LQI = (_data[21] & 0xFF);
 		}
 	}
 }

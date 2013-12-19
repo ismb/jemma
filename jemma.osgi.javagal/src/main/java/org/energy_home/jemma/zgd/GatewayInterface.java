@@ -759,7 +759,7 @@ public interface GatewayInterface {
 			throws IOException, Exception, GatewayException;
 
 	/**
-	 * Returns the list of neighbor of all nodes of the network
+	 * Returns the list of neighbor of related nodes of the network
 	 * 
 	 * @throws IOException
 	 * @throws Exception
@@ -768,6 +768,19 @@ public interface GatewayInterface {
 	public LQIInformation getLQIInformation(Address aoi) throws IOException,
 			Exception, GatewayException;
 
+	
+	/**
+	 * Returns the list of neighbor of all nodes of the network
+	 * 
+	 * @throws IOException
+	 * @throws Exception
+	 * @throws GatewayException
+	 */
+	public LQIInformation getLQIInformation() throws IOException,
+			Exception, GatewayException;
+
+	
+	
 	/**
 	 * Sends a ZCL Command to a node in an asynchronous mode
 	 * 

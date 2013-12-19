@@ -578,6 +578,13 @@ public class GalExtenderProxy implements IGalExtender {
 			Exception, GatewayException {
 		return gal.getLQIInformation(aoi);
 	}
+	
+	
+	@Override
+	public LQIInformation getLQIInformation() throws IOException, Exception,
+			GatewayException {
+		return gal.getAllLQIInformations();
+	}
 
 	@Override
 	public void sendZCLCommand(long timeout, ZCLCommand command)
@@ -645,6 +652,8 @@ public class GalExtenderProxy implements IGalExtender {
 		}
 
 	}
+
+	
 
 
 }
