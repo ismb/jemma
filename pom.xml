@@ -97,6 +97,7 @@
 	</properties>
 
 	<modules>
+		<module>jemma.launch</module>
 		<module>jemma.osgi.javagal</module>
 		<module>jemma.osgi.javagal.rest</module>
 		<module>jemma.osgi.ah.hac.lib</module>
