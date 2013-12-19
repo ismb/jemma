@@ -99,12 +99,62 @@ public class Utils {
 	 *            the channel mask contained in a long number
 	 * @return the built channel mask.
 	 */
-	public static final byte[] buildChannelMask(long channel) {
-		byte[] _channelB = new byte[4];
-		int channelMask = 1 << channel;
-		for (int i = 0; i < 4; i++)
-			_channelB[i] = ((byte) getByteAsInteger(channelMask, i));
-		return _channelB;
+	public static final byte[] buildChannelMask(short channel) {
+		byte[] tores = null;
+		switch (channel) {
+		case 0:
+			tores= new byte[]{0x00,0x00,0x08,0x00};
+			break;
+		case 11:
+			tores= new byte[]{0x00,0x00,0x08,0x00};
+			break;
+		case 12:
+			tores= new byte[]{0x00,0x00,0x10,0x00};
+			break;
+		case 13:
+			tores= new byte[]{0x00,0x00,0x20,0x00};
+			break;
+		case 14:
+			tores= new byte[]{0x00,0x00,0x40,0x00};
+			break;
+		case 15:
+			tores= new byte[]{0x00,0x00,(byte) 0x80,0x00};
+			break;
+		case 16:
+			tores= new byte[]{0x00,0x01,0x00,0x00};
+			break;
+		case 17:
+			tores= new byte[]{0x00,0x02,0x00,0x00};
+			break;
+		case 18:
+			tores= new byte[]{0x00,0x04,0x00,0x00};
+			break;
+		case 19:
+			tores= new byte[]{0x00,0x08,0x00,0x00};
+			break;
+		case 20:
+			tores= new byte[]{0x00,0x10,0x00,0x00};
+			break;
+		case 21:
+			tores= new byte[]{0x00,0x20,0x00,0x00};
+			break;
+		case 22:
+			tores= new byte[]{0x00,0x40,0x00,0x00};
+			break;
+		case 23:
+			tores= new byte[]{0x00,(byte) 0x80,0x00,0x00};
+			break;
+		case 24:
+			tores= new byte[]{0x01,0x00,0x00,0x00};
+			break;
+		case 25:
+			tores= new byte[]{0x02,0x00,0x00,0x00};
+			break;
+		case 26:
+			tores= new byte[]{0x04,0x00,0x00,0x00};
+			break;
+		}
+		return tores;
 	}
 
 	/**
