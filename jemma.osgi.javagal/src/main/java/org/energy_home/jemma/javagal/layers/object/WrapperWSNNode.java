@@ -158,7 +158,6 @@ public class WrapperWSNNode {
 			_timerDiscovery.cancel();
 			if (!WrapperWSNNode.this.is_onDiscovery())
 				gal.getDiscoveryManager().StartDiscovery(
-						WrapperWSNNode.this.get_node().getAddress(),
 						WrapperWSNNode.this.get_node().getAddress());
 		}
 	}
@@ -167,8 +166,7 @@ public class WrapperWSNNode {
 		@Override
 		public void run() {
 			_timerFreshness.cancel();
-			gal.getDiscoveryManager().StartFreshness(
-					WrapperWSNNode.this.get_node().getAddress(),
+			gal.getDiscoveryManager().StartDiscovery(
 					WrapperWSNNode.this.get_node().getAddress());
 		}
 	}

@@ -1261,6 +1261,7 @@ public class GalController {
 
 						/* Clear the Network Cache */
 						getNetworkcache().clear();
+						GalNode.set_discoveryCompleted(false);
 						getNetworkcache().add(GalNode);
 
 						long __timeout = 0;
@@ -1277,17 +1278,7 @@ public class GalController {
 										+ " seconds.");
 						_timeoutGlobalDiscovery.schedule(
 								new stopTaskDiscovery(), timeout);
-						Status _st = new Status();
-						_st.setCode((short) GatewayConstants.SUCCESS);
-						try {
-							get_gatewayEventManager().nodeDiscovered(_st,
-									GalNode.get_node());
-						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("\n\rError on nodeDiscovered: "
-										+ e.getMessage() + "\n\r");
-							}
-						}
+						
 						for (WrapperWSNNode x : getNetworkcache()) {
 							x.setTimerDiscovery(0, false);
 						}

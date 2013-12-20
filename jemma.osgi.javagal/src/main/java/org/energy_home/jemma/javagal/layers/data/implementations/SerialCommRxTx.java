@@ -37,8 +37,7 @@ import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 
 /**
  * RxTx implementation of the {@link IConnector}.
- */
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -54,6 +53,19 @@ public class SerialCommRxTx implements IConnector {
 	private String commport = "";
 	private int boudrate = 0;
 
+	/**
+	 * Creates a new instance.
+	 * 
+	 * @param _portName
+	 *            the port name.
+	 * @param _boudRate
+	 *            the baud rate.
+	 * @param _DataLayer
+	 *            an actual implementation of the {@code IDataLayer} to use in
+	 *            this connection.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
 	public SerialCommRxTx(String _portName, int _boudRate, IDataLayer _DataLayer)
 			throws Exception {
 		DataLayer = _DataLayer;
@@ -61,10 +73,16 @@ public class SerialCommRxTx implements IConnector {
 		boudrate = _boudRate;
 	}
 
+	/**
+	 * Gets the actual DataLayer implementation used by this connection.
+	 */
 	public IDataLayer getDataLayer() {
 		return DataLayer;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void inizialize() throws Exception {
 		synchronized (this) {
 			connected = true;
@@ -96,6 +114,9 @@ public class SerialCommRxTx implements IConnector {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
@@ -159,6 +180,9 @@ public class SerialCommRxTx implements IConnector {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void write(ByteArrayObject buff) throws Exception {
 
 		if (isConnected()) {
@@ -176,11 +200,17 @@ public class SerialCommRxTx implements IConnector {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean isConnected() {
 		return connected;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void disconnect() throws IOException {
 
