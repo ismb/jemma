@@ -32,6 +32,11 @@
         <outputDirectory>modules/jemma</outputDirectory>
         <unpack>false</unpack>
       </binaries>
+      <excludes>
+	<!-- Excluding bundles useful for development -->
+      	<exclude>org.energy-home:jemma.launch</exclude>
+      	<exclude>org.energy-home:jemma.Distribution</exclude>
+      </excludes>
     </moduleSet>
   </moduleSets>
   <dependencySets>
@@ -52,6 +57,8 @@
 	 <exclude>org.energy-home:jemma.osgi.ah.hap.client</exclude>
 	 <exclude>org.energy-home:jemma.osgi.ah.zigbee</exclude>
 	 <exclude>org.energy-home:jemma.osgi.zgd</exclude>
+	 <exclude>org.energy-home:jemma.osgi.javagal</exclude>
+	 <exclude>org.energy-home:jemma.osgi.javagal.rest</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
