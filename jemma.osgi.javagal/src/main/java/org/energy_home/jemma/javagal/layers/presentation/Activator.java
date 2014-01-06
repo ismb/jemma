@@ -32,6 +32,8 @@ import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 /**
+ * Osgi Activator implementation.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -119,6 +121,9 @@ public class Activator implements BundleActivator {
 		log.info("Gal Osgi Stopped!");
 	}
 
+	/**
+	 * {@link GatewayInterface} Service Factory's implementation.
+	 */
 	public class GatewayInterfaceServiceFactory implements ServiceFactory {
 		GatewayInterface gatewayInterface = null;
 		@Override
@@ -148,6 +153,11 @@ public class Activator implements BundleActivator {
 		}
 	}
 
+	/**
+	 * {@link GalExtenderProxyFactory} Service Factory's implementation. It's a
+	 * factory that provides a reference to a {@code GalExtenderProxyFactory}
+	 * object.
+	 */
 	public class GatewayFactoryServiceFactory implements ServiceFactory {
 
 		@Override

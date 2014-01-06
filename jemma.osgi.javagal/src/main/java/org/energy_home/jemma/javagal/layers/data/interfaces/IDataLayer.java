@@ -94,7 +94,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * Gets the actual Data Layer implementation.
 	 * 
 	 * @return the DataLayer
-	 * @see ISerialConnector
+	 * @see IConnector
 	 */
 	public IConnector getIKeyInstance();
 

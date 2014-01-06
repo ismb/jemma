@@ -410,7 +410,7 @@ public class DataManipulation {
 	 *            the start index, included
 	 * @param stop
 	 *            the stop index, included
-	 * @return
+	 * @return the converted sub array
 	 */
 	public static byte[] subByteArray(short[] array, int start, int stop) {
 		byte[] toReturn = new byte[stop - start + 1];

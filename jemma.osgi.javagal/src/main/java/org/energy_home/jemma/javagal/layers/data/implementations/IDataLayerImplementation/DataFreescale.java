@@ -65,8 +65,7 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
 /**
  * Freescale implementation of {@link IDataLayer}.
- */
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
@@ -82,6 +81,14 @@ public class DataFreescale implements IDataLayer {
 	public final List<Short> receivedDataQueue = Collections
 			.synchronizedList(new LinkedList<Short>());
 
+	/**
+	 * Creates a new instance with a reference to the Gal Controller.
+	 * 
+	 * @param _gal
+	 *            a reference to the Gal Controller.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(),
@@ -91,6 +98,11 @@ public class DataFreescale implements IDataLayer {
 	private List<short[]> messages = Collections
 			.synchronizedList(new LinkedList<short[]>());
 
+	/**
+	 * Gets the list of current available messages.
+	 * 
+	 * @return the list of current available message.
+	 */
 	public List<short[]> getMessages() {
 		return messages;
 	}

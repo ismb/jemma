@@ -13,4 +13,7 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
+/**
+ * Data layer's implementation classes.
+ */
 package org.energy_home.jemma.javagal.layers.data.implementations;
