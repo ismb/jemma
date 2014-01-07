@@ -48,7 +48,6 @@ import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.TypeFunction;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
-import sun.org.mozilla.javascript.internal.EcmaError;
 
 import com.sun.org.apache.xml.internal.utils.BoolStack;
 import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
