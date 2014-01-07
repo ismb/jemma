@@ -117,5 +117,13 @@ public enum TypeMessage {
 	/**
 	 * The "Clear Neighbor Table Entry" message type.
 	 */
-	CLEAR_NEIGHBOR_TABLE_ENTRY,NMLE_SET
+	CLEAR_NEIGHBOR_TABLE_ENTRY,
+	/**
+	 * The "NMLE_SET Entry" message type.
+	 */
+	NMLE_SET,
+	/**
+	 * The "READ_IEEE_ADDRESS" message type.
+	 */
+	READ_IEEE_ADDRESS
 }

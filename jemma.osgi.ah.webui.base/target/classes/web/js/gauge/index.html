@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Gauge.js (javascript programmable gauge)</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-language" content="en">
+	<link rel="bookmark" type="text/html" title="Gauge.js" href="http://www.netzgesta.de/gauge/">
+	<meta name="Author" lang="en" content="gauge.netzgesta.de - Christian Effenberger">	<meta name="Publisher" lang="en" content="www.netzgesta.de">	<meta name="Copyright" lang="en" content="www.netzgesta.de - Christian Effenberger">	<meta name="Generator" lang="en" content="Christian Effenberger">
+	<meta name="Description" lang="en" content="Gauge.js 1.33 allows you to add gauges (with shading and reflection) to your webpages through unobtrusive javascript">
+	<meta name="Keywords" lang="en" content="gauge.js, gauges, shading, reflection, unobtrusive javascript, IE, Mozilla, Firefox, Opera, Safari">
+	<meta http-equiv="imagetoolbar" content="no">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<style type="text/css">
+		a { color: blue; font-style:italic; text-decoration:none; }
+		tt {color: green;}
+		b {color: #993333;}
+		em {font-family: times,serif; }
+		body { background: url(images/backgrnd.jpg) silver; color: black; font-family: Georgia,serif; line-height: 1.5; margin: 2em 2em;}
+		h2 { line-height: 1; }
+		.demo { padding: .5em 0 .5em 0; }
+		.demv { float: left; padding: .5em 3em 0 0; }
+		.logo { display: block; float: left; margin: 0 1em 1em 0; position: relative; width: 400px; height: 140px; }
+		.info { float: left; margin: 0px; padding: 0px; white-space: nowrap; position: relative; width: 25%; height: 12px; color: black; font-size: 11px; font-family: tahoma,arial,helvetica,sans-serif;}
+		.box { border: 1px solid black; float: left; margin-right: 4px; position: relative; width: 10px; height: 10px;}
+		#guru { padding: 4px; width: 99%; height: auto; text-align: center; background-color: black; }
+		#guru div { border: solid 3px red; padding: 4px; font-family: monospace; font-size: 1.25em; width: auto; height: auto; color: red; text-align: center; text-decoration: blink; }
+		#header { margin-bottom: 0; font-weight: normal; font-style: italic; color: gray; }
+		.bookmarks { white-space: nowrap; width: 98%; margin: 0; padding-top: 10px; border-top: 1px dotted gray;}
+	</style>
+<!--[if IE]>
+	<style type="text/css">
+		.filtered {
+			-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+			filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+		}
+	</style>
+<![endif]-->
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<script type="text/javascript" src="gauge.js"></script>
+<script type="text/javascript">
+<!--
+if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}
+window.onload = function () { 
+	gauge.add($("stat"),{width:400, height:99, radius:0.5, values:[43.15,35,9.65,12.2], colors:['#316DC8','#DF7510','#64A8E5','#00aa00']});	
+	gauge.add($("g_1"), {width:600, height:30, values:[12,30,23,45,12,30,23,45]});	
+	gauge.add($("g_2"), {width:600, height:30, reflex: 0.7, values:[12,30,23,45,12,30,23,45], colors:['#ff0000','#0000ff','#00ff00','#ff00ff','#ffff00','#00ffff']});	
+	gauge.add($("g_3"), {width:48,  height:12, values:[12,30,23,45]});	
+	gauge.add($("g_4"), {width:600, height:60, values:[12,30,23,45]});	
+	gauge.add($("g_5"), {width:600, height:30, values:[1210,2095.74,6400,3545.2]});	
+	gauge.add($("g_6"), {width:600, height:30, scale: 10, values:[1210,2095.74,6400,3545.2]});	
+	gauge.add($("g_7"), {width:600, height:30, radius:0.001, noscale: true, values:[1210,2095.74,6400,3545.2]});	
+	gauge.add($("g_8"), {width:600, height:30, limit: true, scale: 10, colors:['#ff0000','#00ff00'], values:[0.4,0.2,1]});	
+	gauge.add($("g_9"), {width:600, height:30, limit: true, scale: 10, empty: '#ff0000', opacity: 0.5, values:[0.6,1]});	
+	gauge.add($("g_0"), {width:600, height:30, name: 'test', limit: true, gradient: true, scale: 10, colors:['#ff0000','#00ff00'], values:[0.6,1]});	
+	gauge.add($("g_x"), {width:600, height:30, name: 'puls', busy: true, scale: 10, colors:['#ec7612','#f20000'], values:[100]});	
+	gauge.add($("v_1"), {width:20, height:200, vertical:true, values:[12,30,23,45,12,30,23,45]});	
+	gauge.add($("v_2"), {width:20, height:200, vertical:true, reflex: 0.7, values:[12,30,23,45,12,30,23,45], colors:['#ff0000','#0000ff','#00ff00','#ff00ff','#ffff00','#00ffff']});	
+	gauge.add($("v_3"), {width:8, height:48, vertical:true, values:[12,30,23,45]});	
+	gauge.add($("v_4"), {width:48, height:200, vertical:true, values:[12,30,23,45]});	
+	gauge.add($("v_5"), {width:20, height:200, vertical:true, scale: 10, values:[1210,2095.74,6400,3545.2]});	
+	gauge.add($("v_6"), {width:20, height:200, vertical:true, radius:0.001, noscale: true, values:[1210,2095.74,6400,3545.2]});	
+	gauge.add($("v_7"), {width:20, height:200, vertical:true, limit: true, scale: 10, colors:['#ff0000','#00ff00'], values:[0.4,0.2,1]});	
+	gauge.add($("v_8"), {width:20, height:200, vertical:true, limit: true, scale: 10, empty: '#ff0000', opacity: 0.5, values:[0.6,1]});	
+	gauge.add($("v_9"), {width:20, height:200, vertical:true, name: 'tesv', limit: true, gradient: true, scale: 10, colors:['#ff0000','#00ff00'], values:[0.6,1]});	
+	gauge.add($("v_0"), {width:20, height:200, vertical:true, name: 'pulv', busy: true, scale: 10, colors:['#ec7612','#f20000'], values:[100]});	
+}
+//-->	
+</script>
+</head>
+<body><noscript><div id="guru" title="By this you can recognize the Amiga fan!"><div><strong>Guru Meditation</strong> - With deactivated JavaScript: Images stay unmodified!</div></div></noscript>
+<table summary="">
+<tr><td valign="top" style="padding-top: 0.5em">
+<div class="logo">
+<div id="stat"><noscript style="font-size: 12px;"><small><b>Former</b> content <em>(like this css gauge)</em> will be replaced by the canvas/var gauge</small></noscript>
+<div style="position:relative;width:400px;height:60px;margin:0px;border:1px solid black;background:#00aa00;">
+<div style="position:absolute;left:0px;top:0px;width:172px;height:60px;background:#316DC8;"></div>
+<div style="position:absolute;left:172px;top:0px;width:140px;height:60px;background:#DF7510;"></div>
+<div style="position:absolute;left:312px;top:0px;width:38px;height:60px;background:#64A8E5;"></div>
+</div><div style="position:relative;width:400px;height:30px;margin: 0 0 8px 1px;background:transparent; opacity:0.5;">
+<div style="position:absolute;left:0px;top:0px;width:172px;height:30px;background:#316DC8;" class="filtered"></div>
+<div style="position:absolute;left:172px;top:0px;width:140px;height:30px;background:#DF7510;" class="filtered"></div>
+<div style="position:absolute;left:312px;top:0px;width:38px;height:30px;background:#64A8E5;" class="filtered"></div>
+<div style="position:absolute;left:350px;top:0px;width:50px;height:30px;background:#00aa00;" class="filtered"></div>
+</div></div>
+<div class="info" style="width:27%;"><div class="box" style="background: #316DC8"></div><span>Trident&nbsp;<strong>43.15</strong>%</span></div>
+<div class="info" style="width:25%;"><div class="box" style="background: #DF7510"></div><span>Gecko&nbsp;<strong>35.0</strong>%</span></div>
+<div class="info" style="width:25%;"><div class="box" style="background: #64A8E5"></div><span>Webkit&nbsp;<strong>9.65</strong>%</span></div>
+<div class="info" style="width:23%;"><div class="box" style="background: #00aa00"></div><span>Others&nbsp;<strong>12.2</strong>%</span></div>
+<div class="info" style="width:100%;margin-top:0.75em;color:gray;text-align:center;"><em>netzgesta.de server statistic from <strong>2009-03</strong></em></div>
+</div>
+</td>
+<td style="padding: 0 0 0 15px; margin: 0; line-height: 1.5; font-style: italic;">
+<p><strong>Gauge.js 1.33</strong> allows you to add gauges (with shading and reflection) to your webpages. It uses unobtrusive javascript to keep your code clean.</p>
+<p>It works in all the major browsers - Mozilla Firefox 1.5+, Opera 9+, Safari and IE6+. On older browsers, it'll degrade and your visitors won't notice a thing.</p>
+</td></tr>
+</table>
+
+
+<h2>Setting Up</h2>
+
+<p>Download "gauge.js" and include it into your webpage.</p>
+
+<code>
+&lt;script type="text/javascript" src="<tt>gauge.js</tt>"&gt;&lt;/script&gt;
+</code>
+
+
+<h2>Using It</h2>
+
+<p style="clear: left;">To add a gauge just execute the function "<tt>gauge.add(<b>element</b>);</tt>" to a block-level element.</p>
+
+
+<h2>Usage</h2>
+
+<dl>
+	<dt>Set defaults</dt>
+  	<dd>
+		<code>gauge.<b>defaultWidth</b> &nbsp;&nbsp; = <tt>400</tt>; //INT 48-n (px) canvas|var width</code><br />
+		<code>gauge.<b>defaultHeight</b> &nbsp; = <tt>30</tt>; //INT 12-n (px) canvas|var height (should be dividable by 3)</code><br />
+		<code>gauge.<b>defaultRadius</b> &nbsp; = <tt>1.0</tt>; //FLOAT 0.001-1.0 radius of the corners</code><br />
+		<code>gauge.<b>defaultReflex</b> &nbsp; = <tt>0.5</tt>; //FLOAT 0.001-1.0 transparency of the reflection</code><br />
+		<code>gauge.<b>defaultOpacity</b> &nbsp;= <tt>0.25</tt>; //FLOAT 0.001-1.0 opacity (only visible with limit==true)</code><br />
+		<code>gauge.<b>defaultLimit</b> &nbsp;&nbsp; = <tt>false</tt>; //BOOLEAN limited value mode</code><br />
+		<code>gauge.<b>defaultGradient</b> = <tt>false</tt>; //BOOLEAN color gradient for limit==true and values length==2</code><br />
+		<code>gauge.<b>defaultVertical</b> = <tt>false</tt>; //BOOLEAN vertical orientation</code><br />
+		<code>gauge.<b>defaultNoscale</b> &nbsp;= <tt>false</tt>; //BOOLEAN no vertical tick marks</code><br />
+		<code>gauge.<b>defaultBusy</b> &nbsp; &nbsp; = <tt>false</tt>; //BOOLEAN no pulsating busy bar</code><br />
+		<code>gauge.<b>defaultScale</b> &nbsp;&nbsp; = <tt>null</tt>; //INT 2-n null==auto (number of scale areas)</code><br />
+		<code>gauge.<b>defaultPulse</b> &nbsp;&nbsp; = <tt>100</tt>; //INT 30-1000 (pulsation speed in milliseconds)</code><br />
+		<code>gauge.<b>defaultName</b> &nbsp; &nbsp; = <tt>null</tt>; //STR canvas|var name|id</code><br />
+		<code>gauge.<b>defaultValues</b> &nbsp; = <tt>null</tt>; //OBJ array of numeric values</code><br />
+		<code>gauge.<b>defaultEmpty</b> &nbsp;&nbsp; = <tt>'#cccccc'</tt>; //STR empty area color</code><br />
+		<code>gauge.<b>defaultColors</b> &nbsp; = <tt>['#3765D9', ... ,'#008000']</tt>; //OBJ array of colors</code><br />
+  		<p></p>
+	</dd>
+	<dt>Add gauge</dt>
+  	<dd>
+  		<code><tt>STRING</tt> = gauge.add(<tt>element</tt>[, <tt>options</tt>]);</code><br />
+		<dl><dt><code><tt>element</tt>&nbsp; == block-level element</code></dt></dl>
+		<dl><dt><code><tt>options</tt> &nbsp; &nbsp; &nbsp; e.g. {<b>width</b>: <tt>128</tt>, <b>height</b>: <tt>33</tt>, ...}</code></dt>
+		<dd>
+			<code><b>width</b> &nbsp;&nbsp; == INT <tt>48</tt> - <tt>n</tt> Default: <tt>400</tt></code><br />
+			<code><b>height</b> &nbsp; == INT <tt>12</tt> - <tt>n</tt> Default: <tt>30</tt></code><br />
+			<code><b>name</b> &nbsp; &nbsp; == STRING Default: <tt>null</tt></code><br />
+			<code><b>vertical</b> == BOOLEAN <tt>true</tt> or <tt>false</tt> Default: <tt>false</tt></code><br />
+			<code><b>radius</b> &nbsp; == FLOAT <tt>0.001</tt> - <tt>1.0</tt> Default: <tt>1.0</tt></code><br />
+			<code><b>reflex</b> &nbsp; == FLOAT <tt>0.001</tt> - <tt>1.0</tt> Default: <tt>0.5</tt></code><br />
+			<code><b>opacity</b> &nbsp;== FLOAT <tt>0.001</tt> - <tt>1.0</tt> Default: <tt>0.25</tt></code><br />
+			<code><b>limit</b> &nbsp;&nbsp; == BOOLEAN <tt>true</tt> or <tt>false</tt> Default: <tt>false</tt></code><br />
+			<code><b>gradient</b> == BOOLEAN <tt>true</tt> or <tt>false</tt> Default: <tt>false</tt></code><br />
+			<code><b>noscale</b> &nbsp;== BOOLEAN <tt>true</tt> or <tt>false</tt> Default: <tt>false</tt></code><br/>
+			<code><b>busy</b> &nbsp; &nbsp; == BOOLEAN <tt>true</tt> or <tt>false</tt> Default: <tt>false</tt></code><br/>
+			<code><b>scale</b> &nbsp;&nbsp; == INT <tt>2</tt> - <tt>n</tt> Default: <tt>null</tt></code><br />
+			<code><b>pulse</b> &nbsp;&nbsp; == INT <tt>30</tt> - <tt>1000</tt> Default: <tt>100</tt></code><br />
+			<code><b>values</b> &nbsp; == ARRAY Default: <tt>null</tt></code><br />
+			<code><b>empty</b> &nbsp;&nbsp; == STRING Default: <tt>'#cccccc'</tt></code><br />
+			<code><b>colors</b> &nbsp; == ARRAY Default: <tt>['#3765D9','#9EDE7C','#9E42EE','#EC7612','#00aaaa','#cc0000','#aaaa00','#008000']</tt></code><br />
+  		</dd></dl>
+		<dl><dt><em>(<small><b>Advice:</b> By adding a gauge to a block-level element, the former content of the element will be overwritten)</small></em></dt></dl>
+  		<p></p>
+  	</dd>
+	<dt>Modify gauge</dt>
+  	<dd>
+  		<code>gauge.modify(<tt>canvas</tt>|<tt>var</tt>, <tt>options</tt>);</code><br />
+		<dl><dt><code><tt>options</tt></code></dt>
+		<dd>
+			<code><b>radius</b> &nbsp; == FLOAT <tt>0.001</tt> - <tt>1.0</tt></code><br />
+			<code><b>reflex</b> &nbsp; == FLOAT <tt>0.001</tt> - <tt>1.0</tt></code><br />
+			<code><b>opacity</b> &nbsp;== FLOAT <tt>0.001</tt> - <tt>1.0</tt></code><br />
+			<code><b>limit</b> &nbsp;&nbsp; == BOOLEAN <tt>true</tt> or <tt>false</tt></code><br />
+			<code><b>gradient</b> == BOOLEAN <tt>true</tt> or <tt>false</tt></code><br />
+			<code><b>noscale</b> &nbsp;== BOOLEAN <tt>true</tt> or <tt>false</tt></code><br/>
+			<code><b>busy</b> &nbsp; &nbsp; == BOOLEAN <tt>true</tt> or <tt>false</tt></code><br/>
+			<code><b>scale</b> &nbsp;&nbsp; == INT <tt>2</tt> - <tt>n</tt></code><br />
+			<code><b>pulse</b> &nbsp;&nbsp; == INT <tt>30</tt> - <tt>1000</tt></code><br />
+			<code><b>values</b> &nbsp; == ARRAY</code><br />
+			<code><b>empty</b> &nbsp;&nbsp; == STRING</code><br />
+			<code><b>colors</b> &nbsp; == ARRAY</code><br />
+  		</dd></dl>
+  		<p></p>
+  	</dd>
+	<dt>Get some informations</dt>
+	<dd>
+		<code><tt>STRING</tt> = gauge.add(<tt>element</tt>);</code>	<em>(<small>returns current canvas|var</small> <code><b>name|id</b></code>)</em><br />
+		<code><tt>FLOAT</tt> &nbsp;= gauge.version;</code><br />
+		<code><tt>STRING</tt> = gauge.released;</code>
+  		<p></p>
+	</dd>
+	<dt>Remove gauge</dt>
+	<dd>
+		<code>gauge.remove(<tt>canvas</tt>|<tt>var</tt>);</code>
+  		<p></p>
+	</dd>
+	<dt>Examples</dt>
+	<dd>
+  		<code>var <b>my_gauge</b> = gauge.add(<tt>document.getElementById('my_div')</tt>);</code><br />
+		<code>if(typeof $=='undefined') {function $(v) {return(document.getElementById(v));}}</code><br />
+  		<code>gauge.add(<tt>$('my_div')</tt>);</code><br />
+  		<code>gauge.add(<tt>$('my_div')</tt>, {<b>name</b>:<tt>'my_gauge'</tt>, <b>values</b>:<tt>[144,1202.8]</tt>});</code><br />
+  		<code>gauge.modify(<tt>$('my_gauge')</tt>, {<b>colors</b>:<tt>['#ff0000','#00ff00']</tt>});</code><br />
+  		<code>alert('gauge: '+gauge.version+' ('+gauge.released+')');</code><br/>
+  		<code>gauge.remove(<tt>$('my_gauge')</tt>);</code><br />
+  		<p></p>
+	</dd>
+</dl>
+
+
+<h2>Demonstration</h2>
+
+<p style="clear: left">Shows some of the things gauge.js does.</p>
+<small><b>8</b> inbuilt colors available <em>(if are more colors required - the palette will be repeated)</em></small><br />
+<div class="demo" id="g_1"></div>
+<small><b>Custom</b> palette via argument &#160; </small> <tt>colors: ['#ff0000',...]</tt><br />
+<div class="demo" id="g_2"></div>
+<small><b>Different</b> dimensions via arguments &#160; </small> <tt>width: 48, height: 12</tt> <small><em>&#160; (minimum dimension)</em></small><br />
+<div class="demo" id="g_3"></div>
+<small><b>Height</b> is divided into <b>2/3</b> gauge and <b>1/3</b> reflection &#160; </small> <tt>width: 600, height: 60</tt><br />
+<div class="demo" id="g_4"></div>
+<small><b>Different</b> values via argument &#160; </small> <tt>values: [1210,2095.74,6400,3545.2]</tt><br />
+<div class="demo" id="g_5"></div>
+<small><b>Different</b> tick marks via argument &#160; </small> <tt>scale: 10</tt> <small>&#160; <em>(default is scale: null)</em></small><br />
+<div class="demo" id="g_6"></div>
+<small><b>No</b> tick marks via argument &#160; </small> <tt>noscale: true</tt> <small>&#160; and <b>no</b> round corner via &#160; </small> <tt>radius: 0.001</tt> <br />
+<div class="demo" id="g_7"></div>
+<small><b>Different</b> behavior via argument &#160; </small> <tt>limit: true</tt> <small>&#160; <em>(last value equals max value)</em></small><br />
+<div class="demo" id="g_8">
+<div style="position:relative;width:600px;height:20px;border:1px solid black;background:#cccccc;">
+<div style="position:absolute;left:0px;top:0px;width:240px;height:20px;background:#ff0000;"></div>
+<div style="position:absolute;left:240px;top:0px;width:120px;height:20px;background:#00ff00;"></div>
+</div><div style="position:relative;width:600px;height:10px;margin: 0 0 0 1px;background:transparent; opacity:0.5;">
+<div style="position:absolute;left:0px;top:0px;width:240px;height:10px;background:#ff0000;" class="filtered"></div>
+<div style="position:absolute;left:240px;top:0px;width:120px;height:10px;background:#00ff00;" class="filtered"></div>
+<div style="position:absolute;left:360px;top:0px;width:240px;height:10px;background:#cccccc;" class="filtered"></div>
+</div><noscript style="font-size: 12px;"><small><b>Former</b> content <em>(like this css gauge)</em> will be replaced by the canvas|var gauge</small></noscript>
+</div>
+<small><b>Empty</b> area definition via arguments &#160; </small> <tt>empty: '#ff0000', opacity: 0.5</tt> <small>&#160; <em>(only visible if limit==true)</em></small><br />
+<div class="demo" id="g_9"></div>
+<small><b>Different</b> behavior via argument &#160; </small> <tt>gradient: true</tt> <small>&#160; <em>(#1-#2 color gradient)</em>
+<script type="text/javascript">
+<!--
+var canvascheck = document.createElement('canvas'); 
+if(canvascheck.getContext || (document.all && document.namespaces && !window.opera)){
+	document.write('<button type="button" onclick="gauge.modify($(\'test\'),{values:[0,122.5]});gauge.modify($(\'tesv\'),{values:[0,122.5]});">0%<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'test\'),{values:[0.33,1]});gauge.modify($(\'tesv\'),{values:[0.33,1]});">33%<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'test\'),{values:[66,100]});gauge.modify($(\'tesv\'),{values:[66,100]});">66%<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'test\'),{values:[4000,4000]});gauge.modify($(\'tesv\'),{values:[4000,4000]});">100%<\/button>');
+} 
+//-->	
+</script>
+</small><br />
+<div class="demo" id="g_0"></div>
+<small><b>Different</b> behavior via argument &#160; </small> <tt>busy: true</tt> <small>&#160; <em>(#1-#2 color pulsation)</em>
+<script type="text/javascript">
+<!--
+var canvascheck = document.createElement('canvas'); 
+if(canvascheck.getContext || (document.all && document.namespaces && !window.opera)){
+	document.write('<button type="button" onclick="gauge.modify($(\'puls\'),{busy:false});gauge.modify($(\'pulv\'),{busy:false});">stop<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'puls\'),{busy:true});gauge.modify($(\'pulv\'),{busy:true});">start<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'puls\'),{pulse:30});gauge.modify($(\'pulv\'),{pulse:30});">fast<\/button>');
+	document.write('<button type="button" onclick="gauge.modify($(\'puls\'),{pulse:100});gauge.modify($(\'pulv\'),{pulse:100});">slow<\/button>');
+} 
+//-->	
+</script>
+</small><br />
+<div class="demo" id="g_x"></div>
+<small><b>Different</b> orientation via argument &#160; </small> <tt>vertical: true</tt><br /> 
+<div class="demv" id="v_1"></div>
+<div class="demv" id="v_2"></div>
+<div class="demv" id="v_3"></div>
+<div class="demv" id="v_4"></div>
+<div class="demv" id="v_5"></div>
+<div class="demv" id="v_6"></div>
+<div class="demv" id="v_7"></div>
+<div class="demv" id="v_8"></div>
+<div class="demv" id="v_9"></div>
+<div class="demv" id="v_0"></div>
+<p style="clear: left;"></p>
+
+
+<h2>Why use Javascript Image Gauges?</h2>
+
+<ul>
+<li>Fast and easy to implement and fully programmable.</li>
+<li>It's dead easy to change the attributes of the gauges.</li>
+<li>Free of charge use on non-commercial and private web sites.</li>
+</ul>
+
+<p>In older browsers, the script degrades and your visitors won't notice a thing.</p>
+
+
+<h2>Restrictions</h2>
+
+<p>The Internet Explorer implementation has a limitation of a maximum of <b>14</b> 
+values for reasons that are inherent in the used vml fill parameter "<tt>colors</tt>".</p>
+
+<p>Because of Operas different behavior <em>(in comparison with gecko and webkit)</em>
+when using "<tt>globalCompositeOperation</tt>", the presentation differs. 
+It could be corrected, but for the price of a blown up source code.</p>
+
+
+<h2>History</h2>
+
+Version 1.33<ul><li>Fixed IE printing problem by the help of Bill Alexander</li></ul>
+Version 1.32<ul><li>Bug fixes</li></ul>
+Version 1.3<ul><li>Added support for pulsating busy gauge</li></ul>
+Version 1.2<ul><li>Added support for vertical orientation</li></ul>
+Version 1.1<ul><li>Added support for corner radius</li></ul>
+Version 1.0<ul><li>Initial Release</li></ul>
+
+<h2>License</h2>
+
+<p>Gauge.js is distributed under the <a href="LICENSE.txt">Netzgestade Non-commercial Software License Agreement</a>. 
+<br>License permits free of charge use on non-commercial and private web sites only under special conditions <em>(as described in the license)</em>.
+This license equals neither "<span style="text-decoration: line-through;">open source</span>" nor "<span style="text-decoration: line-through;">public domain</span>".
+There are also  <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#099;&#118;&#105;&#064;&#110;&#101;&#116;&#122;&#103;&#101;&#115;&#116;&#097;&#046;&#100;&#101;">Commercial Software Licenses</a> available.</p>
+
+<h6>YOU AGREE TO ALL CONDITIONS OF THIS LICENCE AGREEMENT CONCERNING THE USE OF THE SOFTWARE BY ACCEPTING THIS LICENCE.
+<br>IF YOU DO NOT AGREE TO ALL CONDITIONS OF THIS AGREEMENT, YOU SHALL NOT INSTALL THE SOFTWARE, OR USE IT IN OTHER WAYS.</h6>
+
+<p><strong>Images used are copyrighted and are used for demonstration only.</strong></p>
+
+<p><a href="http://cvi.netzgesta.de/">cvi.netzgesta.de</a>&nbsp;&nbsp;also visit&nbsp;&nbsp;<a href="http://lab.netzgesta.de/">CVI-lab</a>, <a href="http://dev.netzgesta.de/">CVI-dev</a>, <a href="http://s5.netzgesta.de/">S5 Reloaded</a> and <a href="http://ajaxfilmdb.sourceforge.net/">AJAX-FilmDB</a></p>
+
+</body>
+</html>

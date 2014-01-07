@@ -1,0 +1,17 @@
+/* radio button */
+
+ul.radio li {
+	color: #000000;
+}
+
+ul.radio li.selected {
+	background-image: url(img/check.png);
+	background-position: right center;
+	background-repeat: no-repeat;
+}
+
+ul.radio li.disabled {
+	color: #8F8F8F;
+	background-position: right center;
+	background-repeat: no-repeat;
+}

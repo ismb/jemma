@@ -91,10 +91,10 @@ public class Utils {
 	}
 
 	/**
-	 * Build a channel mask as {@code byte[]} starting from the provided long.
+	 * Build a channel mask as {@code byte[]} starting from the provided short.
 	 * 
 	 * @param channel
-	 *            the channel mask contained in a long number
+	 *            the channel mask contained in a short number
 	 * @return the built channel mask.
 	 */
 	public static final byte[] buildChannelMask(short channel) {

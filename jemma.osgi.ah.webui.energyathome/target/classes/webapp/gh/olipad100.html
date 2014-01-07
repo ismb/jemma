@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head profile="http://www.w3.org/2005/10/profile">
+		
+	
+		<link rel='stylesheet' type='text/css' href = 'js/other/spinner.css'/>
+ 		<link rel='stylesheet' type='text/css' href = 'css/Reset.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oGasMain.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oGasMenu.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oDispositivi.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oGasCostiConsumi.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oGasStorico.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/oGasInfo.css'/>
+		<link rel='stylesheet' type='text/css' href = 'css/jquery.jqplot.css'/>	
+
+	
+		<script language="javascript" type="text/javascript" src="js/jquery/jquery-1.5.2.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/other/spinner.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
+	
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js"></script>	
+		<script language="javascript" type="text/javascript" src="js/jqgauge/gauge.js"></script>
+		
+	
+		<script language="javascript" type="text/javascript" src="js/GasDataSimul.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasDefinePath.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/GasTracing.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/GasDefine.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/GasGestDate.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Log.js"></script>
+		
+		<script language="javascript" type="text/javascript">
+		
+			function Querystring(qs){
+			    this.params = {};
+			    
+			    if (qs == null) 
+			        qs = location.search.substring(1, location.search.length);
+		        
+			    if (qs.length == 0) 
+			        return;
+			    
+			    // Turn <plus> back to <space>
+			    // See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
+			    
+			    qs = qs.replace(/\+/g, ' ');
+			    var args = qs.split('&'); // parse out name/value pairs separated via &
+			    // split out each name=value pair
+			    for (var i = 0; i < args.length; i++) {
+			        var pair = args[i].split('=');
+			        var name = decodeURIComponent(pair[0]);
+			        
+			        var value = (pair.length == 2) ? decodeURIComponent(pair[1]) : name;
+			        
+			        this.params[name] = value;
+			    }
+			}
+			
+			Querystring.prototype.get = function(key, default_){
+			    var value = this.params[key];
+			    return (value != null) ? value : default_;
+			}		
+
+			var qs = new Querystring();
+			GasDefine.lang = qs.get("lang", "it");
+			if (GasDefine.lang == "en")
+				document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgEn.js"><\/sc' + 'ript>');
+			else
+				document.write('<script language="javascript" type="text/javascript" src="js/utils/GasMsgIt.js"></<\/sc' + 'ript>');
+		</script>
+			
+		<script language="javascript" type="text/javascript" src="js/GasDefineMenu.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Utils.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasInterfaceEnergyHome.js"></script>
+		<script language="javascript" type="text/javascript" src="js/NonDisponibile.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasStorico.js"></script>
+		<script language="javascript" type="text/javascript" src="js/Dispositivi.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasInfo.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasCostiConsumi.js"></script>
+		<script language="javascript" type="text/javascript" src="js/GasMain.js"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/GasMenu.js"></script>
+
+	</head>
+	<body onLoad="GasMain.onLoad()" onUnload="GasMain.onUnload()">
+		gas@home home page
+		<br/><a href="./index.html">torna a home page Energy@Home</a>
+		
+		
+		<div id="Container">
+			<div id="Header">
+				<!-- img id="LogoImg" src="./Resources/Images/E@HLogo.png" -->
+				<img id="TelecomLogoImg" src="./Resources/Images/telecom_logo.png">
+			</div>
+			<div id="HeaderSep"><img id="HeaderSepImg" src="./Resources/Images/header_sep.png"></div>
+			<div id="ContentGasMain"></div> 
+			<div id="Content"></div>
+			<div id="GasMainMenu"></div>
+			<div id="ContentMenu"></div>
+			<div id="Timestamp">
+				<span id="Ora"></span>
+				<img id="ClockImg" src="./Resources/Images/orologio.png">
+				<span id="Data"></span>
+			</div>	
+			<div id="ErrorMsgDIV"></div>
+		</div>
+	
+		
+	</body>
+</html>

@@ -805,7 +805,5 @@ public interface GatewayInterface {
 	void sendZDPCommand(long timeout, ZDPCommand command) throws IOException,
 			Exception, GatewayException;
 
-	void sendApsWithPartitioning(long timeout, APSMessage message)
-			throws IOException, Exception, GatewayException;
-
+	
 }

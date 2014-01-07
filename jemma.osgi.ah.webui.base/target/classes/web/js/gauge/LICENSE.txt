@@ -1,0 +1,66 @@
+Netzgestade Non-commercial Software License Agreement
+
+NOTE: This license equals neither "open source" nor "public domain". Under special conditions, as described below, it permits free of charge use. There are also commercial software licenses available (mailto: cvi[at]netzgesta[dot]de).
+
+Software: includes all scripts, graphics, documentations and other media or files.
+
+YOU AGREE TO ALL CONDITIONS OF THIS LICENCE AGREEMENT CONCERNING THE USE OF THE SOFTWARE BY ACCEPTING THIS LICENCE. IF YOU DO NOT AGREE TO ALL CONDITIONS OF THIS AGREEMENT, YOU SHALL NOT INSTALL THE SOFTWARE, OR USE IT IN OTHER WAYS.
+
+1. Copyright
+The software is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties. The software is licensed, not sold.
+
+2. Grant a License
+Subject to the terms and conditions described below, the licenser grants you a non-exclusive and non-transferable license to install and use the software.
+
+This license permits the use on non-commercial websites and private web sites only. Commercial use is understood as the use on web pages with any profit-making purpose.
+
+Commercial websites are business websites, club websites (membership corporation), services, artist websites, radio stations, erotic projects or erotic sites, web sites with banner or advertising revenues, shop websites, auction websites, bet and lot websites, paid-mail services, gamble and betting sites, websites an income is achieved with or websites that intend to achieve an income.
+Furthermore, commercial websites are websites, which arouse public interest, such as churchly, honorary or other organizations, associations and parties, websites with sales orientation and/or profit-making orientation. Websites that are based on sponsors and endorsement and run on a commercial basis, or websites that are regarded as commercial in accordance to the TDG (teleservice law).
+
+A commercial use is always existent, when the contents of the website are of commercial kind.
+
+Public schools - schools that students have to pay nothing for, or schools that do receive no support of responsible bodies, can use the software free of charge, on request.
+
+When privately used you may:
+(1) install and use the software for your purposes
+(2) copy the software for purposes of backups and archival storages.
+
+
+Independent of whether you license the software as natural person or legal entity, you shall not:
+(1) decompile or disassemble the software.
+(2) modify the software or create a derivative work of the software on the whole or in parts, or to separate components of the software.
+(3) remove proprietary notes in the software.
+(4) sell, share, lease, or sublicense the software or to transfer your rights in the software in other ways without the prior written approval.
+(5) sell the software as a part of a published application under the GPL or a licence similar to GPL.
+(6) It is not permitted to use the software in order to make profit or on web pages with profit orientation.
+(7) You shall not use the software for punishable or pornographic contents.
+(8) You shall not offer the software for download.
+
+
+3. Support
+The licenser is not obliged to give support or to carry out maintenance services for the software. As a user or licensee you do not have any claim to product support.
+
+4. Ownership
+You agree that all rights, titles and interests of the program and the documentation, including all intellectual property rights, are property of the licenser. Furthermore, you agree that you hereby do not receive any property rights in the software, the documentation or in patents, copyrights, trademarks or intellectual property rights, which are connected to it. The software is protected by German copyright and international copyright treaties.
+
+5. Exclusion of Warranty
+The software is provided "as is". THE LICENSER EXCLUDES EVERY WARRANTY TO THE FULL EXTENT. The licenser does not warrant that the software will work without faults. THE LICENSEE IS COMPLETELY RESPONSIBLE FOR THE USE OF THIS SOFTWARE.
+
+6. Limitation of Liability
+The licenser rejects all warranties in terms of the software. The licenser and his suppliers are not liable for any damages of any kind that are somehow connected to the use or the impossibility to use the software, the materials or the functions of the software, such as profit loss, interruption of production processes, loss of business information or any other financial damage, even if the licenser has been explicitly informed about the possibility of such damages or if the licenser had knowledge of it. In no case the liability can exceed the paid license fee.
+
+7. Duration of the License
+The licence is granted for an unlimited period of time. In the case of breach of agreement, the right to use the software expires automatically without cancellation.
+
+8. Miscellaneous
+This license agreement is exclusively subject to German law under exclusion of the uniform purchase laws (ECG and EKAG) and under exclusion of the international private law. The applicability of the UN convention about the international goods purchase (CISG) is explicitly excluded.
+
+Severability clause
+If any regulation of this agreement is declared invalid, the remaining regulations of this agreement shall remain in effect. The ineffective regulation will be considered as replaced by another regulation that is suitable to carry out the purpose of the ineffective regulation.
+
+Reservation of rights
+All rights not explicitly granted in this agreement remain with the licenser.
+
+Netzgestade reserves the right to modify parts of this licence without previous announcement.
+
+Court of jurisdiction is Duesseldorf/Germany.

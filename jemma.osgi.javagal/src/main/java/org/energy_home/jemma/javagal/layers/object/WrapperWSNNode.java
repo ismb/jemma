@@ -24,8 +24,10 @@ import java.util.TimerTask;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 
 /**
- * @author 
- *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * Class used to encapsulate any ZigBee Node.
+ * This class manage the Timers for the Algorithms Discovery, Freshness and ForcePing
+ *
+ * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class WrapperWSNNode {

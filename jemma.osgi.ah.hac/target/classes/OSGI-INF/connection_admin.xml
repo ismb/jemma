@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional" immediate="true" modified="modified" name="org.energy_home.jemma.osgi.ah.connection.admin">
+   	<implementation class="org.energy_home.jemma.ah.internal.hac.lib.ConnectionAdminService"/>
+   	<service>
+      	<provide interface="org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService"/>
+   	</service>
+   	
+   	<reference name="Timer" interface="org.eclipse.equinox.internal.util.timer.Timer"
+		bind="setTimer" unbind="unsetTimer" cardinality="1..1" policy="dynamic" />
+   
+	<reference name="DocumentBuilderFactory" interface="javax.xml.parsers.DocumentBuilderFactory" bind="setDocumentBuilderFactory" unbind="unsetDocumentBuilderFactory" cardinality="1..1" policy="dynamic" />
+</scr:component>

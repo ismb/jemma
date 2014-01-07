@@ -18,19 +18,14 @@ package org.energy_home.jemma.javagal.layers.business;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ApsManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
 import org.energy_home.jemma.javagal.layers.business.implementations.GatewayEventManager;
-import org.energy_home.jemma.javagal.layers.business.implementations.PartittionManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ZdoManager;
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
@@ -76,8 +71,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
  * time. All clients can access this instance via their dedicated proxies (see
  * {@link org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxy}).
  * 
- * @author 
- *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class GalController {
@@ -89,8 +83,7 @@ public class GalController {
 	private List<GatewayDeviceEventEntry> listGatewayEventListener = Collections.synchronizedList(new LinkedList<GatewayDeviceEventEntry>());
 	private final static Log logger = LogFactory.getLog(GalController.class);
 	private ApsManager apsManager = null;
-	private PartittionManager partitionManager = null;
-
+	
 	private ZdoManager zdoManager = null;
 	private GatewayEventManager _gatewayEventManager = null;
 	private Boolean _Gal_in_Dyscovery_state = false;
@@ -100,6 +93,10 @@ public class GalController {
 	private Discovery_Freshness_ForcePing _discoveryManager = null;
 	PropertiesManager PropertiesManager = null;
 
+	/**
+	 * Initialize the DataLayer class, with the relative RS-232 conection
+	 * Used, also for the Rest Api
+	 */
 	private void inizializeGAL() throws Exception {
 		/* Used for reset GAL */
 		if (DataLayer != null) {
@@ -182,7 +179,6 @@ public class GalController {
 		PropertiesManager = _properties;
 		zdoManager = new ZdoManager(this);
 		apsManager = new ApsManager(this);
-		partitionManager = new PartittionManager(this);
 		_gatewayEventManager = new GatewayEventManager(this);
 
 		_lockerStartDevice = new ParserLocker();
@@ -225,15 +221,13 @@ public class GalController {
 	public synchronized List<CallbackEntry> getCallbacks() {
 		return listCallback;
 	}
-
-<<<<<<< .mine	public synchronized Discovery_Freshness_ForcePing getDiscoveryManager() {
-=======	/**
+	/**
 	 * Gets a discovery manager.
 	 * 
 	 * @return the discovery manager.
 	 */
-	public synchronized Discovery_Freshness getDiscoveryManager() {
->>>>>>> .theirs		return _discoveryManager;
+	public synchronized Discovery_Freshness_ForcePing getDiscoveryManager() {
+		return _discoveryManager;
 	}
 
 	/**
@@ -245,14 +239,7 @@ public class GalController {
 		return apsManager;
 	}
 
-	/**
-	 * Gets the partitions manager.
-	 * 
-	 * @return the partition manager.
-	 */
-	public synchronized PartittionManager getPartitionManager() {
-		return partitionManager;
-	}
+	
 
 	/**
 	 * Gets the Zdo manager.
@@ -272,7 +259,7 @@ public class GalController {
 		return DataLayer;
 	}
 
-<<<<<<< .mine=======	/**
+	/**
 	 * Returns {@code true} if the Gal is in discovery state.
 	 * 
 	 * @return {@code true} if the Gal is in discovery state; {@code false}
@@ -293,28 +280,8 @@ public class GalController {
 		_Gal_in_Dyscovery_state = GalonDyscovery;
 	}
 
+	
 	/**
-	 * Returns {@code true} if the Gal is in freshness state.
-	 * 
-	 * @return {@code true} if the Gal is in freshness state; {@code false}
-	 *         otherwise.
-	 */
-	public synchronized Boolean get_Gal_in_Freshness_state() {
-		return _Gal_in_Freshness_state;
-	}
-
-	/**
-	 * Sets the freshness state for the Gal.
-	 * 
-	 * @param GalonFreshness
-	 *            whether the Gal is in freshness state {@code true} or not
-	 *            {@code false}.
-	 */
-	public synchronized void set_Gal_in_Freshness_state(Boolean GalonFreshness) {
-		_Gal_in_Freshness_state = GalonFreshness;
-	}
-
->>>>>>> .theirs	/**
 	 * Gets the gateway event manager.
 	 * 
 	 * @return the gateway event manager.
@@ -325,13 +292,12 @@ public class GalController {
 
 	private WrapperWSNNode GalNode = null;
 
-<<<<<<< .mine	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
-=======	/**
->>>>>>> .theirs	 * Allows the creation of an endpoint to which is associated a
+
+	/**
+* Allows the creation of an endpoint to which is associated a
 	 * {@code SimpleDescriptor}. The operation is synchronous and lasts for a
 	 * maximum timeout time.
-<<<<<<< .mine=======	 * 
->>>>>>> .theirs	 * @param timeout
+	 * @param timeout
 	 *            the desired timeout.
 	 * @param desc
 	 *            the {@code SimpleDescriptor}.
@@ -342,8 +308,8 @@ public class GalController {
 	 *             if a general error occurs.
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
-<<<<<<< .mine=======	 */
->>>>>>> .theirs	public short configureEndpoint(long timeout, SimpleDescriptor desc)
+	 */
+public short configureEndpoint(long timeout, SimpleDescriptor desc)
 			throws IOException, Exception, GatewayException {
 		// TODO 30
 		if ((desc.getApplicationInputCluster().size() + desc.getApplicationOutputCluster().size()) > 30) {
@@ -465,11 +431,11 @@ public class GalController {
 	}
 
 	/**
-	 * Returns the list of neighbor of all nodes of the network
+	 * Returns the list of neighbor of the selected nodes of the network by the address
 	 * 
 	 * @param aoi
 	 *            the address of interest
-	 * @return the list of neighbor of all nodes
+	 * @return the list of neighbor of the nodes
 	 * @throws IOException
 	 *             if an Input Output error occurs.
 	 * @throws Exception
@@ -518,29 +484,22 @@ public class GalController {
 
 	}
 
+	
 	/**
-	 * Retrieves the informations about the NodeDescriptor of a ZigBee node
+	 * Returns the list of neighbor of all nodes of the network
 	 * 
-	 * @param timeout
-	 *            the timeout
-	 * @param _requestIdentifier
-	 *            the request identifier.
-	 * @param addrOfInterest
-	 *            the address of interest.
-	 * @param Async
-	 *            whether the operation will be synchronously or not.
-	 * @return the resulting {@code NodeDescriptor}
+	 * @return the list of neighbor of all nodes
 	 * @throws IOException
 	 *             if an Input Output error occurs.
 	 * @throws Exception
 	 *             if a general error occurs.
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
-	 */
-	public NodeDescriptor getNodeDescriptor(final long timeout,
-			final int _requestIdentifier, final Address addrOfInterest,
-			final boolean Async) throws IOException, Exception,
-			GatewayException {
+	 */	
+	public LQIInformation getAllLQIInformations() throws IOException, Exception, GatewayException {
+		LQIInformation _lqi = new LQIInformation();
+		List<WrapperWSNNode> _list = getNetworkcache();
+		for (WrapperWSNNode x : _list) {
 
 			logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + "\n\rDiscoveryCompleted:" + x.is_discoveryCompleted());
 			if (x.is_discoveryCompleted()) {
@@ -588,6 +547,26 @@ public class GalController {
 		return _lqi;
 	}
 
+	
+	/**
+	 * Retrieves the informations about the NodeDescriptor of a ZigBee node
+	 * 
+	 * @param timeout
+	 *            the timeout
+	 * @param _requestIdentifier
+	 *            the request identifier.
+	 * @param addrOfInterest
+	 *            the address of interest.
+	 * @param Async
+	 *            whether the operation will be synchronously or not.
+	 * @return the resulting {@code NodeDescriptor}
+	 * @throws IOException
+	 *             if an Input Output error occurs.
+	 * @throws Exception
+	 *             if a general error occurs.
+	 * @throws GatewayException
+	 *             if a ZGD error occurs.
+	 */
 	public NodeDescriptor getNodeDescriptor(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final boolean Async) throws IOException, Exception, GatewayException {
 
 		if (Async) {
@@ -650,6 +629,8 @@ public class GalController {
 		}
 	}
 
+
+	
 	/**
 	 * Gets the current channel.
 	 * 
@@ -672,10 +653,8 @@ public class GalController {
 
 	}
 
-<<<<<<< .mine	public Status startGatewayDevice(final long timeout, final int _requestIdentifier, final StartupAttributeInfo sai, final boolean Async) throws IOException, Exception, GatewayException {
-=======	
-
->>>>>>> .theirs	/**
+	
+	/**
 	 * Allows to start/create a ZigBee network using the
 	 * {@code StartupAttributeInfo} class as a previously configured parameter.
 	 * 
@@ -696,10 +675,9 @@ public class GalController {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */	
-	public Status startGatewayDevice(final long timeout,
-			final int _requestIdentifier, final StartupAttributeInfo sai,
-			final boolean Async) throws IOException, Exception,
-			GatewayException {
+	
+	
+	public Status startGatewayDevice(final long timeout, final int _requestIdentifier, final StartupAttributeInfo sai, final boolean Async) throws IOException, Exception, GatewayException {
 		// The network can start only from those two gateway status...
 		if (Async) {
 			Thread thr = new Thread() {
@@ -819,6 +797,7 @@ public class GalController {
 		}
 
 	}
+
 
 	/**
 	 * Starts/creates a ZigBee network using configuration loaded from
@@ -1275,29 +1254,7 @@ public class GalController {
 			throw new GatewayException("Gal is not in running state!");
 	}
 
-	/**
-	 * Sends a long Aps message with partitioning.
-	 * 
-	 * @param timeout
-	 *            the desired timeout.
-	 * @param _requestIdentifier
-	 *            the request identifier.
-	 * @param message
-	 *            the message to send.
-	 * @throws IOException
-	 *             if an Input Output error occurs.
-	 * @throws Exception
-	 *             if a general error occurs.
-	 * @throws GatewayException
-	 *             if a ZGD error occurs.
-	 */
-	public void sendAPSWithPartitioning(long timeout, long _requestIdentifier,
-			APSMessage message) throws IOException, Exception, GatewayException {
-		if (getGatewayStatus() == GatewayStatus.GW_RUNNING)
-			getPartitionManager().SendApsWithPartitioning(message);
-		else
-			throw new GatewayException("Gal is not in running state!");
-	}
+	
 
 	/**
 	 * Disassociates a node from the network.
@@ -1734,9 +1691,9 @@ public class GalController {
 	 *            the gateway's status to set
 	 * @see GatewayStatus
 	 */
-	public synchronized void setGatewayStatus(GatewayStatus gatewayStatus) {
-<<<<<<< .mine=======		_gatewayStatus = gatewayStatus;
->>>>>>> .theirs		if (gatewayStatus == GatewayStatus.GW_RUNNING) {
+	public synchronized void setGatewayStatus(final GatewayStatus gatewayStatus) {
+
+		if (gatewayStatus == GatewayStatus.GW_RUNNING) {
 			/* Get The Network Address of the GAL */
 			Runnable thr = new MyThread(this) {
 
@@ -1862,6 +1819,8 @@ public class GalController {
 
 	}
 
+	
+	
 	/**
 	 * Gets the Aps callback identifier.
 	 * 
@@ -1880,9 +1839,9 @@ public class GalController {
 	 * Gets the Gal node.
 	 * 
 	 * @return the gal node.
-	 * @see WSNNode
+	 * @see WrapperWSNNode 
 	 */
-	public synchronized WSNNode get_GalNode() {
+	public synchronized WrapperWSNNode  get_GalNode() {
 		return GalNode;
 	}
 
@@ -1912,7 +1871,7 @@ public class GalController {
 	 *            the node to set.
 	 * @see WSNNode
 	 */
-	public synchronized void set_GalNode(WSNNode _GalNode) {
+	public synchronized void set_GalNode(WrapperWSNNode  _GalNode) {
 		GalNode = _GalNode;
 	}
 

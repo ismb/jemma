@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true" name="org.energy_home.jemma.osgi.ah.greenathome">
+   <implementation class="org.energy_home.jemma.ah.internal.greenathome.GreenathomeAppliance"/>
+   <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="dynamic" unbind="unsetHttpService"/>
+   <service>
+      <provide interface="org.energy_home.jemma.ah.hac.IManagedAppliance"/>
+      <provide interface="org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService"/>
+   </service>
+   <reference bind="setHacService" cardinality="0..1" interface="org.energy_home.jemma.ah.hac.lib.ext.IHacService" name="IHacService" policy="dynamic" unbind="unsetHacService"/>
+   <reference bind="setConfigurator" cardinality="0..1" interface="org.energy_home.jemma.ah.configurator.IConfigurator" name="IConfigurator" policy="dynamic" unbind="unsetConfigurator"/>
+   <reference bind="setConnectionAdmin" cardinality="1..1" interface="org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService" name="IConnectionAdminService" policy="static" unbind="unsetConnectionAdmin"/>
+   <reference bind="setHapService" cardinality="0..1" interface="org.energy_home.jemma.ah.hap.client.IM2MHapService" name="HapService" policy="dynamic" unbind="unsetHapService"/>
+   <reference bind="setM2MDevice" cardinality="0..1" interface="org.energy_home.jemma.ah.m2m.device.M2MDeviceConfigurator" name="M2MDeviceConfigurator" policy="dynamic" unbind="unsetM2MDevice"/>
+   <property name="bind.protocol" type="String" value="json-rpc"/>
+   <reference bind="setESPService" cardinality="0..1" interface="org.energy_home.jemma.ah.eh.esp.ESPService" name="ESPService" policy="dynamic" unbind="unsetESPService"/>
+</scr:component>

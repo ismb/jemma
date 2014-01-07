@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" modified="modified" name="HacService">
+	<implementation class="org.energy_home.jemma.ah.internal.hac.lib.HacService" />
+		
+
+	<reference bind="setConfigurationAdmin" cardinality="1..1" interface="org.osgi.service.cm.ConfigurationAdmin" 
+		name="ConfigurationAdmin" policy="dynamic" unbind="unsetConfigurationAdmin"/>
+
+	<reference name="Timer" interface="org.eclipse.equinox.internal.util.timer.Timer"
+		bind="setTimer" unbind="unsetTimer" cardinality="1..1" policy="dynamic" />
+
+	<reference name="IApplianceFactory" interface="org.energy_home.jemma.ah.hac.IApplianceFactory"
+		bind="setApplianceFactory" unbind="unsetApplianceFactory" cardinality="0..n"
+		policy="dynamic" />
+		
+	<reference name="DocumentBuilderFactory" interface="javax.xml.parsers.DocumentBuilderFactory"
+		bind="setDocumentBuilderFactory" unbind="unsetDocumentBuilderFactory"
+		cardinality="1..1" policy="dynamic" />
+
+ 	<reference name="INetworkManager" interface="org.energy_home.jemma.ah.hac.lib.ext.INetworkManager" 
+ 		bind="addNetworkManager" unbind="removeNetworkManager" cardinality="0..n"
+ 		policy="dynamic" />
+
+		
+ <service>
+    <provide interface="org.energy_home.jemma.ah.hac.lib.ext.IHacService"/>
+ </service>
+										
+</scr:component>
+
+
+
