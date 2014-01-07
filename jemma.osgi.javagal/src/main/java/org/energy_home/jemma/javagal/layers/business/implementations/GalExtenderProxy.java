@@ -62,11 +62,8 @@ import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
  * adds its identifier to that request. After a while, when the response will
  * become available to the Gal controller, it uses that identifier to find the
  * right proxy destination (the client) to dispatch the response to it.
- */
-
-/**
- * @author 
- *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
+ * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class GalExtenderProxy implements IGalExtender {
@@ -296,19 +293,19 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public void getServiceDescriptor(long timeout, Address addrOfInterest,
+	public void getServiceDescriptor(long timeout, Address aoi,
 			short endpoint) throws IOException, Exception, GatewayException {
 		gal.getServiceDescriptor(timeout, this.getProxyIdentifier(),
-				addrOfInterest, endpoint, true);
+				aoi, endpoint, true);
 
 	}
 
 	@Override
 	public ServiceDescriptor getServiceDescriptorSync(long timeout,
-			Address addrOfInterest, short endpoint) throws IOException,
+			Address aoi, short endpoint) throws IOException,
 			Exception, GatewayException {
 		return gal.getServiceDescriptor(timeout, this.getProxyIdentifier(),
-				addrOfInterest, endpoint, false);
+				aoi, endpoint, false);
 
 	}
 
@@ -348,35 +345,35 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public void leave(long timeout, Address addrOfInterest) throws IOException,
+	public void leave(long timeout, Address aoi) throws IOException,
 			Exception, GatewayException {
 		int mask = 0;
-		gal.leave(timeout, this.getProxyIdentifier(), addrOfInterest, mask,
+		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask,
 				true);
 
 	}
 
 	@Override
-	public Status leaveSync(long timeout, Address addrOfInterest)
+	public Status leaveSync(long timeout, Address aoi)
 			throws IOException, Exception, GatewayException {
 		int mask = 0;
-		return gal.leave(timeout, this.getProxyIdentifier(), addrOfInterest,
+		return gal.leave(timeout, this.getProxyIdentifier(), aoi,
 				mask, false);
 
 	}
 
 	@Override
-	public void leave(long timeout, Address addrOfInterest, int mask)
+	public void leave(long timeout, Address aoi, int mask)
 			throws IOException, Exception, GatewayException {
-		gal.leave(timeout, this.getProxyIdentifier(), addrOfInterest, mask,
+		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask,
 				true);
 
 	}
 
 	@Override
-	public Status leaveSync(long timeout, Address addrOfInterest, int mask)
+	public Status leaveSync(long timeout, Address aoi, int mask)
 			throws IOException, Exception, GatewayException {
-		return gal.leave(timeout, this.getProxyIdentifier(), addrOfInterest,
+		return gal.leave(timeout, this.getProxyIdentifier(), aoi,
 				mask, false);
 
 	}
@@ -454,10 +451,10 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public Status permitJoinSync(long timeout, Address addrOfInterest,
+	public Status permitJoinSync(long timeout, Address aoi,
 			short duration) throws IOException, Exception, GatewayException {
 		return gal.permitJoin(timeout, this.getProxyIdentifier(),
-				addrOfInterest, duration, false);
+				aoi, duration, false);
 	}
 
 	@Override
@@ -492,17 +489,17 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public NodeDescriptor getNodeDescriptorSync(long timeout,
-			Address addrOfInterest) throws IOException, Exception,
+			Address aoi) throws IOException, Exception,
 			GatewayException {
 		return gal.getNodeDescriptor(timeout, this.getProxyIdentifier(),
-				addrOfInterest, false);
+				aoi, false);
 	}
 
 	@Override
-	public void getNodeDescriptor(long timeout, Address addrOfInterest)
+	public void getNodeDescriptor(long timeout, Address aoi)
 			throws IOException, Exception, GatewayException {
 		gal.getNodeDescriptor(timeout, this.getProxyIdentifier(),
-				addrOfInterest, true);
+				aoi, true);
 
 	}
 
@@ -527,20 +524,21 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public NodeServices startServiceDiscoveryExtendedSync(long timeout,
-			Address addrOfInterest) throws IOException, Exception,
+	public NodeServices startServiceDiscoverySync(long timeout,
+			Address aoi) throws IOException, Exception,
 			GatewayException {
 		return gal.startServiceDiscovery(timeout, this.getProxyIdentifier(),
-				addrOfInterest, false);
+				aoi, false);
 	}
 
+	
 	@Override
-	public List<Short> startServiceDiscoverySync(long timeout,
-			Address addrOfInterest) throws IOException, Exception,
+	public List<Short> startServiceDiscoveryOldSync(long timeout,
+			Address aoi) throws IOException, Exception,
 			GatewayException {
 
 		NodeServices _res = gal.startServiceDiscovery(timeout,
-				this.getProxyIdentifier(), addrOfInterest, false);
+				this.getProxyIdentifier(), aoi, false);
 
 		List<Short> _list = new ArrayList<Short>();
 		for (NodeServices.ActiveEndpoints e : _res.getActiveEndpoints()) {
@@ -552,10 +550,10 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public void startServiceDiscovery(long timeout, Address addrOfInterest)
+	public void startServiceDiscovery(long timeout, Address aoi)
 			throws IOException, Exception, GatewayException {
 		gal.startServiceDiscovery(timeout, this.getProxyIdentifier(),
-				addrOfInterest, true);
+				aoi, true);
 
 	}
 
@@ -620,11 +618,7 @@ public class GalExtenderProxy implements IGalExtender {
 		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), _message);
 	}
 
-	// ASK
-	public void sendApsWithPartitioning(long timeout, APSMessage message)
-			throws IOException, Exception, GatewayException {
-		gal.sendAPSWithPartitioning(timeout, this.getProxyIdentifier(), message);
-	}
+	
 
 	@Override
 	public void deleteProxy() throws Exception {

@@ -356,7 +356,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	NodeServices startServiceDiscoveryExtendedSync(long timeout,
+	NodeServices startServiceDiscoverySync(long timeout,
 			Address addrOfInterest) throws IOException, Exception,
 			GatewayException;
 
@@ -370,7 +370,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	List<Short> startServiceDiscoverySync(long timeout, Address addrOfInterest)
+	List<Short> startServiceDiscoveryOldSync(long timeout, Address addrOfInterest)
 			throws IOException, Exception, GatewayException;
 
 	/**
@@ -805,7 +805,5 @@ public interface GatewayInterface {
 	void sendZDPCommand(long timeout, ZDPCommand command) throws IOException,
 			Exception, GatewayException;
 
-	void sendApsWithPartitioning(long timeout, APSMessage message)
-			throws IOException, Exception, GatewayException;
-
+	
 }

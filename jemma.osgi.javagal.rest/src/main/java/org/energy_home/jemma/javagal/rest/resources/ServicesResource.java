@@ -122,7 +122,7 @@ public class ServicesResource extends ServerResource {
 				// Synch StartServiceDiscovery
 				proxyGalInterface = getRestManager().getClientObjectKey(-1, getClientInfo().getAddress()).getGatewayInterface();
 				NodeServices node = proxyGalInterface
-						.startServiceDiscoveryExtendedSync(timeout, address);
+						.startServiceDiscoverySync(timeout, address);
 				
 				
 				Info.Detail detail = new Info.Detail();
