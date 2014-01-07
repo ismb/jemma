@@ -45,7 +45,7 @@ public interface IDataLayer extends IFrameCallback {
 	/**
 	 * Default timeout's value.
 	 */
-	final Long INTERNAL_TIMEOUT = 5000L;
+	final Long INTERNAL_TIMEOUT = 20000L;
 
 	public GalController getGalController();
 	/* Internal section */
@@ -116,7 +116,7 @@ public interface IDataLayer extends IFrameCallback {
 			throws Exception;
 
 	/**
-	 * Reads extended Address.
+	 * Reads extended Address of the gal.
 	 * 
 	 * @param timeout
 	 *            the desired timeout value.
@@ -126,7 +126,24 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a not ZGD error occurs.
 	 */
-	public BigInteger readExtAddress(long timeout) throws GatewayException,
+	public BigInteger readExtAddressGal(long timeout) throws GatewayException,
+			Exception;
+
+	
+	/**
+	 * Reads extended Address.
+	 * 
+	 * @param timeout
+	 *            the desired timeout value.
+	 * @param shortAddress
+	 *            the related shortAddress value of the node.
+	 * @return the resulting status from ZGD.
+	 * @throws GatewayException
+	 *             if an error occurs in the ZGD.
+	 * @throws Exception
+	 *             if a not ZGD error occurs.
+	 */
+	public BigInteger readExtAddress(long timeout, short shortAddress) throws GatewayException,
 			Exception;
 
 	/**

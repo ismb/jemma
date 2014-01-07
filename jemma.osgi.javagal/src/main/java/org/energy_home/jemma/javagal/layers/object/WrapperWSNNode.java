@@ -24,14 +24,16 @@ import java.util.TimerTask;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class WrapperWSNNode {
-	private boolean _onDiscovery;
+
 	private WSNNode _node;
 	private Timer _timerDiscovery;
 	private Timer _timerFreshness;
+	private Timer _timerForcePing;
 	private short _numberOfAttempt;
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
@@ -45,7 +47,17 @@ public class WrapperWSNNode {
 		this._timerDiscovery = null;
 		this._timerFreshness = null;
 		this._numberOfAttempt = 0;
-		this._onDiscovery = false;
+
+	}
+
+	public boolean isSleepy() {
+		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
+			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+				return false;
+			else
+				return true;
+		} else
+			return true;
 
 	}
 
@@ -57,17 +69,15 @@ public class WrapperWSNNode {
 		this._node = _node;
 	}
 
-	public synchronized void setTimerDiscovery(int seconds,
-			boolean forceDiscovery) {
+	public synchronized void setTimerDiscovery(int seconds) {
 
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
+			_timerDiscovery.purge();
 
 		}
-		if (seconds >= 0
-				&& (((!forceDiscovery) && gal.get_Gal_in_Dyscovery_state()) || (forceDiscovery))) {
-			_timerDiscovery = new Timer("TimerDiscovery-Node: "
-					+ this._node.getAddress().getNetworkAddress());
+		if (seconds >= 0) {
+			_timerDiscovery = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerDiscovery");
 			_timerDiscovery.schedule(new RemindTaskDiscovery(), seconds * 1000);
 		}
 
@@ -77,21 +87,26 @@ public class WrapperWSNNode {
 
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
+			_timerFreshness.purge();
 
 		}
-		if (seconds >= 0 && gal.get_Gal_in_Freshness_state()) {
-			_timerFreshness = new Timer("TimerFreshness-Node: "
-					+ this._node.getAddress().getNetworkAddress());
+		if (seconds >= 0) {
+			_timerFreshness = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness");
 			_timerFreshness.schedule(new RemindTaskFreshness(), seconds * 1000);
 		}
 
 	}
 
-	public synchronized boolean isSetTimerFreshness() {
-		if (_timerFreshness == null)
-			return false;
-		else
-			return true;
+	public synchronized void setTimerForcePing(int seconds) {
+
+		if (_timerForcePing != null) {
+			_timerForcePing.cancel();
+			_timerForcePing.purge();
+		}
+		if (seconds >= 0) {
+			_timerForcePing = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing");
+			_timerForcePing.schedule(new RemindTaskForcePing(), seconds * 1000);
+		}
 
 	}
 
@@ -108,24 +123,24 @@ public class WrapperWSNNode {
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
 			_timerDiscovery = null;
+			
 		}
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
 			_timerFreshness = null;
+			
+		}
+
+		if (_timerForcePing != null) {
+			_timerForcePing.cancel();
+			_timerForcePing = null;
+		
 		}
 
 	}
 
 	public synchronized void reset_numberOfAttempt() {
 		this._numberOfAttempt = 0;
-	}
-
-	public synchronized boolean is_onDiscovery() {
-		return _onDiscovery;
-	}
-
-	public synchronized void set_onDiscovery(boolean _onDiscovery) {
-		this._onDiscovery = _onDiscovery;
 	}
 
 	public synchronized boolean is_discoveryCompleted() {
@@ -156,9 +171,9 @@ public class WrapperWSNNode {
 		@Override
 		public void run() {
 			_timerDiscovery.cancel();
-			if (!WrapperWSNNode.this.is_onDiscovery())
-				gal.getDiscoveryManager().StartDiscovery(
-						WrapperWSNNode.this.get_node().getAddress());
+
+			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
+
 		}
 	}
 
@@ -166,8 +181,15 @@ public class WrapperWSNNode {
 		@Override
 		public void run() {
 			_timerFreshness.cancel();
-			gal.getDiscoveryManager().StartDiscovery(
-					WrapperWSNNode.this.get_node().getAddress());
+			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
+		}
+	}
+
+	class RemindTaskForcePing extends TimerTask {
+		@Override
+		public void run() {
+			_timerForcePing.cancel();
+			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
 		}
 	}
 }

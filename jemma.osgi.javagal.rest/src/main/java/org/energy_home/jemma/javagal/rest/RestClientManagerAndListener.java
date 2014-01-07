@@ -670,7 +670,6 @@ public class RestClientManagerAndListener implements
 						ClientResource resource = new ClientResource(
 								zdpCommandDestination);
 						Info.Detail detail = new Info.Detail();
-
 						detail.setZDPMessage(message);
 						String _xml = Util.marshal(detail);
 						if (_PropertiesManager.getDebugEnabled())
