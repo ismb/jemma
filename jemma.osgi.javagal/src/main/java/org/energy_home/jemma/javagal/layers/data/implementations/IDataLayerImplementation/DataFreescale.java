@@ -83,6 +83,14 @@ public class DataFreescale implements IDataLayer {
 
 	public final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
+	/**
+	 * Creates a new instance with a reference to the Gal Controller.
+	 * 
+	 * @param _gal
+	 *            a reference to the Gal Controller.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
@@ -90,6 +98,11 @@ public class DataFreescale implements IDataLayer {
 
 	private List<short[]> messages = Collections.synchronizedList(new LinkedList<short[]>());
 
+	/**
+	 * Gets the list of current available messages.
+	 * 
+	 * @return the list of current available message.
+	 */
 	public List<short[]> getMessages() {
 		return messages;
 	}
