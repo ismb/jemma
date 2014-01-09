@@ -106,10 +106,8 @@
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
-		<!--
-		<module>jemma.osgi.javagal</module>
-		<module>jemma.osgi.javagal.rest</module>
-		-->
+		<!--<module>jemma.osgi.javagal</module>
+		<module>jemma.osgi.javagal.rest</module>-->
 		<module>jemma.osgi.device.zgd</module>
 		<module>jemma.osgi.ah.felix.console.web</module>
 		<module>jemma.osgi.zgd</module>
