@@ -105,5 +105,10 @@ org.restlet.util
 			<artifactId>org.restlet</artifactId>
 			<version>2.1.4</version>
 		</dependency>
+                <dependency>
+                        <groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
+                        <artifactId>JAXBNamespacePrefixMapper</artifactId>
+                        <version>2.2.4</version>
+                </dependency>
 	</dependencies>
 </project>
