@@ -1,0 +1,265 @@
+/* @group Toolbar */
+
+#jqt .toolbar {
+    -moz-box-sizing: border-box;
+}
+
+#jqt .button, #jqt .back, #jqt .cancel, #jqt .add {
+    -moz-border-image: url(img/toolButton.png) 0 5 0 5;
+}
+
+#jqt .button.active, #jqt .cancel.active, #jqt .add.active {
+    -moz-border-image: url(img/toolButton.png) 0 5 0 5;	
+}
+
+#jqt .blueButton {
+    -moz-border-image: url(img/actionButton.png) 0 5 0 5;
+}
+
+#jqt .back {
+    -moz-border-image: url(img/backButton.png) 0 8 0 14;
+}
+
+#jqt .back.active {
+    -moz-border-image: url(img/backButton.png) 0 8 0 14;
+}
+
+#jqt .whiteButton.active, #jqt .grayButton.active, #jqt .redButton.active, #jqt .blueButton.active, #jqt .greenButton.active,
+#jqt .whiteButton:active, #jqt .grayButton:active, #jqt .redButton:active, #jqt .blueButton:active, #jqt .greenButton:active {
+    -moz-border-image: url(img/activeButton.png) 0 12 0 12;
+}
+
+#jqt .whiteButton {
+    -moz-border-image: url(img/whiteButton.png) 0 12 0 12;
+}
+
+#jqt .grayButton {
+    -moz-border-image: url(img/grayButton.png) 0 12 0 12;
+}
+
+#jqt .redButton {
+    -moz-border-image: url(img/redButton.png) 0 12 0 12;
+}
+
+#jqt .greenButton {
+    -moz-border-image: url(img/greenButton.png) 0 12 0 12;
+}
+
+/* @end */
+
+/* @group Lists */
+
+#jqt ul {
+    -moz-border-radius: 8px;
+}
+
+/* when you have a first LI item on any list */
+
+#jqt li:first-child, #jqt li:first-child a {
+    -moz-border-top-left-radius: 8px;
+    -moz-border-top-right-radius: 8px;
+}
+
+#jqt li:last-child, #jqt li:last-child a {
+    -moz-border-bottom-left-radius: 8px;
+    -moz-border-bottom-right-radius: 8px;
+}
+
+/* universal links on list */
+
+#jqt ul li a, #jqt li.img a + a {
+    -moz-tap-highlight-color: rgba(0,0,0,0);
+}
+
+/* @group Forms */
+
+#jqt ul li input[type="text"],
+#jqt ul li input[type="password"],
+#jqt ul li input[type="tel"],
+#jqt ul li input[type="number"],
+#jqt ul li input[type="search"],
+#jqt ul li input[type="email"],
+#jqt ul li input[type="url"],
+#jqt ul li textarea,
+#jqt ul li select {
+    color: #777;
+    background: #fff url(../.png);
+    border: 0;
+    font: normal 17px Helvetica;
+    padding: 0;
+    display: inline-block;
+    margin-left: 0px;
+    width: 100%;
+    -moz-appearance: textarea;
+}
+
+#jqt ul li textarea {
+    height: 120px;
+    padding: 0;
+    text-indent: -2px;
+}
+
+#jqt ul li select {
+    text-indent: 0px;
+    background: transparent url(../images/chevron.png) no-repeat 103% 3px;
+    -moz-appearance: textfield;
+    margin-left: -6px;
+    width: 104%;
+}
+
+#jqt ul li input[type="checkbox"], #jqt ul li input[type="radio"] {
+    margin: 0;
+    color: rgb(50,79,133);
+    padding: 10px 10px;
+}
+
+#jqt ul li input[type="checkbox"]:after, #jqt ul li input[type="radio"]:after {
+    content: attr(title);
+    font: 17px Helvetica;
+    display: block;
+    width: 246px;
+    margin: -12px 0 0 17px;
+}
+
+/* @end */
+
+/* @group Edge to edge */
+#jqt ul.edgetoedge {
+    -moz-border-radius: 0;
+}
+	
+#jqt ul.edgetoedge li.sep {
+    background: -moz-gradient(linear, 0% 0%, 0% 100%, from(rgba(139, 159, 171, 1)), to(rgba(181, 193, 201, 1.0)));
+    border-bottom: 1px solid #b5c1c9;
+    border-top: 1px solid #b5c1c9;
+    color: #fff;
+    font-size: 16px;
+    margin: 1px 0 0 0;
+    padding: 2px 10px;
+    text-shadow: #636a6f 0 1px 0;
+}
+
+#jqt .edgetoedge h4 {
+    color: #fff;
+    background: rgb(154,159,170) url(img/listGroup.png) top left repeat-x;
+    border-top: 1px solid rgb(165,177,186);
+    text-shadow: #666 0 1px 0;
+    margin: 0;
+    padding: 2px 10px;
+}
+
+#jqt .edgetoedge, #jqt .metal {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(255,255,255);
+}
+
+#jqt .edgetoedge ul, #jqt .metal ul, #jqt .plastic ul {
+    -moz-border-radius: 0;
+    margin: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+}
+
+#jqt .metal ul {
+    border-top: 0;
+    border-bottom: 0;
+    background: rgb(180,180,180);
+}
+
+#jqt .edgetoedge ul li:first-child,
+#jqt .edgetoedge ul li:first-child a,
+#jqt .edgetoedge ul li:last-child,
+#jqt .edgetoedge ul li:last-child a,
+#jqt .metal ul li:first-child a,
+#jqt .metal ul li:last-child a {
+    -moz-border-radius: 0;
+}
+
+#jqt .edgetoedge ul li small {
+    font-size: 16px;
+    line-height: 28px;
+}
+
+#jqt .edgetoedge li, #jqt .metal li {
+    -moz-border-radius: 0;
+}
+
+#jqt .edgetoedge li em {
+    font-weight: normal;
+    font-style: normal;
+}
+
+#jqt .edgetoedge h4 + ul {
+    border-top: 1px solid rgb(152,158,164);
+    border-bottom: 1px solid rgb(113,125,133);
+}
+
+/* @end */
+
+/* @group Mini Label */
+
+#jqt ul li small.counter {
+    -moz-border-radius: 11px;
+}
+
+/* @end */
+
+/* @group Plastic */
+
+#jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
+    background-image: url(img/listArrow.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+
+#jqt .edgetoedge ul, #jqt .metal ul, #jqt .plastic ul {
+    -moz-border-radius: 0;
+}
+
+#jqt .plastic ul {
+    -moz-border-radius: 0;
+}
+
+#jqt .plastic ul li {
+    -moz-border-radius: 0;
+}
+
+#jqt #plastic ul.minibanner li {
+    -moz-border-radius: 5px;
+}
+
+#jqt #plastic ul.bigbanner li {
+    -moz-border-radius: 5px;
+}
+
+/* @end */
+
+/* @group Individual */
+
+#jqt ul.individual li {
+    -moz-border-radius: 8px;
+    -moz-box-sizing: border-box;
+}
+
+#jqt ul.individual li a {
+    -moz-border-radius: 8px;
+}
+
+/* @end */
+
+/* @group Toggle */
+
+#jqt .toggle input[type="checkbox"] {
+    -moz-tap-highlight-color: rgba(0,0,0,0);
+    -moz-border-radius: 5px;
+    -moz-appearance: textarea;
+    -moz-transition: left .15s;
+}
+/* @end */
+
+
+
+#jqt .info {
+}

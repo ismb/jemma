@@ -192,7 +192,6 @@ public interface GatewayInterface {
 	/**
 	 * Returns the list of associated nodes in the network, and for each node
 	 * gives the short and the IEEE Address
-	 * 
 	 * @return
 	 * @throws IOException
 	 * @throws Exception
@@ -203,9 +202,7 @@ public interface GatewayInterface {
 	/**
 	 * Allows to configure a set of parameters throught the StartupAttributeInfo
 	 * class before to launch the ZigBee network
-	 * 
-	 * @param sai
-	 *            the StartupAttributeInfo
+	 * @param sai the StartupAttributeInfo
 	 * @throws IOException
 	 * @throws Exception
 	 * @throws GatewayException
@@ -216,7 +213,6 @@ public interface GatewayInterface {
 	/**
 	 * Allows to read a set of parameters throught the StartupAttributeInfo
 	 * class
-	 * 
 	 * @param index
 	 * @return
 	 * @throws IOException

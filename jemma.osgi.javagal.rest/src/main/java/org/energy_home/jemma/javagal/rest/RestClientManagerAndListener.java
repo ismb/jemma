@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
 /**
@@ -55,7 +56,7 @@ public class RestClientManagerAndListener implements
 	private String zclCommandDestination;
 	private String zdpCommandDestination;
 	private String frequencyAgilityResultDestination;
-
+	private final Context context;
 	private Log log = LogFactory.getLog(RestClientManagerAndListener.class);
 	private PropertiesManager _PropertiesManager;
 	private ClientResources clientResource;
@@ -64,6 +65,8 @@ public class RestClientManagerAndListener implements
 			ClientResources _clientResorce) {
 		_PropertiesManager = ___PropertiesManager;
 		this.clientResource = _clientResorce;
+		this.context =  new Context();
+		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
 	}
 
 	synchronized public void gatewayStartResult(final Status status) {
@@ -76,7 +79,7 @@ public class RestClientManagerAndListener implements
 					try {
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + startGatewayDestination);
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								startGatewayDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -86,6 +89,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info(_xml);
 						resource.post(_xml, MediaType.TEXT_XML);
+						
 						resource.release();
 						resource = null;
 						clientResource.resetCounter();
@@ -114,7 +118,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeDiscoveredDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeDiscoveredDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -153,7 +157,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeRemovedDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeRemovedDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -193,7 +197,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeServicesDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeServicesDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -233,7 +237,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + serviceDescriptorDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								serviceDescriptorDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -271,7 +275,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + resetDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								resetDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -308,7 +312,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + bindingDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								bindingDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -346,7 +350,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + unbindingDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								unbindingDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -385,7 +389,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeBindingDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeBindingDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -424,7 +428,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + leaveResultDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								leaveResultDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -463,7 +467,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + permitJoinDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								permitJoinDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -503,7 +507,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeDescriptorDestination);
 						
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeDescriptorDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -547,7 +551,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + nodeDescriptorDestination);
 					
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								nodeDescriptorDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -586,7 +590,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + gatewayStopDestination);
 					
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								gatewayStopDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -625,7 +629,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + leaveResultDestination);
 	
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								leaveResultDestination);
 						Info info = new Info();
 						info.setStatus(status);
@@ -667,7 +671,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + zdpCommandDestination);
 	
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								zdpCommandDestination);
 						Info.Detail detail = new Info.Detail();
 						detail.setZDPMessage(message);
@@ -704,7 +708,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + zclCommandDestination);
 	
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								zclCommandDestination);
 						Info.Detail detail = new Info.Detail();
 						detail.setZCLMessage(message);
@@ -740,7 +744,7 @@ public class RestClientManagerAndListener implements
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Conncting to:"  + frequencyAgilityResultDestination);
 	
-						ClientResource resource = new ClientResource(
+						ClientResource resource = new ClientResource(context,
 								frequencyAgilityResultDestination);
 						Info info = new Info();
 						info.setStatus(_st);

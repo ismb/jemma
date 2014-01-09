@@ -1,0 +1,65 @@
+ul.editable li img.minus {
+	display: none;
+	-webkit-transition: -webkit-transform 0.7s;
+	-moz-transition: -webkit-transform 0.7s;
+	margin-left: -40px;
+}
+
+#jqt .cont {
+	color: white !important;
+	width: 0px;
+	overflow: hidden;
+	height: 32px;
+	right: 5px;
+	margin-top: -5px;
+	-webkit-transition-property: width;
+	-webkit-transition-duration: 0.7s;
+	-moz-transition-property: width;
+	-moz-transition-duration: 0.7s;
+	float: right;
+}
+
+#jqt .test {
+	color: white !important;
+	border-bottom-width: 0px;
+	border-left-width: 10px;
+	border-right-width: 10px;
+	border-top-width: 0px;
+	font-weight: bold !important;
+	-webkit-border-bottom-left-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+	font-size: 13px;
+	font-family: helvetica, arial, sans-serif;
+	height: 32px;
+	line-height: 32px;
+	margin-bottom: -20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	display: block;
+	-webkit-border-image: url('img/button-red.png') 0 10 0 10 stretch stretch;
+	-webkit-box-sizing: border-box;
+	float: right;
+}
+
+#jqt .drag {
+	display: block;
+	-webkit-box-sizing: border-box;
+	float: right;
+}
+
+#jqt .test {
+	-moz-border-bottom-left-radius: 4px;
+	-moz-border-bottom-right-radius: 4px;
+	-moz-border-top-left-radius: 4px;
+	-moz-border-top-right-radius: 4px;
+	-moz-border-image: url('img/button-red.png') 0 10 0 10 stretch stretch;
+	-moz-box-sizing: border-box;
+}
+
+input.inputTest {
+	background-color: red;
+	font-size: 20px;
+}

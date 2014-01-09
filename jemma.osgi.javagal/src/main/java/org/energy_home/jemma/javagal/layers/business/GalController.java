@@ -69,7 +69,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
 /**
  * Actual JavaGal Controller. Only one instance of this object can exists at a
  * time. All clients can access this instance via their dedicated proxies (see
- * {@link org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxy}).
+ * {@link org.energy_home.jemma.zgd.GalExtenderProxy}).
  * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 

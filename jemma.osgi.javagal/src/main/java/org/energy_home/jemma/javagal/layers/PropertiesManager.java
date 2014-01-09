@@ -445,6 +445,19 @@ public class PropertiesManager {
 			sd.getApplicationOutputCluster().add(x);
 		return sd;
 	}
+	
+	
+	/* ExtendedPANId */
+	/**
+	 * Gets ExtendedPANId property.
+	 * 
+	 * @return the ExtendedPANId value.
+	 */
+	public BigInteger getExtendedPanId() {
+		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
+		return extendedPanId;
+	}
+	
 
 	/* Utility */
 	/**

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional" modified="modified" name="ZigBee Refining Driver">
+	<implementation class="org.energy_home.jemma.ah.internal.zigbee.ZigBeeManagerImpl" />
+	<property name="network.type" value="ZigBee"/>
+	<service>
+	    <provide interface="org.energy_home.jemma.ah.hac.lib.ext.INetworkManager"/>
+	</service>	
+	
+	<reference name="Timer" interface="org.eclipse.equinox.internal.util.timer.Timer"
+		bind="setTimer" unbind="unsetTimer" cardinality="1..1" policy="dynamic" />		
+		
+	<reference name="GatewayInterface" interface="org.energy_home.jemma.zgd.GatewayInterface"
+		bind="setGatewayInterface" unbind="unsetGatewayInterface" cardinality="1..1"
+		policy="dynamic" />
+	
+	<reference bind="setEventAdmin" cardinality="0..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="dynamic" unbind="unsetEventAdmin"/>	
+</scr:component>

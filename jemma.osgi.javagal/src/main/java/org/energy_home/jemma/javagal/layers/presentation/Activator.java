@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.javagal.layers.presentation;
 
+import org.energy_home.jemma.zgd.GalExtenderProxy;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
 
 import java.io.File;
@@ -22,8 +24,6 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxy;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxyFactory;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;

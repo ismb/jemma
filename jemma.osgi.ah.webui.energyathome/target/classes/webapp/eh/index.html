@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<title>Energy@Home</title>
+<link rel='stylesheet' type='text/css' href = 'css/Main.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/Menu.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/Elettrodomestici.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/Storico.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/CostiConsumi.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/Trial.css'/>
+<link rel='stylesheet' type='text/css' href = 'css/jquery.jqplot.css'/>
+
+<!-- Of course it is advisable to have touch icons ready for each device -->
+<link rel="apple-touch-icon" href="Resources/Images/energy@home-icon-iphone.png">
+<link rel="apple-touch-icon" sizes="72x72" href="Resources/Images/energy@home-icon-ipad.png">
+<link rel="apple-touch-icon" sizes="114x114" href="Resources/Images/energy@home-icon-iphone4.png">
+<link rel="shortcut icon" href="Resources/Images/energy@home-icon-addressbar.png" />
+<link rel="apple-touch-startup-image" sizes="1004x768" href="Resources/Images/startup-icon-ipod.png" />
+<link rel="apple-touch-startup-image" href="Resources/Images/startup-icon-iphone.png" />
+
+<script type="text/javascript" src="/js/jsonrpc/jsonrpc-min.js"></script>
+<script type="text/javascript" src="/js/osgi/osgi.js"></script>
+<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/jqplot/excanvas.min.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="/js/jquery/jquery-1.5.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js"></script>
+
+<script language="javascript" type="text/javascript" src="js/utils/Log.js"></script>
+<script language="javascript" type="text/javascript" src="js/utils/GestDate.js"></script>
+<script language="javascript" type="text/javascript" src="js/InterfaceSimul.js"></script>
+<script language="javascript" type="text/javascript" src="js/InterfaceEnergyHome.js"></script>
+<script language="javascript" type="text/javascript" src="js/NonDisponibile.js"></script>
+<script language="javascript" type="text/javascript" src="js/Storico.js"></script>
+<script language="javascript" type="text/javascript" src="js/Elettrodomestici.js"></script>
+<script language="javascript" type="text/javascript" src="js/CostiConsumi.js"></script>
+<script language="javascript" type="text/javascript" src="js/Trial.js"></script>
+<script language="javascript" type="text/javascript" src="js/Menu.js"></script>
+<script language="javascript" type="text/javascript" src="js/Main.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+<!--<script type="application/javascript" src="../js/other/owa.js"></script>-->
+
+<script type="text/javascript">
+
+function Querystring(qs){
+    this.params = {};
+    
+    if (qs == null) 
+        qs = location.search.substring(1, location.search.length);
+    if (qs.length == 0) 
+        return;
+    
+    // Turn <plus> back to <space>
+    // See: http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1
+    
+    qs = qs.replace(/\+/g, ' ');
+    var args = qs.split('&'); // parse out name/value pairs separated via &
+    // split out each name=value pair
+    for (var i = 0; i < args.length; i++) {
+        var pair = args[i].split('=');
+        var name = decodeURIComponent(pair[0]);
+        
+        var value = (pair.length == 2) ? decodeURIComponent(pair[1]) : name;
+        
+        this.params[name] = value;
+    }
+}
+
+Querystring.prototype.get = function(key, default_){
+    var value = this.params[key];
+    return (value != null) ? value : default_;
+}
+
+Querystring.prototype.contains = function(key){
+    var value = this.params[key];
+    return (value != null);
+}
+
+if ('standalone' in navigator && !navigator.standalone && (/iphone|ipod|ipad/gi).test(navigator.platform) && (/Safari/i).test(navigator.appVersion)) {
+	var addToHomeConfig = {
+		animationIn:'bubble',		// Animation In
+		animationOut:'drop',		// Animation Out
+		lifespan:10000,				// The popup lives 10 seconds
+		expire:2,					// The popup is shown only once every 2 minutes
+		touchIcon:true
+	};
+
+	document.write('<link rel="stylesheet" href="js\/other\/add2home.css">');
+	document.write('<script type="application/javascript" src="js\/other\/add2home.js"><\/script>');
+}
+
+w = window.innerWidth;
+h = window.innerHeight;
+if (!(w || h))
+{
+	// IE
+	w = window.document.documentElement.clientWidth;
+	h = window.document.documentElement.clientHeight;
+}
+Main.screenW = w;
+Main.screenH = h;
+Main.screenRatio = w / h;
+if (w > h)
+	dim = h;
+else
+	dim = w;
+
+if (dim > 800)
+	Main.deviceSize = Main.SCREEN_LARGE;
+else
+	if (dim > 500)
+		Main.deviceSize = Main.SCREEN_MEDIUM;
+	else
+		Main.deviceSize = Main.SCREEN_SMALL;
+
+if (Main.deviceSize == Main.SCREEN_SMALL)
+{
+	document.write('<link href="css-small/Main.css" type="text/css" rel="stylesheet">');
+	document.write('<link href="css-small/Menu.css" type="text/css" rel="stylesheet">');
+	document.write('<link href="css-small/CostiConsumi.css" type="text/css" rel="stylesheet">');
+	document.write('<link href="css-small/Storico.css" type="text/css" rel="stylesheet">');
+	document.write('<link href="css-small/Elettrodomestici.css" type="text/css" rel="stylesheet">');
+
+}
+else
+	if (Main.deviceSize == Main.SCREEN_MEDIUM)
+	{
+		document.write('<link href="css-medium/Main.css" type="text/css" rel="stylesheet">');
+		document.write('<link href="css-medium/Menu.css" type="text/css" rel="stylesheet">');
+		document.write('<link href="css-medium/CostiConsumi.css" type="text/css" rel="stylesheet">');
+		document.write('<link href="css-medium/Storico.css" type="text/css" rel="stylesheet">');
+		document.write('<link href="css-medium/Elettrodomestici.css" type="text/css" rel="stylesheet">');
+	}
+
+    $(function(){
+		$(document).ready(function(){
+		    // Parse the current page's querystring
+		    var qs = new Querystring()
+		    var ids = new Array();
+		    var mode = qs.get("mode", "");
+		    if ((mode != null) && (mode != "")) {
+			    if (mode == "simul")
+		    		InterfaceEnergyHome.mode = 0;
+			    else if (mode == "demo")
+			    	InterfaceEnergyHome.mode = 1;
+			    else 
+			    	InterfaceEnergyHome.mode = 2;
+		    }
+		    else {
+		    	InterfaceEnergyHome.mode = 2;
+		    }
+	    });                     
+	 
+    });
+</script>
+</head>
+<body onLoad="Main.onLoad()" onUnload="Main.onUnload()">
+	<div id="Header">
+		<div id="HeaderDIV"><img id="BackgroundImg" src="Resources/Images/top_page.png"></div>
+		<div id="TitlePageDIV"><img id="LogoImg" src="Resources/Images/E@HLogo.png"></div>
+		<!--div id="AlarmDIV">&nbsp;</div-->
+            <div id="SponsorPageDIV"><img id="PartnerImg" src="Resources/Images/E@HMergePartners.png"></div>
+      	<div id="BannerPageDIV"><img id="BannerImg" src="Resources/Images/banner22.png"></div>
+	</div>
+	<div id="Content">
+	</div>
+	<div id="MainMenu">
+	</div>
+	<div id="ContentMenu">
+	</div>
+	<div id="OraData"></div>
+
+</body>
+</html>
+

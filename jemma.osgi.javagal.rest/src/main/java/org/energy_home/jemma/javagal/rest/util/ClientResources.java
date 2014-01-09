@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxy;
 import org.energy_home.jemma.javagal.rest.PropertiesManager;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
 import org.energy_home.jemma.javagal.rest.RestClientManagerAndListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
+import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GatewayInterface;
 
 /**

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1389261838801
+Build-Jdk: 1.6.0_45
+Built-By: csto625
+Bundle-Category: Web UI libs
+Bundle-ManifestVersion: 2
+Bundle-Name: Web UI Base
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-SymbolicName: jemma.osgi.ah.webui.base
+Bundle-Vendor: Telecom Italia
+Bundle-Version: 2.0.12
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.osgi.service.http;version="[1.2,2)"
+Service-Component: OSGI-INF/*.xml
+Tool: Bnd-1.50.0
