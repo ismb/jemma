@@ -98,8 +98,6 @@
 
 	<modules>
 		<module>jemma.launch</module>
-		<!--<module>jemma.osgi.javagal</module>
-		<module>jemma.osgi.javagal.rest</module>-->
 		<module>jemma.osgi.ah.hac.lib</module>
 		<module>jemma.osgi.ah.configurator</module>
 		<module>jemma.osgi.utils</module>
@@ -108,6 +106,8 @@
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
+		<!--<module>jemma.osgi.javagal</module>
+		<module>jemma.osgi.javagal.rest</module>-->
 		<module>jemma.osgi.device.zgd</module>
 		<module>jemma.osgi.ah.felix.console.web</module>
 		<module>jemma.osgi.zgd</module>
@@ -267,14 +267,14 @@
 		
   
 		<repository>
-				<id>localRepository</id>
-				<name>Local repository</name>
-				<url>http://130.192.85.149:8888/maven</url>
+			<id>localRepository</id>
+			<name>Local repository</name>
+			<url>http://130.192.85.149:8888/maven</url>
 		</repository>
 		<repository>
-				<id>maven-Jaxb</id>
-				<name>JAXB-NamespacePrefixMapper-Interfaces</name>
-				<url>http://mvnrepository.com/</url>
+			<id>maven-Jaxb</id>
+			<name>JAXB-NamespacePrefixMapper-Interfaces</name>
+			<url>http://mvnrepository.com/</url>
 		</repository>
 		<repository>
 		   <id>maven-restlet</id>  
@@ -314,11 +314,6 @@
 			<version>${jaxb-osgi.version}</version>
 			<scope>compile</scope>
 		</dependency> 
-		<dependency>
-		  <groupId>org.restlet</groupId>
-		  <artifactId>org.restlet</artifactId>
-		  <version>2.1.4</version>
-		</dependency>
 		<dependency>
 			<groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
 			<artifactId>JAXBNamespacePrefixMapper</artifactId>
