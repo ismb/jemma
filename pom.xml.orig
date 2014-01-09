@@ -98,6 +98,11 @@
 
 	<modules>
 		<module>jemma.launch</module>
+<<<<<<< HEAD
+		<!--<module>jemma.osgi.javagal</module>
+		<module>jemma.osgi.javagal.rest</module>-->
+=======
+>>>>>>> upstream/master
 		<module>jemma.osgi.ah.hac.lib</module>
 		<module>jemma.osgi.ah.configurator</module>
 		<module>jemma.osgi.utils</module>
@@ -106,10 +111,11 @@
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
-		<!--
-		<module>jemma.osgi.javagal</module>
-		<module>jemma.osgi.javagal.rest</module>
-		-->
+<<<<<<< HEAD
+=======
+		<!--<module>jemma.osgi.javagal</module>
+		<module>jemma.osgi.javagal.rest</module>-->
+>>>>>>> upstream/master
 		<module>jemma.osgi.device.zgd</module>
 		<module>jemma.osgi.ah.felix.console.web</module>
 		<module>jemma.osgi.zgd</module>
@@ -316,6 +322,15 @@
 			<version>${jaxb-osgi.version}</version>
 			<scope>compile</scope>
 		</dependency> 
+<<<<<<< HEAD
+		<dependency>
+		  <groupId>org.restlet</groupId>
+		  <artifactId>org.restlet</artifactId>
+		  <version>2.1.4</version>
+		</dependency>
+=======
+		
+>>>>>>> upstream/master
 		<dependency>
 			<groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
 			<artifactId>JAXBNamespacePrefixMapper</artifactId>
