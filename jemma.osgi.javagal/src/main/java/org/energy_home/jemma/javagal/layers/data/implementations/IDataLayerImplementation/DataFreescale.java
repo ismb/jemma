@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,14 +70,15 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 /**
  * Freescale implementation of {@link IDataLayer}.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class DataFreescale implements IDataLayer {
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
-	private final List<ParserLocker> listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
+	private final List<ParserLocker> listLocker;
 
 	public final static short MAX_TO_SEND_BYTE_ARRAY = 2048;
 
@@ -92,6 +94,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
+		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 	}
 
@@ -335,7 +338,6 @@ public class DataFreescale implements IDataLayer {
 											gal.getNetworkcache().add(o);
 
 										} catch (GatewayException e) {
-
 											logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 										} catch (Exception e) {
 
@@ -443,8 +445,6 @@ public class DataFreescale implements IDataLayer {
 					_zm.setZCLPayload(_payload.getRealByteArray());
 					gal.get_gatewayEventManager().notifyZCLCommand(_zm);
 					gal.getApsManager().APSMessageIndication(messageEvent);
-
-					
 
 				}
 			}
@@ -856,7 +856,7 @@ public class DataFreescale implements IDataLayer {
 				 * synchronized (listLocker) { for (ParserLocker pl :
 				 * listLocker) { if (pl.getType() == TypeMessage.LEAVE) {
 				 * synchronized (pl) { pl.getStatus().setCode(message[3]);
-				 * pl.notify(); } break; } } }
+				 * pl.notify(); } //break; } } }
 				 */
 
 			}
@@ -1694,22 +1694,29 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.APSME_SET);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
 
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				listLocker.remove(lock);
+			}
 		}
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -1749,21 +1756,30 @@ public class DataFreescale implements IDataLayer {
 
 		lock.setType(TypeMessage.APSME_GET);
 		lock.set_Key(String.format("%02X", _AttID));
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				listLocker.remove(lock);
+			}
+
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.error("Timeout expired in APSME-GET.Request");
@@ -1780,7 +1796,9 @@ public class DataFreescale implements IDataLayer {
 		}
 
 	}
-
+//try catch per lock --> continuare
+	
+	
 	@Override
 	public String NMLE_GetSync(long timeout, short _AttID) throws Exception {
 		ByteArrayObject _res = new ByteArrayObject();
@@ -2145,15 +2163,25 @@ public class DataFreescale implements IDataLayer {
 			LogicalType devType = gal.getPropertiesManager().getSturtupAttributeInfo().getDeviceType();
 			ByteArrayObject _res = new ByteArrayObject();
 
-			if (devType == LogicalType.CURRENT)
+			if (devType == LogicalType.CURRENT) {
 				throw new Exception("LogicalType not Valid!");
-			else if (devType == LogicalType.COORDINATOR)
-				_res.addByte((byte) 0xC0);/* Coordinator */
-			else if (devType == LogicalType.END_DEVICE)
-				_res.addByte((byte) 0x20);/* End Device */
-			else if (devType == LogicalType.ROUTER)
-				_res.addByte((byte) 0x80);/* Router */
+			} else if (devType == LogicalType.COORDINATOR) {
 
+				_res.addByte((byte) 0xC0);/* Coordinator */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == COORDINATOR");
+				}
+			} else if (devType == LogicalType.END_DEVICE) {
+				_res.addByte((byte) 0x20);/* End Device */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == ENDDEVICE");
+				}
+			} else if (devType == LogicalType.ROUTER) {
+				_res.addByte((byte) 0x80);/* Router */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == ROUTER");
+				}
+			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("StartupSet value read from PropertiesManager:" + gal.getPropertiesManager().getStartupSet());
 				logger.info("StartupControlMode value read from PropertiesManager:" + gal.getPropertiesManager().getSturtupAttributeInfo().getStartupControl().byteValue());
@@ -2580,22 +2608,31 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NODE_DESCRIPTOR);
-		lock.set_Key(String.format("%04X", addrOfInterest.getNetworkAddress()));
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
+		String __Key = String.format("%04X", addrOfInterest.getNetworkAddress());
+		lock.set_Key(__Key);
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				listLocker.remove(lock);
 			}
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			throw new GatewayException("Timeout expired in ZDP-NodeDescriptor.Request:" + addrOfInterest.getNetworkAddress());

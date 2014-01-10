@@ -58,12 +58,12 @@ import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
  * become available to the Gal controller, it uses that identifier to find the
  * right proxy destination (the client) to dispatch the response to it.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class GalExtenderProxy implements IGalExtender {
-	private final static Log logger = LogFactory
-			.getLog(GalExtenderProxyFactory.class);
+	private final static Log logger = LogFactory.getLog(GalExtenderProxyFactory.class);
 	/**
 	 * The identification number for this proxy instance.
 	 */
@@ -89,13 +89,10 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public short getChannelSync(long timeout) throws IOException, Exception,
-			GatewayException {
+	public short getChannelSync(long timeout) throws IOException, Exception, GatewayException {
 		return gal.getChannelSync(timeout);
 
 	}
-
-	
 
 	@Override
 	public void setGatewayEventListener(GatewayEventListener listener) {
@@ -108,8 +105,7 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public String getInfoBaseAttribute(short attrId) throws Exception,
-			Exception, GatewayException {
+	public String getInfoBaseAttribute(short attrId) throws Exception, Exception, GatewayException {
 		switch (attrId) {
 		case 0xA1:
 		case 0x80:
@@ -126,15 +122,12 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public long createCallback(Callback callback, APSMessageListener listener)
-			throws IOException, Exception, GatewayException {
-		return gal
-				.createCallback(this.getProxyIdentifier(), callback, listener);
+	public long createCallback(Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
+		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 	}
 
 	@Override
-	public long createAPSCallback(short endpoint, APSMessageListener listener)
-			throws IOException, Exception, GatewayException {
+	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("\nCreate ApsCallBack(short endpoint, APSMessageListener listener)...\n\r");
 		}
@@ -148,13 +141,11 @@ public class GalExtenderProxy implements IGalExtender {
 		_addressSpec.setAPSDestinationEndpoint(endpoint);
 		_newFilter.getAddressSpecification().add(_addressSpec);
 		_newCallBack.setFilter(_newFilter);
-		return gal.createCallback(this.getProxyIdentifier(), _newCallBack,
-				listener);
+		return gal.createCallback(this.getProxyIdentifier(), _newCallBack, listener);
 	}
 
 	@Override
-	public long createAPSCallback(APSMessageListener listener)
-			throws IOException, Exception, GatewayException {
+	public long createAPSCallback(APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("\nCreate ApsCallBack(APSMessageListener listener)...\n\r");
 		}
@@ -165,55 +156,45 @@ public class GalExtenderProxy implements IGalExtender {
 		_newFilter.setLevelSpecification(ls1);
 		_newFilter.setLevelSpecification(_newFilter.getLevelSpecification());
 		_newCallBack.setFilter(_newFilter);
-		return gal.createCallback(this.getProxyIdentifier(), _newCallBack,
-				listener);
+		return gal.createCallback(this.getProxyIdentifier(), _newCallBack, listener);
 	}
 
 	@Override
-	public List<Long> listCallbacks() throws IOException, Exception,
-			GatewayException {
-		return gal.listCallbacks(this.getProxyIdentifier())
-				.getCallbackIdentifier();
+	public List<Long> listCallbacks() throws IOException, Exception, GatewayException {
+		return gal.listCallbacks(this.getProxyIdentifier()).getCallbackIdentifier();
 	}
 
 	@Override
-	public CallbackIdentifierList getlistCallbacks() throws IOException,
-			Exception, GatewayException {
+	public CallbackIdentifierList getlistCallbacks() throws IOException, Exception, GatewayException {
 		return gal.listCallbacks(this.getProxyIdentifier());
 	}
 
 	@Override
-	public void deleteCallback(long callId) throws IOException, Exception,
-			GatewayException {
+	public void deleteCallback(long callId) throws IOException, Exception, GatewayException {
 		gal.deleteCallback(callId);
 	}
 
 	@Override
-	public Aliases listAddresses() throws IOException, Exception,
-			GatewayException {
+	public Aliases listAddresses() throws IOException, Exception, GatewayException {
 		return gal.listAddress();
 	}
 
 	@Override
-	public void configureStartupAttributeSet(StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException {
+	public void configureStartupAttributeSet(StartupAttributeInfo sai) throws IOException, Exception, GatewayException {
 		gal.getPropertiesManager().SetStartupAttributeInfo(sai);
 
 	}
 
 	@Override
-	public StartupAttributeInfo readStartupAttributeSet(short index)
-			throws IOException, Exception, GatewayException {
+	public StartupAttributeInfo readStartupAttributeSet(short index) throws IOException, Exception, GatewayException {
 		if (index == 0)
 			return gal.getPropertiesManager().getSturtupAttributeInfo();
 		else
-			throw new Exception(
-					"The index is not correct. Only index 0 is a possible request!");
+			throw new Exception("The index is not correct. Only index 0 is a possible request!");
 	}
 
 	@Override
-	public Status stopNetworkSync(long timeout) throws Exception,
-			GatewayException {
+	public Status stopNetworkSync(long timeout) throws Exception, GatewayException {
 		return gal.stopNetwork(timeout, this.getProxyIdentifier(), false);
 	}
 
@@ -223,96 +204,76 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public void startGatewayDevice(long timeout, StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException {
+	public void startGatewayDevice(long timeout) throws IOException, Exception, GatewayException {
+
+		gal.startGatewayDevice(timeout, this.getProxyIdentifier(), true);
+
+	}
+
+	@Override
+	public void startGatewayDevice(long timeout, StartupAttributeInfo sai) throws IOException, Exception, GatewayException {
+
 		gal.startGatewayDevice(timeout, this.getProxyIdentifier(), sai, true);
 	}
 
 	@Override
-	public void startGatewayDevice(long timeout) throws IOException, Exception,
-			GatewayException {
-		gal.startGatewayDevice(timeout, this.getProxyIdentifier(), true);
+	public Status startGatewayDeviceSync(long timeout, StartupAttributeInfo sai) throws IOException, Exception, GatewayException {
+		if (sai == null)
+			return gal.startGatewayDevice(timeout, this.getProxyIdentifier(), false);
+		else
+			return gal.startGatewayDevice(timeout, this.getProxyIdentifier(), sai, false);
 	}
 
 	@Override
-	public Status startGatewayDeviceSync(long timeout, StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException {
-		return gal.startGatewayDevice(timeout, this.getProxyIdentifier(), sai,
-				false);
-	}
-
-	@Override
-	public Status startGatewayDeviceSync(long timeout) throws IOException,
-			Exception, GatewayException {
-		return gal
-				.startGatewayDevice(timeout, this.getProxyIdentifier(), false);
-	}
-
-	@Override
-	public WSNNodeList readNodeCache() throws IOException, Exception,
-			GatewayException {
+	public WSNNodeList readNodeCache() throws IOException, Exception, GatewayException {
 		return gal.readNodeCache();
 	}
 
 	@Override
-	public void startNodeDiscovery(long timeout, int discoveryMask)
-			throws IOException, Exception, GatewayException {
-		gal.startNodeDiscovery(timeout, this.getProxyIdentifier(),
-				discoveryMask);
+	public void startNodeDiscovery(long timeout, int discoveryMask) throws IOException, Exception, GatewayException {
+		gal.startNodeDiscovery(timeout, this.getProxyIdentifier(), discoveryMask);
 
 	}
 
 	@Override
-	public void subscribeNodeRemoval(long timeout, int freshnessMask)
-			throws IOException, Exception, GatewayException {
+	public void subscribeNodeRemoval(long timeout, int freshnessMask) throws IOException, Exception, GatewayException {
 
-		if (freshnessMask != 16 && freshnessMask != 4 && freshnessMask != 20
-				&& freshnessMask != 0)
+		if (freshnessMask != 16 && freshnessMask != 4 && freshnessMask != 20 && freshnessMask != 0)
 			throw new GatewayException("NodeRemoval mask not valid");
 		else
-			gal.subscribeNodeRemoval(timeout, this.getProxyIdentifier(),
-					freshnessMask);
+			gal.subscribeNodeRemoval(timeout, this.getProxyIdentifier(), freshnessMask);
 
 	}
 
 	@Override
-	public NodeServices getLocalServices() throws IOException, Exception,
-			GatewayException {
+	public NodeServices getLocalServices() throws IOException, Exception, GatewayException {
 		return gal.getLocalServices();
 	}
 
 	@Override
-	public NodeServicesList readServicesCache() throws IOException, Exception,
-			GatewayException {
+	public NodeServicesList readServicesCache() throws IOException, Exception, GatewayException {
 		return gal.readServicesCache();
 	}
 
 	@Override
-	public void getServiceDescriptor(long timeout, Address aoi,
-			short endpoint) throws IOException, Exception, GatewayException {
-		gal.getServiceDescriptor(timeout, this.getProxyIdentifier(),
-				aoi, endpoint, true);
+	public void getServiceDescriptor(long timeout, Address aoi, short endpoint) throws IOException, Exception, GatewayException {
+		gal.getServiceDescriptor(timeout, this.getProxyIdentifier(), aoi, endpoint, true);
 
 	}
 
 	@Override
-	public ServiceDescriptor getServiceDescriptorSync(long timeout,
-			Address aoi, short endpoint) throws IOException,
-			Exception, GatewayException {
-		return gal.getServiceDescriptor(timeout, this.getProxyIdentifier(),
-				aoi, endpoint, false);
+	public ServiceDescriptor getServiceDescriptorSync(long timeout, Address aoi, short endpoint) throws IOException, Exception, GatewayException {
+		return gal.getServiceDescriptor(timeout, this.getProxyIdentifier(), aoi, endpoint, false);
 
 	}
 
 	@Override
-	public short configureEndpoint(long timeout, SimpleDescriptor desc)
-			throws IOException, Exception, GatewayException {
+	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 		return gal.configureEndpoint(timeout, desc);
 	}
 
 	@Override
-	public void clearEndpoint(short endpoint) throws IOException, Exception,
-			GatewayException {
+	public void clearEndpoint(short endpoint) throws IOException, Exception, GatewayException {
 		gal.clearEndpoint(endpoint);
 
 	}
@@ -328,152 +289,113 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public Status leaveAllSync() throws IOException, Exception,
-			GatewayException {
+	public Status leaveAllSync() throws IOException, Exception, GatewayException {
 		long _timeout = GatewayConstants.INFINITE_TIMEOUT;
 		int mask = 0;
 		Address _add = new Address();
 		_add.setNetworkAddress(0xFFFC);
-		return gal
-				.leave(_timeout, this.getProxyIdentifier(), _add, mask, false);
+		return gal.leave(_timeout, this.getProxyIdentifier(), _add, mask, false);
 
 	}
 
 	@Override
-	public void leave(long timeout, Address aoi) throws IOException,
-			Exception, GatewayException {
+	public void leave(long timeout, Address aoi) throws IOException, Exception, GatewayException {
 		int mask = 0;
-		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask,
-				true);
+		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask, true);
+
+	}
+
+	
+
+	@Override
+	public void leave(long timeout, Address aoi, int mask) throws IOException, Exception, GatewayException {
+		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask, true);
 
 	}
 
 	@Override
-	public Status leaveSync(long timeout, Address aoi)
-			throws IOException, Exception, GatewayException {
-		int mask = 0;
-		return gal.leave(timeout, this.getProxyIdentifier(), aoi,
-				mask, false);
+	public Status leaveSync(long timeout, Address aoi, int mask) throws IOException, Exception, GatewayException {
+		return gal.leave(timeout, this.getProxyIdentifier(), aoi, mask, false);
 
 	}
 
 	@Override
-	public void leave(long timeout, Address aoi, int mask)
-			throws IOException, Exception, GatewayException {
-		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask,
-				true);
-
-	}
-
-	@Override
-	public Status leaveSync(long timeout, Address aoi, int mask)
-			throws IOException, Exception, GatewayException {
-		return gal.leave(timeout, this.getProxyIdentifier(), aoi,
-				mask, false);
-
-	}
-
-	@Override
-	public void addBinding(long timeout, Binding binding) throws IOException,
-			Exception, GatewayException {
+	public void addBinding(long timeout, Binding binding) throws IOException, Exception, GatewayException {
 		gal.addBindingSync(timeout, this.getProxyIdentifier(), binding, true);
 
 	}
 
 	@Override
-	public Status addBindingSync(long timeout, Binding binding)
-			throws IOException, Exception, GatewayException {
-		return gal.addBindingSync(timeout, this.getProxyIdentifier(), binding,
-				false);
+	public Status addBindingSync(long timeout, Binding binding) throws IOException, Exception, GatewayException {
+		return gal.addBindingSync(timeout, this.getProxyIdentifier(), binding, false);
 
 	}
 
 	@Override
-	public void removeBinding(long timeout, Binding binding)
-			throws IOException, Exception, GatewayException {
+	public void removeBinding(long timeout, Binding binding) throws IOException, Exception, GatewayException {
 		gal.removeBindingSync(timeout, this.getProxyIdentifier(), binding, true);
 
 	}
 
 	@Override
-	public Status removeBindingSync(long timeout, Binding binding)
-			throws IOException, Exception, GatewayException {
-		return gal.removeBindingSync(timeout, this.getProxyIdentifier(),
-				binding, false);
+	public Status removeBindingSync(long timeout, Binding binding) throws IOException, Exception, GatewayException {
+		return gal.removeBindingSync(timeout, this.getProxyIdentifier(), binding, false);
 	}
 
 	@Override
-	public BindingList getNodeBindingsSync(long timeout, Address aoi)
-			throws IOException, Exception, GatewayException {
-		return gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi,
-				(short) 0, false);
+	public BindingList getNodeBindingsSync(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		return gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi, (short) 0, false);
 	}
 
 	@Override
-	public void getNodeBindings(long timeout, Address aoi) throws IOException,
-			Exception, GatewayException {
-		gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi,
-				(short) 0, true);
+	public void getNodeBindings(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi, (short) 0, true);
 	}
 
 	@Override
-	public void getNodeBindings(long timeout, Address aoi, short index)
-			throws IOException, Exception, GatewayException {
-		gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi, index,
-				true);
+	public void getNodeBindings(long timeout, Address aoi, short index) throws IOException, Exception, GatewayException {
+		gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi, index, true);
 
 	}
 
 	@Override
-	public BindingList getNodeBindingsSync(long timeout, Address aoi,
-			short index) throws IOException, Exception, GatewayException {
-		return gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi,
-				index, false);
+	public BindingList getNodeBindingsSync(long timeout, Address aoi, short index) throws IOException, Exception, GatewayException {
+		return gal.getNodeBindingsSync(timeout, this.getProxyIdentifier(), aoi, index, false);
 
 	}
 
 	@Override
-	public void permitJoinAll(long timeout, short duration) throws IOException,
-			Exception, GatewayException {
+	public void permitJoinAll(long timeout, short duration) throws IOException, Exception, GatewayException {
 		gal.permitJoinAll(timeout, this.getProxyIdentifier(), duration, true);
 	}
 
 	@Override
-	public void permitJoin(long timeout, Address addrOfInterest, short duration)
-			throws IOException, Exception, GatewayException {
-		gal.permitJoin(timeout, this.getProxyIdentifier(), addrOfInterest,
-				duration, true);
+	public void permitJoin(long timeout, Address addrOfInterest, short duration) throws IOException, Exception, GatewayException {
+		gal.permitJoin(timeout, this.getProxyIdentifier(), addrOfInterest, duration, true);
 	}
 
 	@Override
-	public Status permitJoinSync(long timeout, Address aoi,
-			short duration) throws IOException, Exception, GatewayException {
-		return gal.permitJoin(timeout, this.getProxyIdentifier(),
-				aoi, duration, false);
+	public Status permitJoinSync(long timeout, Address aoi, short duration) throws IOException, Exception, GatewayException {
+		return gal.permitJoin(timeout, this.getProxyIdentifier(), aoi, duration, false);
 	}
 
 	@Override
-	public void sendAPSMessage(APSMessage message) throws IOException,
-			Exception, GatewayException {
-		gal.sendAPSMessage(IDataLayer.INTERNAL_TIMEOUT,
-				this.getProxyIdentifier(), message);
+	public void sendAPSMessage(APSMessage message) throws IOException, Exception, GatewayException {
+		gal.sendAPSMessage(IDataLayer.INTERNAL_TIMEOUT, this.getProxyIdentifier(), message);
 	}
 
 	@Override
-	public void sendAPSMessage(long timeout, APSMessage message)
-			throws IOException, Exception, GatewayException {
+	public void sendAPSMessage(long timeout, APSMessage message) throws IOException, Exception, GatewayException {
 		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), message);
 	}
 
 	@Override
-	public void resetDongle(long timeout, short mode) throws IOException,
-			Exception, GatewayException {
+	public void resetDongle(long timeout, short mode) throws IOException, Exception, GatewayException {
 		gal.resetDongle(timeout, this.getProxyIdentifier(), mode, true);
 	}
 
 	@Override
-	public Status resetDongleSync(long timeout, short mode) throws IOException,
-			Exception, GatewayException {
+	public Status resetDongleSync(long timeout, short mode) throws IOException, Exception, GatewayException {
 		return gal.resetDongle(timeout, this.getProxyIdentifier(), mode, false);
 	}
 
@@ -483,24 +405,18 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public NodeDescriptor getNodeDescriptorSync(long timeout,
-			Address aoi) throws IOException, Exception,
-			GatewayException {
-		return gal.getNodeDescriptor(timeout, this.getProxyIdentifier(),
-				aoi, false);
+	public NodeDescriptor getNodeDescriptorSync(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		return gal.getNodeDescriptor(timeout, this.getProxyIdentifier(), aoi, false);
 	}
 
 	@Override
-	public void getNodeDescriptor(long timeout, Address aoi)
-			throws IOException, Exception, GatewayException {
-		gal.getNodeDescriptor(timeout, this.getProxyIdentifier(),
-				aoi, true);
+	public void getNodeDescriptor(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		gal.getNodeDescriptor(timeout, this.getProxyIdentifier(), aoi, true);
 
 	}
 
 	@Override
-	public void setInfoBaseAttribute(short attrId, String value)
-			throws IOException, Exception, GatewayException {
+	public void setInfoBaseAttribute(short attrId, String value) throws IOException, Exception, GatewayException {
 
 		switch (attrId) {
 		case 0xA1:
@@ -519,69 +435,39 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
-	public NodeServices startServiceDiscoverySync(long timeout,
-			Address aoi) throws IOException, Exception,
-			GatewayException {
-		return gal.startServiceDiscovery(timeout, this.getProxyIdentifier(),
-				aoi, false);
+	public NodeServices startServiceDiscoverySync(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		return gal.startServiceDiscovery(timeout, this.getProxyIdentifier(), aoi, false);
 	}
 
 	
 	@Override
-	public List<Short> startServiceDiscoveryOldSync(long timeout,
-			Address aoi) throws IOException, Exception,
-			GatewayException {
-
-		NodeServices _res = gal.startServiceDiscovery(timeout,
-				this.getProxyIdentifier(), aoi, false);
-
-		List<Short> _list = new ArrayList<Short>();
-		for (NodeServices.ActiveEndpoints e : _res.getActiveEndpoints()) {
-			_list.add(e.getEndPoint());
-
-		}
-		return _list;
+	public void startServiceDiscovery(long timeout, Address aoi) throws IOException, Exception, GatewayException {
+		gal.startServiceDiscovery(timeout, this.getProxyIdentifier(), aoi, true);
 
 	}
 
 	@Override
-	public void startServiceDiscovery(long timeout, Address aoi)
-			throws IOException, Exception, GatewayException {
-		gal.startServiceDiscovery(timeout, this.getProxyIdentifier(),
-				aoi, true);
-
+	public void frequencyAgility(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
+		gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(), scanChannel, scanDuration, true);
 	}
 
 	@Override
-	public void frequencyAgility(long timeout, short scanChannel,
-			short scanDuration) throws IOException, Exception, GatewayException {
-		gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(),
-				scanChannel, scanDuration, true);
+	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
+		return gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(), scanChannel, scanDuration, false);
 	}
 
 	@Override
-	public Status frequencyAgilitySync(long timeout, short scanChannel,
-			short scanDuration) throws IOException, Exception, GatewayException {
-		return gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(),
-				scanChannel, scanDuration, false);
-	}
-
-	@Override
-	public LQIInformation getLQIInformation(Address aoi) throws IOException,
-			Exception, GatewayException {
+	public LQIInformation getLQIInformation(Address aoi) throws IOException, Exception, GatewayException {
 		return gal.getLQIInformation(aoi);
 	}
-	
-	
+
 	@Override
-	public LQIInformation getLQIInformation() throws IOException, Exception,
-			GatewayException {
+	public LQIInformation getLQIInformation() throws IOException, Exception, GatewayException {
 		return gal.getAllLQIInformations();
 	}
 
 	@Override
-	public void sendZCLCommand(long timeout, ZCLCommand command)
-			throws IOException, Exception, GatewayException {
+	public void sendZCLCommand(long timeout, ZCLCommand command) throws IOException, Exception, GatewayException {
 		APSMessage _message = new APSMessage();
 		_message.setClusterID(command.getClusterID());
 		_message.setProfileID(command.getProfileID());
@@ -591,15 +477,13 @@ public class GalExtenderProxy implements IGalExtender {
 		_message.setRadius(command.getRadius());
 		_message.setSourceEndpoint(command.getSourceEndpoint());
 		_message.setTxOptions(command.getTxOptions());
-		_message.setData(org.energy_home.jemma.javagal.layers.business.Utils
-				.mergeBytesVect(command.getZCLHeader(), command.getZCLPayload()));
+		_message.setData(org.energy_home.jemma.javagal.layers.business.Utils.mergeBytesVect(command.getZCLHeader(), command.getZCLPayload()));
 		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), _message);
 
 	}
 
 	@Override
-	public void sendZDPCommand(long timeout, ZDPCommand command)
-			throws IOException, Exception, GatewayException {
+	public void sendZDPCommand(long timeout, ZDPCommand command) throws IOException, Exception, GatewayException {
 		APSMessage _message = new APSMessage();
 		_message.setClusterID(command.getClusterID());
 		_message.setProfileID(0x0000);
@@ -613,8 +497,6 @@ public class GalExtenderProxy implements IGalExtender {
 		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), _message);
 	}
 
-	
-
 	@Override
 	public void deleteProxy() throws Exception {
 
@@ -624,8 +506,7 @@ public class GalExtenderProxy implements IGalExtender {
 		 **/
 		synchronized (gal.getListGatewayEventListener()) {
 			for (int i = 0; i < gal.getListGatewayEventListener().size(); i++) {
-				if (gal.getListGatewayEventListener().get(i)
-						.getProxyIdentifier() == getProxyIdentifier()) {
+				if (gal.getListGatewayEventListener().get(i).getProxyIdentifier() == getProxyIdentifier()) {
 					gal.getListGatewayEventListener().remove(i);
 				}
 			}
@@ -641,8 +522,5 @@ public class GalExtenderProxy implements IGalExtender {
 		}
 
 	}
-
-	
-
 
 }

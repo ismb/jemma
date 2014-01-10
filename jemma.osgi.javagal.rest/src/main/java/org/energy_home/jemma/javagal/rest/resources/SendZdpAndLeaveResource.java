@@ -328,7 +328,7 @@ public class SendZdpAndLeaveResource extends ServerResource {
 
 				// TODO exists also leaveSync(timeout, addrOfInterest, mask)
 				// Leave
-				Status status = proxyGalInterface.leaveSync(timeout, address);
+				Status status = proxyGalInterface.leaveSync(timeout, address,0);
 				Info info = new Info();
 				info.setStatus(status);
 				Info.Detail detail = new Info.Detail();

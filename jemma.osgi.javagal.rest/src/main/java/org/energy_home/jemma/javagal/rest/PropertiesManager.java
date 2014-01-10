@@ -87,7 +87,7 @@ public class PropertiesManager {
 	 * to completely disable caching
 	 */
 	public int getHttpOptTimeout() {
-		String _value = props.getProperty("httpOptTimeout ");
+		String _value = props.getProperty("httpOptTimeout");
 		return Integer.parseInt(_value);
 
 	}

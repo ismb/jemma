@@ -74,6 +74,10 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
+
+
+
+
 public class GalController {
 	private GatewayStatus _gatewayStatus = GatewayStatus.GW_READY_TO_START;
 	private Long apsCallbackIdentifier = (long) 1;
@@ -349,9 +353,9 @@ public short configureEndpoint(long timeout, SimpleDescriptor desc)
 	}
 
 	/**
-	 * Returns the list of active endpoints from the cache of the GAL
+	 * Returns the list of NodeServices of all nodes into the network
 	 * 
-	 * @return the list of active endpoints.
+	 * @return the list of NodeServices for every node.
 	 * @throws IOException
 	 *             if an Input Output error occurs.
 	 * @throws Exception
