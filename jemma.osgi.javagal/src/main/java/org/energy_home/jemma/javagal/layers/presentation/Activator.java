@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.javagal.layers.presentation;
 
+import org.energy_home.jemma.zgd.GalExtenderProxy;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
 
 import java.io.File;
@@ -22,8 +24,6 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxy;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxyFactory;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -32,6 +32,8 @@ import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 /**
+ * Osgi Activator implementation.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -119,6 +121,9 @@ public class Activator implements BundleActivator {
 		log.info("Gal Osgi Stopped!");
 	}
 
+	/**
+	 * {@link GatewayInterface} Service Factory's implementation.
+	 */
 	public class GatewayInterfaceServiceFactory implements ServiceFactory {
 		GatewayInterface gatewayInterface = null;
 		@Override
@@ -148,6 +153,11 @@ public class Activator implements BundleActivator {
 		}
 	}
 
+	/**
+	 * {@link GalExtenderProxyFactory} Service Factory's implementation. It's a
+	 * factory that provides a reference to a {@code GalExtenderProxyFactory}
+	 * object.
+	 */
 	public class GatewayFactoryServiceFactory implements ServiceFactory {
 
 		@Override

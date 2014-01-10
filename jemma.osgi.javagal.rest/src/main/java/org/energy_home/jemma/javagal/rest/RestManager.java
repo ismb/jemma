@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxyFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientKey;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.data.Protocol;

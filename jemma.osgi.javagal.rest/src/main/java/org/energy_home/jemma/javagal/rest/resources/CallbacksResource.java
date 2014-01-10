@@ -142,8 +142,8 @@ public class CallbacksResource extends ServerResource {
 			proxyGalInterface = rcmal.getGatewayInterface();
 
 			RestApsMessageListener listener = new RestApsMessageListener(
-					callback, urilistener,rcmal);
-
+					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
+			
 			Long id = proxyGalInterface.createCallback(callback, listener);
 
 			if (id >= 0) {

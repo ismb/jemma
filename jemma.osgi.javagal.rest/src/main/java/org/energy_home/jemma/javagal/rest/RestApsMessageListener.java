@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
 
@@ -38,15 +39,20 @@ public class RestApsMessageListener implements APSMessageListener {
 	private Callback callback;
 	private String urilistener;
 	private ClientResources clientResource;
+	private final Context context;
+	private PropertiesManager _PropertiesManager;
 	
 	
 	
-	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource) {
+	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
 		super();
 		this.callback = callback;
 		this.urilistener = urilistener;
 		this.clientResource = _clientResource;
-	
+		this.context =  new Context();
+		this._PropertiesManager = __PropertiesManager;
+		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
+
 	}
 
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
@@ -58,7 +64,7 @@ public class RestApsMessageListener implements APSMessageListener {
 					try
 					{
 								
-					ClientResource resource = new ClientResource(urilistener);
+					ClientResource resource = new ClientResource(context,urilistener);
 					Info info = new Info();
 					Info.Detail detail = new Info.Detail();
 					detail.setAPSMessageEvent(message);

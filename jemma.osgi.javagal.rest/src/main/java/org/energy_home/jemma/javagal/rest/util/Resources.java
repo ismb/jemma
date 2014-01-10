@@ -20,17 +20,20 @@ package org.energy_home.jemma.javagal.rest.util;
  *
  */
 public class Resources {
-
 	/*
 	 * Root URIs
 	 */
-	// TODO look for this parameter on the old rest server code (it should be
-	// "/" in place of "/restifc/zgd"
-	public final static String GW_ROOT_URI = "";// "/restifc/zgd";
+	public final static String GW_ROOT_URI = "";
 	// Note that we consider only one net, so we have the only "default" one
 	public final static String NET_ROOT_URI = "/net";
-	public final static String NET_DEFAULT_ROOT_URI = "/default";
-	public final static String NWT_ROOT_URI = GW_ROOT_URI + NET_ROOT_URI
+	public static String NET_DEFAULT_ROOT_URI = "/default";
+	public static void setNET_DEFAULT_ROOT_URI(String nET_DEFAULT_ROOT_URI) {
+		NET_DEFAULT_ROOT_URI = "/" + nET_DEFAULT_ROOT_URI;
+		NWT_ROOT_URI = GW_ROOT_URI + NET_ROOT_URI
+				+ NET_DEFAULT_ROOT_URI;
+	}
+
+	public static String NWT_ROOT_URI = GW_ROOT_URI + NET_ROOT_URI
 			+ NET_DEFAULT_ROOT_URI;
 
 	/*

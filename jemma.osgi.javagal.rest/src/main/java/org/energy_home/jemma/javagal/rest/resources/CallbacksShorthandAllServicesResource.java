@@ -84,7 +84,7 @@ public class CallbacksShorthandAllServicesResource extends ServerResource {
 
 			// The callback set on the listener is empty
 			RestApsMessageListener listener = new RestApsMessageListener(
-					callback, urilistener,rcmal);
+					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
 			Long id = proxyGalInterface.createAPSCallback(listener);
 
 			if (id >= 0) {

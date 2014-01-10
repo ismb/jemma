@@ -30,8 +30,9 @@ import org.apache.commons.logging.LogFactory;
  * execution. It's THE way to control a number of parameters at startup.
  */
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class PropertiesManager {
 	private final Log logger = LogFactory.getLog(PropertiesManager.class);
@@ -60,10 +61,34 @@ public class PropertiesManager {
 
 	}
 
-	/* Debug */
+	/**
+	 * Get the debug messages enabled status 
+	 **/
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
 		return (_value.equalsIgnoreCase("0")) ? false : true;
+
+	}
+
+	/**
+	 * Decide if the Network Root URI can be obtained by appending the
+	 * net/default' suffix (SELECT 1), or by appending the net/<ExtendedPANId>'
+	 * suffix (SELECT 0)
+	 * */
+	public int getUseDefaultNWKRootURI() {
+		String _value = props.getProperty("UseDefaultNWKRootURI");
+		return Integer.parseInt(_value);
+
+	}
+
+	/**
+	 * HTTP option application timeout (in seconds) - Note: for remote
+	 * connection between GW and IPHA insert a value higher than 1. Set to zero
+	 * to completely disable caching
+	 */
+	public int getHttpOptTimeout() {
+		String _value = props.getProperty("httpOptTimeout");
+		return Integer.parseInt(_value);
 
 	}
 
@@ -77,8 +102,6 @@ public class PropertiesManager {
 		props.setProperty("debugEnabled", _debug.toString());
 
 	}
-
-	
 
 	/* Debug */
 	public int getIPPort() {

@@ -14,6 +14,6 @@
  *
  */
 /**
- * Data layer's implementations. 
+ * Concrete implementations of Data layer's classes. 
  */
 package org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation;

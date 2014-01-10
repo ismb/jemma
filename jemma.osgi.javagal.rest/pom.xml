@@ -59,9 +59,8 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.rest.Activator</Bundle-Activator>
 						<Import-Package> org.apache.commons.logging;version="[1.1,2)",
- org.energy_home.jemma.javagal.layers.business.implementations;version="[1.0,2)",
- org.energy_home.jemma.zgd;version="[1.4,2)",
- org.energy_home.jemma.zgd.jaxb;version="[1.0,2)",
+ org.energy_home.jemma.zgd;version="1.4.1",
+ org.energy_home.jemma.zgd.jaxb;version="1.0.4",
  org.osgi.framework;version="[1.5,2)",
  org.osgi.util.tracker;version="1.4.2",
  com.sun.xml.internal.bind.marshaller;resolution:=optional, 
@@ -99,12 +98,17 @@ org.restlet.util
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.javagal</artifactId>
-			<version>1.0</version>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.restlet</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>2.1.4</version>
 		</dependency>
+                <dependency>
+                        <groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
+                        <artifactId>JAXBNamespacePrefixMapper</artifactId>
+                        <version>2.2.4</version>
+                </dependency>
 	</dependencies>
 </project>

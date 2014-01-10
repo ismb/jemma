@@ -314,11 +314,5 @@
 			<version>${jaxb-osgi.version}</version>
 			<scope>compile</scope>
 		</dependency> 
-		
-		<dependency>
-			<groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
-			<artifactId>JAXBNamespacePrefixMapper</artifactId>
-			<version>2.2.4</version>
-		</dependency> 
 	</dependencies>
 </project>

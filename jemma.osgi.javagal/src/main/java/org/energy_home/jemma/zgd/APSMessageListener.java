@@ -18,9 +18,18 @@ package org.energy_home.jemma.zgd;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 
 /**
+ * Aps message listener interface. Objects interested in Aps message's
+ * notification must implement this interface.
+ *
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
 public interface APSMessageListener {
+	/**
+	 * Called to notify registered Aps message listeners.
+	 * 
+	 * @param message
+	 *            the message to notify.
+	 */
 	void notifyAPSMessage(APSMessageEvent message);
 }

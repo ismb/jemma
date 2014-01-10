@@ -16,13 +16,27 @@
 package org.energy_home.jemma.zgd;
 
 /**
+ * Extension for {@link GatewayInterface}. It provides proxy capabilities to
+ * implementers.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
 public interface IGalExtender extends GatewayInterface {
 
+	/**
+	 * Gets the proxy identifier.
+	 * 
+	 * @return the proxy identifier.
+	 */
 	public int getProxyIdentifier();
 
+	/**
+	 * Deletes the proxy from the registered proxies' list.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
 	public void deleteProxy() throws Exception;
 
 }

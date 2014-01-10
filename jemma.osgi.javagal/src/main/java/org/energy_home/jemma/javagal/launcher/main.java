@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.javagal.launcher;
 
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayException;
 
 import java.io.File;
@@ -26,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxyFactory;
 
 /**
  * Starter class for the Javagal project.
