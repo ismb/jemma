@@ -457,7 +457,7 @@ public class Discovery_Freshness_ForcePing {
 	}
 
 	/**
-	 * Class used to split the ApsMessage to Lqi_Response
+	 * Class used to split the ApsMessage intto the Lqi_Response class
 	 */
 	public static void Mgmt_LQI_Response(APSMessageEvent message) {
 		Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(message.getData());
