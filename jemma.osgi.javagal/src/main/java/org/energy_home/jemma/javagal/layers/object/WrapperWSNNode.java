@@ -68,7 +68,7 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * return the WsnNode from the frapper
+	 * return the WsnNode from the wrapper
 	 */
 	public synchronized WSNNode get_node() {
 		return _node;
