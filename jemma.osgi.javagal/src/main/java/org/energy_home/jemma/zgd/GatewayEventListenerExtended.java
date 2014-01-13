@@ -76,7 +76,7 @@ public interface GatewayEventListenerExtended extends GatewayEventListener {
 	void notifyZCLCommand(ZCLMessage message);
 
 	/**
-	 * Called to notify Frequency Agility response.
+	 * Called to notify Frequency Agility (Network Update) response.
 	 * 
 	 * @param status
 	 *            the status to notify.
