@@ -78,7 +78,7 @@
 		<maven.license.plugin.version>2.5</maven.license.plugin.version>
 		<maven.clean.plugin.version>2.5</maven.clean.plugin.version>
 		<felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version>
-		<org.restlet.version>1.1</org.restlet.version>
+		<org.restlet.version>2.1.4</org.restlet.version>
 		
 		<!-- Internal dependencies version properties -->
 		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.2</org.energy-home.jemma.osgi.ah.hac.lib.version>
@@ -106,9 +106,9 @@
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
-		<!--<module>jemma.osgi.javagal</module>
-		<module>jemma.osgi.javagal.rest</module>-->
-		<module>jemma.osgi.device.zgd</module>
+		<module>jemma.osgi.javagal</module>
+		<module>jemma.osgi.javagal.rest</module>
+		<!--<module>jemma.osgi.device.zgd</module>-->
 		<module>jemma.osgi.ah.felix.console.web</module>
 		<module>jemma.osgi.zgd</module>
 		<module>jemma.osgi.ah.energyathome</module>
@@ -313,12 +313,6 @@
 			<artifactId>jaxb-osgi</artifactId>
 			<version>${jaxb-osgi.version}</version>
 			<scope>compile</scope>
-		</dependency> 
-		
-		<dependency>
-			<groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
-			<artifactId>JAXBNamespacePrefixMapper</artifactId>
-			<version>2.2.4</version>
 		</dependency> 
 	</dependencies>
 </project>

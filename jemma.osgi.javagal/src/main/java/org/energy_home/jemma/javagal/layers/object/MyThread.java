@@ -16,6 +16,9 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 /**
+ * Wrapper of the Thread standard class.
+ * With this class is possible send parameters to the procedure that is execute by the thread
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -30,7 +33,9 @@ public class MyThread implements Runnable {
 	   }
 	   
 	   public Object getParameter()
-	   {return parameter;}
+	   {
+		   return parameter;
+	   }
 	   
 	  
 	}

@@ -35,15 +35,15 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 /**
+ *  Resource file used to manage the API POST:removeBindingSync, removeBinding
+ *
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
 public class UnbindingsResource extends ServerResource {
 	private GatewayInterface proxyGalInterface;
 
-	// TODO how to use the address read address? There is probably a mistake to
-	// correct in this resource!
-
+	
 	@Post
 	public void processPost(String body) {
 
@@ -220,6 +220,11 @@ public class UnbindingsResource extends ServerResource {
 		}
 	}
 
+	/**
+	 * Gets the RestManager.
+	 * 
+	 * @return the RestManager.
+	 */
 	private RestManager getRestManager() {
 		return ((GalManagerRestApplication) getApplication()).getRestManager();
 	}

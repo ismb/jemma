@@ -24,10 +24,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
 
 /**
+ * Implementation of {@code APSMessageListener} interface for the Rest server.
+ * <p>
+ * Rest clients interested to listen to Aps messages, resister themselves
+ * indicating an uri, here called urilistener, where they are listening for
+ * incoming notifications. In practice the clients opens an http server at the
+ * urilistener uri where this class can {@code POST} incoming notifications.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -38,17 +46,41 @@ public class RestApsMessageListener implements APSMessageListener {
 	private Callback callback;
 	private String urilistener;
 	private ClientResources clientResource;
+	private final Context context;
+	private PropertiesManager _PropertiesManager;
 	
 	
-	
-	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource) {
+	/**
+	 * Creates a new instance with a given callback, urilistener and client
+	 * resource.
+	 * <p>
+	 * Rest clients interested to listen to Aps messages, resister themselves
+	 * indicating an uri, here called urilistener, where they are listening for
+	 * incoming notifications. In practice the clients opens an http server at
+	 * the urilistener uri where this class can {@code POST} incoming
+	 * notifications.
+	 * 
+	 * @param callback
+	 *            the callback.
+	 * @param urilistener
+	 *            the urilistener.
+	 * @param _clientResource
+	 *            the client resource.
+	 */	
+	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
 		super();
 		this.callback = callback;
 		this.urilistener = urilistener;
 		this.clientResource = _clientResource;
-	
-	}
+		this.context =  new Context();
+		this._PropertiesManager = __PropertiesManager;
+		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
 
+	}
+	
+	/**
+	 * Notification of an incoming Aps message.
+	 */
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
 
 		if (urilistener != null) {
@@ -58,7 +90,7 @@ public class RestApsMessageListener implements APSMessageListener {
 					try
 					{
 								
-					ClientResource resource = new ClientResource(urilistener);
+					ClientResource resource = new ClientResource(context,urilistener);
 					Info info = new Info();
 					Info.Detail detail = new Info.Detail();
 					detail.setAPSMessageEvent(message);
@@ -82,14 +114,30 @@ public class RestApsMessageListener implements APSMessageListener {
 
 	}
 
+	/**
+	 * Gets the urilistener.
+	 * 
+	 * @return the urilistener.
+	 */
 	public String getUrilistener() {
 		return urilistener;
 	}
 
+	/**
+	 * Gets the callback.
+	 * 
+	 * @return the callback.
+	 */
 	public Callback getCallback() {
 		return callback;
 	}
 
+	/**
+	 * Sets the callback id.
+	 * 
+	 * @param id
+	 *            the callback id to set.
+	 */
 	public void setCallBackId(Long id) {
 
 		CalbackIdentifier = id;

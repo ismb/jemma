@@ -22,19 +22,48 @@ import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 
 /**
  * Interface for all serial implementation of the FlexGrid key (jssc and RxTx).
- */
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
 public interface IConnector {
+	/**
+	 * Gets the actual DataLayer implementation object.
+	 * 
+	 * @return the actual DataLayer object.
+	 */
 	public IDataLayer getDataLayer();
 
+	/**
+	 * Initializes the dongle.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs in dongle initialization.
+	 */
 	public void inizialize() throws Exception;
 
+	/**
+	 * Writes data on the dongle.
+	 * 
+	 * @param buff
+	 *            the data to write.
+	 * @throws Exception
+	 *             if errors occurs in write process.
+	 */
 	public void write(ByteArrayObject buff) throws Exception;
 
+	/**
+	 * Tells if the dongle is connected or not.
+	 * 
+	 * @return true if dongle is connected or false if not.
+	 */
 	public boolean isConnected();
 
+	/**
+	 * Disconnects the dongle.
+	 * 
+	 * @throws IOException
+	 *             if an error occurs in disconnection phase.
+	 */
 	public void disconnect() throws IOException;
 }

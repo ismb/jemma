@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.object;
 import java.util.Properties;
 
 /**
+ * Gateway Properties class.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -43,7 +45,10 @@ public class GatewayProperties extends Properties {
 	public static final String ZGD_DONGLE_SPEED_PROP_NAME = "zgd.dongle.speed";
 	public static final String ZGD_DEBUG_PROP_NAME = "zgd.log.debug";
 	
-	
+	/**
+	 * Creates a new instance setting up a set of initial properties for the
+	 * gateway.
+	 */	
 	public GatewayProperties() {
 		// set default values
 		setProperty(FACTORY_IMPLEMENTATION_CLASS, "it.telecomitalia.zgd.impl.GatewayFactoryImpl");

@@ -13,4 +13,7 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
+/**
+ * Root layers package.
+ */
 package org.energy_home.jemma.javagal.layers;

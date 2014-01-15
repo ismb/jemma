@@ -18,9 +18,7 @@ package org.energy_home.jemma.javagal.layers.business;
 /**
  * Utilities class. Provides convenient methods to manipulate data (conversion,
  * reversing, truncating and so on).
- */
-
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -93,10 +91,10 @@ public class Utils {
 	}
 
 	/**
-	 * Build a channel mask as {@code byte[]} starting from the provided long.
+	 * Build a channel mask as {@code byte[]} starting from the provided short.
 	 * 
 	 * @param channel
-	 *            the channel mask contained in a long number
+	 *            the channel mask contained in a short number
 	 * @return the built channel mask.
 	 */
 	public static final byte[] buildChannelMask(short channel) {

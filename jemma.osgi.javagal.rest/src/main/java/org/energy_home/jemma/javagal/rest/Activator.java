@@ -17,18 +17,23 @@ package org.energy_home.jemma.javagal.rest;
  */
 
 import java.io.File;
+import java.math.BigInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.business.implementations.GalExtenderProxyFactory;
+import org.energy_home.jemma.javagal.rest.util.Resources;
+import org.energy_home.jemma.zgd.*;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * Osgi's activator for the javagal Rest package.
+ * 
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class Activator implements BundleActivator {
 	Log log = LogFactory.getLog(Activator.class);
@@ -43,11 +48,13 @@ public class Activator implements BundleActivator {
 
 	ServiceTracker serviceTracker = null;
 
+	/**
+	 * Starts the osgi's bundle.
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		String _path = File.separator + "config.properties";
 
-		PropertiesManager = new PropertiesManager(bundleContext.getBundle()
-				.getResource(_path));
+		PropertiesManager = new PropertiesManager(bundleContext.getBundle().getResource(_path));
 
 		if (PropertiesManager.getDebugEnabled())
 			log.info("Starting Rest bundle");
@@ -58,6 +65,9 @@ public class Activator implements BundleActivator {
 			log.info("Rest bundle started!");
 	}
 
+	/**
+	 * Stops the osgi's bundle.
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		if (PropertiesManager.getDebugEnabled())
 			log.info("Stopping Rest bundle");
@@ -74,14 +84,20 @@ public class Activator implements BundleActivator {
 		PropertiesManager = null;
 	}
 
+	/**
+	 * Factory tracker class for GatewayInterface objects.
+	 * 
+	 * @author
+	 *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+	 * 
+	 */
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
 		ServiceReference reference;
 		GalExtenderProxyFactory gatewayFactory;
 
 		BundleContext _context = null;
-		private final Log logger = LogFactory
-				.getLog(GatewayInterfaceFactoryTracker.class);
+		private final Log logger = LogFactory.getLog(GatewayInterfaceFactoryTracker.class);
 
 		public GatewayInterfaceFactoryTracker(BundleContext context) {
 			// super(context, GalExtenderProxyFactory.class.getName(), null);
@@ -91,8 +107,13 @@ public class Activator implements BundleActivator {
 
 		@Override
 		public Object addingService(ServiceReference reference) {
-			gatewayFactory = (GalExtenderProxyFactory) context
-					.getService(reference);
+
+			gatewayFactory = (GalExtenderProxyFactory) context.getService(reference);
+
+			if (PropertiesManager.getUseDefaultNWKRootURI() == 0) {
+				Resources.setNET_DEFAULT_ROOT_URI(String.format("%016X", gatewayFactory.getExtendedPanId()));
+			}
+
 			restManager = new RestManager(PropertiesManager, gatewayFactory);
 
 			if (PropertiesManager.getDebugEnabled())

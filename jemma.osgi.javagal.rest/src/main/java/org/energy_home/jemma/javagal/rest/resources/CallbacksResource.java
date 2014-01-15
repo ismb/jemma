@@ -37,9 +37,8 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 /**
- * Provides ListCallbacks and CreateCallback (Note that both are only synch).
- */
-/**
+ * Resource file used to manage the API GET:getlistCallbacks. POST:createCallback
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -142,8 +141,8 @@ public class CallbacksResource extends ServerResource {
 			proxyGalInterface = rcmal.getGatewayInterface();
 
 			RestApsMessageListener listener = new RestApsMessageListener(
-					callback, urilistener,rcmal);
-
+					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
+			
 			Long id = proxyGalInterface.createCallback(callback, listener);
 
 			if (id >= 0) {
@@ -201,6 +200,11 @@ public class CallbacksResource extends ServerResource {
 		
 	}
 
+	/**
+	 * Gets the RestManager.
+	 * 
+	 * @return the RestManager.
+	 */
 	private RestManager getRestManager() {
 		return ((GalManagerRestApplication) getApplication()).getRestManager();
 	}
