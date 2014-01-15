@@ -14,6 +14,8 @@
  *
  */
 /**
- * Launcher's package for stand alone Gal execution.
+ * Resources' objects. Every resource offered via Rest by the 
+ * Zigbee Gateway Device has a class in this package associated
+ * with a path uri exposed by the Restlet server.
  */
 package org.energy_home.jemma.javagal.rest.resources;
