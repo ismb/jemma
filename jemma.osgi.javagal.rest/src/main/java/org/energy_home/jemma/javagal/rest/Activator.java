@@ -29,6 +29,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
+ * Osgi's activator for the javagal Rest package.
+ * 
  * @author 
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
@@ -46,6 +48,9 @@ public class Activator implements BundleActivator {
 
 	ServiceTracker serviceTracker = null;
 
+	/**
+	 * Starts the osgi's bundle.
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		String _path = File.separator + "config.properties";
 
@@ -60,6 +65,9 @@ public class Activator implements BundleActivator {
 			log.info("Rest bundle started!");
 	}
 
+	/**
+	 * Stops the osgi's bundle.
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		if (PropertiesManager.getDebugEnabled())
 			log.info("Stopping Rest bundle");
@@ -76,6 +84,13 @@ public class Activator implements BundleActivator {
 		PropertiesManager = null;
 	}
 
+	/**
+	 * Factory tracker class for GatewayInterface objects.
+	 * 
+	 * @author
+	 *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+	 * 
+	 */
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
 		ServiceReference reference;
