@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.javagal.rest.util;
 /**
+ * Client identification key parameters.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -23,18 +25,40 @@ public class ClientKey {
 
 	private int port = -1;
 
+	/**
+	 * Gets the client's address.
+	 * 
+	 * @return the client's address.
+	 */
 	public String getAddress() {
 		return address;
 	}
 
+	/**
+	 * Sets the client's address.
+	 * 
+	 * @param address
+	 *            the client's address to set.
+	 */
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
+	/**
+	 * Gets the client's port.
+	 * 
+	 * @return the client's port.
+	 */
 	public int getPort() {
 		return port;
 	}
 
+	/**
+	 * Sets the client's port.
+	 * 
+	 * @param port
+	 *            the client's port to set.
+	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
