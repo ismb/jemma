@@ -6,6 +6,7 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 
 ## Get Started
 
+<<<<<<< HEAD
 **Quick Links:**
 
 * If you want to run the code, follow [this guide](https://github.com/ismb/jemma/wiki/RunOnPc)
@@ -14,10 +15,19 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 More [User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation) (tutorials, etc.) and [Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) will be available soon on the project wiki.
 
 (Note: the documentation for the JEMMA project is still under construction).
+=======
+[User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation) (tutorials, etc.) is available on the project wiki.
+[Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) is also available.
+>>>>>>> eac87a9f41bb7f4f0ffca04b27355441f927821f
 
 ## License
 
 The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which holds the Copyright on the original code base.
 
 The full JEMMA source code, unless specified otherwise in specific files, have been released under the GNU Lesser General Public License (**LGPL**) version 3. LGPL conditions can be found on the [GNU website](https://www.gnu.org/licenses/lgpl.html).
+
+## Contribute
+
+Willing to contribute ? Check our [project tracker](https://github.com/ismb/jemma/issues).
+Information on how to contribute can be found [here](https://github.com/ismb/jemma/wiki/Contribute)
 
