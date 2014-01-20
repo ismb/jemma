@@ -82,9 +82,9 @@ public class GatewayFactoryImpl extends GatewayFactory {
 //		};
 //		
 		client = new Client(Protocol.HTTP);
-		client.start();
-		
-		//client.setConnectTimeout(Integer.parseInt(properties.getProperty(GatewayProperties.CONNECTION_TIMEOUT)));
+		//client.start();
+
+		client.setConnectTimeout(Integer.parseInt(properties.getProperty(GatewayProperties.CONNECTION_TIMEOUT)));
 
 		component = new Component();
 		Integer port=Integer.parseInt(properties.getProperty(GatewayProperties.LOCAL_PORT));
