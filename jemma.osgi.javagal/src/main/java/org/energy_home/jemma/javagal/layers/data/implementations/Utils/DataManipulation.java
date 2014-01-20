@@ -78,22 +78,7 @@ public class DataManipulation {
 
 	}
 
-	/**
-	 * 
-	 * @param _value
-	 *            byte to check the value
-	 * @param position
-	 *            to check the bit
-	 * @return true if the bit is 1
-	 */
-	/*
-	 * public static boolean getBit(byte _value, int position) { return
-	 * (((_value >> position) & 1) == 1); }
-	 */
-	/*
-	 * public static boolean getBit(short _value, int position) { return
-	 * (((_value >> position) & 1) == 1); }
-	 */
+	
 	
 	/**
 	 * Creates an int starting from two given shorts. An int is composed of four

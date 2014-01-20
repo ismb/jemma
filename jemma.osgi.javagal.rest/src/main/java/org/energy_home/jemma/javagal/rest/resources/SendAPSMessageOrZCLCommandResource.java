@@ -37,6 +37,8 @@ import org.restlet.resource.ServerResource;
 
 
 /**
+ *  Resource file used to manage the API POST:sendAPSMessage, sendZCLCommand
+ *  
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -184,7 +186,6 @@ public class SendAPSMessageOrZCLCommandResource extends ServerResource {
 					// Only Asynch is admitted.
 					proxyGalInterface = getRestManager().getClientObjectKey(-1, getClientInfo().getAddress()).getGatewayInterface();
 					int txTime = Util.currentTimeMillis();
-					// // TODO control if it's correct this invocation/result
 					proxyGalInterface.sendAPSMessage(apsMessage);
 					Info _info = new Info();
 					Status st=new Status();
@@ -311,6 +312,11 @@ public class SendAPSMessageOrZCLCommandResource extends ServerResource {
 		}
 	}
 
+	/**
+	 * Gets the RestManager.
+	 * 
+	 * @return the RestManager.
+	 */
 	private RestManager getRestManager() {
 		return ((GalManagerRestApplication) getApplication()).getRestManager();
 	}

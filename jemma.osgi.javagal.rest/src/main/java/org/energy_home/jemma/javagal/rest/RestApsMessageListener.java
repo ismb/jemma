@@ -29,6 +29,13 @@ import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
 
 /**
+ * Implementation of {@code APSMessageListener} interface for the Rest server.
+ * <p>
+ * Rest clients interested to listen to Aps messages, resister themselves
+ * indicating an uri, here called urilistener, where they are listening for
+ * incoming notifications. In practice the clients opens an http server at the
+ * urilistener uri where this class can {@code POST} incoming notifications.
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -43,7 +50,23 @@ public class RestApsMessageListener implements APSMessageListener {
 	private PropertiesManager _PropertiesManager;
 	
 	
-	
+	/**
+	 * Creates a new instance with a given callback, urilistener and client
+	 * resource.
+	 * <p>
+	 * Rest clients interested to listen to Aps messages, resister themselves
+	 * indicating an uri, here called urilistener, where they are listening for
+	 * incoming notifications. In practice the clients opens an http server at
+	 * the urilistener uri where this class can {@code POST} incoming
+	 * notifications.
+	 * 
+	 * @param callback
+	 *            the callback.
+	 * @param urilistener
+	 *            the urilistener.
+	 * @param _clientResource
+	 *            the client resource.
+	 */	
 	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
 		super();
 		this.callback = callback;
@@ -54,7 +77,10 @@ public class RestApsMessageListener implements APSMessageListener {
 		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
 
 	}
-
+	
+	/**
+	 * Notification of an incoming Aps message.
+	 */
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
 
 		if (urilistener != null) {
@@ -88,14 +114,30 @@ public class RestApsMessageListener implements APSMessageListener {
 
 	}
 
+	/**
+	 * Gets the urilistener.
+	 * 
+	 * @return the urilistener.
+	 */
 	public String getUrilistener() {
 		return urilistener;
 	}
 
+	/**
+	 * Gets the callback.
+	 * 
+	 * @return the callback.
+	 */
 	public Callback getCallback() {
 		return callback;
 	}
 
+	/**
+	 * Sets the callback id.
+	 * 
+	 * @param id
+	 *            the callback id to set.
+	 */
 	public void setCallBackId(Long id) {
 
 		CalbackIdentifier = id;

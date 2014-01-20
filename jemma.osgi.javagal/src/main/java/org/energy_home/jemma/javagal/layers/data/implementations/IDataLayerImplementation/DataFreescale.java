@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,14 +70,15 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 /**
  * Freescale implementation of {@link IDataLayer}.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class DataFreescale implements IDataLayer {
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
-	private final List<ParserLocker> listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
+	private final List<ParserLocker> listLocker;
 
 	public final static short MAX_TO_SEND_BYTE_ARRAY = 2048;
 
@@ -92,6 +94,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
+		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 	}
 
@@ -335,7 +338,6 @@ public class DataFreescale implements IDataLayer {
 											gal.getNetworkcache().add(o);
 
 										} catch (GatewayException e) {
-
 											logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 										} catch (Exception e) {
 
@@ -443,8 +445,6 @@ public class DataFreescale implements IDataLayer {
 					_zm.setZCLPayload(_payload.getRealByteArray());
 					gal.get_gatewayEventManager().notifyZCLCommand(_zm);
 					gal.getApsManager().APSMessageIndication(messageEvent);
-
-					
 
 				}
 			}
@@ -856,7 +856,7 @@ public class DataFreescale implements IDataLayer {
 				 * synchronized (listLocker) { for (ParserLocker pl :
 				 * listLocker) { if (pl.getType() == TypeMessage.LEAVE) {
 				 * synchronized (pl) { pl.getStatus().setCode(message[3]);
-				 * pl.notify(); } break; } } }
+				 * pl.notify(); } //break; } } }
 				 */
 
 			}
@@ -1694,22 +1694,31 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.APSME_SET);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
 
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -1749,21 +1758,32 @@ public class DataFreescale implements IDataLayer {
 
 		lock.setType(TypeMessage.APSME_GET);
 		lock.set_Key(String.format("%02X", _AttID));
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.error("Timeout expired in APSME-GET.Request");
@@ -1800,22 +1820,31 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NMLE_GET);
 		lock.set_Key(String.format("%02X", _AttID));
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
 			}
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.error("Timeout expired in NLME-GET.Request");
@@ -1860,22 +1889,31 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.STOP_NETWORK);
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
 			}
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -1913,20 +1951,30 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 		String _key = String.format("%016X", _DSTAdd) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(makeByteArrayFromApsMessage(message));
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(makeByteArrayFromApsMessage(message));
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -1949,7 +1997,6 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 		ByteArrayObject _res = new ByteArrayObject();
-
 		_res.addByte(desc.getEndPoint().byteValue());/* End Point */
 		_res.addBytesShort(Short.reverseBytes(desc.getApplicationProfileIdentifier().shortValue()), 2);
 		_res.addBytesShort(Short.reverseBytes(desc.getApplicationDeviceIdentifier().shortValue()), 2);
@@ -1979,21 +2026,29 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CONFIGURE_END_POINT);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2109,22 +2164,30 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.MODE_SELECT);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+				}
+			}
+
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2145,15 +2208,25 @@ public class DataFreescale implements IDataLayer {
 			LogicalType devType = gal.getPropertiesManager().getSturtupAttributeInfo().getDeviceType();
 			ByteArrayObject _res = new ByteArrayObject();
 
-			if (devType == LogicalType.CURRENT)
+			if (devType == LogicalType.CURRENT) {
 				throw new Exception("LogicalType not Valid!");
-			else if (devType == LogicalType.COORDINATOR)
-				_res.addByte((byte) 0xC0);/* Coordinator */
-			else if (devType == LogicalType.END_DEVICE)
-				_res.addByte((byte) 0x20);/* End Device */
-			else if (devType == LogicalType.ROUTER)
-				_res.addByte((byte) 0x80);/* Router */
+			} else if (devType == LogicalType.COORDINATOR) {
 
+				_res.addByte((byte) 0xC0);/* Coordinator */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == COORDINATOR");
+				}
+			} else if (devType == LogicalType.END_DEVICE) {
+				_res.addByte((byte) 0x20);/* End Device */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == ENDDEVICE");
+				}
+			} else if (devType == LogicalType.ROUTER) {
+				_res.addByte((byte) 0x80);/* Router */
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("DeviceType == ROUTER");
+				}
+			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("StartupSet value read from PropertiesManager:" + gal.getPropertiesManager().getStartupSet());
 				logger.info("StartupControlMode value read from PropertiesManager:" + gal.getPropertiesManager().getSturtupAttributeInfo().getStartupControl().byteValue());
@@ -2171,21 +2244,29 @@ public class DataFreescale implements IDataLayer {
 			}
 			ParserLocker lock = new ParserLocker();
 			lock.setType(TypeMessage.START_NETWORK);
-
-			synchronized (listLocker) {
-				listLocker.add(lock);
-			}
-			addToSendDataQueue(_res);
-			synchronized (lock) {
-				try {
-					lock.wait(timeout);
-				} catch (InterruptedException e) {
-
+			Status status = null;
+			try {
+				synchronized (listLocker) {
+					listLocker.add(lock);
 				}
-			}
-			Status status = lock.getStatus();
-			synchronized (listLocker) {
-				listLocker.remove(lock);
+				addToSendDataQueue(_res);
+				synchronized (lock) {
+					try {
+						lock.wait(timeout);
+					} catch (InterruptedException e) {
+
+					}
+				}
+				status = lock.getStatus();
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+					listLocker.remove(lock);
+				}
+			} catch (Exception e) {
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+					listLocker.remove(lock);
+				}
 			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2313,20 +2394,30 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.WRITE_SAS);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
+		Status status = null;
+		try {
 
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2364,20 +2455,30 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.PERMIT_JOIN);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID)
 			throw new GatewayException("Timeout expired in Permit Join");
@@ -2426,21 +2527,29 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CHANNEL_REQUEST);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2469,21 +2578,30 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.READ_EXT_ADDRESS);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2522,21 +2640,29 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.READ_IEEE_ADDRESS);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2580,22 +2706,33 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NODE_DESCRIPTOR);
-		lock.set_Key(String.format("%04X", addrOfInterest.getNetworkAddress()));
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
+		String __Key = String.format("%04X", addrOfInterest.getNetworkAddress());
+		lock.set_Key(__Key);
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
 			}
 		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			throw new GatewayException("Timeout expired in ZDP-NodeDescriptor.Request:" + addrOfInterest.getNetworkAddress());
@@ -2639,21 +2776,29 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ACTIVE_EP);
 		lock.set_Key(String.format("%04X", aoi.getNetworkAddress()));
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -2746,21 +2891,30 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.DEREGISTER_END_POINT);
+		Status status = null;
 
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(INTERNAL_TIMEOUT);
-			} catch (InterruptedException e) {
-
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(INTERNAL_TIMEOUT);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2790,25 +2944,33 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_END_POINT_LIST);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\n\rAPS-GetEndPointIdList.Request command:" + _res.ToHexString() + "\n\r");
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(INTERNAL_TIMEOUT);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.info("\n\rAPS-GetEndPointIdList.Request command:" + _res.ToHexString() + "\n\r");
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(INTERNAL_TIMEOUT);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2853,20 +3015,29 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_SIMPLE_DESCRIPTOR);
 		lock.set_Key(Key);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2918,20 +3089,30 @@ public class DataFreescale implements IDataLayer {
 																		 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_BINDINGS);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3009,21 +3190,30 @@ public class DataFreescale implements IDataLayer {
 																		 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ADD_BINDING);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3102,21 +3292,29 @@ public class DataFreescale implements IDataLayer {
 																		 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.REMOVE_BINDING);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3240,25 +3438,33 @@ public class DataFreescale implements IDataLayer {
 		_res = Set_SequenceStart_And_FSC(_res, (byte) 0xA3, (byte) 0x3F);
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_DEVICE_KEY_PAIR_SET);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\n\rAPS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString() + "\n\r");
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(INTERNAL_TIMEOUT);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.info("\n\rAPS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString() + "\n\r");
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(INTERNAL_TIMEOUT);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3292,25 +3498,34 @@ public class DataFreescale implements IDataLayer {
 		_res = Set_SequenceStart_And_FSC(_res, (byte) 0xA3, (byte) 0x51);
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_NEIGHBOR_TABLE_ENTRY);
-
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
-
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\n\rZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString() + "\n\r");
-		}
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(INTERNAL_TIMEOUT);
-			} catch (InterruptedException e) {
-
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
 			}
-		}
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
+
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.info("\n\rZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString() + "\n\r");
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(INTERNAL_TIMEOUT);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+				listLocker.remove(lock);
+			}
+
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3350,24 +3565,33 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NMLE_SET);
-		synchronized (listLocker) {
-			listLocker.add(lock);
-		}
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
 
-		addToSendDataQueue(_res);
-		synchronized (lock) {
-			try {
-				lock.wait(timeout);
-			} catch (InterruptedException e) {
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
 
+				}
+			}
+
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
 			}
 		}
-
-		Status status = lock.getStatus();
-		synchronized (listLocker) {
-			listLocker.remove(lock);
-		}
-
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.error("Timeout expired in NMLE SET");

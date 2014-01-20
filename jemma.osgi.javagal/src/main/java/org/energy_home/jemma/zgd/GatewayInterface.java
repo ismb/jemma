@@ -57,7 +57,7 @@ public interface GatewayInterface {
 	 * @param timeout
 	 *            to receive response
 	 */
-	public short getChannelSync(long timeout) throws Exception,
+	 short getChannelSync(long timeout) throws Exception,
 			GatewayException;
 
 	
@@ -263,20 +263,11 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	void startGatewayDevice(long timeout) throws IOException, Exception,
 			GatewayException;
 
-	/**
-	 * Allows to start/create a ZigBee network using a set of default values
-	 * inside the GAL
-	 * 
-	 * @param timeout
-	 * @throws IOException
-	 * @throws Exception
-	 * @throws GatewayException
-	 */
-	Status startGatewayDeviceSync(long timeout) throws IOException, Exception,
-			GatewayException;
+	
 
 	/**
 	 * Returns the list of active nodes and connected to the ZigBee network from
@@ -356,19 +347,7 @@ public interface GatewayInterface {
 			Address addrOfInterest) throws IOException, Exception,
 			GatewayException;
 
-	/**
-	 * Activation of the discovery procedures of the services (the endpoints) of
-	 * a node connected to the ZigBee network
-	 * 
-	 * @param timeout
-	 * @param addrOfInterest
-	 * @throws IOException
-	 * @throws Exception
-	 * @throws GatewayException
-	 */
-	List<Short> startServiceDiscoveryOldSync(long timeout, Address addrOfInterest)
-			throws IOException, Exception, GatewayException;
-
+	
 	/**
 	 * Retrieves the informations about the ServiceDescriptor of a specific
 	 * endpoint of a ZigBee node
@@ -479,26 +458,11 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	void leave(long timeout, Address addrOfInterest) throws IOException,
 			Exception, GatewayException;
 
-	/*
-	 * It�s a command to generate the disassociation of a node from the network
-	 * ZigBee
-	 * 
-	 * @param timeout
-	 * 
-	 * @param addrOfInterest
-	 * 
-	 * @throws IOException
-	 * 
-	 * @throws Exception
-	 * 
-	 * @throws GatewayException
-	 */
-	Status leaveSync(long timeout, Address addrOfInterest) throws IOException,
-			Exception, GatewayException;
-
+	
 	/**
 	 * It�s a command to generate the disassociation of a node from the network
 	 * ZigBee. Mask equals to 0x00 close the network, 0xff leaves the network
@@ -558,7 +522,7 @@ public interface GatewayInterface {
 	 * @throws GatewayException
 	 */
 
-	public Status addBindingSync(long timeout, Binding binding)
+	Status addBindingSync(long timeout, Binding binding)
 			throws IOException, Exception, GatewayException;
 
 	/**
@@ -633,7 +597,7 @@ public interface GatewayInterface {
 	 * @throws GatewayException
 	 */
 
-	public BindingList getNodeBindingsSync(long timeout, Address aoi,
+	BindingList getNodeBindingsSync(long timeout, Address aoi,
 			short index) throws IOException, Exception, GatewayException;
 
 	/**
@@ -685,6 +649,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	void sendAPSMessage(APSMessage message) throws IOException, Exception,
 			GatewayException;
 
@@ -761,7 +726,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	public LQIInformation getLQIInformation(Address aoi) throws IOException,
+	LQIInformation getLQIInformation(Address aoi) throws IOException,
 			Exception, GatewayException;
 
 	
@@ -772,7 +737,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	public LQIInformation getLQIInformation() throws IOException,
+	 LQIInformation getLQIInformation() throws IOException,
 			Exception, GatewayException;
 
 	
