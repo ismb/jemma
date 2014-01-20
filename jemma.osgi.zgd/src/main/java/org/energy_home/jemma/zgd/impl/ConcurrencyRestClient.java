@@ -16,10 +16,10 @@
 package org.energy_home.jemma.zgd.impl;
 
 import org.restlet.Client;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.Method;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
+import org.restlet.representation.Representation;
 
 class ConcurrencyRestClient {
 	private Client restClient;
@@ -29,19 +29,29 @@ class ConcurrencyRestClient {
 	}
 	
 	synchronized Response get(String uri) {
-		return restClient.get(uri);
+		Request req = new Request(Method.GET,uri);
+		Response resp=new Response(req);
+		
+		restClient.handle(req,resp);
+		
+		req.commit(resp);
+		
+		return resp;
 	}
 	
 	synchronized Response put(String uri, Representation rep) {
-		return restClient.put(uri, rep);
+		Request r=new Request(Method.PUT, uri, rep);
+		return restClient.handle(r);
 	}
 	
 	synchronized Response post(String uri, Representation rep) {
-		return restClient.post(uri, rep);
+		Request r=new Request(Method.POST, uri, rep);
+		return restClient.handle(r);
 	}
 	
 	synchronized Response delete(String uri) {
-		return restClient.delete(uri);
+		Request r=new Request(Method.DELETE, uri);
+		return restClient.handle(r);
 	}
 
 	synchronized Response handle(Method action, String uri, Representation rep) {

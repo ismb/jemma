@@ -37,10 +37,10 @@ import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.restlet.Application;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
-import org.restlet.resource.StringRepresentation;
+import org.restlet.Request;
+import org.restlet.Response;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 
 
 class RestletEventListener extends Application implements GatewayEventListener, EventPathURIs {

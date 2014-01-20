@@ -55,6 +55,7 @@
 					</execution>
 				</executions>
 			</plugin>
+<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -74,7 +75,7 @@
 						        <includeScope>runtime</includeScope>
 					        </configuration>
 					</execution>
-<!--					<execution>
+					<execution>
 						<id>copy-model</id>
 						<phase>package</phase>
 				        	<goals>
@@ -90,9 +91,10 @@
 							</artifactItems>
 							<outputDirectory>${project.build.directory}/${project.parent.artifactId}.${project.name}-${project.version}-bin/modules/dependencies</outputDirectory>
 					        </configuration>
-					</execution>-->
+					</execution>
 				</executions>
 			</plugin>
+-->
 		</plugins>
 	</build>
 </project>

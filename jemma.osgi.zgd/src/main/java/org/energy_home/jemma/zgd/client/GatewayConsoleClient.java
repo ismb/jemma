@@ -29,7 +29,7 @@ import org.energy_home.jemma.zgd.impl.JaxbConverter;
 import org.energy_home.jemma.zgd.jaxb.*;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.NodeServices.ActiveEndpoints;
-import org.restlet.resource.Representation;
+import org.restlet.representation.Representation;
 
 public class GatewayConsoleClient implements APSMessageListener, GatewayEventListener {
 	GatewayFactory factory;
