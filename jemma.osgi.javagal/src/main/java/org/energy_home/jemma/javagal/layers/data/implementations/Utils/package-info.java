@@ -14,6 +14,6 @@
  *
  */
 /**
- * Utility classes.
+ * Utility classes related to data layer.
  */
 package org.energy_home.jemma.javagal.layers.data.implementations.Utils;

@@ -23,8 +23,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.restlet.data.MediaType;
-import org.restlet.resource.Representation;
-import org.restlet.resource.SaxRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.ext.xml.SaxRepresentation;
 
 class JaxbRepresentation<T> extends SaxRepresentation {
 	

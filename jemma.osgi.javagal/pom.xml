@@ -33,7 +33,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.javagal</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0</version>
+	<version>2.0.0</version>
 	<name>Java Gal</name>
 
 	<parent>
@@ -61,15 +61,12 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.layers.presentation.Activator</Bundle-Activator>
 						<Import-Package> gnu.io;version="1.0.0",
-							org.energy_home.jemma.zgd;version="1.4.0",
 							org.apache.commons.logging,
-							org.energy_home.jemma.javagal.layers.business.implementations,
 							org.osgi.framework,
 							org.osgi.util.tracker;version="1.4.2",*
 						</Import-Package>
-						<Export-Package>org.energy_home.jemma.zgd;version="1.4.0",
-							org.energy_home.jemma.zgd.jaxb;version="1.0.3",
-							org.energy_home.jemma.javagal.layers.business.implementations
+						<Export-Package>org.energy_home.jemma.zgd;version="1.4.1",
+							org.energy_home.jemma.zgd.jaxb;version="1.0.4"
 						</Export-Package>
 					</instructions>
 				</configuration>

@@ -56,23 +56,37 @@
 							 org.osgi.framework;version="1.5.0",
 							 javax.xml.transform, 
 							 javax.xml.transform.sax,
-							 org.restlet,
-							 org.restlet.data,
-							 org.restlet.util,
-							 org.restlet.resource, *;resolution:=optional
+							 *;resolution:=optional
 						</Import-Package>
+						<!--
+													-->
 						<Export-Package>org.energy_home.jemma.zgd;version="1.4.0",
 							 org.energy_home.jemma.zgd.jaxb;version="1.0.3",!*
 						</Export-Package>
 						<Service-Component>OSGI-INF/jgal.xml</Service-Component>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6,
-							 J2SE-1.5
-						</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+<!--						<Embed-Dependency>org.restlet;version=1.1</Embed-Dependency>
+						<Embed-Directory>target/dependency</Embed-Directory>
+						<Require-Bundle>org.restlet;bundle-version="1.1.0"</Require-Bundle>-->
 					</instructions>
 				</configuration>
 			</plugin>
+<!--
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+-->
 		</plugins>
 	</build>
 
@@ -94,6 +108,16 @@
 			<version>${org.apache.commons.logging.version}</version>
 		</dependency> 
 		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet.ext.xml</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+<!--		<dependency>
 			<groupId>org.restlet</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>1.1</version>
@@ -108,6 +132,7 @@
 			<artifactId>com.noelios.restlet.ext.net</artifactId>
 			<version>1.1</version>
 		</dependency>
+-->
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>javax.xml</artifactId>

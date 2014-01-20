@@ -16,6 +16,8 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 /**
+ * Class used to split an ApsMessage section Data into a Zcl Message.
+ *
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -35,6 +37,9 @@ public class _ZCLMessage {
 
 	public boolean Disable_DefaultResponse;
 
+	/**
+	 * Procedure that invert the direction bit of the Framecontrol Byte of a Zcl Header.
+	 */
 	public byte InvertDirectionBitOfFrameControl() {
 
 		if (!Server_to_Client)
@@ -44,14 +49,22 @@ public class _ZCLMessage {
 
 	}
 
-	public byte SetDisableDefaultResponse(boolean sendDefaltResponse) {
+	/**
+	 * Procedure that disable the bit of the DefaultResponse into the Framecontrol Byte of a Zcl Header.
+	 */
+	public byte SetBitDefaultResponse(boolean sendDefaltResponse) {
 		if (!sendDefaltResponse)
 			return ((byte) (FrameControl | 4));
 		else
 			return ((byte) (FrameControl & ~4));
 	}
 
-	public byte SetDisableDefaultResponse(boolean sendDefaltResponse,
+	/**
+	 * Procedure that disable the bit of the DefaultResponse into the Framecontrol Byte of a Zcl Header.
+	 * @param sendDefaltResponse --> Value of the bit DefaultResponse
+	 * @param _FrameControl --> The FrameControl Byte
+	 */
+	public byte SetBitDefaultResponse(boolean sendDefaltResponse,
 			byte _FrameControl) {
 
 		if (!sendDefaltResponse)
@@ -61,6 +74,11 @@ public class _ZCLMessage {
 
 	}
 
+	/**
+	 * Constructor that populate the class starting from a byte array
+	 * @param _Data --> The array on bytes that represent the Zcl Message
+	 * 
+	 */
 	public _ZCLMessage(byte[] _Data) {
 
 		FrameControl = _Data[0];

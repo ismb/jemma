@@ -33,9 +33,11 @@ import org.restlet.resource.ServerResource;
 
 
 /**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
- */
+* Resource file used to manage the API GET:getChannelSync
+* 
+* @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+*
+*/
 public class ChannelResource extends ServerResource {
 	private GatewayInterface proxyGalInterface = null;
 
@@ -80,6 +82,11 @@ public class ChannelResource extends ServerResource {
 		}
 	}
 
+	/**
+	 * Gets the RestManager.
+	 * 
+	 * @return the RestManager.
+	 */
 	private RestManager getRestManager() {
 		return ((GalManagerRestApplication) getApplication()).getRestManager();
 	}

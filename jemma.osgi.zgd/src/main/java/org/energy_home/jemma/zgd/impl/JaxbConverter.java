@@ -23,6 +23,7 @@ package org.energy_home.jemma.zgd.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -37,10 +38,10 @@ import org.energy_home.jemma.zgd.Trace;
 import org.energy_home.jemma.zgd.jaxb.Info;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
-import org.restlet.data.Response;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.StringRepresentation;
+import org.restlet.Response;
+import org.restlet.representation.OutputRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -124,9 +125,10 @@ public class JaxbConverter {
 	}
 	
 	Info getInfo(Representation rep) throws IOException, JAXBException {
+		InputStream is=rep.getStream();
 		rep = doLog(rep);
 		synchronized (unmarshaller) {
-			JAXBElement<?> element = (JAXBElement<?>)unmarshaller.unmarshal(rep.getStream());
+			JAXBElement<?> element = (JAXBElement<?>)unmarshaller.unmarshal(is);
 			return (Info)element.getValue();
 		}
 	}

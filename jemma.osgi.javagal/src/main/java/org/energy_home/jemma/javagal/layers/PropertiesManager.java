@@ -35,9 +35,7 @@ import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
  * Properties manager class. Loads/saves from/to a ".properties" file the
  * desired values for JavaGal execution. It's THE way to control a number of
  * parameters at startup.
- */
-
-/**
+ * 
  * @author 
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
@@ -167,26 +165,14 @@ public class PropertiesManager {
 		sai.setStartupControl((short) 0x00); // 1 byte
 		sai.setStartupAttributeSetIndex((short) 0x00); // 1 byte
 
-		sai.setTrustCenterAddress(new BigInteger(
-				"00000000000000000000000000000000", 16)); // 16bytes
-		sai.setTrustCenterMasterKey(new byte[] { (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00 }); // 16
-												// bytes
-		sai.setNetworkKey(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }); // 16
-																					// bytes
+		sai.setTrustCenterAddress(new BigInteger("00000000000000000000000000000000", 16)); // 16bytes
+		sai.setTrustCenterMasterKey(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }); // 16
+																																																																	// bytes
+		sai.setNetworkKey(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }); // 16
+																																																															// bytes
 		sai.setUseInsecureJoin(true); // 1 byte
-		sai.setPreconfiguredLinkKey(new byte[] { (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-				(byte) 0x00, (byte) 0x00 }); // 16
-												// bytes
+		sai.setPreconfiguredLinkKey(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }); // 16
+																																																																	// bytes
 		sai.setNetworkKeySeqNum((short) 0x00); // 1 byte
 		sai.setNetworkKeyType(KeyType.HIGH_SECURITY); // 1 byte
 		sai.setNetworkManagerAddress(0x0000); // 2 bytes
@@ -241,16 +227,14 @@ public class PropertiesManager {
 			deviceType = LogicalType.END_DEVICE;
 			break;
 		default:
-			throw new RuntimeException(
-					"Wrong data in properties file:deviceType");
+			throw new RuntimeException("Wrong data in properties file:deviceType");
 		}
 		sai.setDeviceType(deviceType);
 
 		/* Channel Mask */
 		short channelMask = readShort("ChannelMask");
 		if (!((channelMask == 0) || ((channelMask >= 11) && (channelMask <= 26)))) {
-			throw new RuntimeException(
-					"Wrong data in properties file ChannelMask [valid range: 11 - 26, OR '0' for all channels]");
+			throw new RuntimeException("Wrong data in properties file ChannelMask [valid range: 11 - 26, OR '0' for all channels]");
 		}
 		sai.setChannelMask((long) channelMask);
 
@@ -259,8 +243,7 @@ public class PropertiesManager {
 		sai.setPANId(panId);
 
 		/* Extended PanId */
-		BigInteger extendedPanId = new BigInteger(readByteArray(
-				"ExtendedPANId", 8));
+		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
 		sai.setExtendedPANId(extendedPanId);
 
 		/* StartupControlMode */
@@ -293,23 +276,23 @@ public class PropertiesManager {
 	public void SetStartupAttributeInfo(StartupAttributeInfo sai) {
 
 		/* DeviceType */
-		Short deviceType = -1;
-
-		switch (sai.getDeviceType()) {
-		case CURRENT:
-			deviceType = 0;
-			break;
-		case COORDINATOR:
-			deviceType = 1;
-			break;
-		case ROUTER:
-			deviceType = 2;
-			break;
-		case END_DEVICE:
-			deviceType = 3;
-			break;
+		Short deviceType = Short.parseShort(props.getProperty("DeviceType"));
+		if (sai.getDeviceType() != null) {
+			switch (sai.getDeviceType()) {
+			case CURRENT:
+				deviceType = 0;
+				break;
+			case COORDINATOR:
+				deviceType = 1;
+				break;
+			case ROUTER:
+				deviceType = 2;
+				break;
+			case END_DEVICE:
+				deviceType = 3;
+				break;
+			}
 		}
-
 		props.setProperty("DeviceType", deviceType.toString());
 
 		/* Channel Mask */
@@ -322,18 +305,16 @@ public class PropertiesManager {
 		props.setProperty("ExtendedPANId", sai.getExtendedPANId().toString());
 
 		/* StartupControlMode */
-		props.setProperty("StartupControlMode", sai.getStartupControl()
-				.toString());
+		props.setProperty("StartupControlMode", sai.getStartupControl().toString());
 
 		/* StartupSet */
-		props.setProperty("StartupSet",String.valueOf(sai.getStartupAttributeSetIndex()));
+		props.setProperty("StartupSet", String.valueOf(sai.getStartupAttributeSetIndex()));
 
 		/* networkKey */
 		props.setProperty("networkKey", sai.getNetworkKey().toString());
 
 		/* PreconfiguredLinkKey */
-		props.setProperty("preconfiguredLinkKey", sai.getPreconfiguredLinkKey()
-				.toString());
+		props.setProperty("preconfiguredLinkKey", sai.getPreconfiguredLinkKey().toString());
 
 	}
 
@@ -375,7 +356,7 @@ public class PropertiesManager {
 	 *            the StartupSet value to set.
 	 */
 	public void setStartupSet(Short startupSet) {
-		props.setProperty("StartupSet", String.format("%02X",startupSet));
+		props.setProperty("StartupSet", String.format("%02X", startupSet));
 
 	}
 
@@ -386,8 +367,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleUri value.
 	 */
 	public String getzgdDongleUri() {
-		String uri = props
-				.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
+		String uri = props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
 		return uri;
 	}
 
@@ -398,8 +378,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleSpeed value.
 	 */
 	public int getzgdDongleSpeed() {
-		int speed = Integer.parseInt(props
-				.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
+		int speed = Integer.parseInt(props.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 		return speed;
 	}
 
@@ -410,8 +389,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleType value.
 	 */
 	public String getzgdDongleType() {
-		String type = props
-				.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
+		String type = props.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
 		return type;
 	}
 
@@ -467,6 +445,19 @@ public class PropertiesManager {
 			sd.getApplicationOutputCluster().add(x);
 		return sd;
 	}
+	
+	
+	/* ExtendedPANId */
+	/**
+	 * Gets ExtendedPANId property.
+	 * 
+	 * @return the ExtendedPANId value.
+	 */
+	public BigInteger getExtendedPanId() {
+		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
+		return extendedPanId;
+	}
+	
 
 	/* Utility */
 	/**
