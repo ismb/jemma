@@ -13,5 +13,7 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
-
+/**
+ * Utility classes.
+ */
 package org.energy_home.jemma.javagal.rest.util;

@@ -38,12 +38,11 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 /**
- * Provides CreateCallback shorthand for an Endpoint (only synch).
- */
-/**
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
- */
+* Resource file used to manage the API GET:createAPSCallback(ep,listener)
+* 
+* @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+*
+*/
 public class CallbacksShorthandForEndpointResource extends ServerResource {
 
 	private GatewayInterface proxyGalInterface = null;
@@ -150,7 +149,7 @@ public class CallbacksShorthandForEndpointResource extends ServerResource {
 					getClientInfo().getAddress());
 			proxyGalInterface = rcmal.getGatewayInterface();
 			RestApsMessageListener listener = new RestApsMessageListener(
-					callback, urilistener,rcmal);
+					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
 			Long id = proxyGalInterface.createAPSCallback(ep.shortValue(),
 					listener);
 
@@ -211,6 +210,11 @@ public class CallbacksShorthandForEndpointResource extends ServerResource {
 		
 	}
 
+	/**
+	 * Gets the RestManager.
+	 * 
+	 * @return the RestManager.
+	 */
 	private RestManager getRestManager() {
 		return ((GalManagerRestApplication) getApplication()).getRestManager();
 	}

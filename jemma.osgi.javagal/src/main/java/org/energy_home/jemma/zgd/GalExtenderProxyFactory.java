@@ -13,21 +13,20 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
-package org.energy_home.jemma.javagal.layers.business.implementations;
+package org.energy_home.jemma.zgd;
+
+import java.math.BigInteger;
 
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 
-import org.energy_home.jemma.zgd.GatewayInterface;
 
 /**
  * Factory class for {@link GalExtenderProxy} objects. Every 
  * object created by this factory is a separate and independent
  * proxy to the unique {@link GalController} instance and is
  * identified by its own proxy identifier id.
- */
-
-/**
+ * 
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
@@ -82,5 +81,16 @@ public class GalExtenderProxyFactory {
 		gal = null;
 
 	}
+	
+	
+	/**
+	 * Get the ExtendedPanId of the Gal.
+	 * 
+	 * @throws Exception.
+	 */
+	public BigInteger getExtendedPanId(){
+			return gal.getPropertiesManager().getExtendedPanId();
+	}
+	
 
 }

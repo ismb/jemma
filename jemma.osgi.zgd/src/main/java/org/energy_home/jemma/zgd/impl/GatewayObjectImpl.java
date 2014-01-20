@@ -47,10 +47,10 @@ import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.Version;
 import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
-import org.restlet.VirtualHost;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
-import org.restlet.resource.StringRepresentation;
+import org.restlet.routing.VirtualHost;
+import org.restlet.Response;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 
 
 class GatewayObjectImpl implements GatewayInterface, ResourcePathURIs, EventPathURIs {

@@ -57,6 +57,8 @@ import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 /**
+ * The core Rest application. It associates incoming uri's to resources where
+ * the right elaboration is made.
  * @author 
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
@@ -65,13 +67,20 @@ public class GalManagerRestApplication extends Application {
 	private RestManager restManager;
 	private Log log = LogFactory.getLog(GalManagerRestApplication.class);
 
+	/**
+	 * Creates a new instance with a given rest manager.
+	 * 
+	 * @param restManager
+	 *            the rest manager.
+	 */
 	public GalManagerRestApplication(RestManager restManager) {
 		super();
 		this.restManager = restManager;
 	}
 
 	/**
-	 * Creates a root Restlet that will receive all incoming calls.
+	 * Creates a root Restlet that will receive all incoming calls and
+	 * associates every uri to its resource class.
 	 */
 	@Override
 	public synchronized Restlet createInboundRoot() {
@@ -322,10 +331,21 @@ public class GalManagerRestApplication extends Application {
 		return router;
 	}
 
+	/**
+	 * Gets the rest manager.
+	 * 
+	 * @return the rest manager.
+	 */
 	public RestManager getRestManager() {
 		return restManager;
 	}
 
+	/**
+	 * Sets the rest manager.
+	 * 
+	 * @param restManager
+	 *            the rest manager to set.
+	 */
 	public void setRestManager(RestManager restManager) {
 		this.restManager = restManager;
 	}
