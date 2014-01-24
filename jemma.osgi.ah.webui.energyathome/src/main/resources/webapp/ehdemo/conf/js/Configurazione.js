@@ -301,6 +301,7 @@ Configurazione.GestConfigurazione = function(result, e) {
 	var opt4 = "<option value='4000'>4 kW (fondo scala 5 kW)</option>";
 	var opt5 = "<option value='5000'>5 kW (fondo scala 5.5 kW)</option>";
 	var opt6 = "<option value='6000'>6 kW (fondo scala 6.5 kW)</option>";
+	var opt11 = "<option value='11000'>11 kW (fondo scala 12.5 kW)</option>";
 	if ((maxPowerProductionCookie == null) || (maxPowerProductionCookie == 0)){
 		opt0 = "<option value='0' selected='selected'>0 kW (o assenza di impianto fotovoltaico)</option>";
 	}
@@ -322,13 +323,18 @@ Configurazione.GestConfigurazione = function(result, e) {
 	if (maxPowerProductionCookie == 6000){
 		opt6 = "<option value='6000' selected='selected'>6 kW (fondo scala 6.5 kW)</option>";
 	}
+	if (maxPowerProductionCookie == 11000){
+		opt11 = "<option value='11000' selected='selected'>11 kW (fondo scala 12.5 kW)</option>";
+	}
 	
 	$('#MaxProduction').append(opt0)
 					   .append(opt1)
 					   .append(opt2)
 					   .append(opt3)
 					   .append(opt4)
-					   .append(opt5);
+					   .append(opt5)
+					   .append(opt6)
+					   .append(opt11);
 	
 	Configurazione.refreshHapStatus();
 

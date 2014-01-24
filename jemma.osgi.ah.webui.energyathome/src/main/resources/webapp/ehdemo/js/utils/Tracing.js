@@ -18,6 +18,7 @@ var Tracing = {
 		CONTACT: "CONTACT",
 		FORUM: "FORUM",
 		FORMS: "FORMS",
+		REPORT: "REPORT",
 		ERR_GENERIC: 1,
 		QT_IERI: 1, // ieri 
 		QT_SETT: 2, // ultima settimana

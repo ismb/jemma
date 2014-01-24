@@ -12,9 +12,14 @@ var CostiConsumi = {
 	// consumo
 
 	consumoOdierno : null,
+	prodOdierno : null,
 	consumoMedio : null,
 	consumoPrevMese : null,
+	prodPrevMese : null,
 	consumoGiornaliero : null,
+	forecastGiornaliero: null,
+	consumoMediaWeek: null,
+	prodMediaWeek: null,
 	timerConsumi : null,
 	TIMER_UPDATE_CONSUMI : 300000, 
 	potenzaAttuale : null,
@@ -27,7 +32,8 @@ var CostiConsumi = {
 	costoOdierno : null,
 	costoMedio : null,
 	costoPrevMese : null,
-	costoGiornaliero : null, 
+	costoGiornaliero : null,
+	costoMediaWeek: null,
 	suddivisioneCosti : null,
 	timerCosti : null,
 	TIMER_UPDATE_COSTI : 300000,  // 5 minuti

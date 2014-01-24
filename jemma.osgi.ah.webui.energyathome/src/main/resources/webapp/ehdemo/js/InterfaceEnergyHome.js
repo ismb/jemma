@@ -191,7 +191,7 @@ InterfaceEnergyHome.Abort = function() {
  * JSONRpcClient.Exception.CODE_ERR_MARSHALL = 593;
  */
 InterfaceEnergyHome.GestErrorEH = function(func, err) {
-	hideSpinner();
+	//hideSpinner();
 	var msg;
 	InterfaceEnergyHome.visError = InterfaceEnergyHome.ERR_GENERIC;
 	
@@ -504,7 +504,7 @@ InterfaceEnergyHome.GetPowerLimitFotoVoltaico = function(backFunc) {
 			InterfaceEnergyHome.BackPowerLimitFotoVoltaico(null, err);
 		}
 	} else {
-		InterfaceEnergyHome.BackPowerLimitFotoVoltaico(null, null);
+		InterfaceEnergyHome.BackPowerLimitFotoVoltaico({value: 3000}, null);
 	}
 }
 

@@ -14,10 +14,13 @@ var Main = {
 	timerTimeout : null,
 	imgDisp : null,
 	contatore : null,// tipo contatore (0 = 3kW, 1 = 4.5kW, 2 = 6kW)
-	contatoreProd : null,// tipo contatore (0 = 0kw, 1 = 1kW, 2 = 2kW, 3 = 3kW, 4 = 4kW, 5 = 5kW, 6 = 6kW)
+	contatoreProd : null,// tipo contatore (0 = 0kw, 1 = 1kW, 2 = 2kW, 3 = 3kW, 4 = 4kW, 5 = 5kW, 6 = 6kW, 11 = 11kW)
 	contatoreRete : null,// tipo contatore (0 = 3kW, 1 = 4.5kW, 2 = 6kW)
 	idVisitato : null,
 	userId: null,
+	hagId: null,
+	appIdSmartInfo: null,
+	secretPassPhrase: "289quaoj0u823qejiak289uq3089sfoswfrwefij489fjqepiadmk",
 	enablePV: null,
 	env: 2  //tipo ambiente (0 = sviluppo con console.log, 1 = sviluppo senza console.log, 2 = produzione)
 }
@@ -125,7 +128,7 @@ Main.PowerLimitCbFotoVoltaico = function(valProd) {
 	if (Main.env == 0) console.log(20, Main.MODULE, "Power limit Produzione = " + Main.contatoreProd);
 }
 
-//Metodo che gestisce i valori relativi al contatore dei consumi (sempre presente in tutte e due le modalità)
+//Metodo che gestisce i valori relativi al contatore dei consumi (sempre presente in tutte e due le modalitÀÜ)
 Main.PowerLimitCb = function(val) {
 	Main.contatore = 0;
 	
@@ -164,6 +167,7 @@ Main.IdUtenteCb = function(userId, e) {
 		$("#userID").html(Msg.home['labelCodiceUtente'] + ':' + err);
 	} else {
 		Main.userId = userId;
+		Main.hagId = 'hag-'+Main.userId;
 		$("#userID").html(Msg.home['labelCodiceUtente'] + ':' + userId);
 	}
 	
@@ -205,17 +209,17 @@ Main.setEnablePV = function(result, e){
 		
 		addCSSinDocument('css/FotoVoltaico.css');
 		addCSSinDocument('js/tinybox2/style.css');
-		addJavaScriptinDocument('js/FotoVoltaico.js?n=201304091118');
-		addJavaScriptinDocument('js/utils/jscroller-0.4.js?n=201304091118');
-		addJavaScriptinDocument('js/tinybox2/tinybox.js?n=201304091118');
-		addJavaScriptinDocument('js/DefineMenu.js?n=201304091118');
-		addJavaScriptinDocument('js/startApp.js?n=201304091118');
+		addJavaScriptinDocument('js/FotoVoltaico.js?201305315125');
+		addJavaScriptinDocument('js/utils/jscroller-0.4.js?201305315125');
+		addJavaScriptinDocument('js/tinybox2/tinybox.js?201305315125');
+		addJavaScriptinDocument('js/DefineMenu.js?201305315125');
+		addJavaScriptinDocument('js/startApp.js?201305315125');
 	} else {
 		Main.enablePV = false;
 		addCSSinDocument('css/CostiConsumi2.css');
-		addJavaScriptinDocument('js/CostiConsumi1.js?n=201304091118');
-		addJavaScriptinDocument('js/DefineMenu.js?n=201304091118');
-		addJavaScriptinDocument('js/startApp.js?n=201304091118');
+		addJavaScriptinDocument('js/CostiConsumi1.js?201305315125');
+		addJavaScriptinDocument('js/DefineMenu.js?201305315125');
+		addJavaScriptinDocument('js/startApp.js?201305315125');
 	}
 }
 
@@ -278,12 +282,6 @@ Main.onLoad = function() {
 			InterfaceEnergyHome.mode = 2;
 		}
 
-		if (qs.get("report", "") != "") {
-
-			DefineMenu[0]["SubMenu"][4]["FuncEnter"] = "LazyScript.load('js/Report.js',function(){Report.Init();})";
-			DefineMenu[0]["SubMenu"][4]["FuncExit"] = "Report.Exit()";
-		}
-
 		showSpinner();
 		// se non precarico l'immagine di un elettrodomestico non funzionano gli elettrodomestici
 		Main.imgDisp = new Image();
@@ -335,7 +333,7 @@ Main.ResetError = function() {
 //Visualizzo messaggio di errore
 Main.VisError = function(err) {
 	var oldTxt = $("#ErrorMsgDIV").text();
-	//Visualizzo il nuovo messaggio di errore solo se non è già presente
+	//Visualizzo il nuovo messaggio di errore solo se non ÔøΩ giÀÜ presente
 	if ((Msg.visErr[err] != oldTxt) && (oldTxt.indexOf(Msg.visErr[err]) < 0)){
 		$("#ErrorMsgDIV").html(oldTxt + ' <br /> ' + Msg.visErr[err]);
 	}
