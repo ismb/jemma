@@ -24,6 +24,7 @@
 			var gauge = document.createElement('div');
 			
 			gauge.style.position = 'relative';
+			gauge.style.bottom = '7%';
 			gauge.style.width = '100%';
 			gauge.style.height = '100%';
 			gauge.style.background = opts.background;
@@ -46,13 +47,14 @@
 				imagename = 'images/gradient_blu.png';
 			}
 			else {
-				imagename = 'images/gradient_giallo.png'
+				imagename = 'images/gradient_giallo.png';
 			}
 			this.img2.src = srcPathGauge + imagename;
 			this.img2.style.position = 'absolute';
-			this.img2.style.width = '100%';
-			this.img2.style.left = '0px';	
-			this.img2.style.bottom = '3.4%';
+			this.img2.style.width = '92%';
+			this.img2.style.height = '100%';
+			this.img2.style.left = '3.6%';	
+			this.img2.style.bottom = '3%';
 			
 			this.img3 = document.createElement('img');
 			this.img3.src = srcPathGauge + 'images/termometro_sopra.png';
@@ -96,7 +98,7 @@
 			this.img1.style.top = '10px';
 			
 			this.img2 = document.createElement('img');
-			this.img2.src = srcPathGauge + 'images/gradient_blu'+suffIndicatoreT+'.png';
+			this.img2.src = srcPathGauge + 'images/gradient_grey'+suffIndicatoreT+'.png';
 			this.img2.style.position = 'absolute';
 			this.img2.style.width = '89.3%';
 			this.img2.style.height = '80%';
@@ -106,7 +108,7 @@
 			this.img3 = document.createElement('img');
 			this.img3.src = srcPathGauge + 'images/gradient_verde'+suffIndicatoreT+'.png';
 			this.img3.style.position = 'absolute';
-			this.img3.style.width = '100%';
+			this.img3.style.width = '89.3%';
 			this.img3.style.height = '80%';
 			this.img3.style.left = '7.2%';	
 			this.img3.style.bottom = '12%'; //'3.4%';
@@ -134,7 +136,6 @@
 		},
 		
 		value: function(v) {
-			
 			if (isNaN(v)) 
 				return;
 			
@@ -147,10 +148,12 @@
 				if (v > opts.max) {
 					v = opts.max;
 				}
-				var border = this.children[0].children[1].style.bottom;
+				//alert(v+ " "+opts.max);
+				//v=1;
+				//var border = this.children[1].children[1].style.bottom;
 				//var height = ((this.clientHeight - 2 * border) * v) / opts.max;
-				var height = (v * 93) / opts.max;
-				this.children[0].children[1].style.height = height + '%';
+				var width = (v * 93) / opts.max;
+				this.children[1].children[1].style.width = width + '%';
 				opts.value = v;
 			});
 		},
@@ -171,7 +174,7 @@
 				}
 				var border = this.children[0].children[2].style.bottom;
 				//var height = ((this.clientHeight - 2 * border) * v) / opts.max;
-				var height = (v * 93) / opts.max;
+				var height = (v * 89.3) / opts.max;
 				this.children[0].children[2].style.width = height + '%';
 				opts.value = v;
 			});

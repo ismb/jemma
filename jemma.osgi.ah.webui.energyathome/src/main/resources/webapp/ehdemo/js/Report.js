@@ -20,51 +20,19 @@ var Report = {
 															.text(Msg.report["carosello"][0])))
 									.append($(document.createElement('div'))
 												.attr('id', 'carousell')
-												.text(Msg.report["TitoloEventiCasa"])
-												.width('100%').height('55%')
-												.append($(document.createElement('img')).attr('id', 'imgCrslHome').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/menu/home_verde.png')
-																						.attr('alt', 'Casa').attr('title', 'Casa').attr('width', '25%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslForno').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/fornoC.png')
-																						.attr('alt', 'Forno').attr('title', 'Forno').attr('width', '18%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslRefr').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/frigorifero_carosello.png')
-																						.attr('alt', 'Frigo').attr('title', 'Frigo').attr('width', '18%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslPC').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/pczone_carosello.png')
-																						.attr('alt', 'PC').attr('title', 'PC').attr('width', '18%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslLamp').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/lampada_carosello.png')
-																						.attr('alt', 'Lampada').attr('title', 'Lampada').attr('width', '18%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslTV').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/tv_carosello.png')
-																						.attr('alt', 'Smart TV').attr('title', 'Smart TV').attr('width', '18%'))
-												.append($(document.createElement('img')).attr('id', 'imgCrslWash').attr('class', 'cloudcarousel')
-																						.attr('src', 'Resources/Images/carosello/lavatrice_carosello.png')
-																						.attr('alt', 'Lavatrice').attr('title', 'Lavatrice').attr('width', '18%'))
-												.append($(document.createElement('button')).attr('id', 'left-but').attr('class', 'carouselLeft').css('position', 'absolute').css('top', '5%').css('left', '5%'))
-												.append($(document.createElement('button')).attr('id', 'right-but').attr('class', 'carouselRight').css('position', 'absolute').css('top', '5%').css('left', '85%'))))
-						.append($(document.createElement('div'))
-									.attr('id', 'ReportDatiDettaglio')
-									.attr('class', 'ReportBGND')
-									.css('left', '50%')
-									.append($(document.createElement('div'))
-											.attr('id', 'TitoloElettrodomDettaglio')
-											.attr('class', 'TitoloDettaglio')
-											.text(Msg.report["TitoloElettrodomDettaglio"])
-											.append($(document.createElement('span'))
-														.text(Msg.report["carosello"][0])))
-									.append($(document.createElement('div'))
-											.attr('id', 'ReportInfo')
-											.text(Msg.report["TitoloElettrodomDettaglio"])
-											.append($(document.createElement('p'))
-														.attr('id', 'paragrafoInfo')
-														.css('color', 'white')
-														.css('padding', '1%')
-														.text('I consumi fissi della casa sono quelli che hai sempre anche quando spegni tutto!')))
-									.append($(document.createElement('div'))
-											.attr('id', 'elettrodomDetail'))),
+												.width('100%').height('55%')))
+						.append($(document.createElement('div')).attr('id', 'ReportDatiDettaglio')
+																.attr('class', 'ReportBGND').css('left', '50%')
+																.append($(document.createElement('div'))
+																		.attr('id', 'TitoloElettrodomDettaglio')
+																		.attr('class', 'TitoloDettaglio')
+																		.text(Msg.report["TitoloElettrodomDettaglio"]))
+																.append($(document.createElement('div'))
+																		.attr('id', 'ReportInfo')
+																		.text(Msg.report["TitoloElettrodomDettaglio"])
+																		.append($(document.createElement('p')).attr('id', 'paragrafoInfo')
+																											  .css('color', 'white').css('padding', '1%')))
+																.append($(document.createElement('div')).attr('id', 'elettrodomDetail'))),
 	indiceCarosello : 0,
 	numEldo : 7,
 	carouselImgWidth: 0,
@@ -83,6 +51,8 @@ Report.Init = function() {
 	/* Controllo che il div di Report non sia giˆ stato riempito. Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
 	if (divReport.length == 0) {
 		$("#Container").append(Report.htmlContent);
+		
+		Report.GetElettrodomestici();
 
 		/* Struttura del contenuto di un elemento dell'accordion */
 		
@@ -104,33 +74,26 @@ Report.Init = function() {
 		$(document.createElement('div')).attr('id', 'EventiCasa1').appendTo($("#ReportDatiCasa"));
 
 		/* Imposto il contenuto dell'accordion */
-		$("#EventiCasa1").append($(document.createElement('div'))
-			.attr('id', 'Dati1')
-			.append($(document.createElement('div'))
-				.attr('id', 'headerAccordion')
-				.append($(document.createElement('a'))
-					.attr('href', '#')
-					.text(Msg.report["ConsumiFissi"] + " : ")
-					.append($(document.createElement('span')).text(ReportSim.consumiFissi))))
-			.append($(document.createElement('div')).attr('id', 'Dati11Content').height(100))
-			.append($(document.createElement('div'))
-				.attr('id', 'headerAccordion')
-				.append($(document.createElement('a'))
-					.attr('href', '#')
-					.text(Msg.report["ConsumoFasciaEco"] + " : ")
-					.append($(document.createElement('span')).text(ReportSim.consumoAnno))))
-			.append($(document.createElement('div')).attr('id', 'Dati12Content').height(100))
-			.append($(document.createElement('div'))
-				.attr('id', 'headerAccordion')
-				.append($(document.createElement('a'))
-					.attr('href', '#')
-					.text(Msg.report["CO2"] + " : ")
-					.append($(document.createElement('span')).text(ReportSim.C02))))
-			.append($(document.createElement('div')).attr('id', 'Dati13Content').height(100))
+		$("#EventiCasa1").append($(document.createElement('div')).attr('id', 'Dati1')
+						 										 .append($(document.createElement('div')).attr('id', 'headerAccordion1').attr('class', 'headerAccordion')
+						 												 								 .append($(document.createElement('a')).attr('href', '#')
+						 												 										 							   .text(Msg.report["ConsumiFissi"] + " : ")
+						 												 										 							   .append($(document.createElement('span')).text(ReportSim.consumiFissi))))
+								 							   	 .append($(document.createElement('div')).attr('id', 'Dati11Content').height(100))
+								 							   	 .append($(document.createElement('div')).attr('id', 'headerAccordion2').attr('class', 'headerAccordion')
+								 							   			 								 .append($(document.createElement('a')).attr('href', '#')
+								 							   			 										 							   .text(Msg.report["ConsumoFasciaEco"] + " : ")
+								 							   			 										 							   .append($(document.createElement('span')).text(ReportSim.consumoAnno))))
+								 							     .append($(document.createElement('div')).attr('id', 'Dati12Content').height(100))
+								 							     /*.append($(document.createElement('div')).attr('id', 'headerAccordion3').attr('class', 'headerAccordion')
+								 							    		 								 .append($(document.createElement('a')).attr('href', '#')
+								 							    		 										 							   .text(Msg.report["CO2"] + " : ")
+								 							    		 										 							   .append($(document.createElement('span')).text(ReportSim.C02))))
+								 							     .append($(document.createElement('div')).attr('id', 'Dati13Content').height(100))*/
 		);
 
 		/* Inizializzo il bottone Info a destra dell'header dell'accordion */
-		$("#headerAccordion button").button({
+		$(".headerAccordion button").button({
 			icons : {primary : "ui-icon-info"},
 			text : false
 		});
@@ -139,9 +102,9 @@ Report.Init = function() {
 
 		$("#Dati1").accordion({
 			fillSpace : true,
-			header : '#headerAccordion',
+			header : '.headerAccordion',
 			changestart : function(event, ui) {
-				indiceAccordion = $.inArray(ui.newHeader[0],$("#Dati1 #headerAccordion"));
+				indiceAccordion = $.inArray(ui.newHeader[0],$("#Dati1 .headerAccordion"));
 				switch (indiceAccordion) {
 					case 0: {
 						Report.VisConsumiFissiGraf();
@@ -216,10 +179,14 @@ Report.Init = function() {
 
 		/* Configuro il bottone NEXT del carosello */
 		$("#right-but").button({text : false, icons : {primary : "ui-icon-seek-next"}})
-					   .click(function() {Report.moveCarousel('right', false);});
+					   .click(function(){
+						   Report.moveCarousel('right', false);
+					   });
 		/* Configuro il bottone PREV del carosello */
 		$("#left-but").button({text : false, icons : {primary : "ui-icon-seek-prev"}})
-					  .click(function() {Report.moveCarousel('left', false);});
+					  .click(function(){
+						  Report.moveCarousel('left', false);
+					  });
 		$("#carousell img").click(function(){
 			var ccObj = $('#carousell').data();
 			var cloudCarousellObj = ccObj.cloudcarousel;
@@ -244,6 +211,10 @@ Report.Init = function() {
 	} else {
 		$("#Report").show();
 	}
+	$("#ReportInfo").empty();
+	$("#ReportInfo").html(Msg.report["informaReport"][0]);
+	$("#paragrafoInfo").empty();
+	$("#paragrafoInfo").html(Msg.report["informaReport"][0]);
 	/* Per ultimo nascondo lo spinner */
 	hideSpinner();
 }
@@ -293,20 +264,20 @@ Report.moveCarousel = function(click, bringToFront){
 	$("#ReportDatiCasa table tr:odd:gt(0)").map(function(indexTable, ElementRow) {
 					$(ElementRow).children("td")
 						.map(function( indexCell, domElementCell) {
-							$(domElementCell).html(ReportSim.DatiSim[indexTable + 2][indexCell]);});
-	});
+							$(domElementCell).html(ReportSim.DatiSim[indexTable + 2][indexCell]);});});
 	
+	// Incremento o decremento l'indice che mi riporta all'oggetto selezionato dal carosello
 	if (!bringToFront){
 		if (click == 'right'){
-			/* decremento l'indice che mi riporta all'oggetto selezionato dal carosello */
 			Report.indiceCarosello -= 1;
-			if (Report.indiceCarosello < 0)
+			if (Report.indiceCarosello < 0){
 				Report.indiceCarosello = (Report.numEldo-1);
+			}
 		} else {
-			/* Incremento l'indice che mi riporta all'oggetto selezionato dal carosello */
 			Report.indiceCarosello += 1;
-			if (Report.indiceCarosello > (Report.numEldo-1))
+			if (Report.indiceCarosello > (Report.numEldo-1)){
 				Report.indiceCarosello = 0;
+			}
 		}
 	}
 
@@ -372,7 +343,6 @@ Report.VisConsumiFissiGraf = function() {
 }
 
 /* Funzione per la visualizzazione del grafico dei consumi in fascia verde */
-
 Report.VisFasciaGraf = function() {
 
 	$("#elettrodomDetail").empty();
@@ -409,9 +379,9 @@ Report.VisFasciaGraf = function() {
 		dataVerde[i] = rnd2 / 100;
 	}
 
-	console.log(dataRosso);
-	console.log(dataVerde);
-	console.log(data);
+	//console.log(dataRosso);
+	//console.log(dataVerde);
+	//console.log(data);
 	
 	chartFasce = new Highcharts.Chart({
 		chart : {
@@ -473,11 +443,120 @@ Report.VisUtilizzoGraf = function() {
 }
 
 /* Funzione di uscita dai contenuti di Report */
-
 Report.Exit = function() {
-	console.log(80, Report.MODULE, "Report.Exit");
+	//console.log(80, Report.MODULE, "Report.Exit");
 
 	$("#Report").hide();
 	Main.ResetError();
 	hideSpinner();
+}
+
+Report.GetElettrodomestici = function() {
+	if (Main.env == 0) console.log('Report.js', 'GetElettrodomestici', 'Entro!');
+
+	if (InterfaceEnergyHome.mode > 0) {
+		try {
+			InterfaceEnergyHome.objService.getAppliancesConfigurations(Report.DatiElettrodomesticiCB);
+		} catch (err) {
+			//if (Main.env == 0) console.log('exception in Report.js - in Report.GetElettrodomestici method: ', err);
+			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);
+		}
+	} else {
+		// per test
+		var val;
+		var indLista = 0;
+		if (indLista == 0) {
+			val = ListaElettr1;
+			indLista = 1;
+		} else {
+			val = ListaElettr1;
+			indLista = 0;
+		}
+		Report.DatiElettrodomesticiCB(val, null);
+	}
+
+	if (Main.env == 0) console.log('Report.js', 'GetElettrodomestici', 'Esco!');
+}
+
+Report.DatiElettrodomesticiCB = function(result, err) {
+	if (Main.env == 0) console.log('Report.js', 'DatiElettrodomesticiCB', 'Entro!');
+
+	var listEldo = {};
+	//CostiConsumi.popSemaphoro('Report.GetElettrodomestici', 1);
+	
+	if (err != null){
+		//if (Main.env == 0) console.log('exception in Report.js - in Report.DatiElettrodomesticiCB method: ', err);
+		InterfaceEnergyHome.GestErrorEH("DatiElettrodomestici", err);
+	}
+	if ((err == null) && (result != null)) {
+		$.each(result.list,function(indice, elettrodom) {
+			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
+				} else {
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+				}
+				//listEldo.home = elettrodom["map"];
+				//if (Main.env == 0) console.log('COSTICONSUMI1', 'SmartInfo - ');
+				//if (Main.env == 0) console.log(CostiConsumi.SmartInfo);
+			} else {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+				} else {
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+				}
+				//if (Main.env == 0) console.log('COSTICONSUMI1', 'Eldo - ');
+				//if (Main.env == 0) console.log(CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]]);
+				//if (Main.env == 0) console.log(elettrodom["map"]);
+			}
+			listEldo[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
+		});
+	}
+	
+	Report.drawEldo(listEldo);
+	if (Main.env == 0) console.log('Report.js', 'DatiElettrodomesticiCB', 'Esco!');
+}
+
+Report.drawEldo = function(listEldo){
+	if (Main.env == 0) console.log('Report.js', 'drawEldo', 'Entro!');
+
+	console.log(listEldo);
+	for (element in listEldo){
+		if(listEldo[element][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12"){
+			$('#carousell').append($(document.createElement('img')).attr('id', 'imgCrslHome').attr('class', 'cloudcarousel')
+																   .attr('src', 'Resources/Images/menu/home_verde.png').attr('alt', 'Casa').attr('title', 'Casa')
+																   .attr('width', '20%'));
+		} else {
+			$('#carousell').append($(document.createElement('img')).attr('id', 'imgCrsl' + listEldo[element][InterfaceEnergyHome.ATTR_APP_NAME]).attr('class', 'cloudcarousel')
+																   .attr('src', 'Resources/Images/Devices/' + listEldo[element][InterfaceEnergyHome.ATTR_APP_ICON]).attr('alt', listEldo[element][InterfaceEnergyHome.ATTR_APP_NAME])
+																   .attr('title', listEldo[element][InterfaceEnergyHome.ATTR_APP_NAME]).attr('width', '18%'))
+		}
+	}
+	/*
+				   .append($(document.createElement('img')).attr('id', 'imgCrslForno').attr('class', 'cloudcarousel')
+						   .attr('src', 'Resources/Images/carosello/fornoC.png')
+						   .attr('alt', 'Forno').attr('title', 'Forno').attr('width', '18%'))
+				   .append($(document.createElement('img')).attr('id', 'imgCrslRefr').attr('class', 'cloudcarousel')
+						   .attr('src', 'Resources/Images/carosello/frigorifero_carosello.png')
+						   .attr('alt', 'Frigo').attr('title', 'Frigo').attr('width', '18%'))
+				   .append($(document.createElement('img')).attr('id', 'imgCrslPC').attr('class', 'cloudcarousel')
+								.attr('src', 'Resources/Images/carosello/pczone_carosello.png')
+								.attr('alt', 'PC').attr('title', 'PC').attr('width', '18%'))
+				   .append($(document.createElement('img')).attr('id', 'imgCrslLamp').attr('class', 'cloudcarousel')
+								.attr('src', 'Resources/Images/carosello/lampada_carosello.png')
+								.attr('alt', 'Lampada').attr('title', 'Lampada').attr('width', '18%'))
+				   .append($(document.createElement('img')).attr('id', 'imgCrslTV').attr('class', 'cloudcarousel')
+								.attr('src', 'Resources/Images/carosello/tv_carosello.png')
+								.attr('alt', 'Smart TV').attr('title', 'Smart TV').attr('width', '18%'))
+				   .append($(document.createElement('img')).attr('id', 'imgCrslWash').attr('class', 'cloudcarousel')
+								.attr('src', 'Resources/Images/carosello/lavatrice_carosello.png')
+								.attr('alt', 'Lavatrice').attr('title', 'Lavatrice').attr('width', '18%'))
+	*/
+	$('#carousell').append($(document.createElement('button')).attr('id', 'left-but').attr('class', 'carouselLeft').css('position', 'absolute').css('top', '5%').css('left', '5%'));
+	$('#carousell').append($(document.createElement('button')).attr('id', 'right-but').attr('class', 'carouselRight').css('position', 'absolute').css('top', '5%').css('left', '85%'));
+	
+	if (Main.env == 0) console.log('Report.js', 'drawEldo', 'Esco!');
 }
