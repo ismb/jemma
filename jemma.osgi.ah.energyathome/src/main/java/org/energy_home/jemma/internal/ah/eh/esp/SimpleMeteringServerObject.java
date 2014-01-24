@@ -88,10 +88,5 @@ public class SimpleMeteringServerObject extends ServiceCluster implements Simple
 	public int getDivisor(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		return 1;
 	}
-	
-	public void notifyAttributeValue(String appliancePid, String attributeName, IAttributeValue peerAttributeValue) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

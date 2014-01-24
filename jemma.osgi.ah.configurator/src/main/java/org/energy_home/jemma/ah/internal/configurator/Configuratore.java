@@ -239,6 +239,15 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		softwareUpgradeAccess.addMember(administratorsGroup);
 		serviceGroup.addMember(cedacUser);
 
+		//FIXME: cannot access to configuration gui... check!
+		/*
+		membersGroup.addMember(indesitUser);
+		membersGroup.addMember(electroluxUser);
+		membersGroup.addMember(enelUser);
+		membersGroup.addMember(telecomitaliaUser);
+		*/
+
+
 		homeEnergyPortalConfiguration.addMember(serviceGroup);
 		homeEnergyPortalConfiguration.addMember(administratorsGroup);
 	}
@@ -1024,7 +1033,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 			hacService.addCategory(category);
 		}
 
-				
+		//FIXME: check PID				
 		Configuration[] configurations = configurationAdmin.listConfigurations("(" + ConfigurationAdmin.SERVICE_FACTORYPID + "=" + "org.energy_home.jemma.osgi.ah.hac.locations" + ")" );
 		if (configurations != null) {
 			for (int i = 0; i < configurations.length; i++) {

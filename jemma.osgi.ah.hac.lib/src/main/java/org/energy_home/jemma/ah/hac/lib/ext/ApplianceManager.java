@@ -75,6 +75,6 @@ public abstract class ApplianceManager implements IApplianceManager {
 	
 	public abstract Object getCustomConfiguration();
 	
-	public abstract void setAppliancesProxy(EndPoint endPoint, AppliancesProxy proxy);
+	public abstract void setAppliancesProxy(AppliancesProxy proxy);
 
 }

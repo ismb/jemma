@@ -38,6 +38,7 @@ public abstract class M2MConstants {
 	public static final String URL_SCLS = "/SCLS";
 	public static final String URL_ACCESS_RIGHTS = "/ARS";
 	public static final String URL_CONTAINERS = "/CS";
+	public static final String URL_SUBSCRIPTIONS = "/SUBS";
 	public static final String URL_CONTENT_INSTANCES = "/CIS";
 	public static final String URL_DEFAULT_ACCESS_RIGHT = "/defaultAR";
 	public static final String URL_CIS_BATCH_REQUEST = "/CS/ALL/CIS";

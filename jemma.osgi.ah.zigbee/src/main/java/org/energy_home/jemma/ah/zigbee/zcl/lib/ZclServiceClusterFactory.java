@@ -102,7 +102,8 @@ public class ZclServiceClusterFactory {
 		commonServerClusterMap.put(new Integer(ZclApplianceControlServer.CLUSTER_ID), ZclApplianceControlServer.class);
 		commonServerClusterMap.put(new Integer(ZclApplianceEventsAndAlertsServer.CLUSTER_ID),
 				ZclApplianceEventsAndAlertsServer.class);
-		
+		//commonServerClusterMap.put(new Integer(ZclIndesitBridgeServer.CLUSTER_ID), ZclIndesitBridgeServer.class);
+
 		commonServerClusterMap.put(new Integer(ZclTemperatureMeasurementServer.CLUSTER_ID), ZclTemperatureMeasurementServer.class);
 		commonServerClusterMap.put(new Integer(ZclRelativeHumidityMeasurementServer.CLUSTER_ID),
 				ZclRelativeHumidityMeasurementServer.class);

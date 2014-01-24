@@ -15,9 +15,13 @@
  */
 package org.energy_home.jemma.ah.hac.lib;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+
+
 
 
 
@@ -93,14 +97,21 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 
 				trackDevice(device, s);
 				if (appliance.isAvailable) {
-					Object customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
-					if (customConfig != null) {
-						config.put(IAppliance.APPLIANCE_CUSTOM_CONFIG_PROPERTY, customConfig);
-					}
 					config.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, appliance.getEndPointIds());
 					config.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, appliance.getEndPointTypes());
+					
+					Dictionary customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
+					if (customConfig != null) {				
+						for (Enumeration e = customConfig.keys(); e.hasMoreElements();) {
+							String key = (String)e.nextElement();
+							// Custom properties that are invalid are filtered
+							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF));
+								config.put(key, customConfig.get(key));
+						}
+					}
+					
 					if (!enableAutoInstall)
-						config.put("ah.status", "installing");					
+						config.put("ah.status", "installing");		
 					ServiceRegistration sr = bc.registerService(IManagedAppliance.class.getName(), appliance, config);
 					record.applianceServiceRegistration = sr;
 				}
@@ -113,6 +124,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			record.deviceList.add(device);
 			((DriverAppliance)record.appliance).attach(device);
 			trackDevice(device, s);
+			// When the following condition could be true? 
 			if (record.applianceServiceRegistration == null) {
 				if (record.appliance.isAvailable()) {
 					Hashtable config = new Hashtable();
@@ -120,10 +132,17 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 					config.put(IAppliance.APPLIANCE_PID, appliancePid);
 					config.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, record.appliance.getEndPointIds());
 					config.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, record.appliance.getEndPointTypes());
-					Object customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
-					if (customConfig != null) {
-						config.put(IAppliance.APPLIANCE_CUSTOM_CONFIG_PROPERTY, customConfig);
+					
+					Dictionary customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
+					if (customConfig != null) {				
+						for (Enumeration e = customConfig.keys(); e.hasMoreElements();) {
+							String key = (String)e.nextElement();
+							// Custom properties that are invalid are filtered
+							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF));
+								config.put(key, customConfig.get(key));
+						}
 					}
+					
 					if (!enableAutoInstall)
 						config.put("ah.status", "installing");					
 					ServiceRegistration sr = bc.registerService(IManagedAppliance.class.getName(), record.appliance, config);
@@ -156,7 +175,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			IHacDevice device = (IHacDevice) iterator.next();
 			devices[i++] = device;	
 		}
-		// !!!Multieps: an array is needed to avoid concurrent modification in deviceList while using another iterator
+		// Multieps: an array is needed to avoid concurrent modification in deviceList while using another iterator
 		for (int j = 0; j < devices.length; j++) {
 			untrackDevice(devices[j]);	
 			if (removeDevice)

@@ -28,8 +28,12 @@ import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 public interface IAppliancesProxy extends IAppliancesBasicProxy {
 	
 	public abstract ILocation[] getLocations();
+	
+	public abstract ILocation getLocation(String pid);
 
 	public abstract ICategory[] getCategories();
+	
+	public abstract ICategory getCategory(String pid);
 	
 	public abstract List getInstallingAppliances();
 	
@@ -37,9 +41,9 @@ public interface IAppliancesProxy extends IAppliancesBasicProxy {
 	
 	public abstract IAppliance getInstallingAppliance(String appliancePid);
 	
-	public Map getApplianceConfiguration(String appliancePid, Integer endPointId);
+	public IApplianceConfiguration getApplianceConfiguration(String appliancePid);
 	
-	public Map updateApplianceConfiguration(String appliancePid, Integer endPointId, Map config);
+	public boolean updateApplianceConfiguration(IApplianceConfiguration config);
 	
 	public boolean installAppliance(String appliancePid); 
 	
@@ -57,5 +61,7 @@ public interface IAppliancesProxy extends IAppliancesBasicProxy {
 			String attributeName);
 
 	public abstract Map getLastNotifiedAttributeValues(String appliancePid, Integer endPointId, String clusterName);
+	
+	public abstract IAttributeValue getLastReadAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName);
 
 }

@@ -28,6 +28,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUTCTime;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclTypes;
+import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 
 import org.energy_home.jemma.ah.cluster.zigbee.general.BasicClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.BasicServer;
@@ -47,6 +48,10 @@ public class ZclBasicClient extends ZclServiceCluster implements BasicClient, Zi
 
 	protected int getClusterId() {
 		return CLUSTER_ID;
+	}
+
+	protected IZclAttributeDescriptor[] getPeerAttributeDescriptors() {
+		return ZclBasicServer.attributeDescriptors;
 	}
 
 	protected int readAttributeResponseGetSize(int attrId) throws ServiceClusterException, ZclValidationException {

@@ -25,6 +25,10 @@ public interface ApplianceControlServer {
 	final static String ATTR_StartTime_NAME = "StartTime";
 	final static String ATTR_FinishTime_NAME = "FinishTime";
 	final static String ATTR_RemainingTime_NAME = "RemainingTime";
+	final static String ATTR_CycleTarget0_NAME = "CycleTarget0";
+	final static String ATTR_CycleTarget1_NAME = "CycleTarget1";
+	final static String ATTR_TemperatureTarget0_NAME = "TemperatureTarget0";
+	final static String ATTR_TemperatureTarget1_NAME = "TemperatureTarget1";
 	final static String CMD_CommandExecution_NAME = "CommandExecution";
 	final static String CMD_SignalState_NAME = "SignalState";
 	final static String CMD_WriteFunctions_NAME = "WriteFunctions";
@@ -38,6 +42,14 @@ public interface ApplianceControlServer {
 
 	public int getRemainingTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
+	public short getCycleTarget0(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	
+	public short getCycleTarget1(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	
+	public int getTemperatureTarget0(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	
+	public int getTemperatureTarget1(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	
 	public void execCommandExecution(short CommandId, IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException;
 

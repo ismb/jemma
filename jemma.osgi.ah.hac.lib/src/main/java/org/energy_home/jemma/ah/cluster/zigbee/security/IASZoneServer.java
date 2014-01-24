@@ -21,20 +21,23 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public interface IASZoneServer {
 
-    final static String ATTR_ZoneState_NAME = "ZoneState";
-    final static String ATTR_ZoneType_NAME = "ZoneType";
-    final static String ATTR_ZoneStatus_NAME = "ZoneStatus";
+	final static String ATTR_ZoneState_NAME = "ZoneState";
+	final static String ATTR_ZoneType_NAME = "ZoneType";
+	final static String ATTR_ZoneStatus_NAME = "ZoneStatus";
+	final static String ATTR_IAS_CIE_Address_NAME = "IAS_CIE_Address";
+	final static String ATTR_ZoneID_NAME = "ZoneID";
 
-    public short getZoneState(IEndPointRequestContext context)
-        throws ApplianceException, ServiceClusterException
-    ;
+	public short getZoneState(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
-    public int getZoneType(IEndPointRequestContext context)
-        throws ApplianceException, ServiceClusterException
-    ;
+	public int getZoneType(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
-    public int getZoneStatus(IEndPointRequestContext context)
-        throws ApplianceException, ServiceClusterException
-    ;
+	public int getZoneStatus(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public byte[] getIAS_CIE_Address(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void setIAS_CIE_Address(byte[] IAS_CIE_Address, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public short getZoneID(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
 }

@@ -41,6 +41,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI24;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI16;
 
 public class ZclApplianceControlServer extends ZclServiceCluster implements ApplianceControlServer, ZigBeeDeviceListener {
 
@@ -49,12 +50,20 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 	final static HashMap attributesMapById = new HashMap();
 
 	static {
-		attributesMapByName.put(ZclApplianceControlServer.ATTR_StartTime_NAME, new ZclAttributeDescriptor(1,
+		attributesMapByName.put(ZclApplianceControlServer.ATTR_StartTime_NAME, new ZclAttributeDescriptor(0,
 				ZclApplianceControlServer.ATTR_StartTime_NAME, new ZclDataTypeUI16(), null, true, 1));
-		attributesMapByName.put(ZclApplianceControlServer.ATTR_FinishTime_NAME, new ZclAttributeDescriptor(2,
+		attributesMapByName.put(ZclApplianceControlServer.ATTR_FinishTime_NAME, new ZclAttributeDescriptor(1,
 				ZclApplianceControlServer.ATTR_FinishTime_NAME, new ZclDataTypeUI16(), null, true, 1));
-		attributesMapByName.put(ZclApplianceControlServer.ATTR_RemainingTime_NAME, new ZclAttributeDescriptor(3,
+		attributesMapByName.put(ZclApplianceControlServer.ATTR_RemainingTime_NAME, new ZclAttributeDescriptor(2,
 				ZclApplianceControlServer.ATTR_RemainingTime_NAME, new ZclDataTypeUI16(), null, true, 1));
+		attributesMapByName.put(ATTR_CycleTarget0_NAME, new ZclAttributeDescriptor(4,
+				ATTR_CycleTarget0_NAME, new ZclDataTypeUI8(), null, true, 1));
+		attributesMapByName.put(ATTR_CycleTarget1_NAME, new ZclAttributeDescriptor(5,
+				ATTR_CycleTarget1_NAME, new ZclDataTypeUI8(), null, true, 1));
+		attributesMapByName.put(ATTR_TemperatureTarget0_NAME, new ZclAttributeDescriptor(6,
+				ATTR_TemperatureTarget0_NAME, new ZclDataTypeI16(), null, true, 1));
+		attributesMapByName.put(ATTR_TemperatureTarget1_NAME, new ZclAttributeDescriptor(7,
+				ATTR_TemperatureTarget1_NAME, new ZclDataTypeI16(), null, true, 1));
 	}
 
 	public ZclApplianceControlServer() throws ApplianceException {
@@ -187,6 +196,20 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 	public int getStartTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
 			Integer objectResult = null;
+			objectResult = ((Integer) getValidCachedAttributeObject(0, context.getMaxAgeForAttributeValues()));
+			if (objectResult != null) {
+				return objectResult.intValue();
+			}
+		}
+		IZclFrame zclFrame = readAttribute(0, context);
+		int v = ZclDataTypeUI16.zclParse(zclFrame);
+		setCachedAttributeObject(0, new Integer(v));
+		return v;
+	}
+
+	public int getFinishTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+		if (context != null) {
+			Integer objectResult = null;
 			objectResult = ((Integer) getValidCachedAttributeObject(1, context.getMaxAgeForAttributeValues()));
 			if (objectResult != null) {
 				return objectResult.intValue();
@@ -194,11 +217,11 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 		}
 		IZclFrame zclFrame = readAttribute(1, context);
 		int v = ZclDataTypeUI16.zclParse(zclFrame);
-		setCachedAttributeObject(256, new Integer(v));
+		setCachedAttributeObject(1, new Integer(v));
 		return v;
 	}
 
-	public int getFinishTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+	public int getRemainingTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
 			Integer objectResult = null;
 			objectResult = ((Integer) getValidCachedAttributeObject(2, context.getMaxAgeForAttributeValues()));
@@ -208,21 +231,63 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 		}
 		IZclFrame zclFrame = readAttribute(2, context);
 		int v = ZclDataTypeUI16.zclParse(zclFrame);
-		setCachedAttributeObject(257, new Integer(v));
+		setCachedAttributeObject(2, new Integer(v));
 		return v;
 	}
-
-	public int getRemainingTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+	
+	public short getCycleTarget0(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+		if (context != null) {
+			Short objectResult = null;
+			objectResult = ((Short) getValidCachedAttributeObject(4, context.getMaxAgeForAttributeValues()));
+			if (objectResult != null) {
+				return objectResult.shortValue();
+			}
+		}
+		IZclFrame zclFrame = readAttribute(4, context);
+		short v = ZclDataTypeUI8.zclParse(zclFrame);
+		setCachedAttributeObject(4, new Short(v));
+		return v;
+	}
+	
+	public short getCycleTarget1(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+		if (context != null) {
+			Short objectResult = null;
+			objectResult = ((Short) getValidCachedAttributeObject(5, context.getMaxAgeForAttributeValues()));
+			if (objectResult != null) {
+				return objectResult.shortValue();
+			}
+		}
+		IZclFrame zclFrame = readAttribute(5, context);
+		short v = ZclDataTypeUI8.zclParse(zclFrame);
+		setCachedAttributeObject(5, new Short(v));
+		return v;
+	}
+	
+	public int getTemperatureTarget0(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
 			Integer objectResult = null;
-			objectResult = ((Integer) getValidCachedAttributeObject(3, context.getMaxAgeForAttributeValues()));
+			objectResult = ((Integer) getValidCachedAttributeObject(6, context.getMaxAgeForAttributeValues()));
 			if (objectResult != null) {
 				return objectResult.intValue();
 			}
 		}
-		IZclFrame zclFrame = readAttribute(3, context);
-		int v = ZclDataTypeUI16.zclParse(zclFrame);
-		setCachedAttributeObject(258, new Integer(v));
+		IZclFrame zclFrame = readAttribute(6, context);
+		int v = ZclDataTypeI16.zclParse(zclFrame);
+		setCachedAttributeObject(6, new Integer(v));
+		return v;
+	}
+	
+	public int getTemperatureTarget1(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+		if (context != null) {
+			Integer objectResult = null;
+			objectResult = ((Integer) getValidCachedAttributeObject(7, context.getMaxAgeForAttributeValues()));
+			if (objectResult != null) {
+				return objectResult.intValue();
+			}
+		}
+		IZclFrame zclFrame = readAttribute(7, context);
+		int v = ZclDataTypeI16.zclParse(zclFrame);
+		setCachedAttributeObject(7, new Integer(v));
 		return v;
 	}
 

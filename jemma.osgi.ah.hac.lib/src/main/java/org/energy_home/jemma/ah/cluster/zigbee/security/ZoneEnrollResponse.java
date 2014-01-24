@@ -18,15 +18,15 @@ package org.energy_home.jemma.ah.cluster.zigbee.security;
 
 public class ZoneEnrollResponse {
 
-    public short EnrollResponseCode;
-    public short ZoneID;
+	public short EnrollResponseCode;
+	public short ZoneID;
 
-    public ZoneEnrollResponse() {
-    }
+	public ZoneEnrollResponse() {
+	}
 
-    public ZoneEnrollResponse(short EnrollResponseCode, short ZoneID) {
-        this.EnrollResponseCode = EnrollResponseCode;
-        this.ZoneID = ZoneID;
-    }
+	public ZoneEnrollResponse(short EnrollResponseCode, short ZoneID) {
+		this.EnrollResponseCode = EnrollResponseCode;
+		this.ZoneID = ZoneID;
+	}
 
 }

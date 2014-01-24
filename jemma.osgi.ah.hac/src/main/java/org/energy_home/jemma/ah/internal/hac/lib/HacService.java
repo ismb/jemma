@@ -90,8 +90,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		}
 		return new String(chars);
 	}
-	
-	private boolean enableAutoInstall = false;
+
 	private boolean permitAlternateDefaultConfiguration = false;
 
 	/**
@@ -277,16 +276,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				return;
 			}
 
-			if (enableAutoInstall) {
-				appliances.add(appliance);
+			String appStatus = (String) appProps.get("ah.status");
+			if (appStatus != null && (appStatus.equals("installing"))) {
+				log.debug("New appliance to install detected: " + appliancePid);
+				installingAppliances.add(appliance);
 			} else {
-				String appStatus = (String) appProps.get("ah.status");
-				if (appStatus != null && (appStatus.equals("installing"))) {
-					log.debug("New appliance to install detected: " + appliancePid);
-					installingAppliances.add(appliance);
-				} else {
-					appliances.add(appliance);
-				}
+				appliances.add(appliance);
 			}
 
 			((ApplianceManager) appliance.getApplianceManager()).setHacService(this);
@@ -1230,7 +1225,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				}
 			} else if ((tag == "appliance") && (loadAppliances)) {
 				/*
-				 * PINO String name = attrs.getNamedItem("name").getNodeValue();
+				 * String name = attrs.getNamedItem("name").getNodeValue();
 				 * if (log.isDebugEnabled()) log.debug("reading va " + name);
 				 */
 				properties = new Hashtable();
@@ -1774,16 +1769,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				if (c == null) {
 					throw new HacException("unable to update appliance because it doesn't exist" + appliancePid);
 				}
-				// don't override the appliance type property. Fatal error if
-				// this
-				// property is not set for the appliance
-				this.doNotOverrideProperty(c, props, IAppliance.APPLIANCE_TYPE_PROPERTY);
-				// Multieps update (restore eps properties)
-				props.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, managedAppliance.getEndPointIds());
-				props.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, managedAppliance.getEndPointTypes());
-				Object customConfig = ((ApplianceManager) managedAppliance.getApplianceManager()).getCustomConfiguration();
-				if (customConfig != null)
-					props.put(IAppliance.APPLIANCE_CUSTOM_CONFIG_PROPERTY, customConfig);
+				this.checkAndUpdateProperties(managedAppliance, c, props);
 
 				c.update(props);
 			} catch (Exception e) {
@@ -1827,8 +1813,28 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		}
 	}
 
+	private void manageMultiEndPointConfiguration(Dictionary props, Dictionary oldProps, String applianceProperty, String endPointsProperty) {
+		String value = (String) props.get(applianceProperty);
+		String[] values = (String[]) props.get(endPointsProperty);
+		if (values == null) {
+			values = (String[])  oldProps.get(endPointsProperty);
+		}	
+		if (value == null && values != null && values.length > 0) {
+			// If no appliance property is present and end point 0 property is present, the appliance property is created/aligned  
+			props.put(applianceProperty, values[0]);
+		}	
+		if (value != null && values != null && values.length > 0 && !value.equals(values[0])) {
+			// If appliance property is present and end point properties are already present or updated,
+			// all end point corresponding properties are reset to appliance property			
+			for (int i = 0; i < values.length; i++) {
+				values[i] = (String)value;				
+			}
+			props.put(endPointsProperty, values);
+		}
+	}
+	
 	/**
-	 * Force override of the passed property name with the property contained in
+	 * Checks and adds or updates some properties contained in
 	 * the configuration. The props dictionary is changed.
 	 * 
 	 * @param c
@@ -1840,7 +1846,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	 * @throws HacException
 	 */
 
-	private void doNotOverrideProperty(Configuration c, Dictionary props, String name) throws HacException {
+	private void checkAndUpdateProperties(IManagedAppliance managedAppliance, Configuration c, Dictionary props) throws HacException {
+		// don't override the appliance type property. Fatal error if
+		// this property is not set for the appliance
 		Dictionary oldProps = c.getProperties();
 		String applianceType = (String) oldProps.get(IAppliance.APPLIANCE_TYPE_PROPERTY);
 		if (applianceType == null) {
@@ -1848,6 +1856,32 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			// property!!!!! Perche?
 			log.fatal(IAppliance.APPLIANCE_TYPE_PROPERTY + " property not found in record");
 		}
+		
+		// Restore some key properties: it seems it does not associate to new service registration properties 
+		// that are not included in last change to configuration (it also avoid to have some properties
+		// can contains invalid values)
+		props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, managedAppliance.getDescriptor().getType());
+		props.put(IAppliance.APPLIANCE_PID, managedAppliance.getPid());
+		props.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, managedAppliance.getEndPointIds());
+		props.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, managedAppliance.getEndPointTypes());		
+		props.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, managedAppliance.getEndPointIds());
+		props.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, managedAppliance.getEndPointTypes());		
+		Dictionary customConfig = managedAppliance.getCustomConfiguration();
+		if (customConfig != null) {				
+			for (Enumeration e = customConfig.keys(); e.hasMoreElements();) {
+				String key = (String)e.nextElement();
+				// Custom properties that are invalid are filtered
+				if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF));
+				props.put(key, customConfig.get(key));
+			}
+		}	
+
+		// For compatibility with old applications (i.e. green@home), appliance common property is always managed
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_NAME_PROPERTY, IAppliance.END_POINT_NAMES_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, IAppliance.END_POINT_CATEGORY_PIDS_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_LOCATION_PID_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_ICON_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
+		
 	}
 
 	private Map networkManagers = new HashMap(1);

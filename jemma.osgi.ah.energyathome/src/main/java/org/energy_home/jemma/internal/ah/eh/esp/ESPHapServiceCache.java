@@ -40,10 +40,13 @@ public class ESPHapServiceCache {
 
 	private class QueryResult<T> {
 		private long queryTime;
+		Calendar queryCalendar;
 		private T result;
 		
 		QueryResult(T items, long queryTime) {
 			this.queryTime = queryTime;
+			this.queryCalendar = Calendar.getInstance();
+			this.queryCalendar.setTimeInMillis(queryTime);
 			this.result = items;
 		}
 		
@@ -54,12 +57,17 @@ public class ESPHapServiceCache {
 		long getQueryTime() {
 			return queryTime;
 		}
+		
+		Calendar getQueryCalendar() {
+			return queryCalendar;
+		}
 	}
 	
 	private ESPHapServiceObject hapObject;	
 	private Map<AHContainerAddress, QueryResult> cacheItemsMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 	private Map<AHContainerAddress, QueryResult> cacheItemsListMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 	private Map<AHContainerAddress, QueryResult> cacheWeekDayItemsMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
+	private Map<AHContainerAddress, QueryResult> cacheHourlyProducedEnergyForecastItemsMap = new HashMap<AHContainerAddress, QueryResult>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 
 	private static int getCurrentCacheResolution(Calendar calendar, AHContainerAddress containerId, long startTime, long endTime, int resolution) {
 		int currentDay;
@@ -125,7 +133,8 @@ public class ESPHapServiceCache {
 		QueryResult cache = cacheMap.get(containerId);
 		if (cache != null) {
 			long now = System.currentTimeMillis();
-			if ((now - cache.getQueryTime()) > THIRTY_MINUTES_IN_MILLISEC) {
+			int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+			if (cache.getQueryCalendar().get(Calendar.HOUR_OF_DAY) != currentHour) {
 				cache = null;
 				cacheMap.put(containerId, null);
 				log.info("Invalidate cached query " + containerId);
@@ -229,6 +238,21 @@ public class ESPHapServiceCache {
 		if (cache == null)
 			return null;
 		return filterContentInstanceItems(cache.getResult(), startId, endId);
+	}
+	
+	public ContentInstanceItems getHourlyProducedEnergyForecastCachedItems(AHContainerAddress containerId) throws M2MHapException {
+		QueryResult<ContentInstanceItems> cache = getCachedQueryResult(cacheHourlyProducedEnergyForecastItemsMap, Calendar.getInstance(), containerId);		
+		if (cache == null) {
+			ContentInstanceItems items = hapObject.getHourlyProducedEnergyForecast(containerId);
+			if (items != null) {
+				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
+				cacheHourlyProducedEnergyForecastItemsMap.put(containerId, cache);
+				log.info("Created local cache for container " + containerId + "\n:" + items);
+			} 
+		}
+		if (cache == null)
+			return null;
+		return cache.getResult();
 	}
 
 }

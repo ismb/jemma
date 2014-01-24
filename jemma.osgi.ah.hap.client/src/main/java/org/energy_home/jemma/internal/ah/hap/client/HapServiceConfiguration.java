@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
+import org.energy_home.jemma.ah.hap.client.AHContainers;
+import org.energy_home.jemma.ah.hap.client.EHContainers;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
@@ -23,7 +26,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.ah.hap.client.EHContainers;
 
 public class HapServiceConfiguration {
 	private static final Log log = LogFactory.getLog(HapServiceConfiguration.class);
@@ -79,7 +81,7 @@ public class HapServiceConfiguration {
 		if (Utils.isNullOrEmpty(cachedAttributeIdFilterStr))		
 			cachedAttributeIdFilterStr = System.getProperty(CACHED_ATTRIBUTE_ID_FILTER_PROPERY_NAME);
 		if (!Utils.isNullOrEmpty(cachedAttributeIdFilterStr)) {
-			// TODO!!! this is a hack for compatibility with old system property configured in Energy@home trial
+			// TODO:!!! this is a hack for compatibility with old system property configured in Energy@home trial
 			if (cachedAttributeIdFilterStr.equals("ah.eh.esp.energySum"))
 				cachedAttributeIdFilterStr = EHContainers.attrId_ah_eh_esp_deliveredEnergySum;
 			CACHED_ATTRIBUTE_ID_FILTER = propertyValueToStringArray(cachedAttributeIdFilterStr);
@@ -90,8 +92,10 @@ public class HapServiceConfiguration {
 		if (Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr))		
 			localOnlyAttributeIdFilterStr = System.getProperty(LOCAL_ONLY_ATTRIBUTE_ID_FILTER_PROPERY_NAME);
 		if (Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr))
-			// TODO!!! this is a hack for compatibility with default configuration in Energy@home trial
-			localOnlyAttributeIdFilterStr = EHContainers.attrId_ah_eh_esp_deliveredPower+","+EHContainers.attrId_ah_eh_esp_onOffStatus;
+			// TODO:!!! this is a hack for compatibility with default configuration in Energy@home trial
+			// To enable the sending of new AHContainers with Energy@home application a specific filter must be 
+			// defined for the following two containers: ah.cluster.metering.deliveredEnergySum,ah.cluster.metering.receivedEnergySum
+			localOnlyAttributeIdFilterStr = AHContainers.CLUSTER_CONTAINERS_PREFIX;
 		if (!Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr)) {
 			LOCAL_ONLY_ATTRIBUTE_ID_FILTER = propertyValueToStringArray(localOnlyAttributeIdFilterStr);
 		}	

@@ -40,10 +40,6 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, ZigBeeDeviceListener {
 
 	public final static short CLUSTER_ID = 4;
-	final static HashMap attributesMap = new HashMap();
-
-	static {
-	}
 
 	public ZclGroupsClient() throws ApplianceException {
 		super();
@@ -99,14 +95,10 @@ public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, 
 		return CLUSTER_ID;
 	}
 
-	protected IZclAttributeDescriptor getAttributeDescriptor(String name) {
-		return ((IZclAttributeDescriptor) attributesMap.get(name));
-	}
-
 	protected IZclFrame parseAddGroup(GroupsServer o, IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
 		int GroupID = ZclDataTypeUI16.zclParse(zclFrame);
 		String GroupName = ZclDataTypeString.zclParse(zclFrame);
-		AddGroupResponse r = o.execAddGroup(GroupID, GroupName, null);
+		AddGroupResponse r = o.execAddGroup(GroupID, GroupName, endPoint.getDefaultRequestContext());
 		int size = ZclAddGroupResponse.zclSize(r);
 		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
 		zclResponseFrame.setCommandId(0);
@@ -116,7 +108,7 @@ public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, 
 
 	protected IZclFrame parseViewGroup(GroupsServer o, IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
 		int GroupID = ZclDataTypeUI16.zclParse(zclFrame);
-		ViewGroupResponse r = o.execViewGroup(GroupID, null);
+		ViewGroupResponse r = o.execViewGroup(GroupID, endPoint.getDefaultRequestContext());
 		int size = ZclViewGroupResponse.zclSize(r);
 		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
 		zclResponseFrame.setCommandId(1);
@@ -124,22 +116,26 @@ public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, 
 		return zclResponseFrame;
 	}
 
-	protected IZclFrame parseGetGroupMembership(GroupsServer o, IZclFrame zclFrame) throws ApplianceException,
-			ServiceClusterException {
+	protected IZclFrame parseGetGroupMembership(GroupsServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
 		short GroupCount = ZclDataTypeUI8.zclParse(zclFrame);
-		// FIXME: unable handle parameter 'GroupList' of type 'array of uint16'
-		GetGroupMembershipResponse r = null;
-		// o.execGetGroupMembership(GroupCount, null);
-		int size = ZclGetGroupMembershipResponse.zclSize(r);
-		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
-		zclResponseFrame.setCommandId(2);
-		ZclGetGroupMembershipResponse.zclSerialize(zclResponseFrame, r);
-		return zclResponseFrame;
-	}
+		int GroupList[] = new int[GroupCount];
+		for (int i = 0; i < GroupCount; i++)  {
+		 GroupList[i] = ZclDataTypeUI16.zclParse(zclFrame);
+		}
+		
+        GetGroupMembershipResponse r = o.execGetGroupMembership(GroupList, endPoint.getDefaultRequestContext());
+        int size = ZclGetGroupMembershipResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(2);
+        ZclGetGroupMembershipResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
 	protected IZclFrame parseRemoveGroup(GroupsServer o, IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
 		int GroupID = ZclDataTypeUI16.zclParse(zclFrame);
-		RemoveGroupResponse r = o.execRemoveGroup(GroupID, null);
+		RemoveGroupResponse r = o.execRemoveGroup(GroupID, endPoint.getDefaultRequestContext());
 		int size = ZclRemoveGroupResponse.zclSize(r);
 		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
 		zclResponseFrame.setCommandId(3);
@@ -156,7 +152,7 @@ public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, 
 			ServiceClusterException {
 		int GroupID = ZclDataTypeUI16.zclParse(zclFrame);
 		String GroupName = ZclDataTypeString.zclParse(zclFrame);
-		o.execAddGroupIfIdentifying(GroupID, GroupName, null);
+		o.execAddGroupIfIdentifying(GroupID, GroupName, endPoint.getDefaultRequestContext());
 		return null;
 	}
 

@@ -361,7 +361,7 @@ public class ESPContainersDataUtils {
 			for (Iterator<ContentInstanceItems> iterator = itemsList.getContentInstanceItems().iterator(); iterator.hasNext();) {
 				items = iterator.next();
 				containerId = AHContainerAddress.getAddressFromUrl(items.getAddressedId());
-				result.put(containerId.getAppliancePid(), toFloatValueList(items));
+				result.put(ESPApplication.getApplianceId(containerId), toFloatValueList(items));
 			}
 		}
 		return result;

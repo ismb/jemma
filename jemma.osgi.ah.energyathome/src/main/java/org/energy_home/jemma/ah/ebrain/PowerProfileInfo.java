@@ -31,6 +31,7 @@ import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
 public class PowerProfileInfo {
 	public static final int MILLISECS_IN_ONE_MINUTE = 60 * 1000;
 	public static final int TIME_TOLERANCE_EQUALITY = 5 * 60 * 1000; // 5 minutes
+	public static final int INDEFINITE_DURATION = 0xffff;
 
 	public static class PowerProfileState {
 		/*
@@ -126,13 +127,13 @@ public class PowerProfileInfo {
 			return stateTimeNotification;
 		}
 		
-		public boolean isApplianceStarted() {
-			if (state == ENERGY_PHASE_PAUSED || state == ENERGY_PHASE_RUNNING || state == ENERGY_PHASE_WAITING_PAUSED) return true;
-			// if the 1st phase is waiting to start the profile is not running yet
-			if (state == ENERGY_PHASE_WAITING_TO_START && energyPhaseId > 1) return true;
-			// in all other states it's not considered running
-			return false;
-		}
+        public boolean isApplianceStarted() {
+            // all phases other than one means its started
+            if (energyPhaseId > 1) return true;
+            if (state == ENERGY_PHASE_PAUSED || state == ENERGY_PHASE_RUNNING) return true;
+            // in all other states of the 1st phase are not considered running
+            return false;
+      }
 		
 		public String toString() {
 			StringBuilder sb = new StringBuilder("\nPower Profile State for: ").append(powerProfileId);
@@ -161,6 +162,8 @@ public class PowerProfileInfo {
 		public PowerProfileTimeConstraints(short id, int start, int end) {
 			contraintTimeNotification = System.currentTimeMillis();
 			powerProfileID = id;
+			if (start < 0) start = 0;
+			if (end == INDEFINITE_DURATION || end < 0) end = MAX_SCHEDULING_INTERVAL;
 			startAfter = start;
 			stopBefore = end;
 			isValid = start < end
@@ -283,7 +286,7 @@ public class PowerProfileInfo {
 		profileCurrentState = pcs;
 	}
 	
-	void initPhases(float energyConverter) {
+	public void initPhases(float energyConverter) {
 		for (int i = energyPhases.length; --i >= 0;) {
 			energyPhases[i].init(energyConverter);
 		}

@@ -96,15 +96,25 @@ public class ZclGroupsServer extends ZclServiceCluster implements GroupsServer, 
 		return (ZclViewGroupResponse.zclParse(zclResponseFrame));
 	}
 
-	public GetGroupMembershipResponse execGetGroupMembership(short GroupCount, int GroupList, IEndPointRequestContext context)
+	public GetGroupMembershipResponse execGetGroupMembership(int[] GroupList, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException {
-		int size = 0;
-		size += ZclDataTypeUI8.zclSize(GroupCount);
-		// FIXME: unable handle parameter 'GroupList' of type 'array of uint16'
+		int size = 1;
+		if (GroupList != null) {
+			size += GroupList.length * 2;
+		}
+
 		ZclFrame zclFrame = new ZclFrame(1, size);
 		zclFrame.setCommandId(2);
-		ZclDataTypeUI8.zclSerialize(zclFrame, GroupCount);
-		// FIXME: unable handle parameter 'GroupList' of type 'array of uint16'
+
+		if (GroupList != null) {
+			ZclDataTypeUI8.zclSerialize(zclFrame, (short) GroupList.length);
+			for (int i = 0; i < GroupList.length; i++) {
+				ZclDataTypeUI16.zclSerialize(zclFrame, GroupList[i]);
+			}
+		} else {
+			ZclDataTypeUI8.zclSerialize(zclFrame, (short) 0);
+		}
+
 		IZclFrame zclResponseFrame = issueExec(zclFrame, 2, context);
 		return (ZclGetGroupMembershipResponse.zclParse(zclResponseFrame));
 	}

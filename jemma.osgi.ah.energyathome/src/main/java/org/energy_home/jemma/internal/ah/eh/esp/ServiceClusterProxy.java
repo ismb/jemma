@@ -16,6 +16,7 @@
 package org.energy_home.jemma.internal.ah.eh.esp;
 
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
@@ -25,19 +26,35 @@ public class ServiceClusterProxy extends ServiceCluster  {
 		super();
 	}
 
-	protected IServiceCluster getServiceCluster(ApplianceProxy applianceProxy, int endPointId, String clusterName) {
-		if (applianceProxy == null)
+	protected IServiceCluster getServiceCluster(DeviceProxy deviceProxy, String clusterName) {
+		if (deviceProxy == null)
 			return null;
-		return applianceProxy.getServiceCluster(endPointId, clusterName);
+		return deviceProxy.getServiceCluster(clusterName);
 	}
 	
-	protected IEndPointRequestContext getApplicationRequestContext(ApplianceProxy applianceProxy, boolean isConfirmationRequired) {
+	protected IEndPointRequestContext getApplicationRequestContext(DeviceProxy applianceProxy, boolean isConfirmationRequired) {
 		if (applianceProxy == null)
 			return null;
 		return applianceProxy.getApplicationRequestContext(isConfirmationRequired);		
 	}
 	
+	protected IEndPointRequestContext getLastReadApplicationRequestContext(DeviceProxy applianceProxy) {
+		if (applianceProxy == null)
+			return null;
+		return applianceProxy.getLastReadApplicationRequestContext();		
+	}
+	
+	
+	
 	protected String getApplianceId(IEndPointRequestContext context) {
-		return context.getPeerEndPoint().getAppliance().getPid();
+		int endPointId = context.getPeerEndPoint().getId();
+		String applianceId = context.getPeerEndPoint().getAppliance().getPid();
+		if (endPointId != IEndPoint.DEFAULT_END_POINT_ID) {
+			StringBuilder sb = new StringBuilder(applianceId);
+			sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
+			sb.append(context.getPeerEndPoint().getId());
+			applianceId = sb.toString();
+		} 
+		return applianceId;
 	}
 }

@@ -38,7 +38,7 @@ final class ProfileScheduleSubparticle {
 
 	
 	public static final double HALF_PI = 0.5 * Math.PI;
-	public static final double LEVY_ALFA = 1.4;
+	public static final double LEVY_ALFA = 1.5;
 
 	public static double CAUCHY_CONSTRICTION = 0.35;
 	public static double LEVY_CONSTRICTION = 0.75;
@@ -57,8 +57,8 @@ final class ProfileScheduleSubparticle {
 	}
 
 	public static final double nextCauchy() {
-		//return CAUCHY_CONSTRICTION * Math.tan(Math.PI * (rand.nextDouble() - 0.5));
-		return CAUCHY_CONSTRICTION * Math.tan(HALF_PI * rand.nextDouble());
+		return CAUCHY_CONSTRICTION * Math.tan(Math.PI * (rand.nextDouble() - 0.5));
+		//return CAUCHY_CONSTRICTION * Math.tan(HALF_PI * rand.nextDouble());
 	}
 	
 	public static final double nextExponential() {

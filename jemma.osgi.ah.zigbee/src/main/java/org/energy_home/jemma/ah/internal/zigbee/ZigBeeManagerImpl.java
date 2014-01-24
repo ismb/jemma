@@ -79,6 +79,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringCli
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayEventListener;
@@ -233,6 +234,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	private boolean enableNotifyFrameLogs = false;
 	private boolean enableDiscoveryLogs = true;
 	private boolean enableDsLogs = false;
+	
+	
+	private boolean enableAllClusters = false;
+	private boolean enableEnergyAtHomeClusters = true;
 
 	private static final int JGalReconnectTimer = 2;
 	private static final int discoveryTimer = 3;
@@ -244,6 +249,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	// FIXME: currently we use EP 8 because of a problem in the GAL
 	private short localEndpoint = 1;
 	protected long callbackId = -1;
+	SimpleDescriptor sd = null;
 
 	private long timeout = 7000;
 	private int timeoutOffset = 2;
@@ -512,7 +518,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple read lock" + rwLock.getReadLockCount());
 			}
 		}
-
+		
+		// Drop messages that doesn't belong to the exported clusters
 		if (enableNotifyFrameLogs)
 			this.printAPSMessageEvent(msg);
 
@@ -520,6 +527,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			Vector devices = (Vector) ieee2devices.get(nodePid);
 
 			ZclFrame zclFrame = new ZclFrame(msg.getData());
+			
+			int clusterID = msg.getClusterID();
+			if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
+				// FIXME: qui dovremmo dare un errore differente a seconda se il comando' e' generale e manufacturer specific
+				IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, ZCL.UNSUP_CLUSTER_COMMAND);
+				log.error("APS message coming from clusterID 0x" + Hex.toHexString(clusterID, 4) + ". This clusterId is not supported by the gateway");
+				this.post(msg, zclResponseFrame);
+				return;
+			}
 
 			if (devices != null) {
 				Iterator it = devices.iterator();
@@ -582,6 +598,24 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId()
 					+ ": leave notifyAPSMessage()");
 		}
+	}
+
+	private boolean checkGatewaySimpleDescriptor(int clusterID, IZclFrame zclFrame) {
+		if (sd != null) {
+			List clusters;
+			if (zclFrame.isClientToServer()) {
+				clusters = sd.getApplicationInputCluster();				
+			}
+			else {
+				clusters = sd.getApplicationOutputCluster();
+
+			}
+			if ((clusters == null) || (clusters != null) && (!clusters.contains(clusterID)))
+				return false;
+			
+			return true;
+		}
+		return false;
 	}
 
 	private IZclFrame getDefaultResponse(IZclFrame zclFrame, int statusCode) {
@@ -657,7 +691,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						if (!this.discoveredNodesQueue.contains(installationStatus)) {
 							this.discoveredNodesQueue.addLast(installationStatus);
 						} else {
-							log.error(getIeeeAddressHex(a) + ": restartarting discovery");
+							log.error(getIeeeAddressHex(a) + ": too old ... restartarting discovery");
 						}
 					}
 				} else {
@@ -677,7 +711,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				device.announce();
 			}
 		}
-		
 	}
 
 	private void printTables() {
@@ -1245,7 +1278,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			log.warn("galCommandTimer expired");
 			// if this timer expires, it means that the GAL was not sending a
 			// calback for node descriptor or service discriptor or active
-			// endpoints
+			// endpoints. We need to start to process a new node.
 
 			try {
 				if (this.inProcessNode.size() == 0) {
@@ -1357,10 +1390,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						return;
 					}
 					// configure local endpoint
-					gateway.clearEndpoint(localEndpoint);
+					try {
+						gateway.clearEndpoint(localEndpoint);
+					} catch (Exception e) {
+						log.error("exception in clearEndpoint of endpoint " + localEndpoint + " " + e.getMessage()); 
+					}
 					// TODO the following input clusters have to be configurable
 					// from Config Admin or props file
-					SimpleDescriptor sd = new SimpleDescriptor();
+					// FIXME: this simple descriptor MUST be set to null when the gal is detached.
+					sd = new SimpleDescriptor();
 					sd.setEndPoint(new Short(localEndpoint));
 					sd.setApplicationDeviceVersion(new Short((short) 0x01));
 					sd.setApplicationDeviceIdentifier(new Integer(0x0050)); // ESP
@@ -1371,40 +1409,45 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					// TODO the following input clusters have to be configurable
 					// from Config Admin or props file
 
-					// Still missing. To be commented out!
-					// outputClusters.add(new Integer(0x0b02)); // Appliance
-					// Events &Alert
-					// outputClusters.add(new Integer(0x0b03)); // Appliance
-					// statistics
-
-					// This is the list of Client side clusters supported by E@H
-					outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclSimpleMeteringClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclPartitionServer.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceStatisticsClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclMeterIdentificationClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclPowerProfileClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclOccupancySensingClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclIASZoneClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclTemperatureMeasurementClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclIlluminanceMeasurementClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
-					//outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
+					outputClusters.add(new Integer(ZclApplianceStatisticsClient.CLUSTER_ID));
+					outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
+					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
+					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
+					
+					if (enableEnergyAtHomeClusters) {
+						// This is the list of Client side clusters supported by E@H
+						outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
+					}
+					
+					if (enableAllClusters) {
+						outputClusters.add(new Integer(ZclOccupancySensingClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclIASZoneClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclTemperatureMeasurementClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclIlluminanceMeasurementClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
+						outputClusters.add(new Integer(0x0201));	//Thermostat cluster
+					}
 
 					// This is the list of Server side clusters supported by E@H
 					inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
 					inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
 					inputClusters.add(new Integer(ZclTimeServer.CLUSTER_ID));
-					inputClusters.add(new Integer(ZclSimpleMeteringServer.CLUSTER_ID));
-					inputClusters.add(new Integer(ZclPartitionServer.CLUSTER_ID));
-					inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
-
-					// TODO: add partitioning when it will be available.
+					
+					if (enableEnergyAtHomeClusters) {
+						inputClusters.add(new Integer(ZclSimpleMeteringServer.CLUSTER_ID));
+						inputClusters.add(new Integer(ZclPartitionServer.CLUSTER_ID));
+					}
+					if (enableAllClusters) {
+						inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
+					}
+					
 					localEndpoint = gateway.configureEndpoint(100, sd);
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
@@ -1454,9 +1497,32 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		if ((this.gateway == null) || (this.timer == null)) {
 			return false;
 		}
+		
+		String testevent = this.ctxt.getBundleContext().getProperty("it.telecomitalia.ah.zigbee.zcl.testevent");
+		
+		try {
+			if (Boolean.parseBoolean(testevent)) {
+				// enables only those clusters meaningful for the HA 1.2 Testevent
+				this.enableAllClusters = false;
+				this.enableEnergyAtHomeClusters = false;
+			}
+			else {
+				// enables all clusters
+				this.enableAllClusters = true;
+				this.enableEnergyAtHomeClusters = true;
+			}
+		} finally {
+			// do nothing
+		}
 
 		this.terminateDeviceDiscoveryAll();
-		gateway.setGatewayEventListener(this);
+		try {
+			gateway.setGatewayEventListener(this);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			// FIXME: what I have to do here?
+		}
 
 		try {
 			if (getUseNVM()) {
@@ -1490,12 +1556,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		this.terminateDeviceDiscoveryAll();
 
-		gateway.setGatewayEventListener(null);
-
 		try {
+			gateway.setGatewayEventListener(null);
 			gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_STOP);
 		} catch (Exception e) {
-			log.error("exception while calling startNodeDiscovery() for stopping node discovery: " + e.getMessage());
+			log.error("exception while calling startNodeDiscovery() or stopping node discovery: " + e.getMessage());
 		}
 		try {
 			if (callbackId != -1)
@@ -1673,13 +1738,13 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 
 	private void terminateDeviceDiscoveryAll() {
+		
+		this.timerCancel(galCommandTimer);
+		
 		// send leave to any new node under processing
 		for (Iterator iterator = this.inProcessNode.iterator(); iterator.hasNext();) {
 			InstallationStatus installationStatus = (InstallationStatus) iterator.next();
-
 			// FIXME: Devo farlo per tutti?
-
-			this.timerCancel(galCommandTimer);
 			this.terminateDeviceDiscovery(installationStatus);
 		}
 
@@ -1906,7 +1971,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		ServiceDescriptor service = device.getServiceDescriptor();
 		this.removeDevice(getIeeeAddressHex(service.getAddress()));
 	}
-	
+
 	public void enableNVM() {
 		synchronized (sLock) {
 			this.setUseNVM(true);
@@ -1927,9 +1992,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	private void setUseNVM(boolean useNVM) {
 		log.debug("setUseNVM to " + useNVM);
-		this.useNVMNetworkSetting = useNVM;
-		this.saveProperties();
-	}
+			this.useNVMNetworkSetting = useNVM;
+			this.saveProperties();
+		}
 	
 	private boolean getUseNVM() {
 		log.debug("returned UseNVM: " + this.useNVMNetworkSetting);
@@ -2031,9 +2096,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			return;
 
 		this.properties = new Properties();
-
+		File propertiesFile;
+		
 		try {
-			File propertiesFile;
 			if (useDataFileDir)
 				propertiesFile = this.ctxt.getBundleContext().getDataFile(propertyFilename);
 			else {
@@ -2048,7 +2113,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				this.setUseNVM(false);
 			} catch (Exception e1) {
 				log.fatal("unable to write back the property file: " + e1.getMessage());
-			}		
+			}
 		}
 	}
 

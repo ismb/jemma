@@ -33,6 +33,7 @@ import org.energy_home.jemma.ah.hac.IServiceClustersListener;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.InvalidPeerApplianceException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
 
@@ -40,7 +41,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
  * Basic implementation of {@link IServiceCluster} interface
  * 
  */
-public class BasicServiceCluster implements IServiceCluster, IServiceClusterListener {
+public abstract class BasicServiceCluster implements IServiceCluster, IServiceClusterListener {
 	static final String APPLIANCE_INVALID_OR_NOT_AVAILABLE = "Appliance invalid or not available";
 	static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error";	
 	static final String CLUSTER_PACKAGE_NAME_PREFIX = "it.telecomitalia.";
@@ -63,7 +64,7 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 	Map settersMethodNameToAttributeName;
 	Map execsMethodNameToCommandName;	
 	
-	protected IAppliance appliance;
+	protected Appliance appliance;
 	protected EndPoint endPoint;
 
 	private ISubscriptionParameters internalGetAttributeSubscription(String attributeName, IEndPointRequestContext endPointRequestContext) {
@@ -71,83 +72,20 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 		if (attributeSubscriptions == null)
 			return null;
 		else {
-			ISubscriptionParameters params = null;
 			if (endPointRequestContext == null) {
-				for (Iterator iterator = attributeSubscriptions.values().iterator(); iterator.hasNext();) {
-					params = (ISubscriptionParameters) iterator.next();
-					break;
-				}
+				return getAppliancesProxySubscription(attributeName);
 			} else {
 				return (ISubscriptionParameters) attributeSubscriptions.get(endPointRequestContext.getPeerEndPoint());
 			}
-			return params;
 		}
 	}
 	
-	protected final void init(Object clusterInterfaceImpl, Class clusterInterfaceClass) throws ApplianceException {
-		if (clusterInterfaceImpl == null)
-			throw new ApplianceException(INVALID_CLUSTER_CLASS_MESSAGE);
-		this.clusterInterfaceImpl = clusterInterfaceImpl;
-		this.clusterInterfaceClass = clusterInterfaceClass;
-		String name = clusterInterfaceClass.getName();
-		if (name.endsWith(HacCommon.CLUSTER_NAME_CLIENT_POSTFIX)) {
-			this.name = name;
-			this.side = IServiceCluster.CLIENT_SIDE;
-			this.type = this.name.substring(0, this.name.indexOf(HacCommon.CLUSTER_NAME_CLIENT_POSTFIX));
-		} else if (name.endsWith(HacCommon.CLUSTER_NAME_SERVER_POSTFIX)) {
-			this.name = name;
-			this.side = IServiceCluster.SERVER_SIDE;
-			this.type = name.substring(0, name.indexOf(HacCommon.CLUSTER_NAME_SERVER_POSTFIX));
-		} else 
-			throw new ApplianceException(INVALID_CLUSTER_CLASS_MESSAGE);
-
-		this.getterMethods = new HashMap();
-		this.setterMethods = new HashMap();
-		this.execMethods = new HashMap();
-
-		this.gettersMethodNameToAttributeName = new HashMap();
-		this.settersMethodNameToAttributeName = new HashMap();
-		this.execsMethodNameToCommandName = new HashMap();
-
-		Method[] clusterMethod = clusterInterfaceClass.getMethods();
-		if (clusterMethod == null || clusterMethod.length == 0) {
-			isEmpty = true;
-			return;
-		}
-		String key = null;
-		for (int i = 0; i < clusterMethod.length; i++) {
-			if (clusterMethod[i].getName().startsWith(HacCommon.CLUSTER_ATTRIBUTE_GETTER_PREFIX)) {
-				key = clusterMethod[i].getName().substring(HacCommon.CLUSTER_ATTRIBUTE_GETTER_PREFIX.length());
-				this.getterMethods.put(key, clusterMethod[i]);
-				this.gettersMethodNameToAttributeName.put(clusterMethod[i].getName(), key);
-			}
-//			if (clusterMethod[i].getName().startsWith(HacCommon.CLUSTER_ATTRIBUTE_SELECT_PREFIX)) {
-//				key = clusterMethod[i].getName().substring(HacCommon.CLUSTER_ATTRIBUTE_SELECT_PREFIX.length());
-//				this.selectMethods.put(key, clusterMethod[i]);
-//				this.selectMethodNameToAttributeName.put(clusterMethod[i].getName(), key);
-//			} else 
-			if (clusterMethod[i].getName().startsWith(HacCommon.CLUSTER_ATTRIBUTE_SETTER_PREFIX)) {
-				key = clusterMethod[i].getName().substring(HacCommon.CLUSTER_ATTRIBUTE_SETTER_PREFIX.length());
-				this.setterMethods.put(key, clusterMethod[i]);
-				this.settersMethodNameToAttributeName.put(clusterMethod[i].getName(), key);
-			}
-//			if (clusterMethod[i].getName().startsWith(HacCommon.CLUSTER_ATTRIBUTE_PUT_PREFIX)) {
-//				key = clusterMethod[i].getName().substring(HacCommon.CLUSTER_ATTRIBUTE_PUT_PREFIX.length());
-//				this.putMethods.put(key, clusterMethod[i]);
-//				this.putMethodNameToAttributeName.put(clusterMethod[i].getName(), key);
-//			} else 
-			if (clusterMethod[i].getName().startsWith(HacCommon.CLUSTER_COMMAND_PREFIX)) {
-				key = clusterMethod[i].getName().substring(HacCommon.CLUSTER_COMMAND_PREFIX.length());
-				this.execMethods.put(key, clusterMethod[i]);
-				this.execsMethodNameToCommandName.put(clusterMethod[i].getName(), key);
-			} else {
-				// TODO: check when continue statement is needed
-				// throw new
-				// ApplianceException(INVALID_CONNECTED_CLUSTER_CLASS); NICOLA
-				continue;
-			}
-		}
-	}	
+	protected ISubscriptionParameters getAppliancesProxySubscription(String attributeName) {
+		HashMap attributeSubscriptions = (HashMap) subscriptions.get(attributeName);
+		if (subscriptions == null)
+			return null;
+		return (ISubscriptionParameters) subscriptions.get(appliance.appliancesProxy.getEndPoint(IEndPoint.DEFAULT_END_POINT_ID));
+	}
 	
 	protected void updateSubscriptionMap(String attributeName, ISubscriptionParameters parameters,
 			IEndPointRequestContext endPointRequestContext) {
@@ -158,14 +96,14 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 			if (attributeSubscriptions != null && parameters == null) {
 				attributeSubscriptions.remove(endPointRequestContext.getPeerEndPoint());
 				return;
+			} else if (attributeSubscriptions == null && parameters == null) {
+				return;
 			}
 			if (attributeSubscriptions == null) {
 				attributeSubscriptions = new HashMap();
 				subscriptions.put(attributeName, attributeSubscriptions);
-			}
-			if (parameters != null) {
-				attributeSubscriptions.put(endPointRequestContext.getPeerEndPoint(), parameters);
-			}
+			} 
+			attributeSubscriptions.put(endPointRequestContext.getPeerEndPoint(), parameters);
 		}
 	}
 
@@ -178,7 +116,10 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 			if (attributeSubscriptions != null && parameters == null) {
 				subscriptions.remove(attributeName);
 				return;
+			} else if (attributeSubscriptions == null && parameters == null) {
+				return;
 			}
+			
 			if (attributeSubscriptions == null) {
 				attributeSubscriptions = new HashMap();
 				subscriptions.put(attributeName, attributeSubscriptions);
@@ -190,61 +131,6 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 				attributeSubscriptions.put(endPointRequestContext.getPeerEndPoint(), parameters);		
 		}
 
-	}
-	
-	public BasicServiceCluster(Object clusterInterfaceImpl, Class clusterInterfaceClass) throws ApplianceException {
-		init(clusterInterfaceImpl, clusterInterfaceClass);
-	}
-	
-	public BasicServiceCluster() throws ApplianceException {
-		this.endPoint = null;
-
-		Class clazz = this.getClass();
-		Class[] ifs = null;
-		Class clusterInterfaceClass = null;
-		String name = null;
-		boolean initializationOK = false;
-
-		while (!clazz.equals(Object.class)) {
-			ifs = clazz.getInterfaces();
-			if (ifs != null ) {
-				try {
-					for (int i = 0; i < ifs.length; i++) {
-						name = ifs[i].getName();
-						/*
-						 * if (name.startsWith(CLUSTER_PACKAGE_NAME_PREFIX)) name =
-						 * name.substring(CLUSTER_PACKAGE_NAME_PREFIX.length());
-						 */
-						if (name.endsWith(HacCommon.CLUSTER_NAME_CLIENT_POSTFIX)) {
-							if (initializationOK) {
-								initializationOK = false;
-								break;
-							}
-							initializationOK = true;
-							clusterInterfaceClass = ifs[i];
-						} else if (name.endsWith(HacCommon.CLUSTER_NAME_SERVER_POSTFIX)) {
-							if (initializationOK) {
-								initializationOK = false;
-								break;
-							}
-							initializationOK = true;
-							clusterInterfaceClass = ifs[i];
-						}
-					}
-		
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new ApplianceException(INVALID_CLUSTER_CLASS_MESSAGE);
-				}
-			}
-			if (!initializationOK)
-				clazz = clazz.getSuperclass();
-			else 
-				break;
-		}
-		if (!initializationOK)
-			throw new ApplianceException(INVALID_CLUSTER_CLASS_MESSAGE);
-		init(this, clusterInterfaceClass);
 	}
 	
 	public void checkServiceClusterAvailability() throws ApplianceException {
@@ -276,7 +162,7 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 	
 	public boolean isAvailable() {
 		if (endPoint == null)
-			return true;
+			return false;
 		// TODO: it needs to be extended to other common clusters
 		return this.endPoint.isAvailable() || (this.appliance.isValid() && name.equals(ConfigServer.class.getName()));
 	}
@@ -289,19 +175,32 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 	public ISubscriptionParameters setAttributeSubscription(String attributeName, ISubscriptionParameters parameters,
 			IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
 		checkServiceClusterAvailability();
-		if (parameters != null) {
-			// Virtual appliance now notifies all changes to an attribute (no
-			// min or max timeout is supported)
-			updateSubscriptionMap(attributeName, SUBSCRIPTION_PARAMETERS, endPointRequestContext);
-			// A null value is created to store the initial subscription time
-			AttributeValue av = new AttributeValue(null);
-			lastNotifiedAttributeValues.put(attributeName, av);
-			return SUBSCRIPTION_PARAMETERS;
-		} else {
-			updateSubscriptionMap(attributeName, null, endPointRequestContext);
-			return null;
+		// A value is immediately read (not notified to new subscribers)
+		try {
+			
+			IAttributeValue attributeValue = this.getAttributeValue(attributeName, endPointRequestContext);
+			this.notifyAttributeValue(attributeName, attributeValue);
+		} catch (Exception e) {
+			// No error is logged (a sleeping end device can fail)
+			// If the attribute is not supported a null result is returned (no subscription is possible)
+			if (e instanceof UnsupportedClusterAttributeException)
+				return null;
 		}
-
+//		if (!this.getEndPoint().getAppliance().isDriver()) 
+//			// Virtual appliance now notifies all changes to an attribute (no
+//			// min or max timeout is supported)
+//			parameters = SUBSCRIPTION_PARAMETERS;
+		if (endPointRequestContext.getPeerEndPoint().getAppliance().equals(appliance.appliancesProxy)) {
+			// Appliance proxy requests reset all other subscription parameters
+			updateAllSubscriptionMap(attributeName, parameters, endPointRequestContext);
+		} else {
+			ISubscriptionParameters appliancesProxyParameters = getAppliancesProxySubscription(attributeName);
+			if (appliancesProxyParameters != null)
+				// If an appliance proxy subscription already exists the requested parameters are always reset
+				parameters = appliancesProxyParameters;
+			updateSubscriptionMap(attributeName, parameters, endPointRequestContext);
+		}
+		return parameters;
 	}
 
 	public void removeAllSubscriptions(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException{
@@ -319,7 +218,7 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 		} 
 	}
 	
-	public Map getAllSubscriptions(IEndPointRequestContext endPointRequestContext) {
+	public Map getAllSubscriptions(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
 		HashMap result = null;
 		synchronized (subscriptions) {
 			for (Iterator iterator = subscriptions.entrySet().iterator(); iterator.hasNext();) {
@@ -341,7 +240,7 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 	}
 	
 	// Returns the last notified attribute value (doesn't read anything on the device)
-	public final IAttributeValue getLastNotifiedAttributeValue(String attributeName, IEndPointRequestContext endPointRequestContext) {
+	public IAttributeValue getLastNotifiedAttributeValue(String attributeName, IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
 		if (endPointRequestContext != null && internalGetAttributeSubscription(attributeName, endPointRequestContext) == null)
 			return null;
 		return (IAttributeValue) lastNotifiedAttributeValues.get(attributeName);
@@ -527,5 +426,10 @@ public class BasicServiceCluster implements IServiceCluster, IServiceClusterList
 			IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
 		// Can be used in child class to receive notifications
 	}
+	
+	final static String[] noAttributes = {};
 
+	public String[] getSupportedAttributeNames(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
+		return noAttributes;
+	}
 }

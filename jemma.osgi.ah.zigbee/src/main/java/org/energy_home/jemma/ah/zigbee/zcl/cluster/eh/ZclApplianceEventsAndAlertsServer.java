@@ -54,7 +54,7 @@ public class ZclApplianceEventsAndAlertsServer extends ZclServiceCluster impleme
 		IZclFrame responseZclFrame = null;
 		ZigBeeDevice device = getZigBeeDevice();
 		int statusCode = ZCL.SUCCESS;
-		ApplianceEventsAndAlertsClient c = ((ApplianceEventsAndAlertsClient) getSinglePeerCluster((ApplianceEventsAndAlertsClient.class
+		ApplianceEventsAndAlertsClient c = ((ApplianceEventsAndAlertsClient) getSinglePeerClusterNoException((ApplianceEventsAndAlertsClient.class
 				.getName())));
 		switch (commandId) {
 		case 1:
@@ -63,17 +63,20 @@ public class ZclApplianceEventsAndAlertsServer extends ZclServiceCluster impleme
 		case 2:
 			responseZclFrame = parseEventNotification(c, zclFrame);
 			break;
+		
+		default:
+			return false;
 		}
+		
 		if (responseZclFrame == null) {
 			if (!zclFrame.isDefaultResponseDisabled()) {
 				responseZclFrame = getDefaultResponse(zclFrame, statusCode);
 			}
 		}
-		if (!(responseZclFrame == null)) {
+		else {
 			device.post(ZclApplianceEventsAndAlertsServer.CLUSTER_ID, responseZclFrame);
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	protected int getClusterId() {
@@ -97,6 +100,9 @@ public class ZclApplianceEventsAndAlertsServer extends ZclServiceCluster impleme
 		for (i = 0; (i < size); i++) {
 			Events[i] = ZclDataTypeUI24.zclParse(zclFrame);
 		}
+		if (o == null)
+			return null;
+		
 		o.execAlertsNotification(Events, null);
 		return null;
 	}
@@ -105,6 +111,10 @@ public class ZclApplianceEventsAndAlertsServer extends ZclServiceCluster impleme
 			ServiceClusterException {
 		short EventHeader = ZclDataTypeUI8.zclParse(zclFrame);
 		short EventIdentification = ZclDataTypeUI8.zclParse(zclFrame);
+		
+		if (o == null)
+			return null;
+		
 		o.execEventNotification(EventHeader, EventIdentification, null);
 		return null;
 	}

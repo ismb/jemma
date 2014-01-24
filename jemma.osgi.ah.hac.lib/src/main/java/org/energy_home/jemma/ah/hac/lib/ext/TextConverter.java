@@ -62,14 +62,14 @@ public class TextConverter {
 			sb.append(OBJECT_SEPARATOR);
 			sb.append(obj.toString());
 		} else if (type.isArray()) {
-			if (type.getComponentType().equals(Byte.class) || type.getComponentType().equals(byte.class)) {
+			int arrayLength = Array.getLength(obj);	
+			if (arrayLength > 0 && (type.getComponentType().equals(Byte.class) || type.getComponentType().equals(byte.class))) {
 			    BigInteger bi = new BigInteger(1, (byte[])obj);
 			    sb.append(OBJECT_SEPARATOR);
 			    sb.append(EXADECIMAL_VALUE_PREFIX);
 			    sb.append(String.format("%0" + (((byte[])obj).length << 1) + "X", bi));
 			} else {
-				sb.append(OBJECT_SEPARATOR);
-				int arrayLength = Array.getLength(obj);	
+				sb.append(OBJECT_SEPARATOR);		
 				sb.append(arrayLength);
 				if (arrayLength > 0) {
 					for (int i = 0; i < arrayLength; i++) {
@@ -153,7 +153,15 @@ public class TextConverter {
 			base = 16;
 			isExadecimal = true;
 		}
-		if (type.equals(Boolean.class) || type.equals(boolean.class))
+		if (type.equals(Object.class)) {
+			// Just a hack to manage WriteAttributeRecord serialization (it works only for integer attributes)
+			if (Character.isDigit(str.charAt(0))) {
+				// Correct cast is made during serialization (e.g. ZclDataTypeUI8, ZclDataTypeUI16)
+				result = Long.valueOf(str, base);
+			} else {
+				result = Boolean.valueOf(str);
+			}
+		} else if (type.equals(Boolean.class) || type.equals(boolean.class))
 			result = Boolean.valueOf(str);
 		else if (type.equals(Short.class) || type.equals(short.class)) {
 			result = Short.valueOf(str, base);
@@ -175,7 +183,7 @@ public class TextConverter {
 				byte[] baResult = bi.toByteArray();
 				int baResultSize = str.length()/2;
 				result = new byte[baResultSize];
-				System.arraycopy(baResult, baResult.length-baResultSize, result, 0, baResultSize);
+				System.arraycopy(baResult, 0, result, baResultSize - baResult.length, baResult.length);
 			} else {
 				int arrayLength = Integer.parseInt(str);
 				Class arrayClass = type.getComponentType();
