@@ -221,12 +221,12 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		User installUser = (User) this.createRole(ua, "Install", Role.USER);
 		User homeUser = (User) this.createRole(ua, "Home", Role.USER);
 		User cedacUser = (User) this.createRole(ua, "Cedac", Role.USER);
-		User adminUser = (User) this.createRole(ua, "Admin", Role.USER);
+		User adminUser = (User) this.createRole(ua, "admin", Role.USER);
 
 		this.setUserCredentials(installUser, "InstallUser");
 		this.setUserCredentials(homeUser, "HomeUser");
 		this.setUserCredentials(cedacUser, "CedacUser");
-		this.setUserCredentials(adminUser, "AdminUser");
+		this.setUserCredentials(adminUser, "admin");
 
 		// Fills the Administrators group
 		administratorsGroup.addMember(adminUser);
@@ -239,7 +239,6 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		softwareUpgradeAccess.addMember(administratorsGroup);
 		serviceGroup.addMember(cedacUser);
 
-		//FIXME: cannot access to configuration gui... check!
 		/*
 		membersGroup.addMember(indesitUser);
 		membersGroup.addMember(electroluxUser);
@@ -305,7 +304,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 
 		log.debug("try to load configuration '" + configName + "'");
-
+		
 		try {
 			if (storageArea) {
 				String configFilename = SCENARIOS_PATH + configName + ".xml";
@@ -319,6 +318,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					stream = new FileInputStream(configName);
 				} else {
 					String configFilename = SCENARIOS_PATH + configName + ".xml";
+					//URL url = new URL("platform:/plugin/jemma.osgi.ah.configurator/"+configFilename);
 					URL url = bc.getBundle().getEntry(configFilename);
 					if (url == null) {
 						log.error("unable to open file " + configFilename);

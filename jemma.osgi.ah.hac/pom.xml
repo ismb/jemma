@@ -34,7 +34,7 @@
 	<properties>
 		<main.dir>${project.parent.basedir}</main.dir>
 	</properties>
-	<build>
+	<build> 
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -73,6 +73,9 @@
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
 						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+						<Include-Resource>{maven-resources}, xml=xml/</Include-Resource>
+						<!--<Include-Resource>OSGI-INF/*</Include-Resource>-->
+						<Bundle-Activator>org.energy_home.jemma.ah.internal.hac.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>
 			</plugin>

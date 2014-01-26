@@ -129,7 +129,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 	private boolean saveConfigurationToCurrent = true;
 	private static final String servicePid = "org.telecomitalia.hac";
-	private final static String SCENARIOS_PATH = "";
+	private final static String SCENARIOS_PATH = "xml/scenarios/";
 
 	private String defaultConfig = "defaultconfig";
 	private String configurationFilename = "hac-config";
@@ -1071,6 +1071,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 					configFile = bc.getDataFile(configFilename);
 					log.debug("storage area is " + configFile);
 					stream = new FileInputStream(configFile);
+					
 				} else {
 					File f = new File(configName);
 					if (f.isAbsolute()) {

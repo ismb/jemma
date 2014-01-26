@@ -17,7 +17,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.energy_home.jemma.hap.proxy">
-   <implementation class="org.energy_home.jemma.internal.ah.hap.client.HapProxy"/>
+   <implementation class="org.energy_home.jemma.internal.shapi.HapProxy"/>
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="static" unbind="unsetHttpService"/>
    <reference bind="setM2MNetworkScl" cardinality="0..1" interface="org.energy_home.jemma.ah.m2m.device.M2MNetworkScl" name="M2MNetworkScl" policy="dynamic" unbind="unsetM2MNetworkScl"/>
    <reference bind="setAppliancesProxy" cardinality="1..1" interface="org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy" name="IAppliancesProxy" policy="static" unbind="unsetAppliancesProxy"/>
@@ -26,4 +26,6 @@
    <service>
       <provide interface="org.energy_home.jemma.ah.hac.IApplicationService"/>
    </service>
+   <property name="ah.application.name" type="String" value="ah.hap.proxy"/>
+   <reference bind="setExecutorService" cardinality="1..1" interface="org.energy_home.jemma.utils.thread.ExecutorService" name="ExecutorService" policy="static" unbind="unsetExecutorService"/>
 </scr:component>
