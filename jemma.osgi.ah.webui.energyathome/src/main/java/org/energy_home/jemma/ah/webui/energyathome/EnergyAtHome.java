@@ -285,11 +285,11 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 
 	private boolean allowUser(String username, String password) {
 		if (userAdmin != null) {
-			User user = userAdmin.getUser("it.telecomitalia.username", username);
+			User user = userAdmin.getUser("org.energy_home.jemma.username", username);
 			if (user == null) {
 				return false;
 			}
-			if (!user.hasCredential("it.telecomitalia.password", password)) {
+			if (!user.hasCredential("org.energy_home.jemma.password", password)) {
 				return false;
 			}
 
