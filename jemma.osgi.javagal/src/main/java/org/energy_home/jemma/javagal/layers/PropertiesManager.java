@@ -178,9 +178,9 @@ public class PropertiesManager {
 		sai.setNetworkManagerAddress(0x0000); // 2 bytes
 		sai.setScanAttempts((short) 0x03); // 1 byte
 		sai.setTimeBetweenScans(0x6400); // 2 bytes
-		sai.setRejoinInterval(0x0200); // 2 bytes
-		sai.setMaxRejoinInterval(0x100E); // 2 bytes
-		sai.setIndirectPollRate(0xB80B); // 2 bytes
+		sai.setRejoinInterval(0x0002); // 2 bytes
+		sai.setMaxRejoinInterval(0x0E10); // 2 bytes
+		sai.setIndirectPollRate(0x1C84); // 2 bytes
 		sai.setParentRetryThreshold((short) 0x02); // 1 byte
 		sai.setConcentratorFlag(false); // 1 byte
 		sai.setConcentratorRadius((short) 0x05); // 1 byte
