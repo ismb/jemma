@@ -2362,7 +2362,7 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("PreconfiguredLinkKey:" + DataManipulation.convertBytesToString(PreconfiguredLinkKey));
 		}
-		for (byte b : DataManipulation.reverseBytes(PreconfiguredLinkKey))
+		for (byte b : PreconfiguredLinkKey)
 			res.addByte(b);
 
 		res.addByte(sai.getNetworkKeySeqNum().byteValue());
