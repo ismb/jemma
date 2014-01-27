@@ -64,6 +64,14 @@
 		<category icon="hob.png" name="Hob" pid="31"/> <!-- Piano cottura --> 	
 	    <category icon="electric_heater.png" name="Electric Heater" pid="32"/> <!-- Stufa elettrica --> 	
 		<category icon="swimming_pool_pump.png" name="Swimming pool pump" pid="33"/> <!-- Pompa piscina -->
+		
+		<category icon="lamp.png" name="MAC lamp" pid="34"/> <!-- Lampada MAC -->
+        <category icon="lamp.png" name="Philps lamp" pid="35"/> <!-- Lampada Philips -->
+        <category icon="thermostat.png" name="Thermostat" pid="36"/> <!-- Thermostat -->
+		<category icon="whaser_dryer.png" name="Indesit Whashing Machine" pid="37"/>
+		<category icon="oven.png" name="Indesit Oven" pid="38"/>
+		<category icon="freezer.png" name="Indesit Fridge" pid="39"/>
+		
     </categories>
 	<rules>
 		<rule filter ="(&amp;(pid1=ah.app.Greenathome)(pid2=*))"/>
