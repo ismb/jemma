@@ -19,12 +19,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Enumeration;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +52,36 @@ import org.energy_home.jemma.hac.adapter.http.JsonRPC;
 
 public class EnergyAtHome extends WebApplication implements HttpImplementor, HttpContext {
 
+    private static class ServletConfigDisableGZIPWrapper implements ServletConfig{
+
+        private ServletConfig wrapped=null;
+		
+		public ServletConfigDisableGZIPWrapper(ServletConfig wrapped){
+			this.wrapped=wrapped;
+		}
+
+		public String getInitParameter(String name){
+			// Disables gzip compression
+			if(name.equals("gzip_threshold")){
+				return "-1";
+			}else{
+				return wrapped.getInitParameter(name);
+			}
+		} 
+		
+		public Enumeration getInitParameterNames(){
+			return wrapped.getInitParameterNames();
+		}
+
+		public ServletContext getServletContext(){
+			return wrapped.getServletContext();
+		}
+
+		public String getServletName(){
+			return wrapped.getServletName();
+		} 
+	}
+ 
 	private UserAdmin userAdmin = null;
 	private String applicationWebAlias = "/energyathome";
 
@@ -105,7 +139,11 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 		this.registerResource("/gh", "webapp/gh");
 		this.registerResource("/post-json", customJsonServlet);
 		this.registerResource("/json-rpc", jsonRPC);
-		this.registerResource("/JSON-RPC", new JSONRPCServlet());
+ 		this.registerResource("/JSON-RPC", new JSONRPCServlet(){
+			public void init(ServletConfig config) throws ServletException{
+				super.init(new ServletConfigDisableGZIPWrapper(config));
+			}
+		}); 
 
 		this.setHttpContext(this);
 

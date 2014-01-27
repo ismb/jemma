@@ -54,6 +54,8 @@ public class LeaveAllResource extends ServerResource {
 		_info.setStatus(_st);
 		_det.getValue().add(ResourcePathURIs.SERVICES);
 		_det.getValue().add(ResourcePathURIs.PERMIT_JOIN);
+		_det.getValue().add(ResourcePathURIs.LQIINFORMATION);
+		
 		_info.setDetail(_det);
 		getResponse().setEntity(Util.marshal(_info),
 				MediaType.APPLICATION_XML);
