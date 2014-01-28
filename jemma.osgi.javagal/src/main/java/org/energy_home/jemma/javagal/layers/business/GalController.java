@@ -165,7 +165,7 @@ public class GalController {
 		}
 
 		if (getPropertiesManager().getDebugEnabled())
-			logger.info("\n\r***Gateway is ready now...***\n\r");
+			logger.info("\n\r***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() +"***\n\r");
 
 	}
 
@@ -1820,7 +1820,7 @@ public short configureEndpoint(long timeout, SimpleDescriptor desc)
 			getNetworkcache().clear();
 			_gatewayStatus = gatewayStatus;
 		}
-
+		else _gatewayStatus = gatewayStatus;
 	}
 
 	
