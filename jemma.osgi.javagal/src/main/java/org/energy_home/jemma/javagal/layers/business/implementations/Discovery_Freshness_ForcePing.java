@@ -51,7 +51,6 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
 import com.sun.org.apache.xml.internal.utils.BoolStack;
 import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
-
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
  * Algorithm.
@@ -61,7 +60,7 @@ import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
  */
 public class Discovery_Freshness_ForcePing {
 	GalController gal = null;
-	int NUMBEROFATTEMPTSECONDS = 4;
+	int NUMBEROFATTEMPTSECONDS = 5;
 
 	public Discovery_Freshness_ForcePing(GalController _gal) {
 		gal = _gal;
