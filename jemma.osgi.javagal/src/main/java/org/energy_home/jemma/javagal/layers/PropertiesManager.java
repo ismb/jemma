@@ -308,7 +308,7 @@ public class PropertiesManager {
 		props.setProperty("StartupControlMode", sai.getStartupControl().toString());
 
 		/* StartupSet */
-		props.setProperty("StartupSet", String.valueOf(sai.getStartupAttributeSetIndex()));
+		//props.setProperty("StartupSet", String.valueOf(sai.getStartupSet()));
 
 		/* networkKey */
 		props.setProperty("networkKey", sai.getNetworkKey().toString());
@@ -324,7 +324,7 @@ public class PropertiesManager {
 	 * @return the StartupControlMode value.
 	 */
 	public short getStartupControlMode() {
-		short startupControlMode = readShort("StartupControlMode");
+		short startupControlMode = readShortHex("StartupControlMode");
 		return startupControlMode;
 	}
 
@@ -345,7 +345,8 @@ public class PropertiesManager {
 	 * @return the StartupSet value.
 	 */
 	public short getStartupSet() {
-		short startupSet = sai.getStartupAttributeSetIndex();
+
+		short startupSet = readShortHex("StartupSet");
 		return startupSet;
 	}
 
@@ -445,8 +446,7 @@ public class PropertiesManager {
 			sd.getApplicationOutputCluster().add(x);
 		return sd;
 	}
-	
-	
+
 	/* ExtendedPANId */
 	/**
 	 * Gets ExtendedPANId property.
@@ -457,7 +457,6 @@ public class PropertiesManager {
 		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
 		return extendedPanId;
 	}
-	
 
 	/* Utility */
 	/**

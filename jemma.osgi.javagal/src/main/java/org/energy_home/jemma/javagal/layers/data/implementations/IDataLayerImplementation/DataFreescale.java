@@ -1651,7 +1651,7 @@ public class DataFreescale implements IDataLayer {
 	public synchronized void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
 
 		if (gal.getPropertiesManager().getDebugEnabled())
-			logger.info("Sending Message:" + toAdd.ToHexString());
+			logger.info("\n\rSending Message:\n-->>> " + toAdd.ToHexString());
 		Thread thr = new Thread() {
 			@Override
 			public void run() {
@@ -3409,7 +3409,7 @@ public class DataFreescale implements IDataLayer {
 						messageShort[i] = (short) (msg[i] & 0xff);
 
 					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadix("Received data", messageShort);
+						DataManipulation.logArrayHexRadix("\n\rReceived data:\n<<<--- ", messageShort);
 
 					addToReceivedDataQueue(size, messageShort);
 					try {
