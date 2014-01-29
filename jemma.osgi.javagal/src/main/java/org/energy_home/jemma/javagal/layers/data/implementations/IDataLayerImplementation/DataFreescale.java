@@ -3409,7 +3409,7 @@ public class DataFreescale implements IDataLayer {
 						messageShort[i] = (short) (msg[i] & 0xff);
 
 					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadix("\n\rReceived data:\n<<<--- ", messageShort);
+						DataManipulation.logArrayHexRadixDataReceived("\n\rReceived data:\n<<<-- ", messageShort);
 
 					addToReceivedDataQueue(size, messageShort);
 					try {

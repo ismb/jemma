@@ -352,6 +352,23 @@ public class DataManipulation {
 		}
 		logger.info("\n\r" + caption + ":" + sb.toString() + "\n\r");
 	}
+	
+	/**
+	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
+	 * by a leading caption.
+	 * 
+	 * @param caption
+	 *            the leading caption.
+	 * @param arr
+	 *            the array to log.
+	 */
+	public static void logArrayHexRadixDataReceived(String caption, short[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s));
+		}
+		logger.info("\n\r" + caption + sb.toString() + "\n\r");
+	}
 
 	/**
 	 * Logs an hexadecimal representation of a given {@code byte[]}, preceded by
