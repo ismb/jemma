@@ -27,6 +27,8 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentification
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceStatisticsClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceStatisticsServer;
+//import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclIndesitBridgeClient;
+//import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclIndesitBridgeServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclPowerProfileClient;
@@ -136,6 +138,7 @@ public class ZclServiceClusterFactory {
 		commonClientClusterMap.put(new Integer(ZclApplianceControlClient.CLUSTER_ID), ZclApplianceControlClient.class);
 		commonClientClusterMap.put(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID),
 				ZclApplianceEventsAndAlertsClient.class);
+		//commonClientClusterMap.put(new Integer(ZclIndesitBridgeClient.CLUSTER_ID), ZclIndesitBridgeClient.class);
 
 		commonClientClusterMap.put(new Integer(ZclTemperatureMeasurementClient.CLUSTER_ID), ZclTemperatureMeasurementClient.class);
 		commonClientClusterMap.put(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID),
