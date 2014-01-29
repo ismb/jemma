@@ -1434,7 +1434,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
 						outputClusters.add(new Integer(0x0201));	//Thermostat cluster
 					}
-
+				
 					// This is the list of Server side clusters supported by E@H
 					inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
 					inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
