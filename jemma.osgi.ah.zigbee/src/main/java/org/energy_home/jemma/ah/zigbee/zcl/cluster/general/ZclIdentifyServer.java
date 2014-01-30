@@ -15,8 +15,9 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
@@ -25,22 +26,26 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclIdentifyServer extends ZclServiceCluster implements IdentifyServer, ZigBeeDeviceListener {
 
 	public final static short CLUSTER_ID = 3;
-	final static HashMap attributesMapByName = new HashMap();
-	final static HashMap attributesMapById = new HashMap();
+
+	static Map attributesMapByName = null;
+	static Map attributesMapById = null;
+
+	static ZclAttributeDescriptor[] attributeDescriptors = { new ZclAttributeDescriptor(0,
+			ZclIdentifyServer.ATTR_IdentifyTime_NAME, new ZclDataTypeUI16(), null, true, 0) };
 
 	static {
-		attributesMapByName.put(ZclIdentifyServer.ATTR_IdentifyTime_NAME, new ZclAttributeDescriptor(0,
-				ZclIdentifyServer.ATTR_IdentifyTime_NAME, new ZclDataTypeUI16(), null, true, 0));
+		attributesMapById = fillAttributesMapsById(attributeDescriptors, attributesMapById);
+		attributesMapByName = fillAttributesMapsByName(attributeDescriptors, attributesMapByName);
 	}
 
 	public ZclIdentifyServer() throws ApplianceException {
@@ -56,14 +61,11 @@ public class ZclIdentifyServer extends ZclServiceCluster implements IdentifyServ
 	}
 
 	protected IZclAttributeDescriptor getAttributeDescriptor(int id) {
-		Iterator iterator = attributesMapByName.values().iterator();
-		// FIXME: generate it and optimize!!!!
-		for (; iterator.hasNext();) {
-			IZclAttributeDescriptor attributeDescriptor = (IZclAttributeDescriptor) iterator.next();
-			if (attributeDescriptor.zclGetId() == id)
-				return attributeDescriptor;
-		}
-		return null;
+		return (IZclAttributeDescriptor) attributesMapById.get(id);
+	}
+
+	protected Collection getAttributeDescriptors() {
+		return attributesMapByName.values();
 	}
 
 	public void execIdentify(int IdentifyTime, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {

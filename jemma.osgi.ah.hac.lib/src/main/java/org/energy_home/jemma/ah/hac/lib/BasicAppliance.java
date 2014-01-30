@@ -16,6 +16,7 @@
 package org.energy_home.jemma.ah.hac.lib;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -51,12 +52,14 @@ public class BasicAppliance implements IAppliance {
 	ConfigServerCluster basicServerCluster;
 	IApplianceManager hacApplianceManager;	
 	
+	protected Dictionary configuration;	
 	public BasicAppliance(String pid, Dictionary config) throws ApplianceException {
 		this.pid = pid;
 		this.isAvailable = false;
 		this.isValid = true;
 		this.isDriver = false;
 		this.endPoints = new LinkedHashMap();
+		this.configuration = config;
 	}
 	
 	// ****** IAppliance ******/
@@ -78,47 +81,23 @@ public class BasicAppliance implements IAppliance {
 	}
 
 	public Dictionary getConfiguration() {
-		// TODO: a copy should be returned to avoid modification (not so
-		// important because only framework can access to this disctionary)
-		Dictionary config = new Hashtable(4);
-		String locationPid = null;
-		String iconName = null;
-		String name = null;
-		String categoryPid = null;
-		
-		try {
-			name = basicServerCluster.getName(null);
-			locationPid = basicServerCluster.getLocationPid(null);
-			categoryPid = basicServerCluster.getCategoryPid(null);
-			iconName = basicServerCluster.getIconName(null);
-		} catch (ApplianceException e) {
-			e.printStackTrace();
-		} catch (ServiceClusterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Hashtable result = new Hashtable(configuration.size());
+		for(Enumeration e = configuration.keys(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			if (!key.startsWith(APPLIANCE_CUSTOM_PROPERTIES_PREXIF))
+				result.put(key, configuration.get(key));
 		}
-
-		String[] endPointTypes = getEndPointTypes();
-		int[] endPointIds = getEndPointIds();
-		if (endPointIds != null && endPointTypes != null) {
-			config.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, endPointIds);			
-			config.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, endPointTypes);
+		return result;	
+	}
+	
+	public Dictionary getCustomConfiguration() {
+		Hashtable result = new Hashtable(configuration.size());
+		for(Enumeration e = configuration.keys(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			if (key.startsWith(APPLIANCE_CUSTOM_PROPERTIES_PREXIF))
+				result.put(key, configuration.get(key));
 		}
-		if (name != null)
-			config.put(IAppliance.APPLIANCE_NAME_PROPERTY, name);
-
-		if (locationPid != null)
-			config.put(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY, locationPid);
-
-		if (categoryPid != null)
-			config.put(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, categoryPid);
-
-		if (iconName != null)
-			config.put(IAppliance.APPLIANCE_ICON_PROPERTY, iconName);
-
-		config.put(IAppliance.APPLIANCE_TYPE_PROPERTY, this.getDescriptor().getType());
-		
-		return config;
+		return result;	
 	}
 	
 	public final boolean isDriver() {

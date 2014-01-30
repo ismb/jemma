@@ -159,8 +159,8 @@
 	position: absolute;
 	top: 13%;
 	left: 2%;
-	width: 60%;
-	height: 60%;
+	width: 70%;
+	height: 80%;
 	background-color: transparent;
 }
 
@@ -170,9 +170,9 @@
 	left: 5%;
 	width: 90%;
 	height: 8%;
-	text-align: left;
+	text-align: center;
 	font-weight: bold;
-	border-bottom: solid 1px #9EC200;
+	//border-bottom: solid 1px #9EC200;
 }
 
 #InformazioniTesto {

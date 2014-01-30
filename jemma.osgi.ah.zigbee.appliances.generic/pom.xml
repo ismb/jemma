@@ -57,7 +57,7 @@
 						</Import-Package>
 						<Export-Package>!*
 						</Export-Package>
-						<Bundle-Activator>org.energy_home.jemma.osgi.ah.zigbee.appliances.generic.Activator</Bundle-Activator>
+						<Bundle-Activator>org.energy_home.jemma.osgi.ah.zigbee.appliances.Activator</Bundle-Activator>
 						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>

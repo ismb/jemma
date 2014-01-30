@@ -15,8 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
@@ -37,30 +39,25 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 public class ZclTimeServer extends ZclServiceCluster implements TimeServer, ZigBeeDeviceListener {
 
 	public final static short CLUSTER_ID = 10;
-	final static HashMap attributesMapByName = new HashMap();
-	final static HashMap attributesMapById = new HashMap();
+	
+	public static Map attributesMapByName = null;
+	public static Map attributesMapById = null;
+
+	static ZclAttributeDescriptor[] attributeDescriptors = {
+			new ZclAttributeDescriptor(0, ZclTimeServer.ATTR_Time_NAME, new ZclDataTypeUTCTime(), null, true, 0),
+			new ZclAttributeDescriptor(1, ZclTimeServer.ATTR_TimeStatus_NAME, new ZclDataTypeBitmap8(), null, true, 0),
+			new ZclAttributeDescriptor(2, ZclTimeServer.ATTR_TimeZone_NAME, new ZclDataTypeI32(), null, true, 0),
+			new ZclAttributeDescriptor(3, ZclTimeServer.ATTR_DstStart_NAME, new ZclDataTypeUI32(), null, true, 0),
+			new ZclAttributeDescriptor(4, ZclTimeServer.ATTR_DstEnd_NAME, new ZclDataTypeUI32(), null, true, 0),
+			new ZclAttributeDescriptor(5, ZclTimeServer.ATTR_DstShift_NAME, new ZclDataTypeI32(), null, true, 0),
+			new ZclAttributeDescriptor(6, ZclTimeServer.ATTR_StandardTime_NAME, new ZclDataTypeUI32(), null, true, 1),
+			new ZclAttributeDescriptor(7, ZclTimeServer.ATTR_LocalTime_NAME, new ZclDataTypeUI32(), null, true, 1),
+			new ZclAttributeDescriptor(8, ZclTimeServer.ATTR_LastSetTime_NAME, new ZclDataTypeUTCTime(), null, true, 1),
+			new ZclAttributeDescriptor(9, ZclTimeServer.ATTR_ValidUntilTime_NAME, new ZclDataTypeUTCTime(), null, true, 1) };
 
 	static {
-		attributesMapByName.put(ZclTimeServer.ATTR_Time_NAME, new ZclAttributeDescriptor(0, ZclTimeServer.ATTR_Time_NAME,
-				new ZclDataTypeUTCTime(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_TimeStatus_NAME, new ZclAttributeDescriptor(1,
-				ZclTimeServer.ATTR_TimeStatus_NAME, new ZclDataTypeBitmap8(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_TimeZone_NAME, new ZclAttributeDescriptor(2, ZclTimeServer.ATTR_TimeZone_NAME,
-				new ZclDataTypeI32(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_DstStart_NAME, new ZclAttributeDescriptor(3, ZclTimeServer.ATTR_DstStart_NAME,
-				new ZclDataTypeUI32(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_DstEnd_NAME, new ZclAttributeDescriptor(4, ZclTimeServer.ATTR_DstEnd_NAME,
-				new ZclDataTypeUI32(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_DstShift_NAME, new ZclAttributeDescriptor(5, ZclTimeServer.ATTR_DstShift_NAME,
-				new ZclDataTypeI32(), null, true, 0));
-		attributesMapByName.put(ZclTimeServer.ATTR_StandardTime_NAME, new ZclAttributeDescriptor(6,
-				ZclTimeServer.ATTR_StandardTime_NAME, new ZclDataTypeUI32(), null, true, 1));
-		attributesMapByName.put(ZclTimeServer.ATTR_LocalTime_NAME, new ZclAttributeDescriptor(7, ZclTimeServer.ATTR_LocalTime_NAME,
-				new ZclDataTypeUI32(), null, true, 1));
-		attributesMapByName.put(ZclTimeServer.ATTR_LastSetTime_NAME, new ZclAttributeDescriptor(8,
-				ZclTimeServer.ATTR_LastSetTime_NAME, new ZclDataTypeUTCTime(), null, true, 1));
-		attributesMapByName.put(ZclTimeServer.ATTR_ValidUntilTime_NAME, new ZclAttributeDescriptor(9,
-				ZclTimeServer.ATTR_ValidUntilTime_NAME, new ZclDataTypeUTCTime(), null, true, 1));
+		attributesMapById = fillAttributesMapsById(attributeDescriptors, attributesMapById);
+		attributesMapByName = fillAttributesMapsByName(attributeDescriptors, attributesMapByName);
 	}
 
 	public ZclTimeServer() throws ApplianceException {
@@ -76,14 +73,11 @@ public class ZclTimeServer extends ZclServiceCluster implements TimeServer, ZigB
 	}
 
 	protected IZclAttributeDescriptor getAttributeDescriptor(int id) {
-		Iterator iterator = attributesMapByName.values().iterator();
-		// FIXME: generate it and optimize!!!!
-		for (; iterator.hasNext();) {
-			IZclAttributeDescriptor attributeDescriptor = (IZclAttributeDescriptor) iterator.next();
-			if (attributeDescriptor.zclGetId() == id)
-				return attributeDescriptor;
-		}
-		return null;
+		return (IZclAttributeDescriptor) attributesMapById.get(id);
+	}
+
+	protected Collection getAttributeDescriptors() {
+		return attributesMapByName.values();
 	}
 
 	public void setTime(long Time, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
@@ -292,4 +286,9 @@ public class ZclTimeServer extends ZclServiceCluster implements TimeServer, ZigB
 		return v;
 	}
 
+	public void setValidUntilTime(long ValidUntilTime, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException {
+		// TODO Auto-generated method stub
+		
+	}
 }

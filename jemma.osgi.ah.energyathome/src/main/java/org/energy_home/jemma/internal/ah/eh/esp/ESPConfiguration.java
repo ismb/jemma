@@ -38,6 +38,7 @@ public class ESPConfiguration {
 	private static final String SP_SYSTEM_PROPERTY_PREFIX = "org.energy_home.jemma.ah.eh.esp.";	
 	
 	private static final String CHECK_SUBSCRIPTIONS_ENABLED = "checkSubscriptionsEnabled";
+	private static final String POWER_PROFILE_CLUSTER_ENABLED = "powerProfileClusterEnabled";
 	private static final String REMOTE_HOST_ADDR = "remoteHostAddr";
 	private static final String REMOTE_HOST_PORT = "remoteHostPort";
 	private static final String INITIAL_TIME_PROPERTY_NAME = "initialTime";
@@ -136,6 +137,20 @@ public class ESPConfiguration {
 		String result = configProperties.getProperty(CHECK_SUBSCRIPTIONS_ENABLED);
 		if (Utils.isNullOrEmpty(result))
 			result = System.getProperty(SP_SYSTEM_PROPERTY_PREFIX + CHECK_SUBSCRIPTIONS_ENABLED);
+		if (!Utils.isNullOrEmpty(result))
+			try {
+				boolResult = Boolean.parseBoolean(result);
+			} catch (Exception e) {
+			}
+		return boolResult;
+	}
+
+	
+	public static boolean isPowerProfileClusterEnabled() {
+		boolean boolResult = true;
+		String result = configProperties.getProperty(POWER_PROFILE_CLUSTER_ENABLED);
+		if (Utils.isNullOrEmpty(result))
+			result = System.getProperty(SP_SYSTEM_PROPERTY_PREFIX + POWER_PROFILE_CLUSTER_ENABLED);
 		if (!Utils.isNullOrEmpty(result))
 			try {
 				boolResult = Boolean.parseBoolean(result);

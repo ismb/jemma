@@ -190,8 +190,8 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 			}
 		}
 		
-		public final void setAppliancesProxy(EndPoint endPoint, AppliancesProxy proxy) {
-			endPoint.proxy = proxy;
+		public final void setAppliancesProxy(AppliancesProxy proxy) {
+			Appliance.this.appliancesProxy = proxy;
 		}
 		
 		public final void addPeerAppliance(EndPoint endPoint, IAppliance peerAppliance) {
@@ -216,13 +216,13 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 			endPoint.peerAppliances.remove(peerAppliancePid);
 		}
 		
-		public final Object getCustomConfiguration() {
+		public final Dictionary getCustomConfiguration() {
 			return Appliance.this.getCustomConfiguration();
-		}
-		
+		}	
 	}
 	
-	private ApplianceManagerImpl applianceManager = new ApplianceManagerImpl();
+	AppliancesProxy appliancesProxy;
+	ApplianceManagerImpl applianceManager = new ApplianceManagerImpl();
 	
 	private void addDefaultEndPoint(EndPoint defaultEndPoint) throws ApplianceException {
 		if (!defaultEndPoint.getType().equals(IEndPoint.COMMON_END_POINT_TYPE))
@@ -274,25 +274,57 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 	
 	void updateConfig(Dictionary config) throws ApplianceException {
 		try {
+			this.configuration = config;
+			ConfigServerCluster configServerCluster = null;
 			if (config != null) {
 				String newName = (String) config.get(IAppliance.APPLIANCE_NAME_PROPERTY);
 				String newLocationPid = (String) config.get(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY);
 				String newCategoryPid = (String) config.get(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY);
 				String newIconName = (String) config.get(IAppliance.APPLIANCE_ICON_PROPERTY);
-				// TODO: multiple end point configuration must be managed
-				if (newName != null && !newName.equals(basicServerCluster.getConfigName())) {
-					basicServerCluster.setConfigName(newName);
-				}
-				if (newLocationPid != null && !newLocationPid.equals(basicServerCluster.getConfigLocationPid())) {
-					basicServerCluster.setConfigLocationPid(newLocationPid);
-				}
-				if (newCategoryPid != null && !newCategoryPid.equals(basicServerCluster.getConfigCategoryPid())) {
-					basicServerCluster.setConfigCategoryPid(newCategoryPid);
-				}
-				if (newIconName != null && !newIconName.equals(basicServerCluster.getConfigIconName())) {
-					basicServerCluster.setConfigIconName(newIconName);
-				}
-	
+				
+				String[] newNames = (String[]) config.get(IAppliance.END_POINT_NAMES_PROPERTY);
+				String[] newLocationPids = (String[]) config.get(IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
+				String[] newCategoryPids = (String[]) config.get(IAppliance.END_POINT_CATEGORY_PIDS_PROPERTY);
+				String[] newIconNames = (String[]) config.get(IAppliance.END_POINT_ICONS_PROPERTY);
+				IEndPoint[] eps = getEndPoints();
+				
+				if (newNames != null || newLocationPids != null || newCategoryPids != null || newIconNames != null) {
+					boolean updateNames = newNames != null && newNames.length == eps.length;
+					boolean updateLocationPids = newLocationPids != null && newLocationPids.length == eps.length;
+					boolean updateCategoryPids = newCategoryPids != null && newCategoryPids.length == eps.length;
+					boolean updateIconNames = newIconNames != null && newIconNames.length == eps.length;
+					for (int i = 0; i < eps.length; i++) {
+						configServerCluster = (ConfigServerCluster) eps[i].getServiceCluster(ConfigServer.class.getName());
+						if (updateNames && newNames[i] != null && !newNames[i].equals(configServerCluster.getConfigName())) {
+							configServerCluster.setConfigName(newNames[i]);
+						}
+						if (updateLocationPids && newLocationPids[i] != null && !newLocationPids[i].equals(configServerCluster.getConfigLocationPid())) {
+							configServerCluster.setConfigLocationPid(newLocationPids[i]);
+						}
+						if (updateCategoryPids && newCategoryPids[i] != null && !newCategoryPids[i].equals(configServerCluster.getConfigCategoryPid())) {
+							configServerCluster.setConfigCategoryPid(newCategoryPids[i]);
+						}
+						if (updateIconNames && newIconNames[i] != null && !newIconNames[i].equals(configServerCluster.getConfigIconName())) {
+							configServerCluster.setConfigIconName(newIconNames[i]);
+						}
+					}
+				} else {
+					for (int i = 0; i < eps.length; i++) {
+						configServerCluster = (ConfigServerCluster) eps[i].getServiceCluster(ConfigServer.class.getName());
+						if (newName != null && !newName.equals(configServerCluster.getConfigName())) {
+							configServerCluster.setConfigName(newName);
+						}
+						if (newLocationPid != null && !newLocationPid.equals(configServerCluster.getConfigLocationPid())) {
+							configServerCluster.setConfigLocationPid(newLocationPid);
+						}
+						if (newCategoryPid != null && !newCategoryPid.equals(configServerCluster.getConfigCategoryPid())) {
+							configServerCluster.setConfigCategoryPid(newCategoryPid);
+						}
+						if (newIconName != null && !newIconName.equals(configServerCluster.getConfigIconName())) {
+							configServerCluster.setConfigIconName(newIconName);
+						}
+					}
+				}			
 				configurationUpdated();
 			}
 			else {
@@ -325,17 +357,14 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		this.basicServerCluster = new ConfigServerCluster();
 		defaultEndPoint.addServiceCluster((ServiceCluster) basicServerCluster);
 		this.addDefaultEndPoint(defaultEndPoint);
-
-		if (config != null) {
-			updateConfig(config);
-		}
-	}
-	
-	public Object getCustomConfiguration() {
-		return null;
 	}
 	
 	protected synchronized void start() {
+		try {
+			updateConfig(configuration);
+		} catch (ApplianceException e) {
+			log.error("Error whili initializing appliance configuration", e);
+		}
 		if (!isDriver())
 			this.setAvailability(true);
 	}
@@ -350,6 +379,10 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		for (Iterator iterator = endPoints.values().iterator(); iterator.hasNext();) {
 			((EndPoint)iterator.next()).configurationUpdated();	
 		}
+	}
+	
+	protected synchronized void removeEndPoint(int endPointId) {
+		this.endPoints.remove(new Integer(endPointId));
 	}
 	
 	public final void setAvailability(boolean availability) {
@@ -388,16 +421,12 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		this.endPoints.put(new Integer(endPoint.getId()), endPoint);
 		endPoint.setAppliance(this);
 
-		// TODO: multiple end point configuration must be managed
-		if (this.basicServerCluster == null) {
-			try {
-				this.basicServerCluster = new ConfigServerCluster();
-			} catch (ApplianceException e) {
-				log.fatal("Configuration cluster not available");
-				e.printStackTrace();
-			}
+		try {
+			endPoint.addServiceCluster(new ConfigServerCluster());
+		} catch (ApplianceException e) {
+			log.fatal("Configuration cluster not available");
+			e.printStackTrace();
 		}
-		endPoint.addServiceCluster(basicServerCluster);
 		return endPoint;
 	}	
 

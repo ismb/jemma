@@ -27,6 +27,13 @@ public class BasicServerCluster extends ServiceCluster implements BasicServer {
 	public BasicServerCluster() throws ApplianceException {
 		super();
 	}
+	
+	final static String[] supportedAttributes = {  ATTR_ZCLVersion_NAME, ATTR_PowerSource_NAME };
+
+	public String[] getSupportedAttributeNames(IEndPointRequestContext endPointRequestContext) throws ApplianceException,
+			ServiceClusterException {
+		return supportedAttributes;
+	}
 
 	public short getZCLVersion(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		return 2;
@@ -57,7 +64,6 @@ public class BasicServerCluster extends ServiceCluster implements BasicServer {
 	}
 
 	public short getPowerSource(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
-		
 		return 4;
 	}
 
@@ -77,7 +83,7 @@ public class BasicServerCluster extends ServiceCluster implements BasicServer {
 	public void setPhysicalEnvironment(short PhysicalEnvironment, IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException {
 		throw new UnsupportedClusterAttributeException();
-		
+
 	}
 
 	public boolean getDeviceEnabled(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
@@ -87,7 +93,7 @@ public class BasicServerCluster extends ServiceCluster implements BasicServer {
 	public void setDeviceEnabled(boolean DeviceEnabled, IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException {
 		throw new UnsupportedClusterAttributeException();
-		
+
 	}
 
 	public short getAlarmMask(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {

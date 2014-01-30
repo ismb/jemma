@@ -112,7 +112,8 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		this.service = service;
 	}
 
-	public ZigBeeDeviceImpl(ZigBeeManagerImpl zigbeeManager, Timer timer, NodeServices nodeServices, NodeDescriptor node, ServiceDescriptor service) {
+	public ZigBeeDeviceImpl(ZigBeeManagerImpl zigbeeManager, Timer timer, NodeServices nodeServices, NodeDescriptor node,
+			ServiceDescriptor service) {
 		this.zigbeeManager = zigbeeManager;
 		this.timer = timer;
 		this.service = service;
@@ -202,13 +203,15 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		try {
 			// here it should block till the matching response is received
 			// or a timeout has occurred.
-
-			timeout = 4;
-
+			
+			IZclFrame zclResponseFrame;
+			
 			if (clusterId == 2819)
-				timeout = 100;
+				zclResponseFrame = (IZclFrame) sq.poll(100, TimeUnit.SECONDS);
+			else 
+				zclResponseFrame = (IZclFrame) sq.poll(timeout, TimeUnit.SECONDS);
 
-			IZclFrame zclResponseFrame = (IZclFrame) sq.poll(timeout, TimeUnit.SECONDS);
+			
 			if (zclResponseFrame == null) {
 				this.logZclMessage(false, hash, profileId, clusterId, null);
 
@@ -242,8 +245,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				else
 					log.debug(this.getPid() + ": " + "        " + " [hash]: Tx > 0x" + Hex.toHexString(clusterId, 2)
 							+ " [clusterId] " + zclFrame.toString());
-			}
-			else
+			} else
 				log.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Rx > 0x" + Hex.toHexString(clusterId, 2)
 						+ " [clusterId] " + zclFrame.toString());
 		} else {
@@ -273,14 +275,12 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		if (isPartitioningCluster(clusterId)) {
 			// the incoming frame is directed to the Partitioning Cluster
-			// TODO: checks if client to server o server to client
-
 			if (zclFrame.isClientToServer()) {
 				// this is a message sent from the PartitioningClient to the
-				// Partitioning Server clusters
-				if (this.partitionFsmServer != null) {
+				// Partitioning Server clusters that is implemented on the gateway
+				if (this.partitionServerImpl != null) {
 					try {
-						boolean handled = this.partitionFsmServer.notifyZclFrame(clusterId, zclFrame);
+						boolean handled = this.partitionServerImpl.notifyZclFrame(clusterId, zclFrame);
 						if (handled)
 							return handled;
 					} catch (Exception e) {
@@ -314,25 +314,24 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	}
 
 	private void notifyListeners(short clusterId, IZclFrame zclFrame) throws ZclException {
-		
+
 		if (log.isDebugEnabled() && zigbeeManager.isNotifyFrameLogEnabled())
-		log.debug("notify listeners for cluster " + clusterId);
+			log.debug("notify listeners for cluster " + clusterId);
 		Vector listeners = null;
 
 		if (zclFrame.isClientToServer()) {
 			listeners = (Vector) listenersListClientSide.get(new Short(clusterId));
-		}
-		else {
+		} else {
 			listeners = (Vector) listenersListServerSide.get(new Short(clusterId));
 		}
 
-		if ((listeners != null) && (listeners.size() > 0)) {			
+		if ((listeners != null) && (listeners.size() > 0)) {
 			boolean handled = false;
 			Throwable exception = null;
-			
+
 			for (int i = 0; i < listeners.size(); i++) {
 				ZigBeeDeviceListener listener = (ZigBeeDeviceListener) listeners.get(i);
-				
+
 				try {
 					handled = handled || listener.notifyZclFrame(clusterId, zclFrame);
 				} catch (Throwable e) {
@@ -341,43 +340,38 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 					exception = e;
 				}
 			}
-			
+
 			if (!handled) {
 				if (exception != null) {
 					int status;
 					if (exception instanceof ZclException) {
 						status = ((ZclException) exception).getStatusCode();
-					}
-					else {
+					} else {
 						status = upperLayerException2ZCLStatusCode(exception);
-						
+
 					}
 					throw new ZclException(status);
 				}
-				
-				// Altrough there are listeners, no one of them handled the incoming command
+
+				// Altrough there are listeners, no one of them handled the
+				// incoming command
 				log.debug("the command was not handled by any listener");
 				if (zclFrame.isManufacturerSpecific()) {
 					if (zclFrame.getFrameType() == IZclFrame.GENERAL_COMMAND) {
 						throw new ZclException(ZCL.UNSUP_MANUF_GENERAL_COMMAND);
-					}
-					else if (zclFrame.getFrameType() == IZclFrame.CLUSTER_COMMAND){
+					} else if (zclFrame.getFrameType() == IZclFrame.CLUSTER_COMMAND) {
 						throw new ZclException(ZCL.UNSUP_MANUF_CLUSTER_COMMAND);
-					}
-					else {
+					} else {
 						throw new ZclException(ZCL.NOT_AUTHORIZED);
 					}
-				}
-				else {
+				} else {
 					if (zclFrame.getFrameType() == IZclFrame.GENERAL_COMMAND) {
 						throw new ZclException(ZCL.UNSUP_GENERAL_COMMAND);
-					}
-					else if (zclFrame.getFrameType() == IZclFrame.CLUSTER_COMMAND){
+					} else if (zclFrame.getFrameType() == IZclFrame.CLUSTER_COMMAND) {
 						throw new ZclException(ZCL.UNSUP_CLUSTER_COMMAND);
-					}
-					else {
+					} else {
 						throw new ZclException(ZCL.NOT_AUTHORIZED);
-					}					
+					}
 				}
 			}
 		} else {
@@ -387,31 +381,25 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	}
 
 	private int upperLayerException2ZCLStatusCode(Throwable e) {
-		if (e instanceof UnsupportedClusterOperationException) {
-			return ZCL.UNSUP_CLUSTER_COMMAND;
-		}
-		else if (e instanceof UnsupportedClusterAttributeException) {
-			return ZCL.UNSUPPORTED_ATTRIBUTE;
-		}
-		else if (e instanceof ReadOnlyAttributeException) {
-			return ZCL.READ_ONLY;
-		}
-		else if (e instanceof NotAuthorized) {
-			return ZCL.NOT_AUTHORIZED;
-		}
-		else if (e instanceof MalformedMessageException) {
-			return ZCL.MALFORMED_COMMAND;
-		}
-		else if (e instanceof ServiceClusterException) {
-			return ZCL.FAILURE;
-		}
-		else if (e instanceof NotFoundException) {
-			return ZCL.FAILURE;
-		}
-		else if (e instanceof ZclException) {
+		if (e instanceof ZclException) {
 			return ((ZclException) e).getStatusCode();
+		} else if (e instanceof ServiceClusterException) {
+			if (e instanceof UnsupportedClusterOperationException) {
+				return ZCL.UNSUP_CLUSTER_COMMAND;
+			} else if (e instanceof UnsupportedClusterAttributeException) {
+				return ZCL.UNSUPPORTED_ATTRIBUTE;
+			} else if (e instanceof ReadOnlyAttributeException) {
+				return ZCL.READ_ONLY;
+			} else if (e instanceof NotAuthorized) {
+				return ZCL.NOT_AUTHORIZED;
+			} else if (e instanceof MalformedMessageException) {
+				return ZCL.MALFORMED_COMMAND;
+			} else if (e instanceof NotFoundException) {
+				return ZCL.NOT_FOUND;
+			} else
+				return ZCL.FAILURE;
 		}
-		
+
 		return ZCL.NOT_AUTHORIZED;
 	}
 
@@ -507,11 +495,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			Hashtable listenersList = null;
 			if (side == ZclServiceCluster.CLIENT_SIDE) {
 				listenersList = listenersListClientSide;
-			} 
-			else if (side == ZclServiceCluster.SERVER_SIDE) {
+			} else if (side == ZclServiceCluster.SERVER_SIDE) {
 				listenersList = listenersListServerSide;
-			}
-			else {
+			} else {
 				return false;
 			}
 
@@ -538,8 +524,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			Hashtable listenersList = null;
 			if (side == ZclServiceCluster.CLIENT_SIDE) {
 				listenersList = listenersListClientSide;
-			}
-			else if (side == ZclServiceCluster.SERVER_SIDE) {
+			} else if (side == ZclServiceCluster.SERVER_SIDE) {
 				listenersList = listenersListServerSide;
 			} else {
 				return false;
@@ -586,26 +571,27 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		}
 	}
 
-	ZclPartitionServer partitionFsmServer = null;
+	ZclPartitionServerImpl partitionServerImpl = null;
 
 	public boolean enablePartitionServer(short clusterId, short commandId) {
-		if (partitionFsmServer == null) {
+		if (partitionServerImpl == null) {
 			try {
-				partitionFsmServer = new ZclPartitionServer((ZigBeeDevice) this);
-				partitionFsmServer.zclAttach(this);
-
+				// FIXME: maybe the following call is better: partitionClient = new ZclPartitionClient(new ZciPartitionServerImpl());
+				partitionServerImpl = new ZclPartitionServerImpl();
+				partitionServerImpl.zclAttach(this);
 			} catch (ApplianceException e) {
 				log.debug("Error creating ZclPartitionFsmServer", e);
 				return false;
 			}
 		}
-		return partitionFsmServer.enablePartitioning(clusterId, commandId);
+		return partitionServerImpl.enablePartitioning(clusterId, commandId);
 	}
 
 	public boolean disablePartitionServer(short clusterId, short commandId) {
-		if (partitionFsmServer == null)
+		if (partitionServerImpl == null)
 			return false;
-		return partitionFsmServer.disablePartitioning(clusterId, commandId);
+		
+		return partitionServerImpl.disablePartitioning(clusterId, commandId);
 	}
 
 	protected boolean isPartitioningCluster(short clusterId) {

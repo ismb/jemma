@@ -227,6 +227,29 @@ public class PowerAndControlClusterProxySimpleTest extends PowerAndControlCluste
 				// TODO Auto-generated method stub
 				
 			}
+
+			public short getCycleTarget0(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public short getCycleTarget1(IEndPointRequestContext context)
+					throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public int getTemperatureTarget0(IEndPointRequestContext context)
+					throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public int getTemperatureTarget1(IEndPointRequestContext context)
+					throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 		};
 	}
 	

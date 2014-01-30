@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
+import java.util.List;
+
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
@@ -25,16 +27,14 @@ public interface ICloudServiceProxy {
 	public static final int EVENT_INVALID_INST_DEMAND_VALUE = 3;
 	public static final int EVENT_INVALID_CURRENT_SUMMATION_RECEIVED_VALUE = 4;
 	
+	List<Float> retrieveHourlyProducedEnergyForecast(String applianceId);
+	
 	ContentInstance retrieveDeliveredEnergySummation(String applianceId);
 
 	void storeReceivedEnergy(String applianceId, long time, double totalEnergy) throws Exception;
 	
 	void storeDeliveredEnergy(String applianceId, long time, double totalEnergy) throws Exception;
-	
-	void storeDeliveredPower(String applianceId, long time, float power) throws Exception;
-	
-	public void storeOnOffStatus(String appliancePid, long timestamp, boolean value) throws Exception;
-	
+		
 	void storeDeliveredEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo) throws Exception;
 	
 	void storeReceivedEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo) throws Exception;

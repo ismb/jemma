@@ -75,17 +75,18 @@ public interface ESPService {
 	 * Returns the last instantaneous power (W) read from the specified
 	 * appliance
 	 * 
-	 * @param appliancePid
-	 *            The appliance pid or null for smart info appliance
+	 * @param applianceId
+	 *            The appliance pid or null for smart info appliance; in case of multi end point appliance 
+	 *            this id must encode also end point id with a slash separator (e.g. "ah.app.123456789/2")
 	 * @return the last instantaneous power read from the appliance (0 in case
 	 *         the appliance is not available,
 	 *         {@value #INVALID_INSTANTANEOUS_POWER_VALUE} in case last notified
 	 *         value was invalid)
 	 * @throws ESPException
 	 */
-	public float getInstantaneousPowerFloatValue(String appliancePid) throws ESPException;
+	public float getInstantaneousPowerFloatValue(String applianceId) throws ESPException;
 	
-	public List<Float> getEnergyConsumption(String appliancePid, long startTime, long endTime, int resolution) throws ESPException;
+	public List<Float> getEnergyConsumption(String applianceId, long startTime, long endTime, int resolution) throws ESPException;
 	
 	public List<Float> getProducedEnergy(long startTime, long endTime, int resolution) throws ESPException;
 	
@@ -93,16 +94,16 @@ public interface ESPService {
 
 	public Map<String, List<Float>> getEnergyConsumption(long startTime, long endTime, int resolution) throws ESPException;
 
-	public List<Float> getEnergyCost(String appliancePid, long startTime, long endTime, int resolution) throws ESPException;
+	public List<Float> getEnergyCost(String applianceId, long startTime, long endTime, int resolution) throws ESPException;
 
 	public Map<String, List<Float>> getEnergyCost(long startTime, long endTime, int resolution) throws ESPException;
 
-	public Float getEnergyConsumptionForecast(String appliancePid, int resolution) throws ESPException;
+	public Float getEnergyConsumptionForecast(String applianceId, int resolution) throws ESPException;
 
-	public Float getEnergyCostForecast(String appliancePid, int resolution) throws ESPException;
+	public Float getEnergyCostForecast(String applianceId, int resolution) throws ESPException;
 
-	public List<Float> getWeekDayEnergyConsumpionAverage(String appliancePid, int weekDay) throws ESPException;
+	public List<Float> getWeekDayEnergyConsumpionAverage(String applianceId, int weekDay) throws ESPException;
 
-	public List<Float> getWeekDayEnergyCostAverage(String appliancePid, int weekDay) throws ESPException;
+	public List<Float> getWeekDayEnergyCostAverage(String applianceId, int weekDay) throws ESPException;
 
 }

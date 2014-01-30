@@ -22,6 +22,7 @@ public interface IMeteringProxy {
 
 	public static float INVALID_FORMATTING_VALUE = -1;	
 	public static final float INVALID_INSTANTANEOUS_POWER_VALUE = 0xFFFFFF;
+	public static final float INVALID_INSTANTANEOUS_POWER_STANDARD_VALUE = 0x800000;
 	public static final double INVALID_ENERGY_CONSUMPTION_VALUE = 0xFFFFFFFFFFFFL;
 	
 	// contains the Average	Power Factor ratio in 1/100's

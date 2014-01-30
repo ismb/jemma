@@ -402,6 +402,17 @@ public class ZclFrame implements IZclFrame {
 	public void appendArray(byte[] array) {
 		System.arraycopy(array, 0, this.data, pos, array.length);
 	}
+	
+	public void appendArray(byte[] array, boolean swap) {
+		if (swap) {
+			int j = pos + array.length - 1;
+			for (int i = 0; i < array.length; i++) {
+				data[j--] = array[i];
+			}
+		}
+		else
+			System.arraycopy(array, 0, this.data, pos, array.length);
+	}
 
 	public byte getDirection() {
 		return (byte) ((data[0] & DIRECTION_MASK) >> 3);
@@ -412,5 +423,19 @@ public class ZclFrame implements IZclFrame {
 		System.arraycopy(this.data, pos, array,0 , len);
 		pos += len;
 		return array;
+	}
+	
+	public byte[] parseArray(int len, boolean swap) {
+		if (swap) {
+			byte[] array = new byte[len];
+			pos += len;
+			int j = pos;
+			for (int i = 0; i < array.length; i++) {
+				array[i] = data[j--];
+			}
+			return array;
+		}
+		else 
+			return parseArray(len);
 	}
 }

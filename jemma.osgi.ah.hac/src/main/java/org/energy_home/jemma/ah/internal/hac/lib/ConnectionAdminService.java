@@ -24,7 +24,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
-import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
@@ -635,7 +635,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 						if (serviceCluster instanceof ServiceCluster)
 							peerServiceCluster = (ServiceCluster) serviceCluster;
 						else 
-							peerServiceCluster = ((ServiceClusterProxyHandler)Proxy.getInvocationHandler((Proxy)serviceCluster)).getServiceCluster();
+							peerServiceCluster = ((PeerServiceClusterProxy)Proxy.getInvocationHandler((Proxy)serviceCluster)).getServiceCluster();
 						if (peerServiceCluster != null) {
 							try {
 								peerEndPoint.registerCluster(peerServiceCluster);

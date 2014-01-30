@@ -21,8 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
-import org.energy_home.jemma.shal.DeviceInfo;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
+import org.energy_home.jemma.shal.DeviceInfo;
+
 
 /*
  * This class is the hub of all information, data, state of a remote appliance. It contains a working status 

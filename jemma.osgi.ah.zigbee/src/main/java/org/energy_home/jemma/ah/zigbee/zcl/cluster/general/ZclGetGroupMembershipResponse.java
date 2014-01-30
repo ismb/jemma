@@ -18,6 +18,7 @@ package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 
 import org.energy_home.jemma.ah.cluster.zigbee.general.GetGroupMembershipResponse;
 
@@ -26,20 +27,36 @@ public class ZclGetGroupMembershipResponse {
 	public static GetGroupMembershipResponse zclParse(IZclFrame zclFrame) throws ZclValidationException {
 		GetGroupMembershipResponse r = new GetGroupMembershipResponse();
 		r.Capacity = ZclDataTypeUI8.zclParse(zclFrame);
-		r.GroupCount = ZclDataTypeUI8.zclParse(zclFrame);
-		// FIXME: unable handle parameter 'GroupList' of type 'array of uint16'
+		int GroupCount = ZclDataTypeUI8.zclParse(zclFrame);
+
+		if (GroupCount > 0) {
+			r.GroupList = new int[GroupCount];
+			for (int i = 0; i < GroupCount; i++) {
+				r.GroupList[i] = ZclDataTypeUI16.zclParse(zclFrame);
+			}
+		}
 		return r;
 	}
 
-	public static void zclSerialize(IZclFrame zclFrame, GetGroupMembershipResponse r) throws ZclValidationException {
-		ZclDataTypeUI8.zclSerialize(zclFrame, r.Capacity);
-		ZclDataTypeUI8.zclSerialize(zclFrame, r.GroupCount);
-	}
+	public static void zclSerialize(IZclFrame zclFrame, GetGroupMembershipResponse r)
+        throws ZclValidationException
+    {
+        ZclDataTypeUI8.zclSerialize(zclFrame, r.Capacity);
+        short GroupCount = 0;
+        if (r.GroupList != null) {
+        	GroupCount = (short) r.GroupList.length;
+        }
+        
+        ZclDataTypeUI8.zclSerialize(zclFrame, GroupCount);
+        for (int i = 0; i < GroupCount; i++) {
+        	ZclDataTypeUI16.zclSerialize(zclFrame, r.GroupList[i]);
+        }
+    }
 
 	public static int zclSize(GetGroupMembershipResponse r) throws ZclValidationException {
 		int size = 0;
 		size += ZclDataTypeUI8.zclSize(r.Capacity);
-		size += ZclDataTypeUI8.zclSize(r.GroupCount);
+		size += 2 * r.Capacity;
 		return size;
 	}
 

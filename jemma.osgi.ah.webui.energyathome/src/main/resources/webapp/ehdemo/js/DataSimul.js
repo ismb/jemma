@@ -1,6 +1,7 @@
 var MIN_DAY = 60 * 24;
 //utente
-var IDUtente = 'DT106';
+var IDUtente = '0006';
+
 //Perc IAC
 var PERCIAC2 = [20, 20, 20, 20, 20, 5];
 var PERCIAC = [10, 10, 10, 10, 10, 5];
@@ -141,7 +142,7 @@ var ListaElettr = {"list":[
 		"appliance.pid": "0", 
 		"ah.app.name":"SmartInfo", 
 	    "ah.app.type":"it.telecomitalia.ah.zigbee.metering", 
-	    "ah.category.pid":"2", 
+	    "ah.category.pid":"12", 
 	    "ah.location.pid":"3", 
 	    "ah.icon": "plug.png", 
 	    "availability": 0, 
@@ -168,11 +169,11 @@ var ListaElettr = {"list":[
 var ListaElettr1 = {"id": -1, 
 					"list":[
 					    {"map":{
-					    	"appliance.pid": "0", 
+					    	"appliance.pid": "ah.app.36276195726973103", 
 					    	 "ah.app.name":"SmartInfo", 
 					    	 "ah.app.type":"it.telecomitalia.ah.zigbee.metering", 
-					    	 "ah.category.pid":"2", 
-					    	 "ah.location.pid":"3", 
+					    	 "ah.category.pid":"12", 
+					    	 "ah.location.pid":"2", 
 					    	 "ah.icon": "lampada.png", 
 					    	 "availability": 0, 
 					    	 "device_state":0,
@@ -181,26 +182,12 @@ var ListaElettr1 = {"id": -1,
 					    		 "name":"power", 
 					    		 "value": {"timestamp":0, "value":"0"}}}},
 						{"map":{
-							"appliance.pid": "1", 
-							"ah.app.name":"Indesit", 
-							"ah.app.type":"com.indesit.ah.app.whitegood",  
-							"device_state_avail": "true",
-							"device_state_avail": "true", 
-							"ah.category.pid":"2", 
-							"ah.location.pid":"2", 
-							"ah.icon": "lvb1.png",	
-							"availability": 2, 
-							"device_state":1, 
-							"device_value":{
-								"name":"power", 
-								"value": {"timestamp":0, "value":"0"}}}},
-						{"map":{
-							"appliance.pid": "2", 
+							"appliance.pid": "ah.app.3781220529323282", 
 							"ah.app.name":"TV", 
 							"ah.app.type":"app.lamp", 
 							"device_state_avail": "true", 
-							"ah.category.pid":"2", 
-							"ah.location.pid":"3", 
+							"ah.category.pid":"4", 
+							"ah.location.pid":"6", 
 							"ah.icon": "tv.png", 
 							"availability": 2, 
 							"device_state":1,
@@ -208,12 +195,12 @@ var ListaElettr1 = {"id": -1,
 								"name":"power", 
 								"value": {"timestamp":0, "value":"10"}}}},
 						{"map":{
-							"appliance.pid": "3", 
-							"ah.app.name":"Electrolux",
-							"ah.app.type":"com.indesit.ah.app.whitegood", 
-							"ah.category.pid":"2", 
-							"ah.location.pid":"3", 
-							"ah.icon": "lvb2.png", 
+							"appliance.pid": "ah.app.3781220529323365", 
+							"ah.app.name":"Zona PC",
+							"ah.app.type":"it.telecomitalia.ah.zigbee.smartplug", 
+							"ah.category.pid":"5", 
+							"ah.location.pid":"2", 
+							"ah.icon": "pczone.png", 
 							"availability": 2, 
 							"device_state_avail": "true",
 							"device_state":0, 
@@ -221,38 +208,25 @@ var ListaElettr1 = {"id": -1,
 								"name":"power", 
 								"value": {"timestamp":0, "value":"4"}}}},
 						{"map":{
-							"appliance.pid": "6", 
-							"ah.app.name":"Lampada", 
-							"ah.app.type":"ah.app.lamp",
+							"appliance.pid": "ah.app.3521399293210525877", 
+							"ah.app.name":"Phon", 
+							"ah.app.type":"it.telecomitalia.ah.zigbee.smartplug",
 							"device_state_avail": "true", 
-							"ah.category.pid":"4", 
-							"ah.location.pid": "1", 
-							"ah.icon": "lampada.png", 
-							"availability": 2, 
-							"device_state":0, 
-							"device_value":{
-								"name":"power", 
-								"value": {"timestamp":0, "value":"0"}}}},
-						{"map":{
-							"appliance.pid": "7", 
-							"ah.app.name":"Lampada", 
-							"ah.app.type":"ah.app.lamp",
-							"device_state_avail": "true", 
-							"ah.category.pid":"4", 
-							"ah.location.pid": "1", 
-							"ah.icon": "lampada.png", 
+							"ah.category.pid":"25", 
+							"ah.location.pid": "4", 
+							"ah.icon": "plug.png", 
 							"availability": 0, 
 							"device_state": 0, 
 							"device_value":{
 								"name":"power", 
 								"value": {"timestamp":0, "value":"0"}}}},
 						{"map":{
-							"appliance.pid": "8", 
-							"ah.app.name":"Electrolux",
+							"appliance.pid": "ah.app.3521399293213672068", 
+							"ah.app.name":"Lavatrice",
 							"ah.app.type":"com.indesit.ah.app.whitegood", 
 							"device_state_avail": "true",
-							"ah.category.pid":"2", 
-							"ah.location.pid":"3", 
+							"ah.category.pid":"11", 
+							"ah.location.pid":"0", 
 							"ah.icon": "lvb2.png", 
 							"availability": 2, 
 							"device_state":0, 
@@ -297,7 +271,7 @@ var ReportSim ={
 var DataSim = new Date (2012,2,25,22,56);
 
 var NotizieSimul = [
-{	description : "Sale al 20,3% la percentuale di elettricità convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al …",
+{	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
 	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
 	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
 },
@@ -307,9 +281,9 @@ var NotizieSimul = [
 },
 {	description : "In piazza le associazioni delle rinnovabili. hanno chiesto al governo, come un appello pubblicato sui giornali, di rivedere il ...",
 	link : "http://gogreen.virgilio.it/news/green-economy/rinnovabili-mobilitazione-durera_6273.html?pmk=rss",
-	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durerà"
+	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durer&agrave;"
 },
-{	description : "L'appuntamento è il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale è quello di ottenere più sicurezza per i ...",
+{	description : "L'appuntamento &egrave; il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale &egrave; quello di ottenere pi&ugrave; sicurezza per i ...",
 	link : "http://gogreen.virgilio.it/eventi/salvaciclisti_6272.html?pmk=rss",
 	title : "Salvaciclisti"
 },
@@ -317,9 +291,9 @@ var NotizieSimul = [
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/pesticidi-api-governo-decide-sospensioni_6271.html?pmk=rss",
 	title : "Pesticidi e api: il governo decide sulla sospensione degli agrofarmaci"
 },
-{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile è caro, genera piccoli sismi ...",
+{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile &egrave; caro, genera piccoli sismi ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/terremoti-locali-estrazione-scisto_6270.html?pmk=rss",
-	title : "Terremoti: a generare quelli locali è pure l'estrazione dello scisto"
+	title : "Terremoti: a generare quelli locali &egrave; pure l'estrazione dello scisto"
 },
 {	description : "Confermato il taglio degli incentivi del 32-36% e il registro obbligatorio per gli impianti di potenza superiore ai 12 ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/quinto-conto-energia-testo-decreto.html?pmk=rss",

@@ -25,6 +25,7 @@ public class AHContainerAddress {
 
 	private static final WeakHashMap<Integer, AHContainerAddress> ahNetworkContainerAddressesMap = new WeakHashMap<Integer, AHContainerAddress>();
 
+	public static final String DEFAULT_APPLIANCE_PREFIX = "ah.app.";
 	public static final String DEFAULT_END_POINT_ID = new Integer(1).toString();
 	public static final String ALL_ID_FILTER = M2MContainerAddress.ALL_ID_FILTER;
 

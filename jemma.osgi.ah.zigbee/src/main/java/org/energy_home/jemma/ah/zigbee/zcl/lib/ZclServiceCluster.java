@@ -30,8 +30,17 @@ import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.energy_home.jemma.ah.hac.NotAuthorized;
+import org.energy_home.jemma.ah.hac.IEndPoint;
+import org.energy_home.jemma.ah.hac.NotFoundException;
+import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,6 +107,38 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		return null;
 	}
 
+	protected Collection getAttributeDescriptors() {
+		return null;
+	}
+	
+	protected IZclAttributeDescriptor[] getPeerAttributeDescriptors() {
+		return null;
+	}
+
+	protected Collection fillSupportedAttributes() {
+		return null;
+	}
+
+	protected static Map fillAttributesMapsById(IZclAttributeDescriptor[] attributeDescriptors, Map attributesMapById) {
+		if (attributesMapById == null) {
+			attributesMapById = new HashMap();
+			for (int i = 0; i < attributeDescriptors.length; i++) {
+				attributesMapById.put(attributeDescriptors[i].zclGetId(), attributeDescriptors[i]);
+			}
+		}
+		return attributesMapById;
+	}
+
+	protected static Map fillAttributesMapsByName(IZclAttributeDescriptor[] attributeDescriptors, Map attributesMapByName) {
+		if (attributesMapByName == null) {
+			attributesMapByName = new HashMap();
+			for (int i = 0; i < attributeDescriptors.length; i++) {
+				attributesMapByName.put(attributeDescriptors[i].getName(), attributeDescriptors[i]);
+			}
+		}
+		return attributesMapByName;
+	}
+
 	/**
 	 * Getter for the checkDirection field
 	 * 
@@ -149,6 +190,22 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			// ServiceClusterException("More than one appliance connected.");
 		} else if (serviceClusters.length == 0) {
 			throw new ServiceClusterException("Service Clusters List is empty!!!");
+		}
+		return serviceClusters[0];
+	}
+
+	protected IServiceCluster getSinglePeerClusterNoException(String name) throws ServiceClusterException {
+		IServiceCluster[] serviceClusters = ((EndPoint) endPoint).getPeerServiceClusters(name);
+
+		if (serviceClusters == null) {
+			throw new ServiceClusterException("No appliances connected");
+		} else if (serviceClusters.length > 1) {
+			// FIXME: we can relax this by checking if the command don't need
+			// any response.
+			// throw new
+			// ServiceClusterException("More than one appliance connected.");
+		} else if (serviceClusters.length == 0) {
+			return null;
 		}
 		return serviceClusters[0];
 	}
@@ -267,6 +324,32 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		return parameters;
 	}
 
+	protected static short translateToZclStatusCode(Throwable e) {
+		if (e instanceof ZclException) {
+			return (short) ((ZclException) e).getStatusCode();
+		} else if (e instanceof ServiceClusterException) {
+			if (e instanceof UnsupportedClusterOperationException) {
+				return ZCL.UNSUP_CLUSTER_COMMAND;
+			} else if (e instanceof UnsupportedClusterAttributeException) {
+				return ZCL.UNSUPPORTED_ATTRIBUTE;
+			} else if (e instanceof ReadOnlyAttributeException) {
+				return ZCL.READ_ONLY;
+			} else if (e instanceof NotAuthorized) {
+				return ZCL.NOT_AUTHORIZED;
+			} else if (e instanceof MalformedMessageException) {
+				return ZCL.MALFORMED_COMMAND;
+			} else if (e instanceof NotFoundException) {
+				return ZCL.NOT_FOUND;
+			} else if (e instanceof ZclValidationException) {
+				return ZCL.MALFORMED_COMMAND;
+			} else
+				return ZCL.FAILURE;
+		} else if (e instanceof ApplianceException) {
+			return ZCL.FAILURE;
+		}
+		return ZCL.NOT_AUTHORIZED;
+	}
+
 	/**
 	 * Given a Zcl status code, this method convert it in the corresponding
 	 * specific ServiceClusterException that represents this status code. No
@@ -307,16 +390,6 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 
 	protected ZigBeeDevice getZigBeeDevice() throws ApplianceException {
 		return device;
-		// IZclServiceEndPoint zclEndPoint = null;
-		// IEndPoint endPoint = getEndPoint();
-		// if (endPoint instanceof IZclServiceEndPoint) {
-		// zclEndPoint = (IZclServiceEndPoint) endPoint;
-		// } else {
-		// throw new
-		// ApplianceException("at this point the appliance MUST be a ZclAppliance");
-		// }
-		//
-		// return zclEndPoint.zclGetZigBeeDevice();
 	}
 
 	// FIXME: qui passare anche l'attr Type!!!!
@@ -450,40 +523,6 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		}
 	}
 
-	public void writeAttribute(int myattribute) throws ApplianceException, ServiceClusterException {
-
-		if (device == null)
-			throw new ApplianceException("Not attached");
-
-		boolean sync = true;
-		short clusterId = 0x0001;
-
-		IZclFrame zclFrame = this.createOutgoingZclFrame(ZCL.ZclWriteAttrs, 5);
-
-		zclFrame.appendUInt16(0x0100); // attributeId
-		zclFrame.appendUInt8(0x01); // attributeType
-		zclFrame.appendUInt16(myattribute);
-
-		if (sync) {
-			try {
-				IZclFrame zclResponseFrame = deviceInvoke(clusterId, zclFrame);
-				if (zclResponseFrame.isClientToServer())
-					throw new ServiceClusterException("bad direction");
-				if (zclResponseFrame.getCommandId() != ZCL.ZclWriteAttrsRsp)
-					throw new ServiceClusterException("bad response command id '" + zclResponseFrame.getCommandId() + "'");
-			} catch (ZigBeeException e) {
-				throw new ApplianceException("Exception in Invoke on ZigBee device");
-			}
-			// TODO: check if the response frame is correct
-			return;
-		} else {
-			boolean res = devicePost(clusterId, zclFrame);
-			if (!res) {
-				throw new ServiceClusterException("post to ZigBee failed");
-			}
-		}
-	}
-
 	protected IZclFrame getDefaultResponse(IZclFrame zclFrame, int statusCode) {
 		IZclFrame responseZclFrame = zclFrame.createResponseFrame(2);
 		responseZclFrame.setCommandId(ZCL.ZclDefaultRsp);
@@ -512,9 +551,11 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			return true;
 		}
 
-		// Pino: added to manage automatic announcement in case a subscription
-		// is already active
-		if (!this.getEndPoint().isAvailable())
+		// FIXME: what if we receive an other side response command?
+
+		// Added to manage automatic announcement in case a subscription is already active
+		IEndPoint ep = this.getEndPoint();
+		if (ep != null && ep.isAvailable())
 			((ZclAppliance) this.getEndPoint().getAppliance()).notifyEvent(ZigBeeDeviceListener.ANNOUNCEMENT);
 
 		return false;
@@ -533,7 +574,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		// FIXME: currently sleeping end device is supposed to later receive the
 		// subscription (no error managed)
 		// TODO: add configure reporting read operation
-		super.setAttributeSubscription(attributeName, parameters, endPointRequestContext);
+		parameters = super.setAttributeSubscription(attributeName, parameters, endPointRequestContext);
 		ISubscriptionParameters[] sps = null;
 		try {
 			sps = configureReportings(getClusterId(), new String[] { attributeName }, new ISubscriptionParameters[] { parameters },
@@ -568,6 +609,24 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			ApplianceException {
 		return false;
 	}
+
+	/**
+	 * The writeAttribute method have to be overriden by the cluster stub
+	 * implementation if the cluster has at least one writable attribute. It
+	 * must return 0 (see ZCL.SUCCESS) if the write operation has been
+	 * successful. Otherwise it could return the ZCL status code. The method
+	 * could also raise a ServiceClusterException. There is one specific
+	 * exception for each ZCL status code. If the raised exception is
+	 * UnsupportedClusterAttributeException or ReadOnlyAttribute, than the
+	 * ZclServiceCluster supposes that the writeAttribute implementation has
+	 * already removed the attribute value from the ZCL frame.
+	 * 
+	 * @param zclFrame
+	 * @param attrId
+	 * @param dataType
+	 * @return
+	 * @throws Exception
+	 */
 
 	protected short writeAttribute(IZclFrame zclFrame, int attrId, short dataType) throws Exception {
 		return ZCL.UNSUPPORTED_ATTRIBUTE;
@@ -629,33 +688,11 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					handled = fillAttributeRecord(zclResponseFrame, attrIds[i]);
 					if (!handled)
 						ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) ZCL.UNSUPPORTED_ATTRIBUTE);
-				} catch (ApplianceException e) {
-					try {
-						ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) ZCL.FAILURE);
-					} catch (ZclValidationException e1) {
-						log.fatal("Opps... unable to serialize ZclReadAttrs Response ", e1);
-						return;
-					}
-				} catch (ServiceClusterException e) {
-					if (e instanceof UnsupportedClusterOperationException)
-						try {
-							ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) ZCL.UNSUPPORTED_ATTRIBUTE);
-						} catch (ZclValidationException e1) {
-							log.fatal("Opps... unable to serialize ZclReadAttrs Response ", e1);
-							return;
-						}
-					else {
-						try {
-							ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) ZCL.FAILURE);
-						} catch (ZclValidationException e1) {
-							log.fatal("Opps... unable to serialize ZclReadAttrs Response ", e1);
-							return;
-						}
-					}
+
 				} catch (Throwable e) {
-					log.error(e);
+					int statusCode = translateToZclStatusCode(e);
 					try {
-						ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) ZCL.FAILURE);
+						ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) statusCode);
 					} catch (ZclValidationException e1) {
 						log.fatal("Opps... unable to serialize ZclReadAttrs Response ", e1);
 						return;
@@ -750,28 +787,30 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					break;
 				}
 
+				boolean skipped = false;
 				try {
 					statusCode = this.writeAttribute(zclFrame, attrId, dataType);
-				} catch (ZclValidationException e) {
+				} catch (Throwable e) {
 					failures += 1;
-					statusCode = ZCL.INVALID_FIELD;
-					// skip it
-				} catch (Exception e) {
-					failures += 1;
-					statusCode = ZCL.INVALID_FIELD;
+					statusCode = translateToZclStatusCode(e);
+					if (statusCode == ZCL.READ_ONLY || statusCode == ZCL.UNSUPPORTED_ATTRIBUTE) {
+						// flag to remember that the attribute value has to be
+						// removed from the incoming frame.
+						skipped = true;
+					}
 				}
-				
-				
+
 				if (statusCode == ZCL.SUCCESS) {
 					continue;
-				}
-				else if (statusCode == ZCL.UNSUPPORTED_ATTRIBUTE) {
-					// skip the attribute
+				} else {
+
 					try {
-						ZclWriteAttributeRecord.zclSkip(zclFrame, dataType);
+						if (!skipped) {
+							// skip the attribute
+							ZclWriteAttributeRecord.zclSkip(zclFrame, dataType);
+						}
 					} catch (Exception e) {
-						// FIXME: what to do here?
-						statusCode = ZCL.INVALID_FIELD;
+						throw new ZclException(ZCL.MALFORMED_COMMAND);
 					}
 				}
 
@@ -803,78 +842,149 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			break;
 		}
 
+		case ZCL.ZclDiscoverAttrs: {
+			int startAttributeIdentifier;
+			short maxAttributeIdentifiers;
+
+			IZclFrame zclResponseFrame = zclFrame.createResponseFrame(255);
+			zclResponseFrame.setCommandId(ZCL.ZclDiscoverAttrsRsp);
+
+			ServiceCluster peerCluster = null;
+			try {
+				String clazz = getName();
+				if (clazz.endsWith("Server")) {
+					clazz = getName().substring(0, clazz.length() - 6);
+					peerCluster = (ServiceCluster) getSinglePeerCluster(clazz + "Client");
+				} else {
+					clazz = getName().substring(0, clazz.length() - 6);
+					peerCluster = (ServiceCluster) getSinglePeerCluster(clazz + "Server");
+				}
+
+			} catch (ServiceClusterException e) {
+				log.error("Exception ", e);
+			}
+
+			if (peerCluster == null) {
+				// No peer
+				throw new ZclException(ZCL.FAILURE);
+			}
+			String[] supportedAttributes = null;
+			try {
+				supportedAttributes = peerCluster.getSupportedAttributeNames(null);
+			} catch (ApplianceException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ServiceClusterException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			try {
+				startAttributeIdentifier = ZclDataTypeUI16.zclParse(zclFrame);
+				maxAttributeIdentifiers = ZclDataTypeUI8.zclParse(zclFrame);
+			} catch (ZclValidationException e) {
+				throw new ZclException(ZCL.MALFORMED_COMMAND);
+			}
+
+			// FIXME: Optimize it
+			IZclAttributeDescriptor[] peerAttributeDescriptors = this.getPeerAttributeDescriptors();
+			HashMap peerAttributeDescriptorsByIdMap = new HashMap();
+
+			List l = new ArrayList();
+
+			if (peerAttributeDescriptors != null) {
+				for (int i = 0; i < peerAttributeDescriptors.length; i++) {
+					String attributeName = peerAttributeDescriptors[i].getName();
+					if (contains(supportedAttributes, attributeName) || (supportedAttributes == null)) {
+
+						int id = peerAttributeDescriptors[i].zclGetId();
+						if (id >= startAttributeIdentifier) {
+							l.add(id);
+							peerAttributeDescriptorsByIdMap.put(new Integer(id), peerAttributeDescriptors[i]);
+						}
+					}
+				}
+			}
+
+			// sets discovery complete field
+			try {
+
+				// Sets the Discovery Complete value
+				if (l.size() > maxAttributeIdentifiers) {
+					ZclDataTypeUI8.zclSerialize(zclResponseFrame, (short) 0);
+				} else {
+					ZclDataTypeUI8.zclSerialize(zclResponseFrame, (short) 1);
+				}
+			} catch (ZclValidationException e) {
+				log.fatal("Unable to marshall the discovery attr response");
+				throw new ZclException(ZCL.FAILURE);
+			}
+
+			Collections.sort(l);
+			// Unfortunately the spec must know if there are remaining
+			// attributes to discover ...
+			int i;
+
+			int attributeCount = 1;
+			for (i = 0; i < l.size(); i++) {
+				int attrId = ((Integer) l.get(i)).intValue();
+				if (attrId >= startAttributeIdentifier) {
+					if (attributeCount <= maxAttributeIdentifiers) {
+						// Is the attribute supported?
+						ZclAttributeDescriptor attributeDescriptor = (ZclAttributeDescriptor) peerAttributeDescriptorsByIdMap
+								.get(attrId);
+						if (attributeDescriptor != null) {
+							try {
+								ZclDataTypeUI16.zclSerialize(zclResponseFrame, attributeDescriptor.zclGetId());
+								ZclDataTypeUI8
+										.zclSerialize(zclResponseFrame, attributeDescriptor.zclGetDataType().zclGetDataType());
+							} catch (ZclValidationException e) {
+								log.fatal("Unable to marshall the discovery attr response");
+								throw new ZclException(ZCL.FAILURE);
+							}
+						}
+						attributeCount++;
+					} else {
+						break;
+					}
+				}
+			}
+
+			try {
+				ZigBeeDevice device = getZigBeeDevice();
+				zclResponseFrame.shrink();
+				devicePost(clusterId, zclResponseFrame);
+			} catch (ApplianceException e) {
+				log.error("exception", e);
+			}
+			break;
+		}
+
+		case ZCL.ZclConfigRep:
+			break;
+
+		case ZCL.ZclRepConf:
+			break;
+
 		case ZCL.ZclReadAttrsRsp:
 		case ZCL.ZclWriteAttrsRsp:
 		case ZCL.ZclWriteAttrsNoRsp:
-		case ZCL.ZclRepConfRsp:			
 		case ZCL.ZclConfigRepRsp:
-		case ZCL.ZclWriteAttrsStructuredRsp:			
-			throw new ZclException(ZCL.UNSUP_GENERAL_COMMAND);
-			
-		case ZCL.ZclRepConf:
-		case ZCL.ZclConfigRep:
+		case ZCL.ZclRepConfRsp:
 		case ZCL.ZclDefaultRsp:
-		case ZCL.ZclWriteAttrsUndivided:			
-		case ZCL.ZclDiscoverAttrs:
+			break;
+
+		case ZCL.ZclWriteAttrsUndivided:
 		case ZCL.ZclReadAttrsStructured:
 		case ZCL.ZclWriteAttrsStructured:
-
-			// TODO: Handle the Rsp Messages in a different way. If a Rsp arrives here,
-			// it could be that it was arrived too late. So, simply dischard it!
+		case ZCL.ZclWriteAttrsStructuredRsp:
+			// FIXME: probably here we should send back a different error for
+			// the Rsp commands, like failure ...
+			log.error("Unsupported incoming general command: " + commandId);
 			throw new ZclException(ZCL.UNSUP_GENERAL_COMMAND);
 
 		default:
 			throw new ZclException(ZCL.UNSUP_GENERAL_COMMAND);
-		}
-	}
-
-	/**
-	 * Issues a WriteAttributesRequest to retrieve a ZigBee attribute from the
-	 * peer cluster
-	 * 
-	 * @param clusterId
-	 *            The Cluster Identifier
-	 * @param zclFrame
-	 *            The ZclFrame that contains the
-	 * @param context
-	 * @throws Exception
-	 */
-
-	protected void issueSet(short clusterId, IZclFrame zclFrame, IEndPointRequestContext context) throws Exception {
-		boolean sync = true;
-		IZclFrame zclResponseFrame;
-
-		ZigBeeDevice device = getZigBeeDevice();
-		if (device == null) {
-			throw new ApplianceException("Not attached");
-		}
-
-		zclFrame.setCommandId(ZCL.ZclWriteAttrs);
-
-		if (sync) {
-			try {
-				zclResponseFrame = deviceInvoke(clusterId, zclFrame);
-			} catch (ZigBeeException _x) {
-				throw new ApplianceException((INVOKE_ERROR_MESSAGE));
-			}
-
-			this.checkResponseFrameDirection(zclResponseFrame);
-
-			if (zclResponseFrame.getCommandId() != ZCL.ZclWriteAttrsRsp) {
-				throw new ApplianceException(BAD_RESPONSE_COMMAND_ID_MESSAGE + " '" + zclResponseFrame.getCommandId()
-						+ "', expected WriteAttributeResponse");
-			}
-
-			short status = ZclDataTypeUI8.zclParse(zclResponseFrame);
-			if (status != ZCL.SUCCESS)
-				this.raiseServiceClusterException(status);
-
-			return;
-		} else {
-			boolean res = devicePost(clusterId, zclFrame);
-			if (!res) {
-				throw new ApplianceException(POST_FAILED_MESSAGE);
-			}
 		}
 	}
 
@@ -1178,5 +1288,15 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			// contain an error.
 			throw new ServiceClusterException("Unexpected Success status code in DefaultResponse");
 		}
+	}
+
+	protected boolean contains(String[] array, String s) {
+		if (array == null)
+			return false;
+		for (int i = 0; i < array.length; i++) {
+			if (array[i].equals(s))
+				return true;
+		}
+		return false;
 	}
 }

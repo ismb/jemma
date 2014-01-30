@@ -35,43 +35,47 @@ public class EHContainers {
 	
 	public static final String attrId_ah_eh_esp_events = "ah.eh.esp.events";
 	
-	// Da rimuovere in futuro: verra' sostiuito per tutti i contatori dal container ah.eh.esp.deliveredEnergySum
+	// Container used by old version of Energy@home application
 	public static final String attrId_ah_eh_esp_energySum = "ah.eh.esp.energySum";
 	
-	// Nuovi container per fotovoltaico (due istanze per received, una per contatore di scambio ed una per produzione)
+	// Containers used for delivered and received energy
 	public static final String attrId_ah_eh_esp_deliveredEnergySum = "ah.eh.esp.deliveredEnergySum";
 	public static final String attrId_ah_eh_esp_receivedEnergySum = "ah.eh.esp.receivedEnergySum";
 	
-	// Nuovi container: per uso futuro in sostituzione di ecpi quando il calcolo dei costi sara' effettuato lato server 
-	// (probabilmente attivato da subito su qualche utente con smartinfo da quadro per solo delivered power)
+	// Unused containers (now managed in HAP client bundle)
 	public static final String attrId_ah_eh_esp_deliveredPower = "ah.eh.esp.deliveredPower";	
-	public static final String attrId_ah_eh_esp_receivedPower = "ah.eh.esp.receivedPower";	
-	
+	public static final String attrId_ah_eh_esp_receivedPower = "ah.eh.esp.receivedPower";		
 	public static final String attrId_ah_eh_esp_onOffStatus = "ah.eh.esp.onOffStatus";	
 	
-	// Da rimuovere dopo aver terminato la migrazione alla nuova versione
+	// Min and max power are instantaneous demand values filtered by Energy@home application 
 	public static final String attrId_ah_eh_esp_minPower = "ah.eh.esp.minPower";
 	public static final String attrId_ah_eh_esp_maxPower = "ah.eh.esp.maxPower";
 	
+	// Energy consumption containers (house consumptions are associated to exchange smart info device)
 	public static final String attrId_ah_eh_esp_tenMinutesEnergy = "ah.eh.esp.tmEnergy";
 	public static final String attrId_ah_eh_esp_hourlyEnergy = "ah.eh.esp.hourlyEnergy";
 	public static final String attrId_ah_eh_esp_dailyEnergy = "ah.eh.esp.dailyEnergy";
 	public static final String attrId_ah_eh_esp_monthlyEnergy = "ah.eh.esp.monthlyEnergy";
 	public static final String attrId_ah_eh_esp_wdHourlyEnergyAvg = "ah.eh.esp.wdHourlyEnergyAvg";
 	
-	// Nuovi container per fotovoltaico (2 istanze, una per contatore di scambio ed una per contatore di produzione)
+	// Produced energy containers
 	public static final String attrId_ah_eh_esp_tenMinutesReceivedEnergy = "ah.eh.esp.tmReceivedEnergy";
 	public static final String attrId_ah_eh_esp_hourlyReceivedEnergy = "ah.eh.esp.hourlyReceivedEnergy";
 	public static final String attrId_ah_eh_esp_dailyReceivedEnergy = "ah.eh.esp.dailyReceivedEnergy";
 	public static final String attrId_ah_eh_esp_monthlyReceivedEnergy = "ah.eh.esp.monthlyReceivedEnergy";
 	public static final String attrId_ah_eh_esp_wdHourlyReceivedEnergyAvg = "ah.eh.esp.wdHourlyReceivedEnergyAvg";
+	
+	// Produced energy forecast container
+	public static final String attrId_ah_eh_esp_hourlyReceivedEnergyForecast = "ah.eh.esp.hourlyReceivedEnergyForecast";
 
+	// Delivered energy containers
 	public static final String attrId_ah_eh_esp_tenMinutesDeliveredEnergy = "ah.eh.esp.tmDeliveredEnergy";
 	public static final String attrId_ah_eh_esp_hourlyDeliveredEnergy = "ah.eh.esp.hourlyDeliveredEnergy";
 	public static final String attrId_ah_eh_esp_dailyDeliveredEnergy = "ah.eh.esp.dailyDeliveredEnergy";
 	public static final String attrId_ah_eh_esp_monthlyDeliveredEnergy = "ah.eh.esp.monthlyDeliveredEnergy";
 	public static final String attrId_ah_eh_esp_wdHourlyDeliveredEnergyAvg = "ah.eh.esp.wdHourlyDeliveredEnergyAvg";
 	
+	// Energy cost containers 
 	public static final String attrId_ah_eh_esp_energyCost = "ah.eh.esp.energyCost";
 	public static final String attrId_ah_eh_esp_tenMinutesEnergyCost = "ah.eh.esp.tmEnergyCost";
 	public static final String attrId_ah_eh_esp_hourlyEnergyCost = "ah.eh.esp.hourlyEnergyCost";
@@ -79,7 +83,7 @@ public class EHContainers {
 	public static final String attrId_ah_eh_esp_monthlyEnergyCost = "ah.eh.esp.monthlyEnergyCost";
 	public static final String attrId_ah_eh_esp_wdHourlyEnergyCostAvg = "ah.eh.esp.wdHourlyEnergyCostAvg";	
 	
-	// Energy cost power info
+	// Energy cost power info (consumptions)
 	public static final String attrId_ah_eh_esp_ecpi = "ah.eh.esp.ecpi";
 	public static final String attrId_ah_eh_esp_tmEcpi = "ah.eh.esp.tmEcpi";
 	public static final String attrId_ah_eh_esp_hrEcpi = "ah.eh.esp.hrEcpi";
@@ -87,7 +91,7 @@ public class EHContainers {
 	public static final String attrId_ah_eh_esp_mnEcpi = "ah.eh.esp.mnEcpi";
 	public static final String attrId_ah_eh_esp_wdHrEcpiAvg = "ah.eh.esp.wdHrEcpiAvg";
 	
-	// Nuovi container per fotovoltaico
+	// Delivered energy cost power info (equivalent to consumptions for all plugs and smartinfo in case of no micro generation plants)
 	public static final String attrId_ah_eh_esp_deliveredEcpi = "ah.eh.esp.deliveredEcpi";
 	public static final String attrId_ah_eh_esp_tmDeliveredEcpi = "ah.eh.esp.tmDeliveredEcpi";
 	public static final String attrId_ah_eh_esp_hrDeliveredEcpi = "ah.eh.esp.hrDeliveredEcpi";
@@ -129,6 +133,7 @@ public class EHContainers {
 		attributeIdsMap.put(attrId_ah_eh_esp_dailyReceivedEnergy, FloatDV.class);
 		attributeIdsMap.put(attrId_ah_eh_esp_monthlyReceivedEnergy, FloatDV.class);
 		attributeIdsMap.put(attrId_ah_eh_esp_wdHourlyReceivedEnergyAvg, FloatDV.class);
+		attributeIdsMap.put(attrId_ah_eh_esp_hourlyReceivedEnergyForecast, FloatDV.class);
 
 		attributeIdsMap.put(attrId_ah_eh_esp_energyCost, FloatCDV.class);
 		attributeIdsMap.put(attrId_ah_eh_esp_tenMinutesEnergyCost, FloatCDV.class);

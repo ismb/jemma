@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.osgi.ah.felix.console.web;
 
+import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.ICategory;
 import org.energy_home.jemma.ah.hac.IEndPoint;
@@ -22,6 +23,7 @@ import org.energy_home.jemma.ah.hac.ILocation;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
+import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
 import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
@@ -29,6 +31,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +141,6 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 		}
 	}
 	
-	
 	protected void renderContent(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter pw = response.getWriter();
 		if (appliancesProxy == null)
@@ -206,12 +208,15 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 						pw.println("<b><font color=\"red\">Some problem occurred while closing network</font></b>");
 					if (!installStatus)
 						pw.println("<b><font color=\"red\">Some problem occurred while installing appliance " + installParam + "</font></b>");
-					pw.println("</br>");
+					pw.println("</br><hr/>");
 				} else {
 					v = appliancesProxy.getAppliancePids();
 					v.add(PROXY_APPLIANCE_PID);			
-					pw.println("<br/><b><u>INSTALLED APPLIANCES</u>&nbsp;&nbsp;&nbsp;(<a href=\"" + appRoot + "/" + LABEL + "\">Reload page</a>&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install\">Go to installing appliances</a>)</b></br>");
+					pw.println("<br/><b><u>INSTALLED APPLIANCES</u>&nbsp;&nbsp;&nbsp;(<a href=\"" + appRoot + "/" + LABEL + "\">Reload page</a>&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install\">Go to installing appliances</a>)</b></br><hr/>");
 				}
+				List driverApplianceList = new ArrayList();
+				List virtualApplianceList = new ArrayList();
+				List singletonApplianceList = new ArrayList();
 				if (v != null) {
 					appliancePid = null;
 					IAppliance appliance = null;
@@ -222,50 +227,51 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 						else 
 							appliance = appliancesProxy.getAppliance(appliancePid);
 						if (appliance != null) {
-							IEndPoint[] endPoints = appliance.getEndPoints();
-							if (endPoints != null && endPoints.length > 1) {
-								pw.println("<hr>");
-								if (appliance.isAvailable()) {
-									pw.println((appliance.isDriver() ? "<b>DRIVER APPLIANCE: " : "<b>VIRTUAL APPLIANCE: ") + 
-											"PID=" + appliance.getPid() + ", TYPE=" + appliance.getDescriptor().getType() + 
-											((appliance.isSingleton()) ? "</b><br/><br/>" : 
-											(appliancesProxy.getApplianceConfiguration(appliancePid, new Integer(0)) != null ? " (<a href=\"" + appRoot + "/" + LABEL + "/config/"+ appliance.getPid() + "\">configuration</a>" : "") + 
-											 	(installing ? "&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install/"+ appliance.getPid() + "\">install</a>" : "") + 
-										 			"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/confirm/delete/"+ appliance.getPid() + "\">delete</a>)</font></b><br/><br/>" ));						
-								} else {
-									pw.println((appliance.isDriver() ? "<b><font color=\"gray\">DRIVER APPLIANCE: " : "<b><font color=\"gray\">VIRTUAL APPLIANCE: ") + 
-											"PID=" + appliance.getPid() + ", TYPE=" + appliance.getDescriptor().getType() + 
-											((appliance.isSingleton()) ? "</b><br/><br/>" :  
-											(appliancesProxy.getApplianceConfiguration(appliancePid, new Integer(0)) != null ? " (<a href=\"" + appRoot + "/" + LABEL + "/config/"+ appliance.getPid() + "\">configuration</a>" : "") + 
-											 		(installing ? "&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install/"+ appliance.getPid() + "\">install</a>" :  "") +
-											 			"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/confirm/delete/"+ appliance.getPid() + "\">delete</a>)</font></b><br/><br/>" ));
-								}
-								renderEndPoints(appRoot, endPoints, pw);
-							}						
+							if (appliance.isSingleton())
+								singletonApplianceList.add(appliance);
+							else if (appliance.isDriver())
+								driverApplianceList.add(appliance);
+							else
+								virtualApplianceList.add(appliance);
 						}
+					}
+					for (Iterator iterator = driverApplianceList.iterator(); iterator.hasNext();) {
+						appliance = (IAppliance) iterator.next();
+						renderAppliance(appRoot, installing, false, appliance, pw);
+					}
+					pw.println("<hr/>");
+					for (Iterator iterator = virtualApplianceList.iterator(); iterator.hasNext();) {
+						appliance = (IAppliance) iterator.next();
+						renderAppliance(appRoot, installing, false, appliance, pw);
+					}
+					pw.println("<hr/>");
+					for (Iterator iterator = singletonApplianceList.iterator(); iterator.hasNext();) {
+						appliance = (IAppliance) iterator.next();
+						renderAppliance(appRoot, installing, false, appliance, pw);
 					}
 				}
 			} else if (pathInfo.startsWith("/config")) {
 				st = new StringTokenizer(pathInfo, "/");
 				st.nextToken();
 				appliancePid = st.nextToken();
+				Integer endPointId = null;
+				if (st.hasMoreElements()) {
+					endPointId = new Integer(st.nextToken());
+				}
 				String[] params = req.getParameterValues("param");
-				Map config = appliancesProxy.getApplianceConfiguration(appliancePid, new Integer(0));
-				if (params != null && params.length == 3) {
-					if (config != null) {
-						config.put(IAppliance.APPLIANCE_NAME_PROPERTY, params[0]);
-						config.put(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, params[1]);
-						config.put(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY, params[2]);
-						appliancesProxy.updateApplianceConfiguration(appliancePid, new Integer(0), config);
-					}		
+				IApplianceConfiguration config = appliancesProxy.getApplianceConfiguration(appliancePid);
+				if (config != null && params != null && params.length >= 1) {
+					config.updateName(endPointId, params[0]);
+					config.updateCategoryPid(endPointId, params[1]);
+					config.updateLocationPid(endPointId, params[2]);
+					appliancesProxy.updateApplianceConfiguration(config);
 				} 
-				renderApplianceConfiguration(appRoot, appliancePid, (String)config.get(IAppliance.APPLIANCE_NAME_PROPERTY), 
-						(String)config.get(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY), (String)config.get(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY), pw);
+				renderApplianceConfiguration(appRoot, appliancesProxy.getApplianceConfiguration(appliancePid), endPointId, pw);
 			} else {
 				st = new StringTokenizer(pathInfo, "/");
 				int i = 0;
 				appliancePid = null;
-				int endPointId = 0;
+				int endPointId = -1;
 				String clusterName = null;
 				String methodName = null;
 				while (st.hasMoreElements()) {
@@ -288,44 +294,129 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 					i++;
 				}
 				String[] params = req.getParameterValues("param");
-				renderClusterCommands(appRoot, appliancePid, endPointId, clusterName, methodName, params, pw);
+				IAppliance appliance = appliancesProxy.getAppliance(appliancePid);
+				if (appliance == null)
+					appliance = appliancesProxy.getInstallingAppliance(appliancePid);
+				IApplianceConfiguration config = appliancesProxy.getApplianceConfiguration(appliancePid);
+				if (endPointId < 0) { 
+					renderAppliance(appRoot, false, true, appliance, pw);					
+				} else {
+					renderClusterCommands(appRoot, config, appliance.getEndPoint(endPointId), clusterName, methodName, params, pw);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void renderApplianceConfiguration(String appRoot, String appliancePid, String name, String categoryPid, String locationPid, PrintWriter pw) {
+	private void renderAppliance(String appRoot, boolean installing, boolean details, IAppliance appliance, PrintWriter pw) {
+		String appliancePid = appliance.getPid();
+		IApplianceConfiguration config = appliancesProxy.getApplianceConfiguration(appliancePid);
+		IEndPoint[] endPoints = appliance.getEndPoints();
+		if (endPoints != null && endPoints.length > 1) {
+			String name = null; 
+			ICategory category = null;
+			ILocation location = null;
+			if (config != null) {
+				name = config.getName(null);
+				category = appliancesProxy.getCategory(config.getCategoryPid(null));
+				location = appliancesProxy.getLocation(config.getLocationPid(null));
+			}
+			boolean isAvailable = appliance.isAvailable();
+			if (isAvailable) {
+				pw.println("<b>");
+			} else {
+				pw.println("<b><font color=\"gray\">");
+			}
+			if (!details) {
+				pw.println((appliance.isDriver() ? "DRIVER APPLIANCE" : "VIRTUAL APPLIANCE"));
+				pw.println("&nbsp;(<a href=\"" + appRoot + "/" + LABEL + "/"+ appliancePid + "\">Details</a>" +
+				 	(installing ? "&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install/"+ appliance.getPid() + "\">Install</a>" : "") + 
+			 			(appliance.isSingleton() ? ")" : ("&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/confirm/delete/"+ appliance.getPid() + "\">Delete</a>)")));
+			} else {
+				pw.print("<br/><u>APPLIANCE DETAILS</u>" + 
+						"&nbsp;&nbsp;(<a <a href=\"" + appRoot + "/" + LABEL + "/" + appliancePid + "\">Reload page</a>&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + 
+						"\">Go to installed appliances</a>" + "&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install\">Go to installing appliances</a>)</br><hr/>");
+				pw.println((appliance.isDriver() ? "DRIVER APPLIANCE" : "VIRTUAL APPLIANCE"));		
+				if (!appliance.isSingleton()) {
+					pw.println("&nbsp;(<a href=\"" + appRoot + "/" + LABEL + "/config/"+ appliancePid + "\">Configuration</a>)");
+				}
+			}
+			pw.println("<br/>PID: " + appliance.getPid() + "<br/>TYPE: " + appliance.getDescriptor().getType() + 
+					((name != null)? "<br/>Name: " + name : "") + 
+					((category != null)? "<br/>Category: " + category.getName() : "") + 
+					((location != null)? "<br/>Location: " + location.getName() : "") + 
+					"</b><br/><br/>");		
+			if (isAvailable) {
+				pw.println("</b>");
+			} else {
+				pw.println("</b></font>");
+			}
+			if (details)
+				renderEndPoints(appRoot, config, endPoints, pw);
+			pw.println("<hr>");
+		}
+	}
+	
+	private void renderApplianceConfiguration(String appRoot, IApplianceConfiguration config, Integer endPointId, PrintWriter pw) {
+		if (config == null)
+			return;
+		String appliancePid = config.getAppliancePid();
 		IAppliance appliance = appliancesProxy.getAppliance(appliancePid);
 		if (appliance == null)
 			appliance = appliancesProxy.getInstallingAppliance(appliancePid);
-		pw.println((appliance.isDriver() ? "<b><u><br/>DRIVER"  : "<b><u><br/>VIRTUAL") + " APPLIANCE CONFIGURATION: </u>" +
-				" (<a href=\"" + appRoot + "/" + LABEL + "/config/" + appliancePid + "\">Reload page</a>&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "\">Go to installed appliances</a>" +
-				"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install\">Go to installing appliances</a>)</br>" +
-				"<br/>PID=" + appliance.getPid() + "<br/>TYPE=" + appliance.getDescriptor().getType() + "</b><br/><hr/>");
+
+		String name = config.getName(null);
+		ICategory category = appliancesProxy.getCategory(config.getCategoryPid(null));
+		ILocation location = appliancesProxy.getLocation(config.getLocationPid(null));
+		pw.println((appliance.isDriver() ? "<b><u><br/>DRIVER"  : "<b><u><br/>VIRTUAL") + " APPLIANCE</u>" +
+				" (<a href=\"" + appRoot + "/" + LABEL + "/config/" + appliancePid + (endPointId != null ? ("/" + endPointId) : "") + "\">Reload page</a>" +
+				"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/" + appliancePid + "\">Go to appliance details</a>)</br>" +
+				"<br/>PID: " + appliance.getPid() + "<br/>TYPE: " + appliance.getDescriptor().getType() + 
+					((name != null)? "<br/>Name: " + name : "") + 
+					((category != null)? "<br/>Category: " + category.getName() : "") + 
+					((location != null)? "<br/>Location: " + location.getName() : "") + 
+					"</b><br/><hr/>");
+		
 		pw.println("<br/><form name=\"ApplianceConfig\"" + " action=\"" + appRoot + "/" + LABEL + "/config/"
-				+ appliancePid + "\" method=\"get\">");
+				+ appliancePid + (endPointId != null ? ("/"+endPointId) : "") + "\" method=\"get\">");
 		pw.println("<table id=\"ApplianceConfig\" class=\"nicetable\"><tbody>");
-		pw.println("<tr><td width=\"50%\"><b>Configuration </b></td><td><input type=\"submit\" value=\"update\"/></td></tr>");
+		pw.println("<tr><td width=\"50%\">");
+		if (endPointId != null) {
+			IEndPoint endPoint = appliance.getEndPoint(endPointId.intValue());
+			pw.println("<b>End point configuration (ID: " + endPointId + ", TYPE: " + endPoint.getType() + ")</b><br/>");
+		} else {
+			pw.println("<b>Appliance configuration</b><br/>");
+		}
+		pw.println("</b></td><td><input type=\"submit\" value=\"update\"/></td></tr>");
+		
+		name = config.getName(endPointId);
+		String categoryPid = config.getCategoryPid(endPointId);
+		String locationPid = config.getLocationPid(endPointId);
 		pw.println("<tr><td width=\"50%\">Name: </td><td><input type=\"text\" name=\"param\" size=\"30\" value=\"" + name + "\"/></td></tr>");
 		
 		pw.println("</td></tr>");
-		pw.println("<tr><td width=\"50%\">Category: </td><td><select name=\"param\">");
-		ICategory[] categories = appliancesProxy.getCategories();
 		String pid = null;
-		for (int i = 0; i < categories.length; i++) {
-			pid = categories[i].getPid();
-			pw.println("<option value=\"" + pid + (pid.equals(categoryPid) ? "\" selected=\"selected\">" : "\" >") + categories[i].getName() + "</option>");
+		ICategory[] categories = appliancesProxy.getCategories();
+		if (categories != null && categories.length > 0) {
+			pw.println("<tr><td width=\"50%\">Category: </td><td><select name=\"param\">");	
+			for (int i = 0; i < categories.length; i++) {
+				pid = categories[i].getPid();
+				pw.println("<option value=\"" + pid + (pid.equals(categoryPid) ? "\" selected=\"selected\">" : "\" >") + categories[i].getName() + "</option>");
+			}
+			pw.println("</td></tr>");
 		}
-		pw.println("</td></tr>");
-		
-		pw.println("<tr><td width=\"50%\">Location: </td><td><select name=\"param\">");
+
 		ILocation[] locations = appliancesProxy.getLocations();
-		pid = null;
-		for (int i = 0; i < locations.length; i++) {
-			pid = locations[i].getPid();
-			pw.println("<option value=\"" + pid + (pid.equals(locationPid) ? "\" selected=\"selected\">" : "\" >") + locations[i].getName() + "</option>");
-		}		
+		if (locations != null && locations.length > 0) {
+			pw.println("<tr><td width=\"50%\">Location: </td><td><select name=\"param\">");
+			pid = null;
+			for (int i = 0; i < locations.length; i++) {
+				pid = locations[i].getPid();
+				pw.println("<option value=\"" + pid + (pid.equals(locationPid) ? "\" selected=\"selected\">" : "\" >") + locations[i].getName() + "</option>");
+			}	
+			pw.println("</td></tr>");
+		}
 		pw.println("</tbody></table></form>");
 	}
 	
@@ -381,15 +472,46 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 		}
 	}
 	
-	private void renderClusterCommands(String appRoot, String appliancePid, int endPointId, String clusterName, String methodName,
+	private void renderClusterCommands(String appRoot, IApplianceConfiguration config, IEndPoint endPoint, String clusterName, String methodName,
 			String[] params, PrintWriter pw) throws SecurityException, InstantiationException, NoSuchFieldException, IllegalAccessException {
-		IAppliance appliance = appliancesProxy.getAppliance(appliancePid);
-		if (appliance == null)
-			appliance = appliancesProxy.getInstallingAppliance(appliancePid);
-		pw.println((appliance.isDriver() ? "<br><b><u>DRIVER APPLIANCE CLUSTER " : "<br><b><u>VIRTUAL APPLIANCE CLUSTER ") + 
-				" </u>(<a <a href=\"" + appRoot + "/" + LABEL + "/" + appliancePid + "/" + endPointId + "/" + clusterName + "\">Reload page</a>&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "\">Go to installed appliances</a>" +
-				"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/install\">Go to installing appliances</a>)</br>" +
-				"<br/>APPLIANCE PID=" + appliance.getPid() + "<br/>END POINT ID=" +  endPointId +  "<br/>CLUSTER NAME=" + clusterName + "</b><br/>");		
+		IAppliance appliance = endPoint.getAppliance();
+		String appliancePid = appliance.getPid();
+		Integer endPointId = new Integer(endPoint.getId());
+		String endPointType = endPoint.getType();
+		String name = null;
+		ICategory category = null;
+		ILocation location = null;
+		if (config != null) {
+			name = config.getName(null);
+			category = appliancesProxy.getCategory(config.getCategoryPid(null));
+			location = appliancesProxy.getLocation(config.getLocationPid(null));			
+		}
+		pw.println((appliance.isDriver() ? "<br><b><u>DRIVER APPLIANCE CLUSTER</u>" : "<br><b>VIRTUAL APPLIANCE CLUSTER</u>") +
+				"&nbsp;&nbsp;(<a <a href=\"" + appRoot + "/" + LABEL + "/" + appliancePid + "/" + endPointId + "/" + clusterName + "\">Reload page</a>" +
+				"&nbsp;&nbsp;&nbsp;<a href=\"" + appRoot + "/" + LABEL + "/" + appliancePid + "\">Go to appliance details</a>)</br><hr/>");
+
+		pw.println("<br>APPLIANCE<br/>&nbsp;&nbsp;&nbsp;PID: " + appliance.getPid() + 
+				"<br/>&nbsp;&nbsp;&nbsp;TYPE: " + appliance.getDescriptor().getType() + 
+				((name != null)? "<br/>&nbsp;&nbsp;&nbsp;Name: " + name : "") + 
+				((category != null)? "<br/>&nbsp;&nbsp;&nbsp;Category: " + category.getName() : "") + 
+				((location != null)? "<br/>&nbsp;&nbsp;&nbsp;Location: " + location.getName() : "") +
+				"<br/><br/>");
+				
+				
+		if (config != null) {
+			name = config.getName(endPointId);
+			category = appliancesProxy.getCategory(config.getCategoryPid(endPointId));
+			location = appliancesProxy.getLocation(config.getLocationPid(endPointId));			
+		}		
+				
+		pw.println("<br/>END POINT" +
+				"<br/>&nbsp;&nbsp;&nbsp;ID: " +  endPointId +  
+				"<br/>&nbsp;&nbsp;&nbsp;TYPE: " +  endPointType +  
+				((name != null)? "<br/>&nbsp;&nbsp;&nbsp;Name: " + name : "") + 
+				((category != null)? "<br/>&nbsp;&nbsp;&nbsp;Category: " + category.getName() : "") + 
+				((location != null)? "<br/>&nbsp;&nbsp;&nbsp;Location: " + location.getName() : "") + 
+				"<br/>&nbsp;&nbsp;&nbsp;Cluster: " + clusterName + "</b><br/>");
+
 		String result = null;
 		long timestamp = System.currentTimeMillis();
 		try {
@@ -470,8 +592,10 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 		} 
 	}
 
-	private void renderClusterList(String appRoot, String appliancePid, String endPointId, IServiceCluster[] clusterArray, PrintWriter pw) throws InstanceNotFoundException, IntrospectionException, ReflectionException {
+	private void renderClusterList(String appRoot, String appliancePid, Integer endPointId, IServiceCluster[] clusterArray, PrintWriter pw) throws InstanceNotFoundException, IntrospectionException, ReflectionException {
 		for (int i = 0; i < clusterArray.length; i++) {
+			if (clusterArray[i].getName().equals(ConfigServer.class.getName()))
+				continue;
 			if (clusterArray[i].isAvailable())
 				if (clusterArray[i].isEmpty())
 					pw.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#\">"+clusterArray[i].getName()+"</a>");
@@ -494,31 +618,48 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 		}
 	}
 
-	private void renderEndPoints(String appRoot, IEndPoint[] endPoints , PrintWriter pw) {
+	private void renderEndPoints(String appRoot, IApplianceConfiguration config, IEndPoint[] endPoints , PrintWriter pw) {
 		for (int i = 0; i < endPoints.length; i++) {
 			IEndPoint endPoint = endPoints[i];
-			if (endPoint.isAvailable())
-				pw.println("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + endPoint.getId() + ": " + 
-						endPoint.getType() + "</b><br>"); 
+			IAppliance appliance = endPoint.getAppliance();
+			String appliancePid = appliance.getPid();
+			Integer endPointId = new Integer(endPoint.getId());
+			boolean isAvailable = appliance.isAvailable();
+			if (isAvailable)
+				pw.println("<b>");
 			else
-				pw.println("<b><font color=\"gray\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + endPoint.getId() + ": " + 
-						endPoint.getType() + "</font></b><br>");
+				pw.println("<b><font color=\"gray\">");	
+			String name = null;
+			ICategory category  = null;
+			ILocation location = null;
+			if (config != null) {
+				name = config.getName(endPointId);
+				category = appliancesProxy.getCategory(config.getCategoryPid(endPointId));
+				location = appliancesProxy.getLocation(config.getLocationPid(endPointId));
+			}
+			pw.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDPOINT");
+			if (!appliance.isSingleton())
+				pw.println("&nbsp;(<a href=\"" + appRoot + "/" + LABEL + "/config/"+ appliancePid + "/" + endPointId + "\">Configuration</a>)");
+			pw.println("<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID: " + endPoint.getId() + 
+						"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE: " + endPoint.getType() + 
+						((name != null)? "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name: " + name : "") + 
+						((category != null)? "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Category: " + category.getName() : "") + 
+						((location != null)? "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Location: " + location.getName() : ""));
+			if (isAvailable)
+				pw.println("<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (endPointId > 0 ? "Clusters:" : "") + "</b><br/>");
+			else
+				pw.println("<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (endPointId > 0 ? "Clusters:" : "") + "</b></font><br/>");	
 			try {
-				String appliancePid = endPoint.getAppliance().getPid();
-				String endPointId = Integer.toString(endPoint.getId());
 				IServiceCluster[] clusterArray = endPoint.getServiceClusters(IServiceCluster.SERVER_SIDE);
-				if (clusterArray != null && clusterArray.length > 0) {
-					pw.println("<br/>");				
+				if (clusterArray != null && clusterArray.length > 0) {				
 					renderClusterList(appRoot, appliancePid, endPointId, clusterArray, pw);
 				}			
 				clusterArray = endPoint.getServiceClusters(IServiceCluster.CLIENT_SIDE);
-				if (clusterArray != null && clusterArray.length > 0) {
-					pw.println("<br/>");				
+				if (clusterArray != null && clusterArray.length > 0) {			
 					renderClusterList(appRoot, appliancePid, endPointId, clusterArray, pw);
 				}
 				String[] clusterNames = endPoint.getAdditionalClusterNames();
-				if (clusterNames != null && clusterNames.length > 0) {
-					pw.println("<br/>");				
+				if (clusterNames != null && clusterNames.length > 0) {			
 					renderClusterList(appRoot, appliancePid, endPoint, clusterNames, pw);
 				}	
 				pw.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>");				

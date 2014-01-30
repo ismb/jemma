@@ -115,13 +115,13 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		return (ZIGBEE_UTC_DELTA_SECONDS + timestamp) * 1000;
 	}
 	
-	protected ApplianceProxyList proxy;
+	protected DeviceProxyList proxy;
 	protected IPowerAndControlListener listener;
 	protected ApplianceControlProxy appliaceControlProxy;
 	protected ApplianceStatisticsProxy applianceStatisticsProxy;
 	
 	
-	public PowerAndControlClusterProxy(ApplianceProxyList proxy, IPowerAndControlListener listener) throws ApplianceException {
+	public PowerAndControlClusterProxy(DeviceProxyList proxy, IPowerAndControlListener listener) throws ApplianceException {
 		this.proxy = proxy;
 		this.listener = listener;
 		appliaceControlProxy = new ApplianceControlProxy();
@@ -134,19 +134,19 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	
 
 	
-	protected PowerProfileServer getRemotePowerProfileCluster(ApplianceProxy applianceProxy) {
+	protected PowerProfileServer getRemotePowerProfileCluster(DeviceProxy deviceProxy) {
 		// TODO: needs to be modified t manage multi end point devices
-		return (PowerProfileServer) getServiceCluster(applianceProxy, IEndPoint.DEFAULT_END_POINT_ID, PowerProfileServer.class.getName());
+		return (PowerProfileServer) getServiceCluster(deviceProxy, PowerProfileServer.class.getName());
 	}
 	
-	protected ApplianceControlServer getRemoteApplianceControlCluster(ApplianceProxy applianceProxy) {
+	protected ApplianceControlServer getRemoteApplianceControlCluster(DeviceProxy deviceProxy) {
 		// TODO: needs to be modified t manage multi end point devices
-		return (ApplianceControlServer) getServiceCluster(applianceProxy, IEndPoint.DEFAULT_END_POINT_ID, ApplianceControlServer.class.getName());
+		return (ApplianceControlServer) getServiceCluster(deviceProxy, ApplianceControlServer.class.getName());
 	}
 	
-	protected ApplianceStatisticsServer getRemoteApplianceStatisticCluster(ApplianceProxy applianceProxy) {
+	protected ApplianceStatisticsServer getRemoteApplianceStatisticCluster(DeviceProxy deviceProxy) {
 		// TODO: needs to be modified t manage multi end point devices
-		return (ApplianceStatisticsServer) getServiceCluster(applianceProxy, IEndPoint.DEFAULT_END_POINT_ID, ApplianceStatisticsServer.class.getName());
+		return (ApplianceStatisticsServer) getServiceCluster(deviceProxy, ApplianceStatisticsServer.class.getName());
 	}
 	
 	public int getTariffTrailingDigits() {
@@ -249,9 +249,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		short num = -1;
 		try {
 			log.debug(String.format("PowerProfileServer[%s].getTotalProfileNum()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			PowerProfileServer pps = getRemotePowerProfileCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, false);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			num = pps.getTotalProfileNum(context);
 			log.debug(String.format("PowerProfileServer[%s].getTotalProfileNum() returned %s", applianceId, num));
 		} catch (Exception e) {
@@ -271,9 +271,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		float decimalFormatting = -1;
 		try {
 			log.debug(String.format("PowerProfileServer[%s].getEnergyFormatting()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			PowerProfileServer pps = getRemotePowerProfileCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, false);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			short zigbeeFormating = pps.getEnergyFormatting(context);
 			log.debug(String.format("PowerProfileServer[%s].getEnergyFormatting() returned %s", applianceId, zigbeeFormating));
 			decimalFormatting = interpretFormatting(zigbeeFormating);
@@ -307,9 +307,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		try {
 			log.debug(String.format("PowerProfileServer[%s].execEnergyPhasesScheduleNotification(powerProfileID=%s, SchedulePhase=%s)", 
 					applianceId, powerProfileID, Arrays.toString(sp)));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			PowerProfileServer pps = getRemotePowerProfileCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, false);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			pps.execEnergyPhasesScheduleNotification(powerProfileID, sp, context);		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -322,9 +322,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		PowerProfileResponse ppr = null;
 		try {
 			log.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest(PowerProfileID=%s)", applianceId, powerProfileID));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			PowerProfileServer pps = getRemotePowerProfileCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, false);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			ppr = pps.execPowerProfileRequest(powerProfileID, context);
 			log.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest returned PowerProfileResponse=%s", applianceId, ppr));
 			return convertPowerProfileInfo(ppr);	
@@ -351,9 +351,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		PowerProfileStateResponse ppsr = null;
 		try {
 			log.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			PowerProfileServer pps = getRemotePowerProfileCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, false);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			ppsr = pps.execPowerProfileStateRequest(context);
 			log.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest() returned PowerProfileStateResponse=%s", applianceId, ppsr));
 			return convertPowerProfileState(ppsr);
@@ -390,9 +390,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void executeCommand(String applianceId, short command) {
 		try {
 			log.debug(String.format("ApplianceControlServer[%s].execCommandExecution(%s)", applianceId, command));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			acs.execCommandExecution(command, context);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -402,9 +402,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void overloadPause(String applianceId) {
 		try {
 			log.debug(String.format("ApplianceControlServer[%s].execOverloadPause()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			acs.execOverloadPause(context);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -414,9 +414,10 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void overloadResume(String applianceId) {
 		try {
 			log.debug(String.format("ApplianceControlServer[%s].execOverloadPauseResume()", applianceId));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
+			acs.execOverloadPauseResume(context);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -425,9 +426,9 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void notifyOverloadWarning(String applianceId, short event) {
 		try {
 			log.debug(String.format("ApplianceControlServer[%s].execOverloadWarning(%s)", applianceId, event));
-			ApplianceProxy applianceProxy = proxy.getApplianceProxy(applianceId);
-			ApplianceControlServer acs = getRemoteApplianceControlCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
+			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			acs.execOverloadWarning(event, context);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -71,6 +71,9 @@
 							 org.osgi.service.cm,
 							 org.osgi.service.device,
 							 org.osgi.service.http,
+							 org.osgi.service.event,
+							 org.energy_home.jemma.shal,
+							 org.energy_home.jemma.shal.min,
 							 *
 						</Import-Package>
 						<Export-Package>org.energy_home.jemma.ah.ebrain,

@@ -91,7 +91,7 @@ element.
                 <annotation>
                     <documentation>
                         The id element for a content instance must be a not negative value 
-                        and is a unique identifier of the content instance resource related to the containg 
+                        and is a unique identifier of the content instance resource related to the containing 
                         resource identifier specified by the the context of the HTTP Request or by a parent 
                         element (see contentInstanceItems and contentInstanceItemsStatus elements)
 					</documentation>
@@ -275,6 +275,37 @@ This resource is the root for all resources that are residing on the hosting SCL
 		</complexType>
 	</element>
     
+    <element name="Subscriptions">
+        <complexType>
+            <sequence>
+                <group ref="m2m:CommonResourcesGroup"/>
+            </sequence>
+        </complexType>  
+	</element>            
+    
+    <element name="Subscription">
+        <complexType>
+            <sequence>
+                <group ref="m2m:CommonResourcesGroup"/>
+                <element minOccurs="1" name="Contact" type="anyURI">
+                    <annotation>
+                        <documentation>
+                            URI used to send notifications
+                        </documentation>
+                    </annotation>
+                </element>          
+            </sequence>            
+		</complexType>
+    </element> 
+    
+    <element name="SubscriptionItems">
+        <complexType>
+            <sequence>
+                <element ref="m2m:Subscription" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        <attributeGroup ref="m2m:AddressedIdAttributeGroup"/>
+		</complexType>
+	</element>
                 
     <element name="ContentInstances">
         <complexType>

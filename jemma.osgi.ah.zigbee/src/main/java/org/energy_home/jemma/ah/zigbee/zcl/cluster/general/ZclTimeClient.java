@@ -25,12 +25,17 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUTCTime;
+import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 
 import org.energy_home.jemma.ah.cluster.zigbee.general.TimeClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.TimeServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
+import org.energy_home.jemma.ah.hac.InvalidValueException;
+
 
 public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigBeeDeviceListener {
 
@@ -42,6 +47,10 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 
 	protected int getClusterId() {
 		return CLUSTER_ID;
+	}
+
+	protected IZclAttributeDescriptor[] getPeerAttributeDescriptors() {
+		return ZclTimeServer.attributeDescriptors;
 	}
 
 	protected int readAttributeResponseGetSize(int attrId) throws ServiceClusterException, ZclValidationException {
@@ -84,10 +93,11 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 	protected boolean fillAttributeRecord(IZclFrame zclResponseFrame, int attrId) throws ServiceClusterException,
 			ApplianceException {
 		TimeServer c = ((TimeServer) getSinglePeerCluster((TimeServer.class.getName())));
+		IEndPointRequestContext context = endPoint.getDefaultRequestContext();
 
 		switch (attrId) {
 		case 0x00: {
-			long v = c.getTime(null);
+			long v = c.getTime(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUTCTime.ZCL_DATA_TYPE);
 			ZclDataTypeUTCTime.zclSerialize(zclResponseFrame, v);
@@ -95,7 +105,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x01: {
-			short v = c.getTimeStatus(null);
+			short v = c.getTimeStatus(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeBitmap8.ZCL_DATA_TYPE);
 			ZclDataTypeBitmap8.zclSerialize(zclResponseFrame, v);
@@ -103,7 +113,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x02: {
-			long v = c.getTimeZone(null);
+			long v = c.getTimeZone(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeI32.ZCL_DATA_TYPE);
 			ZclDataTypeI32.zclSerialize(zclResponseFrame, v);
@@ -111,7 +121,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x03: {
-			long v = c.getDstStart(null);
+			long v = c.getDstStart(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUI32.ZCL_DATA_TYPE);
 			ZclDataTypeUI32.zclSerialize(zclResponseFrame, v);
@@ -119,7 +129,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x04: {
-			long v = c.getDstEnd(null);
+			long v = c.getDstEnd(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUI32.ZCL_DATA_TYPE);
 			ZclDataTypeUI32.zclSerialize(zclResponseFrame, v);
@@ -127,7 +137,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x05: {
-			long v = c.getDstShift(null);
+			long v = c.getDstShift(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeI32.ZCL_DATA_TYPE);
 			ZclDataTypeI32.zclSerialize(zclResponseFrame, v);
@@ -135,7 +145,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x06: {
-			long v = c.getStandardTime(null);
+			long v = c.getStandardTime(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUI32.ZCL_DATA_TYPE);
 			ZclDataTypeUI32.zclSerialize(zclResponseFrame, v);
@@ -143,7 +153,7 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x07: {
-			long v = c.getLocalTime(null);
+			long v = c.getLocalTime(context);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUI32.ZCL_DATA_TYPE);
 			ZclDataTypeUI32.zclSerialize(zclResponseFrame, v);
@@ -151,7 +161,12 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x08: {
-			long v = c.getLastSetTime(null);
+			long v;
+			try {
+				v = c.getLastSetTime(context);
+			} catch (InvalidValueException e) {
+				v = 0xFFFFFFFF;
+			}
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUTCTime.ZCL_DATA_TYPE);
 			ZclDataTypeUTCTime.zclSerialize(zclResponseFrame, v);
@@ -159,7 +174,12 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 		}
 
 		case 0x09: {
-			long v = c.getValidUntilTime(null);
+			long v;
+			try {
+				v = c.getValidUntilTime(context);
+			} catch (InvalidValueException e) {
+				v = 0xFFFFFFFF;
+			}
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			zclResponseFrame.appendUInt8(ZclDataTypeUTCTime.ZCL_DATA_TYPE);
 			ZclDataTypeUTCTime.zclSerialize(zclResponseFrame, v);
@@ -174,19 +194,45 @@ public class ZclTimeClient extends ZclServiceCluster implements TimeClient, ZigB
 	}
 
 	protected short writeAttribute(IZclFrame zclFrame, int attrId, short dataType) throws Exception {
+
+		TimeServer c = ((TimeServer) getSinglePeerCluster((TimeServer.class.getName())));
+		IEndPointRequestContext context = endPoint.getDefaultRequestContext();
+
 		switch (attrId) {
 		case 0x00:
 		case 0x01:
-		case 0x02:
-		case 0x03:
-		case 0x04:
-		case 0x05:
 		case 0x06:
 		case 0x07:
+		case 0x08:
 			return ZCL.READ_ONLY;
+
+		case 0x02: {
+			long v = ZclDataTypeI32.zclParse(zclFrame);
+			c.setTimeZone(v, context);
+			break;
+		}
+
+		case 0x03: {
+			long v = ZclDataTypeI32.zclParse(zclFrame);
+			c.setDstStart(v, context);
+			break;
+		}
+
+		case 0x04: {
+			long v = ZclDataTypeI32.zclParse(zclFrame);
+			c.setDstEnd(v, context);
+			break;
+		}
+
+		case 0x05: {
+			long v = ZclDataTypeI32.zclParse(zclFrame);
+			c.setDstShift(v, context);
+			break;
+		}
 
 		default:
 			return ZCL.UNSUPPORTED_ATTRIBUTE;
 		}
+		return ZCL.SUCCESS;
 	}
 }

@@ -20,7 +20,6 @@ import org.energy_home.jemma.ah.m2m.device.M2MContainerAddress;
 
 // This class has been added to avoid dependencies from M2MContainerAddress class in bundle importing hap packages
 public class AHM2MContainerAddress extends AHContainerAddress {
-	public static final String DEFAULT_APPLIANCE_PREFIX = "ah.app.";
 
 	public AHM2MContainerAddress(String urlOrAddressedId) throws IllegalArgumentException {
 		super(urlOrAddressedId);

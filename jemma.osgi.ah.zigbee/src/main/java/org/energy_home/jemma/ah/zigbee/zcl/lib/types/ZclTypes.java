@@ -55,6 +55,9 @@ public class ZclTypes {
 	public static final short ZclStringType = 0x42;
 	
 	public static final short ZclClusterIDType = 0xe8;
+	public static final short ZclAttributeIDType = 0xe9;
+	public static final short ZclBACnetOIDType = 0xea;
+	public static final short ZclIEEEAddressType = 0xf0;
 
 	public static final short ZclFloatType = 0x99; // FIXME: put the right value
 													// from specs!!!

@@ -431,6 +431,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 					log.info("Measured time for batch request " + (System.currentTimeMillis() - batch_request_time_check));
 					batch_request_time_check = System.currentTimeMillis();
 				}
+				// TODO:!!! Add here notification based on service exposed by local scl
 				fastForwardFactor = getFastForwardFactor();
 				batch_request_timeout = (fastForwardFactor == 1) ? HapServiceConfiguration.BATCH_REQUEST_TIMEOUT : HapServiceConfiguration.BATCH_REQUEST_TIMEOUT
 						/ fastForwardFactor;
@@ -715,7 +716,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		if (checkAttributeIdFilter(HapServiceConfiguration.LOCAL_ONLY_ATTRIBUTE_ID_FILTER, containerId.getContainerName()))
 			// Local only container
 			return contentInstance;
-		// TODO!!! Remove when new alias for core configuration containers are managed by HAP platform
+		// TODO:!!! Remove when new alias for core configuration containers are managed by HAP platform
 		String containerName = containerId.getContainerName();
 		if (containerName != null) {
 			String url; 

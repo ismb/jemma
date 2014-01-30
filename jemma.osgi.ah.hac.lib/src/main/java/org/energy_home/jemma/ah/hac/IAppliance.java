@@ -40,6 +40,7 @@ import java.util.Dictionary;
  * @see {@link IManagedAppliance}
  */
 public interface IAppliance {
+	public static final String AH_PROPERTY_PREFIX = "ah.";
 	/**
 	 * Property name used for the appliance type. The value is {@value}
 	 * 
@@ -58,6 +59,7 @@ public interface IAppliance {
 	 * @see IAppliance#getConfiguration()
 	 */
 	public static final String APPLIANCE_NAME_PROPERTY = "ah.app.name";
+	public static final String END_POINT_NAMES_PROPERTY = "ah.app.eps.names";
 	/**
 	 * Integer key used to browse appliances by name. The value is {@value}
 	 * 
@@ -71,6 +73,7 @@ public interface IAppliance {
 	 * @see IAppliance#getConfiguration()
 	 */
 	public static final String APPLIANCE_LOCATION_PID_PROPERTY = "ah.location.pid";
+	public static final String END_POINT_LOCATION_PIDS_PROPERTY = "ah.eps.location.pids";
 	/**
 	 * Integer key used to browse appliances by location PID. The value is * *
 	 * {@value}
@@ -86,6 +89,7 @@ public interface IAppliance {
 	 * @see IAppliance#getConfiguration()
 	 */
 	public static final String APPLIANCE_CATEGORY_PID_PROPERTY = "ah.category.pid";
+	public static final String END_POINT_CATEGORY_PIDS_PROPERTY = "ah.eps.category.pids";
 	/**
 	 * Property name used for identifying the appliance persistent identifier
 	 */
@@ -104,6 +108,7 @@ public interface IAppliance {
 	 * @see IAppliance#getConfiguration()
 	 */
 	public static final String APPLIANCE_ICON_PROPERTY = "ah.icon";
+	public static final String END_POINT_ICONS_PROPERTY = "ah.eps.icons";
 	/**
 	 * Integer key used to browse appliances by its PID. The value is {@value}
 	 * 
@@ -126,11 +131,11 @@ public interface IAppliance {
 	public static final String APPLIANCE_EPS_IDS_PROPERTY = "ah.app.eps.ids";
 	
 	/**
-	 * Property name used for custom appliance configuration object. The value is {@value}
+	 * Property name prefix used for custom appliance properties. The value is {@value}
 	 * 
 	 * @see IAppliance#getConfiguration()
 	 */
-	public static final String APPLIANCE_CUSTOM_CONFIG_PROPERTY = "ah.app.custom.config";
+	public static final String APPLIANCE_CUSTOM_PROPERTIES_PREXIF = "ah.app.custom.";
 	
 	/**
 	 * Check if the associated appliance is a singleton
@@ -160,13 +165,25 @@ public interface IAppliance {
 
 	/**
 	 * Returns a dictionary with a set of configuration parameters associated to
-	 * the appliance. The A@H framework is responsible to store the
-	 * configuration parameters and load them into the appliance when the
+	 * the appliance and managed by the A@H Framework. The framework is responsible 
+	 * to store and load the configuration parameters into the appliance when the 
 	 * {@code IManagedAppliance} is registered.
 	 * 
 	 * @return A {@code Dictionary} with all the configuration parameters
 	 */
 	public Dictionary getConfiguration();
+	
+	/**
+	 * Returns a dictionary with a set of custom configuration parameters associated to
+	 * the appliance and managed by the A@H Framework. The framework is responsible 
+	 * to store and load the configuration parameters into the appliance when the 
+	 * {@code IManagedAppliance} is registered. All keys used in the dictionary 
+	 * that don't start with {@link IAppliance#APPLIANCE_CUSTOM_PROPERTIES_PREXIF} 
+	 * are discarded
+	 * 
+	 * @return A {@code Dictionary} with all the custom configuration parameters
+	 */
+	public Dictionary getCustomConfiguration();
 	
 	/**
 	 * Checks if this appliance is associated to a physical device through a

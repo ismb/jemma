@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Test elettrodomestici</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="ifIndesitWM.css" />
+    <link rel="stylesheet" href="ifIndesitOven.css" />
+    <link rel="stylesheet" href="ifIndesitFridge.css" />
+    <link rel="stylesheet" href="ifLampada.css" />
+    <link rel="stylesheet" href="Elettrodomestici.css" />
+    <script language="javascript" type="text/javascript" src="../jquery/jquery-1.7.1.min.js?n=201304171530"></script>
+    <script language="javascript" type="text/javascript" src="../jquery/jquery-ui-1.8.19.custom.min.js?n=201304171530"></script>
+    <!--<script language="javascript" type="text/javascript" src="js/jquery/jquery.colors.bundle.min.js"></script>-->
+
+    
+    <style type="text/css">
+        
+        
+        @media (max-width: 700px) {
+            body{
+                font-size: 12px;
+            }
+            
+        }
+
+        
+        html{
+            height: 100%;
+        }
+        body{
+            background-color: #000;
+            padding: 30px;
+            height: 100%;
+            
+        }
+        
+        #Elettrodomestici{
+            width: 88%;
+            min-width: 800px;
+            height: 80%;
+            min-height: 300px;
+            padding: 10px;
+            background-color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            
+        }
+        
+    </style>
+    
+    
+    <script>
+        
+        $(function() {
+            
+            
+            var t=3660;
+            var h = (t>>8);
+            var m = t-((t>>6)<<6);
+            
+            $("#debug").text("h:"+h+" m:"+m);
+            
+            var u= function(){
+                $("#debug").fadeTo(300,0.3,function(){
+                    $("#debug").fadeTo(300,1);
+                });    
+                
+            };
+            
+            var i=setInterval(u,2000);
+            
+        });
+  </script>
+</head>
+
+<body>
+
+    <div id="Elettrodomestici">
+        <div id="RigaElettrodomestici">
+            <div class="Elettrodomestico ON">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lampadina_on.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">ON</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">10W</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="Elettrodomestico OFF">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lavatrice_off.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">OFF</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">--</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="Elettrodomestico NONPRESENTE">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lavatrice_np.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">--</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">--</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione_disconnesso.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        
+        <div class="Elettrodomestico OFF">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lampadina_off.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">OFF</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">--</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="Elettrodomestico NONPRESENTE">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lavatrice_np.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">--</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">--</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione_disconnesso.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="Elettrodomestico NONPRESENTE">
+                <div class="DatiElettrodomestico">
+                    <div class="NomeElettrodomestico"> <div class="titolo">Prova Nome </div> </div>
+                    <div class="IconaElettrodomestico"> <img src="Resources/Images/Devices2/lampadina_np.png" /></div>
+                    <div class="StatoElettrodomestico">
+                        <div class="row">
+                            <div class="left">Stato:</div>
+                            <div class="right stato">--</div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="left">Consumo:</div>
+                            <div class="right">--</div>
+                        </div>
+                        <div class="row posizione">
+                            <div class="left"><img src="js/dispositivi/posizione_disconnesso.png"/><span class="t">:</span> </div>
+                            <div class="right">Living room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="RigaInterfaccia">
+            <div id="RiepilogoConsumi">
+                <div class="header">
+                    <div class="titolo">
+                        Riepilogo consumi
+                    </div>
+                </div>
+                <div class="content">
+
+                    <div class="row small">
+                        <div class="cell">Totale dispositivi:</div>
+                        <div class="cell right">50W</div>
+                    </div>
+                    <div class="row small">
+                        <div class="cell">Altri consumi:</div>
+                        <div class="cell right">400W</div>
+                    </div>
+                    <div class="row big">
+                        <div class="cell">Totale consumi:</div>
+                        <div class="cell right">450W</div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div id="Interfaccia">
+                <div class="header">
+                    <div class="titolo">Indesit washing machine</div>
+                </div>
+                <div class="content">
+
+<div id="ifLampada">
+    <!--<div class="row1" style="width: 100%">-->
+        <div class="col" style="width: 25%;">
+            <div class="left-box">
+            
+                
+                <div id="bg" class="bg">
+                    <img src="js/dispositivi/maschera_lampadina.png" />
+                </div>
+                <div class="StatoElettrodomestico">
+                   
+                    <div class="row">
+                        <div class="left">Consumption:</div>
+                        <div class="consumo right"></div>
+                    </div>
+                    <div class="row posizione">
+                        <div class="left"><img src="js/dispositivi/posizione.png"/><span class="t">:</span> </div>
+                        <div class="posizione_value right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col" style="width: 39%;">
+            <!--<div class="controlli">-->
+                <div id="OnOffControl">
+                    <div class="label inline" >Device state:</div>
+                    <div id="onoff" class="btnToggle right">&nbsp</div>
+                </div>
+               
+                <div id="SyncControl">
+                    <div class="line">
+                    <div class="label inline" >Sync:</div>
+                    <div id="sync" class="btnSync right">&nbsp</div>
+                    </div>
+                    
+                    <div class="line">
+                    <div id="lum" class="slider"></div>
+                    </div>
+                </div>
+                <div id="LevelControl">
+                    <div class="line">
+                    <div class="label inline" >Light intensity:</div>
+                    <div id="lum_perc" class="dato right">100%</div>
+                    </div>
+                    
+                    <div class="line">
+                    <div id="lum" class="slider"></div>
+                    </div>
+                </div>
+                
+            <!--</div>-->
+        </div>
+        <div class="col lborder" style="width: 34%;">
+            <div class="line" style="width: 80%; margin-left: auto; margin-right: auto;">
+                <div class="label inline" >Color:</div>
+                
+            </div>
+            <div id="ColorControl">
+                <div id="picker"></div>
+            </div>
+        </div>
+    <!--</div>-->
+    
+</div>
+    <!--</div>-->
+    
+</div>
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="debug">debug:</div>
+    <div style="width:200px; height: 250px;">     
+       
+    </div>
+                            
+</body>
+</html>
