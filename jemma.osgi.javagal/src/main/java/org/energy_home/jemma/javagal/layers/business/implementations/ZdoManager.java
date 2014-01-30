@@ -33,7 +33,9 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 /**
  * Manages received ZDO messages. When an ZDO indication is received it is
  * passed to this class' {@code ZDOMessageIndication} method.
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class ZdoManager /* implements APSMessageListener */{
 	private static Log logger = LogFactory.getLog(ZdoManager.class);
@@ -156,9 +158,10 @@ public class ZdoManager /* implements APSMessageListener */{
 							_Node.set_discoveryCompleted(false);
 							_Node.reset_numberOfAttempt();
 							_Node.setTimerDiscovery(0);
-
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+
 								_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+
 							}
 						}
 					} else {
@@ -176,6 +179,7 @@ public class ZdoManager /* implements APSMessageListener */{
 							}
 						}
 					}
+					gal.getNetworkcache().get(_index).abortTimers();
 					gal.getNetworkcache().get(_index).set_node(_Node.get_node());
 				}
 			}
