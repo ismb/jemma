@@ -1754,11 +1754,11 @@ public short configureEndpoint(long timeout, SimpleDescriptor desc)
 
 									if (PropertiesManager.getKeepAliveThreshold() > 0) {
 										/* Execute the Freshness */
-										galNodeWrapper.setTimerFreshness(2);
+										galNodeWrapper.setTimerFreshness(15);
 									}
 									if (PropertiesManager.getForcePingTimeout() > 0) {
 										/* Execute the ForcePing */
-										galNodeWrapper.setTimerForcePing(2);
+										galNodeWrapper.setTimerForcePing(15);
 									}
 								}
 							} else {
@@ -1776,6 +1776,12 @@ public short configureEndpoint(long timeout, SimpleDescriptor desc)
 							else {
 								getNetworkcache().get(_index).set_node(galNodeWrapper.get_node());
 							}
+							
+							/*Notify Gal Node*/
+							Status _s = new Status();
+							_s.setCode((short) 0x00);
+							get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
+
 
 						}
 					} catch (Exception e) {

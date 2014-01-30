@@ -84,41 +84,7 @@ public class Discovery_Freshness_ForcePing {
 		return -1;
 	}
 
-	/**
-	 * Create the Aps for the Lqi-Request command
-	 * 
-	 * @param _transeqNumber
-	 *            --> The counter of the current ApsMessage
-	 * @param startIndex
-	 *            --> The index of the Lqi table that will be read
-	 * @param node
-	 *            --> The address of the destination node
-	 */
-	private APSMessage createApsMessaggeLqi_Req(byte _transeqNumber, int startIndex, Address node) {
-
-		APSMessage _LQIReq = new APSMessage();
-		_LQIReq.setClusterID(0x0031)/* Mngm LQI Req */;
-		_LQIReq.setProfileID(0x0000);
-		_LQIReq.setDestinationAddressMode((long) 0x02);// Short
-		Address _add = new Address();
-		_add.setNetworkAddress(node.getNetworkAddress());
-		_LQIReq.setDestinationAddress(_add);
-		_LQIReq.setDestinationEndpoint((short) 0x00);
-		_LQIReq.setSourceEndpoint((short) 0x00);
-		_LQIReq.setRadius((short) 0x0A);
-		TxOptions _op = new TxOptions();
-		_op.setAcknowledged(false);
-		_op.setPermitFragmentation(false);
-		_op.setSecurityEnabled(false);
-		_op.setUseNetworkKey(false);
-		_LQIReq.setTxOptions(_op);
-		byte[] _commandLqiRequest = new byte[2];
-		_commandLqiRequest[0] = _transeqNumber;/* TranseqNumber */
-		_commandLqiRequest[1] = (byte) startIndex;/* Start Index */
-		_LQIReq.setData(_commandLqiRequest);
-		return _LQIReq;
-	}
-
+	
 	/**
 	 * Send the Lqi_Request for the selected address. Then manages the
 	 * Lqi_Response
@@ -260,7 +226,7 @@ public class Discovery_Freshness_ForcePing {
 									__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.info("\n\r" + funcionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress());
+									logger.info("\n\r" + funcionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " Time:" + System.currentTimeMillis());
 								}
 
 							}
