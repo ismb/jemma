@@ -34,7 +34,7 @@ var InterfaceEnergyHome = {
 	ERR_NO_PRODUCTION : 6,
 	visError : null,
 
-	serviceName : "it.telecomitalia.ah.greenathome.GreenAtHomeApplianceService",
+	serviceName : "org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService",
 	objService : null,
 	// costanti per parametri chiamate
 	MINUTE : 0,
@@ -54,8 +54,8 @@ var InterfaceEnergyHome = {
 	SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
-	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cos“ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
-	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lÕutente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
+	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cosï¿½ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
+	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lï¿½utente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
 	CONSUMO : "ah.eh.esp.Energy",
 	COSTO : "ah.eh.esp.EnergyCost",
 	PRODUZIONE : "ah.eh.esp.ProducedEnergy",
@@ -191,7 +191,7 @@ InterfaceEnergyHome.Abort = function() {
  * JSONRpcClient.Exception.CODE_ERR_MARSHALL = 593;
  */
 InterfaceEnergyHome.GestErrorEH = function(func, err) {
-	hideSpinner();
+	//hideSpinner();
 	var msg;
 	InterfaceEnergyHome.visError = InterfaceEnergyHome.ERR_GENERIC;
 	
@@ -504,7 +504,7 @@ InterfaceEnergyHome.GetPowerLimitFotoVoltaico = function(backFunc) {
 			InterfaceEnergyHome.BackPowerLimitFotoVoltaico(null, err);
 		}
 	} else {
-		InterfaceEnergyHome.BackPowerLimitFotoVoltaico(null, null);
+		InterfaceEnergyHome.BackPowerLimitFotoVoltaico({value: 3000}, null);
 	}
 }
 

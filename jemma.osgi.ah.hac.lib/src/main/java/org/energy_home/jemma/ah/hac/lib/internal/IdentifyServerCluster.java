@@ -21,10 +21,13 @@ import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 
 public class IdentifyServerCluster extends ServiceCluster implements IdentifyServer {
 	private static final Log log = LogFactory.getLog(IdentifyServerCluster.class);
+
+	final static String[] supportedAttributes = { IdentifyServer.ATTR_IdentifyTime_NAME };
 
 	private static final long DEFAULT_MILLISEC_DELAY = 30000;
 
@@ -53,5 +56,10 @@ public class IdentifyServerCluster extends ServiceCluster implements IdentifySer
 	public void setIdentifyTime(int IdentifyTime, IEndPointRequestContext context) throws ApplianceException {
 		log.debug("setIdentifyTime " + IdentifyTime);
 		service.setIdentifyDelay(1000 * IdentifyTime);
+	}
+
+	public String[] getSupportedAttributeNames(IEndPointRequestContext endPointRequestContext) throws ApplianceException,
+			ServiceClusterException {
+		return supportedAttributes;
 	}
 }

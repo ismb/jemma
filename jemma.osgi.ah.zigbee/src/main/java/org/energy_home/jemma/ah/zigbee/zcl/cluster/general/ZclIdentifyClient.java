@@ -32,6 +32,8 @@ import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
+import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclTypes;
 
 public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClient, ZigBeeDeviceListener {
 
@@ -39,6 +41,10 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 
 	public ZclIdentifyClient() throws ApplianceException {
 		super();
+	}
+
+	protected IZclAttributeDescriptor[] getPeerAttributeDescriptors() {
+		return ZclIdentifyServer.attributeDescriptors;
 	}
 
 	public boolean notifyZclFrame(short clusterId, IZclFrame zclFrame) throws Exception {
@@ -51,6 +57,11 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 		if (zclFrame.isServerToClient()) {
 			throw new ZclValidationException("invalid direction field");
 		}
+
+		// here we don't implement any manufacturer specific commands
+		if (zclFrame.isManufacturerSpecific())
+			return false;
+
 		IZclFrame responseZclFrame = null;
 		ZigBeeDevice device = getZigBeeDevice();
 		int statusCode = ZCL.SUCCESS;
@@ -62,15 +73,14 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 		case 1:
 			responseZclFrame = parseIdentifyQuery(c, zclFrame);
 			break;
-			
+
 		default:
 			throw new ZclException(ZCL.UNSUP_CLUSTER_COMMAND);
 		}
 		if (responseZclFrame == null) {
 			if (!zclFrame.isDefaultResponseDisabled()) {
 				responseZclFrame = getDefaultResponse(zclFrame, statusCode);
-			}
-			else 
+			} else
 				return true;
 		}
 		if (!(responseZclFrame == null)) {
@@ -100,7 +110,7 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 
 		switch (attrId) {
 		case 0x00: {
-			int v = c.getIdentifyTime(null);
+			int v = c.getIdentifyTime(endPoint.getDefaultRequestContext());
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, ZCL.SUCCESS);
 			ZclDataTypeUI8.zclSerialize(zclResponseFrame, (short) ZclDataTypeUI16.ZCL_DATA_TYPE);
 			ZclDataTypeUI16.zclSerialize(zclResponseFrame, v);
@@ -124,7 +134,7 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 			}
 
 			int IdentifyTime = ZclDataTypeUI16.zclParse(zclFrame);
-			c.setIdentifyTime(IdentifyTime, null);
+			c.setIdentifyTime(IdentifyTime, endPoint.getDefaultRequestContext());
 			break;
 		}
 
@@ -142,11 +152,13 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 
 	protected IZclFrame parseIdentifyQuery(IdentifyServer o, IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
 		IdentifyQueryResponse r = o.execIdentifyQuery(endPoint.getDefaultRequestContext());
-		int size = ZclIdentifyQueryResponse.zclSize(r);
-		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
-		zclResponseFrame.setCommandId(0);
-		ZclIdentifyQueryResponse.zclSerialize(zclResponseFrame, r);
-		return zclResponseFrame;
+		if (r.Timeout > 0) {
+			int size = ZclIdentifyQueryResponse.zclSize(r);
+			IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+			zclResponseFrame.setCommandId(0);
+			ZclIdentifyQueryResponse.zclSerialize(zclResponseFrame, r);
+			return zclResponseFrame;
+		} else
+			return null;
 	}
-
 }

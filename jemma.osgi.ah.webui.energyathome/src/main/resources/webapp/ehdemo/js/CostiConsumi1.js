@@ -119,6 +119,9 @@ CostiConsumi.Init = function() {
 
 	maxCont = Define.home["limContatore"][Main.contatore];
 
+	$('#ConsumoAttualeMeter').speedometer({
+		max : maxCont
+	});
 	/* FV ToDo: gestire i tre meter in InternetExplorer*/
 	if (navigator.userAgent.indexOf('MSIE 7.0') > -1){
 		//Sono in Internet Explorer 7.0
@@ -129,14 +132,14 @@ CostiConsumi.Init = function() {
 			conMeterDiv.style.left = 0;
 
 		var tmpDiv = $("#ConsumoAttualeMeter div");
-		tmpDiv
 	} else {
-		hDiv = $("#ConsumoAttualeMeter").height();
+		var hDiv = $("#ConsumoAttualeMeter").height();
+		if ((hDiv == null) || (hDiv <= 0)){
+			hDiv == 157;
+			$("#ConsumoAttualeMeter").height(hDiv);
+		}
 		$("#ConsumoAttualeMeter").width(hDiv);
 	}
-	$('#ConsumoAttualeMeter').speedometer({
-		max : maxCont
-	});
 
 	$("#LabelKWH").text(Msg.home["labelkWh"]);
 	$("#LabelOra").text(Msg.home["labelOra"]);
@@ -361,6 +364,7 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
 				}
 				CostiConsumi.SmartInfo = elettrodom["map"];
+				Main.appIdSmartInfo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
 				//if (Main.env == 0) console.log('COSTICONSUMI1', 'SmartInfo - ');
 				//if (Main.env == 0) console.log(CostiConsumi.SmartInfo);
 			} else {
@@ -510,10 +514,13 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 
 CostiConsumi.VisGrafico = function() {
 	if (Main.env == 0) console.log('CostiConsumi1.js', 'VisGrafico', 'Entro!');
-
-	console.log('CostiConsumi.consumoGiornaliero', CostiConsumi.consumoGiornaliero);
-	var dataY = CostiConsumi.consumoGiornaliero.slice(0);
-	console.log('dataY', dataY);
+	if (Main.env == 0) console.log('CostiConsumi.consumoGiornaliero', CostiConsumi.consumoGiornaliero);
+	
+	var dataY;
+	if (CostiConsumi.consumoGiornaliero != null){
+		dataY = CostiConsumi.consumoGiornaliero.slice(0);
+	}
+	if (Main.env == 0) console.log('dataY', dataY);
 	
 	if(dataY){
 		$.each(dataY, function(index, dato) {
@@ -933,16 +940,40 @@ CostiConsumi.Initfeed = function(channel) {
 		/* Una volta settato il canale si caricano i feed e viene chiamata una funzione di callbak una volta caricati*/
 		feed.load(function(result) {
 
+					//if (!result.error) {
+					//	/* salvo i feed nella variabile CostiConsumi.notizie */
+					//	for ( var i = 0; i < result.feed.entries.length; i++) {
+					//		var entry = result.feed.entries[i];
+					//		var item = {
+					//			title : entry.title,
+					//			link : entry.link,
+					//			description : entry.contentSnippet
+					//		}
+					//		CostiConsumi.notizie.push(item);
+					//	}
+					//}
 					if (!result.error) {
-						/* salvo i feed nella variabile CostiConsumi.notizie */
-						for ( var i = 0; i < result.feed.entries.length; i++) {
-							var entry = result.feed.entries[i];
-							var item = {
-								title : entry.title,
-								link : entry.link,
-								description : entry.contentSnippet
+						/* salvo i feed nella variabile CostiConsumi.notizie 
+						 * la prima news  selezionata random, dalla seconda in poi vengono inserite nello stesso ordine con cui vengono ricevute */
+						var randIndex = Math.floor(Math.random() * result.feed.entries.length);
+						var entryRand = result.feed.entries[randIndex];
+						var itemRand = {
+								title : entryRand.title,
+								link : entryRand.link,
+								description : entryRand.contentSnippet
 							}
-							CostiConsumi.notizie.push(item);
+					    CostiConsumi.notizie.push(itemRand);
+						
+						for ( var i = 0; i < result.feed.entries.length; i++) {
+							if(i != randIndex){
+								var entry = result.feed.entries[i];
+								var item = {
+									title : entry.title,
+									link : entry.link,
+									description : entry.contentSnippet
+								}
+								CostiConsumi.notizie.push(item);
+							}
 						}
 					}
 					/* Se ho caricato il primo canale allora chiamo la funzione per caricare il secondo*/

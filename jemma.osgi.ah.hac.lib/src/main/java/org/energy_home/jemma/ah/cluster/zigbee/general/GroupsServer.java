@@ -37,7 +37,7 @@ public interface GroupsServer {
 	public ViewGroupResponse execViewGroup(int GroupID, IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException;
 
-	public GetGroupMembershipResponse execGetGroupMembership(short GroupCount, int GroupList, IEndPointRequestContext context)
+	public GetGroupMembershipResponse execGetGroupMembership(int[] GroupList, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException;
 
 	public RemoveGroupResponse execRemoveGroup(int GroupID, IEndPointRequestContext context) throws ApplianceException,

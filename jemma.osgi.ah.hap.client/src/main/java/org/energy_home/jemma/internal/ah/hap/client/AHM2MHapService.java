@@ -34,6 +34,8 @@ import org.energy_home.jemma.ah.hap.client.lib.M2MHapServiceObject;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstanceItemsList;
+import org.energy_home.jemma.m2m.M2MConstants;
+import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
  
 public class AHM2MHapService {
 	private static final Log log = LogFactory.getLog(AHM2MHapService.class);
@@ -80,31 +82,85 @@ public class AHM2MHapService {
 		this.m2mHapService = (M2MHapServiceObject) hapService;
 	}
 
+	public DeviceCategory getDeviceCategory(String appliancePid, Integer endPointId) {
+		ContentInstance epCategoryCi = getLocalContentInstance(appliancePid, endPointId, null, AHContainers.attrId_ah_core_config_category);
+		if (epCategoryCi == null)
+			return null;
+		Integer categoryPid = (Integer)epCategoryCi.getContent();
+		if (DeviceCategory.values().length >= categoryPid.intValue())
+			return categoryPid == null ? null : DeviceCategory.values()[categoryPid.intValue()-1];
+		else 
+			return DeviceCategory.Other;
+	}
+	
 	public IM2MHapService getM2MHapService() {
 		return this.m2mHapService;
 	}
 	
-	public void sendAttributeValue(String attributeName, long timestamp, Object value, boolean batchRequest) throws HacException {
-		sendAttributeValue(null, null, null, attributeName, timestamp, value, batchRequest);
+	public ContentInstance sendAttributeValue(String attributeName, long timestamp, Object value, boolean batchRequest) throws HacException {
+		return sendAttributeValue(null, null, null, attributeName, timestamp, value, batchRequest);
 	}
 
-	public void sendAttributeValue(String attributeName, IAttributeValue attributeValue, boolean batchRequest) throws HacException {
-		sendAttributeValue(null, null, null, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), batchRequest);
+	public ContentInstance sendAttributeValue(String attributeName, IAttributeValue attributeValue, boolean batchRequest) throws HacException {
+		return sendAttributeValue(null, null, null, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), batchRequest);
 	}
 
-	public void sendAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
+	public String getLocalAddressedId(String appliancePid, Integer endPointId, String clusterName, String attributeName) {
+		String attributeId = null;
+		if (clusterName != null) {
+			attributeId = AHContainers.getClusterAttributeId(clusterName, attributeName);
+			if (attributeId == null) {
+				log.warn("sendAttributeValue: null attribute id for cluster " + clusterName + ", attributeName " + attributeName);
+				return null;
+			}
+		} else 
+			attributeId = attributeName;
+		AHContainerAddress containerId = m2mHapService.getLocalContainerAddress(appliancePid, (endPointId != null ? endPointId.toString() : null), attributeId);
+		if (containerId == null)
+			return null;
+		else 
+			return containerId.getUrl()+M2MConstants.URL_CONTENT_INSTANCES;				
+	}
+	
+	public ContentInstance getLocalContentInstance(String appliancePid, Integer endPointId, String clusterName, String attributeName) {
+		String attributeId = null;
+		if (clusterName != null) {
+			attributeId = AHContainers.getClusterAttributeId(clusterName, attributeName);
+			if (attributeId == null) {
+				log.warn("sendAttributeValue: null attribute id for cluster " + clusterName + ", attributeName " + attributeName);
+				return null;
+			}
+		} else 
+			attributeId = attributeName;
+		AHContainerAddress containerId = m2mHapService.getLocalContainerAddress(appliancePid, (endPointId != null ? endPointId.toString() : null), attributeId);
+		if (containerId == null)
+			return null;
+		else
+			try {
+				return m2mHapService.getLocalContentInstance(containerId);
+			} catch (Exception e) {
+				return null;
+			}
+	}
+	
+	public ContentInstance sendAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
 			long timestamp, Object value, boolean batchRequest) throws HacException {
 		try {
 			String attributeId = null;
-			if (clusterName != null)
+			if (clusterName != null) {
 				attributeId = AHContainers.getClusterAttributeId(clusterName, attributeName);
-			else 
+				if (attributeId == null) {
+					log.warn("sendAttributeValue: null attribute id for cluster " + clusterName + ", attributeName " + attributeName);
+					return null;
+				}
+			} else 
 				attributeId = attributeName;
+
 			AHContainerAddress containerId = m2mHapService.getHagContainerAddress(appliancePid, (endPointId != null ? endPointId.toString() : null), attributeId);
 			if (batchRequest)
-				m2mHapService.createContentInstanceBatch(containerId, timestamp, value);
+				return m2mHapService.createContentInstanceBatch(containerId, timestamp, value);
 			else
-				m2mHapService.createContentInstance(containerId, timestamp, value);
+				return m2mHapService.createContentInstance(containerId, timestamp, value);
 		} catch (Exception e) {
 			log.error("sendAttributeValue error", e);
 			throw new HacException("sendAttributeValue error");
@@ -116,33 +172,38 @@ public class AHM2MHapService {
 		sendAttributeValue(appliancePid, endPointId, clusterName, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), batchRequest);	
 	}
 
-	public void storeAttributeValue(String attributeName, long timestamp, Object value, boolean sync) throws HacException {
-		storeAttributeValue(null, null, null, attributeName, timestamp, value, sync);
+	public ContentInstance storeAttributeValue(String attributeName, long timestamp, Object value, boolean sync) throws HacException {
+		return storeAttributeValue(null, null, null, attributeName, timestamp, value, sync);
 	}
 
-	public void storeAttributeValue(String attributeName, IAttributeValue attributeValue, boolean sync) throws HacException {
-		storeAttributeValue(null, null, null, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), sync);
+	public ContentInstance storeAttributeValue(String attributeName, IAttributeValue attributeValue, boolean sync) throws HacException {
+		return storeAttributeValue(null, null, null, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), sync);
 	}
 
-	public void storeAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
+	public ContentInstance storeAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
 			long timestamp, Object value, boolean sync) throws HacException {
 		try {
 			String attributeId = null;
-			if (clusterName != null)
+			if (clusterName != null) {
 				attributeId = AHContainers.getClusterAttributeId(clusterName, attributeName);
+				if (attributeId == null) {
+					log.warn("storeAttributeValue: null attribute id for cluster " + clusterName + ", attributeName " + attributeName);
+					return null;
+				}
+			}
 			else 
 				attributeId = attributeName;
 			AHContainerAddress containerId = m2mHapService.getHagContainerAddress(appliancePid, (endPointId != null ? endPointId.toString() : null), attributeId);
-			m2mHapService.createContentInstanceQueued(containerId, timestamp, value, sync);
+			return m2mHapService.createContentInstanceQueued(containerId, timestamp, value, sync);
 		} catch (Exception e) {
 			log.error("storeAttributeValue error", e);
 			throw new HacException("storeAttributeValue error");
 		}		
 	}
 
-	public void storeAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
+	public ContentInstance storeAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName,
 			IAttributeValue attributeValue, boolean sync) throws HacException {
-		storeAttributeValue(appliancePid, endPointId, clusterName, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), sync);
+		return storeAttributeValue(appliancePid, endPointId, clusterName, attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), sync);
 	}
 
 	public IAttributeValue getLastestAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName)

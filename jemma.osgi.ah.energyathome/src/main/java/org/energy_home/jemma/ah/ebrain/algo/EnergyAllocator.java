@@ -23,18 +23,21 @@ import javax.crypto.SealedObject;
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 
 public final class EnergyAllocator {
+	
+	public static final int NUMBER_OF_DAYS_HORIZON = 3;
+	public static final float[] EMPTY_ALLOCATION = newEnergyAllocation();
+	
 	public static float[] newEnergyAllocation() {
-		return newEnergyAllocation(3);
+		return newEnergyAllocation(NUMBER_OF_DAYS_HORIZON);
 	}
 	public static float[] newEnergyAllocation(int numDays) {
 		return new float[numDays * CalendarUtil.SLOTS_IN_ONE_DAY];
 	}
 	
-	private float[] energyForecast = newEnergyAllocation();
-	private float[] energyRealAllocation = newEnergyAllocation();
-	private float[] energyAllocation = newEnergyAllocation(); // three days are necessary in scheduling to avoid the chance of overflow
+	private float[] energyForecast = EMPTY_ALLOCATION;
+	private float[] energyAllocation = newEnergyAllocation(); // three days are necessary in scheduling to avoid a remote chance of overflow
 	private float powerThreshold;
-	private float oneSlotEnergyThreshold;
+	private float oneSlotPowerThreshold;
 	private DailyTariff dailyTariff;
 	private Calendar calendar;
 
@@ -53,7 +56,7 @@ public final class EnergyAllocator {
 
 	public void setPowerThreshold(float pt) {
 		powerThreshold = pt;
-		oneSlotEnergyThreshold = pt * CalendarUtil.HOURS_IN_ONE_SLOT;
+		oneSlotPowerThreshold = pt * CalendarUtil.HOURS_IN_ONE_SLOT;
 	}
 
 	public DailyTariff getDailyTariff() {
@@ -93,8 +96,8 @@ public final class EnergyAllocator {
 		swarm.allocateBiasedPeakEnergy(energyAllocation);
 		float overload = 0;
 		for (int i = energyAllocation.length; --i >=0;) {
-			if (energyAllocation[i] > oneSlotEnergyThreshold - energyForecast[i])
-				overload += energyAllocation[i] - oneSlotEnergyThreshold + energyForecast[i];
+			float availableEnergy = oneSlotPowerThreshold + energyForecast[i];
+			if (energyAllocation[i] > availableEnergy) overload += energyAllocation[i] - availableEnergy;
 		}
 		return overload;
 	}
@@ -102,27 +105,15 @@ public final class EnergyAllocator {
 	float computeEnergyCost(ProfileScheduleParticle particle) {
 		clearEnergyAllocation();
 		particle.allocateMeanEnergy(energyAllocation);
+		for (int i = energyAllocation.length; --i >=0;) {
+			energyAllocation[i] -= energyForecast[i];
+			if (energyAllocation[i] < 0) energyAllocation[i] = 0;
+		}
 		return dailyTariff.computeCost(calendar, energyAllocation);
 	}
 
 	private void clearEnergyAllocation() {
 		for (int i = energyAllocation.length; --i >=0; energyAllocation[i] = 0);
 	}
-	
-	public void interpolateEnergyForecast(double[] forecast, int offset, int slotSize) {
-		if (CalendarUtil.SLOTS_IN_ONE_DAY % slotSize != 0)
-			throw new IllegalArgumentException("Inconsistent interpolation: incongruent daily time slots.");
-		
-		int steps = CalendarUtil.SLOTS_IN_ONE_DAY / slotSize;
-		for (int i = offset; i < forecast.length -1; ++i) {
-			double delta = (forecast[i+1] - forecast[i]) / steps;
-			for (int j = 0; j < steps; ++j) {
-				float val = (float)(forecast[i] + (j * delta));
-				energyForecast[j + (i-offset)*steps] = val * 0.8f; // biased conservative allocation;
-			}
-		}
-		for (int i = 0; i < energyForecast.length; ++i) {
-			System.out.println(i + " " + energyForecast[i]);
-		}
-	}
+
 }

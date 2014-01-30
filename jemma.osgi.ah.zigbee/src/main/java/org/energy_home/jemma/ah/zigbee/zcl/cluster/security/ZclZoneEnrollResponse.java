@@ -24,30 +24,23 @@ import org.energy_home.jemma.ah.cluster.zigbee.security.ZoneEnrollResponse;
 
 public class ZclZoneEnrollResponse {
 
+	public static ZoneEnrollResponse zclParse(IZclFrame zclFrame) throws ZclValidationException {
+		ZoneEnrollResponse r = new ZoneEnrollResponse();
+		r.EnrollResponseCode = ZclDataTypeEnum8.zclParse(zclFrame);
+		r.ZoneID = ZclDataTypeUI8.zclParse(zclFrame);
+		return r;
+	}
 
-    public static ZoneEnrollResponse zclParse(IZclFrame zclFrame)
-        throws ZclValidationException
-    {
-        ZoneEnrollResponse r = new ZoneEnrollResponse();
-        r.EnrollResponseCode = ZclDataTypeEnum8 .zclParse(zclFrame);
-        r.ZoneID = ZclDataTypeUI8 .zclParse(zclFrame);
-        return r;
-    }
+	public static void zclSerialize(IZclFrame zclFrame, ZoneEnrollResponse r) throws ZclValidationException {
+		ZclDataTypeEnum8.zclSerialize(zclFrame, r.EnrollResponseCode);
+		ZclDataTypeUI8.zclSerialize(zclFrame, r.ZoneID);
+	}
 
-    public static void zclSerialize(IZclFrame zclFrame, ZoneEnrollResponse r)
-        throws ZclValidationException
-    {
-        ZclDataTypeEnum8 .zclSerialize(zclFrame, r.EnrollResponseCode);
-        ZclDataTypeUI8 .zclSerialize(zclFrame, r.ZoneID);
-    }
-
-    public static int zclSize(ZoneEnrollResponse r)
-        throws ZclValidationException
-    {
-        int size = 0;
-        size += ZclDataTypeEnum8 .zclSize(r.EnrollResponseCode);
-        size += ZclDataTypeUI8 .zclSize(r.ZoneID);
-        return size;
-    }
+	public static int zclSize(ZoneEnrollResponse r) throws ZclValidationException {
+		int size = 0;
+		size += ZclDataTypeEnum8.zclSize(r.EnrollResponseCode);
+		size += ZclDataTypeUI8.zclSize(r.ZoneID);
+		return size;
+	}
 
 }

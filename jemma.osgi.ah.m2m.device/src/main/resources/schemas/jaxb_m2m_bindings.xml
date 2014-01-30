@@ -23,10 +23,10 @@
   <globalBindings> 
 <!-- 
 	<xjc:serializable uid="1"/>
-	<xjc:superInterface name="org.energy_home.jemma.schemas.m2m.core.XmlValue"/>
+	<xjc:superInterface name="it.telecomitalia.schemas.m2m.core.XmlValue"/>
     <javaType name="java.util.Calendar" xmlType="xs:dateTime"
-      parseMethod="org.energy_home.jemma.m2m.M2MXmlDateTimeConverter.parseDateTime"
-      printMethod="org.energy_home.jemma.m2m.M2MXmlDateTimeConverter.printDateTime"
+      parseMethod="it.telecomitalia.m2m.M2MXmlDateTimeConverter.parseDateTime"
+      printMethod="it.telecomitalia.m2m.M2MXmlDateTimeConverter.printDateTime"
     />
 -->
 	<xjc:simple/>

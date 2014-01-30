@@ -21,11 +21,13 @@ package org.energy_home.jemma.ah.ebrain;
 
 
 //import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener.OverloadStatus;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
 import org.energy_home.jemma.m2m.ContentInstance;
@@ -37,9 +39,17 @@ import org.energy_home.jemma.shal.DeviceService;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 
-public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceListener {
+public class MeteringCore implements IMeteringListener, DeviceListener {
 	private static final Log log = LogFactory.getLog(MeteringCore.class.getSimpleName());
 
+	private static final IOverloadStatusListener dummyOverloadListener = new IOverloadStatusListener() {
+		
+		public void notifyOverloadStatusUpdate(OverloadStatus status) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
 	private static final ICloudServiceProxy dummyCloudProxy = new ICloudServiceProxy() {
 		public void storeEvent(String applianceId, long time, int eventType) throws Exception {}
 
@@ -56,16 +66,6 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 		public void storeDeliveredEnergy(String applianceId, long time, double totalEnergy) throws Exception {
 			// TODO Auto-generated method stub	
 		}
-		
-		public void storeDeliveredPower(String applianceId, long time, float power) throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		public void storeOnOffStatus(String appliancePid, long timestamp, boolean value) throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
 
 		public void storeDeliveredEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo)
 				throws Exception {
@@ -77,12 +77,20 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 			// TODO Auto-generated method stub		
 		}
 
+		public List<Float> retrieveHourlyProducedEnergyForecast(String applianceId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 
 	};
 
+	private static final long SMART_INFO_POLLING_MIN_INTERVAL_MILLISEC = 10 * 1000;//30 * 1000
+	private static final long SMART_INFO_POLLING_NORMAL_INTERVAL_MILLISEC = 10 * 1000;// 60 * 3 *1000;
+	
 	public static final long SMART_INFO_SUMMATION_MIN_INTERVAL = 2;
-	public static final long SMART_INFO_SUMMATION_MAX_INTERVAL = 120;
-	public static final double SMART_INFO_SUMMATION_DELTA_VALUE = 1;
+	public static final long SMART_INFO_SUMMATION_MAX_INTERVAL = 15;	//120; MaximumReportingInterval
+	public static final double SMART_INFO_SUMMATION_DELTA_VALUE = 5;	//1
 
 	public static final long DEFAULT_SUMMATION_MIN_INTERVAL = 120;
 	public static final long DEFAULT_SUMMATION_MAX_INTERVAL = 120;
@@ -111,15 +119,24 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 
 	protected IOnOffProxy onOffProxy;
 	protected IMeteringProxy meteringProxy;
-	protected ICloudServiceProxy cloudProxy;
+	
+	protected ICloudServiceProxy cloudProxy = dummyCloudProxy;
+	
+	private OverloadStatus currentOverloadStatus = OverloadStatus.NoOverloadWarning;
+	private IOverloadStatusListener overloadStatusListener = dummyOverloadListener; 
+	
 	protected DailyTariff dailyTariff;
-	protected float upperPowerThreshold = 3300; // Watts/Hour
+	protected PowerThresholds powerThresholds = new PowerThresholds(3000);
+
 	protected float peakProducedPower = 0; // Watts/Hour
 
 	protected SmartMeterInfo smartInfoExchange;
 	protected SmartMeterInfo smartInfoProduction;
 
 	protected boolean checkMeteringSubscriptions = true;
+	
+	protected long smartInfoPollingTimeInterval = SMART_INFO_POLLING_NORMAL_INTERVAL_MILLISEC; 
+	protected long lastSmartInfoPollingTime = 0;
 	
 	protected MeteringCore() {
 		try {
@@ -209,20 +226,41 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 		}
 	}
 	
-	private void refreshOnOffSubscription(ApplianceInfo appliance) {
-		String applianceId = appliance.getApplianceId();
-		onOffProxy.subscribeStatus(applianceId, DEFAULT_ONOFF_MIN_INTERVAL, DEFAULT_ONOFF_MAX_INTERVAL);
-		if (checkMeteringSubscriptions) {
-			Boolean onOff = onOffProxy.getStatus(applianceId);
-			if (onOff != null) {
-				notifyStatus(applianceId, System.currentTimeMillis(), onOff);
-				// TODO: complete/review logging
-				log.info("refreshOnOffSubscription - read onoff status for appliance " + applianceId
-						+ ": received=" + onOff);
-			} else {
-				// TODO: complete/review logging
-				log.error("refreshOnOffSubscription - onoff status read failed for appliance " + applianceId);
+	private void checkOverloadStatus() {
+		// The following formula takes into accounts monitored appliances instantaneous power consumptions data
+		float signedPower = getTotalIstantaneousDemandPower() - 
+				(getIstantaneousProducedPower() - getIstantaneousSoldPower());
+		
+		// Update smart infos polling frequency depending on current instantaneous delivered power
+		if (signedPower >= powerThresholds.getNextToContractualThreshold()) {
+			smartInfoPollingTimeInterval = SMART_INFO_POLLING_MIN_INTERVAL_MILLISEC;
+		} else {
+			smartInfoPollingTimeInterval = SMART_INFO_POLLING_NORMAL_INTERVAL_MILLISEC;
+		}
+		
+		// Generate overload warnings depending on current instantaneous delivered power
+		try {
+			if (signedPower <= powerThresholds.getContractualThreshold() &&
+					!currentOverloadStatus.equals(OverloadStatus.NoOverloadWarning)) {
+				currentOverloadStatus = OverloadStatus.NoOverloadWarning;
+				overloadStatusListener.notifyOverloadStatusUpdate(currentOverloadStatus);
+			} else if (signedPower > powerThresholds.getContractualThreshold() &&
+					signedPower <= powerThresholds.getFirstThreshold() &&
+					!currentOverloadStatus.equals(OverloadStatus.ContractualPowerThresholdWarning)) {
+				currentOverloadStatus = OverloadStatus.ContractualPowerThresholdWarning;
+				overloadStatusListener.notifyOverloadStatusUpdate(currentOverloadStatus);
+			} else if (signedPower > powerThresholds.getFirstThreshold() &&
+					signedPower <= powerThresholds.getSecondThreshold() &&
+					!currentOverloadStatus.equals(OverloadStatus.FirstPowerThresholdWarning)) {
+				currentOverloadStatus = OverloadStatus.FirstPowerThresholdWarning;
+				overloadStatusListener.notifyOverloadStatusUpdate(currentOverloadStatus);
+			} else if (signedPower > powerThresholds.getSecondThreshold() &&
+					!currentOverloadStatus.equals(OverloadStatus.SecondPowerThresholdWarning)) {
+				currentOverloadStatus = OverloadStatus.SecondPowerThresholdWarning;
+				overloadStatusListener.notifyOverloadStatusUpdate(currentOverloadStatus);
 			}
+		} catch (Exception e) {
+			log.error("checkSmartInfosData error while checking wanrings", e);
 		}
 	}
 
@@ -252,7 +290,6 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 								refreshInstantaneousDemandSubscription(appliance);
 							}
 						}
-						// TODO: no check is currently performed on onoff attribute subscriptions
 						
 					} catch (Exception e) {
 						log.error(String.format("Periodic task error while initializing subscriptions for appliance %s",
@@ -261,15 +298,29 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 				}
 			}
 		}
-		try {
-			if (smartInfoExchange != null && smartInfoExchange.isAvailable()) meteringProxy.getIstantaneousDemand(smartInfoExchange.getApplianceId());
-			if (smartInfoProduction != null && smartInfoProduction.isAvailable()) meteringProxy.getIstantaneousDemand(smartInfoProduction.getApplianceId());
-		
-		} catch (Exception e) {
-			log.error("Periodic task error while reading smart-info attributes", e);
-		}
-	}
 
+		// Send requests to smart infos depending on current polling frequency   
+		try {
+			if (System.currentTimeMillis() - lastSmartInfoPollingTime >= smartInfoPollingTimeInterval) {
+				if (smartInfoExchange != null && smartInfoExchange.isAvailable()) {
+					smartInfoExchange.setNextTotalEnergyValidValues(1);
+					smartInfoExchange.setNextProducedEnergyValidValues(1);
+					meteringProxy.getIstantaneousDemand(smartInfoExchange.getApplianceId());
+				}
+				if (smartInfoProduction != null && smartInfoProduction.isAvailable()) {
+					smartInfoProduction.setNextTotalEnergyValidValues(1);
+					smartInfoProduction.setNextProducedEnergyValidValues(1);
+					meteringProxy.getIstantaneousDemand(smartInfoProduction.getApplianceId());
+				}
+				lastSmartInfoPollingTime = System.currentTimeMillis();	
+			}
+		} catch (Exception e) {
+			log.error("periodicTask error while reading smart info instantaneous demand", e);
+		}
+		// Always update forecast data for hourly produced energy (data are cached by cloudProxy locally)
+		if (smartInfoProduction != null)
+			cloudProxy.retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
+	}
 
 	public IMeteringProxy getMeteringProxy() {
 		return meteringProxy;
@@ -303,6 +354,17 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 			cloudProxy = dummyCloudProxy;
 	}
 
+	public IOverloadStatusListener getOverloadStatusListener() {
+		return overloadStatusListener;
+	}
+	
+	public void setOverloadStatusListener(IOverloadStatusListener listener) {
+		if (listener != null)
+			overloadStatusListener = listener;
+		else
+			overloadStatusListener = dummyOverloadListener;
+	}
+
 	public Class<? extends DailyTariff> getDailyTariff() {
 		return dailyTariff.getClass();
 	}
@@ -312,12 +374,12 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 		dailyTariff = DailyTariff.getInstance(clazz);
 	}
 
-	public float getUpperPowerThreshold() {
-		return upperPowerThreshold;
+	public PowerThresholds getPowerThresholds() {
+		return powerThresholds;
 	}
 
-	public void setUpperPowerThreshold(float upper) {
-		upperPowerThreshold = upper;
+	public void setPowerThresholds(PowerThresholds thresholds) {
+		powerThresholds = thresholds;
 	}
 	
 	public float getPeakProducedPower() {
@@ -348,7 +410,12 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 	public void notifyIstantaneousDemandPower(String applianceId, long time, float power) {
 		ApplianceInfo appliance = getApplianceInfo(applianceId);
 
-		if (power == IMeteringProxy.INVALID_INSTANTANEOUS_POWER_VALUE) {
+		// instantaneous demand values are discarded for production smart info
+		if (appliance == smartInfoProduction)
+			return;
+		
+		if (power == IMeteringProxy.INVALID_INSTANTANEOUS_POWER_VALUE ||
+				power == IMeteringProxy.INVALID_INSTANTANEOUS_POWER_STANDARD_VALUE) {
 			log.warn(String.format("Invalid Instantaneous Demand %f, from %s, at %s", power, applianceId,
 					CalendarUtil.toSecondString(time)));
 			try {
@@ -363,15 +430,10 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 			else
 				power = IMeteringProxy.INVALID_INSTANTANEOUS_POWER_VALUE;
 		}
-		if (power != IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			try {
-				cloudProxy.storeDeliveredPower(applianceId, time, power);
-			} catch (Exception e) {
-				log.error("Error while storing delivered power on HAP platform", e);
-			}
-		}
 		
 		appliance.setIstantaneousPower(power, time);
+		
+		checkOverloadStatus();
 	}
 
 	// BEWARE: all notification values are raw data that need to be multiplied
@@ -379,6 +441,10 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 	public void notifyCurrentSummationDelivered(String applianceId, long time, double totalEnergy) {
 		ApplianceInfo appliance = getApplianceInfo(applianceId);
 
+		// current summation delivered values are discarded for production smartinfo
+		if (appliance == smartInfoProduction)
+			return;	
+		
 		if (totalEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
 			log.warn(String.format("Invalid Current Summation %f, from %s, at %s", totalEnergy, applianceId,
 					CalendarUtil.toSecondString(time)));
@@ -398,6 +464,7 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 
 		log.info(String.format("Current summation delivered %f, from %s, at %s", totalEnergy, applianceId,
 				CalendarUtil.toSecondString(time)));
+		
 		if (totalEnergy != IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
 			try {
 				cloudProxy.storeDeliveredEnergy(applianceId, time, totalEnergy);
@@ -455,14 +522,7 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 				log.error("Error while storing energy cost power info on HAP platform", e);
 			}
 		}
-	}
-	
-	public void notifyStatus(String applianceId, long time, Boolean status) {
-		try {
-			cloudProxy.storeOnOffStatus(applianceId, time, status);
-		} catch (Exception e) {
-			log.error("Error while storing onoff status on HAP platform", e);
-		}		
+		
 	}
 
 	public double getCurrentSummationReceived(String applianceId) {
@@ -515,7 +575,10 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 	public float getIstantaneousProducedPower() {
 		if (smartInfoProduction == null)
 			return 0;
+		
 		float producedPower = smartInfoProduction.getMeanProducedPower();
+		//float producedPower = (float) smartInfoProduction.getProducedEnergy();
+		
 		if (producedPower > peakProducedPower) {
 			log.error("Produced power greater than configured peak power");
 			producedPower = peakProducedPower;
@@ -541,14 +604,14 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 		float totalPower = 0;
 		if (smartInfoExchange != null)
 			totalPower = smartInfoExchange.getIstantaneousPower() + getIstantaneousProducedPower() - getIstantaneousSoldPower();
-
-		// BEWARE: this loop sums all power values including the smart-info
-		// itself
+		if (totalPower < 0) totalPower = 0;
+		
 		float summedPower = 0;
 		for (ApplianceInfo a : appliances.values()) {
-			summedPower += a.getIstantaneousPower();
+			if (a != smartInfoExchange && a != smartInfoProduction)
+				summedPower += a.getIstantaneousPower();
 		}
-		return Math.max(summedPower - totalPower, totalPower);
+		return Math.max(summedPower, totalPower);
 	}
 
 	public float getIstantaneousDemandPower(String applianceId) {
@@ -611,6 +674,13 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 				appliance.updateEnergyCost(timestamp.longValue(), energySummation.doubleValue());
 			}
 		}
+		if (appliance == smartInfoExchange) {
+			smartInfoExchange.setNextTotalEnergyValidValues(0);
+			smartInfoExchange.setNextProducedEnergyValidValues(0);
+		} else if (appliance == smartInfoProduction) {
+			smartInfoProduction.setNextTotalEnergyValidValues(0);
+			smartInfoProduction.setNextProducedEnergyValidValues(0);	
+		}
 	}
 
 	public void notifyDeviceRemoved(DeviceInfo info) {
@@ -638,13 +708,9 @@ public class MeteringCore implements IMeteringListener, IOnOffListener, DeviceLi
 			if ((appliance == smartInfoProduction || appliance == smartInfoExchange) && peakProducedPower > 0) {
 				refreshCurrentSummationReceivedSubscription(appliance);
 			}
-			if (appliance.getApplianceType() == DeviceType.SmartPlug) {
-				refreshOnOffSubscription(appliance);
-			}
 		} else {
 			appliance.setIstantaneousPower(0, System.currentTimeMillis());
 		}
-
 	}
 
 	public void notifyDeviceServiceAvailable(DeviceInfo info, DeviceService deviceService) {

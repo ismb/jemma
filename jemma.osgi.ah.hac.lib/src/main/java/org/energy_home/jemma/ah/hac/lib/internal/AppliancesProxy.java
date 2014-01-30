@@ -33,6 +33,7 @@ import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
 
 public class AppliancesProxy extends AppliancesBasicProxy implements IAppliancesProxy {
@@ -138,6 +139,17 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	
 	//********** IAppliancesProxy service interface
 	
+	public ILocation getLocation(String pid) {
+		ILocation[] locations = getLocations();
+		if (locations != null) {
+			for (int i = 0; i < locations.length; i++) {
+				if (locations[i].getPid().equals(pid))
+					return locations[i];
+			}
+		}
+		return null;
+	}
+	
 	public ILocation[] getLocations() {
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
@@ -148,6 +160,17 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 		}
 	}
 
+	public ICategory getCategory(String pid) {
+		ICategory[] categories = getCategories();
+		if (categories != null) {
+			for (int i = 0; i < categories.length; i++) {
+				if (categories[i].getPid().equals(pid))
+					return categories[i];
+			}
+		}
+		return null;
+	}
+	
 	public ICategory[] getCategories() {
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
@@ -183,23 +206,32 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 		return null;
 	}
 	
-	// TODO Currently only appliance configuration (end point 0) is managed
-	public Map getApplianceConfiguration(String appliancePid, Integer endPointId) {
-		return new HashMap((Map) applianceConfigurationMap.get(appliancePid));
+	public IApplianceConfiguration getApplianceConfiguration(String appliancePid) {
+		IAppliance appliance = getAppliance(appliancePid);
+		if (appliance == null) {
+			appliance = getInstallingAppliance(appliancePid);
+		}
+		if (appliance == null || appliance.isSingleton())
+			return null;
+		Map configuration = (Map) applianceConfigurationMap.get(appliancePid);
+		if (configuration == null)
+			return null;
+		return new ApplianceConfiguration(appliance.getEndPointIds(), configuration);
 	}
 	
-	public Map updateApplianceConfiguration(String appliancePid, Integer endPointId, Map config) {
+	public boolean updateApplianceConfiguration(IApplianceConfiguration applianceConfiguration) {
+		Map config = ((ApplianceConfiguration)applianceConfiguration).getConfigurationMap();
 		if (hacService == null) {
 			log.error("updateApplianceConfiguration error: hac service not available");
-			return null;
+			return false;
 		}
 		try {
-			hacService.updateAppliance(appliancePid, new Hashtable(config));
+			hacService.updateAppliance(applianceConfiguration.getAppliancePid(), new Hashtable(config));
 		} catch (Exception e) {
 			log.error("updateApplianceConfiguration error: some problems occurred while trying to update configuration through hac service", e);
-			return null;
+			return false;
 		}
-		return config;
+		return true;
 	}
 
 	public boolean installAppliance(String appliancePid) {
@@ -252,7 +284,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 		IServiceCluster serviceCluster = getServiceCluster(appliancePid, endPointId, clusterName);
 		if (serviceCluster != null && !isNullOrEmpty(attributeName)) {
 			try {
-				sp = serviceCluster.getAttributeSubscription(attributeName, null);
+				sp = serviceCluster.getAttributeSubscription(attributeName, confirmedRequestContext);
 			} catch (Exception e) {
 				log.error("getAttributeSubscription error", e);
 			}
@@ -276,11 +308,26 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 
 	public IAttributeValue getLastNotifiedAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName) {
 		ServiceCluster serviceCluster = (ServiceCluster)getServiceCluster(appliancePid, endPointId, clusterName);
-		if (serviceCluster != null) {
-			return serviceCluster.getLastNotifiedAttributeValue(attributeName, null);
-		} else {
-			return null;
+		try {
+			if (serviceCluster != null) {
+				return serviceCluster.getLastNotifiedAttributeValue(attributeName, null);
+			}
+		} catch (Exception e) {
+			log.error("Exception while reading last notified attribute", e);
 		}
+		return null;
+	}
+	
+	public IAttributeValue getLastReadAttributeValue(String appliancePid, Integer endPointId, String clusterName, String attributeName) {
+		ServiceCluster serviceCluster = (ServiceCluster)getServiceCluster(appliancePid, endPointId, clusterName);
+		try {
+			if (serviceCluster != null) {
+				return serviceCluster.getAttributeValue(attributeName, lastReadRequestContext);
+			}
+		} catch (Exception e) {
+			log.error("Exception while reading last notified attribute", e);
+		}
+		return null;
 	}
 
 	public Map getLastNotifiedAttributeValues(String appliancePid, Integer endPointId, String clusterName) {

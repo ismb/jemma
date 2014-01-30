@@ -59,6 +59,7 @@
 							 org.energy_home.jemma.osgi.utils.equinox.console,
 							 org.energy_home.jemma.utils.datetime;version="[1.0.1,1.1.0)",
 							 org.energy_home.jemma.utils.xml.jaxb;version="[1.0.0,1.1.0)",
+							 org.energy_home.jemma.utils.thread;version="1.0.0",
 							 javax.servlet,
 							 javax.servlet.http,
 							 javax.servlet.resources,
@@ -66,13 +67,17 @@
 							 org.apache.commons.logging,
 							 org.apache.http;version="4.1.0",
 							 org.apache.http.util;version="4.1.0",
+							 org.apache.http.entity;version="4.1.0",
+							 org.apache.http.client;version="4.1.0",
 							 org.eclipse.osgi.framework.console;version="1.0.0",
 							 org.osgi.framework,
 							 org.osgi.service.component,
 							 org.osgi.service.http,*
 						</Import-Package>
 						<Export-Package>org.energy_home.jemma.ah.hap.client;version="1.4.0",
-							org.energy_home.jemma.ah.hap.client.lib;version="1.4.0"
+							org.energy_home.jemma.ah.hap.client.lib;version="1.4.0",
+							org.energy_home.jemma.shal,
+							org.energy_home.jemma.shal.min
 						</Export-Package>
 						<Bundle-Activator>org.energy_home.jemma.osgi.ah.hap.client.HapCoreService</Bundle-Activator>
 						<Service-Component>OSGI-INF/*.xml</Service-Component>

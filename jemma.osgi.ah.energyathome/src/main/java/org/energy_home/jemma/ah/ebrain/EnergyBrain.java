@@ -20,6 +20,7 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class EnergyBrain implements IBasicApplianceListener {
 			// TODO Auto-generated method stub
 			
 		}
-		
+		/* Removed in demo_amsterdam version
 		public void storeDeliveredPower(String applianceId, long time, float power) throws Exception {
 			// TODO Auto-generated method stub
 			
@@ -61,7 +62,7 @@ public class EnergyBrain implements IBasicApplianceListener {
 			// TODO Auto-generated method stub
 			
 		}
-		
+		*/
 		public void storeDeliveredEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo)
 				throws Exception {
 			// TODO Auto-generated method stub
@@ -71,6 +72,10 @@ public class EnergyBrain implements IBasicApplianceListener {
 				throws Exception {
 			// TODO Auto-generated method stub
 			
+		}
+		public List<Float> retrieveHourlyProducedEnergyForecast(String applianceId) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	};
 	

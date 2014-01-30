@@ -82,7 +82,7 @@ public class ZigBeeCommandProvider implements CommandProvider {
 		synchronized (this) {
 			if (!this.checkZbMngrService(ci))
 				return;
-			
+
 			try {
 				((ZigBeeManagerImpl) this.zbMngr).disableNVM();
 			} catch (Exception e) {
@@ -90,7 +90,7 @@ public class ZigBeeCommandProvider implements CommandProvider {
 			}
 		}
 	}
-	
+
 	public void _enablenvm(CommandInterpreter ci) {
 		synchronized (this) {
 			if (!this.checkZbMngrService(ci))
@@ -250,7 +250,7 @@ public class ZigBeeCommandProvider implements CommandProvider {
 		help += "\tzb lsdevs - list currently discovered devices\n";
 		help += "\tzb bind add <node IEEE addr> <ep> <clusterId>  - add a bind from the local node with the remote device cluster\n";
 		help += "\tzb bind remove <node IEEE addr> [<ep> <clusterId>]  - remove binds the local node with the remote device cluster\n";
-		help += "\tzb bind list - list binds\n";
+		//help += "\tzb bind list - list binds\n";
 		return help;
 	}
 

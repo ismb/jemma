@@ -28,7 +28,7 @@ var InterfaceEnergyHome = {
 	errMessage: null,
 	errCode: 0,
 	status: 0,
-	serviceName : "it.telecomitalia.ah.greenathome.GreenAtHomeApplianceService",
+	serviceName : "org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService",
 	objService : null,
 	// costanti per parametri chiamate
 	MINUTE : 0,
@@ -1342,9 +1342,19 @@ InterfaceEnergyHome.BackPotenzaAttuale = function (result, err)
 		if (err != null)
 			InterfaceEnergyHome.GestErrorEH("BackPotenzaAttuale", err);
 
-		if ((err == null) && (result != null))
-			retVal = result.value;
-		else
+		if ((err == null) && (result != null)){
+			$.each(result.list,function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+						CostiConsumi.SmartInfo = elettrodom["map"];
+						device_value = elettrodom["map"].device_value;
+						if (device_value != undefined) {
+							retVal = device_value.value.value;
+						}
+					}
+				}
+			});
+		} else
 			retVal = null;
 		Log.alert(80,  InterfaceEnergyHome.MODULE, "BackPotenzaAttuale result = "  + retVal);
 		InterfaceEnergyHome.backPotenzaAttuale(retVal);    
@@ -1359,7 +1369,8 @@ InterfaceEnergyHome.GetPotenzaAttuale = function (backFunc)
 	{
 		try
 		{
-			InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPotenzaAttuale, InterfaceEnergyHome.POTENZA_TOTALE);
+			//InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPotenzaAttuale, InterfaceEnergyHome.POTENZA_TOTALE);
+			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackPotenzaAttuale);
 		}
 		catch (err)
 		{

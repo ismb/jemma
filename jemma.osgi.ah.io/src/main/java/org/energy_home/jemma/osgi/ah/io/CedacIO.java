@@ -17,10 +17,13 @@ package org.energy_home.jemma.osgi.ah.io;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayLed2;
+import org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayBuzz;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -39,6 +42,10 @@ public class CedacIO implements EventHandler {
 	private static final int ERROR = 4;
 	private static final int IDLE = 5;
 	private static final int IDENTIFYING = 6;
+	private static final int NO_OVERLOAD = 7;
+	private static final int OVERLOAD = 8;
+	private static final int OVERLOAD_FIRST_WARNING = 9;
+	private static final int OVERLOAD_SECOND_WARNING = 10;
 
 	private boolean guiOn = false;
 	private boolean platformOn = false;
@@ -47,16 +54,25 @@ public class CedacIO implements EventHandler {
 	private boolean provisioning = false;
 	private boolean networkOpen = false;
 	private boolean identify = false;
+	private boolean no_overload = true;
+	private boolean overload = false;
+	private boolean overloadFirstThresoldWarning = false;
+	private boolean overloadSecondThresoldWarning = false;
 
 	private boolean booting = false;
 	private ServiceRegistration sr = null;
+	
+	private boolean overloadingChangeState = false;
+	private Timer timer = new Timer();
 	private int state;
-
 	private int previousState;
 
 	public void start(BundleContext bc) {
-		String[] topics = new String[] { "ah/provision/BEGIN", "org/osgi/framework/ServiceEvent/*",
-				"org/osgi/framework/BundleEvent/*", "ah/START_IDENTIFY" };
+		String[] topics = new String[] { "ah/provision/BEGIN", 
+										 "org/osgi/framework/ServiceEvent/*",
+										 "org/osgi/framework/BundleEvent/*", 
+										 "ah/START_IDENTIFY",
+										 "ah/eh/overload/*"};
 
 		Dictionary props = new Hashtable();
 		props.put(EventConstants.EVENT_TOPIC, topics);
@@ -78,7 +94,7 @@ public class CedacIO implements EventHandler {
 		Bundle[] bundles = bc.getBundles();
 		for (int i = 0; i < bundles.length; i++) {
 			String symbolicName = bundles[i].getSymbolicName();
-			if (symbolicName.equals("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
+			if (symbolicName.equals("it.telecomitalia.osgi.ah.webui.energyathome")) {
 				synchronized (this) {
 					this.guiOn = true;
 					handleStateChanged();
@@ -125,6 +141,7 @@ public class CedacIO implements EventHandler {
 	}
 
 	public void handleEvent(Event event) {
+		log.info("CEDAC IO: " + event + " trapped in HandleEvent");
 		if (event.getTopic().equals("org/osgi/framework/BundleEvent/STARTED")) {
 			Object bundle = (Object) event.getProperty("bundle");
 			if (bundle.toString().startsWith("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
@@ -194,6 +211,38 @@ public class CedacIO implements EventHandler {
 				identify = false;
 				handleStateChanged();
 			}
+		} else if (event.getTopic().equals("ah/eh/overload/NO_OVERLOAD")) {
+			synchronized (this) {
+				no_overload = true;
+				overload = false;
+				overloadFirstThresoldWarning = false;
+				overloadSecondThresoldWarning = false;
+				handleStateChanged();
+			}
+		} else if (event.getTopic().equals("ah/eh/overload/CONTRACTUAL_WARNING")) {
+			synchronized (this) {
+				no_overload = false;
+				overload = true;
+				overloadFirstThresoldWarning = false;
+				overloadSecondThresoldWarning = false;
+				handleStateChanged();
+			}
+		} else if (event.getTopic().equals("ah/eh/overload/FIRST_WARNING")) {
+			synchronized (this) {
+				no_overload = false;
+				overload = true;
+				overloadFirstThresoldWarning = true;
+				overloadSecondThresoldWarning = false;
+				handleStateChanged();
+			}
+		} else if (event.getTopic().equals("ah/eh/overload/SECOND_WARNING")) {
+			synchronized (this) {
+				no_overload = false;
+				overload = true;
+				overloadFirstThresoldWarning = false;
+				overloadSecondThresoldWarning = true;
+				handleStateChanged();
+			}
 		}
 	}
 
@@ -206,7 +255,28 @@ public class CedacIO implements EventHandler {
 			return;
 		}
 
-		if (this.provisioning) {
+		// Manage overload
+		if (this.no_overload) {
+			this.changeState(NO_OVERLOAD);
+			if ((this.previousState >= BOOTING) && (this.previousState <= IDENTIFYING) && 
+					(this.overloadingChangeState)){
+				this.changeState(this.previousState);
+			}
+			this.overloadingChangeState = false;
+		} else if (this.overload) {
+			if (!this.overloadingChangeState){
+				this.previousState = this.getCurrentState();
+			}
+			
+			if (this.overloadFirstThresoldWarning) {
+				this.changeState(OVERLOAD_FIRST_WARNING);
+			} else if (this.overloadSecondThresoldWarning) {
+				this.changeState(OVERLOAD_SECOND_WARNING);
+			} else {
+				this.changeState(OVERLOAD);
+			}
+			this.overloadingChangeState = true;
+		} else if (this.provisioning) {
 			this.changeState(UPDATING);
 		} else if (this.networkOpen) {
 			this.changeState(ADDING_NODE);
@@ -224,7 +294,26 @@ public class CedacIO implements EventHandler {
 	}
 
 	private void changeState(int state) {
+		
 		switch (state) {
+		
+		case NO_OVERLOAD:
+			FlexGatewayLed2.setRgbLedOnCedac(Color.BLUE, false, false, false, 0, 0);
+			break;
+		case OVERLOAD:
+			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 255, 0), false, false, false, 0, 2);
+			this.gestBuzzCedacIO();
+			break;
+			
+		case OVERLOAD_FIRST_WARNING:
+			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 128, 0), false, false, false, 0, 1);
+			this.gestBuzzCedacIO();
+			break;
+			
+		case OVERLOAD_SECOND_WARNING:
+			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 0, 255), false, false, false, 0, 2);
+			this.gestBuzzCedacIO();
+			break;
 
 		case BOOTING:
 			FlexGatewayLed2.setRgbLedOnCedac(Color.BLUE, false, false, false, 0, 2);
@@ -260,6 +349,17 @@ public class CedacIO implements EventHandler {
 		}
 
 		this.state = state;
+	}
+	
+	private void gestBuzzCedacIO(){
+		if (!this.overloadingChangeState){
+			FlexGatewayBuzz.cmdStartBuzzOnCedac();
+			timer.schedule(new TimerTask(){
+				public void run() {
+					FlexGatewayBuzz.cmdStopBuzzOnCedac();
+				}
+			}, 5000);
+		}
 	}
 
 	private int getCurrentState() {

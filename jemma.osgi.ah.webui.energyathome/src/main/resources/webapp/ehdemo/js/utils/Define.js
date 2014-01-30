@@ -20,8 +20,8 @@ var Define = {
 	       	"costiSel": DefinePath.imgMenuPath + "costi_verde.png",
 	       	"consumi": DefinePath.imgMenuPath + "consumi_bianco.png",
 	       	"consumiSel": DefinePath.imgMenuPath + "consumi_verde.png",
-	       	"fv": DefinePath.imgMenuPath + "consumi_bianco.png",
-	       	"fvSel": DefinePath.imgMenuPath + "consumi_verde.png",
+	       	"fv": DefinePath.imgMenuPath + "pv_bianco.png",
+	       	"fvSel": DefinePath.imgMenuPath + "pv_verde.png",
 	       	"dispositivi": DefinePath.imgMenuPath + "dispositivi_bianco.png",
 	       	"dispositiviSel": DefinePath.imgMenuPath + "dispositivi_verde.png",
 	       	"storico": DefinePath.imgMenuPath + "storico_bianco.png",
@@ -102,10 +102,10 @@ var Define = {
 			"contatoreOkRete" : [3.0, 4.5, 6.0],	// valori normali
 			"contatoreWarnRete" : [4.0, 6.0, 8.0],	// sovraccarico
 			"contatoreProdDefault" : 2000,
-			"tipoContatoreProd" : [0, 1000, 2000, 3000, 4000, 5000, 6000],
-			"limContatoreProd" : [0, 1.25, 2.5, 4, 5, 6.25, 7.5],
-			"contatoreOkProd" : [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0],	// valori normali
-			"contatoreWarnProd" : [0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],	// sovraccarico
+			"tipoContatoreProd" : [0, 1000, 2000, 3000, 4000, 5000, 6000, 11000],
+			"limContatoreProd" : [0, 1.25, 2.5, 4, 5, 6.25, 7.5, 14.5],
+			"contatoreOkProd" : [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 11.0],	// valori normali
+			"contatoreWarnProd" : [0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 13.0],	// sovraccarico
 			"limCostoOra": [0.3, 0.5, 0.7], 
 			"limCostoGiorno": [5.0, 7.5, 10.0],
 			"limCostoMese": [70.0, 110.0, 150.0],
@@ -121,6 +121,7 @@ var Define = {
 	},
 	trial : {
 		"sfondoTrial": DefinePath.imgPath + "sfondo_sinistra.png",
+		"imgAssociati": DefinePath.imgPath + "associati.png",
 		"tariffaFeriale": DefinePath.imgPath + "tariffa_feriale.png",
 		"tariffaFestiva": DefinePath.imgPath + "tariffa_festiva.png",
 		"tariffaQVerde": DefinePath.imgPath + "qverde.png",

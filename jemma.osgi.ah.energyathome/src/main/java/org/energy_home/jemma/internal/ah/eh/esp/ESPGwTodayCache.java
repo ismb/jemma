@@ -41,12 +41,12 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		private Calendar calendar;
 		private Calendar startTime = null;
 		private Calendar endTime = null;
-		String appliancePid;
+		private String applianceId;
 		private EnergyCostInfo aeci; 
 		private List<EnergyCostInfo> hourlyCachedData;
 		
-		CachedData(String appliancePid, EnergyCostInfo aeci) {
-			this.appliancePid = appliancePid;
+		CachedData(String applianceId, EnergyCostInfo aeci) {
+			this.applianceId = applianceId;
 			this.aeci = aeci;
 			hourlyCachedData = new ArrayList<EnergyCostInfo>(HOURS_IN_A_DAY);
 			calendar = Calendar.getInstance();
@@ -58,7 +58,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 		CacheQueryResult getCachedData(long startId, long endId, int dataType) {
 			if (startTime == null) {
-				log.warn("getCachedData called with null startTime/endTime for CachedData class, appliance " + appliancePid);
+				log.warn("getCachedData called with null startTime/endTime for CachedData class, appliance " + applianceId);
 				return null;
 			}
 			boolean isComplete = (startId >= startTime.getTimeInMillis()) && (endId <= endTime.getTimeInMillis());		
@@ -95,7 +95,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 		void mergeData(List<ContentInstance> resultList, CacheQueryResult cachedResult, int resolution) {
 			if (startTime == null) {
-				log.warn("mergeData called with null startTime/endTime for CachedData class, appliance " + appliancePid);
+				log.warn("mergeData called with null startTime/endTime for CachedData class, appliance " + applianceId);
 				return;
 			}
 			long startId = 0;
@@ -165,7 +165,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 		synchronized String getPrintableCacheData() {
 			StringBuffer sb = new StringBuffer("\nCached energy cost data for ");
-			sb.append(appliancePid);
+			sb.append(applianceId);
 			sb.append("\n");
 			EnergyCostInfo eci;
 			for (Iterator<EnergyCostInfo> iterator = hourlyCachedData.iterator(); iterator.hasNext();) {
@@ -180,13 +180,13 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 			boolean logCachedData = false;
 			synchronized (aeci) {
 				if (aeci == null || !aeci.isValid()) {
-					log.warn("Cache update called with an invalid or null energy cost info for appliance " + appliancePid);
+					log.warn("Cache update called with an invalid or null energy cost info for appliance " + applianceId);
 					return;
 				}
 				long aeciStartTime, aeciEndTime;
 				int aeciStartHourOfDay, aeciStartDayOfYear, aeciStartYear;	
 				int aeciEndHourOfDay, aeciEndDayOfYear, aeciEndYear;
-				log.debug("Starting cache update for appliance " + appliancePid);
+				log.debug("Starting cache update for appliance " + applianceId);
 				aeciStartTime = aeci.getStartTime();
 				calendar.setTimeInMillis(aeciStartTime);
 				aeciStartHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
@@ -198,7 +198,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 				aeciEndDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 				aeciEndYear = calendar.get(Calendar.YEAR);
 				
-				log.debug("Cache update for appliance " + appliancePid + " - finished date/time initialization - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
+				log.debug("Cache update for appliance " + applianceId + " - finished date/time initialization - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
 				execTimeMillis = System.currentTimeMillis();			
 	
 				if (startTime == null) {
@@ -215,7 +215,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 					hourlyCachedData.clear();
 					aeci.copyAndReset();
 					hourlyCachedData.add(aeci);
-					log.info("New day - energy and cost cache reset " + appliancePid);
+					log.info("New day - energy and cost cache reset " + applianceId);
 					return;
 				} 
 	
@@ -227,11 +227,11 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 						hourlyCachedData.set(hourlyCachedData.size()-1, lastEci);	
 					hourlyCachedData.add(aeci);
 					logCachedData = true;
-					log.info("New hour - energy and cost cache update " + appliancePid);
+					log.info("New hour - energy and cost cache update " + applianceId);
 				} 
 			}
 
-			log.debug("Cache update for appliance " + appliancePid + " - energy and cost cache update finished - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
+			log.debug("Cache update for appliance " + applianceId + " - energy and cost cache update finished - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
 			if (logCachedData) {
 				log.info(getPrintableCacheData());
 			}	
@@ -244,29 +244,29 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		cacheMap = new ConcurrentHashMap<String, ESPGwTodayCache.CachedData>(ESPApplication.MAX_NUMBER_OF_APPLIANCES);
 	}
 	
-	public void add(String appliancePid, EnergyCostInfo aeci) {
-		cacheMap.put(appliancePid, new CachedData(appliancePid, aeci));
-		log.info("Added gw cache for appliance " + appliancePid);
+	public void add(String applianceId, EnergyCostInfo aeci) {
+		cacheMap.put(applianceId, new CachedData(applianceId, aeci));
+		log.info("Added gw cache for appliance " + applianceId);
 	}
 	
-	public void remove(String appliancePid) {
-		cacheMap.remove(appliancePid);
-		log.info("Removed gw cache for appliance " + appliancePid);
+	public void remove(String applianceId) {
+		cacheMap.remove(applianceId);
+		log.info("Removed gw cache for appliance " + applianceId);
 	}
 	
-	public void update(String appliancePid) {
-		CachedData cache = cacheMap.get(appliancePid);
+	public void update(String applianceId) {
+		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			log.error("Update on gw cache called with an invalid appliance pid " + appliancePid);
+			log.error("Update on gw cache called with an invalid appliance pid " + applianceId);
 			return;
 		}
 		cache.update();
 	}
 	
-	public CacheQueryResult getHourlyEnergyConsumptionResult(String appliancePid, long startInstanceId, long endInstanceId) {	
-		CachedData cache = cacheMap.get(appliancePid);
+	public CacheQueryResult getHourlyEnergyConsumptionResult(String applianceId, long startInstanceId, long endInstanceId) {	
+		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			log.warn("getHourlyEnergyConsumptionResult called with an invalid appliance pid " + appliancePid);
+			log.warn("getHourlyEnergyConsumptionResult called with an invalid appliance pid " + applianceId);
 			return null;
 		}
 		if (endInstanceId < startInstanceId)
@@ -275,10 +275,10 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 	}
 	
-	public CacheQueryResult getHourlyEnergyCostResult(String appliancePid, long startInstanceId, long endInstanceId) {
-		CachedData cache = cacheMap.get(appliancePid);
+	public CacheQueryResult getHourlyEnergyCostResult(String applianceId, long startInstanceId, long endInstanceId) {
+		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			log.warn("getHourlyEnergyCostResult called with an invalid appliance pid " + appliancePid);
+			log.warn("getHourlyEnergyCostResult called with an invalid appliance pid " + applianceId);
 			return null;
 		}
 		if (endInstanceId < startInstanceId)
@@ -287,12 +287,12 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 	}
 	
 	// resultList cannot be null
-	public void merge(String appliancePid, List<ContentInstance> resultList, CacheQueryResult cachedResult, int resolution) {
+	public void merge(String applianceId, List<ContentInstance> resultList, CacheQueryResult cachedResult, int resolution) {
 		if (cachedResult == null || cachedResult.getResult() == null)
 			return;
-		CachedData cache = cacheMap.get(appliancePid);
+		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			log.warn("merge called with an invalid appliance pid " + appliancePid);
+			log.warn("merge called with an invalid appliance pid " + applianceId);
 			return;
 		}
 		cache.mergeData(resultList, cachedResult, resolution);

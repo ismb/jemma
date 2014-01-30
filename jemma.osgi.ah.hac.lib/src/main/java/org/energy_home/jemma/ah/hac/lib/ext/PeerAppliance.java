@@ -88,6 +88,10 @@ public class PeerAppliance implements IAppliance {
 		return managedAppliance.isDriver();
 	}
 
+	public Dictionary getCustomConfiguration() {
+		return managedAppliance.getCustomConfiguration();
+	}
+	
 	public Dictionary getConfiguration() {
 		return managedAppliance.getConfiguration();
 	}

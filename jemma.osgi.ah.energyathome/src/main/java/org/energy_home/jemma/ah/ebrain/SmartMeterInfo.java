@@ -21,20 +21,49 @@ import org.energy_home.jemma.shal.DeviceInfo;
 
 
 public class SmartMeterInfo extends ApplianceInfo {
+	public static final int PRODUCED_ENERGY_MIN_INTERVAL = 10000;//MILLISECONDS_IN_MINUTE;
+	
 	protected static final Log log = LogFactory.getLog(SmartMeterInfo.class.getSimpleName());
 	
 	public SmartMeterInfo(DeviceInfo info) {
 		super(info);
 	}
 
+	// Used to limit the number of received energy values that are used (-1 means all values are used) 
+	private int nextTotalEnergyValidValues = -1;
+	private int nextProducedEnergyValidValues = -1;
+	
 	private double lastProducedEnergy;  // last value of the energy sent by the appliance
 	private float meanPower;
 	private long lastValidProducedEnergyTime;
 	private long lastProducedEnergyNotificationTime;
 	private EnergyCostInfo accumulatedProducedEnergy = new EnergyCostInfo();
 	
+	public void setNextTotalEnergyValidValues (int i) {
+		nextTotalEnergyValidValues = i;
+	}
+	public void setNextProducedEnergyValidValues (int i) {
+		nextProducedEnergyValidValues = i;
+	}
+	
+	public EnergyCostInfo updateEnergyCost(long newTime, double newEnergy) {
+		if (nextTotalEnergyValidValues == 0) {
+			log.debug("updateEnergyCost discarded value");
+			return null;
+		}
+		if (nextTotalEnergyValidValues > 0)
+			nextTotalEnergyValidValues--;
+		return super.updateEnergyCost(newTime, newEnergy);
+	}
 	
 	public EnergyCostInfo updateProducedEnergy(long newTime, double newEnergy) {
+		if (nextProducedEnergyValidValues == 0) {
+			log.debug("updateProducedEnergy discarded value");
+			return null;
+		}
+		if (nextProducedEnergyValidValues > 0)
+			nextProducedEnergyValidValues--;
+		
 		EnergyCostInfo eci = null;
 		if (newTime < lastValidProducedEnergyTime) {
 			log.error(String.format("updateProducedEnergy: received new time value %d before last valid time value %d, returning null", newTime, lastValidProducedEnergyTime));
@@ -50,7 +79,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 		
 		long elapsedTime = newTime - lastValidProducedEnergyTime;
 		if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
-			if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
+			if (elapsedTime < PRODUCED_ENERGY_MIN_INTERVAL) {
 				log.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
 				return eci;
 			}	

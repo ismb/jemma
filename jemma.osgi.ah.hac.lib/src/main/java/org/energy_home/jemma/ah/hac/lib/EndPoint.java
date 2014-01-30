@@ -36,8 +36,7 @@ import org.energy_home.jemma.ah.hac.IServiceClustersListener;
 import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
-import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
-import org.energy_home.jemma.ah.hac.lib.internal.AppliancesProxy;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
 
 /**
  * Implementation of the {@code IEndPoint} interface
@@ -48,7 +47,7 @@ import org.energy_home.jemma.ah.hac.lib.internal.AppliancesProxy;
  */
 public class EndPoint extends BasicEndPoint {
 	private static final String INVALID_APPLIANCE_OBJECT_MESSAGE = "Invalid appliance object";
-	private static final String INVALID_CLUSTER_NAME_MESSAGE = "Invalid name object";
+	private static final String INVALID_CLUSTER_NAME_MESSAGE = "Invalid cluster name";
 	
 	private static final String CLUSTER_DEFAULT_IMPL_POSTFIX = "Cluster";
 
@@ -58,7 +57,20 @@ public class EndPoint extends BasicEndPoint {
 	// Each item is indexed by peerAppliancePid and its value is an IEndPoint List
 	HashMap peerAppliances;
 	// Added to manage interaction without connections and proxies
-	AppliancesProxy proxy;
+	
+	protected final synchronized void removeServiceCluster(String clusterName) throws ApplianceException {
+		IServiceCluster serviceCluster = getServiceCluster(clusterName);
+		if (serviceCluster == null)
+			throw new ApplianceException(INVALID_CLUSTER_NAME_MESSAGE);
+
+		if (serviceCluster.getSide() == IServiceCluster.SERVER_SIDE) {
+			serverServiceClusters.remove(serviceCluster.getType());
+		} else {
+			clientServiceClusters.remove(serviceCluster.getType());
+		}
+		if (serviceCluster instanceof ServiceCluster)
+			((ServiceCluster)serviceCluster).setEndPoint(null);
+	}
 	
 	protected final synchronized ServiceCluster addServiceCluster(ServiceCluster serviceCluster, IServiceCluster serviceClusterProxy) throws ApplianceException {
 		if (serviceCluster == null)
@@ -87,8 +99,8 @@ public class EndPoint extends BasicEndPoint {
 	}	
 	
 	void configurationUpdated() {
-		if (proxy != null)
-			proxy.notifyConfigurationUpdated(appliance.getPid(), id);
+		if (((Appliance)appliance).appliancesProxy != null)
+			((Appliance)appliance).appliancesProxy.notifyConfigurationUpdated(appliance.getPid(), id);
 	}
 	
 	void setId(int id) {
@@ -97,10 +109,10 @@ public class EndPoint extends BasicEndPoint {
 
 	final void updatePeerAppliances(Map pid2AlreadyNotifiedEndPointIds) {
 		String appliancePid = getAppliance().getPid();
-		if (proxy != null) {
-			if (pid2AlreadyNotifiedEndPointIds.get(proxy.getPid()) == null) {
-				proxy.notifyAvailabilityUpdated(appliancePid);
-				pid2AlreadyNotifiedEndPointIds.put(proxy.getPid(), new ArrayList(0));
+		if (((Appliance)appliance).appliancesProxy != null) {
+			if (pid2AlreadyNotifiedEndPointIds.get(((Appliance)appliance).appliancesProxy.getPid()) == null) {
+				((Appliance)appliance).appliancesProxy.notifyAvailabilityUpdated(appliancePid);
+				pid2AlreadyNotifiedEndPointIds.put(((Appliance)appliance).appliancesProxy.getPid(), new ArrayList(0));
 			}
 		}
 
@@ -232,7 +244,7 @@ public class EndPoint extends BasicEndPoint {
 			return addServiceCluster((ServiceCluster) clusterImpl);
 		} else {
 			try {
-				ServiceClusterProxyHandler serviceClusterHandler = new ServiceClusterProxyHandler(clusterImpl, clusterIf);
+				PeerServiceClusterProxy serviceClusterHandler = new PeerServiceClusterProxy(clusterImpl, clusterIf);
 				ServiceCluster serviceCluster = serviceClusterHandler.getServiceCluster();
 				return addServiceCluster(serviceCluster, (IServiceCluster)Proxy.newProxyInstance(clusterIf.getClassLoader(), 
 								new Class[] {IServiceCluster.class, clusterIf }, serviceClusterHandler));
@@ -378,14 +390,11 @@ public class EndPoint extends BasicEndPoint {
 	public IServiceCluster[] getPeerServiceClusters(String clusterName) {
 		List peerServiceClusters = new ArrayList();
 		
-		IServiceCluster proxyServiceCluster = null;
-		if (proxy != null) {
-			IEndPoint[] proxyEndPoints = proxy.getEndPoints();
-			for (int i = 0; i < proxyEndPoints.length; i++) {
-				proxyServiceCluster = proxyEndPoints[i].getServiceCluster(clusterName);
-				if (proxyServiceCluster != null)
-					peerServiceClusters.add(proxyServiceCluster);
-			}
+		if (((Appliance)appliance).appliancesProxy != null) {
+			IEndPoint proxyEndPoint = ((Appliance)appliance).appliancesProxy.getEndPoint(DEFAULT_END_POINT_ID);
+			IServiceCluster proxyServiceCluster = proxyEndPoint.getServiceCluster(clusterName);
+			if (proxyServiceCluster != null)
+				peerServiceClusters.add(proxyServiceCluster);
 		}
 
 		PeerAppliance peerAppliance = null;
@@ -418,14 +427,11 @@ public class EndPoint extends BasicEndPoint {
 	 *         are found, only one random instance is returned by this method.
 	 */
 	public final IServiceCluster getPeerServiceCluster(String clusterName) {
-		if (proxy != null) {
-			IServiceCluster proxyServiceCluster = null;
-			IEndPoint[] proxyEndPoints = proxy.getEndPoints();
-			for (int i = 0; i < proxyEndPoints.length; i++) {
-				proxyServiceCluster = proxyEndPoints[i].getServiceCluster(clusterName);
-				if (proxyServiceCluster != null)
-					return proxyServiceCluster;
-			}
+		if (((Appliance)appliance).appliancesProxy != null) {
+			IEndPoint proxyEndPoint = ((Appliance)appliance).appliancesProxy.getEndPoint(DEFAULT_END_POINT_ID);
+			IServiceCluster proxyServiceCluster = proxyEndPoint.getServiceCluster(clusterName);
+			if (proxyServiceCluster != null)
+				return proxyServiceCluster;
 		}
 		
 		PeerAppliance peerAppliance = null;

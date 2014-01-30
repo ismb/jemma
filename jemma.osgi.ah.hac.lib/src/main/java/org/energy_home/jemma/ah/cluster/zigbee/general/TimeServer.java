@@ -34,11 +34,7 @@ public interface TimeServer {
 
 	public long getTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
-	public void setTime(long Time, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
-
 	public short getTimeStatus(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
-
-	public void setTimeStatus(short TimeStatus, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
 	public long getTimeZone(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
@@ -63,5 +59,7 @@ public interface TimeServer {
 	public long getLastSetTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
 	public long getValidUntilTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	
+	public void setValidUntilTime(long ValidUntilTime, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
 }

@@ -41,15 +41,15 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		return 1000;
 	}
 	
-	private ApplianceProxyList proxyList;
+	private DeviceProxyList proxyList;
 	private IMeteringListener listener;
 	
-	private SimpleMeteringServer getMeteringServerCluster(ApplianceProxy applianceProxy) {
+	private SimpleMeteringServer getMeteringServerCluster(DeviceProxy deviceProxy) {
 		// TODO: needs to be modified to manage multi end point devices
-		return (SimpleMeteringServer) getServiceCluster(applianceProxy, IEndPoint.DEFAULT_END_POINT_ID, SimpleMeteringServer.class.getName());
+		return (SimpleMeteringServer) getServiceCluster(deviceProxy, SimpleMeteringServer.class.getName());
 	}
 	
-	public MeteringClusterProxy(ApplianceProxyList proxy, IMeteringListener listener) throws ApplianceException {
+	public MeteringClusterProxy(DeviceProxyList proxy, IMeteringListener listener) throws ApplianceException {
 		super();
 		this.proxyList = proxy;
 		this.listener = listener;
@@ -58,18 +58,18 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 	public void notifyAttributeValue(String attributeName, IAttributeValue attributeValue,
 			IEndPointRequestContext endPointRequestContext) {
 		try {
-			String appliancePid = getApplianceId(endPointRequestContext);
+			String applianceId = getApplianceId(endPointRequestContext);
 			if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME)) {
 				float value = ((Integer)attributeValue.getValue()).floatValue();
-				listener.notifyIstantaneousDemandPower(appliancePid, attributeValue.getTimestamp(), value);
+				listener.notifyIstantaneousDemandPower(applianceId, attributeValue.getTimestamp(), value);
 			} else if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME)) {
 				double value = ((Long)attributeValue.getValue()).doubleValue();
-				listener.notifyCurrentSummationDelivered(appliancePid, attributeValue.getTimestamp(), value);		
+				listener.notifyCurrentSummationDelivered(applianceId, attributeValue.getTimestamp(), value);		
 			} else if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME)) {
 				double value = ((Long)attributeValue.getValue()).doubleValue();
-				listener.notifyCurrentSummationReceived(appliancePid, attributeValue.getTimestamp(), value);
+				listener.notifyCurrentSummationReceived(applianceId, attributeValue.getTimestamp(), value);
 			} else {
-				log.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + appliancePid);
+				log.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
 			}			
 		} catch (Exception e) {
 			log.error("notifyAttributeValue error", e);
@@ -104,9 +104,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 
 		float decimalFormatting = INVALID_FORMATTING_VALUE;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			SimpleMeteringServer sms = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			SimpleMeteringServer sms = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getLastReadApplicationRequestContext(deviceProxy);
 			short zigbeeFormating = sms.getSummationFormatting(context);
 			decimalFormatting = interptetFormatting(zigbeeFormating);
 		} catch (Exception e) {
@@ -119,9 +119,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 	public double getCurrentSummationDelivered(String applianceId) {
 		double value = INVALID_ENERGY_CONSUMPTION_VALUE;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			SimpleMeteringServer sms = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			SimpleMeteringServer sms = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			value = sms.getCurrentSummationDelivered(context);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -132,9 +132,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 	public double getCurrentSummationReceived(String applianceId) {
 		double value = INVALID_ENERGY_CONSUMPTION_VALUE;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			SimpleMeteringServer sms = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			SimpleMeteringServer sms = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			value = sms.getCurrentSummationReceived(context);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,9 +145,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 	public float getDemandFormatting(String applianceId) {
 		float decimalFormatting = INVALID_FORMATTING_VALUE;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			SimpleMeteringServer sms = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			SimpleMeteringServer sms = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getLastReadApplicationRequestContext(deviceProxy);
 			short zigbeeFormating = sms.getDemandFormatting(context);
 			decimalFormatting = interptetFormatting(zigbeeFormating);
 		} catch (Exception e) {
@@ -160,9 +160,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 	public float getIstantaneousDemand(String applianceId) {
 		float value = INVALID_INSTANTANEOUS_POWER_VALUE;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			SimpleMeteringServer sms = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			SimpleMeteringServer sms = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			value = sms.getIstantaneousDemand(context);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,9 +174,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		SubscriptionParameters params = new SubscriptionParameters(minReportingInterval, maxReportingInterval, deltaValue);
 		// TODO: needs to be extended to manage multiple end points devices
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, params, context);
 		} catch (Exception e) {
 			log.error("subscribeIstantaneousDemand error for appliance " + applianceId, e);
@@ -187,9 +187,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		SubscriptionParameters params = new SubscriptionParameters(minReportingInterval, maxReportingInterval, deltaValue);
 		// TODO: needs to be extended to manage multiple end points devices
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME, params, context);
 		} catch (Exception e) {
 			log.error("subscribeCurrentSummationDelivered error for appliance " + applianceId, e);
@@ -200,9 +200,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		SubscriptionParameters params = new SubscriptionParameters(minReportingInterval, maxReportingInterval, deltaValue);
 		// TODO: needs to be extended to manage multiple end points devices
 		try {		
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME, params, context);
 		} catch (Exception e) {
 			log.error("subscribeCurrentSummationReceived error for appliance " + applianceId, e);

@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -133,6 +134,10 @@ public class ZclApplianceStatisticsServer extends ZclServiceCluster implements A
 				return attributeDescriptor;
 		}
 		return null;
+	}
+	
+	protected Collection getAttributeDescriptors() {
+		return attributesMapByName.values();
 	}
 
 	public LogResponse execLogRequest(long LogID, IEndPointRequestContext context) throws ApplianceException,

@@ -32,6 +32,8 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
+
 public abstract class XmlConverter {	
 	public static final String XML_SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 	public static final String XML_SCHEMA_INSTANCE_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
@@ -46,31 +48,31 @@ public abstract class XmlConverter {
 		return sb.toString();
 	}
 	
-//	private class CustomNameSpacePrefixMapper extends NamespacePrefixMapper {
-//		private Map<String, String> namespacesPrefixMap;
-//		
-//		CustomNameSpacePrefixMapper(Map<String, String> namespacesPrefixMap) {
-//			this.namespacesPrefixMap = Collections.unmodifiableMap(namespacesPrefixMap);
-//		}
-//		
-//		Map<String, String> getNamespacePreferredPrefixMap() {
-//			return namespacesPrefixMap;
-//		}
-//		
-//		public String[] getPreDeclaredNamespaceUris() {
-//			String[] result = new String[namespacesPrefixMap.size()];
-//			namespacesPrefixMap.keySet().toArray(result);
-//			return result;
-//		}
-//
-//		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-//			String result = namespacesPrefixMap.get(namespaceUri);
-//			if (result == null)
-//				return suggestion;
-//			return result;
-//		}
-//		
-//	}
+	private class CustomNameSpacePrefixMapper extends NamespacePrefixMapper {
+		private Map<String, String> namespacesPrefixMap;
+		
+		CustomNameSpacePrefixMapper(Map<String, String> namespacesPrefixMap) {
+			this.namespacesPrefixMap = Collections.unmodifiableMap(namespacesPrefixMap);
+		}
+		
+		Map<String, String> getNamespacePreferredPrefixMap() {
+			return namespacesPrefixMap;
+		}
+		
+		public String[] getPreDeclaredNamespaceUris() {
+			String[] result = new String[namespacesPrefixMap.size()];
+			namespacesPrefixMap.keySet().toArray(result);
+			return result;
+		}
+
+		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+			String result = namespacesPrefixMap.get(namespaceUri);
+			if (result == null)
+				return suggestion;
+			return result;
+		}
+		
+	}
 	
 	private class ConverterPool {
 		private int poolMaxSize = 0;
@@ -113,7 +115,7 @@ public abstract class XmlConverter {
 	private String contextPath;
 	private String defaultNamespace;
 	private ConverterPool convertersPool;
-//	private CustomNameSpacePrefixMapper namespacePrefixMapper;
+	private CustomNameSpacePrefixMapper namespacePrefixMapper;
 	
 	private void setPoolMaxSize(int poolMaxSize) {
 		if (poolMaxSize > 0) {
@@ -123,9 +125,9 @@ public abstract class XmlConverter {
 		}
 	}
 	
-//	protected final NamespacePrefixMapper getNamespacePrefixMapper() {
-//		return this.namespacePrefixMapper;
-//	}
+	protected final NamespacePrefixMapper getNamespacePrefixMapper() {
+		return this.namespacePrefixMapper;
+	}
 
 	protected JaxbConverter getConverter() throws JAXBException {
 		JaxbConverter jaxbConverter;	
@@ -146,8 +148,8 @@ public abstract class XmlConverter {
 	protected XmlConverter(String contextPath, String defaultNamespace, Map<String, String> nameSpacePreferredPrefixMap, int poolMaxSize) {
 		this.contextPath = contextPath;
 		this.defaultNamespace = defaultNamespace;
-//		if (nameSpacePreferredPrefixMap != null)
-//			this.namespacePrefixMapper = new CustomNameSpacePrefixMapper(nameSpacePreferredPrefixMap);
+		if (nameSpacePreferredPrefixMap != null)
+			this.namespacePrefixMapper = new CustomNameSpacePrefixMapper(nameSpacePreferredPrefixMap);
 		setPoolMaxSize(poolMaxSize);
 	}
 	
@@ -159,12 +161,12 @@ public abstract class XmlConverter {
 		return this.defaultNamespace;
 	}
 	
-//	public Map<String, String> getNameSpacePreferredPrefixMap() {
-//		if (namespacePrefixMapper == null)
-//			return null;
-//		else
-//			return namespacePrefixMapper.getNamespacePreferredPrefixMap();
-//	}
+	public Map<String, String> getNameSpacePreferredPrefixMap() {
+		if (namespacePrefixMapper == null)
+			return null;
+		else
+			return namespacePrefixMapper.getNamespacePreferredPrefixMap();
+	}
 	
 	public byte[] getByteArray(Object o) {
 		try {

@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.ah.cluster.zigbee.general;
 
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public interface PartitionServer {
 	final static String ATTR_MaximumIncomingTransferSize_NAME = "MaximumIncomingTransferSize";
@@ -30,8 +33,45 @@ public interface PartitionServer {
 	final static String CMD_TransferPartitionedFrame_NAME = "TransferPartitionedFrame";
 	final static String CMD_ReadHandshakeParam_NAME = "ReadHandshakeParam";
 	final static String CMD_WriteHandshakeParam_NAME = "WriteHandshakeParam";
-	
-	public boolean enablePartitioning(short clusterId, short commandId);
-	public boolean disablePartitioning(short clusterId, short commandId);
-	public boolean isPartitioningEnabled(short clusterId, short commandId);
+
+	public int getMaximumIncomingTransferSize(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public int getMaximumOutgoingTransferSize(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public short getPartitionedFrameSize(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void setPartitionedFrameSize(short PartitionedFrameSize, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public int getLargeFrameSize(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void setLargeFrameSize(int LargeFrameSize, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public short getNumberOfACKFrame(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void setNumberOfACKFrame(short NumberOfACKFrame, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public int getNACKTimeout(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public short getInterframeDelay(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void setInterframeDelay(short InterframeDelay, IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public short getNumberOfSendRetries(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public int getSenderTimeout(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public int getReceiverTimeout(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public void execTransferPartitionedFrame(short FragmentationOptions, int PartitionIndicator, short FrameType,
+			byte[] PartitionedFrame, IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
+	public ReadHandshakeParamResponse execReadHandshakeParam(IEndPointRequestContext context) throws ApplianceException,
+			ServiceClusterException;
+
+	public void execWriteHandshakeParam(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+
 }

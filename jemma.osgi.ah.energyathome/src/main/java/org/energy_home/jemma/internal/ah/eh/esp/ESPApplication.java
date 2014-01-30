@@ -24,10 +24,12 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.osgi.ah.eh.esp.IESPEventsDispatcher;
 
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServlet;
 
@@ -35,10 +37,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyBrainCore;
 import org.energy_home.jemma.ah.ebrain.IMeteringProxy;
+import org.energy_home.jemma.ah.ebrain.IOnOffListener;
+import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener;
+import org.energy_home.jemma.ah.ebrain.PowerThresholds;
 import org.energy_home.jemma.ah.ebrain.TwoTierDailyTariff;
 import org.energy_home.jemma.ah.eh.esp.ESPConfigParameters;
 import org.energy_home.jemma.ah.eh.esp.ESPException;
 import org.energy_home.jemma.ah.eh.esp.ESPService;
+import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.IM2MHapService;
 import org.energy_home.jemma.shal.DeviceConfiguration;
 import org.energy_home.jemma.shal.DeviceDescriptor;
@@ -46,16 +52,16 @@ import org.energy_home.jemma.shal.DeviceInfo;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 import org.energy_home.jemma.shal.DeviceDescriptor.NetworkType;
-import org.energy_home.jemma.shal.internal.DeviceConfigurationImpl;
-import org.energy_home.jemma.shal.internal.DeviceDescriptorImpl;
-import org.energy_home.jemma.shal.internal.DeviceInfoImpl;
+import org.energy_home.jemma.shal.min.DeviceConfigurationImpl;
+import org.energy_home.jemma.shal.min.DeviceDescriptorImpl;
+import org.energy_home.jemma.shal.min.DeviceInfoImpl;
 import org.energy_home.jemma.utils.thread.ExecutorService;
 import org.osgi.service.http.HttpService;
 
-public class ESPApplication extends HttpServlet implements IApplicationService, ESPService {
+public class ESPApplication extends HttpServlet implements IApplicationService, ESPService, IOnOffListener, IOverloadStatusListener {
 	private static final Log log = LogFactory.getLog(ESPApplication.class);
 	
-	private static final long PERIODIC_TASK_TIMEOUT = 60000;
+	private static final long PERIODIC_TASK_TIMEOUT = 15000;//30000
 	private static final String INVALID_APPLIANCE_PID_ERR_MSG = "Invalid appliance pid";
 	private static final String EMULATED_START_TIME_STR = System.getProperty("it.telecomitalia.ah.test.hap.client.startTime");
 	public static final boolean ENABLE_ATTRIBUTE_READ_BEFORE_SUBSCRIPTION = Utils.isNullOrEmpty(EMULATED_START_TIME_STR);
@@ -65,8 +71,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 //	public static final String APPLIANCE_FRIENDLY_NAME = "Energy Service Portal";
 //	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
 //			APPLIANCE_FRIENDLY_NAME);
-	private static Hashtable APPLIANCE_INITIAL_CONFIG = new Hashtable(1);
-	public static final float FIRST_POWER_THRESHOLD_FACTOR = 1.1f;
+//	private static Hashtable APPLIANCE_INITIAL_CONFIG = new Hashtable(1);
 
 	// Application constants
 	public static final Integer DEFAULT_END_POINT_ID = new Integer(1);
@@ -75,6 +80,13 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public static final int MAX_NUMBER_OF_APPLIANCES = MAX_NUMBER_OF_SMART_PLUGS + MAX_NUMBER_OF_WHITE_GOODS + 1;
 
 	public static final float MAX_HOURLY_DELTA_ENERGY = 21000;
+	
+	public static final String APPLIANCE_ID_SEPARATOR = "-";
+	
+	public static final String NO_OVERLOAD_WARNING = "ah/eh/overload/NO_OVERLOAD";
+	public static final String CONTRACTUAL_POWER_THRESHOLD_WARNING = "ah/eh/overload/CONTRACTUAL_WARNING";
+	public static final String FIRST_POWER_THRESHOLD_WARNING = "ah/eh/overload/FIRST_WARNING";
+	public static final String SECOND_POWER_THRESHOLD_WARNING = "ah/eh/overload/SECOND_WARNING";
 	
 //	static {
 //		APPLIANCE_INITIAL_CONFIG.put(IAppliance.APPLIANCE_NAME_PROPERTY, APPLIANCE_FRIENDLY_NAME);
@@ -87,13 +99,55 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		throw new ESPException(msg);
 	}
 	
-	private HttpService httpService;
+	// Returns an array with two items: appliance pid and end point id
+	public static String[] getDeviceIds(String applianceId) {
+		String[] deviceIds = new String[2];
+		if (applianceId.equals(AHContainerAddress.ALL_ID_FILTER)) {
+			deviceIds[0] = AHContainerAddress.ALL_ID_FILTER;
+			deviceIds[1] = AHContainerAddress.ALL_ID_FILTER;		
+		} else {		
+			StringTokenizer st = new StringTokenizer(applianceId, APPLIANCE_ID_SEPARATOR);
+			int i = 0;
+			while (st.hasMoreElements()) {
+				deviceIds[i++] = (String) st.nextElement();
+			}
+			if (i == 1)
+				deviceIds[1] = AHContainerAddress.DEFAULT_END_POINT_ID;
+		}
+		return deviceIds;
+	}	
+	// Returns applianceId (= deviceId) from appliancePid and endPointId
+	public static String getApplianceId(String appliancePid, int endPointId) {
+		String result = appliancePid;
+		if (endPointId != IEndPoint.DEFAULT_END_POINT_ID) {
+			StringBuilder sb = new StringBuilder(appliancePid);
+			sb.append(APPLIANCE_ID_SEPARATOR);
+			sb.append(endPointId);
+			result = sb.toString();
+		}
+		return result;
+	}
+	// Returns applianceId (= deviceId) from container address
+	public static String getApplianceId (AHContainerAddress containerAddress) {
+		String endPointId = containerAddress.getEndPointId();
+		String result;
+		if (!endPointId.equals(AHContainerAddress.DEFAULT_END_POINT_ID)) {
+			StringBuilder sb = new StringBuilder(containerAddress.getAppliancePid());
+			sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
+			sb.append(containerAddress.getEndPointId());
+			result = sb.toString();
+		} else {
+			result = containerAddress.getAppliancePid();
+		}
+		return result;
+	}
 	
-	private ApplianceProxyList applianceProxyList = new ApplianceProxyList();
+	private DeviceProxyList deviceProxyList = new DeviceProxyList();
 	private EnergyBrainCore energyBrain = null;
 	private OnOffClusterProxy onOffProxy = null;
 	private MeteringClusterProxy meteringProxy = null;
 	private PowerAndControlClusterProxy whiteGoodProxy = null;
+	private IServiceCluster[] serviceClusters;
 	long smartInfoLastCurrentSummation = (long)IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE; // 0xffffffffffffL;
 
 	// TODO: still needs to be moved in energy brain
@@ -101,13 +155,15 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	
 	private ExecutorService executorService = null;
 
+	private IESPEventsDispatcher eventsDispatcherService;
 	private ESPHapServiceObject hapObject = null;
 	private boolean useLocalCache;
 
 	// *** Various private methods
 
-	private String getSafeAppliancePid(String appliancePid) throws ESPException {
-		String safePid = (appliancePid == null) ? energyBrain.getSmartInfoExchangeId() : appliancePid;
+	// Replaces null applianceId with smartinfo appliance id
+	private String getSafeApplianceId(String applianceId) throws ESPException {
+		String safePid = (applianceId == null) ? energyBrain.getSmartInfoExchangeId() : applianceId;
 		if (safePid == null)
 			throw new ESPException(INVALID_APPLIANCE_PID_ERR_MSG);
 		return safePid;
@@ -118,6 +174,16 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 
 	// *** Methods used by component service
+	
+	public void setESPEventsDispatcher(IESPEventsDispatcher espEventsDispatcher) {
+		eventsDispatcherService = espEventsDispatcher;
+		log.info("ESP Events Dispatcher registered");
+	}
+	
+	public void unsetESPEventsDispatcher(IESPEventsDispatcher espEventsDispatcher) {
+		eventsDispatcherService = null;
+		log.info("ESP Events Dispatcher registered");
+	}
 	
 	public void setHapService(IM2MHapService hapService) {
 		hapObject = new ESPHapServiceObject(hapService);
@@ -141,21 +207,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	private Boolean started = false;
 	
-	// Hack used to limit periodic requests for users without microgeneration plants
-	private long lastPeriodicRequestTime = 0;
-	private static long MIN_PERIODIC_REQUEST_TIME_INTERVAL = 60 * 5 * 1000; // 5 minutes
-	
 	protected void periodicTask() {
 		try {
 			long startTime = System.currentTimeMillis();
-			log.info(String.format("Periodic task execution -> START %s", startTime));
-			// Hack used to limit periodic requests for users without microgeneration plants
-/*			if (ESPConfiguration.getConfigParameters().getPeakProducedPower() == 0 &&
-					(startTime - lastPeriodicRequestTime < MIN_PERIODIC_REQUEST_TIME_INTERVAL)) {
-				log.info(String.format("Periodic task execution -> FILTERED"));		
-			}*/
-			lastPeriodicRequestTime = System.currentTimeMillis();		
+			log.info(String.format("Periodic task execution -> START %s", startTime));		
 			energyBrain.periodicTask();
+			notifyOverloadStatusUpdate(currentOverloadStatus);
 			log.info(String.format("Periodic task execution -> END %s", System.currentTimeMillis()));
 		} catch (Exception e) {
 			log.error("Error during periodic task execution", e);
@@ -173,6 +230,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				energyBrain = EnergyBrainCore.getInstance();
 				energyBrain.setCheckMeteringSubscriptions(ESPConfiguration.isCheckSubscriptionsEnabled());
 				energyBrain.setCloudServiceProxy(hapObject);
+				
+				energyBrain.setOverloadStatusListener(this);
+				
 				try {
 					energyBrain.setDailyTariff(TwoTierDailyTariff.class);
 				} catch (InstantiationException e) {
@@ -181,11 +241,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 					log.error("An illegal access error occurred while initializing energy brain daily tariff", e);
 				}
 				if (configParameters != null) {
-					energyBrain.setUpperPowerThreshold(configParameters.getContractualPowerThreshold() * FIRST_POWER_THRESHOLD_FACTOR);			
+					energyBrain.setPowerThresholds(new PowerThresholds(configParameters.getContractualPowerThreshold()));			
 					energyBrain.setPeakProducedPower(configParameters.getPeakProducedPower());
 				} else {
-					energyBrain.setUpperPowerThreshold(ESPConfigParameters.DEFAULT_CONTRACTUAL_POWER_THRESHOLD
-							* FIRST_POWER_THRESHOLD_FACTOR);
+					energyBrain.setPowerThresholds(new PowerThresholds(ESPConfigParameters.DEFAULT_CONTRACTUAL_POWER_THRESHOLD));
 					energyBrain.setPeakProducedPower(ESPConfigParameters.DEFAULT_PEAK_PRODUCED_POWER);
 				}
 				//energyBrain.setTariffTrailingDigits(EnergyBrain.TRAILING_DIGIT_CENTS);
@@ -197,17 +256,36 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				hapObject.resetCache(useLocalCache);
 			
 				try {
-					whiteGoodProxy = new PowerAndControlClusterProxy(applianceProxyList, energyBrain);
+					whiteGoodProxy = new PowerAndControlClusterProxy(deviceProxyList, energyBrain);
 				} catch (Exception e) {
 					log.error("Some probelm occurred while creating power and control cluster proxy", e);
 				}
 				energyBrain.setPowerProfileProxy(whiteGoodProxy);
-				meteringProxy = new MeteringClusterProxy(applianceProxyList, energyBrain);
+				meteringProxy = new MeteringClusterProxy(deviceProxyList, energyBrain);
 				energyBrain.setMeteringProxy(meteringProxy);	
-				onOffProxy = new OnOffClusterProxy(applianceProxyList, energyBrain);
-				energyBrain.setOnOffProxy(onOffProxy);
-				
+
 				meteringServerObject = new SimpleMeteringServerObject(energyBrain);			
+				
+				onOffProxy = new OnOffClusterProxy(deviceProxyList, this);
+				energyBrain.setOnOffProxy(onOffProxy);
+
+				if (ESPConfiguration.isPowerProfileClusterEnabled())
+					serviceClusters = new IServiceCluster[] { 
+								(IServiceCluster) meteringProxy,
+								(IServiceCluster) onOffProxy,
+								(IServiceCluster) whiteGoodProxy.asPowerProfileClient(),
+								(IServiceCluster) whiteGoodProxy.asApplianceControlClient(),
+								(IServiceCluster) whiteGoodProxy.asApplianceStatisticsClient(),
+								(IServiceCluster) meteringServerObject
+								};
+				else
+					serviceClusters = new IServiceCluster[] { 
+								(IServiceCluster) meteringProxy,
+								(IServiceCluster) onOffProxy,
+								(IServiceCluster) whiteGoodProxy.asApplianceControlClient(),
+								(IServiceCluster) whiteGoodProxy.asApplianceStatisticsClient(),
+								(IServiceCluster) meteringServerObject
+								};
 				
 				executorService.scheduleTask(new Runnable() {
 					public void run() {
@@ -229,7 +307,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	protected void stop() {
 		synchronized (started) {
 			started = false;
-			applianceProxyList.clear();
+			deviceProxyList.clear();
 			energyBrain.setCloudServiceProxy(null);
 			log.info("ESP shutdown method invoked");
 		}
@@ -251,52 +329,80 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 		return deviceType;
 	}
+
+	// **** IOverloadStatusListener interface methods	
+	private OverloadStatus currentOverloadStatus = OverloadStatus.NoOverloadWarning; 
+	
+	public void notifyOverloadStatusUpdate(OverloadStatus status) {
+		currentOverloadStatus = status;
+		try {
+			switch (status) {
+			case NoOverloadWarning:
+				eventsDispatcherService.postEvent(NO_OVERLOAD_WARNING, null);
+				break;
+			case ContractualPowerThresholdWarning:
+				eventsDispatcherService.postEvent(CONTRACTUAL_POWER_THRESHOLD_WARNING, null);
+				break;
+			case FirstPowerThresholdWarning:
+				eventsDispatcherService.postEvent(FIRST_POWER_THRESHOLD_WARNING, null);
+				break;
+			case SecondPowerThresholdWarning:
+				eventsDispatcherService.postEvent(SECOND_POWER_THRESHOLD_WARNING, null);
+				break;
+			
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			log.error("notifyStatusUpdate exception", e);
+		}
+	}
 	
 	// **** IApplicationService service interface methods
 	
 	public IServiceCluster[] getServiceClusters() {
-		return new IServiceCluster[] { 
-				(IServiceCluster) meteringProxy,
-				(IServiceCluster) onOffProxy,
-				(IServiceCluster) whiteGoodProxy.asPowerProfileClient(),
-				(IServiceCluster) whiteGoodProxy.asApplianceControlClient(),
-				(IServiceCluster) whiteGoodProxy.asApplianceStatisticsClient(),
-				(IServiceCluster) meteringServerObject
-				};
+		return serviceClusters;
 	}
 	
 	public void notifyApplianceAdded(IApplicationEndPoint applicationEndPoint, IAppliance appliance) {
 		try {
+			if (appliance.isSingleton())
+				return;
 			String appliancePid = appliance.getPid();
 			log.info("notifyApplianceAdded " + appliancePid);
-			IEndPoint ep = appliance.getEndPoint(IEndPoint.DEFAULT_END_POINT_ID);
-			if (ep == null) {
-				log.error("notifyApplianceAdded error: null default end point id");
+			IEndPoint[] eps = appliance.getEndPoints();
+			IEndPoint ep = null;
+			if (eps.length <= 1) {
+				log.error("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
-			DeviceType deviceType = getDeviceType(ep);
-			if (deviceType == null)
-				return;
-			// TODO: device service interfaces still needs to be integrated
-			DeviceDescriptor descriptor = new DeviceDescriptorImpl(deviceType, NetworkType.ZigBee, null);
-			ConfigServer configServer = (ConfigServer) appliance.getEndPoint(IEndPoint.COMMON_END_POINT_ID).getServiceCluster(ConfigServer.class.getName());
-			DeviceConfiguration config = null;
-			IEndPointRequestContext context = applicationEndPoint.getDefaultRequestContext();	
-			String nickname = configServer.getName(context);
-			String categoryPidString = configServer.getCategoryPid(context);
-			Integer categoryPid = categoryPidString == null ? null : new Integer(categoryPidString);
-			// TODO: location are not yet initialized
-			// TODO: check for enum order in the xml file
-			config = new DeviceConfigurationImpl(nickname, categoryPid == null ? null : DeviceCategory.values()[categoryPid.intValue()-1], null);
-			
-			DeviceInfo info = new DeviceInfoImpl(appliancePid, appliancePid, descriptor, config);
-			ApplianceProxy applianceProxy = new ApplianceProxy(applicationEndPoint, appliance, info);
-			applianceProxyList.addApplianceProxy(applianceProxy);
-			
-			energyBrain.notifyDeviceAdded(info);
-			hapObject.applianceConnected(appliancePid, energyBrain.getAccumulatedEnergyCost(appliancePid), ep.isAvailable());	
-			if (ep.isAvailable()) {
-				energyBrain.notifyDeviceServiceAvailable(info, null);
+			for (int i = 1; i < eps.length; i++) {
+				ep = eps[i];
+				DeviceType deviceType = getDeviceType(ep);
+				if (deviceType == null)
+					return;
+				// TODO: device service interfaces still needs to be integrated
+				DeviceDescriptor descriptor = new DeviceDescriptorImpl(deviceType, NetworkType.ZigBee, null);
+				ConfigServer configServer = (ConfigServer) appliance.getEndPoint(IEndPoint.COMMON_END_POINT_ID).getServiceCluster(ConfigServer.class.getName());
+				DeviceConfiguration config = null;
+				IEndPointRequestContext context = applicationEndPoint.getDefaultRequestContext();	
+				String nickname = configServer.getName(context);
+				String categoryPidString = configServer.getCategoryPid(context);
+				Integer categoryPid = categoryPidString == null ? null : new Integer(categoryPidString);
+				// TODO: location are not yet initialized
+				// TODO: check for enum order in the xml file
+				config = new DeviceConfigurationImpl(nickname, (categoryPid == null || (DeviceCategory.values().length < categoryPid.intValue())) ? 
+									null : DeviceCategory.values()[categoryPid.intValue()-1], null);
+				String applianceId = getApplianceId(appliancePid, ep.getId());
+				DeviceInfo info = new DeviceInfoImpl(applianceId, applianceId, descriptor, config);
+				DeviceProxy applianceProxy = new DeviceProxy(applicationEndPoint, ep, info);
+				deviceProxyList.addDeviceProxy(applianceProxy);
+				
+				energyBrain.notifyDeviceAdded(info);
+				hapObject.applianceConnected(applianceId, energyBrain.getAccumulatedEnergyCost(applianceId), ep.isAvailable());	
+				if (ep.isAvailable()) {
+					energyBrain.notifyDeviceServiceAvailable(info, null);
+				}
 			}
 		} catch (Exception e) {
 			log.error("notifyApplianceAdded error", e);
@@ -309,16 +415,25 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				return;
 			String appliancePid = appliance.getPid();
 			log.info("notifyApplianceRemoved " + appliancePid);
-			ApplianceProxy applianceProxy = applianceProxyList.getApplianceProxy(appliance.getPid());
-			if (applianceProxy == null)
+			IEndPoint[] eps = appliance.getEndPoints();
+			if (eps.length <= 1) {
+				log.error("notifyApplianceAdded error: invalid end point list");
 				return;
-			try {
-				energyBrain.notifyDeviceRemoved(applianceProxy.getDeviceInfo());
-				hapObject.applianceDisconnected(appliancePid);				
-			} catch (Exception e) {
-				log.error(e);
 			}
-			applianceProxyList.removeApplianceProxy(appliancePid);
+			for (int i = 1; i < eps.length; i++) {
+				IEndPoint ep = eps[i];
+				String applianceId = getApplianceId(appliancePid, ep.getId());
+				DeviceProxy applianceProxy = deviceProxyList.getDeviceProxy(applianceId);
+				if (applianceProxy == null)
+					return;
+				try {
+					energyBrain.notifyDeviceRemoved(applianceProxy.getDeviceInfo());
+					hapObject.applianceDisconnected(applianceId);				
+				} catch (Exception e) {
+					log.error(e);
+				}
+				deviceProxyList.removeDeviceProxy(applianceId);
+			}
 		} catch (Exception e) {
 			log.error("notifyApplianceRemoved error", e);
 		}
@@ -326,21 +441,27 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	public void notifyApplianceAvailabilityUpdated(IAppliance appliance) {
 		try {
+			if (appliance.isSingleton())
+				return;
 			String appliancePid = appliance.getPid();
 			log.info("notifyApplianceAvailabilityUpdated " + appliancePid);
-			ApplianceProxy applianceProxy = applianceProxyList.getApplianceProxy(appliancePid);
-			if (applianceProxy == null)
+			IEndPoint[] eps = appliance.getEndPoints();
+			if (eps.length <= 1) {
+				log.error("notifyApplianceAdded error: invalid end point list");
 				return;
-			IEndPoint ep = appliance.getEndPoint(IEndPoint.DEFAULT_END_POINT_ID);
-			if (ep == null) {
-				log.error("notifyApplianceAvailabilityUpdated error: null default end point id");
-				return;
-			}			
-			if (ep.isAvailable())
-				energyBrain.notifyDeviceServiceAvailable(applianceProxy.getDeviceInfo(), null);
-			else
-				energyBrain.notifyDeviceServiceUnavailable(applianceProxy.getDeviceInfo());
-			hapObject.applianceAvailabilityUpdated(appliancePid, ep.isAvailable());	
+			}
+			for (int i = 1; i < eps.length; i++) {
+				IEndPoint ep = eps[i];
+				String applianceId = getApplianceId(appliancePid, ep.getId());
+				DeviceProxy applianceProxy = deviceProxyList.getDeviceProxy(applianceId);
+				if (applianceProxy == null)
+					return;			
+				if (ep.isAvailable())
+					energyBrain.notifyDeviceServiceAvailable(applianceProxy.getDeviceInfo(), null);
+				else
+					energyBrain.notifyDeviceServiceUnavailable(applianceProxy.getDeviceInfo());
+				hapObject.applianceAvailabilityUpdated(applianceId, ep.isAvailable());	
+			}
 		} catch (Exception e) {
 			log.error("notifyApplianceAvailabilityUpdated error", e);
 		}
@@ -366,11 +487,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		log.info("ESPService - setConfiguration (config=" + config + ")");
 		ESPConfiguration.setConfigParameters(config);
 		if (config != null) {
-			energyBrain.setUpperPowerThreshold(config.getContractualPowerThreshold() * FIRST_POWER_THRESHOLD_FACTOR);
+			energyBrain.setPowerThresholds(new PowerThresholds(config.getContractualPowerThreshold()));
 			energyBrain.setPeakProducedPower(config.getPeakProducedPower());
 		} else {
-			energyBrain.setUpperPowerThreshold(ESPConfigParameters.DEFAULT_CONTRACTUAL_POWER_THRESHOLD
-					* FIRST_POWER_THRESHOLD_FACTOR);
+			energyBrain.setPowerThresholds(new PowerThresholds(ESPConfigParameters.DEFAULT_CONTRACTUAL_POWER_THRESHOLD));
 			energyBrain.setPeakProducedPower(ESPConfigParameters.DEFAULT_PEAK_PRODUCED_POWER);
 		}
 		log.info("ESPService - setConfiguration returned");
@@ -397,30 +517,28 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 
 	public float getInstantaneousProducedPowerFloatValue() throws ESPException {
-		// log.info("ESPService - getInstantaneousGeneratedPowerFloatValue(pid=" +
-		// appliancePid + ")");
+		// log.info("ESPService - getInstantaneousProducedPowerFloatValue();
 		float result = energyBrain.getIstantaneousProducedPower();
-		// log.info("ESPService - getInstantaneousGeneratedPowerFloatValue returned: "
+		// log.info("ESPService - getInstantaneousProducedPowerFloatValue() returned: "
 		// + result);
 		return result;	
 	}
 
 	public float getInstantaneousSoldPowerFloatValue() throws ESPException {
-		// log.info("ESPService - getInstantaneousSoldPowerFloatValue(pid=" +
-		// appliancePid + ")");
+		// log.info("ESPService - getInstantaneousSoldPowerFloatValue()");
 		float result = energyBrain.getIstantaneousSoldPower();
-		// log.info("ESPService - getInstantaneousSoldPowerFloatValue returned: "
+		// log.info("ESPService - getInstantaneousSoldPowerFloatValue() returned: "
 		// + result);
 		return result;
 	}
 
-	public float getInstantaneousPowerFloatValue(String appliancePid) throws ESPException {
+	public float getInstantaneousPowerFloatValue(String applianceId) throws ESPException {
 		try {
 			// log.info("ESPService - getInstantaneousPowerFloatValue(pid=" +
-			// appliancePid + ")");
+			// applianceId + ")");
 			float result;
-			String safePid = getSafeAppliancePid(appliancePid);
-			result = energyBrain.getIstantaneousDemandPower(safePid);
+			String safeApplianceId = getSafeApplianceId(applianceId);
+			result = energyBrain.getIstantaneousDemandPower(safeApplianceId);
 			// log.info("ESPService - getInstantaneousPowerFloatValue returned: "
 			// + result);
 			return result;
@@ -430,12 +548,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	}
 	
-	public List<Float> getEnergyConsumption(String appliancePid, long startTime, long endTime, int resolution) throws ESPException {
-		log.info("ESPService - getEnergyConsumption(pid=" + appliancePid + ", startTime=" + startTime + ", endTime=" + endTime
+	public List<Float> getEnergyConsumption(String applianceId, long startTime, long endTime, int resolution) throws ESPException {
+		log.info("ESPService - getEnergyConsumption(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime
 				+ ", resolution=" + resolution + ")");
-		String safePid = getSafeAppliancePid(appliancePid);
+		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			List<Float> result = hapObject.getEnergyConsumption(safePid, startTime, endTime, resolution);
+			List<Float> result = hapObject.getEnergyConsumption(safeApplianceId, startTime, endTime, resolution);
 			log.info("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -447,13 +565,13 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public List<Float> getProducedEnergy(long startTime, long endTime, int resolution) throws ESPException {
 		log.info("ESPService - getGeneratedEnergy(startTime=" + startTime + ", endTime=" + endTime
 				+ ", resolution=" + resolution + ")");
-		String pid = energyBrain.getSmartInfoProductionId();
-		if (pid == null) {
+		String applianceId = energyBrain.getSmartInfoProductionId();
+		if (applianceId == null) {
 			log.warn("ESPService - getEnergyConsumption called with no production smart info configured");
 			return null;
 		}
 		try {
-			List<Float> result = hapObject.getReceivedEnergy(pid, startTime, endTime, resolution);
+			List<Float> result = hapObject.getReceivedEnergy(applianceId, startTime, endTime, resolution);
 			log.info("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -465,13 +583,13 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public List<Float> getSoldEnergy(long startTime, long endTime, int resolution) throws ESPException {
 		log.info("ESPService - getSoldEnergy(startTime=" + startTime + ", endTime=" + endTime
 				+ ", resolution=" + resolution + ")");
-		String pid = energyBrain.getSmartInfoExchangeId();
-		if (pid == null) {
+		String applianceId = energyBrain.getSmartInfoExchangeId();
+		if (applianceId == null) {
 			log.warn("ESPService - getEnergyConsumption called with no exchange smart info configured");
 			return null;
 		}
 		try {
-			List<Float> result = hapObject.getReceivedEnergy(pid, startTime, endTime, resolution);
+			List<Float> result = hapObject.getReceivedEnergy(applianceId, startTime, endTime, resolution);
 			log.info("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -493,12 +611,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 	}
 
-	public List<Float> getEnergyCost(String appliancePid, long startTime, long endTime, int resolution) throws ESPException {
-		log.info("ESPService - getEnergyCost(pid=" + appliancePid + ", startTime=" + startTime + ", endTime=" + endTime
+	public List<Float> getEnergyCost(String applianceId, long startTime, long endTime, int resolution) throws ESPException {
+		log.info("ESPService - getEnergyCost(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime
 				+ ", resolution=" + resolution + ")");
-		String safePid = getSafeAppliancePid(appliancePid);
+		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			List<Float> result = hapObject.getEnergyCost(safePid, startTime, endTime, resolution);
+			List<Float> result = hapObject.getEnergyCost(safeApplianceId, startTime, endTime, resolution);
 			log.info("ESPService - getEnergyCost hap service returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -508,7 +626,6 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 
 	public Map<String, List<Float>> getEnergyCost(long startTime, long endTime, int resolution) throws ESPException {
-		getSafeAppliancePid(null);
 		try {
 			log.info("ESPService - getEnergyCost(startTime=" + startTime + ", endTime=" + endTime + ", resolution=" + resolution
 					+ ")");
@@ -521,11 +638,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 	}
 
-	public Float getEnergyConsumptionForecast(String appliancePid, int resolution) throws ESPException {
-		String safePid = getSafeAppliancePid(appliancePid);
+	public Float getEnergyConsumptionForecast(String applianceId, int resolution) throws ESPException {
+		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			log.info("ESPService - getEnergyConsumptionForecast(pid=" + appliancePid + ", resolution=" + resolution + ")");
-			Float result = hapObject.getEnergyConsumptionForecast(safePid, resolution);
+			log.info("ESPService - getEnergyConsumptionForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
+			Float result = hapObject.getEnergyConsumptionForecast(safeApplianceId, resolution);
 			log.info("ESPService - getEnergyConsumptionForecast returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -534,11 +651,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 	}
 
-	public Float getEnergyCostForecast(String appliancePid, int resolution) throws ESPException {
-		String safePid = getSafeAppliancePid(appliancePid);
+	public Float getEnergyCostForecast(String applianceId, int resolution) throws ESPException {
+		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			log.info("ESPService - getEnergyCostForecast(pid=" + appliancePid + ", resolution=" + resolution + ")");
-			Float result = hapObject.getEnergyCostForecast(safePid, resolution);
+			log.info("ESPService - getEnergyCostForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
+			Float result = hapObject.getEnergyCostForecast(safeApplianceId, resolution);
 			log.info("ESPService - getEnergyCostForecast returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -547,11 +664,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 	}
 
-	public List<Float> getWeekDayEnergyConsumpionAverage(String appliancePid, int weekDay) throws ESPException {
-		String safePid = getSafeAppliancePid(appliancePid);
+	public List<Float> getWeekDayEnergyConsumpionAverage(String applianceApplianceId, int weekDay) throws ESPException {
+		String safeApplianceId = getSafeApplianceId(applianceApplianceId);
 		try {
-			log.info("ESPService - getWeekDayEnergyConsumpionAverage(pid=" + appliancePid + ", weekDay=" + weekDay + ")");
-			List<Float> result = hapObject.getWeekDayEnergyConsumpionAverage(safePid, weekDay);
+			log.info("ESPService - getWeekDayEnergyConsumpionAverage(pid=" + applianceApplianceId + ", weekDay=" + weekDay + ")");
+			List<Float> result = hapObject.getWeekDayEnergyConsumpionAverage(safeApplianceId, weekDay);
 			log.info("ESPService - getWeekDayEnergyConsumpionAverage returned: " + result);
 			return result;
 		} catch (Exception e) {
@@ -560,17 +677,27 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		}
 	}
 
-	public List<Float> getWeekDayEnergyCostAverage(String appliancePid, int weekDay) throws ESPException {
-		String safePid = getSafeAppliancePid(appliancePid);
+	public List<Float> getWeekDayEnergyCostAverage(String applianceId, int weekDay) throws ESPException {
+		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			log.info("ESPService - getWeekDayEnergyCostAverage(pid=" + appliancePid + ", weekDay=" + weekDay + ")");
-			List<Float> result = hapObject.getWeekDayEnergyCostAverage(safePid, weekDay);
+			log.info("ESPService - getWeekDayEnergyCostAverage(pid=" + applianceId + ", weekDay=" + weekDay + ")");
+			List<Float> result = hapObject.getWeekDayEnergyCostAverage(safeApplianceId, weekDay);
 			log.info("ESPService - getWeekDayEnergyCostAverage returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
 			return null;
 		}
+	}
+
+	
+	public void notifyStatus(String applianceId, long time, Boolean status) {
+		try {
+			log.debug("Received onoff status " + status + " from " + applianceId);
+//			hapObject.storeOnOffStatus(applianceId, time, status.booleanValue());
+		} catch (Exception e) {
+			log.error("Error while storing onoff status on HAP platform", e);
+		}		
 	}
 
 }

@@ -57,8 +57,22 @@
 	vertical-align: middle;
 }
 
-#headerAccordion {
+.headerAccordion {
 	font-size: 0.9em;
+}
+
+.headerAccordion button {
+	float: right;
+	background-color: transparent !important;
+	background-image: none !important;
+	border: none;
+	width: 3.5%;
+	right: 5%;
+}
+
+.headerAccordion a {
+	display: inline;
+	color: black;
 }
 
 #Dati1 {
@@ -70,19 +84,6 @@
 
 #Dati1 div {
 	overflow: hidden;
-}
-
-#headerAccordion button {
-	float: right;
-	background-color: transparent !important;
-	background-image: none !important;
-	border: none;
-	width: 3.5%;
-	right: 5%;
-}
-
-#headerAccordion a {
-	display: inline;
 }
 
 #ReportInfo {
@@ -156,10 +157,6 @@ li {
 
 ul {
 	padding: 0px;
-}
-
-#headerAccordion a {
-	color: black;
 }
 
 .premuto {

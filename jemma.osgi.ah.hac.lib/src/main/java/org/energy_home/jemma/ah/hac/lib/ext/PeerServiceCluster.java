@@ -46,7 +46,7 @@ public class PeerServiceCluster implements IServiceCluster, IServiceClusterListe
 		this.managedServiceCluster = managedServiceCluster;
 		this.peerEndPoint = peerEndPoint;
 		Class clusterIf = managedServiceCluster.getClusterInterfaceClass();
-		ServiceClusterProxyHandler serviceClusterHandler = new ServiceClusterProxyHandler(this);
+		PeerServiceClusterProxy serviceClusterHandler = new PeerServiceClusterProxy(this);
 		serviceClusterProxy = (IServiceCluster)Proxy.newProxyInstance(clusterIf.getClassLoader(), 
 						new Class[] {IServiceCluster.class, clusterIf }, serviceClusterHandler);
 	}
@@ -107,6 +107,11 @@ public class PeerServiceCluster implements IServiceCluster, IServiceClusterListe
 		endPointRequestContext = peerEndPoint.getPeerValidRequestContext(endPointRequestContext);
 		return managedServiceCluster.getAttributeValue(attributeName, endPointRequestContext);
 	}
+	
+	public String[] getSupportedAttributeNames(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
+		endPointRequestContext = peerEndPoint.getPeerValidRequestContext(endPointRequestContext);
+		return managedServiceCluster.getSupportedAttributeNames(endPointRequestContext);
+	}
 
 	public IAttributeValue setAttributeValue(String attributeName, Object attributeValue,
 			IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
@@ -125,5 +130,4 @@ public class PeerServiceCluster implements IServiceCluster, IServiceClusterListe
 		endPointRequestContext = peerEndPoint.getPeerValidRequestContext(endPointRequestContext);
 		managedServiceCluster.notifyAttributeValue(attributeName, attributeValue, endPointRequestContext);
 	}
-
 }

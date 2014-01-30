@@ -66,6 +66,7 @@
 						</Import-Package>
 						<Export-Package>org.energy_home.jemma.ah.configurator;version="1.0.1"
 						</Export-Package>
+						<Include-Resource>{maven-resources}, xml=xml/</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>

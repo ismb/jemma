@@ -124,7 +124,7 @@ public class PeerEndPoint extends BasicEndPoint implements IEndPoint {
 			if (!serviceCluster.getName().equals(ConfigClient.class.getName()))
 				containsOnlyCommonClustersListeners = false;
 			PeerServiceCluster peerServiceCluster = new PeerServiceCluster(serviceCluster, this);			
-			ServiceClusterProxyHandler serviceClusterHandler = new ServiceClusterProxyHandler(peerServiceCluster);
+			PeerServiceClusterProxy serviceClusterHandler = new PeerServiceClusterProxy(peerServiceCluster);
 			addServiceCluster(peerServiceCluster, (IServiceCluster)Proxy.newProxyInstance(clusterIf.getClassLoader(), 
 							new Class[] {IServiceCluster.class, clusterIf }, serviceClusterHandler));
 		} catch (Exception e) {

@@ -15,7 +15,10 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
+import org.energy_home.jemma.ah.ebrain.algo.SolarIrradianceProfile.SkyCover;
+
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,10 +28,12 @@ import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstrai
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.ebrain.algo.EnergyAllocator;
 import org.energy_home.jemma.ah.ebrain.algo.ParticleSwarmScheduler;
+import org.energy_home.jemma.ah.ebrain.algo.SolarIrradianceProfile;
 import org.energy_home.jemma.ah.ebrain.algo.SwarmStatistics;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
-import org.energy_home.jemma.shal.DeviceInfo;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
+import org.energy_home.jemma.shal.DeviceInfo;
+
 
 //public class EnergyBrainCore extends MeteringCore implements IPowerAndControlListener {
 public class EnergyBrainCore extends MeteringCore implements IPowerAndControlListener {
@@ -39,6 +44,8 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 	public static final int TIME_TOLERANCE_EQUALITY = 3 * 60 * 1000; // 3 minutes
 
 	private static EnergyBrainCore instance;
+	
+	private static SolarIrradianceProfile sky;
 	
 	public static EnergyBrainCore getInstance() {
 		if (instance == null) instance = new EnergyBrainCore();
@@ -170,7 +177,7 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 
 	private float getCurrentAvailablePower() {
 		//float available = upperPowerThreshold - super.getTotalInstantaneosPowerInfo(smartInfoId).getCurrentPower();
-		float available = upperPowerThreshold - super.getTotalIstantaneousDemandPower() + super.getIstantaneousProducedPower();
+		float available = powerThresholds.getFirstThreshold() - super.getTotalIstantaneousDemandPower() + super.getIstantaneousProducedPower();
 		return available;
 	}
 
@@ -220,10 +227,32 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 				throw new IllegalStateException("Unschedulable Profile State " + PowerProfileState.getNameOf(profileState));
 		}
 		*/
-		
+		return runSchedule(ppi);
+	}
+	
+	public EnergyPhaseScheduleTime[]  runSchedule(PowerProfileInfo ppi) {
 		try {
 			EnergyAllocator ec = new EnergyAllocator(dailyTariff);
-			ec.setPowerThreshold(getCurrentAvailablePower());
+			ec.setPowerThreshold(powerThresholds.getContractualThreshold());
+			
+			float[] forecast;
+			if (smartInfoProduction != null) {
+
+				List<Float> hourlyData = getCloudServiceProxy().retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
+				if (hourlyData != null && hourlyData.size() > SolarIrradianceProfile.MINIMUM_INTERPOLATION_HOURS) {
+					// set current value as most accurate than any forecast (obvious)
+					hourlyData.set(0, super.getIstantaneousProducedPower());
+					forecast = SolarIrradianceProfile.interpolate(hourlyData);
+				
+				} else {
+					// fall back if the retrieved values are unavailable
+					float maxProducedPower = super.getPeakProducedPower();
+					if (sky == null) sky = new SolarIrradianceProfile(maxProducedPower, EnergyAllocator.NUMBER_OF_DAYS_HORIZON, SkyCover.ClearSky);
+					forecast = sky.getSeries();
+				}
+				ec.setEnergyForecast(forecast);
+			}
+
 			ParticleSwarmScheduler swarm = new ParticleSwarmScheduler(ppi, ec, SCHEDULER_SWARM_SIZE);
 			
 			SwarmStatistics ss = null;//new SwarmStatistics();

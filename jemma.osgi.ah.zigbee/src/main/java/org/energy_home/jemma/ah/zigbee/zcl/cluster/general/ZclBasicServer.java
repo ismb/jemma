@@ -15,8 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
@@ -38,36 +40,28 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 public class ZclBasicServer extends ZclServiceCluster implements BasicServer, ZigBeeDeviceListener {
 
 	public final static short CLUSTER_ID = 0;
-	final static HashMap attributesMapByName = new HashMap();
-	final static HashMap attributesMapById = new HashMap();
+
+	static Map attributesMapByName = null;
+	static Map attributesMapById = null;
+
+	static ZclAttributeDescriptor[] attributeDescriptors = {
+			new ZclAttributeDescriptor(0, ZclBasicServer.ATTR_ZCLVersion_NAME, new ZclDataTypeUI8(), null, true, 1),
+			new ZclAttributeDescriptor(1, ZclBasicServer.ATTR_ApplicationVersion_NAME, new ZclDataTypeUI8(), null, true, 1),
+			new ZclAttributeDescriptor(2, ZclBasicServer.ATTR_StackVersion_NAME, new ZclDataTypeUI8(), null, true, 1),
+			new ZclAttributeDescriptor(3, ZclBasicServer.ATTR_HWVersion_NAME, new ZclDataTypeUI8(), null, true, 1),
+			new ZclAttributeDescriptor(4, ZclBasicServer.ATTR_ManufacturerName_NAME, new ZclDataTypeString(32), null, true, 1),
+			new ZclAttributeDescriptor(5, ZclBasicServer.ATTR_ModelIdentifier_NAME, new ZclDataTypeString(32), null, true, 1),
+			new ZclAttributeDescriptor(6, ZclBasicServer.ATTR_DateCode_NAME, new ZclDataTypeString(32), null, true, 1),
+			new ZclAttributeDescriptor(7, ZclBasicServer.ATTR_PowerSource_NAME, new ZclDataTypeEnum8(), null, true, 1),
+			new ZclAttributeDescriptor(16, ZclBasicServer.ATTR_LocationDescription_NAME, new ZclDataTypeString(16), null, true, 0),
+			new ZclAttributeDescriptor(17, ZclBasicServer.ATTR_PhysicalEnvironment_NAME, new ZclDataTypeEnum8(), null, true, 0),
+			new ZclAttributeDescriptor(18, ZclBasicServer.ATTR_DeviceEnabled_NAME, new ZclDataTypeBoolean(), null, true, 0),
+			new ZclAttributeDescriptor(19, ZclBasicServer.ATTR_AlarmMask_NAME, new ZclDataTypeBitmap8(), null, true, 0),
+			new ZclAttributeDescriptor(20, ZclBasicServer.ATTR_DisableLocalConfig_NAME, new ZclDataTypeBitmap8(), null, true, 0) };
 
 	static {
-		attributesMapByName.put(ZclBasicServer.ATTR_ZCLVersion_NAME, new ZclAttributeDescriptor(0,
-				ZclBasicServer.ATTR_ZCLVersion_NAME, new ZclDataTypeUI8(), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_ApplicationVersion_NAME, new ZclAttributeDescriptor(1,
-				ZclBasicServer.ATTR_ApplicationVersion_NAME, new ZclDataTypeUI8(), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_StackVersion_NAME, new ZclAttributeDescriptor(2,
-				ZclBasicServer.ATTR_StackVersion_NAME, new ZclDataTypeUI8(), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_HWVersion_NAME, new ZclAttributeDescriptor(3,
-				ZclBasicServer.ATTR_HWVersion_NAME, new ZclDataTypeUI8(), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_ManufacturerName_NAME, new ZclAttributeDescriptor(4,
-				ZclBasicServer.ATTR_ManufacturerName_NAME, new ZclDataTypeString(32), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_ModelIdentifier_NAME, new ZclAttributeDescriptor(5,
-				ZclBasicServer.ATTR_ModelIdentifier_NAME, new ZclDataTypeString(32), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_DateCode_NAME, new ZclAttributeDescriptor(6, ZclBasicServer.ATTR_DateCode_NAME,
-				new ZclDataTypeString(32), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_PowerSource_NAME, new ZclAttributeDescriptor(7,
-				ZclBasicServer.ATTR_PowerSource_NAME, new ZclDataTypeEnum8(), null, true, 1));
-		attributesMapByName.put(ZclBasicServer.ATTR_LocationDescription_NAME, new ZclAttributeDescriptor(16,
-				ZclBasicServer.ATTR_LocationDescription_NAME, new ZclDataTypeString(16), null, true, 0));
-		attributesMapByName.put(ZclBasicServer.ATTR_PhysicalEnvironment_NAME, new ZclAttributeDescriptor(17,
-				ZclBasicServer.ATTR_PhysicalEnvironment_NAME, new ZclDataTypeEnum8(), null, true, 0));
-		attributesMapByName.put(ZclBasicServer.ATTR_DeviceEnabled_NAME, new ZclAttributeDescriptor(18,
-				ZclBasicServer.ATTR_DeviceEnabled_NAME, new ZclDataTypeBoolean(), null, true, 0));
-		attributesMapByName.put(ZclBasicServer.ATTR_AlarmMask_NAME, new ZclAttributeDescriptor(19,
-				ZclBasicServer.ATTR_AlarmMask_NAME, new ZclDataTypeBitmap8(), null, true, 0));
-		attributesMapByName.put(ZclBasicServer.ATTR_DisableLocalConfig_NAME, new ZclAttributeDescriptor(20,
-				ZclBasicServer.ATTR_DisableLocalConfig_NAME, new ZclDataTypeBitmap8(), null, true, 0));
+		attributesMapById = fillAttributesMapsById(attributeDescriptors, attributesMapById);
+		attributesMapByName = fillAttributesMapsByName(attributeDescriptors, attributesMapByName);
 	}
 
 	public ZclBasicServer() throws ApplianceException {
@@ -81,18 +75,15 @@ public class ZclBasicServer extends ZclServiceCluster implements BasicServer, Zi
 	protected IZclAttributeDescriptor getAttributeDescriptor(String name) {
 		return ((IZclAttributeDescriptor) attributesMapByName.get(name));
 	}
-	
+
 	protected IZclAttributeDescriptor getAttributeDescriptor(int id) {
-		Iterator iterator = attributesMapByName.values().iterator();
-		// FIXME: generate it and optimize!!!!
-		for (; iterator.hasNext();) {
-			IZclAttributeDescriptor attributeDescriptor = (IZclAttributeDescriptor) iterator.next();
-			if (attributeDescriptor.zclGetId() == id)
-				return attributeDescriptor;
-		}
-		return null;
+		return (IZclAttributeDescriptor) attributesMapById.get(id);
 	}
-	
+
+	protected Collection getAttributeDescriptors() {
+		return attributesMapByName.values();
+	}
+
 	public short getZCLVersion(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
 			Short objectResult = null;

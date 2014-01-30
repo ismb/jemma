@@ -451,7 +451,7 @@ public class TripleExponentialSmoothing {
 		
 			int period = t.getPeriod();
 			int offset = period * t.getSeasons();
-			ea.interpolateEnergyForecast(pred, 0, period);
+			//ea.interpolateEnergyForecast(pred, 0, period);
 			
 			System.exit(0);
         	

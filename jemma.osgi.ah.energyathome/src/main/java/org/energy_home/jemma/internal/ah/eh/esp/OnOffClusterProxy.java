@@ -32,15 +32,15 @@ import org.energy_home.jemma.ah.ebrain.IOnOffProxy;
 
 public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClient, IServiceClusterListener, IOnOffProxy {
 	private static final Log log = LogFactory.getLog(OnOffClusterProxy.class);
-	private ApplianceProxyList proxyList;
+	private DeviceProxyList proxyList;
 	private IOnOffListener listener;
 	
-	private OnOffServer getMeteringServerCluster(ApplianceProxy applianceProxy) {
+	private OnOffServer getMeteringServerCluster(DeviceProxy deviceProxy) {
 		// TODO: needs to be modified to manage multi end point devices
-		return (OnOffServer) getServiceCluster(applianceProxy, IEndPoint.DEFAULT_END_POINT_ID, OnOffServer.class.getName());
+		return (OnOffServer) getServiceCluster(deviceProxy, OnOffServer.class.getName());
 	}
 	
-	public OnOffClusterProxy(ApplianceProxyList proxy, IOnOffListener listener) throws ApplianceException {
+	public OnOffClusterProxy(DeviceProxyList proxy, IOnOffListener listener) throws ApplianceException {
 		this.proxyList = proxy;
 		this.listener = listener;
 	}
@@ -48,9 +48,9 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 	public Boolean getStatus(String applianceId) {
 		Boolean value = null;
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			OnOffServer ofs = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			OnOffServer ofs = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			value = new Boolean(ofs.getOnOff(context));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,9 +61,9 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 
 	public Boolean setStatus(String applianceId, Boolean value) {
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			OnOffServer ofs = getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			OnOffServer ofs = getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			if (value)
 				ofs.execOn(context);
 			else
@@ -77,12 +77,12 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 	
 	public void notifyAttributeValue(String attributeName, IAttributeValue peerAttributeValue, IEndPointRequestContext endPointRequestContext) {
 		try {
-			String appliancePid = getApplianceId(endPointRequestContext);
+			String applianceId = getApplianceId(endPointRequestContext);
 			if (attributeName.equals(OnOffServer.ATTR_OnOff_NAME)) {
 				Boolean value = (Boolean)peerAttributeValue.getValue();
-				listener.notifyStatus(appliancePid, peerAttributeValue.getTimestamp(), value);
+				listener.notifyStatus(applianceId, peerAttributeValue.getTimestamp(), value);
 			} else {
-				log.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + appliancePid);
+				log.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
 			}			
 		} catch (Exception e) {
 			log.error("notifyAttributeValue error", e);
@@ -93,9 +93,9 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 		SubscriptionParameters params = new SubscriptionParameters(minReportingInterval, maxReportingInterval, 0);
 		// TODO: needs to be extended to manage multiple end points devices
 		try {
-			ApplianceProxy applianceProxy = proxyList.getApplianceProxy(applianceId);
-			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(applianceProxy);
-			IEndPointRequestContext context = getApplicationRequestContext(applianceProxy, true);
+			DeviceProxy deviceProxy = proxyList.getDeviceProxy(applianceId);
+			IServiceCluster serviceCluster = (IServiceCluster) getMeteringServerCluster(deviceProxy);
+			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(OnOffServer.ATTR_OnOff_NAME, params, context);
 		} catch (Exception e) {
 			log.error("subscribeStatus error for appliance " + applianceId, e);

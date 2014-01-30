@@ -35,7 +35,7 @@ var Storico = {
 			+ "		<img id='StoricoBg' src='" + Define.home["sfondo_sx"] + "'>"
 			+ "		<div id='MsgStorico' style='display:none'>" + Msg.home["datiMancanti"] + "</div>"
 			+ "		<div id='LabelStoricokWh'>kWh</div>"
-			+ "		<div id='LabelStoricoEuro'>Ä</div>"
+			+ "		<div id='LabelStoricoEuro'>‚Ç¨</div>"
 			+ "		<div id='Prec'>"
 			+ "			<img id='PrecImg' src='" + Define.home["frecciaPrec"] + "'><div id='LabelPrec'></div>"
 			+ "		</div>"
@@ -259,7 +259,7 @@ Storico.VisStorico = function(tipo) {
 		}
 	}
 	
-	//filtro con jquery.grep e se il risultato è < al 30% visualizzo il div col msg di errore
+	//filtro con jquery.grep e se il risultato ÔøΩ < al 30% visualizzo il div col msg di errore
 	var consumiNullGrep = jQuery.grep(dati1, function(valueDati1){
 		return (valueDati1 != null);
 	});
@@ -629,7 +629,7 @@ Storico.DatiCostoStorico = function(val) {
 
 Storico.DatiProduzioneStorico = function(val) {
 	//console.log('datiCosti Costi dal server', val);
-	Storico.datiProduzione = val;
+	Storico.datiProduzione = val * 10;
 	if (val == null){
 		//console.log(80, Storico.MODULE, "DatiCostoStorico null");
 	}
@@ -996,8 +996,8 @@ Storico.GestStorico = function() {
 	var divStorico = $("#Content");
 
 	/*
-	 * Controllo che il div di Report non sia già stato riempito. Se non esiste
-	 * lo inizializzo, se già esiste lo visualizzo solamente
+	 * Controllo che il div di Report non sia giÀÜ stato riempito. Se non esiste
+	 * lo inizializzo, se giÀÜ esiste lo visualizzo solamente
 	 */
 
 	if (divStorico.length == 0) {

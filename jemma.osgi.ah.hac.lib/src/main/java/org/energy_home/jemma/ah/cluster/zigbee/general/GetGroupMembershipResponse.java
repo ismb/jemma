@@ -18,16 +18,13 @@ package org.energy_home.jemma.ah.cluster.zigbee.general;
 public class GetGroupMembershipResponse {
 
 	public short Capacity;
-	public short GroupCount;
-	public int GroupList;
+	public int[] GroupList;
 
 	public GetGroupMembershipResponse() {
 	}
 
-	public GetGroupMembershipResponse(short Capacity, short GroupCount, int GroupList) {
+	public GetGroupMembershipResponse(short Capacity, short GroupCount, int[] GroupList) {
 		this.Capacity = Capacity;
-		this.GroupCount = GroupCount;
 		this.GroupList = GroupList;
 	}
-
 }

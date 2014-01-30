@@ -17,6 +17,7 @@ package org.energy_home.jemma.ah.hac.lib.internal;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -56,7 +57,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
 import org.energy_home.jemma.ah.hac.lib.ext.EndPointRequestContext;
 import org.energy_home.jemma.ah.hac.lib.ext.ICoreApplication;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
+//import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -80,15 +81,26 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	protected static final int INITIAL_APPLIANCE_NUMBER = 12;
 	
-	// Driver mode is used when jemma.osgi.ah.hac bundle id not available (no appliance configuration information is available)
+	protected static final int INITIAL_APPLICATION_NUMBER = 3;
+	
+	// Driver mode is used when it.telecomitalia.osgi.ah.hac bundle id not available (no appliance configuration information is available)
 	private static final String AH_HAC_DRIVER_MODE = "driver";
 	private static final String AH_EXECUTION_MODE = System.getProperty("it.telecomitalia.ah.hac.mode");
 	
 	public static final String APPLIANCE_TYPE = "ah.app.proxy";
 	public static final String END_POINT_TYPE = "ah.ep.zigbee.proxy";
+	public static final String APPLICATION_END_POINT = "ah.app.application.proxy";
 	public static final  String APPLIANCE_FRIENDLY_NAME = "ah.app.proxy";
 	public static final  IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
 			APPLIANCE_FRIENDLY_NAME);
+	
+	private static final String APPLICATION_SERVICE_NAME_PROPERTY_NAME = "ah.application.name";
+	
+	private static Dictionary initialConfig = new Hashtable(1);
+			
+	static {
+		initialConfig.put(IAppliance.APPLIANCE_NAME_PROPERTY, APPLIANCE_FRIENDLY_NAME);
+	};
 	
 	protected static boolean isHacDriverModeActive() {
 		return AH_HAC_DRIVER_MODE.equals(AH_EXECUTION_MODE);
@@ -100,83 +112,12 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 
 	//********** ProxyEndPoint internal class
 	
-	public class ProxyEndPoint extends EndPoint {
-
-		ProxyEndPoint(String type) throws ApplianceException {
-			super(type);
-		}	
 		
-		boolean isApplianceEnabled(String appliancePid) {
-			if (appliancePid.equals(APPLIANCE_TYPE))
-				return true;
-			ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) applianceMap.get(appliancePid);
-			return (applianceProxy != null && applianceProxy.getStatus() == ManagedApplianceStatus.STATUS_ENABLED); 
-		}
-		
-		public IServiceCluster addProxyServiceCluster(ServiceCluster serviceCluster) throws ApplianceValidationException {
-			if (serviceCluster == null)
-				return null;
-			Class clusterIf = serviceCluster.getClusterInterfaceClass();
-			try {
-				ServiceClusterProxyHandler serviceClusterHandler = new ServiceClusterProxyHandler(
-						serviceCluster.getClusterInterfaceImpl(), clusterIf, new IEndPointRequestContextCheck() {						
-							public void checkRequestContext(IEndPointRequestContext context) throws ServiceClusterException {
-								if (context != null) {
-									String appliancePid = context.getPeerEndPoint().getAppliance().getPid();
-									if (!isApplianceEnabled(appliancePid))
-										throw new NotAuthorized("Invalid context appliance not enabled");
-								}
-							}
-						});
-				ServiceCluster proxyCluster = serviceClusterHandler.getServiceCluster();
-				Class[] registeredInterfaces;
-				if (serviceCluster instanceof IServiceClusterListener)
-					registeredInterfaces = new Class[] {IServiceCluster.class, clusterIf, IServiceClusterListener.class };
-				else
-					registeredInterfaces = new Class[] {IServiceCluster.class, clusterIf};
-				return addServiceCluster(proxyCluster, (IServiceCluster)Proxy.newProxyInstance(
-						clusterIf.getClassLoader(), registeredInterfaces , serviceClusterHandler));
-			} catch (Exception e) {
-				throw new ApplianceValidationException("End point cluster proxy instantiation error " + clusterIf.getClass().getName());
-			}
-		}
-		
-		public void removeProxyServiceCluster(ServiceCluster serviceCluster) {
-			removeServiceCluster(serviceCluster);
-		}
-		
-		public ServiceCluster addServiceCluster(ServiceCluster serviceCluster) {
-			if (mainEndPoint.getServiceCluster(serviceCluster.getName()) != null) {
-				// TODO: last registered service is used (control access or connection management needs to be added)
-				log.warn("addExportedServiceCluster: already registered service cluster " + serviceCluster.getName());
-				removeServiceCluster(serviceCluster);
-			}
-			try {
-				return super.addServiceCluster(serviceCluster);
-			} catch (ApplianceException e) {
-				log.error("Error while adding service cluster " + serviceCluster.getName(), e);
-				return null;
-			}
-		}
-		
-		public void removeServiceCluster(ServiceCluster serviceCluster) {
-			if (serviceCluster == null)
-				return;
-			String clusterType = serviceCluster.getType();
-			String clusterName = serviceCluster.getName();
-			try {		
-				if (serviceCluster.getSide() == IServiceCluster.SERVER_SIDE) {
-					serverServiceClusters.remove(clusterType);
-				} else {
-					clientServiceClusters.remove(clusterType);
-				}
-			} catch (Exception e) {
-				log.error("Error while removing cluster " + clusterName, e);
-			}
-		}
-			
-
-		
+	boolean isApplianceEnabled(String appliancePid) {
+		if (appliancePid.equals(APPLIANCE_TYPE))
+			return true;
+		ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) applianceMap.get(appliancePid);
+		return (applianceProxy != null && applianceProxy.getStatus() == ManagedApplianceStatus.STATUS_ENABLED); 
 	}
 	
 	//********** ApplicationTasks internal class
@@ -318,14 +259,17 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	}
 	
 	ApplicationTasks applicationTasks = new ApplicationTasks();
+	private AppliancesInitializationManager appliancesInitializationManager;
 	
 	protected BundleContext bc = null;
 	protected ServiceRegistration hacServiceRegistration = null;
 	protected ServiceRegistration hacDriverLocatorRegistration = null;
 	
-	protected ProxyEndPoint mainEndPoint;
+	protected EndPointProxy mainEndPoint;
 	protected IEndPointRequestContext confirmedRequestContext;
 	protected IEndPointRequestContext unconfirmedRequestContext;
+	protected IEndPointRequestContext lastReadRequestContext;
+	
 	protected IdentifyServerCluster identifyServer;
 	
 	protected Object hacServiceSync = new Object();
@@ -339,9 +283,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	protected Map installingApplianceMap = new HashMap(INITIAL_APPLIANCE_NUMBER);
 
 	protected List attributeValuesListenerList = new ArrayList();
-	protected List<IApplicationService> appliancesListenerList = new ArrayList<IApplicationService>();
 	protected Map appliancesListenerListMap = new HashMap(INITIAL_APPLIANCE_NUMBER);
 
+	protected Map applicationToProxyEndPointMap = new HashMap(INITIAL_APPLICATION_NUMBER);
+	
 	protected ManagedApplianceServiceTracker managedApplianceServiceTracker = null;
 	protected boolean useManagedApplianceServiceTracker = true;
 
@@ -365,7 +310,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			IAppliance appliance = ((ManagedApplianceStatus) iterator.next()).getAppliance();
 			String appliancePid = appliance.getPid();
 			try {
-				listener.notifyApplianceAdded(mainEndPoint, appliance);	
+				if (!installing)
+					listener.notifyApplianceAdded(mainEndPoint, appliance);	
+				else if (listener instanceof ICoreApplication)
+					((ICoreApplication)listener).notifyInstallingApplianceAdded(appliance);
 				List proxyListeners = getProxyListeners(appliancePid);
 				if (proxyListeners.remove(listener))
 					log.error("Existing listener " + listener +  " removed for appliance " + appliancePid);
@@ -384,7 +332,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			try {	
 				List proxyListeners = getProxyListeners(appliancePid);
 				proxyListeners.remove(listener);
-				listener.notifyApplianceRemoved(appliance);
+				if (!installing)
+					listener.notifyApplianceRemoved(appliance);
+				else if (listener instanceof ICoreApplication)
+					((ICoreApplication)listener).notifyInstallingApplianceRemoved(appliance);
 			} catch (Exception e) {
 				log.error("Error while notifying appliance removed to listener " + appliance.getPid(), e);
 			}
@@ -396,8 +347,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		for (Iterator iterator = proxyListeners.iterator(); iterator.hasNext();) {
 			IApplicationService listener = (IApplicationService) iterator.next();
 			try {
-				if (!installing || listener instanceof ICoreApplication)
+				if (!installing) 
 					listener.notifyApplianceAdded(mainEndPoint, appliance);
+				else if (listener instanceof ICoreApplication)
+					((ICoreApplication)listener).notifyInstallingApplianceAdded(appliance);
 			} catch (Exception e) {
 				log.error("Error while notifying new appliance to listener", e);
 			}
@@ -442,18 +395,19 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	//********** Appliance related methods
 	
 	public AppliancesBasicProxy() throws ApplianceException {
-		super(APPLIANCE_TYPE, null);
+		super(APPLIANCE_TYPE, initialConfig);
 		//setApplianceManager(null);
-
-		mainEndPoint = new ProxyEndPoint(END_POINT_TYPE);
-		this.addEndPoint(mainEndPoint);
+		mainEndPoint = new EndPointProxy(END_POINT_TYPE);
+		addEndPoint(mainEndPoint);
 		mainEndPoint.addServiceCluster(new BasicServerCluster());
 		identifyServer = new IdentifyServerCluster(applicationTasks);
 		mainEndPoint.addServiceCluster(identifyServer);
 		mainEndPoint.addServiceCluster(new TimeServerCluster());
 		mainEndPoint.registerServiceClustersListener(this);
-		this.confirmedRequestContext = new EndPointRequestContext(mainEndPoint);
-		this.unconfirmedRequestContext = new EndPointRequestContext(mainEndPoint, false, 0);
+		confirmedRequestContext = new EndPointRequestContext(mainEndPoint);
+		unconfirmedRequestContext = new EndPointRequestContext(mainEndPoint, false, 0);
+		lastReadRequestContext = new EndPointRequestContext(mainEndPoint, true, Long.MAX_VALUE);
+		appliancesInitializationManager = new AppliancesInitializationManager(confirmedRequestContext);
 	}
 	
 	public void start(ComponentContext ctxt) {
@@ -507,18 +461,22 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			applianceProxy = (ManagedApplianceStatus) installingApplianceMap.get(appliancePid);
 		if (applianceProxy == null)
 			log.error("Received availability update for not exhisting appliance " + appliancePid);
-		else
+		else {
+			IAppliance appliance = applianceProxy.getAppliance();
+			if (appliance.isAvailable())
+				appliancesInitializationManager.initAppliance(appliance);
 			for (Iterator iterator = proxyListeners.iterator(); iterator.hasNext();) {
 				IApplicationService listener = (IApplicationService) iterator.next();
 				try {
 					if (applianceProxy.getStatus() == ManagedApplianceStatus.STATUS_ENABLED)
-						listener.notifyApplianceAvailabilityUpdated(applianceProxy.getAppliance());			
+						listener.notifyApplianceAvailabilityUpdated(appliance);			
 					else if (listener instanceof ICoreApplication)
-						((ICoreApplication)listener).notifyInstallingApplianceAvailabilityUpdated(applianceProxy.getAppliance());	
+						((ICoreApplication)listener).notifyInstallingApplianceAvailabilityUpdated(appliance);	
 				} catch (Exception e) {
 					log.error("Error while notifying availability update", e);
 				}
 			}
+		}
 	}
 	
 	// Method use to receive configuration updates from registered appliances (IManagedAppliance services)
@@ -562,7 +520,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	public void unsetEventAdmin(EventAdmin s) {
 		synchronized (eventAdminSync) {
 			if (s == eventAdmin)
-				eventAdmin = s;
+				eventAdmin = null;
 		}
 	}
 	
@@ -591,10 +549,12 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		IEndPoint[] endPoints = appliance.getEndPoints();
 		Map savedProps = new HashMap(props);
 		for (int i = 0; i < endPoints.length; i++) {
-			((ApplianceManager)appliance.getApplianceManager()).setAppliancesProxy((EndPoint)endPoints[i], (AppliancesProxy)this);
+			((ApplianceManager)appliance.getApplianceManager()).setAppliancesProxy((AppliancesProxy)this);
 		}
+		if (appliance.isAvailable())
+			appliancesInitializationManager.initAppliance(appliance);
 		List proxyListeners = getProxyListeners(appliancePid);
-		for (Iterator iterator = appliancesListenerList.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = applicationToProxyEndPointMap.keySet().iterator(); iterator.hasNext();) {
 			IApplicationService listener = (IApplicationService) iterator.next();
 			if (proxyListeners.remove(listener))
 				log.error("Existing listener " + listener +  " removed for appliance " + appliancePid);
@@ -602,14 +562,14 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			proxyListeners.add(listener);
 		}
 		applianceConfigurationMap.put(appliancePid, savedProps);
-		String appStatus = (String) savedProps.get("ah.status");
+		String appStatus = (String) savedProps.get(ApplianceConfiguration.AH_STATUS_PROPERTY_NAME);
 		if (appStatus != null && appStatus.equals("installing")) {
 			log.info("Appliance not yet installed " + appliancePid);
 			ManagedApplianceStatus proxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_INSTALLING);
 			installingApplianceMap.put(appliancePid, proxy);
 			notifyApplianceAdded(appliance, true);
 			return;
-		}  
+		}
 		ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) installingApplianceMap.get(appliancePid);
 		if (applianceProxy != null) {
 			installingApplianceMap.remove(appliancePid);
@@ -637,7 +597,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			applianceConfigurationMap.remove(appliancePid);
 		IEndPoint[] endPoints = appliance.getEndPoints();
 		for (int i = 0; i < endPoints.length; i++) {
-			((ApplianceManager)appliance.getApplianceManager()).setAppliancesProxy((EndPoint)endPoints[i], null);
+			((ApplianceManager)appliance.getApplianceManager()).setAppliancesProxy(null);
 			IServiceCluster[] serviceClusterArray = endPoints[i].getServiceClusters();
 			for (int j = 0; j < serviceClusterArray.length; j++) {
 				try {
@@ -656,43 +616,80 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			applianceMap.remove(appliancePid);
 		}
 		List proxyListeners = getProxyListeners(appliancePid);
-		for (Iterator iterator = appliancesListenerList.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = applicationToProxyEndPointMap.keySet().iterator(); iterator.hasNext();) {
 			IApplicationService listener = (IApplicationService) iterator.next();
 			proxyListeners.remove(listener);
 		}
 	}
 	
-	public synchronized void addApplicationService(IApplicationService listener) {
-		appliancesListenerList.add(listener);
-		notifyAllAppliancesAdded(listener, false);
-		if (listener instanceof ICoreApplication) {
-			notifyAllAppliancesAdded(listener, true);
-		}
-		IServiceCluster[] serviceClusters = listener.getServiceClusters();
-		if (serviceClusters != null) {
-			for (int i = 0; i < serviceClusters.length; i++) {
-				ServiceCluster serviceCluster = (ServiceCluster) serviceClusters[i];
-				try {
-					mainEndPoint.addProxyServiceCluster(serviceCluster);
-				} catch (ApplianceValidationException e) {
-					log.error("Error while adding proxy service cluster" + serviceCluster.getName(), e);
+	public synchronized void addApplicationService(IApplicationService listener, Map props) {
+		try {
+			String endPointName = (String)props.get(APPLICATION_SERVICE_NAME_PROPERTY_NAME);
+			if (endPointName == null)
+				endPointName = APPLICATION_END_POINT;
+			EndPointProxy appEndPoint = new EndPointProxy(endPointName);
+			notifyAllAppliancesAdded(listener, false);
+			if (listener instanceof ICoreApplication) {
+				notifyAllAppliancesAdded(listener, true);
+			}
+			IServiceCluster[] serviceClusters = listener.getServiceClusters();
+			if (serviceClusters != null) {
+				for (int i = 0; i < serviceClusters.length; i++) {
+					ServiceCluster serviceCluster = (ServiceCluster) serviceClusters[i];
+					try {
+						String clusterName = serviceCluster.getName();
+						synchronized (mainEndPoint) {
+							ServiceClusterProxy serviceClusterProxy = mainEndPoint.getServiceClusterProxy(clusterName);
+							if (serviceClusterProxy == null) {
+								Class clusterInterfaceClass = serviceCluster.getClusterInterfaceClass();
+								serviceClusterProxy = new ServiceClusterProxy(this, clusterInterfaceClass, new IEndPointRequestContextCheck() {						
+									public void checkRequestContext(IEndPointRequestContext context) throws ServiceClusterException {
+										if (context != null) {
+											String appliancePid = context.getPeerEndPoint().getAppliance().getPid();
+											if (!isApplianceEnabled(appliancePid))
+												throw new NotAuthorized("Invalid context: application not ready");
+										}
+									}
+								});	
+								mainEndPoint.addServiceClusterProxy(serviceClusterProxy);
+							}
+						}
+						appEndPoint.addServiceCluster(serviceCluster);
+					} catch (Exception e) {
+						log.error("Error while adding proxy service cluster" + serviceCluster.getName(), e);
+					}
 				}
 			}
+			addEndPoint(appEndPoint);
+			applicationToProxyEndPointMap.put(listener, appEndPoint);		
+		} catch (Exception e) {
+			log.error("Error while registering proxy application end point service clusters");
 		}
 	}	
 	
 	public synchronized void removeApplicationService(IApplicationService listener) {
-		IServiceCluster[] serviceClusters = listener.getServiceClusters();
-		if (serviceClusters != null) {
-			for (int i = 0; i < serviceClusters.length; i++) {
-				ServiceCluster serviceCluster = (ServiceCluster) serviceClusters[i];
-				mainEndPoint.removeProxyServiceCluster(serviceCluster);
+		try {
+			EndPointProxy appEndPoint = (EndPointProxy) applicationToProxyEndPointMap.get(listener);
+			IServiceCluster[] serviceClusters = listener.getServiceClusters();
+			if (serviceClusters != null) {
+				for (int i = 0; i < serviceClusters.length; i++) {
+					ServiceCluster serviceCluster = (ServiceCluster) serviceClusters[i];
+					try {						
+						appEndPoint.removeServiceCluster(serviceCluster);
+						mainEndPoint.checkAndRemoveEmptyServiceClusterProxy(serviceCluster.getName()); 						
+					} catch (Exception e) {
+						log.error("Error while removing proxy service cluster" + serviceCluster.getName(), e);
+					}
+				}
 			}
-		}
-		appliancesListenerList.remove(listener);
-		notifyAllAppliancesRemoved(listener, false);
-		if (listener instanceof ICoreApplication) {
-			notifyAllAppliancesRemoved(listener, true);
+			removeEndPoint(appEndPoint.getId());
+			applicationToProxyEndPointMap.remove(listener);
+			notifyAllAppliancesRemoved(listener, false);
+			if (listener instanceof ICoreApplication) {
+				notifyAllAppliancesRemoved(listener, true);
+			}
+		} catch (Exception e) {
+			log.error("Error while registering proxy application end point service clusters");
 		}
 
 	}	
@@ -718,16 +715,19 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	public void notifyAttributeValue(String clusterName, String attributeName, IAttributeValue attributeValue,
 			IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
 		String appliancePid = endPointRequestContext.getPeerEndPoint().getAppliance().getPid();
-		ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) applianceMap.get(appliancePid);
-		if (applianceProxy == null || applianceProxy.getStatus() != ManagedApplianceStatus.STATUS_ENABLED) {
-			log.warn("notifyAttributeValue received from an " +
-					((applianceProxy == null) ? "unknown" : "not enabled ") + " appliance: " + 
+		ManagedApplianceStatus applianceStatus = (ManagedApplianceStatus) applianceMap.get(appliancePid);
+		if (applianceStatus == null)
+			applianceStatus = (ManagedApplianceStatus) installingApplianceMap.get(appliancePid);
+		
+		if (applianceStatus == null || applianceStatus.getStatus() != ManagedApplianceStatus.STATUS_ENABLED) {
+			log.warn("notifyAttributeValue received from " +
+					((applianceStatus == null) ? "an unknown" : "a not enabled ") + " appliance: " + 
 						endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + clusterName + " " + 
 						attributeName + " " + attributeValue.getTimestamp() + " " + attributeValue.getValue());
 			return;
 		}
 		Integer endPointId = new Integer(endPointRequestContext.getPeerEndPoint().getId());
-		log.debug("notifyAttributeValue: " + endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
+		log.debug("notifyAttributeValue: " + endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + endPointId +  " " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
 				+ " " + attributeValue.getValue());		
 		synchronized (attributeValuesListenerList) {
 			for (Iterator iterator = attributeValuesListenerList.iterator(); iterator.hasNext();) {
@@ -794,8 +794,6 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			return proxy.getAppliance();
 		return null;
 	}
-	
-	
 	
 }
 
