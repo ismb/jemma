@@ -48,14 +48,15 @@ import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.TypeFunction;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
-
 import com.sun.org.apache.xml.internal.utils.BoolStack;
 import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
+
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
  * Algorithm.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class Discovery_Freshness_ForcePing {
@@ -72,29 +73,26 @@ public class Discovery_Freshness_ForcePing {
 	/**
 	 * return -1 if not Exist; return > 0 is the index of the object
 	 */
-	private synchronized static short existIntoTable(int tranSeqNumber, Integer shortAddress) {
+	private synchronized static short existIntoTable(Integer shortAddress) {
 		/* Check if the request exists into the table DiscoveryMng */
 		short __index = -1;
 		for (DiscoveryMng x : _Table) {
 			__index++;
-			if (tranSeqNumber > -1) {
-				if ((x.get_TranseqNumber() == tranSeqNumber) && (shortAddress.equals(x.get_Destination_NetworkAddress()))) {
-					return __index;
-
-				}
-			} else {
-				if (shortAddress.equals(x.get_Destination_NetworkAddress()))
-					return __index;
-			}
+			if ((shortAddress.equals(x.get_Destination_NetworkAddress())))
+				return __index;
 		}
 		return -1;
 	}
 
 	/**
 	 * Create the Aps for the Lqi-Request command
-	 * @param _transeqNumber --> The counter of the current ApsMessage
-	 * @param startIndex --> The index of the Lqi table that will be read
-	 * @param node --> The address of the destination node
+	 * 
+	 * @param _transeqNumber
+	 *            --> The counter of the current ApsMessage
+	 * @param startIndex
+	 *            --> The index of the Lqi table that will be read
+	 * @param node
+	 *            --> The address of the destination node
 	 */
 	private APSMessage createApsMessaggeLqi_Req(byte _transeqNumber, int startIndex, Address node) {
 
@@ -121,14 +119,13 @@ public class Discovery_Freshness_ForcePing {
 		return _LQIReq;
 	}
 
-	
 	/**
-	 * Send the Lqi_Request for the selected address. Then manages the Lqi_Response
+	 * Send the Lqi_Request for the selected address. Then manages the
+	 * Lqi_Response
 	 */
 	public void startLqi(Address node, TypeFunction function, short startIndex) {
 
 		String funcionName = null;
-		byte TranseqNumber = (byte) gal.getTransequenceNumber();
 		if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
 			if (function == TypeFunction.DISCOVERY)
@@ -155,12 +152,11 @@ public class Discovery_Freshness_ForcePing {
 
 				_newDsc = new DiscoveryMng();
 				_newDsc.set_Destination_NetworkAddress(node.getNetworkAddress());
-				_newDsc.set_TranseqNumber(TranseqNumber);
 				synchronized (_Table) {
 					_Table.add(_newDsc);
 				}
 				Status _stat = null;
-				_stat = gal.getDataLayer().sendApsSync(IDataLayer.INTERNAL_TIMEOUT, createApsMessaggeLqi_Req(TranseqNumber, startIndex, node));
+				_stat = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
 
 				/* Check no confirm received */
 				if (_stat == null || _stat.getCode() != 0) {
@@ -291,7 +287,8 @@ public class Discovery_Freshness_ForcePing {
 	}
 
 	/**
-	 * For any Child into the Neighbor of he parent node, start the same Algorithm recursively
+	 * For any Child into the Neighbor of he parent node, start the same
+	 * Algorithm recursively
 	 */
 	private void manageChildNode(Address node, TypeFunction function, String funcionName, AssociatedDevices _AssociatedDevices, NeighborTableLis_Record x) throws Exception {
 		if (x._Extended_Address == 0xFFFFFFFFFFFFFFFFL || x._Extended_Address == 0x0000000000000000L) {
@@ -462,7 +459,7 @@ public class Discovery_Freshness_ForcePing {
 		Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(message.getData());
 		short index = -1;
 		synchronized (_Table) {
-			index = existIntoTable(_res._TranseqNumber, message.getSourceAddress().getNetworkAddress());
+			index = existIntoTable(message.getSourceAddress().getNetworkAddress());
 			if (index == -1)
 				return;
 			else {
@@ -477,26 +474,17 @@ public class Discovery_Freshness_ForcePing {
 	}
 
 }
+
 /**
  * Class used to manage the lock on the Lqi_Request
  */
 class DiscoveryMng {
-	private byte _TranseqNumber;
 	private Mgmt_LQI_rsp _response;
 	private int _Destination_NetworkAddress;
 
 	public DiscoveryMng() {
-		_TranseqNumber = -1;
 		_Destination_NetworkAddress = -1;
 		_response = null;
-	}
-
-	public short get_TranseqNumber() {
-		return _TranseqNumber;
-	}
-
-	public void set_TranseqNumber(byte _TranseqNumber) {
-		this._TranseqNumber = _TranseqNumber;
 	}
 
 	public int get_Destination_NetworkAddress() {

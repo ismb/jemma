@@ -81,7 +81,6 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
 public class GalController {
 	private GatewayStatus _gatewayStatus = GatewayStatus.GW_READY_TO_START;
 	private Long apsCallbackIdentifier = (long) 1;
-	private short transequenceNumber = 1;
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
 	private List<CallbackEntry> listCallback = Collections.synchronizedList(new LinkedList<CallbackEntry>());
 	private List<GatewayDeviceEventEntry> listGatewayEventListener = Collections.synchronizedList(new LinkedList<GatewayDeviceEventEntry>());
@@ -1638,20 +1637,7 @@ public short configureEndpoint(long timeout, SimpleDescriptor desc)
 
 	}
 
-	/**
-	 * Gets the transaction sequence number. See section 6.5.1.2 of ZigBee
-	 * Document 075468r35.
-	 * 
-	 * @return the trans sequence number.
-	 */
-	public short getTransequenceNumber() {
-		if (transequenceNumber < 0xFF)
-			transequenceNumber++;
-		else
-			transequenceNumber = 0x01;
-		return transequenceNumber;
-	}
-
+	
 	/**
 	 * Gets the Gateway Status.
 	 * 

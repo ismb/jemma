@@ -534,4 +534,20 @@ public interface IDataLayer extends IFrameCallback {
 	
 
 	
+	/**
+	 * Starts a ZDP-Mgmt_Lqi.Request procedure synchronously. The Lqi_req procedure is
+	 * invoked by an IPHA to issue a ZDP-Mgmt_Lqi.Request.
+	 * 
+	 * @param timeout
+	 *            the desired timeout.
+	 * @param addrOfInterest
+	 *            the address of interest for the PermitJoin procedure.
+	 * @param startindex
+	 *            the value of the table index.
+	 */
+	public Status Mgmt_Lqi_Request(long timeout, Address addrOfInterest,
+			short startIndex) throws IOException, Exception,
+			GatewayException;
+	
+	
 }

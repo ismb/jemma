@@ -807,6 +807,24 @@ public class DataFreescale implements IDataLayer {
 				}
 
 			}
+			
+			/* APS-ZDP-Mgmt_Lqi.Response */
+			else if (message[0] == 0xA0 && message[1] == 0xB1) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					DataManipulation.logArrayHexRadix("Received ZDP-Mgmt_Lqi.Response", message);
+				synchronized (listLocker) {
+					for (ParserLocker pl : listLocker) {
+						if ((pl.getType() == TypeMessage.LQI_REQ)) {
+							synchronized (pl) {
+								pl.getStatus().setCode(message[3]);
+								pl.notify();
+							}
+							break;
+						}
+					}
+				}
+
+			}
 			/* ZTC-ReadExtAddr.Confirm */
 			else if (message[0] == 0xA4 && message[1] == 0xD2) {
 				if (gal.getPropertiesManager().getDebugEnabled())
@@ -1712,12 +1730,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 
@@ -1774,12 +1792,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -1836,12 +1854,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 
@@ -1905,12 +1923,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 
@@ -1967,12 +1985,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -2042,12 +2060,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2181,12 +2199,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2260,12 +2278,12 @@ public class DataFreescale implements IDataLayer {
 				status = lock.getStatus();
 				synchronized (listLocker) {
 					if (listLocker.contains(lock))
-					listLocker.remove(lock);
+						listLocker.remove(lock);
 				}
 			} catch (Exception e) {
 				synchronized (listLocker) {
 					if (listLocker.contains(lock))
-					listLocker.remove(lock);
+						listLocker.remove(lock);
 				}
 			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2411,12 +2429,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2471,12 +2489,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -2543,12 +2561,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2594,12 +2612,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -2656,12 +2674,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2724,12 +2742,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 
@@ -2792,12 +2810,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2908,12 +2926,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -2964,12 +2982,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -3031,12 +3049,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -3105,12 +3123,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -3206,12 +3224,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -3308,12 +3326,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -3458,12 +3476,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
@@ -3518,12 +3536,12 @@ public class DataFreescale implements IDataLayer {
 			status = lock.getStatus();
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 		} catch (Exception e) {
 			synchronized (listLocker) {
 				if (listLocker.contains(lock))
-				listLocker.remove(lock);
+					listLocker.remove(lock);
 			}
 
 		}
@@ -3603,6 +3621,58 @@ public class DataFreescale implements IDataLayer {
 					logger.info("Returned Status: " + status.getCode());
 				}
 				throw new GatewayException("Error on NMLE_SET.request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+			}
+			return status;
+		}
+	}
+
+	@Override
+	public Status Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException {
+		ByteArrayObject _res = new ByteArrayObject();
+		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);
+		_res.addByte((byte) startIndex);
+		_res = Set_SequenceStart_And_FSC(_res, (byte) 0xA2, (byte) 0x31);
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			logger.info("Mgmt_Lqi_Request command:" + _res.ToHexString());
+		}
+		ParserLocker lock = new ParserLocker();
+		lock.setType(TypeMessage.LQI_REQ);
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(_res);
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+		}
+		if (status.getCode() == ParserLocker.INVALID_ID) {
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.error("Timeout expired in ZDP-Mgmt_Lqi.Request");
+			}
+			throw new GatewayException("Timeout expired in ZDP-Mgmt_Lqi.Request");
+		} else {
+			if (status.getCode() != 0) {
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("Returned Status: " + status.getCode());
+				}
+				throw new GatewayException("Error on ZDP-Mgmt_Lqi.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			}
 			return status;
 		}
