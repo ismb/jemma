@@ -81,10 +81,11 @@ public class WrapperWSNNode {
 		this._node = _node;
 	}
 
-	
 	/**
 	 * Set the Discovery Timer
-	 * @param int second --> Schedule the timer for the number of seconds passed how parameter
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
 	 */
 	public synchronized void setTimerDiscovery(int seconds) {
 
@@ -100,20 +101,26 @@ public class WrapperWSNNode {
 
 	}
 
-
 	/**
 	 * Set the Freshness Timer
-	 * @param int second --> Schedule the timer for the number of seconds passed how parameter
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
 	 */
 	public synchronized void setTimerFreshness(int seconds) {
-
+		boolean purged = false;
 		if (_timerFreshness != null) {
+			purged = true;
 			_timerFreshness.cancel();
 			_timerFreshness.purge();
 
 		}
 		if (seconds >= 0) {
-			_timerFreshness = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness");
+			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness(" + System.currentTimeMillis() + ")";
+			if (purged == true)
+				name += "[Purged]";
+
+			_timerFreshness = new Timer(name);
 			_timerFreshness.schedule(new RemindTaskFreshness(), seconds * 1000);
 		}
 
@@ -121,36 +128,45 @@ public class WrapperWSNNode {
 
 	/**
 	 * Set the ForcePing Timer
-	 * @param int second --> Schedule the timer for the number of seconds passed how parameter
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
 	 */
 	public synchronized void setTimerForcePing(int seconds) {
-
+		boolean purged = false;
 		if (_timerForcePing != null) {
+			purged = true;
 			_timerForcePing.cancel();
 			_timerForcePing.purge();
 		}
+
 		if (seconds >= 0) {
-			_timerForcePing = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing");
+
+			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing(" + System.currentTimeMillis() + ")";
+			if (purged == true)
+				name += "[Purged]";
+			_timerForcePing = new Timer(name);
 			_timerForcePing.schedule(new RemindTaskForcePing(), seconds * 1000);
 		}
 
 	}
 
 	/**
-	 * return the number of fail of the (Discovery, Freshness, ForcePing) procedures
+	 * return the number of fail of the (Discovery, Freshness, ForcePing)
+	 * procedures
 	 */
 	public synchronized short get_numberOfAttempt() {
 		return _numberOfAttempt;
 	}
 
 	/**
-	 * Increase the number of fail of the (Discovery, Freshness, ForcePing) procedures
+	 * Increase the number of fail of the (Discovery, Freshness, ForcePing)
+	 * procedures
 	 */
 	public synchronized void set_numberOfAttempt() {
 		this._numberOfAttempt = (short) (this._numberOfAttempt + 1);
 	}
 
-	
 	/**
 	 * Cancel all timers
 	 */
@@ -176,24 +192,24 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * reset the number of fail of the (Discovery, Freshness, ForcePing) procedures
+	 * reset the number of fail of the (Discovery, Freshness, ForcePing)
+	 * procedures
 	 */
 	public synchronized void reset_numberOfAttempt() {
 		this._numberOfAttempt = 0;
 	}
 
-	
 	/**
-	 * Return the status of the discovery.
-	 * The discovery is complited when the node has sent the response of the LqiRequest
+	 * Return the status of the discovery. The discovery is complited when the
+	 * node has sent the response of the LqiRequest
 	 */
 	public synchronized boolean is_discoveryCompleted() {
 		return _discoveryCompleted;
 	}
 
 	/**
-	 * Set the status of the discovery.
-	 * The discovery is complited when the node has sent the response of the LqiRequest
+	 * Set the status of the discovery. The discovery is complited when the node
+	 * has sent the response of the LqiRequest
 	 */
 	public synchronized void set_discoveryCompleted(boolean _discoveryCompleted) {
 		this._discoveryCompleted = _discoveryCompleted;
@@ -221,14 +237,13 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * Set the list of the EndPoints of the node.
-	 * Is called when is present a response of the startnodeServices
+	 * Set the list of the EndPoints of the node. Is called when is present a
+	 * response of the startnodeServices
 	 */
 	public synchronized void set_nodeServices(NodeServices _nodeServices) {
 		this._nodeServices = _nodeServices;
 	}
 
-	
 	/**
 	 * Procedure execute when the Discovery Tiler elapsed
 	 */
@@ -241,7 +256,6 @@ public class WrapperWSNNode {
 
 		}
 	}
-
 
 	/**
 	 * Procedure execute when the Freshness Tiler elapsed
