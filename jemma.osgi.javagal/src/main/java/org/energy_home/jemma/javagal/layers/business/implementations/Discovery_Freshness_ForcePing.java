@@ -84,7 +84,6 @@ public class Discovery_Freshness_ForcePing {
 		return -1;
 	}
 
-	
 	/**
 	 * Send the Lqi_Request for the selected address. Then manages the
 	 * Lqi_Response
@@ -223,6 +222,7 @@ public class Discovery_Freshness_ForcePing {
 									__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 
 								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
+
 									__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 								if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -284,77 +284,81 @@ public class Discovery_Freshness_ForcePing {
 			newNodeWrapperChild.set_node(newNodeChild);
 
 			indexChildOnCache = gal.existIntoNetworkCache(newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
-			if (indexChildOnCache == -1)
+			if (indexChildOnCache == -1) {
 				gal.getNetworkcache().add(newNodeWrapperChild);
 
-			synchronized (newNodeWrapperChild) {
+				synchronized (newNodeWrapperChild) {
 
-				if (indexChildOnCache == -1) {
-					/*
-					 * node child not exists
-					 */
+					if (indexChildOnCache == -1) {
+						/*
+						 * node child not exists
+						 */
 
-					if (!newNodeWrapperChild.isSleepy()) {
+						if (!newNodeWrapperChild.isSleepy()) {
 
-						/* Node Not SleepyEndDevice */
-						/* Only Coordinator or Router */
-						if (x._Device_Type == 0x00 /*
-													 * LogicalType . COORDINATOR
-													 */
-								|| x._Device_Type == 0x01 /*
-														 * LogicalType . Router
-														 */) {
-							newNodeWrapperChild.set_discoveryCompleted(false);
+							/* Node Not SleepyEndDevice */
+							/* Only Coordinator or Router */
+							if (x._Device_Type == 0x00 /*
+														 * LogicalType .
+														 * COORDINATOR
+														 */
+									|| x._Device_Type == 0x01 /*
+															 * LogicalType .
+															 * Router
+															 */) {
+								newNodeWrapperChild.set_discoveryCompleted(false);
 
-							if (function == TypeFunction.DISCOVERY) {
-								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.info("\n\rScheduling " + funcionName + " for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
+								if (function == TypeFunction.DISCOVERY) {
+									if (gal.getPropertiesManager().getDebugEnabled()) {
+										logger.info("\n\rScheduling " + funcionName + " for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
+									}
+									/*
+									 * Only Discovery Function execute recursion
+									 */
+
+									newNodeWrapperChild.setTimerDiscovery(0);
+
 								}
-								/*
-								 * Only Discovery Function execute recursion
-								 */
-								newNodeWrapperChild.setTimerDiscovery(0);
+
+								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
+									newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
+
+									newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+
+							} else /*
+									 * LogicalType EndDevice
+									 */
+							{
+								newNodeWrapperChild.set_discoveryCompleted(true);
+								Status _s = new Status();
+								_s.setCode((short) 0x00);
+								_s.setMessage("Successful - " + funcionName + " Algorithm");
+								gal.get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
+								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
+									newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+
+								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
+									newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 							}
-
-							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
-								newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-
-							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-								newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-
-						} else /*
-								 * LogicalType EndDevice
-								 */
-						{
+						} else {
+							/* If Sleepy EndDevice */
 							newNodeWrapperChild.set_discoveryCompleted(true);
 							Status _s = new Status();
 							_s.setCode((short) 0x00);
 							_s.setMessage("Successful - " + funcionName + " Algorithm");
 							gal.get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
-							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
-								newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+						}
 
-							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-								newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-
+						if (gal.getPropertiesManager().getDebugEnabled()) {
+							logger.info(funcionName + ":Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
 						}
 					} else {
-						/* If Sleepy EndDevice */
-						newNodeWrapperChild.set_discoveryCompleted(true);
-						Status _s = new Status();
-						_s.setCode((short) 0x00);
-						_s.setMessage("Successful - " + funcionName + " Algorithm");
-						gal.get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
-					}
 
-					if (gal.getPropertiesManager().getDebugEnabled()) {
-						logger.info(funcionName + ":Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
-					}
-				} else {
-
-					if (gal.getPropertiesManager().getDebugEnabled()) {
-						logger.info("Found an existing Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " into NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
+						if (gal.getPropertiesManager().getDebugEnabled()) {
+							logger.info("Found an existing Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " into NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
+						}
 					}
 				}
 			}
@@ -409,9 +413,7 @@ public class Discovery_Freshness_ForcePing {
 				if (function == TypeFunction.DISCOVERY)
 					__currentNodeWrapper.setTimerDiscovery(NUMBEROFATTEMPTSECONDS);
 				else if (function == TypeFunction.FRESHNESS)
-
 					__currentNodeWrapper.setTimerFreshness(NUMBEROFATTEMPTSECONDS);
-
 				else if (function == TypeFunction.FORCEPING)
 					__currentNodeWrapper.setTimerForcePing(NUMBEROFATTEMPTSECONDS);
 			}

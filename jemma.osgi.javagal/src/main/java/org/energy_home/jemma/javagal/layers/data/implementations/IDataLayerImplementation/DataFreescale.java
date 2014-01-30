@@ -807,7 +807,7 @@ public class DataFreescale implements IDataLayer {
 				}
 
 			}
-			
+
 			/* APS-ZDP-Mgmt_Lqi.Response */
 			else if (message[0] == 0xA0 && message[1] == 0xB1) {
 				if (gal.getPropertiesManager().getDebugEnabled())
