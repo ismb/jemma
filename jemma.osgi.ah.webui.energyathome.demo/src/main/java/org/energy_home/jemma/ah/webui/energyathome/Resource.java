@@ -13,7 +13,7 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
-package org.energy_home.jemma.ah.webui.energyathome.demo;
+package org.energy_home.jemma.ah.webui.energyathome;
 
 public class Resource {
 	private String alias;
