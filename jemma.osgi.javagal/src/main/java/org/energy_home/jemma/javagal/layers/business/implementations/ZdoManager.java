@@ -153,31 +153,26 @@ public class ZdoManager /* implements APSMessageListener */{
 			synchronized (gal) {
 				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
 					/* id not exist */
+					_Node.set_discoveryCompleted(true);
+					_Node.reset_numberOfAttempt();
 					if (!_Node.isSleepy()) {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							_Node.set_discoveryCompleted(false);
-							_Node.reset_numberOfAttempt();
-							_Node.setTimerDiscovery(0);
-							if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-								_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-
-							}
+							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 						}
-					} else {
-						/* Sleepy EndDevice */
-						_Node.set_discoveryCompleted(true);
-						_Node.reset_numberOfAttempt();
+						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+						}
+
 					}
 					gal.getNetworkcache().add(_Node);
 				} else/* if exist */{
 					if (!_Node.isSleepy()) {
+						_Node.reset_numberOfAttempt();
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							if (_Node.is_discoveryCompleted()) {
-								_Node.reset_numberOfAttempt();
-								_Node.setTimerDiscovery(gal.getPropertiesManager().getKeepAliveThreshold());
-							}
+							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 						}
 					}
+					gal.getNetworkcache().get(_index).abortTimers();
 					gal.getNetworkcache().get(_index).set_node(_Node.get_node());
 				}
 			}
