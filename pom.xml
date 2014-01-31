@@ -81,18 +81,18 @@
 		<felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version>
 		
 		<!-- Internal dependencies version properties -->
-		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.2</org.energy-home.jemma.osgi.ah.hac.lib.version>
-		<org.energy-home.jemma.osgi.ah.hac.version>3.1.1</org.energy-home.jemma.osgi.ah.hac.version>
+		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.4</org.energy-home.jemma.osgi.ah.hac.lib.version>
+		<org.energy-home.jemma.osgi.ah.hac.version>3.1.3</org.energy-home.jemma.osgi.ah.hac.version>
 		<org.energy-home.jemma.osgi.ah.felix.console.web.version>3.1.8</org.energy-home.jemma.osgi.ah.felix.console.web.version>
 		<org.energy-home.jemma.osgi.ah.m2m.device.version>1.2.13</org.energy-home.jemma.osgi.ah.m2m.device.version>
 		<org.energy-home.jemma.osgi.ah.hap.client.version>1.2.13</org.energy-home.jemma.osgi.ah.hap.client.version>
 		<org.energy-home.jemma.osgi.utils.version>1.0.6</org.energy-home.jemma.osgi.utils.version>
 		<org.energy-home.jemma.osgi.ah.energyathome.version>2.2.22</org.energy-home.jemma.osgi.ah.energyathome.version>
 		<org.energy-home.jemma.osgi.ah.adapter.http.version>2.0.2</org.energy-home.jemma.osgi.ah.adapter.http.version>
-		<org.energy-home.jemma.osgi.ah.configurator.version>1.0.6</org.energy-home.jemma.osgi.ah.configurator.version>
+		<org.energy-home.jemma.osgi.ah.configurator.version>1.0.7</org.energy-home.jemma.osgi.ah.configurator.version>
 		<org.energy-home.jemma.osgi.device.zgd.version>1.1.15</org.energy-home.jemma.osgi.device.zgd.version>
 		<org.energy-home.jemma.osgi.zgd.version>1.4.1</org.energy-home.jemma.osgi.zgd.version>
-		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.24.qualifier</org.energy-home.jemma.osgi.ah.zigbee.version>
+		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.26</org.energy-home.jemma.osgi.ah.zigbee.version>
 		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.12</org.energy-home.jemma.osgi.ah.webui.base.version>
 	</properties>
 
