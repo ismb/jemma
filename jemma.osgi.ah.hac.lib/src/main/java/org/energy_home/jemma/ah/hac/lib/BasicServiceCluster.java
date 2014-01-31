@@ -172,7 +172,8 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 		return internalGetAttributeSubscription(attributeName, endPointRequestContext);
 	}
 
-	public ISubscriptionParameters setAttributeSubscription(String attributeName, ISubscriptionParameters parameters,
+	// If this appliance is a driver, this command does not try to configure subscription parameters on the attached device    
+	public ISubscriptionParameters initAttributeSubscription(String attributeName, ISubscriptionParameters parameters,
 			IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
 		checkServiceClusterAvailability();
 		// A value is immediately read (not notified to new subscribers)
@@ -203,6 +204,11 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 		return parameters;
 	}
 
+	public ISubscriptionParameters setAttributeSubscription(String attributeName, ISubscriptionParameters parameters,
+			IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException {
+		return initAttributeSubscription(attributeName, parameters, endPointRequestContext);
+	}
+	
 	public void removeAllSubscriptions(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException{
 		if (endPointRequestContext == null)
 			return;
@@ -212,7 +218,7 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 				for (Iterator iterator2 = subscriptions.keySet().iterator(); iterator2.hasNext();) {
 					IEndPoint endPoint = (IEndPoint) iterator2.next();
 					if (endPoint.equals(endPointRequestContext.getPeerEndPoint()))
-						iterator.remove();
+						iterator2.remove();
 				}		
 			}
 		} 

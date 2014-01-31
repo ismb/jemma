@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.hac;
 
+import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
+
 //* <ul>
 //* <li>0,0,0 -> tutti i cambiamenti</li>
 //* <li>1000,0,0 -> tutti i cambiamenti, ma non piu` frequentemente di 1 sec</li>
@@ -32,6 +34,7 @@ package org.energy_home.jemma.ah.hac;
  */
 public interface ISubscriptionParameters {
 
+	public static final ISubscriptionParameters DEFAULT_SUBSCRIPTION_PARAMETERS = new SubscriptionParameters(2, 120, 0);
 	/**
 	 * Returns the minimum reporting interval parameter
 	 * 

@@ -394,9 +394,9 @@ public class SimpleHacService implements IHacService, CommandProvider {
 		help += "\thac lsapptypes - list the available appliance types\n";
 		help += "\thac appliance <appliance pid> - prints all available information about the specified component\n";
 		help += "\thac setapp <appliance pid> - set the current appliance\n";
-		help += "\thac invoke <short cluster name> <mehod name> <parameters list> - invoke a cluster method of the current appliance\n";
-		help += "\thac subscribe <short cluster name> <attribute name> <min> <max> <change> - subscribe a cluster attribute of the current appliance\n";
-		help += "\thac substatus <short cluster name> <attribute name> - return current subscription pareamters for a cluster attribute of the current appliance\n";
+		help += "\thac invoke <cluster name> <mehod name> <parameters list> - invoke a cluster method of the current appliance\n";
+		help += "\thac subscribe <cluster name> <attribute name> <min> <max> <change> - subscribe a cluster attribute of the current appliance\n";
+		help += "\thac substatus <cluster name> <attribute name> - return current subscription pareamters for a cluster attribute of the current appliance\n";
 		return help;
 	}
 
