@@ -316,15 +316,15 @@ public class Discovery_Freshness_ForcePing {
 									 * Only Discovery Function execute recursion
 									 */
 
-									newNodeWrapperChild.setTimerDiscovery(0);
+									newNodeWrapperChild.setTimerDiscovery(NUMBEROFATTEMPTSECONDS);
 
 								}
 
 								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
-									newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+									newNodeWrapperChild.setTimerFreshness(NUMBEROFATTEMPTSECONDS);
 								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
 
-									newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+									newNodeWrapperChild.setTimerForcePing(NUMBEROFATTEMPTSECONDS);
 
 							} else /*
 									 * LogicalType EndDevice
