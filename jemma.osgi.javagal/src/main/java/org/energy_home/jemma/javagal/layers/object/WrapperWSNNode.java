@@ -15,18 +15,12 @@
  */
 package org.energy_home.jemma.javagal.layers.object;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.zgd.jaxb.NodeServices;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.business.implementations.ApsManager;
-
-import com.sun.net.ssl.internal.ssl.Debug;
+import org.energy_home.jemma.zgd.jaxb.NodeServices;
+import org.energy_home.jemma.zgd.jaxb.WSNNode;
 
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
