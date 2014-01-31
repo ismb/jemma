@@ -38,7 +38,6 @@ import com.sun.net.ssl.internal.ssl.Debug;
  */
 public class WrapperWSNNode {
 
-	
 	int _timerID = 0;
 	private WSNNode _node;
 	private Timer _timerDiscovery;
@@ -126,7 +125,6 @@ public class WrapperWSNNode {
 			_timerFreshness = new Timer(name);
 			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
 
-		
 		}
 
 	}
@@ -148,7 +146,6 @@ public class WrapperWSNNode {
 			_timerForcePing = new Timer(name);
 			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 
-		
 		}
 
 	}
@@ -277,7 +274,7 @@ public class WrapperWSNNode {
 		@Override
 		public void run() {
 			_timerFreshness.cancel();
-				gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
+			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
 			_timerFreshness.purge();
 
 		}
