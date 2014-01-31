@@ -167,17 +167,21 @@ public class WrapperWSNNode {
 
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
+			_timerDiscovery.purge();
+			
 			_timerDiscovery = null;
 
 		}
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
+			_timerFreshness.purge();
 			_timerFreshness = null;
 
 		}
 
 		if (_timerForcePing != null) {
 			_timerForcePing.cancel();
+			_timerForcePing.purge();
 			_timerForcePing = null;
 
 		}
@@ -251,7 +255,7 @@ public class WrapperWSNNode {
 		public void run() {
 			_timerDiscovery.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
-			_timerDiscovery.purge();
+
 		}
 	}
 
@@ -269,7 +273,7 @@ public class WrapperWSNNode {
 		public void run() {
 			_timerFreshness.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
-			_timerFreshness.purge();
+
 
 		}
 	}
@@ -288,7 +292,7 @@ public class WrapperWSNNode {
 		public void run() {
 			_timerForcePing.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
-			_timerForcePing.purge();
+
 		}
 	}
 }

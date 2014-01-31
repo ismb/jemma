@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 
 /**
  * Data layer interface to be implemented by every vendor (Freescale, Ember and
@@ -545,7 +546,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @param startindex
 	 *            the value of the table index.
 	 */
-	public Status Mgmt_Lqi_Request(long timeout, Address addrOfInterest,
+	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest,
 			short startIndex) throws IOException, Exception,
 			GatewayException;
 	
