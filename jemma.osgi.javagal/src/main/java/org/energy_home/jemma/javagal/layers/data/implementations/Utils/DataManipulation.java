@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -131,6 +132,28 @@ public class DataManipulation {
 				_7, _8 });
 		return bb.getLong();
 	}
+	
+	
+	/**
+	 * Starts from a {@code short[]} and returns a sub array, converted as
+	 * {@code byte[]}.
+	 * 
+	 * @param array
+	 *            the original array
+	 * @param start
+	 *            the start index, included
+	 * @param stop
+	 *            the stop index, included
+	 * @return the converted sub array
+	 */
+	public static byte[] subByteArray(short[] array, int start, int stop) {
+		byte[] toReturn = new byte[stop - start + 1];
+		for (int i = start; i <= stop; i++) {
+			toReturn[i - start] = (byte) array[i];
+		}
+		return toReturn;
+	}
+
 
 	/**
 	 * Converts a {@code long} to a {@code List<Byte>}. A long is composed of
@@ -402,25 +425,7 @@ public class DataManipulation {
 		return sb;
 	}
 
-	/**
-	 * Starts from a {@code short[]} and returns a sub array, converted as
-	 * {@code byte[]}.
-	 * 
-	 * @param array
-	 *            the original array
-	 * @param start
-	 *            the start index, included
-	 * @param stop
-	 *            the stop index, included
-	 * @return the converted sub array
-	 */
-	public static byte[] subByteArray(short[] array, int start, int stop) {
-		byte[] toReturn = new byte[stop - start + 1];
-		for (int i = start; i <= stop; i++) {
-			toReturn[i - start] = (byte) array[i];
-		}
-		return toReturn;
-	}
+	
 
 	/**
 	 * Reverses the order of elements in a given {@code byte[]}.

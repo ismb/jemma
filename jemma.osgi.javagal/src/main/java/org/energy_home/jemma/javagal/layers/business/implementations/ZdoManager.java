@@ -70,32 +70,32 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a MGMT_LQI_Response");
+				logger.info("**************************Received APS With a MGMT_LQI_Response");
 			}
-			Discovery_Freshness_ForcePing.Mgmt_LQI_Response(message);
+			
 		}
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a MGMT_LQI_Request");
+				logger.info("**************************Received APS With a MGMT_LQI_Request");
 			}
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a Node_Desc_req");
+				logger.info("**************************Received APS With a Node_Desc_req");
 			}
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a Node_Desc_rsp");
+				logger.info("**************************Received APS With a Node_Desc_rsp");
 			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("\n\r**************************Received a Leave_rsp\n\r");
+				logger.info("\n\r**************************Received APS With a Leave_rsp\n\r");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();

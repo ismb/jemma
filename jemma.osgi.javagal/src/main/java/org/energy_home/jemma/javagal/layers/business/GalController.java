@@ -99,7 +99,7 @@ public class GalController {
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
 	 * also for the Rest Api
 	 */
-	private void inizializeGAL() throws Exception {
+	private void initializeGAL() throws Exception {
 		/* Used for reset GAL */
 		if (DataLayer != null) {
 			if (getPropertiesManager().getDebugEnabled())
@@ -127,7 +127,7 @@ public class GalController {
 			DataLayer = new DataFreescale(this);
 			try {
 
-				DataLayer.getIKeyInstance().inizialize();
+				DataLayer.getIKeyInstance().initialize();
 			} catch (Exception e) {
 				DataLayer.getIKeyInstance().disconnect();
 				throw e;
@@ -186,7 +186,7 @@ public class GalController {
 		_lockerStartDevice = new ParserLocker();
 		_discoveryManager = new Discovery_Freshness_ForcePing(this);
 
-		inizializeGAL();
+		initializeGAL();
 	}
 
 	/**
@@ -856,7 +856,7 @@ public class GalController {
 						Status _s = new Status();
 						_s.setCode((short) GatewayConstants.SUCCESS);
 						_s.setMessage("Reset Done");
-						inizializeGAL();
+						initializeGAL();
 						get_gatewayEventManager().notifyResetResult(_s);
 
 					} catch (Exception e) {
@@ -876,7 +876,7 @@ public class GalController {
 			Status _s = new Status();
 			_s.setCode((short) GatewayConstants.SUCCESS);
 			_s.setMessage("Reset Done");
-			inizializeGAL();
+			initializeGAL();
 			get_gatewayEventManager().notifyResetResult(_s);
 			return _s;
 		}

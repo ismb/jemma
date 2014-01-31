@@ -68,28 +68,13 @@ public class Discovery_Freshness_ForcePing {
 	}
 
 	private final static Log logger = LogFactory.getLog(Discovery_Freshness_ForcePing.class);
-	private static List<DiscoveryMng> _Table = Collections.synchronizedList(new LinkedList<DiscoveryMng>());
-
-	/**
-	 * return -1 if not Exist; return > 0 is the index of the object
-	 */
-	private synchronized static short existIntoTable(Integer shortAddress) {
-		/* Check if the request exists into the table DiscoveryMng */
-		short __index = -1;
-		for (DiscoveryMng x : _Table) {
-			__index++;
-			if ((shortAddress.equals(x.get_Destination_NetworkAddress())))
-				return __index;
-		}
-		return -1;
-	}
 
 	/**
 	 * Send the Lqi_Request for the selected address. Then manages the
 	 * Lqi_Response
 	 */
 	public void startLqi(Address node, TypeFunction function, short startIndex) {
-
+		Mgmt_LQI_rsp _Lqi = null;
 		String funcionName = null;
 		if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
@@ -112,142 +97,119 @@ public class Discovery_Freshness_ForcePing {
 				logger.info("\n\r****************Starting " + funcionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
 			}
 
-			DiscoveryMng _newDsc = null;
 			try {
 
-				_newDsc = new DiscoveryMng();
-				_newDsc.set_Destination_NetworkAddress(node.getNetworkAddress());
-				synchronized (_Table) {
-					_Table.add(_newDsc);
-				}
-				Status _stat = null;
-				_stat = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
+				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
 
-				/* Check no confirm received */
-				if (_stat == null || _stat.getCode() != 0) {
-					manageError(function, startIndex, __currentNodeWrapper, _indexParent, new Exception("LqiReq.Confirm not received!"));
-				} else/* Confirm Received -- Waiting Response */
+				/* Check no Response received */
+				if (_Lqi == null) {
+					manageError(function, startIndex, __currentNodeWrapper, _indexParent, new Exception("LqiReq.Response not received!"));
+				} else/* Response Received */
 				{
-					synchronized (_newDsc) {
-						try {
-							_newDsc.wait(IDataLayer.INTERNAL_TIMEOUT);
-						} catch (InterruptedException e) {
 
+					short _totalLqi = _Lqi._NeighborTableEntries;
+					short _indexLqi = _Lqi._StartIndex;
+					short _LqiListCount = _Lqi._NeighborTableListCount;
+
+					/*
+					 * Start the discovery for any child and add the child to
+					 * parent node
+					 */
+
+					AssociatedDevices _AssociatedDevices = new AssociatedDevices();
+					if (_Lqi.NeighborTableList != null && _Lqi.NeighborTableList.size() > 0) {
+						for (NeighborTableLis_Record x : _Lqi.NeighborTableList) {
+							manageChildNode(node, function, funcionName, _AssociatedDevices, x);
 						}
 					}
-					if (_newDsc.get_response() == null) {
-						manageError(function, startIndex, __currentNodeWrapper, _indexParent, new Exception("LqiRsp not received!"));
-					} else /* Response Received */
-					{
-						short _totalLqi = _newDsc.get_response()._NeighborTableEntries;
-						short _indexLqi = _newDsc.get_response()._StartIndex;
-						short _LqiListCount = _newDsc.get_response()._NeighborTableListCount;
 
-						/*
-						 * Start the discovery for any child and add the child
-						 * to parent node
-						 */
+					synchronized (__currentNodeWrapper) {
+						__currentNodeWrapper.reset_numberOfAttempt();
+						__currentNodeWrapper.get_node().getAssociatedDevices().clear();
+						__currentNodeWrapper.get_node().getAssociatedDevices().add(_AssociatedDevices);
 
-						AssociatedDevices _AssociatedDevices = new AssociatedDevices();
-						if (_newDsc.get_response().NeighborTableList != null && _newDsc.get_response().NeighborTableList.size() > 0) {
-							for (NeighborTableLis_Record x : _newDsc.get_response().NeighborTableList) {
-								manageChildNode(node, function, funcionName, _AssociatedDevices, x);
-							}
-						}
-
-						synchronized (__currentNodeWrapper) {
-							__currentNodeWrapper.reset_numberOfAttempt();
-							__currentNodeWrapper.get_node().getAssociatedDevices().clear();
-							__currentNodeWrapper.get_node().getAssociatedDevices().add(_AssociatedDevices);
-
-							if ((_indexLqi + _LqiListCount) < _totalLqi) {
-								if (_LqiListCount == 0x00) {
-									if (gal.getPropertiesManager().getDebugEnabled()) {
-										logger.warn("patch that correct a 4noks bug - 07-12-2011");
-									}
-									return;
-								} else {
-									if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && _newDsc.get_response().NeighborTableList != null) {
-
-										if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
-											if (startIndex == 0x00) {
-												__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
-											}
-											__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_newDsc.get_response().NeighborTableList);
-										} else
-											__currentNodeWrapper.set_Mgmt_LQI_rsp(_newDsc.get_response());
-									} else
-										__currentNodeWrapper.set_Mgmt_LQI_rsp(_newDsc.get_response());
+						if ((_indexLqi + _LqiListCount) < _totalLqi) {
+							if (_LqiListCount == 0x00) {
+								if (gal.getPropertiesManager().getDebugEnabled()) {
+									logger.warn("patch that correct a 4noks bug - 07-12-2011");
 								}
-								__currentNodeWrapper.set_discoveryCompleted(true);
-								List<Object> parameters = new ArrayList<Object>();
-								short nextStartIndex = (short) (_indexLqi + _LqiListCount);
-								parameters.add(nextStartIndex);
-								parameters.add(node);
-								parameters.add(function);
-
-								Runnable thr = new MyThread(parameters) {
-									@Override
-									public void run() {
-										List<Object> parameters = (List<Object>) (this.getParameter());
-										Short _indexLqi = (Short) parameters.get(0);
-										Address node = (Address) parameters.get(1);
-										TypeFunction function = (TypeFunction) parameters.get(2);
-										if (gal.getPropertiesManager().getDebugEnabled()) {
-
-											logger.info("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
-										}
-										startLqi(node, function, _indexLqi);
-										return;
-									}
-								};
-								Thread thr0 = new Thread(thr);
-								thr0.setName("Node:" + node.getNetworkAddress() + " -- " + funcionName + " StartIndex:" + nextStartIndex);
-								thr0.start();
-
+								return;
 							} else {
-								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && __currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList != null) {
+								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && _Lqi.NeighborTableList != null) {
+
 									if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
 										if (startIndex == 0x00) {
 											__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
 										}
-										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_newDsc.get_response().NeighborTableList);
+										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
 									} else
-										__currentNodeWrapper.set_Mgmt_LQI_rsp(_newDsc.get_response());
+										__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
 								} else
-									__currentNodeWrapper.set_Mgmt_LQI_rsp(_newDsc.get_response());
-								__currentNodeWrapper.set_discoveryCompleted(true);
-
-								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
-									__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-
-								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-
-									__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-
-								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.info("\n\r" + funcionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " Time:" + System.currentTimeMillis());
-								}
-
+									__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
 							}
-						}
+							__currentNodeWrapper.set_discoveryCompleted(true);
+							List<Object> parameters = new ArrayList<Object>();
+							short nextStartIndex = (short) (_indexLqi + _LqiListCount);
+							parameters.add(nextStartIndex);
+							parameters.add(node);
+							parameters.add(function);
 
-						if ((function == TypeFunction.FORCEPING) || (function == TypeFunction.DISCOVERY)) {
-							Status _s = new Status();
-							_s.setCode((short) 0x00);
-							_s.setMessage("Successful - " + funcionName + " Algorithm");
-							gal.get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
-						}
+							Runnable thr = new MyThread(parameters) {
+								@Override
+								public void run() {
+									List<Object> parameters = (List<Object>) (this.getParameter());
+									Short _indexLqi = (Short) parameters.get(0);
+									Address node = (Address) parameters.get(1);
+									TypeFunction function = (TypeFunction) parameters.get(2);
+									if (gal.getPropertiesManager().getDebugEnabled()) {
 
+										logger.info("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
+									}
+									startLqi(node, function, _indexLqi);
+									return;
+								}
+							};
+							Thread thr0 = new Thread(thr);
+							thr0.setName("Node:" + node.getNetworkAddress() + " -- " + funcionName + " StartIndex:" + nextStartIndex);
+							thr0.start();
+
+						} else {
+							if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && __currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList != null) {
+								if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
+									if (startIndex == 0x00) {
+										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
+									}
+									__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
+								} else
+									__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
+							} else
+								__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
+							__currentNodeWrapper.set_discoveryCompleted(true);
+
+							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
+								__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+
+							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
+
+								__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+
+							if (gal.getPropertiesManager().getDebugEnabled()) {
+								logger.info("\n\r" + funcionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " Time:" + System.currentTimeMillis());
+							}
+
+						}
 					}
+
+					if ((function == TypeFunction.FORCEPING) || (function == TypeFunction.DISCOVERY)) {
+						Status _s = new Status();
+						_s.setCode((short) 0x00);
+						_s.setMessage("Successful - " + funcionName + " Algorithm");
+						gal.get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
+					}
+
 				}
 			} catch (Exception e) {
 				manageError(function, startIndex, __currentNodeWrapper, _indexParent, e);
-			} finally {
-				synchronized (_Table) {
-					_Table.remove(_newDsc);
-				}
-
 			}
 		}
 	}
@@ -319,11 +281,9 @@ public class Discovery_Freshness_ForcePing {
 									newNodeWrapperChild.setTimerDiscovery(NUMBEROFATTEMPTSECONDS);
 
 								}
-
 								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 									newNodeWrapperChild.setTimerFreshness(NUMBEROFATTEMPTSECONDS);
 								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-
 									newNodeWrapperChild.setTimerForcePing(NUMBEROFATTEMPTSECONDS);
 
 							} else /*
@@ -336,10 +296,10 @@ public class Discovery_Freshness_ForcePing {
 								_s.setMessage("Successful - " + funcionName + " Algorithm");
 								gal.get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
 								if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
-									newNodeWrapperChild.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+									newNodeWrapperChild.setTimerFreshness(NUMBEROFATTEMPTSECONDS);
 
 								if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-									newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+									newNodeWrapperChild.setTimerForcePing(NUMBEROFATTEMPTSECONDS);
 
 							}
 						} else {
@@ -352,7 +312,7 @@ public class Discovery_Freshness_ForcePing {
 						}
 
 						if (gal.getPropertiesManager().getDebugEnabled()) {
-							logger.info(funcionName + ":Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
+							logger.info(funcionName + ": Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress() + "\n\r");
 						}
 					} else {
 
@@ -402,10 +362,14 @@ public class Discovery_Freshness_ForcePing {
 					logger.error("\n\rError on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "\n\rError message: " + e.getMessage() + "\n\rNmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt() + "\n\r");
 				}
 			}
-			if (gal.getNetworkcache().get(_indexParent) != null) {
-				gal.getNetworkcache().get(_indexParent).abortTimers();
-				gal.getNetworkcache().remove(_indexParent);
+
+			if (gal.getNetworkcache().size() > _indexParent) {
+				if (gal.getNetworkcache().get(_indexParent) != null) {
+					gal.getNetworkcache().get(_indexParent).abortTimers();
+					gal.getNetworkcache().remove(_indexParent);
+				}
 			}
+
 			return;
 
 		} else {
@@ -418,57 +382,6 @@ public class Discovery_Freshness_ForcePing {
 					__currentNodeWrapper.setTimerForcePing(NUMBEROFATTEMPTSECONDS);
 			}
 		}
-	}
-
-	/**
-	 * Class used to split the ApsMessage intto the Lqi_Response class
-	 */
-	public static void Mgmt_LQI_Response(APSMessageEvent message) {
-		Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(message.getData());
-		short index = -1;
-		synchronized (_Table) {
-			index = existIntoTable(message.getSourceAddress().getNetworkAddress());
-			if (index == -1)
-				return;
-			else {
-				DiscoveryMng i = _Table.get(index);
-				synchronized (i) {
-					i.set_response(_res);
-					i.notify();
-				}
-			}
-		}
-
-	}
-
-}
-
-/**
- * Class used to manage the lock on the Lqi_Request
- */
-class DiscoveryMng {
-	private Mgmt_LQI_rsp _response;
-	private int _Destination_NetworkAddress;
-
-	public DiscoveryMng() {
-		_Destination_NetworkAddress = -1;
-		_response = null;
-	}
-
-	public int get_Destination_NetworkAddress() {
-		return _Destination_NetworkAddress;
-	}
-
-	public void set_Destination_NetworkAddress(int _Destination_NetworkAddress) {
-		this._Destination_NetworkAddress = _Destination_NetworkAddress;
-	}
-
-	public Mgmt_LQI_rsp get_response() {
-		return _response;
-	}
-
-	public void set_response(Mgmt_LQI_rsp _response) {
-		this._response = _response;
 	}
 
 }

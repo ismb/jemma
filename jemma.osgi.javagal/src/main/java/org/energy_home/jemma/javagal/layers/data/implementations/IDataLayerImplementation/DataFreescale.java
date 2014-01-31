@@ -15,6 +15,31 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.business.Utils;
+import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
+import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
+import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
+import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
+import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
+import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
+import org.energy_home.jemma.javagal.layers.object.MyThread;
+import org.energy_home.jemma.javagal.layers.object.ParserLocker;
+import org.energy_home.jemma.javagal.layers.object.TypeMessage;
+import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayException;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
@@ -26,7 +51,6 @@ import org.energy_home.jemma.zgd.jaxb.DescriptorCapability;
 import org.energy_home.jemma.zgd.jaxb.Device;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult.ScannedChannel;
-import org.energy_home.jemma.zgd.jaxb.Group;
 import org.energy_home.jemma.zgd.jaxb.LogicalType;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
@@ -41,31 +65,6 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.TxOptions;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.business.Utils;
-import org.energy_home.jemma.javagal.layers.business.implementations.GatewayEventManager;
-import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
-import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
-import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
-import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
-import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
-import org.energy_home.jemma.javagal.layers.object.MyThread;
-import org.energy_home.jemma.javagal.layers.object.ParserLocker;
-import org.energy_home.jemma.javagal.layers.object.TypeMessage;
-import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 
 /**
  * Freescale implementation of {@link IDataLayer}.
@@ -169,11 +168,6 @@ public class DataFreescale implements IDataLayer {
 				int first_element = receivedDataQueue.get(0);
 
 				if (first_element != DataManipulation.SEQUENCE_START) {
-					/*
-					 * if (gal.getPropertiesManager().getDebugEnabled())
-					 * logger.error("\n\rError on data skypped byte " +
-					 * Integer.toHexString(first_element));
-					 */
 					receivedDataQueue.remove(0);
 					continue;
 				}
@@ -350,6 +344,7 @@ public class DataFreescale implements IDataLayer {
 				messageEvent.setProfileID(DataManipulation.toIntFromShort((byte) message[12], (byte) message[11]));
 				messageEvent.setClusterID(DataManipulation.toIntFromShort((byte) message[14], (byte) message[13]));
 				int lastAsdu = 16 + message[15] - 1;
+				
 				messageEvent.setData(DataManipulation.subByteArray(message, 16, lastAsdu));
 				messageEvent.setAPSStatus(message[lastAsdu + 1]);
 				// ASK Jump WasBroadcast
@@ -809,6 +804,10 @@ public class DataFreescale implements IDataLayer {
 						if ((pl.getType() == TypeMessage.LQI_REQ)) {
 							synchronized (pl) {
 								pl.getStatus().setCode(message[3]);
+								
+								
+								Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(DataManipulation.subByteArray(message, 3, message.length-1));
+								pl.set_objectOfResponse(_res);
 								pl.notify();
 							}
 							break;
@@ -1661,7 +1660,7 @@ public class DataFreescale implements IDataLayer {
 	public synchronized void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
 
 		if (gal.getPropertiesManager().getDebugEnabled())
-			logger.info("\n\rSending Message:\n-->>> " + toAdd.ToHexString());
+			logger.info("\n\r[" + (new Timestamp(System.currentTimeMillis()).toString()) + "] Sending Message:\n-->>> " + toAdd.ToHexString());
 		Thread thr = new Thread() {
 			@Override
 			public void run() {
@@ -3419,8 +3418,7 @@ public class DataFreescale implements IDataLayer {
 						messageShort[i] = (short) (msg[i] & 0xff);
 
 					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadixDataReceived("\n\rReceived data:\n<<<-- ", messageShort);
-
+						DataManipulation.logArrayHexRadixDataReceived("\n\r[" + (new Timestamp(System.currentTimeMillis()).toString()) + "] Received data:\n<<<-- ", messageShort);
 					addToReceivedDataQueue(size, messageShort);
 					try {
 						processMessages();
@@ -3619,7 +3617,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException {
+	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException {
 		ByteArrayObject _res = new ByteArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);
 		_res.addByte((byte) startIndex);
@@ -3627,8 +3625,10 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("Mgmt_Lqi_Request command:" + _res.ToHexString());
 		}
+		String __Key = String.format("%04X", addrOfInterest.getNetworkAddress());
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.LQI_REQ);
+		lock.set_Key(__Key);
 		Status status = null;
 		try {
 			synchronized (listLocker) {
@@ -3666,7 +3666,7 @@ public class DataFreescale implements IDataLayer {
 				}
 				throw new GatewayException("Error on ZDP-Mgmt_Lqi.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			}
-			return status;
+			return (Mgmt_LQI_rsp)lock.get_objectOfResponse();
 		}
 	}
 }
