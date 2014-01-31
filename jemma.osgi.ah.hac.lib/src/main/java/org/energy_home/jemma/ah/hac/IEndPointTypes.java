@@ -27,7 +27,7 @@ public interface IEndPointTypes {
 	public static final String ZIGBEE_IAS_ZONE = "ah.ep.zigbee.IASZone";
 	public static final String ZIGBEE_ON_OFF_LIGHT = "ah.ep.zigbee.OnOffLight";
 	public static final String ZIGBEE_LIGHT_SENSOR = "ah.ep.zigbee.LightSensor";
-	public static final String ZIGBEE_OCCUPANCY_SENSOR = "ah.ep.zigbee.LightSensor";
+	public static final String ZIGBEE_OCCUPANCY_SENSOR = "ah.ep.zigbee.OccupancySensor";
 	public static final String ZIGBEE_LEVEL_CONTROLLABLE_OUTPUT = "ah.ep.zigbee.LevelControllableOutput";
 	public static final String ZIGBEE_THERMOSTAT = "ah.ep.zigbee.Thermostat";
 }

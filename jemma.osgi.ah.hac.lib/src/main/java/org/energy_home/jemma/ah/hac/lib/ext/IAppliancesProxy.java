@@ -19,21 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IConfigurationInfoService;
 import org.energy_home.jemma.ah.hac.IAppliancesBasicProxy;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
+
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 
-public interface IAppliancesProxy extends IAppliancesBasicProxy {
+public interface IAppliancesProxy extends IAppliancesBasicProxy, IConfigurationInfoService{
 	
-	public abstract ILocation[] getLocations();
-	
-	public abstract ILocation getLocation(String pid);
-
-	public abstract ICategory[] getCategories();
-	
-	public abstract ICategory getCategory(String pid);
 	
 	public abstract List getInstallingAppliances();
 	

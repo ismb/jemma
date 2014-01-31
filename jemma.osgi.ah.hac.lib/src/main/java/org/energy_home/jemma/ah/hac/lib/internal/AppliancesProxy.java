@@ -35,6 +35,7 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 
 public class AppliancesProxy extends AppliancesBasicProxy implements IAppliancesProxy {
 	

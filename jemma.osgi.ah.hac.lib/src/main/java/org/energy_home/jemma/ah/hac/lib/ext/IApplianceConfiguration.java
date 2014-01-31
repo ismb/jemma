@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.hac.lib.ext;
 
+import java.util.Map;
+
 public interface IApplianceConfiguration {
 
 	public String getAppliancePid() ;
@@ -44,5 +46,7 @@ public interface IApplianceConfiguration {
 
 	// If endPointId is null, all end points icon name are updated
 	public boolean updateIconName(Integer endPointId, String value);
+	
+	public Map getConfigurationMap();
 
 }
