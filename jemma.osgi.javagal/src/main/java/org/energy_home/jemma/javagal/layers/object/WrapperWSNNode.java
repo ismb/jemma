@@ -23,6 +23,8 @@ import java.util.TimerTask;
 
 import org.energy_home.jemma.javagal.layers.business.GalController;
 
+import com.sun.net.ssl.internal.ssl.Debug;
+
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
  * the Algorithms Discovery, Freshness and ForcePing
@@ -32,7 +34,6 @@ import org.energy_home.jemma.javagal.layers.business.GalController;
  * 
  */
 public class WrapperWSNNode {
-
 	private WSNNode _node;
 	private Timer _timerDiscovery;
 	private Timer _timerFreshness;
@@ -88,15 +89,14 @@ public class WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerDiscovery(int seconds) {
-
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
 			_timerDiscovery.purge();
-
 		}
 		if (seconds >= 0) {
-			_timerDiscovery = new Timer("Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerDiscovery");
-			_timerDiscovery.schedule(new RemindTaskDiscovery(), seconds * 1000);
+			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerDiscovery(Seconds:" + seconds + ")";
+			_timerDiscovery = new Timer(name);
+			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
 		}
 
 	}
@@ -108,20 +108,15 @@ public class WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerFreshness(int seconds) {
-		boolean purged = false;
 		if (_timerFreshness != null) {
-			purged = true;
 			_timerFreshness.cancel();
 			_timerFreshness.purge();
 
 		}
 		if (seconds >= 0) {
-			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness(" + System.currentTimeMillis() + ")";
-			if (purged == true)
-				name += "[Purged]";
-
+			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness(Seconds:" + seconds + ")";
 			_timerFreshness = new Timer(name);
-			_timerFreshness.schedule(new RemindTaskFreshness(), seconds * 1000);
+			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
 		}
 
 	}
@@ -133,20 +128,15 @@ public class WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerForcePing(int seconds) {
-		boolean purged = false;
 		if (_timerForcePing != null) {
-			purged = true;
 			_timerForcePing.cancel();
 			_timerForcePing.purge();
 		}
 
 		if (seconds >= 0) {
-
-			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing(" + System.currentTimeMillis() + ")";
-			if (purged == true)
-				name += "[Purged]";
+			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing(Seconds:" + seconds + ")";
 			_timerForcePing = new Timer(name);
-			_timerForcePing.schedule(new RemindTaskForcePing(), seconds * 1000);
+			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 		}
 
 	}
@@ -248,12 +238,18 @@ public class WrapperWSNNode {
 	 * Procedure execute when the Discovery Tiler elapsed
 	 */
 	class RemindTaskDiscovery extends TimerTask {
+		String _name;
+		RemindTaskDiscovery(String name) {
+			_name = name;
+		}
+
 		@Override
 		public void run() {
 			_timerDiscovery.cancel();
-
+			if (gal.getPropertiesManager().getDebugEnabled())
+				System.out.println("\n\rTimer Discovery Elapsed: " + _name);
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
-
+			_timerDiscovery.purge();
 		}
 	}
 
@@ -261,10 +257,19 @@ public class WrapperWSNNode {
 	 * Procedure execute when the Freshness Tiler elapsed
 	 */
 	class RemindTaskFreshness extends TimerTask {
+		String _name;
+		RemindTaskFreshness(String name) {
+			_name = name;
+		}
+
 		@Override
 		public void run() {
 			_timerFreshness.cancel();
+			if (gal.getPropertiesManager().getDebugEnabled())
+				System.out.println("\n\rTimer Freshness Elapsed: " + _name);
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
+			_timerFreshness.purge();
+
 		}
 	}
 
@@ -272,10 +277,18 @@ public class WrapperWSNNode {
 	 * Procedure execute when the ForcePing Tiler elapsed
 	 */
 	class RemindTaskForcePing extends TimerTask {
+		String _name;
+		RemindTaskForcePing(String name) {
+			_name = name;
+		}
+
 		@Override
 		public void run() {
 			_timerForcePing.cancel();
+			if (gal.getPropertiesManager().getDebugEnabled())
+				System.out.println("\n\rTimer ForcePing Elapsed: " + _name);
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
+			_timerForcePing.purge();
 		}
 	}
 }

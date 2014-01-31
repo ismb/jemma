@@ -159,7 +159,6 @@ public class ZdoManager /* implements APSMessageListener */{
 							_Node.reset_numberOfAttempt();
 							_Node.setTimerDiscovery(0);
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-
 								_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 							}
@@ -179,7 +178,6 @@ public class ZdoManager /* implements APSMessageListener */{
 							}
 						}
 					}
-					gal.getNetworkcache().get(_index).abortTimers();
 					gal.getNetworkcache().get(_index).set_node(_Node.get_node());
 				}
 			}

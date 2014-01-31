@@ -77,6 +77,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
  */
 
 public class GalController {
+	final int startTimeFirstGalDiscovery = 15;
 	private GatewayStatus _gatewayStatus = GatewayStatus.GW_READY_TO_START;
 	private Long apsCallbackIdentifier = (long) 1;
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
@@ -1713,11 +1714,11 @@ public class GalController {
 									galNodeWrapper.set_discoveryCompleted(true);
 									if (PropertiesManager.getKeepAliveThreshold() > 0) {
 										/* Execute the Freshness */
-										galNodeWrapper.setTimerFreshness(15);
+										galNodeWrapper.setTimerFreshness(startTimeFirstGalDiscovery);
 									}
 									if (PropertiesManager.getForcePingTimeout() > 0) {
 										/* Execute the ForcePing */
-										galNodeWrapper.setTimerForcePing(15);
+										galNodeWrapper.setTimerForcePing(startTimeFirstGalDiscovery);
 									}
 
 								} else {

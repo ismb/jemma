@@ -109,7 +109,7 @@ public class Discovery_Freshness_ForcePing {
 				return;
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("\n\rStarting " + funcionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
+				logger.info("\n\r****************Starting " + funcionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
 			}
 
 			DiscoveryMng _newDsc = null;
@@ -402,10 +402,10 @@ public class Discovery_Freshness_ForcePing {
 					logger.error("\n\rError on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "\n\rError message: " + e.getMessage() + "\n\rNmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt() + "\n\r");
 				}
 			}
-
-			gal.getNetworkcache().get(_indexParent).abortTimers();
-			gal.getNetworkcache().remove(_indexParent);
-
+			if (gal.getNetworkcache().get(_indexParent) != null) {
+				gal.getNetworkcache().get(_indexParent).abortTimers();
+				gal.getNetworkcache().remove(_indexParent);
+			}
 			return;
 
 		} else {
