@@ -1,4 +1,4 @@
-var CostiConsumi = {
+var CostiConsumi = {
 	MODULE : "CostiConsumi",
 	CONSUMI : 1,
 	COSTI : 2,
@@ -32,8 +32,7 @@ var CostiConsumi = {
 	costoOdierno : null,
 	costoMedio : null,
 	costoPrevMese : null,
-	costoGiornaliero : null,
-	costoMediaWeek: null,
+	costoGiornaliero : null, 
 	suddivisioneCosti : null,
 	timerCosti : null,
 	TIMER_UPDATE_COSTI : 300000,  // 5 minuti

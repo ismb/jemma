@@ -48,9 +48,11 @@ var ConsumoOdierno 		= [{"list":[82, 88, 83, 89, 983, 93, 90, 512, 210, 160, 173
 var indConsumoOdierno 	= 0;
 var ConsumoMedio 		= {"list":[85, 85, 88, 89, 93, 93, 90, 632, 210, 160, 123, 125, 360, 492, 450, 401, 421, 535, 643, 681, 652, 332, 310, 78]};
 var ConsumoPrevisto 	= 219300;
-var ConsumoGiornaliero  = {"list":[85, 85, 88, 89, 93, 93, 209, 1132, 1210, 160, 720, 2325, 3360, 2492, 450, 400, 1421, 535, 1643, 2181, 3352, 332, 789, 78]};
-var EnergiaProdottaGiornalieroSimul  = {"list":[null, null, null, null, null, null, 5, 72, 193, 420, 780, 1600, 2000, 2000, 2000, 1200, 634, 256, 65, 13, null, null, null, null]};
+var ConsumoGiornaliero  = {"list":[85, 85, 88, 89, 93, 93, 209, 1132, 1210, 160, 720, 2325, 3360, 2492, 450, 400, 1421, 535, 1643, 1781, 1852, 332, 789, 78]};
+var EnergiaProdottaGiornalieroSimul  = {"list":[null, null, null, null, null, null, 5, 72, 193, 420, 780, 1600, 1800, 1850, 2000, 1200, 634, 256, 65, 13, null, null, null, null]};
 var EnergiaVendutaGiornalieroSimul  = {"list":[null, null, null, null, null, null, null, null, null, 260, 60, null, null, null, 1550, 800, null, null, null, null, null, null, null, null]};
+var PrevisioneEnergiaProdotta = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.123, 0.245, 0.600, 1.224, 1.490, 1.586, 1.401, 1.172, 0.819, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
 
 var PotenzaAttuale = {"value":0};
 
@@ -72,7 +74,10 @@ var StoricoConsumoM = {"list":[null, null, 8100, 5400, 7200, 6400, 6900, 4900, 6
 var StoricoCostoA = {"list":[30.2, 	32.9, 	41.2, 	34.0, 	33.4, 	36.0, 	29.0, 	28.4, 	42.0,  38.9, 35.0, 43.0, 38.0]};
 var StoricoConsumoA = {"list":[167000, 181000, 230300, 190540, 165000, 186900, 159000, 141000, 245000, 209000, 170000, 261000, 205000]}; 
 */
- 
+
+var StoricoCostoO =   {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+var StoricoConsumoO = {"list":[98, 99, 98, 80, 76, 77, 80, 88, 70, 78, 77, 70, 70, 90, 80, 70, 70, 77, 70, 70, 77, 88, 86, 92, 100, 90, 70, 80, null, null, 77, 76, 78, 98, 70, 77, 78, 80, 88, 70, 78, 70, 70, 90, 80, 70, 70, 70, 70, 70, 70, 70, 80, 90, 88, 86, 92, 100, 90, 70, 98, 99, 98, 70, 75, 77, 80, 88, 70, 78, 77, 70, 70, 90, 80, 70, 70, 70, 77, 70, 70, 70, 80, 85, 88, 86, 92, 100, 90, 70]}; 
+var StoricoProduzioneO = {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}; 
 var StoricoCostoI =   {"list":[0.01, 0.01, 0.01, 0.01, 0.07, 0.04, 0.02, 0.03, 0.11, 0.13, 0.17, 0.12, 0.34, null, null, null, null, null, null, null, null, null, null, null]};
 var StoricoConsumoI = {"list":[88, 85, 88, 89, 250, 110, 98, 120, 360, 450, 650, 420, 1100, null, null, null, null, null, null, null, null, null, null, null]}; 
 var StoricoProduzioneI = {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 650, 1200, 2400, null, null, null, null, null, null, null, null, null, null, null]}; 
@@ -268,10 +273,10 @@ var ReportSim ={
 	
 }
 
-var DataSim = new Date (2012,2,25,22,56);
+var DataSim = new Date (2012,3,25,12,56);
 
 var NotizieSimul = [
-{	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
+{	description : "Sale al 20,3% la percentuale di elettricit convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al É",
 	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
 	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
 },

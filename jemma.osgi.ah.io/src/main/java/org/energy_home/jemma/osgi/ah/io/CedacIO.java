@@ -46,6 +46,8 @@ public class CedacIO implements EventHandler {
 	private static final int OVERLOAD = 8;
 	private static final int OVERLOAD_FIRST_WARNING = 9;
 	private static final int OVERLOAD_SECOND_WARNING = 10;
+	
+	private static final int secondForBeepInOverloadState = 2500; //1500
 
 	private boolean guiOn = false;
 	private boolean platformOn = false;
@@ -142,6 +144,9 @@ public class CedacIO implements EventHandler {
 
 	public void handleEvent(Event event) {
 		log.info("CEDAC IO: " + event + " trapped in HandleEvent");
+
+		no_overload = false;
+		
 		if (event.getTopic().equals("org/osgi/framework/BundleEvent/STARTED")) {
 			Object bundle = (Object) event.getProperty("bundle");
 			if (bundle.toString().startsWith("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
@@ -358,7 +363,7 @@ public class CedacIO implements EventHandler {
 				public void run() {
 					FlexGatewayBuzz.cmdStopBuzzOnCedac();
 				}
-			}, 5000);
+			}, secondForBeepInOverloadState);
 		}
 	}
 

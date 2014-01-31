@@ -172,6 +172,18 @@ span {
 	
 }
 
+#iframeOverload {
+	position: absolute;
+	left: 15%;
+	top: 11%;
+	width: 83%;
+	height: 75%;
+	overflow: hidden;
+	color: #202020;
+	background-color: #333;
+	
+}
+
 .Content {
 	position: absolute;
 	left: 12%;

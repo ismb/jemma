@@ -158,17 +158,17 @@ Main.IdUtenteCb = function(userId, e) {
 	if (e != null) {
 		var err = Msg.visErr[InterfaceEnergyHome.ERR_NO_USER];
 		Configurazione.HandleError(err);
-		$("#userID").html(Msg.home['labelCodiceUtente'] + ':' + err);
+		$("#userID").html(Msg.home['labelCodiceUtente'] + ': ' + err);
 		return;
 	}
 	
 	if (userId == null) {
 		var err = Msg.visErr[InterfaceEnergyHome.ERR_NO_USER];
-		$("#userID").html(Msg.home['labelCodiceUtente'] + ':' + err);
+		$("#userID").html(Msg.home['labelCodiceUtente'] + ': ' + err);
 	} else {
 		Main.userId = userId;
 		Main.hagId = 'hag-'+Main.userId;
-		$("#userID").html(Msg.home['labelCodiceUtente'] + ':' + userId);
+		$("#userID").html(Msg.home['labelCodiceUtente'] + ': ' + userId);
 	}
 	
 	if (Main.enablePV == null){

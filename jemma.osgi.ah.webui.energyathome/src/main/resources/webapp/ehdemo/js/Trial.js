@@ -15,7 +15,7 @@ var Trial = {
 				
 	htmlInformazioni : "<div id='InformazioniTitolo' class='TrialTitolo'>" + Msg.trial["titoloInfo"] + "</div><div id='Informazioni'>" +
 		"<img id='InfoTrialBackground' src='" + Define.trial["sfondoTrial"] + "'>" +
-		"<div id='InformazioniTestoTitolo'>" + Msg.trial["titoloTestoInfo"] + "</div><img id='InformazioniTesto' src='" + Define.trial["imgAssociati"] + "'/></div>",
+		"<div id='InformazioniTestoTitolo'>" + Msg.trial["titoloTestoInfo"] + "</div><div id='InformazioniTesto'>" + Msg.trial["testoInfo"] + "</div></div>",
 	
 	htmlContatti :	"<div id='ContattiTitolo' class='TrialTitolo'>" + Msg.trial["titoloContatti"] + "</div><div id='Contatti'>" +
 		"<img id='ContattiTrialBackground' src='" + Define.trial["sfondoTrial"] + "'>" +

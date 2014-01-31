@@ -191,7 +191,7 @@ InterfaceEnergyHome.Abort = function() {
  * JSONRpcClient.Exception.CODE_ERR_MARSHALL = 593;
  */
 InterfaceEnergyHome.GestErrorEH = function(func, err) {
-	//hideSpinner();
+	hideSpinner();
 	var msg;
 	InterfaceEnergyHome.visError = InterfaceEnergyHome.ERR_GENERIC;
 	
@@ -346,7 +346,13 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		param1 = InterfaceEnergyHome.CONSUMO;
 	}
 
-	if (intervallo == 0) {
+	if (intervallo == -1) {
+		param2 = InterfaceEnergyHome.MINUTE;
+		// dataInizio.setHours(0);
+		// dataFine.setHours(23);
+		// dataFine.setMinutes(30);
+		paramTr = Tracing.QT_IERI;
+	} else if (intervallo == 0) {
 		param2 = InterfaceEnergyHome.HOUR;
 		// dataInizio.setHours(0);
 		// dataFine.setHours(23);
@@ -367,9 +373,14 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 	// solo se anche piattaforma
 	if (InterfaceEnergyHome.mode > 1) {
 		try {
-			InterfaceEnergyHome.objService.getAttributeData(InterfaceEnergyHome.BackStorico, pid, param1, 
-															dataInizio.getTime(), dataFine.getTime(), param2, 
-															true, InterfaceEnergyHome.DELTA);
+			InterfaceEnergyHome.objService.getAttributeData(InterfaceEnergyHome.BackStorico, 
+															pid, 
+															param1, 
+															dataInizio.getTime(), 
+															dataFine.getTime(), 
+															param2, 
+															true, 
+															InterfaceEnergyHome.DELTA);
 		} catch (err) {
 			InterfaceEnergyHome.BackStorico(null, err);
 		}
@@ -389,7 +400,15 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		g = Math.floor(diff / (24 * 60 * 60 * 1000)) + 1;
 
 		//console.log(20, InterfaceEnergyHome.MODULE, "   diff = " + diff + "  giorni = " + g);
-		if (intervallo == 0) {
+		if (intervallo == -1) {
+			if (tipo == "Costo"){
+				val = StoricoCostoO;
+			} else if (tipo == "Produzione"){
+				val = StoricoProduzioneO;
+			} else {
+				val = StoricoConsumoO;
+			}
+		} else if (intervallo == 0) {
 			if (tipo == "Costo"){
 				val = StoricoCostoI;
 			} else if (tipo == "Produzione"){

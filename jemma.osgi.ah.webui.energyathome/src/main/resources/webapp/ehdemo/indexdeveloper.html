@@ -25,16 +25,6 @@
 <link rel='stylesheet' type='text/css' href='css/Configurazioni.css' />
 <link rel='stylesheet' type='text/css' href='css/Report.css' />
 
-<link rel="stylesheet" type='text/css' href="js/farbtastic/farbtastic.css" />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/Elettrodomestici.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampada.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampadaMac.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifBase.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifThermostat.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitWM.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitFridge.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitOven.css' />
-
 <link rel="stylesheet" href="css/e@h-theme/jquery-ui-1.8.19.custom.css">
 
 <!-- Of course it is advisable to have touch icons ready for each device -->
@@ -53,70 +43,35 @@ var localTime = localDate.getTime();
 <script language="javascript" type="text/javascript" src="js/jsonrpc.js?201305315125"></script>
 <script language="javascript" type="text/javascript" src="js/utils/hmac-sha256.js?201305315125"></script>
 <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/jqplot/excanvas.min.js?201305315125"></script><![endif]-->
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery-1.7.1.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery-ui-1.8.19.custom.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/other/spinner.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/jquery.jqplot.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.barRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqgauge/gauge.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqspeedometer/speedometer.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/DefinePath.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Tracing.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Define.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/GestDate.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Log.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Lang.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery.ThreeDots.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/cloud-carousel.1.0.5.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/plot/highcharts.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/plot/highstock.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Utils.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Tools.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/Main.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jquery/jquery-1.7.1.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jquery/jquery-ui-1.8.19.custom.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/other/spinner.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqgauge/gauge.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jqspeedometer/speedometer.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/DefinePath.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Tracing.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Define.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/GestDate.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Log.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Lang.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/jquery/jquery.ThreeDots.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/cloud-carousel.1.0.5.min.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/plot/highcharts.js?201305315125"></script>
+<!-- script language="javascript" type="text/javascript" src="js/plot/highstock.js?201305315125"></script-->
+<script language="javascript" type="text/javascript" src="js/utils/Utils.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Tools.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/Main.js?201305315125"></script>
 <!--<script language="javascript" type="text/javascript" src="js/plot/grid.js"></script>-->
 <!--<script language="javascript" type="text/javascript" src="js/jquery/jquery.corner.js"></script>-->
 <!--<script language="javascript" type="text/javascript" src="js/jquery.mousewheel.js"></script>-->
-<script language="javascript" type="text/javascript" src="js/tinycolor/tinycolor-min.js"></script>
-<script language="javascript" type="text/javascript" src="js/farbtastic/farbtastic.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampada.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampadaMac.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifBase.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifThermostat.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitWM.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitFridge.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitOven.js"></script>
 
 <script type="text/javascript">
 
@@ -154,7 +109,7 @@ var localTime = localDate.getTime();
 	
 	var testTime = qs.get("testtime", "false");
 	
-	var developer = false;
+	var developer = true;
 </script>
 
 <!-- IF FOTOVOLTAICO -->
@@ -229,25 +184,6 @@ var localTime = localDate.getTime();
 					<div id='ConsumoIACIndicatoreImg' class='IndicatoreImg'></div>
 					<div id='ConsumoIndicatoreImg' class='IndicatoreImg'></div>
 					<div id='CostoIndicatoreImg' class='IndicatoreImg'></div>
-				</div>
-				<div id='DatiCosti' class='consSingleBox'>
-					<div id='DatiCostiHead'>
-						<img id="HouseImg" src="./Resources/Images/euro.png">
-						<span id='DatiCostiTitolo'></span>
-					</div>
-					<div id='CostiOdierno'>
-						<div id='DettaglioCostiOdierno' class="Dettagli"></div>
-					</div>
-					<div id='CostiPrevisto'>
-						<div id='DettaglioCostiPrevisto' class="Dettagli"></div>
-					</div>
-					<div id='CostiMediaWeek'>
-						<div id='DettaglioCostiMediaWeek' class="Dettagli"></div>
-					</div>
-				</div>
-				<div id='IndicatorePV'>
-					<div id='IndicatoreTitoloPV' class='TitoloDettaglio IndicatoreTitoloPV'></div>
-					<div id='PVConsumoIACIndicatoreImg' class='IndicatoreImg'></div>
 				</div>
 			</div>
 			<div id='CostoConsumoInfo'>

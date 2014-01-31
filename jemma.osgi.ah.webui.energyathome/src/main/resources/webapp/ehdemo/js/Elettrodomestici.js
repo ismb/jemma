@@ -97,8 +97,7 @@ Elettrodomestici.GetDatiPotenzaElettr = function() {
 	}
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			//InterfaceEnergyHome.objService.getAttribute(Elettrodomestici.GetElettrodomestici, InterfaceEnergyHome.POTENZA_TOTALE);
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(Elettrodomestici.GetElettrodomestici);
+			InterfaceEnergyHome.objService.getAttribute(Elettrodomestici.GetElettrodomestici, InterfaceEnergyHome.POTENZA_TOTALE);
 		} catch (err) {
 			if (Main.env == 0) console.log('exception in Elettrodomestici.js - in Elettrodomestici.GetDatiPotenzaElettr method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenzaElettr", err);
@@ -124,18 +123,7 @@ Elettrodomestici.GetElettrodomestici = function(result, err) {
 		if (Main.env == 0) console.log('exception in FotoVoltaico.js - in Elettrodomestici.GetElettrodomestici method: ', err);
 		InterfaceEnergyHome.GestErrorEH("GetElettrodomestici", err);
 	} else if (result != null){
-		$.each(result.list,function(indice, elettrodom) {
-			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
-				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
-					device_value = elettrodom["map"].device_value;
-					if (device_value != undefined) {
-						Elettrodomestici.potenzaAttuale.value = device_value.value.value;
-					}
-				}
-				if (Main.env == 0)
-					console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
-			}
-		});
+		Elettrodomestici.potenzaAttuale.value = result.value;
 	} else {
 		Elettrodomestici.potenzaAttuale.value = null;
 	}
@@ -191,7 +179,8 @@ Elettrodomestici.DatiElettrodomestici = function(result, err, req) {
 						} else if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
 							//Analizzo la lavatrice whitegood (per adesso stesso codice di uno smart plug)
 							if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
-								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
 							} else {
 								var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
 								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
@@ -201,7 +190,8 @@ Elettrodomestici.DatiElettrodomestici = function(result, err, req) {
 						} else {
 							//Analizzo gli altri elettrodomestici quindi elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTPLUG_APP_TYPE
 							if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
-								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
 							} else {
 								var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
 								elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
@@ -390,7 +380,7 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 	}
 	
 	if (tmpOffset <= 0){
-		//Ci sono meno dispositivi di quanti la pagina pu˜ contenerne
+		//Ci sono meno dispositivi di quanti la pagina pu contenerne
 		$("#nextDevices").hide();
 	}
 
@@ -429,7 +419,7 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 			} else if (statoElettr) {
 				if (nomeElettr == 'Altri consumi'){
 					if (consumoElettr > 0) {
-						//Se c'� consumo visualizzo l'icona verde
+						//Se c' consumo visualizzo l'icona verde
 						estensioneIcona = "_acceso.png";
 						$(statoElettrodomestico).css('color', '').text('');
 						$(consumoDatiElettrodomestico).text(consumoElettr.toFixed(1) + " W");
@@ -440,11 +430,17 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 						$(consumoDatiElettrodomestico).text(" ");
 					}
 				} else if (consumoElettr > 0) {
-					//Se c'� consumo visualizzo l'icona verde
+					//Se c' consumo visualizzo l'icona verde
 					estensioneIcona = "_acceso.png";
 					$(statoElettrodomestico).css('color', '');
 					$(statoElettrodomestico).css("color", "#9CC31C").css("style-weight", "bold").text(Msg.home.statoDisp[1]);
 					$(consumoDatiElettrodomestico).text(consumoElettr.toFixed(1) + " W");
+				} else if (nomeElettr == 'ColorLight') {
+					//Se c' consumo visualizzo l'icona verde
+					estensioneIcona = "_acceso.png";
+					$(statoElettrodomestico).css('color', '');
+					$(statoElettrodomestico).css("color", "#9CC31C").css("style-weight", "bold").text(Msg.home.statoDisp[1]);
+					$(consumoDatiElettrodomestico).text(" ");
 				} else {
 					//Altrimenti lo visualizzo spento
 					estensioneIcona = "_spento.png";
@@ -454,7 +450,7 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 				}
 			} else {
 				if (typeElettr == 'whitegood'){
-					//Se il dispositivo � una lavatrice ed � in standby
+					//Se il dispositivo  una lavatrice ed  in standby
 					if (consumoElettr <= 0){
 						//Il device whitegood consuma 0W, quindi spento
 						estensioneIcona = "_spento.png";
@@ -469,7 +465,7 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 						$(consumoDatiElettrodomestico).text(" ");
 						//$(consumoDatiElettrodomestico).text(consumoElettr.toFixed(1) + " W");
 					} else if ((consumoElettr >= 1) && (consumoElettr <= 5)){
-						//Il device consuma pi� di un 1W, ma meno di 5km, quindi standby
+						//Il device consuma pi di un 1W, ma meno di 5km, quindi standby
 						//al momento lo mettiamo ON.
 						estensioneIcona = "_acceso.png";
 						$(statoElettrodomestico).css('color', '');
@@ -507,6 +503,22 @@ Elettrodomestici.VisualizzaElettro = function(offset) {
 					$(imgDiv).attr("src", urlImg).attr('title', 'SmartPlug Disconnesso');
 				}
 			}
+			
+			/*
+			$(imgDiv).click(function(){
+				return function(n){
+					LazyScript.load('js/Storico.js?201305315125',function(nome){
+						Main.env == 0
+						Elettrodomestici.ExitElettrodomestici();
+						Menu.OnClickContentMenu(0, 3);
+						//Storico.GestStorico();
+						console.log('nome', nome);
+						Storico.dispositivoScelto = nome;
+						Storico.GetStorico();
+					}(n));
+				}(nomeElettr)
+			});
+			*/
 	
 			/* Visualizzazione location */
 			//var loc = Elettrodomestici.locazioni[locationElettr];
