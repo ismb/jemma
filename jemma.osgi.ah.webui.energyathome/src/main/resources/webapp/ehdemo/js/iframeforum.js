@@ -1,6 +1,7 @@
 var iFrameForum = {
 	MODULE : "Forum",
-	forumURL: "http://ehforum.polito.it:8181/ehforum/forums/list.page",
+	forumURL: "https://ehforum.ismb.it:8282/ehforum/forums/list.page",
+	forumURLDemo: "http://ehforum.polito.it:8181/ehforum/forums/list.page",
 	listEldo: {}
 }
 

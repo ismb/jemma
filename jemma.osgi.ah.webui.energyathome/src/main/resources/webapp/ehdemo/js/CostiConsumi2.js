@@ -181,7 +181,7 @@ CostiConsumi.GetCostoOdierno = function() {
 		CostiConsumi.DatiCostoOdiernoCb(val, null);
 	}
 
-};
+}
 
 CostiConsumi.DatiCostoOdiernoCb = function(result, err) {
 
@@ -203,7 +203,7 @@ CostiConsumi.DatiCostoOdiernoCb = function(result, err) {
 	$("#DettaglioCostoConsumoOdierno").html(Msg.home["costoFinora"] + ":<br><br><b>" + txt + "</b>");
 
 	CostiConsumi.GetCostoGiornaliero();
-};
+}
 
 CostiConsumi.GetCostoGiornaliero = function() {
 

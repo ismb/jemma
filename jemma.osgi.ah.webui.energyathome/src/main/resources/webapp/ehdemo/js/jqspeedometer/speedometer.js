@@ -52,16 +52,17 @@ function isNumber (o) {
 
 			var img1 = document.createElement('img');
 			
-			var img = srcPathSpeedometerAZXC + 'images/consumi.png';
-//			if (opts.max == 4.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_3kw.png';
-//			} else if (opts.max == 6.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_4.5kw.png';
-//			} else if (opts.max == 8.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_6kw.png';
-//			} else {
-//				img = srcPathSpeedometerAZXC + 'images/gauge_sfondo.png';
-//			}
+			var img = '';
+			
+			if (opts.max == 4.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_3kw.png';
+			} else if (opts.max == 6.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_4.5kw.png';
+			} else if (opts.max == 8.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_6kw.png';
+			} else {
+				img = srcPathSpeedometerAZXC + 'images/gauge_sfondo.png';
+			}
 			
 			img1.src = img;
 			img1.style.position = 'absolute';
@@ -114,8 +115,8 @@ function isNumber (o) {
 			textDiv.appendChild(span);
 
 			container.appendChild(img1);
-			//container.appendChild(img2);
-			//container.appendChild(img3);
+			container.appendChild(img2);
+			container.appendChild(img3);
 			container.appendChild(textDiv);
 			
 			if (Main.env == 0) console.log(parent);
@@ -230,8 +231,8 @@ function isNumber (o) {
 			textDiv.appendChild(span);
 
 			container.appendChild(img1);
-			//container.appendChild(img2);
-			//container.appendChild(img3);
+			container.appendChild(img2);
+			container.appendChild(img3);
 			container.appendChild(textDiv);
 			
 			if (Main.env == 0) console.log(parent);
@@ -267,16 +268,16 @@ function isNumber (o) {
 			var img1 = document.createElement('img');
 			
 			var img = '';
-			img = srcPathSpeedometerAZXC + 'images/rete.png';
-//			if (opts.max == 4.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_3kw_rete.png';
-//			} else if (opts.max == 6.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_4.5kw_rete.png';
-//			} else if (opts.max == 8.0) {
-//				img = srcPathSpeedometerAZXC + 'images/contatore_6kw_rete.png';
-//			} else {
-//				img = srcPathSpeedometerAZXC + 'images/gauge_sfondo.png';
-//			}
+			
+			if (opts.max == 4.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_3kw_rete.png';
+			} else if (opts.max == 6.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_4.5kw_rete.png';
+			} else if (opts.max == 8.0) {
+				img = srcPathSpeedometerAZXC + 'images/contatore_6kw_rete.png';
+			} else {
+				img = srcPathSpeedometerAZXC + 'images/gauge_sfondo.png';
+			}
 			
 			img1.src = img;
 			img1.style.position = 'absolute';
@@ -329,8 +330,8 @@ function isNumber (o) {
 			textDiv.appendChild(span);
 
 			container.appendChild(img1);
-			//container.appendChild(img2);
-			//container.appendChild(img3);
+			container.appendChild(img2);
+			container.appendChild(img3);
 			container.appendChild(textDiv);
 			
 			if (Main.env == 0) console.log(parent);
@@ -349,7 +350,7 @@ function isNumber (o) {
 			if (indImg > 81)
 				indImg = 81;
 			
-			var imgPower = indImg + '-' + '01.png';
+			var imgPower = indImg + '-' + '01.png'
 			return 'images/' + imgPower;
 		},
 
