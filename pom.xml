@@ -114,7 +114,8 @@
 		<module>jemma.osgi.ah.energyathome</module>
 		<module>jemma.osgi.ah.greenathome</module>
 		<module>jemma.osgi.ah.webui.base</module>
-		<module>jemma.osgi.ah.webui.energyathome</module>
+<!--		<module>jemma.osgi.ah.webui.energyathome.ekitchen</module>
+		<module>jemma.osgi.ah.webui.energyathome.demo</module>-->
 		<module>jemma.osgi.ah.adapter.http</module>
 		<module>jemma.osgi.ah.app</module>
 		<module>jemma.osgi.ah.zigbee</module>
