@@ -80,7 +80,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + startGatewayDestination);
+							log.info("Connecting to:"  + startGatewayDestination);
 						ClientResource resource = new ClientResource(context,
 								startGatewayDestination);
 						Info info = new Info();
@@ -118,7 +118,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeDiscoveredDestination);
+							log.info("Connecting to:"  + nodeDiscoveredDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								nodeDiscoveredDestination);
@@ -157,7 +157,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeRemovedDestination);
+							log.info("Connecting to:"  + nodeRemovedDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								nodeRemovedDestination);
@@ -197,7 +197,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeServicesDestination);
+							log.info("Connecting to:"  + nodeServicesDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								nodeServicesDestination);
@@ -237,7 +237,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + serviceDescriptorDestination);
+							log.info("Connecting to:"  + serviceDescriptorDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								serviceDescriptorDestination);
@@ -275,7 +275,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + resetDestination);
+							log.info("Connecting to:"  + resetDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								resetDestination);
@@ -312,7 +312,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + bindingDestination);
+							log.info("Connecting to:"  + bindingDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								bindingDestination);
@@ -350,7 +350,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + unbindingDestination);
+							log.info("Connecting to:"  + unbindingDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								unbindingDestination);
@@ -389,7 +389,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeBindingDestination);
+							log.info("Connecting to:"  + nodeBindingDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								nodeBindingDestination);
@@ -428,7 +428,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + leaveResultDestination);
+							log.info("Connecting to:"  + leaveResultDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								leaveResultDestination);
@@ -467,7 +467,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + permitJoinDestination);
+							log.info("Connecting to:"  + permitJoinDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								permitJoinDestination);
@@ -507,7 +507,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeDescriptorDestination);
+							log.info("Connecting to:"  + nodeDescriptorDestination);
 						
 						ClientResource resource = new ClientResource(context,
 								nodeDescriptorDestination);
@@ -551,7 +551,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + nodeDescriptorDestination);
+							log.info("Connecting to:"  + nodeDescriptorDestination);
 					
 						ClientResource resource = new ClientResource(context,
 								nodeDescriptorDestination);
@@ -590,7 +590,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + gatewayStopDestination);
+							log.info("Connecting to:"  + gatewayStopDestination);
 					
 						ClientResource resource = new ClientResource(context,
 								gatewayStopDestination);
@@ -629,7 +629,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + leaveResultDestination);
+							log.info("Connecting to:"  + leaveResultDestination);
 	
 						ClientResource resource = new ClientResource(context,
 								leaveResultDestination);
@@ -671,7 +671,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + zdpCommandDestination);
+							log.info("Connecting to:"  + zdpCommandDestination);
 	
 						ClientResource resource = new ClientResource(context,
 								zdpCommandDestination);
@@ -708,7 +708,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + zclCommandDestination);
+							log.info("Connecting to:"  + zclCommandDestination);
 	
 						ClientResource resource = new ClientResource(context,
 								zclCommandDestination);
@@ -744,8 +744,7 @@ public class RestClientManagerAndListener implements
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
-							log.info("Conncting to:"  + frequencyAgilityResultDestination);
-	
+							log.info("Connecting to:"  + frequencyAgilityResultDestination);
 						ClientResource resource = new ClientResource(context,
 								frequencyAgilityResultDestination);
 						Info info = new Info();
