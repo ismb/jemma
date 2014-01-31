@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.webui.energyathome</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.44</version>
+	<version>1.0.41</version>
 	<name>Energy@Home Web Application</name>
 
 	<properties>

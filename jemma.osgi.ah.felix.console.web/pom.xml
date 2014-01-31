@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.felix.console.web</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.7</version>
+	<version>1.0.9</version>
 	<name>AH Felix Web Console</name>
 
 	<parent>
