@@ -373,7 +373,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info("\n\r" + caption + ":" + sb.toString() + "\n\r");
+		logger.info(caption + ":" + sb.toString());
 	}
 	
 	/**
@@ -390,7 +390,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info("\n\r" + caption + sb.toString() + "\n\r");
+		logger.info(caption + sb.toString());
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class DataManipulation {
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info("\n\r" + caption + ":" + sb.toString() + "\n\r");
+		logger.info(caption + ":" + sb.toString());
 	}
 
 	/**

@@ -313,7 +313,6 @@ public class RestClientManagerAndListener implements
 					try {
 						if (_PropertiesManager.getDebugEnabled())
 							log.info("Connecting to:"  + bindingDestination);
-						
 						ClientResource resource = new ClientResource(context,
 								bindingDestination);
 						Info info = new Info();
