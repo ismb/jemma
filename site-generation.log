@@ -1,21 +1,41 @@
-Auto-generated site: 201312181928
+Auto-generated site: 201402031734
 
 ##########################
 Git status
 ##########################
 
-# Sul branch gh-pages
+# On branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   site-generation.log
+#	modified:   credits.html
+#	modified:   devteam.html
+#	modified:   features.html
+#	modified:   getrel.html
+#	modified:   header.template
+#	modified:   howtoc.html
+#	modified:   howtos.html
+#	modified:   index.html
+#	modified:   license.html
+#	modified:   news.html
+#	modified:   resources.html
+#	modified:   site-generation.log
+#	modified:   techs.html
+#	modified:   versions.html
+#	modified:   versions.md
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 3adbc4761e99ef3d9ab40b5a12a20d7e70aa57b3
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Wed Dec 18 19:28:09 2013 +0100
+
+    re-generated page
 
 commit c6426f7c521a1966bba745a9d37403815b78b53b
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -41,9 +61,3 @@ Date:   Thu Nov 14 04:08:03 2013 -0800
 commit ccac2545cd71850e6661a6fbeedb97dea669dd9e
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Thu Nov 14 13:05:00 2013 +0100
-
-    fixing as for pull request review
-
-commit 05ef4b15debcea398bf7600d3804da5f0e2c0899
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Thu Nov 14 12:51:17 2013 +0100
