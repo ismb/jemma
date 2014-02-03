@@ -6,8 +6,8 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 
 ## Get Started
 
-[User Documentation](https://github.com/ismb/jemma/wiki/User-Documentation) (tutorials, etc.) is available on the project wiki.
-[Developers Documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation) is also available.
+
+Tutorials, how-tos and other resources are available on [the project wiki-based documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation).
 
 ## License
 
