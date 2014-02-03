@@ -4,8 +4,8 @@ Versions
 
 ### Current version
 
-The current stable version of JEMMA is <a href="http://github.com/ismb/jemma/wiki/Milestone-0.0.1" target="_parent">version 0.0.1</a>.
-You can find the full version history in the <a href="http://github.com/ismb/jemma/wiki/Versions" target="_parent">Versions page</a> on the JEMMA Wiki.
+The current stable version of JEMMA is <a href="https://github.com/ismb/jemma/releases/tag/V0.1.0" target="_parent">version 0.1.0</a>.
+You can find the full version history in the <a href="https://github.com/ismb/jemma/tags" target="_parent">Versions page</a> on the JEMMA Wiki.
 
 ### Future releases
 
