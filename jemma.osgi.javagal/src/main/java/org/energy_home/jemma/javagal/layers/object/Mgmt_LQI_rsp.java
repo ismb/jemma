@@ -33,13 +33,13 @@ public class Mgmt_LQI_rsp {
 
 	public Mgmt_LQI_rsp(byte[] data) {
 		/* 02 00 01 00 01 */
-		_Status = data[0];
-		_NeighborTableEntries = data[1];
-		_StartIndex = data[2];
-		_NeighborTableListCount = data[3];
+		_Status = data[1];
+		_NeighborTableEntries = data[2];
+		_StartIndex = data[3];
+		_NeighborTableListCount = data[4];
 		if (_NeighborTableListCount > 0) {
 			NeighborTableList = new ArrayList<NeighborTableLis_Record>();
-			byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 4, data.length);
+			byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
 			for (int i = 0; i < _NeighborTableListCount; i++) {
 				byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i),
 						22 * (i + 1));

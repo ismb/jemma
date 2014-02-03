@@ -71,7 +71,12 @@ public class ZdoManager /* implements APSMessageListener */{
 		if (message.getClusterID() == 0x8031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("**************************Received APS With a MGMT_LQI_Response");
+			
 			}
+			
+			
+			
+		 	
 			
 		}
 		/* MGMT_LQI_Request */

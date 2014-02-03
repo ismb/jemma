@@ -102,15 +102,18 @@ public class Discovery_Freshness_ForcePing {
 				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
 
 				/* Check no Response received */
-				if (_Lqi == null) {
+				if (_Lqi == null  ) {
 					manageError(function, startIndex, __currentNodeWrapper, _indexParent, new Exception("LqiReq.Response not received!"));
 				} else/* Response Received */
 				{
-
 					short _totalLqi = _Lqi._NeighborTableEntries;
 					short _indexLqi = _Lqi._StartIndex;
 					short _LqiListCount = _Lqi._NeighborTableListCount;
 
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info("\n\rReceived LQI_RSP (" + funcionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi + "\n\r");
+					}
+					
 					/*
 					 * Start the discovery for any child and add the child to
 					 * parent node
@@ -134,7 +137,8 @@ public class Discovery_Freshness_ForcePing {
 									logger.warn("patch that correct a 4noks bug - 07-12-2011");
 								}
 								return;
-							} else {
+							} 
+							else {
 								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && _Lqi.NeighborTableList != null) {
 
 									if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
