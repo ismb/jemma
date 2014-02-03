@@ -344,7 +344,7 @@ public class DataFreescale implements IDataLayer {
 				messageEvent.setProfileID(DataManipulation.toIntFromShort((byte) message[12], (byte) message[11]));
 				messageEvent.setClusterID(DataManipulation.toIntFromShort((byte) message[14], (byte) message[13]));
 				int lastAsdu = 16 + message[15] - 1;
-				
+
 				messageEvent.setData(DataManipulation.subByteArray(message, 16, lastAsdu));
 				messageEvent.setAPSStatus(message[lastAsdu + 1]);
 				// ASK Jump WasBroadcast
@@ -389,6 +389,26 @@ public class DataFreescale implements IDataLayer {
 				if (messageEvent.getProfileID().equals(0)) {/*
 															 * ZDO Command
 															 */
+					if (messageEvent.getClusterID() == 0x8031) {
+						String __key = "";
+						__key = String.format("%04X", address.getNetworkAddress()); 
+						synchronized (listLocker) {
+							for (ParserLocker pl : listLocker) {
+								if (gal.getPropertiesManager().getDebugEnabled()) {
+									logger.info("LQI KEY:" + __key +" -- PLKEY:" + pl.get_Key());
+								}
+								if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
+									synchronized (pl) {
+										pl.getStatus().setCode((short) messageEvent.getAPSStatus());
+										Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(messageEvent.getData());
+										pl.set_objectOfResponse(_res);
+										pl.notify();
+									}
+									break;
+								}
+							}
+						}
+					}
 					// profileid == 0
 					gal.getZdoManager().ZDOMessageIndication(messageEvent);
 				} else {
@@ -798,23 +818,16 @@ public class DataFreescale implements IDataLayer {
 			/* APS-ZDP-Mgmt_Lqi.Response */
 			else if (message[0] == 0xA0 && message[1] == 0xB1) {
 				if (gal.getPropertiesManager().getDebugEnabled())
-					DataManipulation.logArrayHexRadix("Received ZDP-Mgmt_Lqi.Response", message);
-				synchronized (listLocker) {
-					for (ParserLocker pl : listLocker) {
-						if ((pl.getType() == TypeMessage.LQI_REQ)) {
-							synchronized (pl) {
-								pl.getStatus().setCode(message[3]);
-								
-								
-								Mgmt_LQI_rsp _res = new Mgmt_LQI_rsp(DataManipulation.subByteArray(message, 3, message.length-1));
-								pl.set_objectOfResponse(_res);
-								pl.notify();
-							}
-							break;
-						}
-					}
-				}
-
+					DataManipulation.logArrayHexRadix("Received ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO\n\r", message);
+				/*
+				 * synchronized (listLocker) { for (ParserLocker pl :
+				 * listLocker) { if ((pl.getType() == TypeMessage.LQI_REQ)) {
+				 * synchronized (pl) { pl.getStatus().setCode(message[3]);
+				 * Mgmt_LQI_rsp _res = new
+				 * Mgmt_LQI_rsp(DataManipulation.subByteArray(message, 3,
+				 * message.length-1)); pl.set_objectOfResponse(_res);
+				 * pl.notify(); } break; } } }
+				 */
 			}
 			/* ZTC-ReadExtAddr.Confirm */
 			else if (message[0] == 0xA4 && message[1] == 0xD2) {
@@ -3666,7 +3679,7 @@ public class DataFreescale implements IDataLayer {
 				}
 				throw new GatewayException("Error on ZDP-Mgmt_Lqi.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			}
-			return (Mgmt_LQI_rsp)lock.get_objectOfResponse();
+			return (Mgmt_LQI_rsp) lock.get_objectOfResponse();
 		}
 	}
 }
