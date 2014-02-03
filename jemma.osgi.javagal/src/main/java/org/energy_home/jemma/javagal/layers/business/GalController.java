@@ -1707,11 +1707,12 @@ public class GalController {
 							galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
 							galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
 							galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
-							
+							galNodeWrapper.reset_numberOfAttempt();
+							galNodeWrapper.set_discoveryCompleted(true);
 								if (!galNodeWrapper.isSleepy()) {
 									/* If the Node is NOT a sleepyEndDevice */
-									galNodeWrapper.reset_numberOfAttempt();
-									galNodeWrapper.set_discoveryCompleted(true);
+									
+									
 									if (PropertiesManager.getKeepAliveThreshold() > 0) {
 										/* Execute the Freshness */
 										galNodeWrapper.setTimerFreshness(startTimeFirstGalDiscovery);
@@ -1723,7 +1724,7 @@ public class GalController {
 
 								} else {
 									/* Sleepy end device */
-									galNodeWrapper.set_discoveryCompleted(true);
+									
 									galNodeWrapper.reset_numberOfAttempt();
 								}
 

@@ -72,7 +72,7 @@ public class ApsManager {
 			@Override
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("\n\rAps Message Indication in process...\n\r");
+					logger.info("Aps Message Indication in process...");
 				}
 
 				synchronized (gal.getCallbacks()) {

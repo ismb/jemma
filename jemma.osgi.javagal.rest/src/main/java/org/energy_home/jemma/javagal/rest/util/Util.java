@@ -30,6 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.rest.PropertiesManager;
 
 /**
  * Utility class.
@@ -109,7 +110,7 @@ public class Util {
 					.getClass().getSimpleName());
 			JAXBElement<T> je = new JAXBElement<T>(_qname,
 					(Class<T>) o.getClass(), ((T) o));
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
 			m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
@@ -117,7 +118,7 @@ public class Util {
 					Boolean.FALSE);
 			m.marshal(je, stringWriter);
 			String _tores = stringWriter.toString();
-			logger.info("Marshall OutPut:\n\r" + _tores);
+			
 			return _tores;
 		} catch (JAXBException e) {
 			logger.error("\n\rException on marshal : " + e.getMessage());

@@ -70,7 +70,7 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received APS With a MGMT_LQI_Response");
+				logger.info("**************************Extracted APS With a MGMT_LQI_Response");
 			
 			}
 			
@@ -82,25 +82,25 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received APS With a MGMT_LQI_Request");
+				logger.info("**************************Extracted APS With a MGMT_LQI_Request");
 			}
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received APS With a Node_Desc_req");
+				logger.info("**************************Extracted APS With a Node_Desc_req");
 			}
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received APS With a Node_Desc_rsp");
+				logger.info("**************************Extracted APS With a Node_Desc_rsp");
 			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("\n\r**************************Received APS With a Leave_rsp\n\r");
+				logger.info("\n\r**************************Extracted APS With a Leave_rsp\n\r");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
@@ -154,12 +154,12 @@ public class ZdoManager /* implements APSMessageListener */{
 			_mac.setSecuritySupported((_SecurityCapability == 1 ? true : false));
 			n.setCapabilityInformation(_mac);
 			_Node.set_node(n);
+			_Node.set_discoveryCompleted(true);
+			_Node.reset_numberOfAttempt();
 			int _index = -1;
 			synchronized (gal) {
 				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
 					/* id not exist */
-					_Node.set_discoveryCompleted(true);
-					_Node.reset_numberOfAttempt();
 					if (!_Node.isSleepy()) {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
@@ -172,7 +172,6 @@ public class ZdoManager /* implements APSMessageListener */{
 					gal.getNetworkcache().add(_Node);
 				} else/* if exist */{
 					if (!_Node.isSleepy()) {
-						_Node.reset_numberOfAttempt();
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 						}

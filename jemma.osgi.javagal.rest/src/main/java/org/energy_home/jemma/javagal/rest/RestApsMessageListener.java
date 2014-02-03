@@ -97,6 +97,8 @@ public class RestApsMessageListener implements APSMessageListener {
 					info.setDetail(detail);
 					info.setEventCallbackIdentifier(CalbackIdentifier);
 					String xml = Util.marshal(info);
+					if (_PropertiesManager.getDebugEnabled())
+						log.info(xml);
 					resource.post(xml, MediaType.APPLICATION_XML);
 					resource.release();
 					resource = null;
