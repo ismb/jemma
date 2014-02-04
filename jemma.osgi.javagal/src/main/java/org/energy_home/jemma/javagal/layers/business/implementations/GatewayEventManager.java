@@ -374,7 +374,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	public void nodeDiscovered(final Status _status, final WSNNode _node)
 			throws Exception {
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		System.out.println("\n\rTest--nodeDiscovered:" + _node.getAddress().getNetworkAddress() + " - " + stackTraceElements[2].getMethodName() +"("+stackTraceElements[2].getLineNumber()+")\n\r");
+		System.out.println("\n\rCalled--nodeDiscovered:" + _node.getAddress().getNetworkAddress() + " FROM:" + stackTraceElements[2].getMethodName() +"(Line Number:"+stackTraceElements[2].getLineNumber()+")\n\r");
 		
 		try {
 			Thread thr = new Thread() {
