@@ -25,7 +25,6 @@ import java.util.List;
  *
  */
 public class Mgmt_LQI_rsp {
-	public short _TranseqNumber;
 	public short _Status;
 	public short _NeighborTableEntries;
 	public short _StartIndex;
@@ -34,7 +33,6 @@ public class Mgmt_LQI_rsp {
 
 	public Mgmt_LQI_rsp(byte[] data) {
 		/* 02 00 01 00 01 */
-		_TranseqNumber = data[0];
 		_Status = data[1];
 		_NeighborTableEntries = data[2];
 		_StartIndex = data[3];

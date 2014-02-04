@@ -39,7 +39,7 @@ public class PropertiesManager {
 	public Properties props;
 
 	public PropertiesManager(URL _url) {
-		logger.info("\n\rPropertiesManager - Costructor - Loading configuration file...\n\r");
+		logger.info("PropertiesManager - Costructor - Loading configuration file...");
 		InputStream in = null;
 		try {
 			in = _url.openStream();
@@ -57,7 +57,7 @@ public class PropertiesManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("\n\rPropertiesManager - Costructor - Configuration file loaded!\n\r");
+		logger.info("PropertiesManager - Costructor - Configuration file loaded!");
 
 	}
 
