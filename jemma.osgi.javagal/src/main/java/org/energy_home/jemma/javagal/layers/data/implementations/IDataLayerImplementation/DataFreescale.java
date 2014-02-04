@@ -134,7 +134,7 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (currCscControl != messageCfc) {
-				logger.error("Error CscControl: " + Integer.toHexString(currCscControl) + " != " + Integer.toHexString(messageCfc) );
+				logger.error("Error CscControl: " + Integer.toHexString(currCscControl) + " != " + Integer.toHexString(messageCfc));
 
 				error = true;
 			}
@@ -277,60 +277,66 @@ public class DataFreescale implements IDataLayer {
 								Runnable thr = new MyThread(address) {
 									@Override
 									public void run() {
-										if (gal.getPropertiesManager().getDebugEnabled())
-											logger.info("*****AutoDiscoveryUnknownNodes procedure");
 										Address _address = (Address) this.getParameter();
-										WrapperWSNNode _o = new WrapperWSNNode(gal);
-										WSNNode __o = new WSNNode();
-										__o.setAddress(_address);
-										_o.set_node(__o);
-										_o.set_discoveryCompleted(true);
+										int _indexOnCache = -1;
+										_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+										if (_indexOnCache == -1) {
 
-										/*
-										 * Read the IEEEAddress of the new node
-										 */
-										BigInteger ieee = null;
-										try {
 											if (gal.getPropertiesManager().getDebugEnabled())
-												logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-											ieee = readExtAddress(IDataLayer.INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
-											if (ieee != null)
-												_address.setIeeeAddress(ieee);
-											if (gal.getPropertiesManager().getDebugEnabled())
-												logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
-											NodeDescriptor _ndesc = getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _address);
-											WrapperWSNNode o = new WrapperWSNNode(gal);
-											WSNNode _newNode = new WSNNode();
-											o.set_node(_newNode);
-											_newNode.setAddress(_address);
-											_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
-											o.reset_numberOfAttempt();
-											o.set_discoveryCompleted(true);
-											if (!o.isSleepy()) {
-												
-												if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-													o.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+												logger.info("*****AutoDiscoveryUnknownNodes procedure");
+											try {
+												WrapperWSNNode _o = new WrapperWSNNode(gal);
+												WSNNode __o = new WSNNode();
+												__o.setAddress(_address);
+												_o.set_node(__o);
+												_o.set_discoveryCompleted(true);
+
+												/*
+												 * Read the IEEEAddress of the
+												 * new node
+												 */
+												BigInteger ieee = null;
+												WrapperWSNNode o = new WrapperWSNNode(gal);
+												WSNNode _newNode = new WSNNode();
+												synchronized (gal.getNetworkcache()) {
+													if (gal.getPropertiesManager().getDebugEnabled())
+														logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
+													ieee = readExtAddress(IDataLayer.INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
+													if (ieee != null)
+														_address.setIeeeAddress(ieee);
+													if (gal.getPropertiesManager().getDebugEnabled())
+														logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
+													NodeDescriptor _ndesc = getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _address);
+													
+													o.set_node(_newNode);
+													_newNode.setAddress(_address);
+													_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
+													o.reset_numberOfAttempt();
+													o.set_discoveryCompleted(true);
+													if (!o.isSleepy()) {
+
+														if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+															o.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+														}
+														if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+															o.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+														}
+													}
+
+													gal.getNetworkcache().add(o);
+
 												}
-												if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-													o.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-												}
+
+												Status _st = new Status();
+												_st.setCode((short) GatewayConstants.SUCCESS);
+												gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+
+											} catch (GatewayException e) {
+												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+											} catch (Exception e) {
+												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 											}
-
-											synchronized (gal.getNetworkcache()) {
-												gal.getNetworkcache().add(o);
-
-											}
-
-											Status _st = new Status();
-											_st.setCode((short) GatewayConstants.SUCCESS);
-											gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
-
-										} catch (GatewayException e) {
-											logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-										} catch (Exception e) {
-											logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 										}
-
 									}
 								};
 
@@ -392,7 +398,7 @@ public class DataFreescale implements IDataLayer {
 															 */
 					if (messageEvent.getClusterID() == 0x8031) {
 						String __key = "";
-						__key = String.format("%04X", address.getNetworkAddress()); 
+						__key = String.format("%04X", address.getNetworkAddress());
 						synchronized (listLocker) {
 							for (ParserLocker pl : listLocker) {
 								if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
@@ -2970,7 +2976,7 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString() );
+				logger.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString());
 			}
 			addToSendDataQueue(_res);
 			synchronized (lock) {
@@ -3086,7 +3092,7 @@ public class DataFreescale implements IDataLayer {
 																		 * Control
 																		 */
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("CPUResetCommnad command:" + _res.ToHexString() );
+			logger.info("CPUResetCommnad command:" + _res.ToHexString());
 		}
 		addToSendDataQueue(_res);
 
@@ -3463,7 +3469,7 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString() );
+				logger.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString());
 			}
 			addToSendDataQueue(_res);
 			synchronized (lock) {
@@ -3523,7 +3529,7 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString() );
+				logger.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 			}
 			addToSendDataQueue(_res);
 			synchronized (lock) {
