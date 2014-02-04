@@ -121,7 +121,7 @@ public class Util {
 			
 			return _tores;
 		} catch (JAXBException e) {
-			logger.error("\n\rException on marshal : " + e.getMessage());
+			logger.error("Exception on marshal : " + e.getMessage());
 			return EMPTY_STRING;
 		}
 	}

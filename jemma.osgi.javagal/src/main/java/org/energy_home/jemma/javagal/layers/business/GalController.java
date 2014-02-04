@@ -103,7 +103,7 @@ public class GalController {
 		/* Used for reset GAL */
 		if (DataLayer != null) {
 			if (getPropertiesManager().getDebugEnabled())
-				logger.info("\n\rStarting reset...\n\r");
+				logger.info("Starting reset...");
 			/* Stop all timers */
 			List<WrapperWSNNode> _list = getNetworkcache();
 			for (WrapperWSNNode x : _list)
@@ -120,7 +120,7 @@ public class GalController {
 				DataLayer.getIKeyInstance().disconnect();
 			DataLayer = null;
 			if (getPropertiesManager().getDebugEnabled())
-				logger.info("\n\rReset done!\n\r");
+				logger.info("Reset done!");
 		}
 		/* End of reset section */
 		if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
@@ -151,7 +151,7 @@ public class GalController {
 					executeAutoStart();
 				} catch (Exception e) {
 
-					logger.error("\n\rError on autostart!\n\r");
+					logger.error("Error on autostart!");
 				}
 			} else {
 				short _EndPoint = 0;
@@ -163,7 +163,7 @@ public class GalController {
 		}
 
 		if (getPropertiesManager().getDebugEnabled())
-			logger.info("\n\r***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() + "***\n\r");
+			logger.info("***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() + "***");
 
 	}
 
@@ -497,7 +497,7 @@ public class GalController {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode x : _list) {
 
-			logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + "\n\rDiscoveryCompleted:" + x.is_discoveryCompleted());
+			logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + "DiscoveryCompleted:" + x.is_discoveryCompleted());
 			if (x.is_discoveryCompleted()) {
 				LQINode _lqinode = new LQINode();
 				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
@@ -692,12 +692,12 @@ public class GalController {
 								}
 								if (_lockerStartDevice.getId() > 0) {
 									if (PropertiesManager.getDebugEnabled())
-										logger.info("\n\rGateway Started now!\n\r");
+										logger.info("Gateway Started now!");
 
 								} else {
 									setGatewayStatus(GatewayStatus.GW_READY_TO_START);
 									if (PropertiesManager.getDebugEnabled())
-										logger.error("\n\r*******Gateway NOT Started!\n\r");
+										logger.error("*******Gateway NOT Started!");
 									_res.setCode((short) GatewayConstants.GENERAL_ERROR);
 									_res.setMessage("No Network Event Running received!");
 
@@ -763,11 +763,11 @@ public class GalController {
 
 					if (_lockerStartDevice.getId() > 0) {
 						if (PropertiesManager.getDebugEnabled())
-							logger.info("\n\rGateway Started now!\n\r");
+							logger.info("Gateway Started now!");
 					} else {
 						setGatewayStatus(GatewayStatus.GW_READY_TO_START);
 						if (PropertiesManager.getDebugEnabled())
-							logger.error("\n\rGateway NOT Started!\n\r");
+							logger.error("Gateway NOT Started!");
 						_status.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_status.setMessage("No Network Event Running received!");
 					}
@@ -1517,7 +1517,7 @@ public class GalController {
 	public void startNodeDiscovery(long timeout, int requestIdentifier, int discoveryMask) throws GatewayException {
 		int _index = -1;
 		if (PropertiesManager.getDebugEnabled())
-			logger.info("\n\rCalled startNodeDiscovery Mask: " + discoveryMask + " - Timeout:" + timeout);
+			logger.info("Called startNodeDiscovery Mask: " + discoveryMask + " - Timeout:" + timeout);
 		synchronized (get_gatewayEventManager()) {
 			_index = existIntolistGatewayEventListener(requestIdentifier);
 		}
@@ -1552,18 +1552,18 @@ public class GalController {
 					GalNode.setTimerDiscovery(0);
 				}
 				if (PropertiesManager.getDebugEnabled()) {
-					logger.info("\n\rGlobal Discovery Started(" + __timeout + " seconds)!\n\r");
+					logger.info("Global Discovery Started(" + __timeout + " seconds)!");
 				}
 
 			} else if ((discoveryMask == GatewayConstants.DISCOVERY_STOP) || (timeout == 1)) {
 
 				if (PropertiesManager.getDebugEnabled())
-					logger.info("\n\rGlobal Discovery Stopped!\n\r");
+					logger.info("Global Discovery Stopped!");
 
 			}
 		} else {
 			if (PropertiesManager.getDebugEnabled())
-				logger.error("\n\rError on startNodeDiscovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
+				logger.error("Error on startNodeDiscovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 
 			throw new GatewayException("No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 		}
@@ -1593,7 +1593,7 @@ public class GalController {
 
 			} else {
 				if (PropertiesManager.getDebugEnabled()) {
-					logger.error("\n\rError on subscribeNodeRemoval: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!\n\r");
+					logger.error("Error on subscribeNodeRemoval: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 				}
 				throw new GatewayException("No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 			}

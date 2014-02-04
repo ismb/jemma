@@ -54,7 +54,7 @@ public class main {
 	 * @param args startup arguments.
 	 */
 	public static void main(String[] args) {
-		logger.info("\n\rStarting Gal:Java!\n\r");
+		logger.info("Starting Gal:Java!");
 		PropertiesManager PropertiesManager = null;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i].charAt(0)) {
@@ -130,10 +130,10 @@ public class main {
 					.createGatewayInterfaceObject();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.fatal("\n\rError starting GAL: " + e.getMessage());
+			logger.fatal("Error starting GAL: " + e.getMessage());
 			return;
 		}
-		logger.info("\n\rWaiting Osgi connections...\n\r");
+		logger.info("Waiting Osgi connections...");
 
 	}
 

@@ -74,7 +74,6 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
-	private SimpleDateFormat _FormatTimeStamp = new SimpleDateFormat("HH:mm:ss");
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
@@ -1670,9 +1669,8 @@ public class DataFreescale implements IDataLayer {
 	private final ChecksumControl csc = new ChecksumControl();
 
 	public synchronized void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
-
 		if (gal.getPropertiesManager().getDebugEnabled())
-			logger.info("[" + (_FormatTimeStamp.format(new Timestamp(System.currentTimeMillis()))) + "] >>> Sending Message:\n " + toAdd.ToHexString());
+			logger.info(">>> Sending Message: " + toAdd.ToHexString());
 		Thread thr = new Thread() {
 			@Override
 			public void run() {
@@ -3430,7 +3428,7 @@ public class DataFreescale implements IDataLayer {
 						messageShort[i] = (short) (msg[i] & 0xff);
 
 					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadixDataReceived("[" + (_FormatTimeStamp.format(new Timestamp(System.currentTimeMillis()))) + "] <<< Received data:\n ", messageShort);
+						DataManipulation.logArrayHexRadixDataReceived("<<< Received data: ", messageShort);
 					addToReceivedDataQueue(size, messageShort);
 					try {
 						processMessages();
