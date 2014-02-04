@@ -129,7 +129,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\nCreate ApsCallBack(short endpoint, APSMessageListener listener)...\n\r");
+			logger.info("Create ApsCallBack(short endpoint, APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();
@@ -147,7 +147,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public long createAPSCallback(APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\nCreate ApsCallBack(APSMessageListener listener)...\n\r");
+			logger.info("Create ApsCallBack(APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();

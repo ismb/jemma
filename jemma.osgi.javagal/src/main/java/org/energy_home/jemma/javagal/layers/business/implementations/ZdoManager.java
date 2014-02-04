@@ -100,7 +100,7 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("\n\r**************************Extracted APS With a Leave_rsp\n\r");
+				logger.info("**************************Extracted APS With a Leave_rsp");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
