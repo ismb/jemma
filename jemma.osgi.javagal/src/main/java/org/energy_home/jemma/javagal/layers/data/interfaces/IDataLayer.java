@@ -46,7 +46,7 @@ public interface IDataLayer extends IFrameCallback {
 	/**
 	 * Default timeout's value.
 	 */
-	final Long INTERNAL_TIMEOUT = (long) 20000;
+	final Long INTERNAL_TIMEOUT = (long) 9000;
 
 	public GalController getGalController();
 	/* Internal section */
