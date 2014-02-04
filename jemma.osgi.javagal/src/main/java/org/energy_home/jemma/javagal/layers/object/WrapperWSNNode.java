@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.object;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
@@ -31,7 +33,6 @@ import org.energy_home.jemma.zgd.jaxb.WSNNode;
  * 
  */
 public class WrapperWSNNode {
-
 	int _timerID = 0;
 	private WSNNode _node;
 	private Timer _timerDiscovery;
@@ -95,6 +96,7 @@ public class WrapperWSNNode {
 		}
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			//System.out.println("\n\rTimer Scheduled:" + name+ "\n\r");
 			_timerDiscovery = new Timer(name);
 			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
 
@@ -116,6 +118,7 @@ public class WrapperWSNNode {
 
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			//System.out.println("\n\rTimer Scheduled:" + name+ "\n\r");
 			_timerFreshness = new Timer(name);
 			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
 
@@ -137,6 +140,7 @@ public class WrapperWSNNode {
 
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			//System.out.println("\n\rTimer Scheduled:" + name+ "\n\r");
 			_timerForcePing = new Timer(name);
 			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 
@@ -253,7 +257,9 @@ public class WrapperWSNNode {
 
 		@Override
 		public void run() {
+			System.out.println("\n\rTimer Elapsed:" + _name+ "\n\r");
 			_timerDiscovery.cancel();
+			
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
 
 		}
@@ -271,6 +277,7 @@ public class WrapperWSNNode {
 
 		@Override
 		public void run() {
+			System.out.println("\n\rTimer Elapsed:" + _name+ "\n\r");
 			_timerFreshness.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
 
@@ -290,6 +297,7 @@ public class WrapperWSNNode {
 
 		@Override
 		public void run() {
+			System.out.println("\n\rTimer Elapsed:" + _name+ "\n\r");
 			_timerForcePing.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
 
