@@ -160,6 +160,7 @@ public class ZdoManager /* implements APSMessageListener */{
 			synchronized (gal) {
 				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
 					/* id not exist */
+					gal.getNetworkcache().add(_Node);
 					if (!_Node.isSleepy()) {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
@@ -169,7 +170,6 @@ public class ZdoManager /* implements APSMessageListener */{
 						}
 
 					}
-					gal.getNetworkcache().add(_Node);
 				} else/* if exist */{
 					if (!_Node.isSleepy()) {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
