@@ -387,7 +387,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				return;
 			} else {
 				// !!!Multieps: a concurrent update can occur (device access and
-				// configuration admin can concurrenlty attach and update the
+				// configuration admin can concurrently attach and update the
 				// application)
 				if (installingAppliances.contains(appliance))
 					installingAppliances.remove(appliance);

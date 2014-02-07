@@ -509,6 +509,16 @@ public class EndPoint extends BasicEndPoint {
 		}
 		return null;
 	}
+	
+	public final IServiceCluster getPeerServiceCluster(String peerAppliancePid, String clusterName, int endPointId) {
+		PeerAppliance peerAppliance = (PeerAppliance) peerAppliances.get(peerAppliancePid);
+		if (peerAppliance == null)
+			return null;	
+		IEndPoint peerEndPoint = peerAppliance.getEndPoint(endPointId);
+		if (peerEndPoint != null)
+			return peerEndPoint.getServiceCluster(clusterName);
+		return null;
+	}
 
 	/*
 	 * public final Class getServiceClusterInterfaceClass(String clusterType,

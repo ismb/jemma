@@ -58,6 +58,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.EndPointRequestContext;
 import org.energy_home.jemma.ah.hac.lib.ext.ICoreApplication;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
 //import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -71,7 +72,8 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 
 	protected static final long MINIMUM_VALID_TIME = 1356998400000l; // 01/01/2013
 	
-	protected static final long CHECK_SUBSCRIPTION_PERIOD = 60000;
+	protected static final int CHECK_SUBSCRIPTION_PERIOD_MULTIPLIER = 12;
+	protected static final long CHECK_SUBSCRIPTION_PERIOD = 5000;
 	
 	protected static final long SUBSCRIPTION_MAX_DELAY_FACTOR = 1500;
 	
@@ -128,12 +130,40 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		private TimerTask checkSubscriptionsTask;
 		private long identifyStopTime = 0;
 		private TimerTask identifyTask; 
+		
+		private int timeIntervalCounter = 0;
+		private int fasterChecks = -1;
 
 		long getValidCurrentTimeMillis() {
 			long time = System.currentTimeMillis();
 			if (time > MINIMUM_VALID_TIME)
 				return time;
 			return 0;
+		}
+		
+		boolean isCheckRequired() {
+			// After around 1 minutes, faster subscription check is disabled
+			if (isFasterSubscriptionCheckEnabled()) {
+				log.info("Faster subscription check enabled");
+				fasterChecks++;
+				return true;
+			}
+			fasterChecks = -1;
+			timeIntervalCounter++;
+			if (timeIntervalCounter == Integer.MAX_VALUE)
+				timeIntervalCounter = 0;
+			return (timeIntervalCounter % CHECK_SUBSCRIPTION_PERIOD_MULTIPLIER == 0);					
+		}
+		
+		boolean isFasterSubscriptionCheckEnabled() {
+			return (fasterChecks >= 0 && fasterChecks <= 12);
+		}
+		
+		void enableFasterSubscriptionCheck() {
+			if (fasterChecks < 0) {
+				fasterChecks = 0;
+				timeIntervalCounter = 0;
+			}
 		}
 		
 		public boolean isIdentifyActive() {
@@ -205,21 +235,31 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		}
 		
 		public void checkSubscriptions() {
+			if (!isCheckRequired()) {
+				return;
+			}
 			long startTime = System.currentTimeMillis();
 			log.info("Starting subscriptions check");
 			try {
 				// Array is used to avoid concurrent modification exceptions
 				String[] appliancePids = new String[applianceMap.size()];
 				applianceMap.keySet().toArray(appliancePids);
-				Appliance appliance;
+				ManagedApplianceStatus applianceStatus;
+				IManagedAppliance appliance;
 				IServiceCluster[] serviceClusters;
 				IServiceCluster serviceCluster;
 				Map subscriptions;
 				String attributeName;
 				ISubscriptionParameters subscriptionParameters;
+				ISubscriptionParameters returnedSubscriptionParameters;
 				IAttributeValue attributeValue;
+				long lastNotifiedTimestamp = 0;
 				for (int i = 0; i < appliancePids.length; i++) {
-					appliance = (Appliance) getAppliance(appliancePids[i]);
+					applianceStatus = (ManagedApplianceStatus) applianceMap.get(appliancePids[i]);
+					if (applianceStatus == null)
+						appliance = null;
+					else
+						appliance = applianceStatus.getAppliance();
 					if (appliance != null && appliance.isAvailable()) {
 						IEndPoint[] endPoints = appliance.getEndPoints();
 						for (int j = 0; j < endPoints.length; j++) {
@@ -234,12 +274,21 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 										subscriptionParameters = (ISubscriptionParameters) entry.getValue();
 										try {
 											attributeValue = serviceCluster.getLastNotifiedAttributeValue(attributeName, null);
-											if (attributeValue != null && subscriptionParameters != null &&
+											lastNotifiedTimestamp = (attributeValue != null) ? Math.max(attributeValue.getTimestamp(), applianceStatus.getLastSubscriptionRequestTime()) : 
+													applianceStatus.getLastSubscriptionRequestTime();
+											if (subscriptionParameters != null &&
 													subscriptionParameters.getMaxReportingInterval() > 0 ) {
-												if (System.currentTimeMillis() - attributeValue.getTimestamp() >
+												if (System.currentTimeMillis() - lastNotifiedTimestamp >
 													SUBSCRIPTION_MAX_DELAY_FACTOR * subscriptionParameters.getMaxReportingInterval()) {
-														log.warn("Subscription renewed for attribute " + attributeName + " of appliance " + appliancePids[i]);
-														serviceCluster.setAttributeSubscription(attributeName, subscriptionParameters, confirmedRequestContext);
+														log.warn("Subscription renewed for attribute " + attributeName + ", cluster " +serviceCluster.getName() + ", ep " + serviceCluster.getEndPoint().getId() + ", appliance " + appliancePids[i]);
+														returnedSubscriptionParameters = serviceCluster.setAttributeSubscription(attributeName, subscriptionParameters, confirmedRequestContext);
+														if (returnedSubscriptionParameters == null) {
+															// Retry subscription faster when fails (useful for sleeping end devices)
+															enableFasterSubscriptionCheck();
+														}
+														if (returnedSubscriptionParameters != null || !isFasterSubscriptionCheckEnabled())
+															// If the subscription succeeded or failed after a period of faster checks, last subscription request time for the appliance is initialized
+															applianceStatus.setLastSubscriptionRequestTime(System.currentTimeMillis());
 												}
 											}
 										} catch (Exception e) {
@@ -457,14 +506,19 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		log.info("Availability updated for appliance " + appliancePid);
 		List proxyListeners = getProxyListeners(appliancePid);
 		ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) applianceMap.get(appliancePid);
-		if (applianceProxy == null)
+		boolean installing = false;
+		if (applianceProxy == null) {
 			applianceProxy = (ManagedApplianceStatus) installingApplianceMap.get(appliancePid);
+			installing = (applianceProxy != null);
+		}		
 		if (applianceProxy == null)
 			log.error("Received availability update for not exhisting appliance " + appliancePid);
 		else {
 			IAppliance appliance = applianceProxy.getAppliance();
-			if (appliance.isAvailable())
-				appliancesInitializationManager.initAppliance(appliance);
+			if (appliance.isAvailable()) {
+				appliancesInitializationManager.initAppliance(appliance, installing);
+				applianceProxy.setLastSubscriptionRequestTime(System.currentTimeMillis());
+			}
 			for (Iterator iterator = proxyListeners.iterator(); iterator.hasNext();) {
 				IApplicationService listener = (IApplicationService) iterator.next();
 				try {
@@ -551,8 +605,14 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		for (int i = 0; i < endPoints.length; i++) {
 			((ApplianceManager)appliance.getApplianceManager()).setAppliancesProxy((AppliancesProxy)this);
 		}
-		if (appliance.isAvailable())
-			appliancesInitializationManager.initAppliance(appliance);
+		String appStatus = (String) savedProps.get(ApplianceConfiguration.AH_STATUS_PROPERTY_NAME);
+		boolean installing = false;
+		if (appStatus != null && appStatus.equals("installing")) {
+			installing = true;
+		}
+		if (appliance.isAvailable()) {
+			appliancesInitializationManager.initAppliance(appliance, installing);
+		}
 		List proxyListeners = getProxyListeners(appliancePid);
 		for (Iterator iterator = applicationToProxyEndPointMap.keySet().iterator(); iterator.hasNext();) {
 			IApplicationService listener = (IApplicationService) iterator.next();
@@ -562,10 +622,11 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			proxyListeners.add(listener);
 		}
 		applianceConfigurationMap.put(appliancePid, savedProps);
-		String appStatus = (String) savedProps.get(ApplianceConfiguration.AH_STATUS_PROPERTY_NAME);
-		if (appStatus != null && appStatus.equals("installing")) {
+		if (installing) {
 			log.info("Appliance not yet installed " + appliancePid);
 			ManagedApplianceStatus proxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_INSTALLING);
+			if (appliance.isAvailable())
+				proxy.setLastSubscriptionRequestTime(System.currentTimeMillis());
 			installingApplianceMap.put(appliancePid, proxy);
 			notifyApplianceAdded(appliance, true);
 			return;
@@ -577,6 +638,8 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		} else {
 			applianceProxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_ENABLING);
 		}
+		if (appliance.isAvailable())
+			applianceProxy.setLastSubscriptionRequestTime(System.currentTimeMillis());
 		if (applianceMap.get(appliancePid) != null)
 			log.error("Appliance " + appliancePid + " already added");
 		applianceMap.put(appliancePid, applianceProxy);

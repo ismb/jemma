@@ -1,0 +1,185 @@
+body {
+	width: 100%;
+	background-color: #202020;
+	overflow: auto;
+	font-family: Arial, Arial, sans-serif;
+	text-align: center;
+/*	font-size: 1.0em; */
+	font-size: 100%;
+}
+
+img {
+	-ms-interpolation-mode: bicubic;
+}
+
+.visibleDiv {
+	display: inline;
+}
+
+.invisibleDiv {
+	display: none;
+}
+
+span {
+	color: black;
+/*	font-size: 1.0em; */
+	font-size: 100%;
+}
+
+#Header {
+	position: absolute;
+	left: 2%;
+	top: 0%;
+	right: 2%;
+	height: 10%;
+}
+
+#HeaderSep {
+	position: absolute;
+	left: 2%;
+	right: 2%;
+	top: 10%;
+	height: 5px;
+}
+
+@media screen and ( max-width : 700px) {
+	#Header {
+		height: 7%;
+	}
+	#HeaderSep {
+		top: 7%;
+	}
+}
+
+#LogoImg {
+	position: absolute;
+	height: 100%;
+	left: 0%;
+}
+
+#PartnerImg {
+	position: absolute;
+	height: 85%;
+	right: 10%;
+	bottom: 1px;
+}
+
+#TelecomLogoImg {
+	position: absolute;
+	height: 85%;
+	right: 0%;
+	bottom: 1px;
+}
+
+#HeaderSepImg {
+	position: absolute;
+	height: 100%;
+	left: 0px;
+	width: 100%;
+}
+
+/* serve solo per colorare una parte dello schermo */
+#ContentGasMain {
+	position: absolute;
+	left: 2%;
+	top: 11%;
+	width: 96%;
+	height: 86%;
+	background-color: #333333;
+	overflow: hidden;
+}
+
+#GasMainMenu {
+	position: absolute;
+	left: 0%;
+	top: 10%;
+	width: 15%;
+	height: 80%;
+	overflow: hidden;
+}
+
+#ContentMenu {
+	position: absolute;
+	left: 16%;
+	top: 88%;
+	width: 83%;
+	height: 8%;
+}
+
+#Content {
+	position: absolute;
+	left: 15%;
+	top: 10%;
+	width: 83%;
+	height: 75%;
+	overflow: hidden;
+	color: #202020;
+}
+
+#NonDisponibile {
+	position: absolute;
+	top: 30%;
+	left: 10%;
+	width: 80%;
+	height: 70%;
+	color: #abd037;
+/*	font-size: 2.0em; */
+	font-size: 200%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+#Timestamp {
+	position: absolute;
+	right: 4%;
+	top: 12%;
+	height: 5%;
+	width: 100%;
+/*	font-size: 1.0em; */
+	font-size: 100%;
+}
+
+#Data {
+	margin-right: 12px;
+	color: #f0f0f0;
+	float: right;
+}
+
+#Ora {
+	color: #f0f0f0;
+	float: right;
+}
+
+#ClockImg {
+	margin-right: 12px;
+	float: right;
+}
+
+.ContentTitle {
+	position: absolute;
+	top: 3%;
+	left: 2%;
+	width: 50%;
+	height: 8%;
+	text-align: left;
+	valign: middle;
+/* 	font-size: 1.4em; */
+	font-size: 140%;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+#ErrorMsgDIV {
+	position: absolute;
+    top: 89%;
+    left: 77%;
+    height: 8%;
+    width: 20%;
+    overflow:hidden;
+    background-color: transparent;
+    text-align: center;
+/*	font-size: 1.0em; */
+	font-size: 100%;
+	font-weight: bold;
+	color: red;
+}
