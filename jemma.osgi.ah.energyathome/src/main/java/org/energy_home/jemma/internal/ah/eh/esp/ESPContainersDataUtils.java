@@ -191,6 +191,10 @@ public class ESPContainersDataUtils {
 		// TODO: check for a more efficient implementation
 		long now = System.currentTimeMillis();
 		long endTime;
+		
+		if (startTime+duration >= now)
+			// Test added to manage produced energy forecast (it is assumed that hourly forecast data are already normalized)
+			return true;
 
 		Long initialConfigurationTime = ESPConfiguration.getInitialConfigurationTime();
 		long initialTime = initialConfigurationTime != null ? initialConfigurationTime.longValue() : DateUtils.DEFAULT_INITIAL_TIME;

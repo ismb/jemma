@@ -24,6 +24,7 @@ public class ManagedApplianceStatus {
 	
 	private IManagedAppliance appliance;
 	private int status;
+	private long lastSubscriptionRequestTime;
 	
 	ManagedApplianceStatus(IManagedAppliance appliance, int status) {
 		this.appliance = appliance;
@@ -40,5 +41,13 @@ public class ManagedApplianceStatus {
 	
 	void setStatus(int status) {
 		this.status = status;
+	}
+	
+	long getLastSubscriptionRequestTime() {
+		return this.lastSubscriptionRequestTime;
+	}
+	
+	void setLastSubscriptionRequestTime(long time) {
+		this.lastSubscriptionRequestTime = time;
 	}
 }

@@ -297,6 +297,10 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 				IAppliance appliance = appliancesProxy.getAppliance(appliancePid);
 				if (appliance == null)
 					appliance = appliancesProxy.getInstallingAppliance(appliancePid);
+				if (appliance == null) {
+					pw.println("<br><br>Please wait some seconds and try to reload this web page or click on the AH tab...");
+					return;
+				}
 				IApplianceConfiguration config = appliancesProxy.getApplianceConfiguration(appliancePid);
 				if (endPointId < 0) { 
 					renderAppliance(appRoot, false, true, appliance, pw);					

@@ -574,18 +574,21 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		// FIXME: currently sleeping end device is supposed to later receive the
 		// subscription (no error managed)
 		// TODO: add configure reporting read operation
-		parameters = super.setAttributeSubscription(attributeName, parameters, endPointRequestContext);
+		ISubscriptionParameters result = null;
+		parameters = super.initAttributeSubscription(attributeName, parameters, endPointRequestContext);
 		ISubscriptionParameters[] sps = null;
 		try {
 			sps = configureReportings(getClusterId(), new String[] { attributeName }, new ISubscriptionParameters[] { parameters },
 					endPointRequestContext);
+			result = sps[0];
 		} catch (Exception e) {
 			log.error("Error while subscribing attribute " + attributeName + " for driver appliance "
 					+ this.getEndPoint().getAppliance().getPid() + ". Maybe this is a sleeping end device!");
 			sps = new ISubscriptionParameters[] { parameters };
 		}
 		updateAllSubscriptionMap(attributeName, sps[0], endPointRequestContext);
-		return sps[0];
+		// A null value is returned if configure reportings command fails 
+		return result;
 	}
 
 	protected int readAttributeResponseGetSize(int attrId) throws ServiceClusterException, ZclValidationException {
