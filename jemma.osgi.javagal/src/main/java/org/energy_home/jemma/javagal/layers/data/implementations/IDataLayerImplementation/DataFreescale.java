@@ -264,12 +264,11 @@ public class DataFreescale implements IDataLayer {
 					if (_indexOnCache != -1) {
 						/* The node is already into the DB */
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							synchronized (gal.getNetworkcache().get(_indexOnCache)) {
-								if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
-									gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
-									gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-								}
+							if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
+								gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
+								gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 							}
+
 						}
 					} else {
 						if (gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) {
@@ -283,13 +282,12 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled())
+											{
+												System.out.println("*****AutoDiscoveryUnknownNodes procedure");
+												
 												logger.info("*****AutoDiscoveryUnknownNodes procedure");
+											}
 											try {
-												WrapperWSNNode _o = new WrapperWSNNode(gal);
-												WSNNode __o = new WSNNode();
-												__o.setAddress(_address);
-												_o.set_node(__o);
-												_o.set_discoveryCompleted(true);
 
 												/*
 												 * Read the IEEEAddress of the
@@ -298,38 +296,37 @@ public class DataFreescale implements IDataLayer {
 												BigInteger ieee = null;
 												WrapperWSNNode o = new WrapperWSNNode(gal);
 												WSNNode _newNode = new WSNNode();
-												synchronized (gal.getNetworkcache()) {
-													if (gal.getPropertiesManager().getDebugEnabled())
-														logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-													ieee = readExtAddress(IDataLayer.INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
-													if (ieee != null)
-														_address.setIeeeAddress(ieee);
-													if (gal.getPropertiesManager().getDebugEnabled())
-														logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
-													NodeDescriptor _ndesc = getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _address);
-													
-													o.set_node(_newNode);
-													_newNode.setAddress(_address);
-													_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
-													o.reset_numberOfAttempt();
-													o.set_discoveryCompleted(true);
-													if (!o.isSleepy()) {
 
-														if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-															o.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-														}
-														if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-															o.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-														}
+												if (gal.getPropertiesManager().getDebugEnabled())
+													logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
+												ieee = readExtAddress(IDataLayer.INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
+												if (ieee != null)
+													_address.setIeeeAddress(ieee);
+												if (gal.getPropertiesManager().getDebugEnabled())
+													logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
+												NodeDescriptor _ndesc = getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _address);
+
+												o.set_node(_newNode);
+												_newNode.setAddress(_address);
+												_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
+												o.reset_numberOfAttempt();
+												o.set_discoveryCompleted(true);
+												if (!o.isSleepy()) {
+
+													if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+														o.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 													}
-
-													gal.getNetworkcache().add(o);
-
+													if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+														o.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+													}
 												}
-
-												Status _st = new Status();
-												_st.setCode((short) GatewayConstants.SUCCESS);
-												gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+												if (_indexOnCache == -1) {
+													gal.getNetworkcache().add(o);
+													Status _st = new Status();
+													_st.setCode((short) GatewayConstants.SUCCESS);
+													gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+												}
 
 											} catch (GatewayException e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
@@ -380,7 +377,7 @@ public class DataFreescale implements IDataLayer {
 				// ASK: jumped iMsgType, pNext, iDataSize, pData,
 				// iBufferNumber
 				if (gal.getPropertiesManager().getDebugEnabled())
-					DataManipulation.logArrayHexRadix("ExtractedAPSDE-DATA.Indication", message);
+					DataManipulation.logArrayHexRadix("Extracted APSDE-DATA.Indication", message);
 				if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null))
 					messageEvent.getDestinationAddress().setIeeeAddress(gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress()));
 
@@ -823,15 +820,7 @@ public class DataFreescale implements IDataLayer {
 			else if (message[0] == 0xA0 && message[1] == 0xB1) {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO", message);
-				/*
-				 * synchronized (listLocker) { for (ParserLocker pl :
-				 * listLocker) { if ((pl.getType() == TypeMessage.LQI_REQ)) {
-				 * synchronized (pl) { pl.getStatus().setCode(message[3]);
-				 * Mgmt_LQI_rsp _res = new
-				 * Mgmt_LQI_rsp(DataManipulation.subByteArray(message, 3,
-				 * message.length-1)); pl.set_objectOfResponse(_res);
-				 * pl.notify(); } break; } } }
-				 */
+
 			}
 			/* ZTC-ReadExtAddr.Confirm */
 			else if (message[0] == 0xA4 && message[1] == 0xD2) {
@@ -878,12 +867,6 @@ public class DataFreescale implements IDataLayer {
 			else if (message[0] == 0xA0 && message[1] == 0xB4) {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Leave.Response", message);
-				/*
-				 * synchronized (listLocker) { for (ParserLocker pl :
-				 * listLocker) { if (pl.getType() == TypeMessage.LEAVE) {
-				 * synchronized (pl) { pl.getStatus().setCode(message[3]);
-				 * pl.notify(); } //break; } } }
-				 */
 
 			}
 			/* ZDP-Active_EP_rsp.response */
@@ -1976,6 +1959,11 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 		String _key = String.format("%016X", _DSTAdd) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
+
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			System.out.println("Sending Aps message to: " + String.format("%016X", _DSTAdd));
+		}
+
 		Status status = null;
 		try {
 			synchronized (listLocker) {
@@ -2867,12 +2855,7 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("Leave command:" + _res.ToHexString());
 		}
-		/*
-		 * ParserLocker lock = new ParserLocker();
-		 * 
-		 * lock.setType(TypeMessage.LEAVE); synchronized (listLocker) {
-		 * listLocker.add(lock); }
-		 */
+
 		addToSendDataQueue(_res);
 		if (addrOfInterest.getIeeeAddress() == null) {
 			BigInteger _add = gal.getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress());
@@ -2883,20 +2866,6 @@ public class DataFreescale implements IDataLayer {
 			Status _st = ClearDeviceKeyPairSet(timeout, addrOfInterest);
 			Status _st1 = ClearNeighborTableEntry(timeout, addrOfInterest);
 		}
-		/*
-		 * synchronized (lock) { try { lock.wait(timeout); } catch
-		 * (InterruptedException e) {
-		 * 
-		 * } } Status status = lock.getStatus(); synchronized (listLocker) {
-		 * listLocker.remove(lock); } if (status.getCode() ==
-		 * ParserLocker.INVALID_ID) throw new
-		 * GatewayException("Timeout expired in Leave command"); else { if
-		 * (status.getCode() != 0) throw new GatewayException(
-		 * "Error on ZDP-Mgmt_Leave.Request. Status code:" + status.getCode() +
-		 * " Status Message: " + status.getMessage());
-		 * 
-		 * }
-		 */
 
 		Status status = new Status();
 		status.setCode((short) GatewayConstants.SUCCESS);
@@ -3377,36 +3346,11 @@ public class DataFreescale implements IDataLayer {
 																						 * Control
 																						 */
 
-		/*
-		 * ParserLocker lock = new ParserLocker();
-		 * lock.setType(TypeMessage.NWK_UPDATE); synchronized (listLocker) {
-		 * listLocker.add(lock); }
-		 */
 		addToSendDataQueue(_bodyCommand);
 		Status _st = new Status();
 		_st.setCode((short) GatewayConstants.SUCCESS);
 
 		return _st;
-		/*
-		 * synchronized (lock) { try { lock.wait(timeout); } catch
-		 * (InterruptedException e) {
-		 * 
-		 * } } Status status = lock.getStatus(); synchronized (listLocker) {
-		 * listLocker.remove(lock); } if (status.getCode() ==
-		 * ParserLocker.INVALID_ID) {
-		 * 
-		 * if (gal.getPropertiesManager().getDebugEnabled()) {
-		 * logger.error("Timeout expired in Mgmt_NWK_Update_Request"); } throw
-		 * new GatewayException( "Timeout expired in Mgmt_NWK_Update_Request");
-		 * } else { if (status.getCode() != 0) { if
-		 * (gal.getPropertiesManager().getDebugEnabled()) {
-		 * logger.info("Returned Status: " + status.getCode()); } throw new
-		 * GatewayException( "Error on Mgmt_NWK_Update_Request. Status code:" +
-		 * status.getCode() + " Status Message: " + status.getMessage()); } else
-		 * { return (EnergyScanResult) lock.get_objectOfResponse();
-		 * 
-		 * } }
-		 */
 	}
 
 	@Override

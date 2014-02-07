@@ -75,7 +75,6 @@ public class ApsManager {
 					logger.info("Aps Message Indication in process...");
 				}
 
-				synchronized (gal.getCallbacks()) {
 					for (CallbackEntry ce : gal.getCallbacks()) {
 						APSMessageListener apml = ce.getDestination();
 						Callback callback = ce.getCallback();
@@ -261,7 +260,7 @@ public class ApsManager {
 
 						}
 					}
-				}
+				
 			}
 		};
 		thr.setName("Thread APSMessageIndication(final APSMessageEvent message)");
