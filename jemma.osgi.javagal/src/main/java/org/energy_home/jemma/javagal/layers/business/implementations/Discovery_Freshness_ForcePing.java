@@ -296,6 +296,8 @@ public class Discovery_Freshness_ForcePing {
 					}
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {
+						System.out.println(funcionName + ": Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress());
+
 						logger.info(funcionName + ": Found new Node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress() + " from NeighborTableListCount of:" + node.getNetworkAddress());
 					}
 
@@ -350,7 +352,12 @@ public class Discovery_Freshness_ForcePing {
 			if (gal.getNetworkcache().size() > _indexParent) {
 				if (gal.getNetworkcache().get(_indexParent) != null) {
 					gal.getNetworkcache().get(_indexParent).abortTimers();
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						System.out.println("Removed node: " + gal.getNetworkcache().get(_indexParent).get_node().getAddress().getNetworkAddress());
+						logger.error("Removed node: " + gal.getNetworkcache().get(_indexParent).get_node().getAddress().getNetworkAddress());
+					}
 					gal.getNetworkcache().remove(_indexParent);
+					
 				}
 			}
 
