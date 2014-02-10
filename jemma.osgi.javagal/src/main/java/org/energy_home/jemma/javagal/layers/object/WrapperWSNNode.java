@@ -105,7 +105,6 @@ public class WrapperWSNNode {
 		}
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-			System.out.println("\n\rTimer Discovery Scheduled:" + name+ "\n\r");
 			_timerDiscovery = new Timer(name);
 			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
 
@@ -127,7 +126,6 @@ public class WrapperWSNNode {
 
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-			System.out.println("\n\rTimer Freshness Scheduled:" + name+ "\n\r");
 			_timerFreshness = new Timer(name);
 			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
 
@@ -149,7 +147,6 @@ public class WrapperWSNNode {
 
 		if (seconds >= 0) {
 			String name = "Node: " + this._node.getAddress().getNetworkAddress() + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-			System.out.println("\n\rTimer ForcePing Scheduled:" + name+ "\n\r");
 			_timerForcePing = new Timer(name);
 			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 
