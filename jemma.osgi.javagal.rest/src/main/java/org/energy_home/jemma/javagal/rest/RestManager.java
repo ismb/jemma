@@ -90,7 +90,7 @@ public class RestManager {
 		try {
 			component.start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error starting Rest: " +e.getMessage());
 		}
 	}
 
