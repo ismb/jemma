@@ -117,6 +117,7 @@ public class Discovery_Freshness_ForcePing {
 					short _LqiListCount = _Lqi._NeighborTableListCount;
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {
+						System.out.println("Received LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi);
 						logger.info("Received LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi);
 					}
 
@@ -320,23 +321,27 @@ public class Discovery_Freshness_ForcePing {
 			__currentNodeWrapper.set_numberOfAttempt();
 		}
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.error("Error on Lqi request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+			System.out.println("Error on Lqi request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+			logger.error("Error on Lqi request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 		}
 
-		if (__currentNodeWrapper.get_numberOfAttempt() >= gal.getPropertiesManager().getKeepAliveNumberOfAttempt()) {
-
-			try {
-				Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
-			} catch (Exception e1) {
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.error("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-				}
-			}
+		if (__currentNodeWrapper.get_numberOfAttempt() >= gal.getPropertiesManager().getKeepAliveNumberOfAttempt())
+		{
 			try {
 				Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
 			} catch (Exception e1) {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.error("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+					System.out.println("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+					logger.error("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+				}
+			}
+			
+			try {
+				Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
+			} catch (Exception e1) {
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					System.out.println("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+					logger.error("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 				}
 			}
 			Status _s = new Status();
@@ -345,7 +350,8 @@ public class Discovery_Freshness_ForcePing {
 				gal.get_gatewayEventManager().nodeRemoved(_s, __currentNodeWrapper.get_node());
 			} catch (Exception e1) {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.error("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + "Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+					System.out.println("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+					logger.error("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 				}
 			}
 
