@@ -198,7 +198,7 @@ public class DataFreescale implements IDataLayer {
 
 			/* APSDE-DATA.Indication */
 			if (message[0] == 0x9D && message[1] == 0x01) {
-				APSMessageEvent messageEvent = new APSMessageEvent();
+				final APSMessageEvent messageEvent = new APSMessageEvent();
 				short destAddressMode = message[3];
 				messageEvent.setDestinationAddressMode((long) destAddressMode);
 				BigInteger _ieee = null;
@@ -283,9 +283,9 @@ public class DataFreescale implements IDataLayer {
 
 											if (gal.getPropertiesManager().getDebugEnabled())
 											{
-												System.out.println("*****AutoDiscoveryUnknownNodes procedure");
+												System.out.println("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 												
-												logger.info("*****AutoDiscoveryUnknownNodes procedure");
+												logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}
 											try {
 
@@ -395,7 +395,7 @@ public class DataFreescale implements IDataLayer {
 															 */
 					if (messageEvent.getClusterID() == 0x8031) {
 						String __key = "";
-						__key = String.format("%04X", address.getNetworkAddress());
+						__key = String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress());
 						synchronized (listLocker) {
 							for (ParserLocker pl : listLocker) {
 								if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
@@ -3473,6 +3473,7 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
+				System.out.println("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 				logger.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 			}
 			addToSendDataQueue(_res);
