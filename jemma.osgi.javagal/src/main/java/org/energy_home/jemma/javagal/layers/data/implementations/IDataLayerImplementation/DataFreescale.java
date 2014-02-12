@@ -2864,7 +2864,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (addrOfInterest.getIeeeAddress() != null) {
 			Status _st = ClearDeviceKeyPairSet(timeout, addrOfInterest);
-			Status _st1 = ClearNeighborTableEntry(timeout, addrOfInterest);
+			if (_st.getCode() == GatewayConstants.SUCCESS)
+				ClearNeighborTableEntry(timeout, addrOfInterest);
 		}
 
 		Status status = new Status();
@@ -3473,7 +3474,6 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				System.out.println("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 				logger.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 			}
 			addToSendDataQueue(_res);
