@@ -210,7 +210,7 @@ public class Discovery_Freshness_ForcePing {
 									__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 							if (gal.getPropertiesManager().getDebugEnabled()) {
-								logger.info("" + functionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " Time:" + System.currentTimeMillis());
+								logger.info(functionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress());
 							}
 
 						}
