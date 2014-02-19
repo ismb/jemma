@@ -1,35 +1,39 @@
-Auto-generated site: 201402031734
+Auto-generated site: 201402200005
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
+# Sul branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   credits.html
-#	modified:   devteam.html
-#	modified:   features.html
-#	modified:   getrel.html
-#	modified:   header.template
-#	modified:   howtoc.html
-#	modified:   howtos.html
-#	modified:   index.html
-#	modified:   license.html
-#	modified:   news.html
-#	modified:   resources.html
-#	modified:   site-generation.log
-#	modified:   techs.html
-#	modified:   versions.html
-#	modified:   versions.md
+#	modificato:   howtoc.md
+#	modificato:   index.html
+#	modificato:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit c303954e1fc914350664b6bb5c49dd80c31ba4bf
+Merge: 3adbc47 978aa1d
+Author: Riccardo <riccardo@users.noreply.github.com>
+Date:   Mon Feb 3 08:40:02 2014 -0800
+
+    Merge pull request #74 from riccardo/gh-pages
+    
+    added link to github on navigation bar + update version information.
+
+commit 978aa1d98a61972b87a475834c0ec24c00ddc119
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Feb 3 17:34:32 2014 +0100
+
+    added link to github on navigation bar
+    updated version number
 
 commit 3adbc4761e99ef3d9ab40b5a12a20d7e70aa57b3
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -45,19 +49,3 @@ Date:   Wed Dec 18 19:22:38 2013 +0100
 
 commit bad9b4acda85984ddda10c0366fe2e0e6d743116
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Wed Dec 18 19:03:03 2013 +0100
-
-    Added javagal content in techs page
-
-commit 5aab560a92935346f655bec544ed1544b4dfd9ea
-Merge: aabd76d ccac254
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Thu Nov 14 04:08:03 2013 -0800
-
-    Merge pull request #41 from riccardo/gh-pages
-    
-    several improvements on the website
-
-commit ccac2545cd71850e6661a6fbeedb97dea669dd9e
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Thu Nov 14 13:05:00 2013 +0100
