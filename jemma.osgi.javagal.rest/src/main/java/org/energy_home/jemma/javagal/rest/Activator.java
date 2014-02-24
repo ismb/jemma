@@ -117,7 +117,7 @@ public class Activator implements BundleActivator {
 			restManager = new RestManager(PropertiesManager, gatewayFactory);
 
 			if (PropertiesManager.getDebugEnabled())
-				logger.info("\n\rZGD started. Rest Manager can serve requests.\n\r");
+				logger.info("ZGD started. Rest Manager can serve requests.");
 
 			return null;
 		}

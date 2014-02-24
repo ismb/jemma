@@ -99,10 +99,10 @@ public class ClientResources {
 
 			gatewayInterface.setGatewayEventListener(clientEventListener);
 			if (propertiesManager.getDebugEnabled())
-				logger.info("\n\rGateway Event listener registered!\n\r");
+				logger.info("Gateway Event listener registered!");
 
 			if (propertiesManager.getDebugEnabled())
-				logger.info("\n\rGateway Event listener registered!\n\r");
+				logger.info("Gateway Event listener registered!");
 		}
 	}
 

@@ -40,7 +40,7 @@ public interface IConnector {
 	 * @throws Exception
 	 *             if an error occurs in dongle initialization.
 	 */
-	public void inizialize() throws Exception;
+	public void initialize() throws Exception;
 
 	/**
 	 * Writes data on the dongle.

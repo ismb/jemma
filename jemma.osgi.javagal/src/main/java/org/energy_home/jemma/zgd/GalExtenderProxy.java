@@ -129,7 +129,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\nCreate ApsCallBack(short endpoint, APSMessageListener listener)...\n\r");
+			logger.info("Create ApsCallBack(short endpoint, APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();
@@ -147,7 +147,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public long createAPSCallback(APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("\nCreate ApsCallBack(APSMessageListener listener)...\n\r");
+			logger.info("Create ApsCallBack(APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();
@@ -270,6 +270,9 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 		return gal.configureEndpoint(timeout, desc);
+	
+	
+	
 	}
 
 	@Override
@@ -286,6 +289,7 @@ public class GalExtenderProxy implements IGalExtender {
 		_add.setNetworkAddress(0xFFFC);
 		gal.leave(_timeout, this.getProxyIdentifier(), _add, mask, true);
 
+		
 	}
 
 	@Override
@@ -304,8 +308,6 @@ public class GalExtenderProxy implements IGalExtender {
 		gal.leave(timeout, this.getProxyIdentifier(), aoi, mask, true);
 
 	}
-
-	
 
 	@Override
 	public void leave(long timeout, Address aoi, int mask) throws IOException, Exception, GatewayException {
@@ -439,7 +441,6 @@ public class GalExtenderProxy implements IGalExtender {
 		return gal.startServiceDiscovery(timeout, this.getProxyIdentifier(), aoi, false);
 	}
 
-	
 	@Override
 	public void startServiceDiscovery(long timeout, Address aoi) throws IOException, Exception, GatewayException {
 		gal.startServiceDiscovery(timeout, this.getProxyIdentifier(), aoi, true);
@@ -504,21 +505,17 @@ public class GalExtenderProxy implements IGalExtender {
 		 * Deletion of GatewayEventListener and Callbacks related to the
 		 * GatewayInterface Proxy ID
 		 **/
-		synchronized (gal.getListGatewayEventListener()) {
-			for (int i = 0; i < gal.getListGatewayEventListener().size(); i++) {
-				if (gal.getListGatewayEventListener().get(i).getProxyIdentifier() == getProxyIdentifier()) {
-					gal.getListGatewayEventListener().remove(i);
-				}
+		for (int i = 0; i < gal.getListGatewayEventListener().size(); i++) {
+			if (gal.getListGatewayEventListener().get(i).getProxyIdentifier() == getProxyIdentifier()) {
+				gal.getListGatewayEventListener().remove(i);
 			}
 		}
 
-		synchronized (gal.getCallbacks()) {
-			for (int i = 0; i < gal.getCallbacks().size(); i++) {
-				if (gal.getCallbacks().get(i).getProxyIdentifier() == getProxyIdentifier()) {
-					gal.getCallbacks().remove(i);
-				}
-
+		for (int i = 0; i < gal.getCallbacks().size(); i++) {
+			if (gal.getCallbacks().get(i).getProxyIdentifier() == getProxyIdentifier()) {
+				gal.getCallbacks().remove(i);
 			}
+
 		}
 
 	}
