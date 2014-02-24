@@ -33,7 +33,9 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 /**
  * Manages received ZDO messages. When an ZDO indication is received it is
  * passed to this class' {@code ZDOMessageIndication} method.
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class ZdoManager /* implements APSMessageListener */{
 	private static Log logger = LogFactory.getLog(ZdoManager.class);
@@ -68,32 +70,37 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a MGMT_LQI_Response");
+				logger.info("**************************Extracted APS With a MGMT_LQI_Response");
+			
 			}
-			Discovery_Freshness_ForcePing.Mgmt_LQI_Response(message);
+			
+			
+			
+		 	
+			
 		}
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a MGMT_LQI_Request");
+				logger.info("**************************Extracted APS With a MGMT_LQI_Request");
 			}
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a Node_Desc_req");
+				logger.info("**************************Extracted APS With a Node_Desc_req");
 			}
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Received a Node_Desc_rsp");
+				logger.info("**************************Extracted APS With a Node_Desc_rsp");
 			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("\n\r**************************Received a Leave_rsp\n\r");
+				logger.info("**************************Extracted APS With a Leave_rsp");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
@@ -147,36 +154,37 @@ public class ZdoManager /* implements APSMessageListener */{
 			_mac.setSecuritySupported((_SecurityCapability == 1 ? true : false));
 			n.setCapabilityInformation(_mac);
 			_Node.set_node(n);
+			_Node.set_discoveryCompleted(true);
+			_Node.reset_numberOfAttempt();
 			int _index = -1;
 			synchronized (gal) {
 				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
 					/* id not exist */
-					if (!_Node.isSleepy()) {
-						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							_Node.set_discoveryCompleted(false);
-							_Node.reset_numberOfAttempt();
-							_Node.setTimerDiscovery(0);
-
-							if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-								_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-							}
-						}
-					} else {
-						/* Sleepy EndDevice */
-						_Node.set_discoveryCompleted(true);
-						_Node.reset_numberOfAttempt();
-					}
 					gal.getNetworkcache().add(_Node);
-				} else/* if exist */{
 					if (!_Node.isSleepy()) {
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							if (_Node.is_discoveryCompleted()) {
-								_Node.reset_numberOfAttempt();
-								_Node.setTimerDiscovery(gal.getPropertiesManager().getKeepAliveThreshold());
-							}
+							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 						}
+						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+						}
+
 					}
-					gal.getNetworkcache().get(_index).set_node(_Node.get_node());
+				} else/* if exist */{
+					gal.getNetworkcache().get(_index).abortTimers();
+					gal.getNetworkcache().remove(_index);
+					gal.getNetworkcache().add(_Node);
+					if (!_Node.isSleepy()) {
+						
+						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+						}
+						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+						}
+						
+					}
+					
 				}
 			}
 			Status _s = new Status();

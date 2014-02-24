@@ -125,5 +125,9 @@ public enum TypeMessage {
 	/**
 	 * The "READ_IEEE_ADDRESS" message type.
 	 */
-	READ_IEEE_ADDRESS
+	READ_IEEE_ADDRESS,
+	/**
+	 * The "LQI_REQ" message type.
+	 */
+	LQI_REQ
 }

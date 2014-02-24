@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 
 /**
  * Data layer interface to be implemented by every vendor (Freescale, Ember and
@@ -45,7 +46,7 @@ public interface IDataLayer extends IFrameCallback {
 	/**
 	 * Default timeout's value.
 	 */
-	final Long INTERNAL_TIMEOUT = (long) 20000;
+	final Long INTERNAL_TIMEOUT = (long) 9000;
 
 	public GalController getGalController();
 	/* Internal section */
@@ -533,5 +534,21 @@ public interface IDataLayer extends IFrameCallback {
 	Exception, GatewayException;
 	
 
+	
+	/**
+	 * Starts a ZDP-Mgmt_Lqi.Request procedure synchronously. The Lqi_req procedure is
+	 * invoked by an IPHA to issue a ZDP-Mgmt_Lqi.Request.
+	 * 
+	 * @param timeout
+	 *            the desired timeout.
+	 * @param addrOfInterest
+	 *            the address of interest for the PermitJoin procedure.
+	 * @param startindex
+	 *            the value of the table index.
+	 */
+	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest,
+			short startIndex) throws IOException, Exception,
+			GatewayException;
+	
 	
 }
