@@ -15,8 +15,8 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
@@ -25,7 +25,7 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 
 public class IdentifyServerCluster extends ServiceCluster implements IdentifyServer {
-	private static final Log log = LogFactory.getLog(IdentifyServerCluster.class);
+	private static final Logger LOG = LoggerFactory.getLogger(IdentifyServerCluster.class);
 
 	final static String[] supportedAttributes = { IdentifyServer.ATTR_IdentifyTime_NAME };
 
@@ -39,22 +39,22 @@ public class IdentifyServerCluster extends ServiceCluster implements IdentifySer
 	}
 
 	public int getIdentifyTime(IEndPointRequestContext context) throws ApplianceException {
-		log.debug("getIdentifyTime");
+		LOG.debug("getIdentifyTime");
 		return (int) (service.getIdentifyDelay() / 1000);
 	}
 
 	public IdentifyQueryResponse execIdentifyQuery(IEndPointRequestContext context) throws ApplianceException {
-		log.debug("execIdentifyQuery");
+		LOG.debug("execIdentifyQuery");
 		return new IdentifyQueryResponse((int) (service.getIdentifyDelay() / 1000));
 	}
 
 	public void execIdentify(int IdentifyTime, IEndPointRequestContext context) throws ApplianceException {
-		log.debug("execIdentify");
+		LOG.debug("execIdentify");
 		service.setIdentifyDelay(1000 * IdentifyTime);
 	}
 
 	public void setIdentifyTime(int IdentifyTime, IEndPointRequestContext context) throws ApplianceException {
-		log.debug("setIdentifyTime " + IdentifyTime);
+		LOG.debug("setIdentifyTime " + IdentifyTime);
 		service.setIdentifyDelay(1000 * IdentifyTime);
 	}
 

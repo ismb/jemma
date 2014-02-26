@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceFactory;
@@ -52,7 +52,7 @@ class ApplianceRecord {
  */
 public abstract class ApplianceFactory implements IApplianceFactory, ManagedServiceFactory, ServiceTrackerCustomizer {
 
-	static Log log = LogFactory.getLog(ApplianceFactory.class);
+	static final Logger LOG = LoggerFactory.getLogger(ApplianceFactory.class);
 
 	private ServiceRegistration sr;
 	private ServiceRegistration driverRegistration;
@@ -80,13 +80,13 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 			
 			
 		} catch (Exception e) {
-			log.error("Unable to instantiate appliance", e);
+			LOG.debug("Unable to instantiate appliance", e);
 			throw new ApplianceException("Unable to instantiate appliance " + pid);
 		}
 	
 		appliance.setApplianceFactory(this);
 	
-		log.debug("created " + appliance.getDescriptor().getType());
+		LOG.debug("created " + appliance.getDescriptor().getType());
 		return appliance;
 	}
 	
@@ -105,7 +105,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 		String type = this.getDescriptor().getType();
 
 		if ((type == null) || (type != null) && (type.equals(""))) {
-			log.error("invalid type in factory");
+			LOG.debug("invalid type in factory");
 			throw new Exception("invalid type in factory");
 		}
 
@@ -115,7 +115,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 				this, props);
 
 		started(bc);
-		log.debug("started appliance factory for type '" + getDescriptor().getType() + "'");
+		LOG.debug("started appliance factory for type '" + getDescriptor().getType() + "'");
 	
 	}
 
@@ -154,7 +154,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 							((DriverAppliance)appliance).detach(device);	
 						}
 					} catch (ApplianceException e) {
-						log.error(e);
+						LOG.warn(e.getMessage(), e);
 					}
 					
 				}
@@ -197,7 +197,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 		try {
 			updated(servicePid, new Hashtable(config));
 		} catch (Exception e) {
-			log.error("updated error", e);
+			LOG.warn("updated error", e);
 			return false;
 		}
 		return true;
@@ -213,7 +213,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 			String appliancePid;
 			appliancePid = (String) config.get("appliance.pid");
 			if (appliancePid == null) {
-				log.error("props don't contain the appliance.pid property in factory " + this.getName());
+				LOG.debug("props don't contain the appliance.pid property in factory " + this.getName());
 				throw new ConfigurationException(null, "props don't contain the appliance.pid property in factory "
 						+ this.getName());
 			}
@@ -278,7 +278,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 		try {
 			deleted(servicePid);
 		} catch (Exception e) {
-			log.error("updated error", e);
+			LOG.debug("updated error", e);
 			return false;
 		}
 		return true;
@@ -287,7 +287,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 	public final void deleteAppliance(String appliancePid, boolean removeDevices) {
 		ApplianceRecord record = this.getByAppliancePid(appliancePid);
 		if (record == null) {
-			log.fatal("record==null should not happen here!!!");
+			LOG.warn("record==null should not happen here!!!");
 			return;
 		}
 		Appliance appliance = record.appliance;
@@ -301,7 +301,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 						((DriverAppliance)appliance).detach(device);	
 					}
 				} catch (ApplianceException e) {
-					log.error(e);
+					LOG.warn(e.getMessage(), e);
 				}
 
 			}
@@ -328,7 +328,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 	public synchronized final void deleted(String servicePid) {
 		ApplianceRecord record = this.getByServicePid(servicePid);
 		if (record == null) {
-			log.fatal("record==null should not happen here!!!");
+			LOG.warn("record==null should not happen here!!!");
 			return;
 		}
 		Appliance appliance = record.appliance;
@@ -342,7 +342,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 						((DriverAppliance)appliance).detach(device);	
 					}
 				} catch (ApplianceException e) {
-					log.error(e);
+					LOG.warn(e.getMessage(), e);
 				}
 
 			}
@@ -390,7 +390,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 		ApplianceRecord record = this.getByAppliancePid(pid);
 
 		if (record == null) {
-			log.fatal("unexisting pid");
+			LOG.debug("unexisting pid");
 			return;
 		}
 
@@ -404,7 +404,7 @@ public abstract class ApplianceFactory implements IApplianceFactory, ManagedServ
 							((DriverAppliance)appliance).detach(device);
 							iterator.remove();
 						} catch (ApplianceException e) {
-							log.error(e);
+							LOG.warn(e.getMessage(), e);
 						}					
 				}
 			}

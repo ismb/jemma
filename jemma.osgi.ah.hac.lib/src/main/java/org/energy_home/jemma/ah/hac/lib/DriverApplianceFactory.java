@@ -51,7 +51,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			try {
 				enableAutoInstall = Boolean.parseBoolean(enableAutoInstallStr);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.warn(e.getMessage(), e);
 			}
 		}
 	}
@@ -205,7 +205,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 				if (filterString != null)
 					deviceFilter = bc.createFilter(filterString);
 			} catch (InvalidSyntaxException e) {
-				log.error("Error in deviceMatchFilterString LDAP expression");
+				LOG.warn("Error in deviceMatchFilterString LDAP expression", e);
 			}
 		}
 
@@ -215,7 +215,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 				if (filterString != null)
 					classFilter = bc.createFilter(filterString);
 			} catch (InvalidSyntaxException e) {
-				log.error("Error in classMatchFilterString LDAP expression");
+				LOG.warn("Error in classMatchFilterString LDAP expression", e);
 			}
 		}
 		

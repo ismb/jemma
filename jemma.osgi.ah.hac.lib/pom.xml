@@ -47,7 +47,8 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Import-Package>org.apache.commons.logging;version="1.0.4",
+						<Import-Package>
+							org.slf4j,
 							org.eclipse.osgi.framework.console;version="1.0.0",
 							org.osgi.framework;version="1.5.0",
 							org.osgi.service.cm;version="1.2.0",
@@ -89,17 +90,15 @@
 			<artifactId>org.eclipse.osgi</artifactId>
 			<version>${org.eclipse.osgi.version}</version>
 		</dependency>
-			    
+		<dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-api</artifactId>
+        	<version>${org.slf4j.version}</version>
+   		</dependency>
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi.services</artifactId>
 			<version>${org.eclipse.osgi.services.version}</version>
-		</dependency>
-		    
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
 		</dependency>
 	</dependencies>
 
