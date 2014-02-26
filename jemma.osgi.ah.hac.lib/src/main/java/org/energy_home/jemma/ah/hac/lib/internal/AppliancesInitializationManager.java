@@ -32,11 +32,11 @@ import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppliancesInitializationManager {
-	protected static final Log log = LogFactory.getLog(AppliancesInitializationManager.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AppliancesInitializationManager.class);
 	
 	protected static boolean enableAutoInstall = false;
 	
@@ -50,7 +50,7 @@ public class AppliancesInitializationManager {
 			try {
 				enableAutoInstall = Boolean.parseBoolean(enableAutoInstallStr);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.warn(e.getMessage(), e);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public class AppliancesInitializationManager {
 				((ServiceCluster)serviceCluster).initAttributeSubscription(attributeName, params, requestContext);			
 			}
 		} catch (Exception e) {
-			log.error(String.format("Error while subscribing attribute %s from %s", attributeName, getClusterDetails(serviceCluster)), e);
+			LOG.warn(String.format("Error while subscribing attribute %s from %s", attributeName, getClusterDetails(serviceCluster)), e);
 		}
 	}
 	
@@ -93,12 +93,12 @@ public class AppliancesInitializationManager {
 		try {
 			sms.getDemandFormatting(requestContext);
 		} catch (Exception e) {
-			log.error(String.format("Error while reading demand formatting from %s", getClusterDetails(serviceCluster)));
+			LOG.warn(String.format("Error while reading demand formatting from %s", getClusterDetails(serviceCluster)));
 		} 
 		try {
 			sms.getSummationFormatting(requestContext);
 		} catch (Exception e) {
-			log.error(String.format("Error while reading summation formatting from %s", getClusterDetails(serviceCluster)));
+			LOG.warn(String.format("Error while reading summation formatting from %s", getClusterDetails(serviceCluster)));
 		}
 		subscribe(serviceCluster, SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME, installing);
 		subscribe(serviceCluster, SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, installing);

@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAppliance;
@@ -47,6 +49,7 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 	static final String CLUSTER_PACKAGE_NAME_PREFIX = "it.telecomitalia.";
 	static final String INVALID_CLUSTER_CLASS_MESSAGE = "Invalid cluster class";	
 	static final ISubscriptionParameters SUBSCRIPTION_PARAMETERS = new SubscriptionParameters();
+	static final Logger LOG = LoggerFactory.getLogger(BasicServiceCluster.class);
 	
 	String name = null;
 	String type = null;
@@ -297,18 +300,18 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 						} catch (ApplianceException e) {
 							// TODO: currently when an appliance is disconnected the
 							// subscription is not deleted
-							e.printStackTrace();
+							LOG.warn(e.getMessage(), e);
 							if (e instanceof InvalidPeerApplianceException)
 								attributeSubscriptions.remove(peerEndPoint);
 						} catch (ServiceClusterException se) {
-							se.printStackTrace();
+							LOG.warn(se.getMessage(), se);
 						} catch (Exception ge) {
-							ge.printStackTrace();
+							LOG.warn(ge.getMessage(), ge);
 						}
 					}
 				}				
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.warn(e.getMessage(), e);
 			}
 		}
 	}

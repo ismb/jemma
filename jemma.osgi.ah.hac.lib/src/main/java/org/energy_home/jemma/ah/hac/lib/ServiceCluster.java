@@ -131,7 +131,7 @@ public class ServiceCluster extends BasicServiceCluster {
 					}
 		
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.debug(e.getMessage(), e);
 					throw new ApplianceException(INVALID_CLUSTER_CLASS_MESSAGE);
 				}
 			}

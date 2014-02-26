@@ -80,12 +80,12 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 				result = this.invoke((IServiceCluster)serviceCluster, methodName, params);
 			} else {
 				String msg = "invoke: method Name not found";
-				log.error(msg);
+				LOG.debug(msg);
 				return new ServiceClusterException(msg);
 			}
 		} else {
 			String msg = "invoke: method Name not found";
-			log.error(msg);
+			LOG.debug(msg);
 			return new ServiceClusterException(msg);
 		}
 		return result;
@@ -154,7 +154,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	public ILocation[] getLocations() {
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
-				log.error("getLocations error: hac service not available");
+				LOG.warn("getLocations error: hac service not available");
 				return null;
 			}
 			return hacService.getLocations();
@@ -175,7 +175,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	public ICategory[] getCategories() {
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
-				log.error("getCategories error: hac service not available");
+				LOG.warn("getCategories error: hac service not available");
 				return null;
 			}
 			return hacService.getCategories();
@@ -223,13 +223,13 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	public boolean updateApplianceConfiguration(IApplianceConfiguration applianceConfiguration) {
 		Map config = ((ApplianceConfiguration)applianceConfiguration).getConfigurationMap();
 		if (hacService == null) {
-			log.error("updateApplianceConfiguration error: hac service not available");
+			LOG.debug("updateApplianceConfiguration error: hac service not available");
 			return false;
 		}
 		try {
 			hacService.updateAppliance(applianceConfiguration.getAppliancePid(), new Hashtable(config));
 		} catch (Exception e) {
-			log.error("updateApplianceConfiguration error: some problems occurred while trying to update configuration through hac service", e);
+			LOG.warn("updateApplianceConfiguration error: some problems occurred while trying to update configuration through hac service", e);
 			return false;
 		}
 		return true;
@@ -238,18 +238,18 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	public boolean installAppliance(String appliancePid) {
 		Map config = (Map) applianceConfigurationMap.get(appliancePid);
 		if (config == null) {
-			log.error("installAppliance error: no configuration available");
+			LOG.debug("installAppliance error: no configuration available");
 			return false;
 		}	
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
-				log.error("installAppliance error: hac service not available");
+				LOG.debug("installAppliance error: hac service not available");
 				return false;
 			}
 			try {	
 				hacService.installAppliance(appliancePid, new Hashtable(config));
 			} catch (Exception e) {
-				log.error("installAppliance error: some problems occurred while trying to install appliance through hac service", e);
+				LOG.debug("installAppliance error: some problems occurred while trying to install appliance through hac service", e);
 				return false;
 			}
 		}
@@ -259,13 +259,13 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 	public boolean deleteAppliance(String appliancePid) {
 		synchronized (hacServiceSync) {
 			if (hacService == null) {
-				log.error("deleteAppliance error: hac service not available");
+				LOG.debug("deleteAppliance error: hac service not available");
 				return false;
 			}
 			try {
 				return hacService.removeAppliance(appliancePid);
 			} catch (Exception e) {
-				log.error("deleteAppliance error: some problems occurred while trying to delete configuration through hac service", e);
+				LOG.debug("deleteAppliance error: some problems occurred while trying to delete configuration through hac service", e);
 				return false;
 			}				
 		}
@@ -275,7 +275,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 		try {
 		    return clusterInvoke(appliancePid, endPointId, clusterName, methodName, params);
 		} catch (Throwable t) {
-			log.error("invoke error", t);
+			LOG.debug("invoke error", t);
 			throw new Exception(t);
 		}
 	}
@@ -287,7 +287,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 			try {
 				sp = serviceCluster.getAttributeSubscription(attributeName, confirmedRequestContext);
 			} catch (Exception e) {
-				log.error("getAttributeSubscription error", e);
+				LOG.debug("getAttributeSubscription error", e);
 			}
 		} 
 		return sp;		
@@ -301,7 +301,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 			try {
 				sp = serviceCluster.setAttributeSubscription(attributeName, parameters, confirmedRequestContext);
 			} catch (Exception e) {
-				log.error("setAttributeSubscription error", e);
+				LOG.warn("setAttributeSubscription error", e);
 			}
 		}
 		return sp;
@@ -314,7 +314,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 				return serviceCluster.getLastNotifiedAttributeValue(attributeName, null);
 			}
 		} catch (Exception e) {
-			log.error("Exception while reading last notified attribute", e);
+			LOG.warn("Exception while reading last notified attribute", e);
 		}
 		return null;
 	}
@@ -326,7 +326,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 				return serviceCluster.getAttributeValue(attributeName, lastReadRequestContext);
 			}
 		} catch (Exception e) {
-			log.error("Exception while reading last notified attribute", e);
+			LOG.warn("Exception while reading last notified attribute", e);
 		}
 		return null;
 	}
@@ -348,7 +348,7 @@ public class AppliancesProxy extends AppliancesBasicProxy implements IAppliances
 				}
 			}
 		} catch (Exception e) {
-			log.error("Error while getting last notified attribute values", e);
+			LOG.warn("Error while getting last notified attribute values", e);
 		}
 		return result;
 	}

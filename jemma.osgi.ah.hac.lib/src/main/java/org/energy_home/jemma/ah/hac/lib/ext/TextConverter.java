@@ -27,7 +27,13 @@ import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TextConverter {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(TextConverter.class);
+	
 	private static final String ERROR_PREFIX = "ERROR: ";
 	private static final String OBJECT_SEPARATOR = "|";
 	private static final String EXADECIMAL_VALUE_PREFIX = "0X";
@@ -246,7 +252,7 @@ public class TextConverter {
 		try {
 			appendObject(obj, sb);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 			return null;
 		}
 		return sb.toString();

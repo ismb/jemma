@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ApplianceValidationException;
@@ -68,7 +68,7 @@ import org.osgi.service.event.EventAdmin;
 
 public abstract class AppliancesBasicProxy extends Appliance implements IAppliancesBasicProxy, IServiceClustersListener {
 
-	protected static final Log log = LogFactory.getLog(AppliancesProxy.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AppliancesProxy.class);
 
 	protected static final long MINIMUM_VALID_TIME = 1356998400000l; // 01/01/2013
 	
@@ -144,7 +144,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		boolean isCheckRequired() {
 			// After around 1 minutes, faster subscription check is disabled
 			if (isFasterSubscriptionCheckEnabled()) {
-				log.info("Faster subscription check enabled");
+				LOG.debug("Faster subscription check enabled");
 				fasterChecks++;
 				return true;
 			}
@@ -193,7 +193,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 						timer.schedule(identifyTask, delay);
 						AppliancesBasicProxy.this.postEvent(START_IDENTIFY_EVENT_TOPIC, null);
 					} catch (Exception e) {
-						log.error("", e);
+						LOG.warn(e.getMessage(), e);
 					}
 				}
 			} else {
@@ -223,7 +223,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			try {
 				timer.schedule(checkSubscriptionsTask, CHECK_SUBSCRIPTION_PERIOD, CHECK_SUBSCRIPTION_PERIOD);
 			} catch (Exception e) {
-				log.error("", e);
+				LOG.warn(e.getMessage(), e);
 			}
 		}
 		
@@ -239,7 +239,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				return;
 			}
 			long startTime = System.currentTimeMillis();
-			log.info("Starting subscriptions check");
+			LOG.debug("Starting subscriptions check");
 			try {
 				// Array is used to avoid concurrent modification exceptions
 				String[] appliancePids = new String[applianceMap.size()];
@@ -280,7 +280,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 													subscriptionParameters.getMaxReportingInterval() > 0 ) {
 												if (System.currentTimeMillis() - lastNotifiedTimestamp >
 													SUBSCRIPTION_MAX_DELAY_FACTOR * subscriptionParameters.getMaxReportingInterval()) {
-														log.warn("Subscription renewed for attribute " + attributeName + ", cluster " +serviceCluster.getName() + ", ep " + serviceCluster.getEndPoint().getId() + ", appliance " + appliancePids[i]);
+														if (LOG.isDebugEnabled()) {
+															LOG.debug("Subscription renewed for attribute " + attributeName + ", cluster " +serviceCluster.getName() + ","
+																	+ " ep " + serviceCluster.getEndPoint().getId() + ", appliance " + appliancePids[i]);
+														}
 														returnedSubscriptionParameters = serviceCluster.setAttributeSubscription(attributeName, subscriptionParameters, confirmedRequestContext);
 														if (returnedSubscriptionParameters == null) {
 															// Retry subscription faster when fails (useful for sleeping end devices)
@@ -292,7 +295,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 												}
 											}
 										} catch (Exception e) {
-											log.error("Error while subscribing attribute with invalid reporting time - " + attributeName, e);
+											LOG.warn("Error while subscribing attribute with invalid reporting time - " + attributeName, e);
 										}							
 									}
 								}
@@ -301,9 +304,9 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 					}
 				}
 			} catch (Exception e) {
-				log.error("Error while checking subscriptions", e);
+				LOG.warn("Error while checking subscriptions", e);
 			}
-			log.info("Finished subscriptions check, elapsed millisecs " + (System.currentTimeMillis() - startTime));
+			LOG.debug("Finished subscriptions check, elapsed millisecs " + (System.currentTimeMillis() - startTime));
 		}	
 	}
 	
@@ -347,7 +350,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				try {
 					this.eventAdmin.postEvent(new Event(topic, props));
 				} catch (Exception e) {
-					log.error(e);
+					LOG.warn(e.getMessage(), e);
 				}
 			}
 		}
@@ -365,10 +368,10 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 					((ICoreApplication)listener).notifyInstallingApplianceAdded(appliance);
 				List proxyListeners = getProxyListeners(appliancePid);
 				if (proxyListeners.remove(listener))
-					log.error("Existing listener " + listener +  " removed for appliance " + appliancePid);
+					LOG.debug("Existing listener " + listener +  " removed for appliance " + appliancePid);
 				proxyListeners.add(listener);
 			} catch (Exception e) {
-				log.error("Error while notifying appliance added to listener " + appliancePid, e);
+				LOG.warn("Error while notifying appliance added to listener " + appliancePid, e);
 			}
 		}
 	}
@@ -386,7 +389,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				else if (listener instanceof ICoreApplication)
 					((ICoreApplication)listener).notifyInstallingApplianceRemoved(appliance);
 			} catch (Exception e) {
-				log.error("Error while notifying appliance removed to listener " + appliance.getPid(), e);
+				LOG.warn("Error while notifying appliance removed to listener " + appliance.getPid(), e);
 			}
 		}
 	}
@@ -401,7 +404,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				else if (listener instanceof ICoreApplication)
 					((ICoreApplication)listener).notifyInstallingApplianceAdded(appliance);
 			} catch (Exception e) {
-				log.error("Error while notifying new appliance to listener", e);
+				LOG.warn("Error while notifying new appliance to listener", e);
 			}
 		}
 	}
@@ -414,7 +417,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				if (!installing /* || (installing && !listener.filterInstallingAppliances())*/)
 					listener.notifyApplianceRemoved(appliance);
 			} catch (Exception e) {
-				log.error("Error while notifying appliance removed to listener", e);
+				LOG.warn("Error while notifying appliance removed to listener", e);
 			}
 		}
 	}
@@ -503,7 +506,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	// Method use to receive availability updates from registered appliances (IManagedAppliance services)
 	public synchronized void notifyAvailabilityUpdated(String appliancePid) {
-		log.info("Availability updated for appliance " + appliancePid);
+		LOG.debug("Availability updated for appliance " + appliancePid);
 		List proxyListeners = getProxyListeners(appliancePid);
 		ManagedApplianceStatus applianceProxy = (ManagedApplianceStatus) applianceMap.get(appliancePid);
 		boolean installing = false;
@@ -512,7 +515,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			installing = (applianceProxy != null);
 		}		
 		if (applianceProxy == null)
-			log.error("Received availability update for not exhisting appliance " + appliancePid);
+			LOG.warn("Received availability update for not exhisting appliance " + appliancePid);
 		else {
 			IAppliance appliance = applianceProxy.getAppliance();
 			if (appliance.isAvailable()) {
@@ -527,7 +530,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 					else if (listener instanceof ICoreApplication)
 						((ICoreApplication)listener).notifyInstallingApplianceAvailabilityUpdated(appliance);	
 				} catch (Exception e) {
-					log.error("Error while notifying availability update", e);
+					LOG.warn("Error while notifying availability update", e);
 				}
 			}
 		}
@@ -535,7 +538,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	// Method use to receive configuration updates from registered appliances (IManagedAppliance services)
 	public void notifyConfigurationUpdated(String appliancePid, int endPointId) {
-		log.info("Configuration updated for appliance " + appliancePid + " and end point " + endPointId);
+		LOG.debug("Configuration updated for appliance " + appliancePid + " and end point " + endPointId);
 		if (!isHacDriverModeActive()) {
 // Configuration updated ignored because hac service unregister and register IManagedAppliance service
 //			for (Iterator iterator = proxyListeners.iterator(); iterator.hasNext();) {
@@ -580,7 +583,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	public synchronized void addApplianceFactory (IApplianceFactory factory, Map props) {
 		String type = factory.getDescriptor().getType();
-		log.info("Added appliancefactory " + factory.getDescriptor().getType());
+		LOG.debug("Added appliancefactory " + factory.getDescriptor().getType());
 		if (isHacDriverModeActive()) {
 			factory.init();
 		}
@@ -589,13 +592,13 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	public synchronized void removeApplianceFactory (IApplianceFactory factory) {
 		String type = factory.getDescriptor().getType();
-		log.info("Removed appliancefactory " + factory.getDescriptor().getType());
+		LOG.debug("Removed appliancefactory " + factory.getDescriptor().getType());
 		applianceFactoryMap.remove(type);
 	}
 	
 	public synchronized void addManagedAppliance (IManagedAppliance appliance, Map props) {
 		String appliancePid = appliance.getPid();
-		log.info("Added appliance " + appliancePid);
+		LOG.debug("Added appliance " + appliancePid);
 		if (isHacDriverModeActive()) {
 			ApplianceManager applianceManager = ((ApplianceManager) appliance.getApplianceManager());
 			applianceManager.setHacService(hacService);
@@ -617,13 +620,13 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		for (Iterator iterator = applicationToProxyEndPointMap.keySet().iterator(); iterator.hasNext();) {
 			IApplicationService listener = (IApplicationService) iterator.next();
 			if (proxyListeners.remove(listener))
-				log.error("Existing listener " + listener +  " removed for appliance " + appliancePid);
+				LOG.warn("Existing listener " + listener +  " removed for appliance " + appliancePid);
 			// TODO: add here filter logic
 			proxyListeners.add(listener);
 		}
 		applianceConfigurationMap.put(appliancePid, savedProps);
 		if (installing) {
-			log.info("Appliance not yet installed " + appliancePid);
+			LOG.debug("Appliance not yet installed " + appliancePid);
 			ManagedApplianceStatus proxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_INSTALLING);
 			if (appliance.isAvailable())
 				proxy.setLastSubscriptionRequestTime(System.currentTimeMillis());
@@ -641,7 +644,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		if (appliance.isAvailable())
 			applianceProxy.setLastSubscriptionRequestTime(System.currentTimeMillis());
 		if (applianceMap.get(appliancePid) != null)
-			log.error("Appliance " + appliancePid + " already added");
+			LOG.warn("Appliance " + appliancePid + " already added");
 		applianceMap.put(appliancePid, applianceProxy);
 
 		notifyApplianceAdded(appliance, false);
@@ -655,7 +658,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	public synchronized void removeManagedAppliance (IManagedAppliance appliance) {
 		String appliancePid = appliance.getPid();
-		log.info("Removed appliance " + appliancePid);	
+		LOG.debug("Removed appliance " + appliancePid);	
 		if (!isHacDriverModeActive())
 			applianceConfigurationMap.remove(appliancePid);
 		IEndPoint[] endPoints = appliance.getEndPoints();
@@ -666,12 +669,12 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				try {
 					serviceClusterArray[j].removeAllSubscriptions(confirmedRequestContext);
 				} catch (Exception e) {
-					log.error("Error while removing all subscription from appliance " + appliancePid, e);
+					LOG.warn("Error while removing all subscription from appliance " + appliancePid, e);
 				} 
 			}
 		}
 		if (installingApplianceMap.get(appliancePid) != null) {
-			log.info("Appliance not yet installed " + appliancePid);
+			LOG.debug("Appliance not yet installed " + appliancePid);
 			notifyApplianceRemoved(appliance, true);
 			installingApplianceMap.remove(appliancePid);
 		} else {
@@ -719,14 +722,14 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 						}
 						appEndPoint.addServiceCluster(serviceCluster);
 					} catch (Exception e) {
-						log.error("Error while adding proxy service cluster" + serviceCluster.getName(), e);
+						LOG.warn("Error while adding proxy service cluster" + serviceCluster.getName(), e);
 					}
 				}
 			}
 			addEndPoint(appEndPoint);
 			applicationToProxyEndPointMap.put(listener, appEndPoint);		
 		} catch (Exception e) {
-			log.error("Error while registering proxy application end point service clusters");
+			LOG.warn("Error while registering proxy application end point service clusters");
 		}
 	}	
 	
@@ -741,7 +744,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 						appEndPoint.removeServiceCluster(serviceCluster);
 						mainEndPoint.checkAndRemoveEmptyServiceClusterProxy(serviceCluster.getName()); 						
 					} catch (Exception e) {
-						log.error("Error while removing proxy service cluster" + serviceCluster.getName(), e);
+						LOG.warn("Error while removing proxy service cluster" + serviceCluster.getName(), e);
 					}
 				}
 			}
@@ -752,7 +755,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				notifyAllAppliancesRemoved(listener, true);
 			}
 		} catch (Exception e) {
-			log.error("Error while registering proxy application end point service clusters");
+			LOG.warn("Error while registering proxy application end point service clusters");
 		}
 
 	}	
@@ -760,7 +763,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	public synchronized void addAttributeValuesListener(IAttributeValuesListener listener) {
 		synchronized (attributeValuesListenerList) {
 			if (attributeValuesListenerList.contains(listener)) {
-				log.warn("Dulicated listeners detected " + listener);
+				LOG.warn("Dulicated listeners detected " + listener);
 				return;
 			}
 			attributeValuesListenerList.add(listener);
@@ -783,14 +786,14 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 			applianceStatus = (ManagedApplianceStatus) installingApplianceMap.get(appliancePid);
 		
 		if (applianceStatus == null || applianceStatus.getStatus() != ManagedApplianceStatus.STATUS_ENABLED) {
-			log.warn("notifyAttributeValue received from " +
+			LOG.warn("notifyAttributeValue received from " +
 					((applianceStatus == null) ? "an unknown" : "a not enabled ") + " appliance: " + 
 						endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + clusterName + " " + 
 						attributeName + " " + attributeValue.getTimestamp() + " " + attributeValue.getValue());
 			return;
 		}
 		Integer endPointId = new Integer(endPointRequestContext.getPeerEndPoint().getId());
-		log.debug("notifyAttributeValue: " + endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + endPointId +  " " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
+		LOG.debug("notifyAttributeValue: " + endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " " + endPointId +  " " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
 				+ " " + attributeValue.getValue());		
 		synchronized (attributeValuesListenerList) {
 			for (Iterator iterator = attributeValuesListenerList.iterator(); iterator.hasNext();) {
@@ -798,7 +801,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 				try {
 					listener.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, attributeValue);				
 				} catch (Exception e) {
-					log.error("Error while notifying attribute", e);
+					LOG.warn("Error while notifying attribute", e);
 				}
 			}
 		}
@@ -806,19 +809,25 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 
 	public void notifyReadResponse(String clusterName, String attributeName, IAttributeValue attributeValue,
 			IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
-		log.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyReadResponse " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp() + " "
-				+ attributeValue.getValue());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyReadResponse " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp() + " "
+					+ attributeValue.getValue());
+		}
 	}
 
 	public void notifyWriteResponse(String clusterName, String attributeName, IAttributeValue attributeValue,
 			IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
-		log.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyWriteResponse " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
-				+ " " + attributeValue.getValue());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyWriteResponse " + clusterName + " " + attributeName + " " + attributeValue.getTimestamp()
+					+ " " + attributeValue.getValue());
+		}
 	}
 
 	public void notifyCommandResponse(String clusterName, String commandName, Object response,
 			IEndPointRequestContext endPointRequestContext) throws ApplianceException {
-		log.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyCommandResponse " + clusterName + " " + commandName + " " + response);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(endPointRequestContext.getPeerEndPoint().getAppliance().getPid() + " - notifyCommandResponse " + clusterName + " " + commandName + " " + response);
+		}
 	}
 	 
 	//********** IAppliancesProxy service interface
