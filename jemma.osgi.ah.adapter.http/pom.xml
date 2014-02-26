@@ -94,6 +94,11 @@
 			<version>${org.json.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>	
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet</artifactId>
 			<version>${javax.servlet.version}</version>
