@@ -30,8 +30,12 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocationsService implements ManagedServiceFactory {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(LocationsService.class);
 	
 	private ConfigurationAdmin configAdmin;
 	
@@ -77,7 +81,7 @@ public class LocationsService implements ManagedServiceFactory {
 			c.update(props);
 			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			LOG.warn(e.getMessage(), e);
 		}
 		return location;
 	}
@@ -90,8 +94,9 @@ public class LocationsService implements ManagedServiceFactory {
 					configurations[i].delete();
 				}
 		} catch (IOException e) {
-			
+			LOG.warn(e.getMessage(), e);
 		} catch (Exception e) {
+			LOG.warn(e.getMessage(), e);
 		}
 	}
 
@@ -105,8 +110,7 @@ public class LocationsService implements ManagedServiceFactory {
 		try {
 			location = (Location) pid2location.remove(pid);
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 			return;
 		}
 		

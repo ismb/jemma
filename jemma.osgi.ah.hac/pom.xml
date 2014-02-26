@@ -45,13 +45,13 @@
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Import-Package>org.energy_home.jemma.ah.cluster.ah;version="3.0.1",
+							 org.slf4j,
 							 org.energy_home.jemma.ah.hac;version="3.0.2",
 							 org.energy_home.jemma.ah.hac.lib;version="3.0.1",
 							 org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0",
 							 org.apache.commons.codec;version="1.3.0",
 							 org.apache.commons.httpclient;version="3.1.0",
 							 org.apache.commons.httpclient.methods,
-							 org.apache.commons.logging,
 							 org.apache.felix.bundlerepository;version="2.0.0",
 							 org.apache.xml.serialize,
 							 org.eclipse.equinox.internal.util.timer,
@@ -112,11 +112,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
 			<artifactId>org.apache.commons.httpclient</artifactId>
 			<version>${org.apache.commons.httpclient.version}</version>
 		</dependency>
@@ -135,6 +130,11 @@
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>org.apache.xerces</artifactId>
 			<version>${org.apache.xerces.version}</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-api</artifactId>
+    		<version>${org.slf4j.version}</version>
 		</dependency>
 			    
 	</dependencies>
