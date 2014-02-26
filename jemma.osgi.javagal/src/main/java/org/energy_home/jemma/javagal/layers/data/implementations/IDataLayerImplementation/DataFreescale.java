@@ -3514,7 +3514,7 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
-	@Override
+	
 	public GalController getGalController() {
 		return gal;
 	}
