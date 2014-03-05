@@ -19,12 +19,16 @@ package org.energy_home.jemma.javagal.gui;
 import java.io.File;
 import java.math.BigInteger;
 
+import javax.servlet.ServletException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.zgd.*;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -35,8 +39,11 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  */
 public class Activator implements BundleActivator {
+	
 	Log log = LogFactory.getLog(Activator.class);
 	private static BundleContext context;
+	GalExtenderProxyFactory gatewayFactory;
+	private String WebFolder = "/Config";
 	//PropertiesManager PropertiesManager = null;
 
 	//private RestManager restManager;
@@ -46,6 +53,9 @@ public class Activator implements BundleActivator {
 	}
 
 	ServiceTracker serviceTracker = null;
+	
+	ServiceTracker httpserviceTracker = null;
+	
 
 	/**
 	 * Starts the osgi's bundle.
@@ -62,6 +72,33 @@ public class Activator implements BundleActivator {
 		serviceTracker.open();
 		//if (PropertiesManager.getDebugEnabled())
 		//	log.info("Gui bundle started!");
+		
+		
+		httpserviceTracker = new ServiceTracker(context, HttpService.class.getName(), null) {
+		      public void removedService(ServiceReference reference, Object service) {
+		        // HTTP service is no longer available, unregister our servlet...
+		        try {
+		           ((HttpService) service).unregister(WebFolder);
+		        } catch (IllegalArgumentException exception) {
+		           // Ignore; servlet registration probably failed earlier on...
+		        }
+		      }
+
+		      public Object addingService(ServiceReference reference) {
+		        // HTTP service is available, register our servlet...
+		        HttpService httpService = (HttpService) this.context.getService(reference);
+		        try {
+		          httpService.registerServlet(WebFolder, new WebApplication(gatewayFactory.createGatewayInterfaceObject()), null, null);
+		          
+		        } catch (Exception exception) {
+		          exception.printStackTrace();
+		        }
+		        return httpService;
+		      }
+		    };
+		    // start tracking all HTTP services...
+		    httpserviceTracker.open();
+		    
 	}
 
 	/**
@@ -83,6 +120,8 @@ public class Activator implements BundleActivator {
 		//if (PropertiesManager.getDebugEnabled())
 		//	log.info("Stopped Rest bundle");
 		//PropertiesManager = null;
+		
+		httpserviceTracker.close();
 	}
 
 	/**
@@ -95,7 +134,7 @@ public class Activator implements BundleActivator {
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
 		ServiceReference reference;
-		GalExtenderProxyFactory gatewayFactory;
+		
 
 		BundleContext _context = null;
 		private final Log logger = LogFactory.getLog(GatewayInterfaceFactoryTracker.class);
@@ -111,6 +150,9 @@ public class Activator implements BundleActivator {
 
 			gatewayFactory = (GalExtenderProxyFactory) context.getService(reference);
 
+
+			
+			
 			
 
 			//restManager = new RestManager(PropertiesManager, gatewayFactory);
