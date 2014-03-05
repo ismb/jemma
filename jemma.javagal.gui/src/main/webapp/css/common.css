@@ -1,0 +1,222 @@
+body
+{
+    font-size : 8px;
+}
+
+.title
+{
+    font-size   : 22px;
+    font-weight : bold;
+    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    color       : white;
+}
+
+label
+{
+    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size   : 0.8em;
+}
+
+.labeltitle
+{
+    font-family    : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size      : 1.4em;
+    font-style     : oblique;
+    font-weight    : bold;
+    text-transform : uppercase;
+    color          : white;
+}
+
+.Small
+{
+    width : 80px;
+}
+
+.Medium
+{
+    width : 150px;
+}
+
+.Large
+{
+    width : 230px;
+}
+
+.XLarge
+{
+    width : 340px;
+}
+
+.XXLarge
+{
+    width : 600px;
+}
+
+.XSmall
+{
+    width : 50px;
+}
+
+.smallText
+{
+    font-size : 0.4em;
+}
+
+input
+{
+    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size   : 0.8em;
+}
+
+input[readonly]
+{
+    font-family      : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size        : 0.8em;
+    background-color : lightgray;
+}
+
+.ui-autocomplete-loading
+{
+    background : white url('images/spinner.gif') right center no-repeat;
+}
+
+.titolo-pagina
+{
+    background-color : #6464ff;
+    color            : #ffffff;
+    font-family      : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size        : 0.8em;
+    width            : 100%;
+    text-align       : center;
+}
+
+legend
+{
+    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size   : 1.6em;
+    font-weight : bold;
+}
+
+.hor_menu
+{
+    font-family     : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-style      : italic;
+    font-size       : 2em;
+    background      : url('images/arrow_right_menu.png') left no-repeat;
+    padding-left    : 34px;
+    text-decoration : none;
+    color           : #000000;
+}
+
+.logo_background
+{
+    background-image      : url('../../images/ropva/ROP-LOGO.jpg');
+    background-repeat     : no-repeat;
+    background-attachment : fixed;
+    background-position   : center;
+}
+
+.middlepage
+{
+    position   : fixed;
+    top        : 50%;
+    margin-top : -50px;
+}
+
+.logicalDeleted
+{
+    background-color : white;
+    color            : #D2D2D2;
+}
+
+.boldForDescription
+{
+    font-weight : bold !important;
+}
+
+.grayLine
+{
+    background-color : #B0B0B0;
+}
+
+.redForDescription
+{
+    background-color : #FF9080;
+}
+
+.yellowForDescription
+{
+    background-color : #FFFF8D;
+}
+
+.greenForDescription
+{
+    background-color : #CAFFAF;
+}
+
+.italicBlue
+{
+    font-style : italic !important;
+    color      : #0000FF;
+}
+
+.italicViola
+{
+    font-style : italic !important;
+    color      : #C800C8;
+}
+
+.custom_ui-icon-apriEmergenza
+{
+    background : url('images/apriEmergenza.gif') center no-repeat !important;
+    width      : 20px;
+    height     : 20px;
+}
+
+.custom_ui-icon-visualizzaDatiConsenso
+{
+    background : url('images/visualizzaConsenso.gif') center no-repeat !important;
+    width      : 20px;
+    height     : 20px;
+}
+
+.ui-icon-male
+{
+    float        : left;
+    margin-right : 3px;
+    margin-top   : 3px;
+    background   : url('images/paziente_m.png') left no-repeat !important;
+
+}
+
+.ui-icon-female
+{
+    float        : left;
+    margin-right : 3px;
+    margin-top   : 3px;
+    background   : url('images/paziente_f.png') left no-repeat !important;
+
+}
+
+#north, .ui-layout-north
+{
+    z-index : 3 !important;
+}
+
+#north, .ui-layout-north
+{
+    overflow : visible !important;
+}
+
+.upperCase
+{
+    text-transform : uppercase;
+}
+
+.moveRight
+{
+    text-align    : right;
+    padding-right : 10px;
+}
+
+
