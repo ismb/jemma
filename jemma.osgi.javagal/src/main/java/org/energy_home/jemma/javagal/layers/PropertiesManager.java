@@ -124,6 +124,90 @@ public class PropertiesManager {
 		return Integer.parseInt(_value);
 
 	}
+	
+	/**
+	 * Gets CommandTimeout property.
+	 * 
+	 * @return the CommandTimeout value.
+	 */
+	public long getCommandTimeoutMS() {
+		String _value = props.getProperty("CommandTimeoutMS");
+		return Long.parseLong(_value);
+
+	}
+	
+	
+	/**
+	 * Gets TimeForcePingErrorSeconds property.
+	 * 
+	 * @return the TimeForcePingErrorSeconds value.
+	 */
+	public int getTimeForcePingErrorSeconds() {
+		String _value = props.getProperty("TimeForcePingErrorSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
+	/**
+	 * Gets TimeFreshnessErrorSeconds property.
+	 * 
+	 * @return the TimeFreshnessErrorSeconds value.
+	 */
+	public int getTimeFreshnessErrorSeconds() {
+		String _value = props.getProperty("TimeFreshnessErrorSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
+	/**
+	 * Gets TimeDiscoveryErrorSeconds property.
+	 * 
+	 * @return the TimeDiscoveryErrorSeconds value.
+	 */
+	public int getTimeDiscoveryErrorSeconds() {
+		String _value = props.getProperty("TimeDiscoveryErrorSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	/**
+	 * Gets TimeForcePingNewNodeSeconds property.
+	 * 
+	 * @return the TimeForcePingNewNodeSeconds value.
+	 */
+	public int getTimeForcePingNewNodeSeconds() {
+		String _value = props.getProperty("TimeForcePingNewNodeSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
+	/**
+	 * Gets TimeDiscoveryNewNodeSeconds property.
+	 * 
+	 * @return the TimeDiscoveryNewNodeSeconds value.
+	 */
+	public int getTimeDiscoveryNewNodeSeconds() {
+		String _value = props.getProperty("TimeDiscoveryNewNodeSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
+	/**
+	 * Gets TimeFreshnessNewNodeSeconds property.
+	 * 
+	 * @return the TimeFreshnessNewNodeSeconds value.
+	 */
+	public int getTimeFreshnessNewNodeSeconds() {
+		String _value = props.getProperty("TimeFreshnessNewNodeSeconds");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
 
 	/**
 	 * Gets ForcePingTimeout property.

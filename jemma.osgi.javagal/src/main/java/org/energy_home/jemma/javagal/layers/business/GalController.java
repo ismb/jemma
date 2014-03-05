@@ -158,7 +158,7 @@ public class GalController {
 				}
 			} else {
 				short _EndPoint = 0;
-				_EndPoint = DataLayer.configureEndPointSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSimpleDescriptorReadFromFile());
+				_EndPoint = DataLayer.configureEndPointSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSimpleDescriptorReadFromFile());
 				if (_EndPoint == 0)
 					throw new Exception("Error on configure endpoint");
 
@@ -378,10 +378,10 @@ public class GalController {
 	 */
 	public void executeAutoStart() throws Exception {
 		logger.info("Executing AutoStart procedure...");
-		short _EndPoint = DataLayer.configureEndPointSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSimpleDescriptorReadFromFile());
+		short _EndPoint = DataLayer.configureEndPointSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSimpleDescriptorReadFromFile());
 		if (_EndPoint > 0x00) {
 			logger.info("Configure EndPoint completed...");
-			Status _statusStartGatewayDevice = DataLayer.startGatewayDeviceSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSturtupAttributeInfo());
+			Status _statusStartGatewayDevice = DataLayer.startGatewayDeviceSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSturtupAttributeInfo());
 			if (_statusStartGatewayDevice.getCode() == 0x00) {
 				logger.info("StartGateway Device completed...");
 				return;
@@ -964,20 +964,20 @@ public class GalController {
 	}
 
 	public String APSME_GETSync(short attrId) throws Exception, GatewayException {
-		return DataLayer.APSME_GETSync(IDataLayer.INTERNAL_TIMEOUT, attrId);
+		return DataLayer.APSME_GETSync(PropertiesManager.getCommandTimeoutMS(), attrId);
 	}
 
 	public void APSME_SETSync(short attrId, String value) throws Exception, GatewayException {
-		DataLayer.APSME_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
+		DataLayer.APSME_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
 	public String NMLE_GetSync(short ilb) throws IOException, Exception, GatewayException {
-		return DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, ilb);
+		return DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb);
 
 	}
 
 	public void NMLE_SetSync(short attrId, String value) throws Exception, GatewayException {
-		DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
+		DataLayer.NMLE_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
 	/**
@@ -1698,7 +1698,7 @@ public class GalController {
 					BigInteger _IeeeAdd = null;
 					/* Read the ShortAddress of the GAL */
 					try {
-						_NetworkAdd = DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, (short) 0x96);
+						_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
 						System.out.println("Readed Network Addres of Gal: " + _NetworkAdd);
 					} catch (Exception e) {
 						if (PropertiesManager.getDebugEnabled()) {
@@ -1708,7 +1708,7 @@ public class GalController {
 					}
 					/* Read the IEEEAddress of the GAL */
 					try {
-						_IeeeAdd = DataLayer.readExtAddressGal(IDataLayer.INTERNAL_TIMEOUT);
+						_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
 						System.out.println("Readed IEEE Addres of Gal: " + _IeeeAdd);
 
 					} catch (Exception e) {
@@ -1728,7 +1728,7 @@ public class GalController {
 
 					/* Read the NodeDescriptor of the GAL */
 					try {
-						NodeDescriptor _NodeDescriptor = DataLayer.getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _add);
+						NodeDescriptor _NodeDescriptor = DataLayer.getNodeDescriptorSync(PropertiesManager.getCommandTimeoutMS(), _add);
 						if (_NodeDescriptor != null) {
 							if (galNodeWrapper.get_node().getCapabilityInformation() == null)
 								galNodeWrapper.get_node().setCapabilityInformation(new MACCapability());
@@ -1770,7 +1770,7 @@ public class GalController {
 
 					/* Executing the command(PermitJoin==0) to close network */
 					try {
-						Status _permitjoin = DataLayer.permitJoinSync(IDataLayer.INTERNAL_TIMEOUT, _add, (short) 0x00, (byte) 0x01);
+						Status _permitjoin = DataLayer.permitJoinSync(PropertiesManager.getCommandTimeoutMS(), _add, (short) 0x00, (byte) 0x01);
 						if (_permitjoin.getCode() != GatewayConstants.SUCCESS) {
 							Status _st = new Status();
 							_st.setCode((short) GatewayConstants.GENERAL_ERROR);

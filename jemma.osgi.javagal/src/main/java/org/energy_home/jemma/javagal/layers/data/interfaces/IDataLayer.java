@@ -43,11 +43,7 @@ import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
  *
  */
 public interface IDataLayer extends IFrameCallback {
-	/**
-	 * Default timeout's value.
-	 */
-	final Long INTERNAL_TIMEOUT = (long) 9000;
-
+	
 	
 	/**
 	 * Gets the properties manager.
