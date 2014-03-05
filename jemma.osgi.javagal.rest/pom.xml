@@ -77,9 +77,8 @@ org.restlet.util
 						</Import-Package>
 						<Require-Bundle>
 							jemma.osgi.javagal;bundle-version="1.0.0"
-							
 						</Require-Bundle>
-                        <Embed-Dependency>org.restlet:org.restlet:2.1.6</Embed-Dependency>-->
+                        <Embed-Dependency>org.restlet:org.restlet:2.1.6</Embed-Dependency>
 					</instructions>
 				</configuration>
 			</plugin>
