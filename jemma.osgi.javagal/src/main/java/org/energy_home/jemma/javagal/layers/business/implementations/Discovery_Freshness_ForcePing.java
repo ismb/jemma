@@ -61,16 +61,22 @@ import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
  */
 public class Discovery_Freshness_ForcePing {
 	GalController gal = null;
-	int TimeForcePingErrorSECONDS = 5;
-	int TimeFreshnessErrorSeconds = 8;
-	int TimeDiscoveryErrorSeconds = 5;
+	int TimeForcePingErrorSeconds;
+	int TimeFreshnessErrorSeconds;
+	int TimeDiscoveryErrorSeconds;
 
-	int TimeForcePingNewNodeSECONDS = 1;
-	int TimeFreshnessNewNodeSeconds = 3;
-	int TimeDiscoveryNewNodeSeconds = 0;
+	int TimeForcePingNewNodeSeconds;
+	int TimeFreshnessNewNodeSeconds;
+	int TimeDiscoveryNewNodeSeconds;
 
 	public Discovery_Freshness_ForcePing(GalController _gal) {
 		gal = _gal;
+		TimeForcePingErrorSeconds = gal.getPropertiesManager().getTimeForcePingErrorSeconds();
+		TimeFreshnessErrorSeconds = gal.getPropertiesManager().getTimeFreshnessErrorSeconds();
+		TimeDiscoveryErrorSeconds = gal.getPropertiesManager().getTimeDiscoveryErrorSeconds();
+		TimeForcePingNewNodeSeconds= gal.getPropertiesManager().getTimeForcePingNewNodeSeconds();
+		TimeFreshnessNewNodeSeconds = gal.getPropertiesManager().getTimeFreshnessNewNodeSeconds();
+		TimeDiscoveryNewNodeSeconds = gal.getPropertiesManager().getTimeDiscoveryNewNodeSeconds();
 	}
 
 	private final static Log logger = LogFactory.getLog(Discovery_Freshness_ForcePing.class);
@@ -117,7 +123,7 @@ public class Discovery_Freshness_ForcePing {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					System.out.println("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
 				}
-				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
+				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(gal.getPropertiesManager().getCommandTimeoutMS(), node, startIndex);
 
 				/* Check no Response received */
 				if (_Lqi == null) {
@@ -297,7 +303,7 @@ public class Discovery_Freshness_ForcePing {
 							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 								newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSECONDS);
+								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
 						}
 					} else {
 						/* If Sleepy EndDevice */
@@ -342,10 +348,10 @@ public class Discovery_Freshness_ForcePing {
 
 			if (__currentNodeWrapper.get_numberOfAttempt() >= gal.getPropertiesManager().getKeepAliveNumberOfAttempt()) {
 				try {
-					Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
+					Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 					if (_st1.getCode() == GatewayConstants.SUCCESS) {
 						try {
-							Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
+							Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 						} catch (Exception e1) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
 								System.out.println("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
@@ -393,7 +399,7 @@ public class Discovery_Freshness_ForcePing {
 					else if (function == TypeFunction.FRESHNESS)
 						__currentNodeWrapper.setTimerFreshness(TimeFreshnessErrorSeconds);
 					else if (function == TypeFunction.FORCEPING)
-						__currentNodeWrapper.setTimerForcePing(TimeForcePingErrorSECONDS);
+						__currentNodeWrapper.setTimerForcePing(TimeForcePingErrorSeconds);
 				}
 			}
 		}

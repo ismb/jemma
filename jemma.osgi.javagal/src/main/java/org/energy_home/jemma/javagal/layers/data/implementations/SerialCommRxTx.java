@@ -259,7 +259,7 @@ public class SerialCommRxTx implements IConnector {
 		synchronized (this) {
 			connected = true;
 		}
-		Status _status = DataLayer.SetModeSelectSync(IDataLayer.INTERNAL_TIMEOUT);
+		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
 		else {

@@ -383,7 +383,7 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public void sendAPSMessage(APSMessage message) throws IOException, Exception, GatewayException {
-		gal.sendAPSMessage(IDataLayer.INTERNAL_TIMEOUT, this.getProxyIdentifier(), message);
+		gal.sendAPSMessage(gal.getPropertiesManager().getCommandTimeoutMS(), this.getProxyIdentifier(), message);
 	}
 
 	@Override
