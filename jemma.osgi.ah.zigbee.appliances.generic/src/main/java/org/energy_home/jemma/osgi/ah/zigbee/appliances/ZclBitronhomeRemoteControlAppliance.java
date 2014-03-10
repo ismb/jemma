@@ -20,23 +20,22 @@ import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclGroupsServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclScenesServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log; //// This line is related to Old Logging System
+//import org.apache.commons.logging.LogFactory;// This line is related to Old Logging System
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author ISMB-Pert
@@ -45,8 +44,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ZclBitronhomeRemoteControlAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
-
-	private static final Log log = LogFactory.getLog(ZclBitronhomeRemoteControlAppliance.class);
+	
+	// private static final Log log = LogFactory.getLog(ZclBitronhomeRemoteControlAppliance.class); // This line is related to Old Logging System
+	private static final Logger LOG = LoggerFactory.getLogger(ZclBitronhomeRemoteControlAppliance.class);
 
 	public ZclBitronhomeRemoteControlAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
@@ -95,11 +95,17 @@ public class ZclBitronhomeRemoteControlAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
+		if (LOG.isDebugEnabled())	
+			{ 
+				LOG.debug("attached");
+			}
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		if(LOG.isDebugEnabled()){
+			LOG.debug("detached");
+		}
+		
 	}
 
 }
