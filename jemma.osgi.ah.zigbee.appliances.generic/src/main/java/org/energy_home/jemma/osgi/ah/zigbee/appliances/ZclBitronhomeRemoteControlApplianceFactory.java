@@ -47,7 +47,7 @@ import org.osgi.service.device.Driver;
 
 public class ZclBitronhomeRemoteControlApplianceFactory extends DriverApplianceFactory implements Driver {
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.bitronhome.remotecontrol";
-	public static final String APPLIANCE_FRIENDLY_NAME = "Remote Control [including 4 buttons]";
+	public static final String APPLIANCE_FRIENDLY_NAME = "bitronhome remote control [which includs 4 buttons]";
 	public static final String DEVICE_TYPE = "ZigBee";
 
 	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
@@ -62,10 +62,7 @@ public class ZclBitronhomeRemoteControlApplianceFactory extends DriverApplianceF
 	}
 
 	public String deviceMatchFilterString() {
-		String result = "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=6)(zigbee.device.manufacturer.id=0))"; 
-		System.out.println(result);
-		
-		
+		String result = "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=6)(zigbee.device.manufacturer.id=0))"; 	
 		return result; 
 		
 	}

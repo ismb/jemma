@@ -63,9 +63,6 @@ public class ZclBitronhomeSmartPlugApplianceFactory extends DriverApplianceFacto
 
 	public String deviceMatchFilterString() {
 		String result = "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=2)(zigbee.device.profile.id=260)(zigbee.device.device.id=9))"; 
-		System.out.println(result);
-		
-		
 		return result; 
 		
 	}
