@@ -17,18 +17,17 @@ package org.energy_home.jemma.javagal.gui;
  */
 
 import java.io.File;
-import java.math.BigInteger;
-
-import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.zgd.*;
+import org.energy_home.jemma.javagal.gui.servlet.channelServlet;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
+import org.energy_home.jemma.zgd.GatewayInterface;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -39,102 +38,100 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  */
 public class Activator implements BundleActivator {
-	
+	GalGuiHttpApplication webAplication;
 	Log log = LogFactory.getLog(Activator.class);
-	private static BundleContext context;
+	private static  BundleContext context;
 	GalExtenderProxyFactory gatewayFactory;
-	private String WebFolder = "/Config";
-	//PropertiesManager PropertiesManager = null;
+	HttpService httpService;
 
-	//private RestManager restManager;
+	// PropertiesManager PropertiesManager = null;
+
+	// private RestManager restManager;
 
 	static BundleContext getContext() {
 		return context;
 	}
 
 	ServiceTracker serviceTracker = null;
-	
+
 	ServiceTracker httpserviceTracker = null;
-	
 
 	/**
 	 * Starts the osgi's bundle.
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
+
 		String _path = File.separator + "config.properties";
 
-		//PropertiesManager = new PropertiesManager(bundleContext.getBundle().getResource(_path));
+		// PropertiesManager = new
+		// PropertiesManager(bundleContext.getBundle().getResource(_path));
 
-		//if (PropertiesManager.getDebugEnabled())
-		//	log.info("Starting Gui bundle");
-		Activator.context = bundleContext;
+		// if (PropertiesManager.getDebugEnabled())
+		// log.info("Starting Gui bundle");
+		context = bundleContext;
 		serviceTracker = new GatewayInterfaceFactoryTracker(context);
 		serviceTracker.open();
-		//if (PropertiesManager.getDebugEnabled())
-		//	log.info("Gui bundle started!");
-		
-		
-		httpserviceTracker = new ServiceTracker(context, HttpService.class.getName(), null) {
-		      public void removedService(ServiceReference reference, Object service) {
-		        // HTTP service is no longer available, unregister our servlet...
-		        try {
-		           ((HttpService) service).unregister(WebFolder);
-		        } catch (IllegalArgumentException exception) {
-		           // Ignore; servlet registration probably failed earlier on...
-		        }
-		      }
+		// if (PropertiesManager.getDebugEnabled())
+		// log.info("Gui bundle started!");
 
-		      public Object addingService(ServiceReference reference) {
-		        // HTTP service is available, register our servlet...
-		        HttpService httpService = (HttpService) this.context.getService(reference);
-		        try {
-		          httpService.registerServlet(WebFolder, new WebApplication(gatewayFactory.createGatewayInterfaceObject()), null, null);
-		          
-		        } catch (Exception exception) {
-		          exception.printStackTrace();
-		        }
-		        return httpService;
-		      }
-		    };
-		    // start tracking all HTTP services...
-		    httpserviceTracker.open();
-		    
+		httpserviceTracker = new ServiceTracker(context, HttpService.class.getName(), null) {
+			public void removedService(ServiceReference reference, Object service) {
+				
+			}
+
+			public Object addingService(ServiceReference reference) {
+				// HTTP service is available, register our servlet...
+				try {
+					httpService = (HttpService) this.context.getService(reference);
+					webAplication = new GalGuiHttpApplication();
+					try {
+						webAplication.activate(this.context,gatewayFactory.createGatewayInterfaceObject(),httpService);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+				return null;
+			}
+		};
+		// start tracking all HTTP services...
+		httpserviceTracker.open();
+
 	}
 
 	/**
 	 * Stops the osgi's bundle.
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		//if (PropertiesManager.getDebugEnabled())
-		//	log.info("Stopping Gui bundle");
+		// if (PropertiesManager.getDebugEnabled())
+		// log.info("Stopping Gui bundle");
 		Activator.context = null;
 		serviceTracker.close();
 		serviceTracker = null;
 		/*
-		if (restManager != null) {
-			restManager.setProxyActive(false);
-			restManager.stopServer();
-			restManager.deleteFactory();
-		}*/
-		
-		//if (PropertiesManager.getDebugEnabled())
-		//	log.info("Stopped Rest bundle");
-		//PropertiesManager = null;
-		
+		 * if (restManager != null) { restManager.setProxyActive(false);
+		 * restManager.stopServer(); restManager.deleteFactory(); }
+		 */
+
+		// if (PropertiesManager.getDebugEnabled())
+		// log.info("Stopped Rest bundle");
+		// PropertiesManager = null;
+
 		httpserviceTracker.close();
 	}
 
 	/**
 	 * Factory tracker class for GatewayInterface objects.
 	 * 
-	 * @author
+	 * @author 
 	 *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
 	 * 
 	 */
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
 		ServiceReference reference;
-		
 
 		BundleContext _context = null;
 		private final Log logger = LogFactory.getLog(GatewayInterfaceFactoryTracker.class);
@@ -147,25 +144,21 @@ public class Activator implements BundleActivator {
 
 		@Override
 		public Object addingService(ServiceReference reference) {
-
+			
 			gatewayFactory = (GalExtenderProxyFactory) context.getService(reference);
-
-
 			
-			
-			
+			// restManager = new RestManager(PropertiesManager, gatewayFactory);
 
-			//restManager = new RestManager(PropertiesManager, gatewayFactory);
-
-			//if (PropertiesManager.getDebugEnabled())
-			//	logger.info("ZGD started. Rest Manager can serve requests.");
+			// if (PropertiesManager.getDebugEnabled())
+			// logger.info("ZGD started. Rest Manager can serve requests.");
 
 			return null;
 		}
 
 		@Override
 		public void removedService(ServiceReference reference, Object service) {
-
+			webAplication.deactivate();
+			webAplication = null;
 		}
 
 	}
