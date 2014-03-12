@@ -23,7 +23,6 @@ import org.energy_home.jemma.zgd.GatewayInterface;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
-
 public class DefaultWebApplication {
 	private String rootUrl = "";
 	private HttpService httpService = null;
@@ -31,13 +30,6 @@ public class DefaultWebApplication {
 	Vector resources = new Vector();
 	Vector servlets = new Vector();
 
-	
-	
-
-
-	
-
-	
 	private HttpContext httpContext;
 
 	public void setRootUrl(String rootUrl) {
@@ -59,7 +51,7 @@ public class DefaultWebApplication {
 	public synchronized void bindHttpService(HttpService s) {
 		this.httpService = s;
 		this.bindResources();
-	
+
 	}
 
 	protected synchronized void unbindHttpService(HttpService s) {
@@ -88,7 +80,7 @@ public class DefaultWebApplication {
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					continue;
-				} 
+				}
 			}
 		}
 	}
@@ -98,7 +90,7 @@ public class DefaultWebApplication {
 			String a = alias.substring(0, alias.length() - 1);
 			return a;
 		}
-			
+
 		return alias;
 	}
 
@@ -131,8 +123,9 @@ public class DefaultWebApplication {
 		}
 		return null;
 	}
+
 	public void setHttpContext(HttpContext httpContext) {
-			this.httpContext = httpContext;
-	
+		this.httpContext = httpContext;
+
 	}
 }
