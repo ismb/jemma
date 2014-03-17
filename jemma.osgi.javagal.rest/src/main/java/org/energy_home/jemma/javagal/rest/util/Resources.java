@@ -46,6 +46,8 @@ public class Resources {
 	public final static String URI_PARAM_START = "start";
 	public final static String URI_PARAM_INDEX = "index";
 	public final static String URI_PARAM_MODE = "mode";
+	public final static String URI_PARAM_CACHE = "cache";
+	
 	public final static String URI_ID = "/{id}";
 	public final static String URI_ADDR = "/{addr}";
 	public final static String URI_ENDPOINT = "/{ep}";

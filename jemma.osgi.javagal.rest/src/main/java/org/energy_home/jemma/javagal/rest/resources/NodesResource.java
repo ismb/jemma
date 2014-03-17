@@ -58,7 +58,7 @@ public class NodesResource extends ServerResource {
 		if (modeString != null) {
 			// Mode parameter is present, it's a Read Node Cache
 			// Control mode parameter's validity
-			if (!modeString.equals("cache")) {
+			if (!modeString.equals(Resources.URI_PARAM_CACHE)) {
 
 				Info info = new Info();
 				Status _st = new Status();
