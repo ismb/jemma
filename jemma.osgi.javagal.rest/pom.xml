@@ -99,7 +99,7 @@ org.restlet.util
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.javagal</artifactId>
-			<version>2.0.0</version>
+			<version>${org.energy-home.jemma.osgi.javagal.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.restlet.osgi</groupId>
