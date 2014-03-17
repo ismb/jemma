@@ -1,143 +1,216 @@
 <html>
-<head>
-   
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Java GAL - Console di Gestione</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery-ui-1.10.4.custom.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/searchFilter.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/ui.jqgrid.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/ui.multiselect.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/layout-default-latest.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/apprise.css">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	    <title>Java GAL - Console di Gestione</title>
+	    <link rel="stylesheet" type="text/css" href="./css/jquery-ui-1.10.4.custom.css">
+	    <link rel="stylesheet" type="text/css" href="./css/searchFilter.css">
+	    <link rel="stylesheet" type="text/css" href="./css/ui.jqgrid.css">
+	    <link rel="stylesheet" type="text/css" href="./css/ui.multiselect.css">
+	    <link rel="stylesheet" type="text/css" href="./css/common.css">
+	    <link rel="stylesheet" type="text/css" href="./css/layout-default-latest.css">
+	    <link rel="stylesheet" type="text/css" href="./css/apprise.css">
+	    <link rel="stylesheet" type="text/css" href="./css/custom.css">
 
-
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/grid.addons.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/grid.postext.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/grid.setcolumns.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-ui-1.10.4.custom.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/ui.multiselect.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery.jqGrid.src.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery.searchFilter.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery.tablednd.js"></script>
-<script>
-    var arrowimages={down:['downarrowclass', '${pageContext.request.contextPath}/css/images/arrow-down.gif', 25], right:['rightarrowclass', '${pageContext.request.contextPath}//css/images/arrow-right.gif']}
-</script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/i18n/grid.locale-it.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery.layout-latest.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery.blockUI.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/apprise-1.5.full.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
-<script type="text/javascript">
-    //$.datepicker.setDefaults($.datepicker.regional[ "it" ]);
-    $.datepicker.setDefaults($.datepicker.regional[ "it" ]);
-    $.datepicker.setDefaults({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd/mm/yy',
-        yearRange:"c-100:c+10"
-    });
-    window.alert = function(msg, title, callback)
-    {
-        //jAlert(msg, title, callback);
-        apprise(msg,{},callback);
-
-    }
-
-    window.confirm = function(msg, title, callback)
-    {
-        //jConfirm(msg, title, callback);
-        apprise(msg, {'verify':true, 'textYes':'Si', 'textNo':'No'},callback);
-    }
-
-    window.prompt = function(message, value, title, callback)
-    {
-        //jPrompt(message, value, title, callback);
-        apprise(msg, {input:true}, callback);
-    }
-
-    var confirmV2 = function(msg, callback)
-    {
-        apprise(msg,{'newVerify':true, 'textYes':'Si', 'textNo':'No','textCancel':'Annulla'},callback);
-    }
-
-</script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('body').layout({resizeWhileDragging: true, sizable: false, animatePaneSizing: true, fxSpeed: 'slow', north__size: "20%", center__size: "80%", west__size: "20%", spacing_open: 0, spacing_closed: 0});
-        $("#btnDlg").button().click(function(){
-            $('#dlg').dialog({autoOpen:false, modal:true});
-            $('#dlg').dialog('open');
-        });
-
-        var gridDataArray = new Array();
-        for(var i = 0; i < 10; i++)
-        {
-            gridDataArray.push({'row_id':i,
-                'affidatario':'Campo' + i +'_a',
-                'destinatario':'Campo' + i + '_b'});
-        }
-
-
-        $("#testGrid").jqGrid({
-            datatype: "json",
-            rowNum: 10000,
-            colModel: [
-                {name: 'row_id', index: 'row_id', hidden: true},
-                {name: 'affidatario', index: 'affidatario', width: 400, label: 'Campo 1'},
-                {name: 'destinatario', index: 'destinatario', width: 300, label: 'Campo 2'}
-            ],
-            sortname:'row_id',
-            sortorder: "desc",
-            viewrecords:true,
-            autowidth:false,
-            subGrid:false,
-            pager:'#testPager'
-        });
-
-
-        jQuery("#testGrid").jqGrid('navGrid', '#testPager', {edit: false, add: false, del: false, search: false})
-                .navButtonAdd('#testPager', {    caption: "Cerca",
-                    onClickButton: function () {
-                        alert("Ricerca");
-                    },
-                    buttonicon: "ui-icon-search",
-                    title: "Filtro",
-                    id:'eventiNBFiltro'
-                }).navButtonAdd("#testPager", {
-                    caption: "Nuovo",
-                    id:'eventiNBNuovo',
-                    onClickButton: function () {
-                        alert("Nuovo");
-
-                    },
-                    buttonicon: 'ui-icon-plus',
-                    title: 'Nuovo'
-                })
-        reloadGridFromLocalArray("testGrid", gridDataArray);
-
-
-    });
-</script>
-</head>
-
-<body>
-<div id="north" class="ui-layout-north" style="overflow: hidden;">
-    <table border="0">
-        <tr>
-            <td valign="middle" align="left" width="20%">&nbsp;</td>
-            <td valign="middle" width="60%" style="background-color: red"><label class="title">Java GAL - Console di gestione</label></td>
-            <td valign="middle" width="20%"><img src="images/2000px-logo_telecom_italia-svg.png" height="100px"/></td>
-        </tr>
-    </table>
-    </div>
-<div id="west" class="ui-layout-west">Menu</div>
-<div id="center" class="ui-layout-center">
-    <div id="dlg" title="testo">Ciao</div>
-    <button id="btnDlg">Clicca</button>
-    <table id="testGrid"/>
-    <div id="testPager"/>
-</div>
-</body>
+		<script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery-ui-1.10.4.custom.js"></script>
+		<script type="text/javascript" src="./js/jquery/ui.multiselect.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery.jqGrid.src.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery.searchFilter.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery.tablednd.js"></script>
+		<script type="text/javascript" src="./js/jquery/grid.addons.js"></script>
+		<script type="text/javascript" src="./js/jquery/grid.postext.js"></script>
+		<script type="text/javascript" src="./js/jquery/grid.setcolumns.js"></script>
+		<script type="text/javascript" src="./js/jquery/json2.js"></script>
+		<script type="text/javascript" src="./js/jquery/jstorage.js"></script>
+		<script>
+		    var arrowimages={down:['downarrowclass', './css/images/arrow-down.gif', 25], 
+		    				 right:['rightarrowclass', './/css/images/arrow-right.gif']};
+		    
+		    function supportImports(){
+		    	return 'import' in document.createElement('link');
+		    }
+		    if (supportImports()){
+		    	function handleLoad(e){
+		    		console.log('Loaded import: ' + e.target.href);
+		    	}
+		    	function handleError(e){
+		    		console.log('Error loading import: ' + e.target.href);
+		    	}
+		    } else {
+		    	console.log('Your browser not suport dynamic import :(!, then....');
+		    	var arrTplToImport = ['./radioChannel.html', './versionJGal.html', './viewDevice.html', './viewGraphNodes.html', './insertDevice.html'];
+		    	for (var iCounter = 0; iCounter < arrTplToImport.length; iCounter++){
+			    	$.ajax({
+						dataType:"html",
+						url: arrTplToImport[iCounter]
+					}).done(function(data){
+			    		$("body").append(data);
+			    	});
+		    	}
+		    }
+		</script>
+	    
+	    <link rel="import" type="text/html" href="./radioChannel.html" onload="handleLoad(event)" onerror="handleError(event)">
+	    <link rel="import" type="text/html" href="./versionJGal.html" onload="handleLoad(event)" onerror="handleError(event)">
+	    <link rel="import" type="text/html" href="./viewDevice.html" onload="handleLoad(event)" onerror="handleError(event)">
+	    
+		<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="./js/jquery/i18n/grid.locale-it.js"></script>
+		<script type="text/javascript" src="./js/jquery/apprise-1.5.full.js"></script>
+		<script type="text/javascript" src="./js/common.js"></script>
+		<script type="text/javascript" src="./js/gestPathLibrary.js"></script>
+		<script type="text/javascript" src="./js/gestMenu.js"></script>
+		<script type="text/javascript" src="./js/gestCreateCenterPane.js"></script>
+		
+		<script type="text/javascript" src="./js/langIT.js"></script>
+		
+		<script type="text/javascript">
+		    $.datepicker.setDefaults($.datepicker.regional[ "it" ]);
+		    $.datepicker.setDefaults({
+		        changeMonth: true,
+		        changeYear: true,
+		        dateFormat: 'dd/mm/yy',
+		        yearRange:"c-100:c+10"
+		    });
+		    
+		    window.alert = function(msg, title, callback)
+		    {
+		        //jAlert(msg, title, callback);
+		        apprise(msg,{},callback);
+		
+		    }
+		
+		    window.confirm = function(msg, title, callback)
+		    {
+		        //jConfirm(msg, title, callback);
+		        apprise(msg, {'verify':true, 'textYes':'Si', 'textNo':'No'},callback);
+		    }
+		
+		    window.prompt = function(message, value, title, callback)
+		    {
+		        //jPrompt(message, value, title, callback);
+		        apprise(msg, {input:true}, callback);
+		    }
+		
+		    var confirmV2 = function(msg, callback)
+		    {
+		        apprise(msg,{'newVerify':true, 'textYes':'Si', 'textNo':'No','textCancel':'Annulla'},callback);
+		    }
+		
+		</script>
+		<script type="text/javascript">
+		    $(document).ready(function () {
+		        var javaGalGuiLayout = $('body').layout({
+		        										  resizeWhileDragging: true, 
+		        										  sizable: false, 
+		        										  animatePaneSizing: true, 
+		        										  fxSpeed: 'slow', 
+		        										  north__size: "20%", 
+		        										  center__size: "82%", 
+		        										  west__size: "18%", 
+		        										  spacing_open: 0, 
+		        										  spacing_closed: 0});
+		        
+		        $.ajax({
+					dataType:"json",
+					url: DEFINEPATH.channelPath
+				}).done(function(data){
+					
+					if (data.status.code == 0){
+						//Tutto ok
+						var chR = data.detail.value[0];
+						$.jStorage.set("ChannelRadioValue", chR);
+						$('#spChannelRadioHP').text(chR);
+					} else {
+						//Visualizzo il messaggi odi errore
+					}
+				});
+		        
+		        var myGestCPane = new jGGGestCenterPane();
+		        var myMenu = new jGGSxMenu();
+		        	myMenu.newButton('btnCanaleRadio', myGestCPane.templateActivator, 'tplCanaleRadio');
+		        	myMenu.newButton('btnVersionJGal', myGestCPane.templateActivator, 'tplVersionJGal'); 
+		        	myMenu.newButton('btnViewDevice', myGestCPane.templateActivator, 'tplViewDevice');
+		        	myMenu.newButton('btnViewGraphNodes', myGestCPane.templateActivator, 'tplViewGraphNodes');
+		        	myMenu.newButton('btnInsertDevice', myGestCPane.templateActivator, 'tplInsertDevice');
+		        
+		        $("#btnDlg").button().click(function(){
+		            $('#dlg').dialog({autoOpen:false, modal:true});
+		            $('#dlg').dialog('open');
+		        });
+		
+		        var gridDataArray = new Array();
+		        for(var i = 0; i < 10; i++)
+		        {
+		            gridDataArray.push({'row_id':i,
+		                'affidatario':'Campo' + i +'_a',
+		                'destinatario':'Campo' + i + '_b'});
+		        }
+		
+		
+		        $("#testGrid").jqGrid({
+		            datatype: "json",
+		            rowNum: 10000,
+		            colModel: [
+		                {name: 'row_id', index: 'row_id', hidden: true},
+		                {name: 'affidatario', index: 'affidatario', width: 400, label: 'Campo 1'},
+		                {name: 'destinatario', index: 'destinatario', width: 300, label: 'Campo 2'}
+		            ],
+		            sortname:'row_id',
+		            sortorder: "desc",
+		            viewrecords:true,
+		            autowidth:false,
+		            subGrid:false,
+		            pager:'#testPager'
+		        });
+		
+		
+		        jQuery("#testGrid").jqGrid('navGrid', '#testPager', {edit: false, add: false, del: false, search: false})
+		                .navButtonAdd('#testPager', {    
+		                	caption: "Cerca",
+		                    onClickButton: function () {
+		                        alert("Ricerca");
+		                    },
+		                    buttonicon: "ui-icon-search",
+		                    title: "Filtro",
+		                    id:'eventiNBFiltro'
+		                }).navButtonAdd("#testPager", {
+		                    caption: "Nuovo",
+		                    id:'eventiNBNuovo',
+		                    onClickButton: function () {
+		                        alert("Nuovo");
+		
+		                    },
+		                    buttonicon: 'ui-icon-plus',
+		                    title: 'Nuovo'
+		                })
+		        reloadGridFromLocalArray("testGrid", gridDataArray);
+		    });
+		</script>
+	</head>
+	<body>
+		<div id="north" class="ui-layout-north" style="overflow: hidden;">
+		    <table border="0">
+		        <tr>
+		            <td valign="middle" align="left" width="20%">Canale Radio Attuale: <span id="spChannelRadioHP"></span></td>
+		            <td valign="middle" width="60%" style="background-color: red"><label class="title">Java GAL - Console di gestione</label></td>
+		            <td valign="middle" width="20%"><img src="images/2000px-logo_telecom_italia-svg.png" height="100px"/></td>
+		        </tr>
+		    </table>
+		    </div>
+		<div id="west" class="ui-layout-west">
+			<button id="btnCanaleRadio"></button>
+			<button id="btnVersionJGal"></button>
+			<button id="btnViewDevice"></button>
+			<button id="btnViewGraphNodes"></button>
+			<button id="btnInsertDevice"></button>
+		</div>
+		<div id="center" class="ui-layout-center">
+		    <div id="dlg" title="testo">Ciao</div>
+		    <button id="btnDlg">Clicca</button>
+		    <table id="testGrid"/>
+		    <div id="testPager"/>
+		</div>
+	</body>
 </html>

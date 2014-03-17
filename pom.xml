@@ -108,7 +108,8 @@
 		<module>jemma.osgi.ah.io</module>
 		<module>jemma.osgi.javagal</module>
 		<module>jemma.osgi.javagal.rest</module>
-		<module>jemma.osgi.javagal.gui</module>
+		<!--<module>jemma.osgi.javagal.gui</module>
+		<module>jemma.osgi.javagal.json</module>-->
 		<module>jemma.osgi.device.zgd</module>
 		<module>jemma.osgi.ah.felix.console.web</module>
 		<module>jemma.osgi.zgd</module>
@@ -187,6 +188,7 @@
 				    <source>1.6</source>
 				    <target>1.6</target>
 					<encoding>UTF-8</encoding>
+					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>

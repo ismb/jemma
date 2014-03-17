@@ -96,6 +96,25 @@ public class SerialCommRxTx implements IConnector {
 
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
+					/*Freescale code*/
+					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					serialPort.setRTS(true);
+					serialPort.setDTR(true);
+					serialPort.enableReceiveTimeout(1000);
+					in = serialPort.getInputStream();
+					serialReader = new SerialReader(in, this);
+					try {
+						serialPort.addEventListener(serialReader);
+					} catch (TooManyListenersException e) {
+						disconnect();
+						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
+					}
+					serialPort.notifyOnDataAvailable(true);
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						logger.info("Connection on " + portName + " established");
+					
+					/*
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					in = serialPort.getInputStream();
@@ -109,6 +128,7 @@ public class SerialCommRxTx implements IConnector {
 					serialPort.notifyOnDataAvailable(true);
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						logger.info("Connection on " + portName + " established");
+					*/
 					return true;
 				} else {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())

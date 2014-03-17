@@ -288,7 +288,7 @@ public class Discovery_Freshness_ForcePing {
 
 						newNodeWrapperChild.set_discoveryCompleted(false);
 
-						if (function == TypeFunction.DISCOVERY && (x._Device_Type == 0x00 || x._Device_Type == 0x01)) {
+						if (function == TypeFunction.DISCOVERY) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
 								logger.info("Scheduling Discovery for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
 							}
@@ -299,12 +299,16 @@ public class Discovery_Freshness_ForcePing {
 								newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
 
-						else if (function == TypeFunction.FRESHNESS) {
+						else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING)
+						{
 							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 								newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
 								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
 						}
+						
+						
+						
 					} else {
 						/* If Sleepy EndDevice */
 						newNodeWrapperChild.set_discoveryCompleted(true);
