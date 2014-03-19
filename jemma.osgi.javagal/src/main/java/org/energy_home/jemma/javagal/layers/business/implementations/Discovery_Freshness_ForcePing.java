@@ -15,41 +15,26 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.jaxb.APSMessage;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.AssociatedDevices;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.MACCapability;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.SonNode;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.TxOptions;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.MyThread;
 import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.TypeFunction;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
-
-import com.sun.org.apache.xml.internal.utils.BoolStack;
-import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
+import org.energy_home.jemma.zgd.GatewayConstants;
+import org.energy_home.jemma.zgd.jaxb.Address;
+import org.energy_home.jemma.zgd.jaxb.AssociatedDevices;
+import org.energy_home.jemma.zgd.jaxb.MACCapability;
+import org.energy_home.jemma.zgd.jaxb.SonNode;
+import org.energy_home.jemma.zgd.jaxb.Status;
+import org.energy_home.jemma.zgd.jaxb.WSNNode;
 
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
@@ -74,7 +59,7 @@ public class Discovery_Freshness_ForcePing {
 		TimeForcePingErrorSeconds = gal.getPropertiesManager().getTimeForcePingErrorSeconds();
 		TimeFreshnessErrorSeconds = gal.getPropertiesManager().getTimeFreshnessErrorSeconds();
 		TimeDiscoveryErrorSeconds = gal.getPropertiesManager().getTimeDiscoveryErrorSeconds();
-		TimeForcePingNewNodeSeconds= gal.getPropertiesManager().getTimeForcePingNewNodeSeconds();
+		TimeForcePingNewNodeSeconds = gal.getPropertiesManager().getTimeForcePingNewNodeSeconds();
 		TimeFreshnessNewNodeSeconds = gal.getPropertiesManager().getTimeFreshnessNewNodeSeconds();
 		TimeDiscoveryNewNodeSeconds = gal.getPropertiesManager().getTimeDiscoveryNewNodeSeconds();
 	}
@@ -105,15 +90,14 @@ public class Discovery_Freshness_ForcePing {
 			} else
 				return;
 
-			if (function == TypeFunction.FORCEPING)
-			{
+			if (function == TypeFunction.FORCEPING) {
 				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 					__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					System.out.println("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 					logger.info("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 				}
-				
+
 			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("****************Starting " + functionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex);
@@ -299,16 +283,13 @@ public class Discovery_Freshness_ForcePing {
 								newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
 
-						else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING)
-						{
+						else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING) {
 							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 								newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
 								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
 						}
-						
-						
-						
+
 					} else {
 						/* If Sleepy EndDevice */
 						newNodeWrapperChild.set_discoveryCompleted(true);
