@@ -15,13 +15,22 @@
  */
 package org.energy_home.jemma.zgd.impl;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.Executor;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 @SuppressWarnings("restriction")
 class RestHttpServer implements HttpHandler {
@@ -82,73 +91,74 @@ class RestHttpServer implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		InputStream is = httpExchange.getRequestBody();
-		//read(is); // .. read the request body
+		// read(is); // .. read the request body
 		String response = "This is the response";
 		httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length());
 		final OutputStream os = httpExchange.getResponseBody();
 		os.write(response.getBytes());
 		os.close();
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		InetSocketAddress addr = new InetSocketAddress(8080);
 		HttpServer server = HttpServer.create(addr, 0);
-		server.createContext( "/", new RootHandler());	
-		server.createContext( "/foo/", new FooHandler());	
-		server.setExecutor( Executors.newCachedThreadPool());
+		server.createContext("/", new RootHandler());
+		server.createContext("/foo/", new FooHandler());
+		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
-		System.out.println("Server is listening on port 8080" );
+		System.out.println("Server is listening on port 8080");
 	}
 
-	public static void printHeaders( HttpExchange exchange, PrintStream response) {
+	public static void printHeaders(HttpExchange exchange, PrintStream response) {
 		Headers requestHeaders = exchange.getRequestHeaders();
 		Set<String> keySet = requestHeaders.keySet();
 		Iterator<String> iter = keySet.iterator();
-		while( iter.hasNext()) {
+		while (iter.hasNext()) {
 			String key = iter.next();
-			response.println( key + " = " + requestHeaders.get(key));
+			response.println(key + " = " + requestHeaders.get(key));
 		}
 	}
-	public static void printBody( HttpExchange exchange, PrintStream response) throws IOException {
-		BufferedReader body = new BufferedReader( new InputStreamReader( exchange.getRequestBody()));
+
+	public static void printBody(HttpExchange exchange, PrintStream response) throws IOException {
+		BufferedReader body = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
 		String bodyLine;
-		while( (bodyLine = body.readLine()) != null) {
-			response.println( bodyLine);
+		while ((bodyLine = body.readLine()) != null) {
+			response.println(bodyLine);
 		}
 	}
 }
 
 class RootHandler implements HttpHandler {
-	public void handle( HttpExchange exchange) throws IOException {
+	public void handle(HttpExchange exchange) throws IOException {
 		String requestMethod = exchange.getRequestMethod();
-		
-		Headers responseHeaders = exchange.getResponseHeaders();
-		responseHeaders.set( "Content-Type", "text/plain");
-		exchange.sendResponseHeaders( 200, 0);
 
-		PrintStream response = new PrintStream( exchange.getResponseBody());
-		response.println( "context: ROOT; method: " + requestMethod);
-		response.println( "--- headers ---");
-		RestHttpServer.printHeaders( exchange, response);
-		if( requestMethod.equalsIgnoreCase( "POST")) {
-			response.println( "=== body ===");
-			RestHttpServer.printBody( exchange, response);
+		Headers responseHeaders = exchange.getResponseHeaders();
+		responseHeaders.set("Content-Type", "text/plain");
+		exchange.sendResponseHeaders(200, 0);
+
+		PrintStream response = new PrintStream(exchange.getResponseBody());
+		response.println("context: ROOT; method: " + requestMethod);
+		response.println("--- headers ---");
+		RestHttpServer.printHeaders(exchange, response);
+		if (requestMethod.equalsIgnoreCase("POST")) {
+			response.println("=== body ===");
+			RestHttpServer.printBody(exchange, response);
 		}
 		response.close();
-	}	
+	}
 }
 
 class FooHandler implements HttpHandler {
-	public void handle( HttpExchange exchange) throws IOException {
+	public void handle(HttpExchange exchange) throws IOException {
 		String requestMethod = exchange.getRequestMethod();
-		
-		Headers responseHeaders = exchange.getResponseHeaders();
-		responseHeaders.set( "Content-Type", "text/plain");
-		exchange.sendResponseHeaders( 200, 0);
 
-		PrintStream response = new PrintStream( exchange.getResponseBody());
-		response.println( "context: FOO; method: " + requestMethod);
-		RestHttpServer.printHeaders( exchange, response);
+		Headers responseHeaders = exchange.getResponseHeaders();
+		responseHeaders.set("Content-Type", "text/plain");
+		exchange.sendResponseHeaders(200, 0);
+
+		PrintStream response = new PrintStream(exchange.getResponseBody());
+		response.println("context: FOO; method: " + requestMethod);
+		RestHttpServer.printHeaders(exchange, response);
 		response.close();
-	}	
+	}
 }

@@ -337,7 +337,7 @@ public class DataFreescale implements IDataLayer {
 											}
 											try {
 
-												//Thread.sleep(1000);
+												
 												// Insert the node into cache,
 												// but with the
 												// discovery_completed flag a
@@ -350,6 +350,7 @@ public class DataFreescale implements IDataLayer {
 												o.set_node(_newNode);
 												gal.getNetworkcache().add(o);
 
+												Thread.sleep(500);
 												/*
 												 * Reading the IEEEAddress of
 												 * the new node
@@ -407,9 +408,22 @@ public class DataFreescale implements IDataLayer {
 
 												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
+												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+												if (_indexOnCache > -1) {
+													gal.getNetworkcache().get(_indexOnCache).abortTimers();
+													gal.getNetworkcache().remove(_indexOnCache);
+												}
+												
 											} catch (Exception e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+												if (_indexOnCache > -1) {
+													gal.getNetworkcache().get(_indexOnCache).abortTimers();
+													gal.getNetworkcache().remove(_indexOnCache);
+
+												}
+
 											}
 										}
 									}
