@@ -515,10 +515,7 @@ public class GalController {
 
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-						/*
-						 * e.setExtendedPANId(BigInteger
-						 * .valueOf(_n1._Extended_PAN_Id));
-						 */
+						
 						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
 						if (_shortAddress != null)
 							e.setShortAddress(_shortAddress);
