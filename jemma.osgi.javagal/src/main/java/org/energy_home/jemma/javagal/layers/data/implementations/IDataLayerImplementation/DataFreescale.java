@@ -111,9 +111,13 @@ public class DataFreescale implements IDataLayer {
 				while (true) {
 					try {
 						_currentCommand = listOfCommandToSend.poll();
-						if (_currentCommand != null)
+						if (_currentCommand != null){
+							if (gal.getPropertiesManager().getDebugEnabled()) {
+								logger.info(">>> Sending: " + _currentCommand.ToHexString());
+								System.out.println(">>> Sending: " + _currentCommand.ToHexString());
+							}
 								_key.write(_currentCommand);
-							
+						}
 						
 						
 					
@@ -310,7 +314,7 @@ public class DataFreescale implements IDataLayer {
 								gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
 								gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress() + "\n\r");
+									//System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress() + "\n\r");
 									logger.info("Postponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress());
 								}
 							}
@@ -331,7 +335,7 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress() + "\n\r");
+												//System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress() + "\n\r");
 
 												logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}

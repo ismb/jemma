@@ -16,6 +16,7 @@
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
 import java.math.BigInteger;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,18 +95,18 @@ public class Discovery_Freshness_ForcePing {
 				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 					__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					System.out.println("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
+					//System.out.println("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 					logger.info("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 				}
 
 			}
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("****************Starting " + functionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex);
-			}
+			
 
 			try {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					System.out.println("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
+					System.out.println("\n\r"+ new Date(System.currentTimeMillis()).toLocaleString() + "Sending LQI_REQ (" + functionName + ") for node:" + String.format("%04x",node.getNetworkAddress()) + " -- StartIndex:" + startIndex + "\n\r");
+
+					logger.info("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
 				}
 				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(gal.getPropertiesManager().getCommandTimeoutMS(), node, startIndex);
 
@@ -119,7 +120,7 @@ public class Discovery_Freshness_ForcePing {
 					short _LqiListCount = _Lqi._NeighborTableListCount;
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						System.out.println("\n\rReceived LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi + "\n\r");
+						//System.out.println("\n\rReceived LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi + "\n\r");
 						logger.info("Received LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi);
 					}
 
@@ -139,7 +140,7 @@ public class Discovery_Freshness_ForcePing {
 						if ((_indexLqi + _LqiListCount) < _totalLqi) {
 							if (_LqiListCount == 0x00) {
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.warn("patch that correct a 4noks bug - 07-12-2011");
+									logger.warn("patch that correct a 4-noks bug - 07-12-2011");
 								}
 								return;
 							} else {
@@ -170,6 +171,7 @@ public class Discovery_Freshness_ForcePing {
 									TypeFunction function = (TypeFunction) parameters.get(2);
 									if (gal.getPropertiesManager().getDebugEnabled()) {
 
+										//System.out.println("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
 										logger.info("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
 									}
 									startLqi(node, function, _indexLqi);
