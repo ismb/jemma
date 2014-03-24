@@ -28,6 +28,15 @@ public class Activator implements BundleActivator {
 	private Vector applicationFactories = new Vector();
 
 	public void start(BundleContext bc) throws Exception {
+		/**
+		 * @brief adding Appliance Factory here
+		 * bitronhome SMART-PLUG and Remote COntrol  by ISMB-Pert   
+		 */		
+		applicationFactories.add(new ZclBitronhomeSmartPlugApplianceFactory());
+		applicationFactories.add(new ZclBitronhomeRemoteControlApplianceFactory());
+		/**
+		 * Ends bitronhome 
+		 */
 		// applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
 		applicationFactories.add(new ZigbeeMeteringApplianceFactory());
 		applicationFactories.add(new ZclZinApplianceFactory());
