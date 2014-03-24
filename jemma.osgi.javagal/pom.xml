@@ -39,7 +39,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<properties>
