@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+
 import org.apache.felix.bundlerepository.Capability;
 import org.apache.felix.bundlerepository.Property;
 import org.apache.felix.bundlerepository.Repository;
@@ -35,6 +35,8 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.device.DriverLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the OSGi Device Admin service {@link DriverLocator
@@ -54,8 +56,8 @@ public class HacDriverLocator implements DriverLocator {
 	private ConfigurationAdmin configAdmin;
 
 	private Object properties;
-
-	private static final Log log = LogFactory.getLog(HacDriverLocator.class);
+	
+	private static final Logger LOG = LoggerFactory.getLogger(HacDriverLocator.class);
 
 	public void activate(BundleContext bc) {
 		// the following property is used to specify the driver repository
@@ -117,15 +119,11 @@ public class HacDriverLocator implements DriverLocator {
 			// return new String[] { "configurator.pid" };
 			// }
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+			LOG.warn(e.getMessage(), e);
 		} catch (InvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 		}
 
 		String driverId = (String) props.get(IAppliance.APPLIANCE_TYPE_PROPERTY);
@@ -321,7 +319,7 @@ public class HacDriverLocator implements DriverLocator {
 
 			return drivers;
 		} else {
-			log.warn("unable to find a driver id for device " + props);
+			LOG.debug("unable to find a driver id for device " + props);
 		}
 
 		return null;
@@ -336,14 +334,18 @@ public class HacDriverLocator implements DriverLocator {
 		Repository[] repositories = this.repositoryAdmin.listRepositories();
 		Resource[] resources = this.repositoryAdmin.discoverResources(filter);
 		for (int i = 0; i < resources.length; i++) {
-			log.debug(resources[i].getId() + ":");
+			LOG.debug(resources[i].getId() + ":");
 			Capability[] capabilities = resources[i].getCapabilities();
 			// log.debug(capabilities);
 			for (int j = 0; j < capabilities.length; j++) {
-				log.debug("\t" + capabilities[j].getName() + ":");
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("\t" + capabilities[j].getName() + ":");
+				}
 				Property[] props = capabilities[j].getProperties();
-				for (int k = 0; k < props.length; k++) {
-					log.debug("\t\tname=" + props[k].getName() + ", value=" + props[k].getValue());
+				if (LOG.isDebugEnabled()) {
+					for (int k = 0; k < props.length; k++) {
+						LOG.debug("\t\tname=" + props[k].getName() + ", value=" + props[k].getValue());
+					}
 				}
 			}
 		}
@@ -366,8 +368,7 @@ public class HacDriverLocator implements DriverLocator {
 				return null;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception: file not found");
-			e.printStackTrace();
+			LOG.debug("Exception: file not found" + e.getMessage());
 		}
 
 		return stream;

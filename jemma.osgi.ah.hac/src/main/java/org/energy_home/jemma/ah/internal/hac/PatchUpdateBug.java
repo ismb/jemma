@@ -24,8 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -33,13 +34,16 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 public class PatchUpdateBug {
-	private static final Log log = LogFactory.getLog(PatchUpdateBug.class);
+		
+	private static final Logger LOG = LoggerFactory.getLogger(PatchUpdateBug.class);
 
 	public static boolean patchUpdateBugOnHac(BundleContext bc, String configFilename) {
 		File srcFile = bc.getDataFile(configFilename);
 		if (srcFile.exists()) {
-			log.debug("configuration file " + configFilename + " found in storage area of bundle "
-					+ bc.getBundle().getBundleId());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("configuration file " + configFilename + " found in storage area of bundle "
+						+ bc.getBundle().getBundleId());
+			}
 			Bundle[] bundles = bc.getBundles();
 			for (int i = 0; i < bundles.length; i++) {
 				if (bundles[i].getSymbolicName().equals("it.telecomitalia.osgi.ah.hac.lib")) {
@@ -48,6 +52,7 @@ public class PatchUpdateBug {
 					BundleContext hacLibBundleContext = bundles[i].getBundleContext();
 					Version version = bundles[i].getVersion();
 					if (hacLibBundleContext == null) {
+						LOG.debug("The bundle has not yet started");
 						// The bundle is has not been started, yet!!!
 						return false;
 					}
@@ -81,12 +86,12 @@ public class PatchUpdateBug {
 			}
 			in.close();
 			out.close();
-			System.out.println("File copied.");
+			LOG.trace("File copied.");
 		} catch (FileNotFoundException ex) {
-			log.error(ex.getMessage() + " in the specified directory.");
+			LOG.warn(ex.getMessage() + " in the specified directory.", ex);
 			return false;
 		} catch (IOException e) {
-			log.error(e);
+			LOG.warn(e.getMessage(),e);
 			return false;
 		}
 		return true;
