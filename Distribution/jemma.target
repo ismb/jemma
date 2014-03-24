@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
 
-<target name="Jemma" sequenceNumber="16">
+<target name="Jemma" sequenceNumber="17">
 <locations>
-<location path="${resource_loc:/jemma.Distribution}/target/jemma.Distribution-0.1.0-bin/modules/dependencies" type="Directory"/>
+<location path="${resource_loc:/jemma.Distribution}/target/jemma.Distribution-0.1.1-bin/modules/dependencies" type="Directory"/>
 </locations>
 </target>
