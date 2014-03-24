@@ -20,10 +20,11 @@ import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.service.device.DriverLocator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the OSGi Device Admin service {@link DriverLocator
@@ -36,7 +37,7 @@ import org.osgi.service.device.DriverLocator;
  * </ul>
  */
 public class SimpleHacDriverLocator implements DriverLocator {
-	private static final Log log = LogFactory.getLog(SimpleHacDriverLocator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleHacDriverLocator.class);
 
 
 	/**
@@ -87,7 +88,7 @@ public class SimpleHacDriverLocator implements DriverLocator {
 
 			return drivers;
 		} else {
-			log.warn("unable to find a driver id for device " + props);
+			LOG.warn("unable to find a driver id for device " + props);
 		}
 
 		return null;

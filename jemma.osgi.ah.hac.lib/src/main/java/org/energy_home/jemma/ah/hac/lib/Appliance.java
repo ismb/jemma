@@ -44,6 +44,7 @@ import org.energy_home.jemma.ah.hac.lib.internal.AppliancesProxy;
  * 
  */
 public class Appliance extends BasicAppliance implements IManagedAppliance {
+	
 	public static final String APPLIANCE_EPS_TYPES_PROPERTY = "ah.app.eps.types";
 	public static final String APPLIANCE_EPS_IDS_PROPERTY = "ah.app.eps.ids";
 	
@@ -134,7 +135,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 						try {
 							result.add(clusterType);
 						} catch (Exception e) {
-							e.printStackTrace();
+							LOG.warn(e.getMessage(), e);
 						}
 					}
 				}
@@ -169,7 +170,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 						try {
 							result.add(clusterType);
 						} catch (Exception e) {
-							e.printStackTrace();
+							LOG.warn(e.getMessage(), e);
 						}
 				}
 			}
@@ -185,7 +186,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 				try {
 					endPoint.peerAppliancesListener.notifyPeerApplianceConnected(peerAppliance.getPid());
 				} catch (Throwable e) {
-					log.error("exeption raised by notifyPeerApplianceConnected of appliance " + peerAppliance.getPid(), e);
+					LOG.warn("exeption raised by notifyPeerApplianceConnected of appliance " + peerAppliance.getPid(), e);
 				}
 			}
 		}
@@ -205,7 +206,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 				try {
 					endPoint.peerAppliancesListener.notifyPeerApplianceDisconnected(peerAppliance.getPid());
 				} catch (Throwable e) {
-					log.error("exception returned by notifyPeerApplianceDisconnected() for appliance " + peerAppliance.getPid(), e);
+					LOG.warn("exception returned by notifyPeerApplianceDisconnected() for appliance " + peerAppliance.getPid(), e);
 				}
 			}
 		}
@@ -235,15 +236,14 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		try {
 			this.basicServerCluster = (ConfigServerCluster) defaultEndPoint.getServiceCluster(ConfigServer.class.getName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 		}
 		if (this.basicServerCluster == null) {
 			try {
 				this.basicServerCluster = new ConfigServerCluster();
 				defaultEndPoint.addServiceCluster(basicServerCluster);
 			} catch (ApplianceException e) {
-				log.fatal("Configuration cluster not available");
-				e.printStackTrace();
+				LOG.warn("Configuration cluster not available", e);
 			}
 		}
 	}	
@@ -328,10 +328,10 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 				configurationUpdated();
 			}
 			else {
-				log.error("updateConfig called on appliance " + this.pid + " with null config parameter");
+				LOG.debug("updateConfig called on appliance " + this.pid + " with null config parameter");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.warn(e.getMessage(), e);
 		}
 
 	}	
@@ -363,7 +363,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		try {
 			updateConfig(configuration);
 		} catch (ApplianceException e) {
-			log.error("Error whili initializing appliance configuration", e);
+			LOG.warn("Error while initializing appliance configuration", e);
 		}
 		if (!isDriver())
 			this.setAvailability(true);
@@ -375,7 +375,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 	}
 	
 	protected synchronized void configurationUpdated() {
-		log.info("Configuration updated in appliance '" + this.getPid() + "'");
+		LOG.debug("Configuration updated in appliance '" + this.getPid() + "'");
 		for (Iterator iterator = endPoints.values().iterator(); iterator.hasNext();) {
 			((EndPoint)iterator.next()).configurationUpdated();	
 		}
@@ -424,8 +424,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 		try {
 			endPoint.addServiceCluster(new ConfigServerCluster());
 		} catch (ApplianceException e) {
-			log.fatal("Configuration cluster not available");
-			e.printStackTrace();
+			LOG.warn("Configuration cluster not available", e);
 		}
 		return endPoint;
 	}	
