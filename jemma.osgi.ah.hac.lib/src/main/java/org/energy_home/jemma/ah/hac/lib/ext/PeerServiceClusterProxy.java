@@ -26,7 +26,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PeerServiceClusterProxy implements InvocationHandler  {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PeerServiceClusterProxy.class);
+	
 	private IServiceCluster serviceCluster = null;
 	private ServiceCluster serviceClusterImpl = null;
 	private boolean isPeerServiceCluster = false;
@@ -72,7 +78,7 @@ public class PeerServiceClusterProxy implements InvocationHandler  {
 				if (t != null && t instanceof Exception)
 					throw t;
 			}
-			e.printStackTrace();
+			LOG.debug(e.getMessage(), e);
 			throw new ServiceClusterException("Unknown error while executing service cluster request");
 		}
 	}	

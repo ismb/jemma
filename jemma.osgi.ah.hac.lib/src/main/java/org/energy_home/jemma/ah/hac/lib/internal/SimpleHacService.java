@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
@@ -40,8 +38,11 @@ import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
 import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SimpleHacService implements IHacService, CommandProvider {
-	private static final Log log = LogFactory.getLog(SimpleHacService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleHacService.class);
 	
 	private AppliancesProxy appliancesProxy = null;
 	
@@ -52,7 +53,7 @@ public class SimpleHacService implements IHacService, CommandProvider {
 	public boolean removeAppliance(String appliancePid) {
 		ApplianceFactory factory = appliancesProxy.getApplianceFactory(appliancePid);
 		if (factory == null) {
-			log.error("deleteAppliance error: no factory available for appliance " + appliancePid);
+			LOG.debug("deleteAppliance error: no factory available for appliance " + appliancePid);
 			return false;
 		}
 		factory.deleteAppliance(appliancePid, true);
@@ -174,7 +175,7 @@ public class SimpleHacService implements IHacService, CommandProvider {
 			return TextConverter.getTextRepresentation(proxy.invokeClusterMethod(appliancePid, endPointId, clusterName, methodName,
 					objectParams));
 		} catch (Throwable t) {
-			t.printStackTrace();
+			LOG.debug(t.getMessage(), t);
 			return TextConverter.getTextRepresentation(new Exception(t));
 		}
 	}
