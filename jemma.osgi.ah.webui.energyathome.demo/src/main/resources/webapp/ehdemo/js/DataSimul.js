@@ -48,9 +48,11 @@ var ConsumoOdierno 		= [{"list":[82, 88, 83, 89, 983, 93, 90, 512, 210, 160, 173
 var indConsumoOdierno 	= 0;
 var ConsumoMedio 		= {"list":[85, 85, 88, 89, 93, 93, 90, 632, 210, 160, 123, 125, 360, 492, 450, 401, 421, 535, 643, 681, 652, 332, 310, 78]};
 var ConsumoPrevisto 	= 219300;
-var ConsumoGiornaliero  = {"list":[85, 85, 88, 89, 93, 93, 209, 1132, 1210, 160, 720, 2325, 3360, 2492, 450, 400, 1421, 535, 1643, 2181, 3352, 332, 789, 78]};
-var EnergiaProdottaGiornalieroSimul  = {"list":[null, null, null, null, null, null, 5, 72, 193, 420, 780, 1600, 2000, 2000, 2000, 1200, 634, 256, 65, 13, null, null, null, null]};
+var ConsumoGiornaliero  = {"list":[85, 85, 88, 89, 93, 93, 209, 1132, 1210, 160, 720, 2325, 3360, 2492, 450, 400, 1421, 535, 1643, 1781, 1852, 332, 789, 78]};
+var EnergiaProdottaGiornalieroSimul  = {"list":[null, null, null, null, null, null, 5, 72, 193, 420, 780, 1600, 1800, 1850, 2000, 1200, 634, 256, 65, 13, null, null, null, null]};
 var EnergiaVendutaGiornalieroSimul  = {"list":[null, null, null, null, null, null, null, null, null, 260, 60, null, null, null, 1550, 800, null, null, null, null, null, null, null, null]};
+var PrevisioneEnergiaProdotta = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.123, 0.245, 0.600, 1.224, 1.490, 1.586, 1.401, 1.172, 0.819, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
 
 var PotenzaAttuale = {"value":0};
 
@@ -72,7 +74,10 @@ var StoricoConsumoM = {"list":[null, null, 8100, 5400, 7200, 6400, 6900, 4900, 6
 var StoricoCostoA = {"list":[30.2, 	32.9, 	41.2, 	34.0, 	33.4, 	36.0, 	29.0, 	28.4, 	42.0,  38.9, 35.0, 43.0, 38.0]};
 var StoricoConsumoA = {"list":[167000, 181000, 230300, 190540, 165000, 186900, 159000, 141000, 245000, 209000, 170000, 261000, 205000]}; 
 */
- 
+
+var StoricoCostoO =   {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+var StoricoConsumoO = {"list":[98, 99, 98, 80, 76, 77, 80, 88, 70, 78, 77, 70, 70, 90, 80, 70, 70, 77, 70, 70, 77, 88, 86, 92, 100, 90, 70, 80, null, null, 77, 76, 78, 98, 70, 77, 78, 80, 88, 70, 78, 70, 70, 90, 80, 70, 70, 70, 70, 70, 70, 70, 80, 90, 88, 86, 92, 100, 90, 70, 98, 99, 98, 70, 75, 77, 80, 88, 70, 78, 77, 70, 70, 90, 80, 70, 70, 70, 77, 70, 70, 70, 80, 85, 88, 86, 92, 100, 90, 70]}; 
+var StoricoProduzioneO = {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}; 
 var StoricoCostoI =   {"list":[0.01, 0.01, 0.01, 0.01, 0.07, 0.04, 0.02, 0.03, 0.11, 0.13, 0.17, 0.12, 0.34, null, null, null, null, null, null, null, null, null, null, null]};
 var StoricoConsumoI = {"list":[88, 85, 88, 89, 250, 110, 98, 120, 360, 450, 650, 420, 1100, null, null, null, null, null, null, null, null, null, null, null]}; 
 var StoricoProduzioneI = {"list":[0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 650, 1200, 2400, null, null, null, null, null, null, null, null, null, null, null]}; 
@@ -167,6 +172,132 @@ var ListaElettr = {"list":[
   ]};
 
 var ListaElettr1 = {"id": -1, 
+		"list":[
+		    {"map":{
+		    	"appliance.pid": "ah.app.1234567891230", 
+		    	 "ah.app.name":"SmartInfo", 
+		    	 "name":"SmartInfo", //for Report Demo 
+		    	 "ah.app.type":"it.telecomitalia.ah.zigbee.metering", 
+		    	 "ah.category.pid":"12", 
+		    	 "categoryEldo":"12", 
+		    	 "ah.location.pid":"3", 
+		    	 "ah.icon": "plug.png", 
+		    	 "availability": 0, 
+		    	 "device_state":0,
+		    	 "device_state_avail": "false",
+		    	 "device_value":{
+		    		 "name":"power", 
+		    		 "value": {"timestamp":0, "value":"0"}}}},
+		    {"map":{
+		    	"appliance.pid": "ah.app.1234567891234", 
+		    	 "ah.app.name":"SmartInfo PV", 
+		    	 "name":"SmartInfo PV", //for Report Demo 
+		    	 "ah.app.type":"it.telecomitalia.ah.zigbee.metering", 
+		    	 "ah.category.pid":"14", 
+		    	 "categoryEldo":"14", 
+		    	 "ah.location.pid":"3", 
+		    	 "ah.icon": "plug.png", 
+		    	 "availability": 0, 
+		    	 "device_state":0,
+		    	 "device_state_avail": "false",
+		    	 "device_value":{
+		    		 "name":"power", 
+		    		 "value": {"timestamp":0, "value":"0"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891231", 
+				"ah.app.name":"Frigo",  
+				"name":"Frigo", //for Report Demo
+				"ah.app.type":"com.indesit.ah.app.whitegood",  
+				"device_state_avail": "true",
+				"device_state_avail": "true", 
+				"ah.category.pid":"2", 
+				"categoryEldo":"2", 
+				"ah.location.pid":"2", 
+				"ah.icon": "frigorifero.png",	
+				"availability": 2, 
+				"device_state":1, 
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"0"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891232", 
+				"ah.app.name":"TV", 
+				"name":"TV",  //for Report Demo
+				"ah.app.type":"app.lamp", 
+				"device_state_avail": "true", 
+				"ah.category.pid":"2", 
+				"categoryEldo":"2", 
+				"ah.location.pid":"3", 
+				"ah.icon": "tv.png", 
+				"availability": 2, 
+				"device_state":1,
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"10"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891233", 
+				"ah.app.name":"Lavatrice",
+				"name":"Lavatrice", //for Report Demo
+				"ah.app.type":"com.indesit.ah.app.whitegood", 
+				"ah.category.pid":"2", 
+				"categoryEldo":"2", 
+				"ah.location.pid":"3", 
+				"ah.icon": "lvb2.png", 
+				"availability": 2, 
+				"device_state_avail": "true",
+				"device_state":0, 
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"4"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891236", 
+				"ah.app.name":"Micro onde", 
+				"name":"Micro onde", //for Report Demo 
+				"ah.app.type":"ah.app.lamp",
+				"device_state_avail": "true", 
+				"ah.category.pid":"4", 
+				"categoryEldo":"4", 
+				"ah.location.pid": "1", 
+				"ah.icon": "microonde.png", 
+				"availability": 2, 
+				"device_state":0, 
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"0"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891237", 
+				"ah.app.name":"Lampada", 
+				"name":"Lampada", //for Report Demo 
+				"ah.app.type":"ah.app.lamp",
+				"device_state_avail": "true", 
+				"ah.category.pid":"4", 
+				"categoryEldo":"4", 
+				"ah.location.pid": "1", 
+				"ah.icon": "lampada.png", 
+				"availability": 0, 
+				"device_state": 0, 
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"0"}}}},
+			{"map":{
+				"appliance.pid": "ah.app.1234567891238", 
+				"ah.app.name":"Forno",
+				"name":"Forno", //for Report Demo
+				"ah.app.type":"com.indesit.ah.app.whitegood", 
+				"device_state_avail": "true",
+				"ah.category.pid":"2", 
+				"categoryEldo":"2", 
+				"ah.location.pid":"3", 
+				"ah.icon": "forno.png", 
+				"availability": 2, 
+				"device_state":0, 
+				"device_value":{
+					"name":"power", 
+					"value": {"timestamp":0, "value":"50"}}}}
+		
+		  ]};
+
+var ListaElettr2 = {"id": -1, 
 					"list":[
 					    {"map":{
 					    	"appliance.pid": "ah.app.36276195726973103", 
@@ -268,10 +399,10 @@ var ReportSim ={
 	
 }
 
-var DataSim = new Date (2012,2,25,22,56);
+var DataSim = new Date (2012,3,25,12,56);
 
 var NotizieSimul = [
-{	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
+{	description : "Sale al 20,3% la percentuale di elettricità convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al …",
 	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
 	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
 },
@@ -281,9 +412,9 @@ var NotizieSimul = [
 },
 {	description : "In piazza le associazioni delle rinnovabili. hanno chiesto al governo, come un appello pubblicato sui giornali, di rivedere il ...",
 	link : "http://gogreen.virgilio.it/news/green-economy/rinnovabili-mobilitazione-durera_6273.html?pmk=rss",
-	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durer&agrave;"
+	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durerà"
 },
-{	description : "L'appuntamento &egrave; il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale &egrave; quello di ottenere pi&ugrave; sicurezza per i ...",
+{	description : "L'appuntamento è il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale è quello di ottenere più sicurezza per i ...",
 	link : "http://gogreen.virgilio.it/eventi/salvaciclisti_6272.html?pmk=rss",
 	title : "Salvaciclisti"
 },
@@ -291,9 +422,9 @@ var NotizieSimul = [
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/pesticidi-api-governo-decide-sospensioni_6271.html?pmk=rss",
 	title : "Pesticidi e api: il governo decide sulla sospensione degli agrofarmaci"
 },
-{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile &egrave; caro, genera piccoli sismi ...",
+{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile è caro, genera piccoli sismi ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/terremoti-locali-estrazione-scisto_6270.html?pmk=rss",
-	title : "Terremoti: a generare quelli locali &egrave; pure l'estrazione dello scisto"
+	title : "Terremoti: a generare quelli locali è pure l'estrazione dello scisto"
 },
 {	description : "Confermato il taglio degli incentivi del 32-36% e il registro obbligatorio per gli impianti di potenza superiore ai 12 ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/quinto-conto-energia-testo-decreto.html?pmk=rss",
