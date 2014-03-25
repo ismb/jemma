@@ -36,15 +36,16 @@
 							  		break; 
 								case DEFINEMANUFACTURER.FOURNOKS:
 								  	colorManufacturer = 'cyan'; 
-								  	nameManufacturer = 'FOURNOKS';
+								  	nameManufacturer = '4-NOKS';
 								  	alphaInfo = 1;
 								  	break; 
 							}
 							
 							var myData = {mass: 100,
-										  label: strIeeeAddress,
+										  label: nameManufacturer,
 										  color: colorManufacturer,
-										  alpha: alphaInfo
+										  alpha: alphaInfo,
+										  shape: 'dot'
 							};
 							var myNode = sys.addNode(strIeeeAddress, myData); //AGGIUNGO UN VERTICE
 							otherInfoOfNode[padLeft(16, node.nodeAddress.toString(16)).toUpperCase()] = new Array();
@@ -181,6 +182,10 @@
 							var myNodeDeviceType = sys.addNode(nodePlus+'DT', otherInfoOfNode[nodePlus][0].deviceType); //AGGIUNGO UN VERTICE
 							var myNodeRxOnWhenIdle = sys.addNode(nodePlus+'ROWI', otherInfoOfNode[nodePlus][1].rxOnWhenIdle); //AGGIUNGO UN VERTICE
 							var myNodePermitJoin = sys.addNode(nodePlus+'PJ', otherInfoOfNode[nodePlus][2].permitJoin); //AGGIUNGO UN VERTICE
+							var myNodeIEEE = sys.addNode(nodePlus+'IEEE', {mass: 10,
+																				 fixed: false,
+															    			     label: nodePlus,
+															    			     alpha: 1}); //AGGIUNGO UN VERTICE
 							
 							var myDataDT = {color: CLR.doc, length: 50};
 							sys.addEdge(nodePlus, myNodeDeviceType, myDataDT); //E I NODI
@@ -188,13 +193,15 @@
 							sys.addEdge(nodePlus, myNodeRxOnWhenIdle, myDataRX); //E I NODI
 							var myDataPJ = {color: CLR.demo, length: 50};
 							sys.addEdge(nodePlus, myNodePermitJoin, myDataPJ); //E I NODI
+							var myDataIEEE = {color: CLR.demo, length: 50};
+							sys.addEdge(nodePlus, myNodeIEEE, myDataPJ); //E I NODI
 						}
 					}
 					sys.renderer.redraw();
 				});
 			</script>
 			<div id="container">
-				<canvas id="viewPortGraphNodes" width="800" height="500"></canvas>
+				<canvas id="viewPortGraphNodes" width="1100" height="500"></canvas>
 			</div>
 		</template>
 	</body>
