@@ -78,7 +78,7 @@ var jGGCenterPaneMenu = function(spec){ //spec, optionDB){
 var jGGNetworkManageMenu = function(spec){ //spec, optionDB){
 	
 	optionMenu = spec || {};
-    optionMenu.widthMenu = optionMenu.widthMenu || 300;
+    optionMenu.widthMenu = optionMenu.widthMenu || 250;
     optionMenu.langName = optionMenu.langName || "LANG.networkManage.";
 
 	//Constructor
