@@ -11,6 +11,7 @@
 					myNMMenu.newButton('btnRestartGal3', null, null);
 					
 				var timeout = '00002710';
+				$.ajax({
 					dataType:"json",
 					url: DEFINEPATH.infoForRestartGal+"timeout="+timeout+"&index=00"
 				}).done(function(data){
@@ -108,7 +109,6 @@
 					}
 				});
 			</script>
-					
 			<div id="container">
 				<table id="tblManageNetwork"></table>
 				<div id="pager"></div>

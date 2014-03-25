@@ -399,9 +399,12 @@ public class GalController {
 	public synchronized WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
 		List<WrapperWSNNode> _list0 = getNetworkcache();
+
 		for (WrapperWSNNode x : _list0) {
 			if (x.is_discoveryCompleted())
 				_list.getWSNNode().add(x.get_node());
+			if (PropertiesManager.getDebugEnabled())
+				System.out.println(x.get_node().getAddress().getNetworkAddress() + "-" + x.is_discoveryCompleted());
 		}
 
 		return _list;
@@ -467,7 +470,7 @@ public class GalController {
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
 						e.setLQI((short) _n1._LQI);
 						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
-						e.setPermitJoining((short)_n1._Permitting_Joining);
+						e.setPermitJoining((short) _n1._Permitting_Joining);
 						_lqinode.getNeighborList().getNeighbor().add(e);
 					}
 				}
@@ -523,7 +526,7 @@ public class GalController {
 						}
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
 						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
-						e.setPermitJoining((short)_n1._Permitting_Joining);
+						e.setPermitJoining((short) _n1._Permitting_Joining);
 						e.setLQI((short) _n1._LQI);
 						_list0.getNeighbor().add(e);
 						_lqinode.setNeighborList(_list0);
@@ -1801,7 +1804,6 @@ public class GalController {
 							logger.error("Error calling nodeDiscovered for the GAL node!");
 						}
 					}
-
 
 					synchronized (_lockerStartDevice) {
 						_lockerStartDevice.setId(1);
