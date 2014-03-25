@@ -759,3 +759,21 @@ function padLeft(pad, tmpStringToHex){
 	str = myPad.substring(0, myPad.length - str.length) + str;
 	return str;
 }
+
+function padVector(pad, arrOfByte){
+
+	var pad2 = "00";
+	var tmpStr = "";
+	var tmpChar = "";
+	
+	for(var i = 0; i<arrOfByte.length; )
+    {
+		tmpChar1 = arrOfByte[i].toString(16);
+		tmpChar1 = pad2.substring(0, pad2.length - tmpChar1.length) + tmpChar1;
+		tmpChar2 = arrOfByte[i+1].toString(16);
+		tmpChar2 = pad2.substring(0, pad2.length - tmpChar2.length) + tmpChar2;
+		tmpStr = '0x' + tmpChar1.toUpperCase() + " " + '0x' + tmpChar2.toUpperCase() + " " + tmpStr;
+		i = i+2;
+    }
+	return tmpStr;
+}
