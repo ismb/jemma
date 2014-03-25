@@ -257,7 +257,9 @@
 								<include>.classpath</include>
 								<include>bin/</include>
 								<include>META-INF/</include>
+								<include>.svn/**/*</include>
 							</includes>
+							
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 					</filesets>

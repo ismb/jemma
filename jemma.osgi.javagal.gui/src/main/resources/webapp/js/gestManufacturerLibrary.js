@@ -1,0 +1,8 @@
+/**
+ * 
+ */
+
+var DEFINEMANUFACTURER = {
+	FREESCALE: "30DE",
+	FOURNOKS: "000D"
+}
