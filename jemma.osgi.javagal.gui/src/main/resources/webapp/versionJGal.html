@@ -1,0 +1,41 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<template id="tplVersionJGal">
+			<script type="text/javascript"> 
+				$.ajax({
+					dataType:"json",
+					url: DEFINEPATH.versionPath
+				}).done(function(data){
+					jQuery("#tblVersion").jqGrid({ 	
+						datatype: "local", 	
+						colNames:[LANG.centerPane.lblVersionId, LANG.centerPane.lblVersionFId, LANG.centerPane.lblVersionRpcP], 	
+						colModel:[ 		
+						          {name:'id', index:'id', width:200, align: "center"}, 		
+						          {name:'fsId', index:'fsId', width:200, align: "center"}, 		
+						          {name:'rpcP', index:'rpcP', width:300, align: "center"} 	
+						         ], 	
+						rowNum:1, 		
+						sortname: 'id', 
+						viewrecords: true, 
+						caption: LANG.menu.btnVersionJGal 
+					});
+					
+					if (data.status.code == 0){
+						var versionObj = data.detail.version; 
+						
+						var mydata = [{ id: versionObj.versionIdentifier, 
+										fsId: versionObj.featureSetIdentifier, 
+										rpcP: versionObj.rpcProtocol[0]}]; 
+						jQuery("#tblVersion").jqGrid('addRowData', 1, mydata[0]);
+					}
+				});
+			</script>
+			<div id="container">
+				<table id="tblVersion"></table>
+				<div id="pager"></div>
+			</div>
+		</template>
+	</body>
+</html>

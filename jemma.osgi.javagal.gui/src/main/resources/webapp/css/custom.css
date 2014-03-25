@@ -1,0 +1,37 @@
+@CHARSET "ISO-8859-1";
+
+#container{
+	width: 100%;
+	margin:0 auto;
+}
+
+#rdRadioChannel{
+	width: 90%;
+	margin:50 auto;
+	text-align: center;
+}
+
+#btnRadioChannel{
+	
+	width: 70%;
+	margin:20 auto;
+	text-align: center;
+}
+
+.tnCenterPane{
+	margin:0 auto;
+}
+
+.tnHeaderHome{
+	margin:0 auto;
+}
+
+.tnHeaderHome2{
+	margin:0 auto;
+	width: 50;
+}
+
+.tblVersion{
+	margin:0 auto;
+	border=1;
+}
