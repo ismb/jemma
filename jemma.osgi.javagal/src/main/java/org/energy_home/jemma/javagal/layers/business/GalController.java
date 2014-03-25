@@ -459,10 +459,6 @@ public class GalController {
 						Neighbor e = new Neighbor();
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._RxOnWhenIdle);
-						/*
-						 * e.setExtendedPANId(BigInteger
-						 * .valueOf(_n1._Extended_PAN_Id));
-						 */
 						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
 						if (_shortAddress != null)
 							e.setShortAddress(_shortAddress);
@@ -470,7 +466,8 @@ public class GalController {
 							continue;
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
 						e.setLQI((short) _n1._LQI);
-						/* e.setPermitJoining((short) _n1._Permitting_Joining); */
+						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+						e.setPermitJoining((short)_n1._Permitting_Joining);
 						_lqinode.getNeighborList().getNeighbor().add(e);
 					}
 				}
@@ -510,12 +507,9 @@ public class GalController {
 
 					NeighborList _list0 = new NeighborList();
 					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-
 						Neighbor e = new Neighbor();
-
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-						
 						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
 						if (_shortAddress != null)
 							e.setShortAddress(_shortAddress);
@@ -528,15 +522,13 @@ public class GalController {
 							continue;
 						}
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
+						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+						e.setPermitJoining((short)_n1._Permitting_Joining);
 						e.setLQI((short) _n1._LQI);
 						_list0.getNeighbor().add(e);
-						// e.setPermitJoining((short)
-						// _n1._Permitting_Joining);
 						_lqinode.setNeighborList(_list0);
-
 					}
 				}
-
 				_lqi.getLQINode().add(_lqinode);
 			}
 		}
