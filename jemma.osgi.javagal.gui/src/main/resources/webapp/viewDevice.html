@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script>
+<script type="text/javascript" lang="javascript">
 	function leaveDevice(shortAddress) {
 		var result = window.confirm(
 				'Are you sure you want to leave the selected device: 0x'
@@ -24,20 +24,20 @@
 	}
 
 	function infoDevice(shortAddress) {
-			$.ajax(
-					{
-						url : DEFINEPATH.detailDevicePath + "?timeout=00002710&addr="
-								+ shortAddress,
-						type : 'GET'
-					}).done(function(data) {
-				var dataBig = json_parse(data);
-				if (dataBig.status.code == 0) {
-					alert(data);
-				} else {
-					alert("Error on Info command: " + dataBig.status.message);
-				}
-			});
-		
+		$.ajax(
+				{
+					url : DEFINEPATH.detailDevicePath
+							+ "?timeout=00002710&addr=" + shortAddress,
+					type : 'GET'
+				}).done(function(data) {
+			var dataBig = json_parse(data);
+			if (dataBig.status.code == 0) {
+				alert(data);
+			} else {
+				alert("Error on Info command: " + dataBig.status.message);
+			}
+		});
+
 	}
 </script>
 </head>
@@ -196,7 +196,6 @@
 															+ "');\"><span style=\"font-size: 11px; font-family: Verdana\">Leave Device</span></a></li></ul></div>"
 												});
 									}
-									//jQuery("#tblViewDevice").jqGrid('addRowData', 1, mydata);
 									reloadGridFromLocalArray("tblViewDevice",
 											mydataViewDevice);
 
@@ -206,65 +205,70 @@
 					);
 		};
 		loadData();
-		$("#btnOpenNetw").click(function(){
-			var JoiningInfo = {permitDuration: 60, tcSignificance: true };
-			$.ajax(
-					{
-						url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
-						type : 'POST',
-						dataType:"json",
-						data: JSON.stringify(JoiningInfo),
-			            contentType: "application/json; charset=utf-8"
-					}).done(function(data) {
-				//var dataBig = json_parse(data);
-				if (data.status.code == 0) {
-					alert("Now is permit to join for 60 seconds...");
-				} else {
-					alert("Error on PermitJoin command: " + data.status.message);
-				}
-			});
-		
-		
-		
-		
-		});
-		$("#btnCloseNetw").click(function(){
+		$("#btnOpenNetw")
+				.click(
+						function() {
+							var JoiningInfo = {
+								permitDuration : 60,
+								tcSignificance : true
+							};
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.permitJoinPath
+														+ "?timeout=00002710",
+												type : 'POST',
+												dataType : "json",
+												data : JSON
+														.stringify(JoiningInfo),
+												contentType : "application/json; charset=utf-8"
+											})
+									.done(
+											function(data) {
+												//var dataBig = json_parse(data);
+												if (data.status.code == 0) {
+													alert("Now is permit to join for 60 seconds...");
+												} else {
+													alert("Error on PermitJoin command: "
+															+ data.status.message);
+												}
+											});
 
-		
-			var JoiningInfo = {'permitDuration': 0, 'tcSignificance': true };
-			$.ajax(
-					{
+						});
+		$("#btnCloseNetw").click(
+				function() {
+					var JoiningInfo = {
+						'permitDuration' : 0,
+						'tcSignificance' : true
+					};
+					$.ajax({
 						url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
 						type : 'POST',
-						dataType:"json",
-						data: JSON.stringify(JoiningInfo),
-			            contentType: "application/json; charset=utf-8"
-					}).done(function(data) {
-				//var dataBig = json_parse(data);
-				if (data.status.code == 0) {
-					alert("Now is not permit to join!");
-				} else {
-					alert("Error on PermitJoin command: " + data.status.message);
-				}
-			});
-		
-		
-		
-		});
+						dataType : "json",
+						data : JSON.stringify(JoiningInfo),
+						contentType : "application/json; charset=utf-8"
+					}).done(
+							function(data) {
+								//var dataBig = json_parse(data);
+								if (data.status.code == 0) {
+									alert("Now is not permit to join!");
+								} else {
+									alert("Error on PermitJoin command: "
+											+ data.status.message);
+								}
+							});
+
+				});
 	</script>
 	<div id="container">
 		<table id="tblViewDevice"></table>
-		<div id="pager"></div>
+		<div id="pager">
+		</div>
 		<br />
-		<center>
-			<div id="permitJoinPanel">
-				<input id="btnOpenNetw" type="button" value="Open Network" /> <input
-					id="btnCloseNetw" type="button" value="Close Network" />
-			</div>
-		</center>
+		<div align="center"><input id="btnOpenNetw" type="button" value="Open Network" />
+					<input id="btnCloseNetw" type="button" value="Close Network" />
+					</div>
 	</div>
-
-
 	</template>
 </body>
 </html>

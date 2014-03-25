@@ -13,10 +13,10 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
 	
 	that.templateActivator = function(idTpl){
 
-		var t = window.document.querySelector('#'+idTpl);
+		var t = window.document.querySelector("#"+idTpl);
 		
-		$('#center').empty();
-		$('#center').append(t.content.cloneNode(true));
+		$("#center").empty();
+		$("#center").append(t.content.cloneNode(true));
 	};
 	
 	return that;
