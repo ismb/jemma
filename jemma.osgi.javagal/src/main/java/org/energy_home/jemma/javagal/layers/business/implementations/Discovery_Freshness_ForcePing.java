@@ -15,41 +15,27 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.jaxb.APSMessage;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.AssociatedDevices;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.MACCapability;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.SonNode;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.TxOptions;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-
-import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.MyThread;
 import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.TypeFunction;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
-
-import com.sun.org.apache.xml.internal.utils.BoolStack;
-import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
+import org.energy_home.jemma.zgd.GatewayConstants;
+import org.energy_home.jemma.zgd.jaxb.Address;
+import org.energy_home.jemma.zgd.jaxb.AssociatedDevices;
+import org.energy_home.jemma.zgd.jaxb.MACCapability;
+import org.energy_home.jemma.zgd.jaxb.SonNode;
+import org.energy_home.jemma.zgd.jaxb.Status;
+import org.energy_home.jemma.zgd.jaxb.WSNNode;
 
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
@@ -61,16 +47,22 @@ import com.sun.org.apache.xpath.internal.compiler.FunctionTable;
  */
 public class Discovery_Freshness_ForcePing {
 	GalController gal = null;
-	int TimeForcePingErrorSECONDS = 5;
-	int TimeFreshnessErrorSeconds = 8;
-	int TimeDiscoveryErrorSeconds = 5;
+	int TimeForcePingErrorSeconds;
+	int TimeFreshnessErrorSeconds;
+	int TimeDiscoveryErrorSeconds;
 
-	int TimeForcePingNewNodeSECONDS = 1;
-	int TimeFreshnessNewNodeSeconds = 3;
-	int TimeDiscoveryNewNodeSeconds = 0;
+	int TimeForcePingNewNodeSeconds;
+	int TimeFreshnessNewNodeSeconds;
+	int TimeDiscoveryNewNodeSeconds;
 
 	public Discovery_Freshness_ForcePing(GalController _gal) {
 		gal = _gal;
+		TimeForcePingErrorSeconds = gal.getPropertiesManager().getTimeForcePingErrorSeconds();
+		TimeFreshnessErrorSeconds = gal.getPropertiesManager().getTimeFreshnessErrorSeconds();
+		TimeDiscoveryErrorSeconds = gal.getPropertiesManager().getTimeDiscoveryErrorSeconds();
+		TimeForcePingNewNodeSeconds = gal.getPropertiesManager().getTimeForcePingNewNodeSeconds();
+		TimeFreshnessNewNodeSeconds = gal.getPropertiesManager().getTimeFreshnessNewNodeSeconds();
+		TimeDiscoveryNewNodeSeconds = gal.getPropertiesManager().getTimeDiscoveryNewNodeSeconds();
 	}
 
 	private final static Log logger = LogFactory.getLog(Discovery_Freshness_ForcePing.class);
@@ -99,25 +91,24 @@ public class Discovery_Freshness_ForcePing {
 			} else
 				return;
 
-			if (function == TypeFunction.FORCEPING)
-			{
+			if (function == TypeFunction.FORCEPING) {
 				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 					__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					System.out.println("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
+					//System.out.println("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 					logger.info("Postponing  timer Freshness by ForcePing for node:" + node.getNetworkAddress());
 				}
-				
+
 			}
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("****************Starting " + functionName + " for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex);
-			}
+			
 
 			try {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					System.out.println("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
+					System.out.println("\n\r"+ new Date(System.currentTimeMillis()).toLocaleString() + "Sending LQI_REQ (" + functionName + ") for node:" + String.format("%04x",node.getNetworkAddress()) + " -- StartIndex:" + startIndex + "\n\r");
+
+					logger.info("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
 				}
-				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(IDataLayer.INTERNAL_TIMEOUT, node, startIndex);
+				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(gal.getPropertiesManager().getCommandTimeoutMS(), node, startIndex);
 
 				/* Check no Response received */
 				if (_Lqi == null) {
@@ -129,7 +120,7 @@ public class Discovery_Freshness_ForcePing {
 					short _LqiListCount = _Lqi._NeighborTableListCount;
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						System.out.println("\n\rReceived LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi + "\n\r");
+						//System.out.println("\n\rReceived LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi + "\n\r");
 						logger.info("Received LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi);
 					}
 
@@ -149,7 +140,7 @@ public class Discovery_Freshness_ForcePing {
 						if ((_indexLqi + _LqiListCount) < _totalLqi) {
 							if (_LqiListCount == 0x00) {
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.warn("patch that correct a 4noks bug - 07-12-2011");
+									logger.warn("patch that correct a 4-noks bug - 07-12-2011");
 								}
 								return;
 							} else {
@@ -180,6 +171,7 @@ public class Discovery_Freshness_ForcePing {
 									TypeFunction function = (TypeFunction) parameters.get(2);
 									if (gal.getPropertiesManager().getDebugEnabled()) {
 
+										//System.out.println("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
 										logger.info("Executing Thread -- LqiReq Node:" + node.getNetworkAddress() + " StartIndex:" + _indexLqi);
 									}
 									startLqi(node, function, _indexLqi);
@@ -210,7 +202,7 @@ public class Discovery_Freshness_ForcePing {
 									__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 
 							if (gal.getPropertiesManager().getDebugEnabled()) {
-								logger.info("" + functionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " Time:" + System.currentTimeMillis());
+								logger.info(functionName + " completed for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress());
 							}
 
 						}
@@ -282,7 +274,7 @@ public class Discovery_Freshness_ForcePing {
 
 						newNodeWrapperChild.set_discoveryCompleted(false);
 
-						if (function == TypeFunction.DISCOVERY && (x._Device_Type == 0x00 || x._Device_Type == 0x01)) {
+						if (function == TypeFunction.DISCOVERY) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
 								logger.info("Scheduling Discovery for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
 							}
@@ -293,12 +285,13 @@ public class Discovery_Freshness_ForcePing {
 								newNodeWrapperChild.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
 
-						else if (function == TypeFunction.FRESHNESS) {
+						else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING) {
 							if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 								newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
 							if (gal.getPropertiesManager().getForcePingTimeout() > 0)
-								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSECONDS);
+								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
 						}
+
 					} else {
 						/* If Sleepy EndDevice */
 						newNodeWrapperChild.set_discoveryCompleted(true);
@@ -336,28 +329,28 @@ public class Discovery_Freshness_ForcePing {
 				__currentNodeWrapper.set_numberOfAttempt();
 			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				System.out.println("Error on Lqi( " + function + " ) request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-				logger.error("Error on Lqi( " + function + " ) request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+				System.out.println("Error on Lqi( " + function + " ) request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+				logger.error("Error on Lqi( " + function + " ) request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 			}
 
 			if (__currentNodeWrapper.get_numberOfAttempt() >= gal.getPropertiesManager().getKeepAliveNumberOfAttempt()) {
 				try {
-					Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
+					Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 					if (_st1.getCode() == GatewayConstants.SUCCESS) {
 						try {
-							Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(IDataLayer.INTERNAL_TIMEOUT, __currentNodeWrapper.get_node().getAddress());
+							Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 						} catch (Exception e1) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
-								System.out.println("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-								logger.error("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+								System.out.println("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+								logger.error("Error on ClearNeighborTableEntry for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 							}
 						}
 					}
 
 				} catch (Exception e1) {
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						System.out.println("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-						logger.error("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+						System.out.println("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+						logger.error("Error on ClearDeviceKeyPairSet for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 					}
 				}
 
@@ -379,8 +372,8 @@ public class Discovery_Freshness_ForcePing {
 					gal.get_gatewayEventManager().nodeRemoved(_s, __currentNodeWrapper.get_node());
 				} catch (Exception e1) {
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						System.out.println("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-						logger.error("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NmberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+						System.out.println("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+						logger.error("Error on nodeRemoved callback for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + "NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 					}
 				}
 
@@ -393,7 +386,7 @@ public class Discovery_Freshness_ForcePing {
 					else if (function == TypeFunction.FRESHNESS)
 						__currentNodeWrapper.setTimerFreshness(TimeFreshnessErrorSeconds);
 					else if (function == TypeFunction.FORCEPING)
-						__currentNodeWrapper.setTimerForcePing(TimeForcePingErrorSECONDS);
+						__currentNodeWrapper.setTimerForcePing(TimeForcePingErrorSeconds);
 				}
 			}
 		}

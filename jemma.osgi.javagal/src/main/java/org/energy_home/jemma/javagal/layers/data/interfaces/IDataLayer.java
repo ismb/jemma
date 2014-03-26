@@ -43,46 +43,8 @@ import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
  *
  */
 public interface IDataLayer extends IFrameCallback {
-	/**
-	 * Default timeout's value.
-	 */
-	final Long INTERNAL_TIMEOUT = (long) 9000;
-
-	public GalController getGalController();
-	/* Internal section */
-
-	/**
-	 * Adds data to the ReceivedDataQueue for later processing. When the dongle
-	 * receives data, they are roughly added to a designated queue called
-	 * ReceivedDataQueue. Later the received data are processed looking for
-	 * known messages on it. This mechanism is necessary due to the particular
-	 * way the data are received by the serial port by burst. Often messages
-	 * begins in a burst and ends in the next. So the need of a
-	 * ReceivedDataQueue.
-	 * <p>
-	 * Please note that for optimization matters the {@code short[]} are all of
-	 * the same fixed size, while relevant data on them are indicated by the
-	 * {@code size} parameter.
-	 * 
-	 * @param size
-	 *            the size of relevant data on the array.
-	 * @param buff
-	 *            the array of data to add.
-	 */
-	public void addToReceivedDataQueue(int size, short[] buff);
-
-	/**
-	 * Processes all the complete messages present on the ReceivedDataQueue. The
-	 * serial port receives data by burst and often messages begins in a burst
-	 * and ends in the next. That's why the queue can contains an incomplete
-	 * message. In that case its data remains in the queue waiting for following
-	 * data in next received burst.
-	 * 
-	 * @throws Exception
-	 *             if an error occurs.
-	 */
-	public void processMessages() throws Exception;
-
+	
+	
 	/**
 	 * Gets the properties manager.
 	 * 

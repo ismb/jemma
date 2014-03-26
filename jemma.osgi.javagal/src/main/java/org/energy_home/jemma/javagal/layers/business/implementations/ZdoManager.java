@@ -168,23 +168,19 @@ public class ZdoManager /* implements APSMessageListener */{
 						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
 							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
-
 					}
 				} else/* if exist */{
 					gal.getNetworkcache().get(_index).abortTimers();
 					gal.getNetworkcache().remove(_index);
 					gal.getNetworkcache().add(_Node);
 					if (!_Node.isSleepy()) {
-						
 						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 						}
 						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
 							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
-						
 					}
-					
 				}
 			}
 			Status _s = new Status();

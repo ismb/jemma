@@ -1,0 +1,221 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Java GAL - Management Console</title>
+<link rel="stylesheet" type="text/css"
+	href="./css/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" type="text/css" href="./css/searchFilter.css">
+<link rel="stylesheet" type="text/css" href="./css/ui.jqgrid.css">
+<link rel="stylesheet" type="text/css" href="./css/ui.multiselect.css">
+<link rel="stylesheet" type="text/css" href="./css/common.css">
+<link rel="stylesheet" type="text/css"
+	href="./css/layout-default-latest.css">
+<link rel="stylesheet" type="text/css" href="./css/apprise.css">
+<link rel="stylesheet" type="text/css" href="./css/custom.css">
+
+<script type="text/javascript" src="./js/bignumber.js"></script>
+<script type="text/javascript" src="./js/jsonbigint.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript"
+	src="./js/jquery/jquery-ui-1.10.4.custom.js"></script>
+<script type="text/javascript" src="./js/jquery/ui.multiselect.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.jqGrid.src.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.searchFilter.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.tablednd.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.addons.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.postext.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.setcolumns.js"></script>
+<script type="text/javascript" src="./js/jquery/json2.js"></script>
+<script type="text/javascript" src="./js/jquery/jstorage.js"></script>
+
+
+
+
+<script type="text/javascript" lang="javascript">
+	// At the top of your script:
+	if (!window.console)
+		console = {
+			log : function() {
+			}
+		};
+	// If you use other console methods, add them to the object literal above
+
+	// Then, anywhere in your script:
+	console
+			.log('This message will be logged, but will not cause an error in IE7');
+
+	var arrowimages = {
+		down : [ 'downarrowclass', './css/images/arrow-down.gif', 25 ],
+		right : [ 'rightarrowclass', './css/images/arrow-right.gif' ]
+	};
+
+	function supportImports() {
+		return 'import' in document.createElement('link');
+	}
+	if (supportImports()) {
+		function handleLoad(e) {
+			console.log('Loaded import: ' + e.target.href);
+		}
+		function handleError(e) {
+			console.log('Error loading import: ' + e.target.href);
+		}
+	} else {
+		console.log('Your browser not suport dynamic import :(!, then....');
+		var arrTplToImport = [ './radioChannel.html', './versionJGal.html',
+				'./viewDevice.html', './viewGraphNodes.html',
+				'./insertDevice.html', './manageNetwork.html' ];
+		for (var iCounter = 0; iCounter < arrTplToImport.length; iCounter++) {
+			$.ajax({
+				dataType : "html",
+				url : arrTplToImport[iCounter]
+			}).done(function(data) {
+				$("body").append(data);
+
+			});
+		}
+
+	}
+</script>
+
+<link rel="import" type="text/html" href="./radioChannel.html"
+	onload="handleLoad(event)" onerror="handleError(event)">
+<link rel="import" type="text/html" href="./versionJGal.html"
+	onload="handleLoad(event)" onerror="handleError(event)">
+<link rel="import" type="text/html" href="./viewDevice.html"
+	onload="handleLoad(event)" onerror="handleError(event)">
+
+<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
+<script type="text/javascript" src="./js/jquery/i18n/grid.locale-it.js"></script>
+<script type="text/javascript" src="./js/jquery/apprise-1.5.full.js"></script>
+<script type="text/javascript" src="./js/common.js"></script>
+<script type="text/javascript" src="./js/gestPathLibrary.js"></script>
+<script type="text/javascript" src="./js/gestManufacturerLibrary.js"></script>
+<script type="text/javascript" src="./js/gestMenu.js"></script>
+<script type="text/javascript" src="./js/gestCreateCenterPane.js"></script>
+
+<script type="text/javascript" src="./js/langIT.js"></script>
+
+<script type="text/javascript" src="./js/arbor/arbor.js"></script>
+<script type="text/javascript" src="./js/arbor/arbor-tween.js"></script>
+<script type="text/javascript" src="./js/arbor/graphics.js"></script>
+<script type="text/javascript" src="./js/provaArborjs.js"></script>
+<!-- script type="text/javascript" src="./js/render.js"></script> -->
+
+<script type="text/javascript">
+	$.datepicker.setDefaults($.datepicker.regional["it"]);
+	$.datepicker.setDefaults({
+		changeMonth : true,
+		changeYear : true,
+		dateFormat : 'dd/mm/yy',
+		yearRange : "c-100:c+10"
+	});
+
+	window.alert = function(msg, title, callback) {
+		//jAlert(msg, title, callback);
+		apprise(msg, {}, callback);
+
+	}
+
+	window.confirm = function(msg, title, callback) {
+		//jConfirm(msg, title, callback);
+		apprise(msg, {
+			'verify' : true,
+			'textYes' : 'Si',
+			'textNo' : 'No'
+		}, callback);
+	}
+
+	window.prompt = function(message, value, title, callback) {
+		//jPrompt(message, value, title, callback);
+		apprise(msg, {
+			input : true
+		}, callback);
+	}
+
+	var confirmV2 = function(msg, callback) {
+		apprise(msg, {
+			'newVerify' : true,
+			'textYes' : 'Si',
+			'textNo' : 'No',
+			'textCancel' : 'Annulla'
+		}, callback);
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+				$('body').layout({
+					applyDefaultStyles : true,
+					west__size : 300
+				});
+
+				$.ajax({
+					dataType : "json",
+					url : DEFINEPATH.channelPath
+				}).done(
+						function(data) {
+
+							if (data.status.code == 0) {
+								//Tutto ok
+								var chR = data.detail.value[0];
+								$.jStorage.set("ChannelRadioValue", chR);
+								$('#spChannelRadioHP').text(chR);
+								$('#spZigBeeState').text('ATTIVA').css('color',
+										'green');
+							} else {
+								//Visualizzo il messaggi di errore
+								$.jStorage.set("ChannelRadioError",
+										data.status.message);
+								$('#spChannelRadioHP')
+										.text(data.status.message);
+								$('#spZigBeeState').text('DISATTIVA').css(
+										'color', 'red');
+							}
+						});
+
+				var myGestCPane = new jGGGestCenterPane();
+				var myMenu = new jGGSxMenu();
+				myMenu.newButton('btnCanaleRadio',
+						myGestCPane.templateActivator, 'tplCanaleRadio');
+				myMenu.newButton('btnVersionJGal',
+						myGestCPane.templateActivator, 'tplVersionJGal');
+				myMenu.newButton('btnViewDevice',
+						myGestCPane.templateActivator, 'tplViewDevice');
+				myMenu.newButton('btnViewGraphNodes',
+						myGestCPane.templateActivator, 'tplViewGraphNodes');
+				myMenu.newButton('btnInsertDevice',
+						myGestCPane.templateActivator, 'tplInsertDevice');
+				myMenu.newButton('btnManageNetwork',
+						myGestCPane.templateActivator, 'tplManageNetwork');
+			});
+</script>
+</head>
+<body>
+	<div id="north" class="ui-layout-north"
+		style="width: 100%; padding: 0px !important;">
+		<div
+			style="width: 300px; height: 100%; background-color: white; float: left;text-align: center;">
+			<br>			
+			Channel Radio: <span id="spChannelRadioHP"></span> <br /> State of
+			network: <span id="spZigBeeState"></span>
+		</div>
+		<div
+			style="height: 100%; width: 50%; float: left; background-color: red;">
+			<h1 class="title">Java GAL - Management Console</h1>
+		</div>
+		<div
+			style="float: left; height: 77px; width: 300px; background-position: center; background-size: 300px 77px; background-image: url('./images/2000px-logo_telecom_italia-svg.png');"></div>
+	</div>
+	<div id="west" class="ui-layout-west" style="float: left;">
+		<button id="btnCanaleRadio"></button>
+		<button id="btnVersionJGal"></button>
+		<button id="btnViewDevice"></button>
+		<button id="btnViewGraphNodes"></button>
+		<button id="btnInsertDevice"></button>
+		<button id="btnManageNetwork"></button>
+	</div>
+	<div id="center" class="ui-layout-center"></div>
+
+</body>
+</html>

@@ -30,7 +30,7 @@ public class ByteArrayObject {
 	/**
 	 * The maximum array dimension.
 	 */
-	public final static short MAX_ARRAY_DIMENSION = 8192;
+	public final static short MAX_ARRAY_DIMENSION = 1024;
 	private final static short START = 4;
 	/**
 	 * True if the valid values starts from zero, false otherwise.

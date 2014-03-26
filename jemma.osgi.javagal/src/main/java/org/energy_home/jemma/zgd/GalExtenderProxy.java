@@ -209,6 +209,8 @@ public class GalExtenderProxy implements IGalExtender {
 		gal.startGatewayDevice(timeout, this.getProxyIdentifier(), true);
 
 	}
+	
+	
 
 	@Override
 	public void startGatewayDevice(long timeout, StartupAttributeInfo sai) throws IOException, Exception, GatewayException {
@@ -372,6 +374,11 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
+	public Status permitJoinAllSync(long timeout, short duration) throws IOException, Exception, GatewayException {
+		return gal.permitJoinAll(timeout, this.getProxyIdentifier(), duration, false);
+	}
+	
+	@Override
 	public void permitJoin(long timeout, Address addrOfInterest, short duration) throws IOException, Exception, GatewayException {
 		gal.permitJoin(timeout, this.getProxyIdentifier(), addrOfInterest, duration, true);
 	}
@@ -383,7 +390,7 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public void sendAPSMessage(APSMessage message) throws IOException, Exception, GatewayException {
-		gal.sendAPSMessage(IDataLayer.INTERNAL_TIMEOUT, this.getProxyIdentifier(), message);
+		gal.sendAPSMessage(gal.getPropertiesManager().getCommandTimeoutMS(), this.getProxyIdentifier(), message);
 	}
 
 	@Override

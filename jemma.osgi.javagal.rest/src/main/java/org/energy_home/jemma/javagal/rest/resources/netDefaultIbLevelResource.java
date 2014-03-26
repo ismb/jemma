@@ -15,11 +15,12 @@
  */
 package org.energy_home.jemma.javagal.rest.resources;
 
+import java.util.Arrays;
+
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Info;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.Status;
-
 import org.energy_home.jemma.javagal.rest.util.ResourcePathURIs;
 import org.energy_home.jemma.javagal.rest.util.Resources;
 import org.energy_home.jemma.javagal.rest.util.Util;
@@ -27,6 +28,10 @@ import org.restlet.data.MediaType;
 import org.restlet.resource.Get;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+
+
+
 
 /**
  * Resource file used to manage the API GET:URL menu.
@@ -37,6 +42,13 @@ import org.restlet.resource.ServerResource;
  */
 public class netDefaultIbLevelResource extends ServerResource {
 
+	public <T extends Enum<T>> void enumValues(Class<T> enumType) {
+	    for (T c : enumType.getEnumConstants()) {
+	         System.out.println(c.name());
+	    }
+	}
+	
+	
 	@Get
 	public void represent() {
 		Detail _det = new Detail();

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
+	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License (LGPL) version 3 or later as published by the Free 
+	Software Foundation, which accompanies this distribution and is available 
+	at http://www.gnu.org/licenses/lgpl.html JEMMA is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Lesser General Public License (LGPL) for more details. -->
+<!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
+	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License (LGPL) version 3 or later as published by the Free 
+	Software Foundation, which accompanies this distribution and is available 
+	at http://www.gnu.org/licenses/lgpl.html JEMMA is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Lesser General Public License (LGPL) for more details. -->
+<!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
+	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License (LGPL) version 3 or later as published by the Free 
+	Software Foundation, which accompanies this distribution and is available 
+	at http://www.gnu.org/licenses/lgpl.html JEMMA is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Lesser General Public License (LGPL) for more details. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma.osgi.javagal.gui</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.0</version>
+	<name>Java Gal Gui</name>
+
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>0.1.0</version>
+	</parent>
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Import-Package>javax.servlet,
+							javax.servlet.http,
+							org.apache.commons.logging;version="[1.1,2)",
+							org.osgi.framework;version="[1.5,2)",
+							org.osgi.service.component;version="[1.1,2)",
+							org.osgi.service.event;version="[1.2,2)",
+							org.osgi.service.http;version="[1.2,2)",
+							org.osgi.util.tracker;version="1.4.2"
+						</Import-Package>
+						<Require-Bundle>
+							jemma.osgi.javagal;bundle-version="1.0.0"
+						</Require-Bundle>
+					<Export-Package>!*
+						</Export-Package>
+						<Service-Component>OSGI-INF/*.xml</Service-Component>
+
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>${org.eclipse.osgi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>org.json</artifactId>
+			<version>${org.json.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.chameleon</groupId>
+			<artifactId>commons.jabsorb</artifactId>
+			<version>${commons.jabsorb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet</artifactId>
+			<version>${javax.servlet.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+	</dependencies>
+</project>
+

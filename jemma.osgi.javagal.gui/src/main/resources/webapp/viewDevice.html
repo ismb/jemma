@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" lang="javascript">
+	function leaveDevice(shortAddress) {
+		var result = window.confirm(
+				'Are you sure you want to leave the selected device: 0x'
+						+ shortAddress.toUpperCase() + '?', 'Leave Command');
+		if (result) {
+			$.ajax(
+					{
+						url : DEFINEPATH.leavePath + "?timeout=00002710&addr="
+								+ shortAddress,
+						type : 'DELETE'
+					}).done(function(data) {
+				var dataBig = json_parse(data);
+				if (dataBig.status.code == 0) {
+					loadData();
+				} else {
+					alert("Error on Leave command: " + dataBig.status.message);
+				}
+			});
+		}
+	}
+
+	function infoDevice(shortAddress) {
+		$.ajax(
+				{
+					url : DEFINEPATH.detailDevicePath
+							+ "?timeout=00002710&addr=" + shortAddress,
+					type : 'GET'
+				}).done(function(data) {
+			var dataBig = json_parse(data);
+			if (dataBig.status.code == 0) {
+				alert(data);
+			} else {
+				alert("Error on Info command: " + dataBig.status.message);
+			}
+		});
+
+	}
+</script>
+</head>
+<body>
+	<template id="tplViewDevice"> <script type="text/javascript">
+		function loadData() {
+			$
+					.ajax({
+						url : DEFINEPATH.viewDevicePath
+					})
+					.done(
+							function(data) {
+								var dataBig = json_parse(data);
+
+								$("#tblViewDevice")
+										.jqGrid(
+												{
+
+													rowNum : 10000,
+													datatype : "local",
+													colNames : [
+															LANG.centerPane.lblDeviceNetAdd,
+															LANG.centerPane.lblDeviceIeeAdd,
+															LANG.centerPane.lblDeviceSIndex,
+															LANG.centerPane.lblDeviceAssDev,
+															LANG.centerPane.lblDeviceAltPan,
+															LANG.centerPane.lblDeviceDevFFD,
+															LANG.centerPane.lblDeviceMainPo,
+															LANG.centerPane.lblDeviceRecOWI,
+															LANG.centerPane.lblDeviceSecSup,
+															LANG.centerPane.lblDeviceAllAdd,
+															LANG.centerPane.lblActions ],
+													colModel : [ {
+														name : 'nAdd',
+														width : 165,
+														align : "center"
+													}, {
+														name : 'iAdd',
+														width : 180,
+														align : "center"
+													}, {
+														name : 'start',
+														width : 110,
+														align : "center"
+													}, {
+														name : 'devices',
+														width : 175,
+														align : "center"
+													}, {
+														name : 'alt',
+														width : 225,
+														align : "center"
+													}, {
+														name : 'ffd',
+														width : 140,
+														align : "center"
+													}, {
+														name : 'powered',
+														width : 150,
+														align : "center"
+													}, {
+														name : 'idle',
+														width : 220,
+														align : "center"
+													}, {
+														name : 'security',
+														width : 180,
+														align : "center"
+													}, {
+														name : 'aAdd',
+														width : 160,
+														align : "center"
+													}, {
+														name : 'aAct',
+														width : 160,
+														align : "center"
+													} ],
+													sortname : 'id',
+													viewrecords : true,
+													caption : LANG.menu.btnViewDevice,
+													sortorder : "desc",
+													autowidth : false,
+													subGrid : false,
+													pager : '#pager'
+												});
+
+								$("#tblViewDevice")
+										.jqGrid(
+												'setGroupHeaders',
+												{
+													useColSpanStyle : true,
+													groupHeaders : [
+															{
+																startColumnName : 'nAdd',
+																numberOfColumns : 2,
+																titleText : LANG.centerPane.lblDeviceAddress
+															},
+															{
+																startColumnName : 'alt',
+																numberOfColumns : 6,
+																titleText : LANG.centerPane.lblDeviceCInfo
+															} ]
+												});
+								var mydataViewDevice = [];
+
+								if (dataBig.status.code == 0) {
+									var nodesObj = dataBig.detail.wsnNodes;
+									var nodeObj = nodesObj.wsnNode;
+									for (var iCounter = 0; iCounter < nodeObj.length; iCounter++) {
+										var nObj = nodeObj[iCounter];
+										var associatedString = '';
+										if (typeof (nObj.associatedDevices) != 'undefined') {
+											if (typeof (nObj.associatedDevices[0]) != 'undefined') {
+												var associatedDev = nObj.associatedDevices[0].sonNode;
+												if (typeof (associatedDev) != 'undefined') {
+													for (var sCounter = 0; sCounter < associatedDev.length; sCounter++) {
+														var tmpStringToHex = associatedDev[sCounter].shortAddr
+																.toString(16);
+														var str = padLeft(4,
+																tmpStringToHex);
+														associatedString = '0x'
+																+ str
+																		.toUpperCase()
+																+ '<br />'
+																+ associatedString;
+													}
+												}
+											}
+										}
+										var strNetworkAddress = padLeft(4,
+												nObj.address.networkAddress
+														.toString(16));
+										var strIeeeAddress = padLeft(16,
+												nObj.address.ieeeAddress
+														.toString(16));
+										mydataViewDevice
+												.push({
+													nAdd : '0x'
+															+ strNetworkAddress
+																	.toUpperCase(),
+													iAdd : '0x'
+															+ strIeeeAddress
+																	.toUpperCase(),
+													start : nObj.startIndex,
+													devices : associatedString,
+													alt : nObj.capabilityInformation.alternatePanCoordinator,
+													ffd : nObj.capabilityInformation.deviceIsFFD,
+													powered : nObj.capabilityInformation.mainsPowered,
+													idle : nObj.capabilityInformation.receiverOnWhenIdle,
+													security : nObj.capabilityInformation.securitySupported,
+													aAdd : nObj.capabilityInformation.allocateAddress,
+													aAct : "<div class=\"contextMenu\" id=\"deviceMenu\" ><ul><li id=\"edit\"><span class=\"ui-icon ui-icon-pencil\" style=\"float: left\"></span><a href=\"javascript:infoDevice('"
+															+ strNetworkAddress
+															+ "');\"><span style=\"font-size: 11px; font-family: Verdana\">Info Device</span></a></li><li id=\"del\"><span class=\"ui-icon ui-icon-trash\" style=\"float: left\"></span><a href=\"javascript:leaveDevice('"
+															+ strNetworkAddress
+															+ "');\"><span style=\"font-size: 11px; font-family: Verdana\">Leave Device</span></a></li></ul></div>"
+												});
+									}
+									reloadGridFromLocalArray("tblViewDevice",
+											mydataViewDevice);
+
+								}
+							}
+
+					);
+		};
+		loadData();
+		$("#btnOpenNetw")
+				.click(
+						function() {
+							var JoiningInfo = {
+								permitDuration : 60,
+								tcSignificance : true
+							};
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.permitJoinPath
+														+ "?timeout=00002710",
+												type : 'POST',
+												dataType : "json",
+												data : JSON
+														.stringify(JoiningInfo),
+												contentType : "application/json; charset=utf-8"
+											})
+									.done(
+											function(data) {
+												//var dataBig = json_parse(data);
+												if (data.status.code == 0) {
+													alert("Now is permit to join for 60 seconds...");
+												} else {
+													alert("Error on PermitJoin command: "
+															+ data.status.message);
+												}
+											});
+
+						});
+		$("#btnCloseNetw").click(
+				function() {
+					var JoiningInfo = {
+						'permitDuration' : 0,
+						'tcSignificance' : true
+					};
+					$.ajax({
+						url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
+						type : 'POST',
+						dataType : "json",
+						data : JSON.stringify(JoiningInfo),
+						contentType : "application/json; charset=utf-8"
+					}).done(
+							function(data) {
+								//var dataBig = json_parse(data);
+								if (data.status.code == 0) {
+									alert("Now is not permit to join!");
+								} else {
+									alert("Error on PermitJoin command: "
+											+ data.status.message);
+								}
+							});
+
+				});
+	</script>
+	<div id="container">
+		<table id="tblViewDevice"></table>
+		<div id="pager">
+		</div>
+		<br />
+		<div align="center"><input id="btnOpenNetw" type="button" value="Open Network" />
+					<input id="btnCloseNetw" type="button" value="Close Network" />
+					</div>
+	</div>
+	</template>
+</body>
+</html>

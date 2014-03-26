@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
@@ -114,3 +115,120 @@ org.restlet.util
 	</dependencies>
 </project>
 
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
+	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License (LGPL) version 3 or later as published by the Free 
+	Software Foundation, which accompanies this distribution and is available 
+	at http://www.gnu.org/licenses/lgpl.html JEMMA is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Lesser General Public License (LGPL) for more details. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma.osgi.javagal.rest</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.0</version>
+	<name>Java Gal Rest</name>
+
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>0.1.0</version>
+	</parent>
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Bundle-Activator>org.energy_home.jemma.javagal.rest.Activator</Bundle-Activator>
+						<Import-Package> org.apache.commons.logging;version="[1.1,2)",
+ org.energy_home.jemma.zgd;version="1.4.1",
+ org.energy_home.jemma.zgd.jaxb;version="1.0.4",
+ org.osgi.framework;version="[1.5,2)",
+ org.osgi.util.tracker;version="1.4.2",
+ com.sun.xml.internal.bind.marshaller;resolution:=optional, 
+ javax.xml.bind, 
+ javax.xml.namespace, 
+ javax.xml.transform, 
+ javax.xml.transform.stream, 
+ org.restlet, 
+ org.restlet.data, 
+ org.restlet.representation, 
+ org.restlet.resource, 
+ org.restlet.routing,
+org.restlet.util
+						</Import-Package>
+						<Require-Bundle>
+							jemma.osgi.javagal;bundle-version="1.0.0"
+						</Require-Bundle>
+                        <Embed-Dependency>org.restlet:org.restlet:2.1.6</Embed-Dependency>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>${org.eclipse.osgi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>${org.restlet.version}</version>
+		</dependency>
+                <dependency>
+                        <groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
+                        <artifactId>JAXBNamespacePrefixMapper</artifactId>
+                        <version>2.2.4</version>
+                </dependency>
+	</dependencies>
+</project>
+
+>>>>>>> 4ceaab1476ce486ba0e7972b27db87b1e860dddb

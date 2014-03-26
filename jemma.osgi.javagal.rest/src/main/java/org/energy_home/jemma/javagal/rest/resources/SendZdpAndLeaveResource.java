@@ -38,17 +38,19 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 /**
- *  Resource file used to manage the API GET:URL menu. POST:sendZDPCommand. DELETE:deleteCallBack
- *
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * Resource file used to manage the API GET:URL menu. POST:sendZDPCommand.
+ * DELETE:deleteCallBack
+ * 
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class SendZdpAndLeaveResource extends ServerResource {
 
 	private GatewayInterface proxyGalInterface;
 
 	@Get
-	public void represent() {
+	public void processGet() {
 		Detail _det = new Detail();
 		Info _info = new Info();
 		Status _st = new Status();
@@ -61,11 +63,9 @@ public class SendZdpAndLeaveResource extends ServerResource {
 		_det.getValue().add(ResourcePathURIs.PERMIT_JOIN);
 		_det.getValue().add(ResourcePathURIs.LQIINFORMATION);
 		_info.setDetail(_det);
-		
-		
-		getResponse().setEntity(Util.marshal(_info),
-				MediaType.TEXT_XML);
-		return ;
+
+		getResponse().setEntity(Util.marshal(_info), MediaType.TEXT_XML);
+		return;
 
 	}
 
@@ -80,15 +80,13 @@ public class SendZdpAndLeaveResource extends ServerResource {
 
 		Long timeout = -1l;
 
-		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm()
-				.getFirst(Resources.URI_PARAM_TIMEOUT);
+		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_TIMEOUT);
 		if (timeoutParam == null) {
 
 			Info info = new Info();
 			Status _st = new Status();
 			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-			_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT
-					+ "' parameter missing.");
+			_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.");
 			info.setStatus(_st);
 			Info.Detail detail = new Info.Detail();
 			info.setDetail(detail);
@@ -105,15 +103,11 @@ public class SendZdpAndLeaveResource extends ServerResource {
 					Info info = new Info();
 					Status _st = new Status();
 					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage("Error: mandatory '"
-							+ Resources.URI_PARAM_TIMEOUT
-							+ "' parameter's value invalid. You provided: "
-							+ timeoutString);
+					_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
 					info.setStatus(_st);
 					Info.Detail detail = new Info.Detail();
 					info.setDetail(detail);
-					getResponse().setEntity(Util.marshal(info),
-							MediaType.APPLICATION_XML);
+					getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 					return;
 
 				}
@@ -122,22 +116,17 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				Info info = new Info();
 				Status _st = new Status();
 				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '"
-						+ Resources.URI_PARAM_TIMEOUT
-						+ "' parameter's value invalid. You provided: "
-						+ timeoutString);
+				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
 				info.setStatus(_st);
 				Info.Detail detail = new Info.Detail();
 				info.setDetail(detail);
-				getResponse().setEntity(Util.marshal(info),
-						MediaType.APPLICATION_XML);
+				getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 				return;
 
 			}
 		}
 
-		aoiString = (String) getRequest().getAttributes().get(
-				Resources.PARAMETER_ADDR);
+		aoiString = (String) getRequest().getAttributes().get(Resources.PARAMETER_ADDR);
 
 		if (aoiString == null) {
 
@@ -164,8 +153,7 @@ public class SendZdpAndLeaveResource extends ServerResource {
 			address.setNetworkAddress(shortAddress);
 		}
 
-		Parameter urilistenerParam = getRequest().getResourceRef()
-				.getQueryAsForm().getFirst(Resources.URI_PARAM_URILISTENER);
+		Parameter urilistenerParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_URILISTENER);
 
 		ZDPCommand zdpCommand;
 
@@ -182,8 +170,7 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				info.setStatus(_st);
 				Info.Detail detail = new Info.Detail();
 				info.setDetail(detail);
-				getResponse().setEntity(Util.marshal(info),
-						MediaType.APPLICATION_XML);
+				getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 				return;
 			} else {
 				// Async call. We know here that urilistenerParam is not null...
@@ -191,13 +178,10 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				// Process async. If urilistener equals "", don't send the
 				// result but wait that the IPHA polls for it using the request
 				// identifier.
-				ClientResources rcmal = getRestManager().getClientObjectKey(
-						Util.getPortFromUriListener(urilistener),
-						getClientInfo().getAddress());
+				ClientResources rcmal = getRestManager().getClientObjectKey(Util.getPortFromUriListener(urilistener), getClientInfo().getAddress());
 				proxyGalInterface = rcmal.getGatewayInterface();
 
-				rcmal.getClientEventListener().setZdpCommandDestination(
-						urilistener);
+				rcmal.getClientEventListener().setZdpCommandDestination(urilistener);
 				proxyGalInterface.sendZDPCommand(timeout, zdpCommand);
 				Info.Detail detail = new Info.Detail();
 				Info infoToReturn = new Info();
@@ -206,8 +190,7 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				infoToReturn.setStatus(status);
 				infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
 				infoToReturn.setDetail(detail);
-				getResponse().setEntity(Util.marshal(infoToReturn),
-						MediaType.TEXT_XML);
+				getResponse().setEntity(Util.marshal(infoToReturn), MediaType.TEXT_XML);
 				return;
 			}
 		} catch (Exception e1) {
@@ -224,15 +207,14 @@ public class SendZdpAndLeaveResource extends ServerResource {
 	}
 
 	@Delete
-	public void deleteCallback() {
+	public void processDelete() {
 		Address address = new Address();
 
 		String timeoutString = null;
 		String urilistener = null;
 		Long timeout = -1l;
 		// addrString parameters check
-		String addrString = (String) getRequest().getAttributes().get(
-				Resources.PARAMETER_ADDR);
+		String addrString = (String) getRequest().getAttributes().get(Resources.PARAMETER_ADDR);
 		if (addrString != null) {
 			if (addrString.length() > 4) {
 				// IEEEAddress
@@ -240,17 +222,14 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				address.setIeeeAddress(ieee);
 			} else {
 				// ShortAddress
-				Integer shortAddress = new Integer(Integer.parseInt(addrString,
-						16));
+				Integer shortAddress = new Integer(Integer.parseInt(addrString, 16));
 				address.setNetworkAddress(shortAddress);
 			}
 		} else {
 			Info info = new Info();
 			Status _st = new Status();
 			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-			_st.setMessage("Error: mandatory '" + Resources.PARAMETER_ADDR
-					+ "' parameter's value invalid. You provided: "
-					+ addrString);
+			_st.setMessage("Error: mandatory '" + Resources.PARAMETER_ADDR + "' parameter's value invalid. You provided: " + addrString);
 			info.setStatus(_st);
 			Info.Detail detail = new Info.Detail();
 			info.setDetail(detail);
@@ -259,15 +238,13 @@ public class SendZdpAndLeaveResource extends ServerResource {
 
 		}
 
-		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm()
-				.getFirst(Resources.URI_PARAM_TIMEOUT);
+		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_TIMEOUT);
 		if (timeoutParam == null) {
 
 			Info info = new Info();
 			Status _st = new Status();
 			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-			_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT
-					+ "' parameter's not present");
+			_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's not present");
 			info.setStatus(_st);
 			Info.Detail detail = new Info.Detail();
 			info.setDetail(detail);
@@ -284,15 +261,11 @@ public class SendZdpAndLeaveResource extends ServerResource {
 					Info info = new Info();
 					Status _st = new Status();
 					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage("Error: mandatory '"
-							+ Resources.URI_PARAM_TIMEOUT
-							+ "' parameter's value invalid. You provided: "
-							+ timeoutString);
+					_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
 					info.setStatus(_st);
 					Info.Detail detail = new Info.Detail();
 					info.setDetail(detail);
-					getResponse().setEntity(Util.marshal(info),
-							MediaType.APPLICATION_XML);
+					getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 					return;
 
 				}
@@ -301,33 +274,27 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				Info info = new Info();
 				Status _st = new Status();
 				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '"
-						+ Resources.URI_PARAM_TIMEOUT
-						+ "' parameter's value invalid. You provided: "
-						+ timeoutString);
+				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
 				info.setStatus(_st);
 				Info.Detail detail = new Info.Detail();
 				info.setDetail(detail);
-				getResponse().setEntity(Util.marshal(info),
-						MediaType.APPLICATION_XML);
+				getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 				return;
 
 			}
 		}
-		Parameter urilistenerParam = getRequest().getResourceRef()
-				.getQueryAsForm().getFirst(Resources.URI_PARAM_URILISTENER);
+		Parameter urilistenerParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_URILISTENER);
 
 		try {
 			if (urilistenerParam == null) {
 				// Sync call because urilistener not present.
 
 				// Check for Gal Interface
-				proxyGalInterface = getRestManager().getClientObjectKey(-1,
-						getClientInfo().getAddress()).getGatewayInterface();
+				proxyGalInterface = getRestManager().getClientObjectKey(-1, getClientInfo().getAddress()).getGatewayInterface();
 
 				// TODO exists also leaveSync(timeout, addrOfInterest, mask)
 				// Leave
-				Status status = proxyGalInterface.leaveSync(timeout, address,0);
+				Status status = proxyGalInterface.leaveSync(timeout, address, 0);
 				Info info = new Info();
 				info.setStatus(status);
 				Info.Detail detail = new Info.Detail();
@@ -343,13 +310,10 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				// but wait that the IPHA polls for it using the request
 				// identifier. Async is possible only if start=true
 
-				ClientResources rcmal = getRestManager().getClientObjectKey(
-						Util.getPortFromUriListener(urilistener),
-						getClientInfo().getAddress());
+				ClientResources rcmal = getRestManager().getClientObjectKey(Util.getPortFromUriListener(urilistener), getClientInfo().getAddress());
 				proxyGalInterface = rcmal.getGatewayInterface();
 
-				rcmal.getClientEventListener().setLeaveResultDestination(
-						urilistener);
+				rcmal.getClientEventListener().setLeaveResultDestination(urilistener);
 				proxyGalInterface.leave(timeout, address);
 				Info.Detail detail = new Info.Detail();
 				Info infoToReturn = new Info();
@@ -358,8 +322,7 @@ public class SendZdpAndLeaveResource extends ServerResource {
 				infoToReturn.setStatus(status);
 				infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
 				infoToReturn.setDetail(detail);
-				getResponse().setEntity(Util.marshal(infoToReturn),
-						MediaType.TEXT_XML);
+				getResponse().setEntity(Util.marshal(infoToReturn), MediaType.TEXT_XML);
 				return;
 			}
 		} catch (NullPointerException npe) {

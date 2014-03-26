@@ -1,0 +1,209 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<template id="tplViewGraphNodes"> 
+			<script type="text/javascript">
+				$.ajax({
+					url : DEFINEPATH.viewLQI
+				}).done(function(data) {
+				    var CLR = {
+				    	      branch:"#b2b19d",
+				    	      code:"orange",
+				    	      doc:"#922E00",
+				    	      demo:"#a7af00"
+		    	    }
+
+					var colorLQI, weightLQI;
+				    var allNodes = new Array();
+					var otherInfoOfNode = new Array();
+					//var sys = arbor.ParticleSystem(500);
+					var sys = arbor.ParticleSystem({stiffness:900, repulsion:20000, gravity: false, dt:0.015, precision: 0.2});
+					sys.renderer = new Renderer('#viewPortGraphNodes');
+					var dataBig = json_parse(data);
+					var lqiNodes = dataBig.detail.lqiInformation[0].lqiNode;
+					if (typeof lqiNodes != 'undefined'){
+						$.each(lqiNodes, function(i, node) {
+							
+							var strIeeeAddress = padLeft(16, node.nodeAddress.toString(16)).toUpperCase();
+							var codeManufacturer = strIeeeAddress.substring(0,4);
+							var colorManufacturer, nameManufacturer, alphaInfo;
+							switch (codeManufacturer){
+								case DEFINEMANUFACTURER.FREESCALE:
+								  	colorManufacturer = 'blue'; 
+								  	nameManufacturer = 'FREESCALE';
+								  	alphaInfo = 1;
+							  		break; 
+								case DEFINEMANUFACTURER.FOURNOKS:
+								  	colorManufacturer = 'cyan'; 
+								  	nameManufacturer = '4-NOKS';
+								  	alphaInfo = 1;
+								  	break; 
+							}
+							
+							var myData = {mass: 100,
+										  label: nameManufacturer,
+										  color: colorManufacturer,
+										  alpha: alphaInfo,
+										  shape: 'dot'
+							};
+							var myNode = sys.addNode(strIeeeAddress, myData); //AGGIUNGO UN VERTICE
+							otherInfoOfNode[padLeft(16, node.nodeAddress.toString(16)).toUpperCase()] = new Array();
+							if (typeof node.neighborList != 'undefined'){
+								var lqiNodeNeighborList = node.neighborList.neighbor;
+								allNodes.push({name: padLeft(16, node.nodeAddress.toString(16)).toUpperCase(), node: myNode, neighbor: lqiNodeNeighborList});
+							}
+						});
+						$.each(allNodes, function(i, node) {
+							if (typeof node.neighbor != 'undefined') {
+								$.each(node.neighbor, function(i, edge) {
+									if (edge.lqi < 50){
+											colorLQI = '#ff0000';
+											weightLQI = 0.1;
+									} else if ((edge.lqi > 50) && (edge.lqi < 100)){
+											colorLQI = '#ff69b4';
+											weightLQI = 0.2;
+									} else if ((edge.lqi > 100) && (edge.lqi < 150)){
+											colorLQI = '#fdb11b';
+											weightLQI = 0.3;
+									} else if ((edge.lqi > 150) && (edge.lqi < 200)){
+											colorLQI = '#31962a';
+											weightLQI = 0.4;
+									} else if (edge.lqi > 200){
+											colorLQI = '#9aff69';
+											weightLQI = 0.5;
+									}
+									weightLQI = 0.5;
+									var myData = {weight: edge.lqi/50,
+												  color: colorLQI,
+												  length: 200};
+									var tmpEdge = sys.addEdge(node.name, padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase(), myData); //E I NODI
+									
+									var dataToShift = edge.deviceTypeRxOnWhenIdleRelationship;
+									var tmp = dataToShift;
+									var deviceType = ((tmp << 30) >> 30);
+									var deviceTypeString, deviceTypeColor;
+									switch (deviceType){
+										case 0: 
+											deviceTypeString = 'ZigBee coordinator';
+											deviceTypeColor = '#e9ae11';
+											break;
+										case 1: 
+											deviceTypeString = 'ZigBee router';
+											deviceTypeColor = '#388f89';
+											break;
+										case 2: 
+											deviceTypeString = 'ZigBee end device';
+											deviceTypeColor = '#e796af';
+											break;
+										case 3: 
+											deviceTypeString = 'Unknown';
+											deviceTypeColor = null;
+											break;
+									}
+										tmp = dataToShift;
+									var rxOnWhenIdle = ((tmp << 28) >> 30);
+									var rxOnWhenIdleString, rxOnWhenIdleColor;
+									switch (rxOnWhenIdle){
+										case 0: 
+											rxOnWhenIdleString = 'RxOnWhenIdle = false';
+											rxOnWhenIdleColor = '#dc143c';
+											break;
+										case 1: 
+											rxOnWhenIdleString = 'RxOnWhenIdle = true';
+											rxOnWhenIdleColor = '#217346';
+											break;
+										case 2: 
+											rxOnWhenIdleString = 'Unknown';
+											rxOnWhenIdleColor = null;
+											break;
+									}
+										tmp = dataToShift;
+									var relationship = ((tmp << 25) >> 30);
+									var relationshipString;
+									switch (relationship){
+										case 0: 
+											relationshipString = 'Neighbor is the parent';
+											break;
+										case 1: 
+											relationshipString = 'Neighbor is a child';
+											break;
+										case 2: 
+											relationshipString = 'Neighbor is a sibling';
+											break;
+										case 3: 
+											relationshipString = 'None of the above';
+											break;
+										case 4: 
+											relationshipString = 'Previous child';
+											break;
+									}
+									var permitJoin = edge.permitJoining;
+									var permitJoinString, permitJoinColor;
+									switch (permitJoin){
+										case 0: 
+											permitJoinString = 'is not permitting join';
+											permitJoinColor = '#dc143c';
+											break;
+										case 1: 
+											permitJoinString = 'is permitting join';
+											permitJoinColor = '#217346';
+											break;
+										case 2: 
+											permitJoinString = 'Unknown';
+											permitJoinColor = null;
+											break;
+									}
+									var nameTmp = padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase();
+									if (otherInfoOfNode[nameTmp].length == 0){
+										otherInfoOfNode[nameTmp].push({deviceType: {mass: 30,
+																					fixed: false,
+																				    deviceType: deviceType,
+																    			    label: deviceTypeString,
+																    			    color: deviceTypeColor,
+																    			    alpha: 1}});
+										otherInfoOfNode[nameTmp].push({rxOnWhenIdle: {mass: 20,
+																					  fixed: false,
+																					  rxOnWhenIdle: rxOnWhenIdle,
+																    			      label: rxOnWhenIdleString,
+																    			      color: rxOnWhenIdleColor,
+																    			      alpha: 1}});
+										otherInfoOfNode[nameTmp].push({permitJoin: {mass: 10,
+																					fixed: false,
+																				    deviceType: permitJoin,
+																    			    label: permitJoinString,
+																    			    color: permitJoinColor,
+																    			    alpha: 1}});
+									}
+								});
+							};
+						});
+						for (nodePlus in otherInfoOfNode) {
+							var myNodeDeviceType = sys.addNode(nodePlus+'DT', otherInfoOfNode[nodePlus][0].deviceType); //AGGIUNGO UN VERTICE
+							var myNodeRxOnWhenIdle = sys.addNode(nodePlus+'ROWI', otherInfoOfNode[nodePlus][1].rxOnWhenIdle); //AGGIUNGO UN VERTICE
+							var myNodePermitJoin = sys.addNode(nodePlus+'PJ', otherInfoOfNode[nodePlus][2].permitJoin); //AGGIUNGO UN VERTICE
+							var myNodeIEEE = sys.addNode(nodePlus+'IEEE', {mass: 10,
+																				 fixed: false,
+															    			     label: nodePlus,
+															    			     alpha: 1}); //AGGIUNGO UN VERTICE
+							
+							var myDataDT = {color: CLR.doc, length: 50};
+							sys.addEdge(nodePlus, myNodeDeviceType, myDataDT); //E I NODI
+							var myDataRX = {color: CLR.branch, length: 50};
+							sys.addEdge(nodePlus, myNodeRxOnWhenIdle, myDataRX); //E I NODI
+							var myDataPJ = {color: CLR.demo, length: 50};
+							sys.addEdge(nodePlus, myNodePermitJoin, myDataPJ); //E I NODI
+							var myDataIEEE = {color: CLR.demo, length: 50};
+							sys.addEdge(nodePlus, myNodeIEEE, myDataPJ); //E I NODI
+						}
+					}
+					sys.renderer.redraw();
+				});
+			</script>
+			<div id="container">
+				<canvas id="viewPortGraphNodes" width="1100" height="500"></canvas>
+			</div>
+		</template>
+	</body>
+</html>
+		

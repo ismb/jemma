@@ -158,7 +158,7 @@ public class GalController {
 				}
 			} else {
 				short _EndPoint = 0;
-				_EndPoint = DataLayer.configureEndPointSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSimpleDescriptorReadFromFile());
+				_EndPoint = DataLayer.configureEndPointSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSimpleDescriptorReadFromFile());
 				if (_EndPoint == 0)
 					throw new Exception("Error on configure endpoint");
 
@@ -378,10 +378,10 @@ public class GalController {
 	 */
 	public void executeAutoStart() throws Exception {
 		logger.info("Executing AutoStart procedure...");
-		short _EndPoint = DataLayer.configureEndPointSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSimpleDescriptorReadFromFile());
+		short _EndPoint = DataLayer.configureEndPointSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSimpleDescriptorReadFromFile());
 		if (_EndPoint > 0x00) {
 			logger.info("Configure EndPoint completed...");
-			Status _statusStartGatewayDevice = DataLayer.startGatewayDeviceSync(IDataLayer.INTERNAL_TIMEOUT, PropertiesManager.getSturtupAttributeInfo());
+			Status _statusStartGatewayDevice = DataLayer.startGatewayDeviceSync(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSturtupAttributeInfo());
 			if (_statusStartGatewayDevice.getCode() == 0x00) {
 				logger.info("StartGateway Device completed...");
 				return;
@@ -399,9 +399,12 @@ public class GalController {
 	public synchronized WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
 		List<WrapperWSNNode> _list0 = getNetworkcache();
+
 		for (WrapperWSNNode x : _list0) {
 			if (x.is_discoveryCompleted())
 				_list.getWSNNode().add(x.get_node());
+			if (PropertiesManager.getDebugEnabled())
+				System.out.println(x.get_node().getAddress().getNetworkAddress() + "-" + x.is_discoveryCompleted());
 		}
 
 		return _list;
@@ -459,10 +462,6 @@ public class GalController {
 						Neighbor e = new Neighbor();
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._RxOnWhenIdle);
-						/*
-						 * e.setExtendedPANId(BigInteger
-						 * .valueOf(_n1._Extended_PAN_Id));
-						 */
 						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
 						if (_shortAddress != null)
 							e.setShortAddress(_shortAddress);
@@ -470,7 +469,8 @@ public class GalController {
 							continue;
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
 						e.setLQI((short) _n1._LQI);
-						/* e.setPermitJoining((short) _n1._Permitting_Joining); */
+						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+						e.setPermitJoining((short) _n1._Permitting_Joining);
 						_lqinode.getNeighborList().getNeighbor().add(e);
 					}
 				}
@@ -510,15 +510,9 @@ public class GalController {
 
 					NeighborList _list0 = new NeighborList();
 					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-
 						Neighbor e = new Neighbor();
-
 						e.setDepth((short) _n1._Depth);
 						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-						/*
-						 * e.setExtendedPANId(BigInteger
-						 * .valueOf(_n1._Extended_PAN_Id));
-						 */
 						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
 						if (_shortAddress != null)
 							e.setShortAddress(_shortAddress);
@@ -531,15 +525,13 @@ public class GalController {
 							continue;
 						}
 						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
+						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+						e.setPermitJoining((short) _n1._Permitting_Joining);
 						e.setLQI((short) _n1._LQI);
 						_list0.getNeighbor().add(e);
-						// e.setPermitJoining((short)
-						// _n1._Permitting_Joining);
 						_lqinode.setNeighborList(_list0);
-
 					}
 				}
-
 				_lqi.getLQINode().add(_lqinode);
 			}
 		}
@@ -964,20 +956,20 @@ public class GalController {
 	}
 
 	public String APSME_GETSync(short attrId) throws Exception, GatewayException {
-		return DataLayer.APSME_GETSync(IDataLayer.INTERNAL_TIMEOUT, attrId);
+		return DataLayer.APSME_GETSync(PropertiesManager.getCommandTimeoutMS(), attrId);
 	}
 
 	public void APSME_SETSync(short attrId, String value) throws Exception, GatewayException {
-		DataLayer.APSME_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
+		DataLayer.APSME_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
 	public String NMLE_GetSync(short ilb) throws IOException, Exception, GatewayException {
-		return DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, ilb);
+		return DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb);
 
 	}
 
 	public void NMLE_SetSync(short attrId, String value) throws Exception, GatewayException {
-		DataLayer.NMLE_SETSync(IDataLayer.INTERNAL_TIMEOUT, attrId, value);
+		DataLayer.NMLE_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
 	/**
@@ -1698,7 +1690,7 @@ public class GalController {
 					BigInteger _IeeeAdd = null;
 					/* Read the ShortAddress of the GAL */
 					try {
-						_NetworkAdd = DataLayer.NMLE_GetSync(IDataLayer.INTERNAL_TIMEOUT, (short) 0x96);
+						_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
 						System.out.println("Readed Network Addres of Gal: " + _NetworkAdd);
 					} catch (Exception e) {
 						if (PropertiesManager.getDebugEnabled()) {
@@ -1708,7 +1700,7 @@ public class GalController {
 					}
 					/* Read the IEEEAddress of the GAL */
 					try {
-						_IeeeAdd = DataLayer.readExtAddressGal(IDataLayer.INTERNAL_TIMEOUT);
+						_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
 						System.out.println("Readed IEEE Addres of Gal: " + _IeeeAdd);
 
 					} catch (Exception e) {
@@ -1728,7 +1720,7 @@ public class GalController {
 
 					/* Read the NodeDescriptor of the GAL */
 					try {
-						NodeDescriptor _NodeDescriptor = DataLayer.getNodeDescriptorSync(IDataLayer.INTERNAL_TIMEOUT, _add);
+						NodeDescriptor _NodeDescriptor = DataLayer.getNodeDescriptorSync(PropertiesManager.getCommandTimeoutMS(), _add);
 						if (_NodeDescriptor != null) {
 							if (galNodeWrapper.get_node().getCapabilityInformation() == null)
 								galNodeWrapper.get_node().setCapabilityInformation(new MACCapability());
@@ -1770,7 +1762,7 @@ public class GalController {
 
 					/* Executing the command(PermitJoin==0) to close network */
 					try {
-						Status _permitjoin = DataLayer.permitJoinSync(IDataLayer.INTERNAL_TIMEOUT, _add, (short) 0x00, (byte) 0x01);
+						Status _permitjoin = DataLayer.permitJoinSync(PropertiesManager.getCommandTimeoutMS(), _add, (short) 0x00, (byte) 0x01);
 						if (_permitjoin.getCode() != GatewayConstants.SUCCESS) {
 							Status _st = new Status();
 							_st.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -1812,7 +1804,6 @@ public class GalController {
 							logger.error("Error calling nodeDiscovered for the GAL node!");
 						}
 					}
-
 
 					synchronized (_lockerStartDevice) {
 						_lockerStartDevice.setId(1);

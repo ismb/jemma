@@ -1,0 +1,106 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<template id="tplCanaleRadio">
+			<script type="text/javascript">
+				$("#rdRadioChannel").buttonset(); 
+				
+				var buttonpressed;
+			    $('.tnCenterPane').click(function(event) {
+			          buttonpressed = $(event.target).attr('id');
+			    })
+				
+				$("#chooseRadioChannel").submit(function(event){
+					
+					event.preventDefault();
+					
+					var ccrTimeOut = '00000014'; 
+					var newChannelLbl;
+					switch (buttonpressed){
+						case 'btnAutomaticScan':
+							newChannelLbl = '00';
+							break;
+						case 'btnManualScan':
+							newChannelLbl = $('#rdRadioChannel :radio:checked + label').text();
+							break;
+					}
+					
+					var opChannelRadio = '0xFE';
+					
+					$.ajax({
+						dataType:"json",
+						url: DEFINEPATH.changeChannelPath+'timeout='+ccrTimeOut+'&scanChannel='+newChannelLbl+'&scanDuration='+opChannelRadio
+					}).done(function(data){
+						var chR = searchChannel();
+					});
+				});
+				
+		        var myCPMenu = new jGGCenterPaneMenu();
+		        	myCPMenu.newButton('btnAutomaticScan', null, null);
+		        	myCPMenu.newButton('btnManualScan', null, null);
+		        	
+		        var chR = $.jStorage.get("ChannelRadioValue");
+				if(!chR){
+					chR = searchChannel();
+				} else {
+					var radioCh = $('#radioChannel'+chR);
+					radioCh[0].checked = true;
+					radioCh.button("refresh");
+				}
+				
+				var searchChannel = function(){
+					var newChannel;
+					$.ajax({
+						dataType:"json",
+						url: DEFINEPATH.channelPath
+					}).done(function(data){
+
+						if (data.status.code == 0){
+							//Tutto ok
+							newChannel = data.detail.value[0];
+							$.jStorage.set("ChannelRadioValue", newChannel);
+							$('#spChannelRadioHP').text(newChannel);
+							$('#spZigBeeState').text('ATTIVA').css('color', 'green');
+							console.log('ok: ', newChannel);
+						} else {
+							//Visualizzo il messaggio di errore
+							newChannel = 'canale non disponibile: ' + $.jStorage.get("ChannelRadioError");
+							$('#spChannelRadioHP').text(newChannel);
+							$('#spZigBeeState').text('DISATTIVA').css('color', 'red');
+							console.log('KO: ', newChannel);
+						}
+						return newChannel;
+					});
+				}
+			</script>
+					
+			<div id="container">
+				<form id="chooseRadioChannel">
+					<div id="rdRadioChannel">
+						<input type="radio" id="radioChannel11" name="radioRadioChannel" value="11"><label for="radioChannel11">11</label>
+					    <input type="radio" id="radioChannel12" name="radioRadioChannel" value="12"><label for="radioChannel12">12</label>
+					    <input type="radio" id="radioChannel13" name="radioRadioChannel" value="13"><label for="radioChannel13">13</label>
+					    <input type="radio" id="radioChannel14" name="radioRadioChannel" value="14"><label for="radioChannel14">14</label>
+					    <input type="radio" id="radioChannel15" name="radioRadioChannel" value="15"><label for="radioChannel15">15</label>
+					    <input type="radio" id="radioChannel16" name="radioRadioChannel" value="16"><label for="radioChannel16">16</label>
+					    <input type="radio" id="radioChannel17" name="radioRadioChannel" value="17"><label for="radioChannel17">17</label>
+					    <input type="radio" id="radioChannel18" name="radioRadioChannel" value="18"><label for="radioChannel18">18</label>
+					    <input type="radio" id="radioChannel19" name="radioRadioChannel" value="19"><label for="radioChannel19">19</label>
+					    <input type="radio" id="radioChannel20" name="radioRadioChannel" value="20"><label for="radioChannel20">20</label>
+					    <input type="radio" id="radioChannel21" name="radioRadioChannel" value="21"><label for="radioChannel21">21</label>
+					    <input type="radio" id="radioChannel22" name="radioRadioChannel" value="22"><label for="radioChannel22">22</label>
+					    <input type="radio" id="radioChannel23" name="radioRadioChannel" value="23"><label for="radioChannel23">23</label>
+					    <input type="radio" id="radioChannel24" name="radioRadioChannel" value="24"><label for="radioChannel24">24</label>
+					    <input type="radio" id="radioChannel25" name="radioRadioChannel" value="25"><label for="radioChannel25">25</label>
+					    <input type="radio" id="radioChannel26" name="radioRadioChannel" value="26"><label for="radioChannel26">26</label>
+					</div>
+					<div id="btnRadioChannel">
+						<input type="submit" id="btnAutomaticScan" class="tnCenterPane"></input>
+						<input type="submit" id="btnManualScan" class="tnCenterPane"></input>
+					</div>
+				</form>
+			</div>
+		</template>
+	</body>
+</html>

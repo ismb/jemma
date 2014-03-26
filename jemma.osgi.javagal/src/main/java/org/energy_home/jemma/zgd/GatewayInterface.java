@@ -268,6 +268,7 @@ public interface GatewayInterface {
 			GatewayException;
 
 	
+	
 
 	/**
 	 * Returns the list of active nodes and connected to the ZigBee network from
@@ -612,6 +613,21 @@ public interface GatewayInterface {
 	 */
 	void permitJoinAll(long timeout, short duration) throws IOException,
 			Exception, GatewayException;
+	
+	/**
+	 * Allows the opening of the ZigBee network for all nodes, and for a
+	 * specified duration, to be able to associate new nodes
+	 * 
+	 * @param timeout
+	 
+	 * @param duration
+	 * @throws IOException
+	 * @throws Exception
+	 * @throws GatewayException
+	 */
+	Status permitJoinAllSync(long timeout, short duration)
+			throws IOException, Exception, GatewayException;
+
 
 	/**
 	 * Allows the opening of the ZigBee network to a single node, and for a

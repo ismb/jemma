@@ -81,6 +81,10 @@ public interface GatewayConstants {
 	public final static short ADDRESS_MODE_ALIAS = 16;
 
 	
+
+	
+	
+	
 	public static final int SUCCESS = 0;
 	public static final int TIMEOUT = 1;
 	public static final int GENERAL_ERROR = 2;
