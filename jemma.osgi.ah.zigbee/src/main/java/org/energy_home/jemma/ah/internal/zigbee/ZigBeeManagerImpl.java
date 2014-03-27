@@ -550,13 +550,13 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						try {
 							device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
 						} catch (ZclException e) {
-							// if (!zclFrame.isDefaultResponseDisabled()) {
-							IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
-							this.post(msg, zclResponseFrame);
-							log.error(getIeeeAddressHex(srcAddress)
-									+ ": messageReceived(): Sent to device a default response with status code "
-									+ e.getStatusCode());
-							// }
+							if (!zclFrame.isDefaultResponseDisabled()) {
+								IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
+								this.post(msg, zclResponseFrame);
+								log.error(getIeeeAddressHex(srcAddress)
+										+ ": messageReceived(): Sent to device a default response with status code "
+										+ e.getStatusCode());
+							}
 						}
 
 						if (enableNotifyFrameLogs) {
@@ -1417,6 +1417,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
 					
+					
 					if (enableEnergyAtHomeClusters) {
 						// This is the list of Client side clusters supported by E@H
 						outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
@@ -1452,7 +1453,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 					// subscribe liveness
-					gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS);
+					gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE);
 					// register local callback
 					this.callbackId = gateway.createAPSCallback(localEndpoint, this);
 					if (this.callbackId == -1) {

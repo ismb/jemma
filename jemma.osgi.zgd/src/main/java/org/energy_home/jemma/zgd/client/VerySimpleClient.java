@@ -69,7 +69,7 @@ public class VerySimpleClient implements APSMessageListener, GatewayEventListene
 		gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 		
 		// subscribe liveness;
-		gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS);
+		gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE);
 		
 		// confugure local endpoint
 		/*(gateway.clearEndpoint((short) localEndpoint);

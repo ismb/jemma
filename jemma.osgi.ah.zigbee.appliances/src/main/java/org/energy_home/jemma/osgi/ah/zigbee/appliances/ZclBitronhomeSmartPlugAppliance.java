@@ -18,6 +18,7 @@ package org.energy_home.jemma.osgi.ah.zigbee.appliances;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclGroupsServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
@@ -32,6 +33,7 @@ import java.util.Dictionary;
 
 //import org.apache.commons.logging.Log; //// This line is related to Old Logging System
 //import org.apache.commons.logging.LogFactory;// This line is related to Old Logging System
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,8 @@ public class ZclBitronhomeSmartPlugAppliance extends ZclAppliance {
 		endPoint.addServiceCluster(new ZclScenesServer()); 	 // adding Scenes (0x0005)
 		endPoint.addServiceCluster(new ZclOnOffServer()); 	 // adding On/Off (0x0006)
 		endPoint.addServiceCluster(new ZclSimpleMeteringServer()); 	 // adding Metering (0x0702) 
+		
+		endPoint.addServiceCluster(new ZclBasicClient());
 
 		
 		ConfigServer serviceCluster = (ConfigServer) this.getEndPoint(0).getServiceCluster("org.energy_home.jemma.ah.cluster.ah.ConfigServer");

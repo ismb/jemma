@@ -579,7 +579,7 @@ public class GatewayConsoleClient implements APSMessageListener, GatewayEventLis
 	}
 	
 	public void subscribeNodeRemoval(Scanner scanner) throws IOException, Exception, GatewayException {
-		int mask = GatewayConstants.DISCOVERY_FRESHNESS;
+		int mask = GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE;
 		if (scanner.next().equalsIgnoreCase("off")) mask = GatewayConstants.DISCOVERY_STOP;
 		gateway.subscribeNodeRemoval(0, mask);
 	}

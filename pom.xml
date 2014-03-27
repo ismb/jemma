@@ -122,6 +122,7 @@
 		<module>jemma.osgi.ah.adapter.http</module>
 		<module>jemma.osgi.ah.app</module>
 		<module>jemma.osgi.ah.zigbee</module>
+		<module>jemma.osgi.ah.zigbee.appliances</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>Distribution</module>
 	</modules>
