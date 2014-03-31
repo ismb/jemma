@@ -5,22 +5,27 @@
 	function leaveDevice(shortAddress) {
 		var result = window.confirm(
 				'Are you sure you want to leave the selected device: 0x'
-						+ shortAddress.toUpperCase() + '?', 'Leave Command');
-		if (result) {
-			$.ajax(
-					{
-						url : DEFINEPATH.leavePath + "?timeout=00002710&addr="
-								+ shortAddress,
-						type : 'DELETE'
-					}).done(function(data) {
-				var dataBig = json_parse(data);
-				if (dataBig.status.code == 0) {
-					loadData();
-				} else {
-					alert("Error on Leave command: " + dataBig.status.message);
-				}
-			});
-		}
+						+ shortAddress.toUpperCase() + '?', 'Leave Command',
+				function(result) {
+					if (result) {
+						$.ajax(
+								{
+									url : DEFINEPATH.leavePath
+											+ "?timeout=00002710&addr="
+											+ shortAddress,
+									type : 'DELETE'
+								}).done(
+								function(data) {
+									var dataBig = json_parse(data);
+									if (dataBig.status.code == 0) {
+										loadData();
+									} else {
+										alert("Error on Leave command: "
+												+ dataBig.status.message);
+									}
+								});
+					}
+				});
 	}
 
 	function infoDevice(shortAddress) {
@@ -74,6 +79,7 @@
 														name : 'nAdd',
 														width : 165,
 														align : "center"
+														
 													}, {
 														name : 'iAdd',
 														width : 180,
@@ -81,23 +87,28 @@
 													}, {
 														name : 'start',
 														width : 110,
-														align : "center"
+														align : "center",
+															hidden: true
 													}, {
 														name : 'devices',
 														width : 175,
-														align : "center"
+														align : "center",
+														hidden: true
 													}, {
 														name : 'alt',
 														width : 225,
-														align : "center"
+														align : "center",
+														hidden: true
 													}, {
 														name : 'ffd',
 														width : 140,
-														align : "center"
+														align : "center",
+														hidden: true
 													}, {
 														name : 'powered',
 														width : 150,
-														align : "center"
+														align : "center",
+														hidden: true
 													}, {
 														name : 'idle',
 														width : 220,
@@ -105,15 +116,19 @@
 													}, {
 														name : 'security',
 														width : 180,
-														align : "center"
+														align : "center",
+														hidden: true
 													}, {
 														name : 'aAdd',
 														width : 160,
-														align : "center"
+														align : "center",
+														hidden: true
+														
 													}, {
 														name : 'aAct',
 														width : 160,
 														align : "center"
+														
 													} ],
 													sortname : 'id',
 													viewrecords : true,
@@ -262,12 +277,12 @@
 	</script>
 	<div id="container">
 		<table id="tblViewDevice"></table>
-		<div id="pager">
-		</div>
+		<div id="pager"></div>
 		<br />
-		<div align="center"><input id="btnOpenNetw" type="button" value="Open Network" />
-					<input id="btnCloseNetw" type="button" value="Close Network" />
-					</div>
+		<div align="center">
+			<input id="btnOpenNetw" type="button" value="Open Network" /> <input
+				id="btnCloseNetw" type="button" value="Close Network" />
+		</div>
 	</div>
 	</template>
 </body>
