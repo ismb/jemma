@@ -127,7 +127,6 @@ public class LocalServicesResource extends ServerResource {
 				Resources.PARAMETER_EP);
 
 		if (epString == null) {
-			// /{ep} not present
 			Parameter timeoutParam = getRequest().getResourceRef()
 					.getQueryAsForm().getFirst(ResourcePathURIs.TIMEOUT_PARAM);
 			if (timeoutParam != null) {
