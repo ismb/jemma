@@ -4,11 +4,15 @@
 	<body>
 		<template id="tplManageNetwork">
 			<script type="text/javascript">
+
+				var myProfile = {};
+			
 				var idTblOnFire = null;
 				var rtnObjConfig, tmpObjConfig = {};
 				var controlAllOk = true;
 				var controlSomeMod = false;
 				var fieldToVerify, lblFieldToVerify = null;
+				var arrLblToUpperCase = new Array();
 				
 				/*
 				 * Restituisce l'array per i canali
@@ -18,13 +22,51 @@
 				  	return rtnrString;
 				};
 				
+				/*
+				 * Restituisce l'array per il Device Type
+				 */
 				var getDeviceTypeParameters = function(){
 					var rtnrString = { 'COORDINATOR': 'Coordinator', 'ROUTER': 'Router', 'ENDDEVICE': 'End Device'};
 				  	return rtnrString;
 				};
 				
+				/*
+				 * Restituisce l'array per il Network Key Type
+				 */
 				var getNetworkKeyType = function(){ 
 					var rtnrString = { 'STANDARD': 'Standard', 'HIGH_SECURITY': 'High Security'};
+				  	return rtnrString;
+				};
+				
+				/*
+				 * Restituisce l'array per il Profile-ID
+				 */
+				var getProfile = function(){
+					var tmpString = '{';
+					var rtnrString;
+					
+					//$.each(myProfile, function(iCounter, vProfile){
+						tmpString += "'"+myProfile.zigbeeprofileid+"':'"+myProfile.description+"',";
+					//});
+					tmpString = tmpString.substring(0, tmpString.length - 1) + "}";
+					eval('rtnrString='+tmpString);
+				  	return rtnrString;
+				};
+				
+				/*
+				 * Restituisce l'array per il Device-ID
+				 */
+				var getDevice = function(){
+					var tmpString = '{';
+					var rtnrString;
+					
+					$.each(myProfile.device, function(iCounter, vDev){
+						if (vDev.devProfilesid == 'HA'){
+							tmpString += "'"+vDev.deviceidentifier+"':'"+vDev.description+"',";
+						}
+					});
+					tmpString = tmpString.substring(0, tmpString.length - 1) + "}";
+					eval('rtnrString='+tmpString);
 				  	return rtnrString;
 				};
 				
@@ -50,12 +92,21 @@
 					//nop;
 				};
 				
-				var startWithEditButton = function(){
+				var startWithEditButton = function(rowId){
 					$("#btn_edit_" + rowId + "_tblManageNetwork1").show();
 					$("#btn_edit_" + rowId + "_tblManageNetwork2").show();
 					$("#btn_edit_" + rowId + "_tblManageNetwork3").show();
 					$("#btn_edit_" + rowId + "_tblManageNetwork4").show();
 					$("#btn_edit_" + rowId + "_tblManageNetwork5").show();
+					$("#btn_edit_" + rowId + "_tblManageNetwork6").show();
+					$("#btn_edit_" + rowId + "_tblManageNetwork7").show();
+					
+					var dataValue1 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepProfileId', true);
+					var dataValue2 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepDeviceId', true);
+					
+					if ((typeof dataValue1[0] != 'undefined') && (typeof dataValue2[0] != 'undefined')){
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").show();
+					}
 					
 					$("#btn_save_1_tblManageNetwork1").hide();
 			        $("#btn_cancel_1_tblManageNetwork1").hide();
@@ -71,10 +122,54 @@
 
 			        $("#btn_save_1_tblManageNetwork5").hide();
 			        $("#btn_cancel_1_tblManageNetwork5").hide();
+
+			        $("#btn_save_1_tblManageNetwork6").hide();
+			        $("#btn_cancel_1_tblManageNetwork6").hide();
+
+			        $("#btn_save_1_tblManageNetwork7").hide();
+			        $("#btn_cancel_1_tblManageNetwork7").hide();
+
+					var dataValue3 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'ePointId', true);
+					var dataValue4 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'profId', true);
+					var dataValue5 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'devId', true);
+					var dataValue6 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'devVer', true);
+					if ((typeof dataValue3[0] != 'undefined') && (typeof dataValue4[0] != 'undefined') && (typeof dataValue5[0] != 'undefined') && (typeof dataValue6[0] != 'undefined')){
+						$("#btnStartGal").button("enable");
+					}
+					
+			        $("#btnRestartGal1").button("enable");
+			        $("#btnRestartGal2").button("enable");
+			        $("#btnRestartGal3").button("enable");
 				}
 				
 				var aftersavefunc = function(rowId, response, options){ 
-					startWithEditButton();
+
+					jQuery.each( arrLblToUpperCase, function( i, val ) {
+						var tmpValue = $('#' + idTblOnFire).getCell(rowId, val);
+						tmpValue = tmpValue.toUpperCase();
+						tmpValue = tmpValue.replace(/0X/g,"0x");
+						var rowData = jQuery('#' + idTblOnFire).jqGrid('setCell', rowId, val, tmpValue);
+					});
+					
+					startWithEditButton(rowId);
+					
+					if (idTblOnFire == 'tblManageNetwork6'){
+						var dataValue1 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepProfileId', true);
+						var dataValue2 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepDeviceId', true);
+						
+						if ((typeof dataValue1[0] != 'undefined') && (typeof dataValue2[0] != 'undefined')){
+							var tmp = dataValue1[0].value;
+							tmp = "0x" + tmp.toUpperCase();
+							jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {profId: tmp});
+							var tmp = dataValue2[0].value;
+							tmp = "0x" + tmp.toUpperCase();
+							jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {devId: tmp});
+							jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {ePointId: '0x01'});
+							jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {devVer: '0x00'});
+							
+							$("#btnStartGal").button("enable");
+						}
+					}
 				};
 				
 				var errorfunc = function(a,b,c,d){
@@ -86,74 +181,133 @@
 				};
 				
 				var beforeSaveRow = function(options, rowId) { 
-					var rowData = jQuery('#' + idTblOnFire).getRowData(rowId);
-
+					var rowData = jQuery('#' + idTblOnFire).jqGrid('getRowData', rowId);
+			        
+					if ((typeof rowData.cepProfileId != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'cepProfileId';
+						fieldToVerify = LANG.networkManage.lblProfileConfEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.cepProfileId = tmpValue;
+					}
+					if ((typeof rowData.cepDeviceId != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'cepDeviceId';
+						fieldToVerify = LANG.networkManage.lblDeviceConfEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.cepDeviceId = tmpValue;
+					}
+					if ((typeof rowData.ePointId != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'ePointId';
+						fieldToVerify = LANG.networkManage.lblEndPointEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.ePointId = tmpValue;
+					}
+					if ((typeof rowData.profId != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'profId';
+						fieldToVerify = LANG.networkManage.lblProfileEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.profId = tmpValue;
+					}
+					if ((typeof rowData.devId != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'devId';
+						fieldToVerify = LANG.networkManage.lblDeviceEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.devId = tmpValue;
+					}
+					if ((typeof rowData.devVer != 'undefined') && (controlAllOk)){
+						lblFieldToVerify = 'devVer';
+						fieldToVerify = LANG.networkManage.lblDeviceVersEndPoint;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.devVer = tmpValue;
+					}
 					if ((typeof rowData.cMask != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblChannelMask');
-						fieldToVerify = LANG.networkManage.lblChannelMask;
 						lblFieldToVerify = 'cMask';
-						rtnObjConfig.channelMask = rowData.cMask;
+						fieldToVerify = LANG.networkManage.lblChannelMask;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.channelMask = tmpValue;
 					}
 					if ((typeof rowData.dType != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblDeviceType');
-						fieldToVerify = LANG.networkManage.lblDeviceType;
 						lblFieldToVerify = 'dType';
-						rtnObjConfig.deviceType = rowData.dType;
+						fieldToVerify = LANG.networkManage.lblDeviceType;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.channelMask = tmpValue;
 					}
 					if ((typeof rowData.nKey != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblNetworkKey');
-						fieldToVerify = LANG.networkManage.lblNetworkKey;
 						lblFieldToVerify = 'nKey';
-						var tmp = verBigAddr(rowData.nKey);
-						rtnObjConfig.networkKey = (tmp != null) ? tmp : rtnObjConfig.networkKey;
+						fieldToVerify = LANG.networkManage.lblNetworkKey;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verBigAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.networkKey = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.networkKey;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.nKeyType != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblNetworkKeyType');
-						fieldToVerify = LANG.networkManage.lblNetworkKeyType;
 						lblFieldToVerify = 'nKeyType';
-						rtnObjConfig.networkKeyType = rowData.nKeyType;
+						fieldToVerify = LANG.networkManage.lblNetworkKeyType;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						rtnObjConfig.networkKeyType = tmpValue;
 					}
 					if ((typeof rowData.nManAddr != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblNetworkManagerAddress');
-						fieldToVerify = LANG.networkManage.lblNetworkManagerAddress;
 						lblFieldToVerify = 'nManAddr';
-						var tmp = verShortAddr(rowData.nManAddr);
-						rtnObjConfig.networkManagerAddress = (tmp != null) ? tmp : rtnObjConfig.networkManagerAddress;
+						fieldToVerify = LANG.networkManage.lblNetworkManagerAddress;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verShortAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.networkManagerAddress = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.networkManagerAddress;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.pId != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblPanId');
-						fieldToVerify = LANG.networkManage.lblPanId;
 						lblFieldToVerify = 'pId';
-						var tmp = verShortAddr(rowData.pId);
-						rtnObjConfig.panId = (tmp != null) ? tmp : rtnObjConfig.panId;
+						fieldToVerify = LANG.networkManage.lblPanId;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verShortAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.panId = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.panId;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.pLinkK != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblPreconfiguredLinkKey');
-						fieldToVerify = LANG.networkManage.lblPreconfiguredLinkKey;
 						lblFieldToVerify = 'pLinkK';
-						var tmp = verBigAddr(rowData.pLinkK);
-						rtnObjConfig.preconfiguredLinkKey = (tmp != null) ? tmp : rtnObjConfig.preconfiguredLinkKey;
+						fieldToVerify = LANG.networkManage.lblPreconfiguredLinkKey;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verBigAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.preconfiguredLinkKey = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.preconfiguredLinkKey;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.sAddr != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblShortAddress');
-						fieldToVerify = LANG.networkManage.lblShortAddress;
 						lblFieldToVerify = 'sAddr';
-						var tmp = verShortAddr(rowData.sAddr);
-						rtnObjConfig.shortAddress = (tmp != null) ? tmp: rtnObjConfig.shortAddress;
+						fieldToVerify = LANG.networkManage.lblShortAddress;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verShortAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.shortAddress = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.shortAddress;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.tCenterAddr != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblTrustCenterAddress');
-						fieldToVerify = LANG.networkManage.lblTrustCenterAddress;
 						lblFieldToVerify = 'tCenterAddr';
-						var tmp = verShortAddr(rowData.tCenterAddr);
-						rtnObjConfig.trustCenterAddress = (tmp != null) ? tmp : rtnObjConfig.trustCenterAddress;
+						fieldToVerify = LANG.networkManage.lblTrustCenterAddress;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verShortAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.trustCenterAddress = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.trustCenterAddress;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					if ((typeof rowData.tCentMasterK != 'undefined') && (controlAllOk)){
-						console.log('Verfico lblTrustCenterMasterKey');
-						fieldToVerify = LANG.networkManage.lblTrustCenterMasterKey;
 						lblFieldToVerify = 'tCentMasterK';
-						var tmp = verBigAddr(rowData.tCentMasterK);
-						rtnObjConfig.trustCenterMasterKey = (tmp != null) ? tmp : rtnObjConfig.trustCenterMasterKey;
+						fieldToVerify = LANG.networkManage.lblTrustCenterMasterKey;
+						var dataValue = jQuery('#' + idTblOnFire).jqGrid('getCol', lblFieldToVerify, true);
+						var tmpValue = $('#'+dataValue[0].id+'_'+lblFieldToVerify).val();
+						tmpValue = verBigAddr(tmpValue, fieldToVerify);
+						rtnObjConfig.trustCenterMasterKey = (tmpValue != null) ? tmpValue.toUpperCase() : rtnObjConfig.trustCenterMasterKey;
+						arrLblToUpperCase.push(lblFieldToVerify);
 					}
 					
 					if (controlAllOk){
@@ -165,39 +319,71 @@
 				};
 				
 				var editData = function(div, rowId){
-					idTblOnFire = div;
+					idTblOnFire = div; 
 					
 					if (idTblOnFire == 'tblManageNetwork1'){
 						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
 					}
 					if (idTblOnFire == 'tblManageNetwork2'){
 						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
 					}
 			        if (idTblOnFire == 'tblManageNetwork3'){
 						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
 					}
 			        if (idTblOnFire == 'tblManageNetwork4'){
 						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
 					}
 			        if (idTblOnFire == 'tblManageNetwork5'){
 						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
 						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
 					}
+			        if (idTblOnFire == 'tblManageNetwork6'){
+						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork7").hide();
+					}
+			        if (idTblOnFire == 'tblManageNetwork7'){
+						$("#btn_edit_" + rowId + "_tblManageNetwork1").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork2").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork3").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork4").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork5").hide();
+						$("#btn_edit_" + rowId + "_tblManageNetwork6").hide();
+					}
+			        
+			        $("#btnStartGal").button("disable");
+			        $("#btnRestartGal1").button("disable");
+			        $("#btnRestartGal2").button("disable");
+			        $("#btnRestartGal3").button("disable");
 					
+			        arrLblToUpperCase = new Array();
 					controlSomeMod = false;
 					fieldToVerify = null;
 					jQuery('#' + div).jqGrid('editRow', rowId, true, theOnEditFunction );
@@ -222,8 +408,92 @@
 					idTblOnFire = div;
 					jQuery('#' + div).jqGrid('restoreRow', rowId, displayEditButton);
 					
-					startWithEditButton();
+					startWithEditButton(rowId);
 				}
+				
+
+				
+				$.ajax({
+					type: "GET",
+					dataType: "xml",
+					url : './hap.xml'
+				}).done(function(xml) {  
+					var profileinformation = new Array(); 
+					$(xml).find('profileinformation').each(function(){
+						profileinformation.push({profilesid: $(this).find('profilesid').text(),
+												 zigbeeprofileid: $(this).find('zigbeeprofileid').text(),
+									 			 description: $(this).find('description').text()});
+				    });
+					var device = new Array(); 
+					$(xml).find('devices').each(function(){
+						device.push({profilesid: $(this).find('profilesid').text(),
+									 deviceidentifier: $(this).find('deviceidentifier').text(),
+									 description: $(this).find('description').text()});
+				    });
+					var servermandatorylist = new Array(); 
+					$(xml).find('servermandatorylist').each(function(){
+						servermandatorylist.push({deviceid: $(this).find('deviceid').text(),
+												  clusterid: $(this).find('clusterid').text()});
+				    });
+					var clientmandatorylist = new Array(); 
+					$(xml).find('clientmandatorylist').each(function(){
+						clientmandatorylist.push({deviceid: $(this).find('deviceid').text(),
+							  					  clusterid: $(this).find('clusterid').text()});
+				    });
+					var serveroptionallist = new Array(); 
+					$(xml).find('serveroptionallist').each(function(){
+						serveroptionallist.push({deviceid: $(this).find('deviceid').text(),
+							  					  clusterid: $(this).find('clusterid').text()});
+				    });
+					var clientoptionallist = new Array(); 
+					$(xml).find('clientoptionallist').each(function(){
+						clientoptionallist.push({deviceid: $(this).find('deviceid').text(),
+							  					  clusterid: $(this).find('clusterid').text()});
+				    });
+					var clusters = new Array(); 
+					$(xml).find('clusters').each(function(){
+						clusters[$(this).find('clustersidentifier').text()] = $(this).find('description').text();
+				    });
+					
+					$.each(profileinformation, function(idx, val){
+						myProfile.profilesId = val.profilesid;
+						myProfile.zigbeeprofileid = val.zigbeeprofileid;
+						myProfile.description = val.description;
+						myProfile.device = new Array();
+						$.each(device, function(idx, val){
+							var myDevice = {};
+							myDevice.devProfilesid = val.profilesid;
+							myDevice.deviceidentifier = val.deviceidentifier;
+							myDevice.description = val.description;
+							myDevice.servermandatorylist = new Array();
+							$.each(servermandatorylist, function(idx, val){
+								if (val.deviceid == myDevice.deviceidentifier){
+									myDevice.servermandatorylist.push(val.clusterid);
+								}
+							});
+							myDevice.clientmandatorylist = new Array();
+							$.each(clientmandatorylist, function(idx, val){
+								if (val.deviceid == myDevice.deviceidentifier){
+									myDevice.clientmandatorylist.push(val.clusterid);
+								}
+							});
+							myDevice.serveroptionallist = new Array();
+							$.each(serveroptionallist, function(idx, val){
+								if (val.deviceid == myDevice.deviceidentifier){
+									myDevice.serveroptionallist.push(val.clusterid);
+								}
+							});
+							myDevice.clientoptionallist = new Array();
+							$.each(clientoptionallist, function(idx, val){
+								if (val.deviceid == myDevice.deviceidentifier){
+									myDevice.clientoptionallist.push(val.clusterid);
+								}
+							});
+							myProfile.device.push(myDevice);
+						});
+					});
+					console.log(myProfile);
+				});
 				
 				var myNMMenu = new jGGNetworkManageMenu();
 					myNMMenu.newButton('btnStartGal', null, null);
@@ -254,12 +524,16 @@
 					var mydataViewDevice3 = new Array();
 					var mydataViewDevice4 = new Array();
 					var mydataViewDevice5 = new Array();
+					var mydataViewDevice6 = new Array();
+					var mydataViewDevice7 = new Array();
 
 					mydataViewDevice1.push({ cMask: tmpObjConfig.cMask, dType: tmpObjConfig.dType});
 					mydataViewDevice2.push({ nKey: tmpObjConfig.nKey});
 					mydataViewDevice3.push({ nKeyType: tmpObjConfig.nKeyType, nManAddr: tmpObjConfig.nManAddr, pId: tmpObjConfig.pId});
 					mydataViewDevice4.push({ pLinkK: tmpObjConfig.pLinkK, sAddr: tmpObjConfig.sAddr});
 					mydataViewDevice5.push({ tCenterAddr: tmpObjConfig.tCenterAddr, tCentMasterK: tmpObjConfig.tCentMasterK});
+					mydataViewDevice6.push({ cepProfileId: '---Seleziona Profile---', cepDeviceId: '---Seleziona Device---'});
+					mydataViewDevice7.push({ ePointId: '', profId: '', devId: '', devVer: ''});
 					
 					$("#tblManageNetwork1").jqGrid({ 
 						     	 				  rowNum: 10000,
@@ -274,10 +548,8 @@
 					                                              sortable: true, editable: true, cellEdit: true, 
 					                                              edittype: 'select', formatter: 'select', editrules: { required: true}, 
 					                                              editoptions: {value: getDeviceTypeParameters()}}], 		
-												  sortname: 'id', 
 												  viewrecords: true, 
-												  caption: LANG.menu.btnManageNetwork,
-										          sortorder: "desc",
+												  caption: 'START-UP ATTRIBUTE SET',
 										          autowidth: true,
 										          subGrid: false,
 										          height: "auto",
@@ -302,10 +574,8 @@
 												  colNames:['Actions', LANG.networkManage.lblNetworkKey], 
 												  colModel:[ {name:'act',index:'act', width:53, sortable:false}, 
 												        	 {name:'nKey', width: 210, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}], 		
-												  sortname: 'id', 
 												  viewrecords: true, 
 												  caption: null, //LANG.menu.btnManageNetwork,
-										          sortorder: "desc",
 										          autowidth: true,
 										          subGrid: false,
 										          height: "auto",
@@ -335,10 +605,8 @@
 				                                              editoptions: {value: getNetworkKeyType()}}, 
 												             {name:'nManAddr', width:80, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
 												             {name:'pId', width:45, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}], 		
-												  sortname: 'id', 
 												  viewrecords: true, 
 												  caption: null, //LANG.menu.btnManageNetwork,
-										          sortorder: "desc",
 										          autowidth: true,
 										          subGrid: false,
 										          height: "auto",
@@ -364,10 +632,8 @@
 												  colModel:[ {name:'act',index:'act', width:54, sortable:false}, 
 													         {name:'pLinkK', width:170, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
 												             {name:'sAddr', width:40, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}], 		
-												  sortname: 'id', 
 												  viewrecords: true, 
 												  caption: null, //LANG.menu.btnManageNetwork,
-										          sortorder: "desc",
 										          autowidth: true,
 										          subGrid: false,
 										          height: "auto",
@@ -393,10 +659,8 @@
 												  colModel:[ {name:'act',index:'act', width:52, sortable:false}, 
 												        	 {name:'tCenterAddr', width:60, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
 												             {name:'tCentMasterK', width:140, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}], 		
-												  sortname: 'id', 
 												  viewrecords: true, 
 												  caption: null, //LANG.menu.btnManageNetwork,
-										          sortorder: "desc",
 										          autowidth: true,
 										          subGrid: false,
 										          height: "auto",
@@ -413,14 +677,78 @@
 												      			jQuery("#tblManageNetwork5").jqGrid('setRowData', rowId, {act:ae+be+se+ce+de});
 												      		}	
 											      	  	}
-											      	  },
-										          pager:'#pager5'});
+											      	  }});
+
+					$("#tblManageNetwork6").jqGrid({ 
+   	 				  							  rowNum: 10000,
+												  datatype: "local", 
+												  colNames:['Actions', LANG.networkManage.lblProfileConfEndPoint, LANG.networkManage.lblDeviceConfEndPoint], 
+												  colModel:[ {name:'act',index:'act', width:52, sortable:false},
+										        	 		 {name:'cepProfileId', width:100, align: "center",
+			                                              	  sortable: true, editable: true, cellEdit: true, 
+			                                                  edittype: 'select', formatter: 'select', editrules: { required: true}, 
+			                                                  editoptions: {value: getProfile()}},
+												        	 {name:'cepDeviceId', width:100, align: "center",
+				                                              sortable: true, editable: true, cellEdit: true, 
+				                                              edittype: 'select', formatter: 'select', editrules: { required: true}, 
+				                                              editoptions: {value: getDevice()}}], 		
+												  viewrecords: true, 
+												  caption: null, //LANG.menu.btnManageNetwork,
+										          autowidth: true,
+										          subGrid: false,
+										          height: "auto",
+										          gridComplete: function(){
+											      	  	var ids = jQuery("#tblManageNetwork6").jqGrid('getDataIDs');
+											      	  	if (ids.length > 0){
+												      		for(var i=0;i < ids.length;i++){
+												      			var rowId = ids[i];
+												      			ae = "<div style='text-align: center;'>";
+												      			be = "<input style='height:22px;width:70px;' type='button' id='btn_edit_" + rowId + "_tblManageNetwork6' value='Edit' onclick=\"editData('tblManageNetwork6', '"+rowId+"');\"  />"; 
+												    			se = "<input style='height:22px;width:70px;' type='button' id='btn_save_" + rowId + "_tblManageNetwork6' value='Save' onclick=\"validateData('tblManageNetwork6', '"+rowId+"');\"  />";  
+												    			ce = "<input style='height:22px;width:70px;' type='button' id='btn_cancel_" + rowId + "_tblManageNetwork6' value='Cancel' onclick=\"restoreData('tblManageNetwork6', '"+rowId+"');\" />";
+												      			de = "</div>"; 
+												      			jQuery("#tblManageNetwork6").jqGrid('setRowData', rowId, {act:ae+be+se+ce+de});
+												      		}	
+											      	  	}
+											      	  }});
+
+					$("#tblManageNetwork7").jqGrid({
+   	 				  							  rowNum: 10000,
+												  datatype: "local", 
+												  colNames:['Actions', LANG.networkManage.lblEndPointEndPoint, LANG.networkManage.lblProfileEndPoint, LANG.networkManage.lblDeviceEndPoint, LANG.networkManage.lblDeviceVersEndPoint], 
+												  colModel:[ {name:'act',index:'act', width:52, sortable:false},
+												             {name:'ePointId', width:50, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
+												             {name:'profId', width:50, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
+												             {name:'devId', width:50, editable: true, cellEdit: true, editrules: { required: true}, align: "center"}, 
+												             {name:'devVer', width:50, editable: true, cellEdit: true, editrules: { required: true}, align: "center"} 
+				                                           ], 		
+												  viewrecords: true, 
+												  caption: null, //LANG.menu.btnManageNetwork,
+										          autowidth: true,
+										          subGrid: false,
+										          height: "auto",
+										          gridComplete: function(){
+											      	  	var ids = jQuery("#tblManageNetwork7").jqGrid('getDataIDs');
+											      	  	if (ids.length > 0){
+												      		for(var i=0;i < ids.length;i++){
+												      			var rowId = ids[i];
+												      			ae = "<div style='text-align: center;'>";
+												      			be = "<input style='height:22px;width:70px;' type='button' id='btn_edit_" + rowId + "_tblManageNetwork7' value='Edit' onclick=\"editData('tblManageNetwork7', '"+rowId+"');\"  />"; 
+												    			se = "<input style='height:22px;width:70px;' type='button' id='btn_save_" + rowId + "_tblManageNetwork7' value='Save' onclick=\"validateData('tblManageNetwork7', '"+rowId+"');\"  />";  
+												    			ce = "<input style='height:22px;width:70px;' type='button' id='btn_cancel_" + rowId + "_tblManageNetwork7' value='Cancel' onclick=\"restoreData('tblManageNetwork7', '"+rowId+"');\" />";
+												      			de = "</div>"; 
+												      			jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {act:ae+be+se+ce+de});
+												      		}	
+											      	  	}
+											      	  }});
 
 					reloadGridFromLocalArray("tblManageNetwork1", mydataViewDevice1);
 					reloadGridFromLocalArray("tblManageNetwork2", mydataViewDevice2);
 					reloadGridFromLocalArray("tblManageNetwork3", mydataViewDevice3);
 					reloadGridFromLocalArray("tblManageNetwork4", mydataViewDevice4);
 					reloadGridFromLocalArray("tblManageNetwork5", mydataViewDevice5);
+					reloadGridFromLocalArray("tblManageNetwork6", mydataViewDevice6);
+					reloadGridFromLocalArray("tblManageNetwork7", mydataViewDevice6);
 					
 			        $("#btn_save_1_tblManageNetwork1").hide();
 			        $("#btn_cancel_1_tblManageNetwork1").hide();
@@ -435,7 +763,22 @@
 			        $("#btn_cancel_1_tblManageNetwork4").hide();
 
 			        $("#btn_save_1_tblManageNetwork5").hide();
-			        $("#btn_cancel_1_tblManageNetwork5").hide();
+			        $("#btn_cancel_1_tblManageNetwork5").hide(); 
+
+			        $("#btn_save_1_tblManageNetwork6").hide();
+			        $("#btn_cancel_1_tblManageNetwork6").hide();
+
+			        $("#btn_save_1_tblManageNetwork7").hide();
+			        $("#btn_cancel_1_tblManageNetwork7").hide();
+			        
+			        $("#btnStartGal").button("disable");
+					
+					var dataValue1 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepProfileId', true);
+					var dataValue2 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepDeviceId', true);
+					
+					if ((typeof dataValue1[0] == 'undefined') && (typeof dataValue2[0] == 'undefined')){
+						$("#btn_edit_1_tblManageNetwork7").hide();
+					}
 				});
 		        
 		       	var buttonInHeaderPressed;
@@ -501,7 +844,8 @@
 				<table id="tblManageNetwork3"></table>
 				<table id="tblManageNetwork4"></table>
 				<table id="tblManageNetwork5"></table>
-				<div id="pager5"></div>
+				<table id="tblManageNetwork6"></table>
+				<table id="tblManageNetwork7"></table>
 				<form id="changeStatusGal" style='text-align: center;'>
             		<button id="btnStartGal" class="tnHeaderHome2" title="Avvia il GAL"></button>
 					<button id="btnRestartGal1" class="tnHeaderHome2" title="Restart in ASSOCIATION Mode"></button>
