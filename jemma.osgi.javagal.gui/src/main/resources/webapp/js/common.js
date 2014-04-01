@@ -751,6 +751,7 @@ function enableButtonsForUsecases()
 
 function padLeft(pad, tmpStringToHex){
 
+	var pad2 = "00";
 	var pad4 = "0000";
 	var pad16 = "0000000000000000";
 	
