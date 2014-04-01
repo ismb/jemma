@@ -751,6 +751,7 @@ function enableButtonsForUsecases()
 
 function padLeft(pad, tmpStringToHex){
 
+	var pad2 = "00";
 	var pad4 = "0000";
 	var pad16 = "0000000000000000";
 	
@@ -799,7 +800,7 @@ function padVectorInverse(arrOfByte){
 	return tmpStr;
 }
 
-function verBigAddr(cp){
+function verBigAddr(cp, fieldToVerify){
 	var arrCP = cp.split(' ');
 	var err = 0;
 	if (arrCP.length != 16){
@@ -816,15 +817,17 @@ function verBigAddr(cp){
 		}
 	}
 	if (err == 0){
-		return arrCP;
+		var strRtn = arrCP.join(' ');
+		return strRtn;
 	} else {
 		controlAllOk = false;
 		return null;
 	}
 }
 
-function verShortAddr(cp){
+function verShortAddr(cp, fieldToVerify){
 	var espressione = /^0x[0-9|a-f|A-F]{4}$/;
+	cp = cp.trim();
 	if (!espressione.test(cp)){
 		alert('Errato formato indirizzo! Verificare il campo ' + fieldToVerify);
 		controlAllOk = false;
