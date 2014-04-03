@@ -15,15 +15,15 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.energy_home.jemma.zgd.APSMessageListener;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Callback;
-import org.energy_home.jemma.zgd.jaxb.Info;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
+import org.energy_home.jemma.zgd.MessageListener;
+import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
+import org.energy_home.jemma.zgd.jaxb.Callback;
+import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
@@ -36,20 +36,20 @@ import org.restlet.resource.ClientResource;
  * incoming notifications. In practice the clients opens an http server at the
  * urilistener uri where this class can {@code POST} incoming notifications.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
-public class RestApsMessageListener implements APSMessageListener {
+public class RestMessageListener implements MessageListener {
 
-	private Log log = LogFactory.getLog(RestApsMessageListener.class);
+	private Log log = LogFactory.getLog(RestMessageListener.class);
 	private Long CalbackIdentifier = -1L;
 	private Callback callback;
 	private String urilistener;
 	private ClientResources clientResource;
 	private final Context context;
 	private PropertiesManager _PropertiesManager;
-	
-	
+
 	/**
 	 * Creates a new instance with a given callback, urilistener and client
 	 * resource.
@@ -66,18 +66,18 @@ public class RestApsMessageListener implements APSMessageListener {
 	 *            the urilistener.
 	 * @param _clientResource
 	 *            the client resource.
-	 */	
-	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
+	 */
+	public RestMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
 		super();
 		this.callback = callback;
 		this.urilistener = urilistener;
 		this.clientResource = _clientResource;
-		this.context =  new Context();
+		this.context = new Context();
 		this._PropertiesManager = __PropertiesManager;
-		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
+		context.getParameters().add("socketTimeout", ((Integer) (_PropertiesManager.getHttpOptTimeout() * 1000)).toString());
 
 	}
-	
+
 	/**
 	 * Notification of an incoming Aps message.
 	 */
@@ -87,27 +87,24 @@ public class RestApsMessageListener implements APSMessageListener {
 			Thread thr = new Thread() {
 				@Override
 				public void run() {
-					try
-					{
-								
-					ClientResource resource = new ClientResource(context,urilistener);
-					Info info = new Info();
-					Info.Detail detail = new Info.Detail();
-					detail.setAPSMessageEvent(message);
-					info.setDetail(detail);
-					info.setEventCallbackIdentifier(CalbackIdentifier);
-					String xml = Util.marshal(info);
-					if (_PropertiesManager.getDebugEnabled())
-						log.info(xml);
-					resource.post(xml, MediaType.APPLICATION_XML);
-					resource.release();
-					resource = null;
-					clientResource.resetCounter();
-					}
-					catch(Exception e)
-					{
+					try {
+
+						ClientResource resource = new ClientResource(context, urilistener);
+						Info info = new Info();
+						Info.Detail detail = new Info.Detail();
+						detail.setAPSMessageEvent(message);
+						info.setDetail(detail);
+						info.setEventCallbackIdentifier(CalbackIdentifier);
+						String xml = Util.marshal(info);
+						if (_PropertiesManager.getDebugEnabled())
+							log.info(xml);
+						resource.post(xml, MediaType.APPLICATION_XML);
+						resource.release();
+						resource = null;
+						clientResource.resetCounter();
+					} catch (Exception e) {
 						clientResource.addToCounterException();
-						
+
 					}
 				}
 			};
@@ -145,8 +142,37 @@ public class RestApsMessageListener implements APSMessageListener {
 		CalbackIdentifier = id;
 
 	}
-	
-	
-	
-	
+
+	@Override
+	public void notifyInterPANMessage(final InterPANMessageEvent message) {
+		if (urilistener != null) {
+			Thread thr = new Thread() {
+				@Override
+				public void run() {
+					try {
+
+						ClientResource resource = new ClientResource(context, urilistener);
+						Info info = new Info();
+						Info.Detail detail = new Info.Detail();
+						detail.setInterPANMessageEvent(message);
+						info.setDetail(detail);
+						info.setEventCallbackIdentifier(CalbackIdentifier);
+						String xml = Util.marshal(info);
+						if (_PropertiesManager.getDebugEnabled())
+							log.info(xml);
+						resource.post(xml, MediaType.APPLICATION_XML);
+						resource.release();
+						resource = null;
+						clientResource.resetCounter();
+					} catch (Exception e) {
+						clientResource.addToCounterException();
+
+					}
+				}
+			};
+			thr.start();
+		}
+		
+	}
+
 }

@@ -25,9 +25,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.implementations.ApsManager;
+import org.energy_home.jemma.javagal.layers.business.implementations.ApsMessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
 import org.energy_home.jemma.javagal.layers.business.implementations.GatewayEventManager;
+import org.energy_home.jemma.javagal.layers.business.implementations.MessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ZdoManager;
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
@@ -43,6 +44,7 @@ import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayEventListener;
 import org.energy_home.jemma.zgd.GatewayException;
+import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Aliases;
@@ -50,6 +52,7 @@ import org.energy_home.jemma.zgd.jaxb.Binding;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
 import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.CallbackIdentifierList;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
 import org.energy_home.jemma.zgd.jaxb.LQIInformation;
 import org.energy_home.jemma.zgd.jaxb.LQINode;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
@@ -83,12 +86,14 @@ public class GalController {
 	final int startTimeFirstForcePing = 16;
 
 	private GatewayStatus _gatewayStatus = GatewayStatus.GW_READY_TO_START;
-	private Long apsCallbackIdentifier = (long) 1;
+	private Long CallbackIdentifier = (long) 1;
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
 	private List<CallbackEntry> listCallback = Collections.synchronizedList(new LinkedList<CallbackEntry>());
 	private List<GatewayDeviceEventEntry> listGatewayEventListener = Collections.synchronizedList(new LinkedList<GatewayDeviceEventEntry>());
 	private final static Log logger = LogFactory.getLog(GalController.class);
-	private ApsManager apsManager = null;
+	private ApsMessageManager apsManager = null;
+
+	private MessageManager messageManager = null;
 
 	private ZdoManager zdoManager = null;
 	private GatewayEventManager _gatewayEventManager = null;
@@ -183,7 +188,8 @@ public class GalController {
 	public GalController(PropertiesManager _properties) throws Exception {
 		PropertiesManager = _properties;
 		zdoManager = new ZdoManager(this);
-		apsManager = new ApsManager(this);
+		apsManager = new ApsMessageManager(this);
+		messageManager = new MessageManager(this);
 		_gatewayEventManager = new GatewayEventManager(this);
 
 		_lockerStartDevice = new ParserLocker();
@@ -241,9 +247,22 @@ public class GalController {
 	 * 
 	 * @return the Aps manager.
 	 */
-	public synchronized ApsManager getApsManager() {
+	@Deprecated
+	public synchronized ApsMessageManager getApsManager() {
 		return apsManager;
 	}
+	
+	
+	/**
+	 * Gets the Message manager APS/INTERPAN.
+	 * 
+	 * @return the message manager.
+	 */
+	public synchronized MessageManager getMessageManager() {
+		return messageManager;
+	}
+	
+	
 
 	/**
 	 * Gets the Zdo manager.
@@ -990,13 +1009,46 @@ public class GalController {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
+	@Deprecated
 	public long createCallback(int proxyIdentifier, Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		CallbackEntry callbackEntry = new CallbackEntry();
 		callbackEntry.setCallback(callback);
 		callbackEntry.setDestination(listener);
 		callbackEntry.setProxyIdentifier(proxyIdentifier);
-		long id = getApsCallbackIdentifier();
-		callbackEntry.setApsCallbackIdentifier(id);
+		long id = getCallbackIdentifier();
+		callbackEntry.setCallbackIdentifier(id);
+		synchronized (listCallback) {
+			listCallback.add(callbackEntry);
+		}
+		return id;
+	}
+	
+	
+	/**
+	 * Creates a callback to receive APS/ZDP/ZCL/InterPAN messages using a class of
+	 * filters.
+	 * 
+	 * @param proxyIdentifier
+	 *            the proxy identifier for the callback
+	 * @param callback
+	 *            the callback
+	 * @param listener
+	 *            the listener where messages for the callback will be notified.
+	 * @return the callback's identifier.
+	 * @throws IOException
+	 *             if an Input Output error occurs.
+	 * @throws Exception
+	 *             if a general error occurs.
+	 * @throws GatewayException
+	 *             if a ZGD error occurs.
+	 */
+	public long createCallback(int proxyIdentifier, Callback callback, MessageListener listener) throws IOException, Exception, GatewayException {
+		CallbackEntry callbackEntry = new CallbackEntry();
+		callbackEntry.setCallback(callback);
+		callbackEntry.setGenericDestination(listener);
+		callbackEntry.setProxyIdentifier(proxyIdentifier);
+		long id = getCallbackIdentifier();
+		callbackEntry.setCallbackIdentifier(id);
 		synchronized (listCallback) {
 			listCallback.add(callbackEntry);
 		}
@@ -1021,7 +1073,7 @@ public class GalController {
 
 		for (CallbackEntry x : listCallback) {
 			_index++;
-			if (x.getApsCallbackIdentifier().equals(id)) {
+			if (x.getCallbackIdentifier().equals(id)) {
 				index = _index;
 				break;
 			}
@@ -1164,7 +1216,7 @@ public class GalController {
 		CallbackIdentifierList toReturn = new CallbackIdentifierList();
 		for (CallbackEntry ce : listCallback) {
 			if (ce.getProxyIdentifier() == requestIdentifier)
-				toReturn.getCallbackIdentifier().add(ce.getApsCallbackIdentifier());
+				toReturn.getCallbackIdentifier().add(ce.getCallbackIdentifier());
 		}
 		return toReturn;
 	}
@@ -1221,6 +1273,33 @@ public class GalController {
 			if (message.getDestinationAddress().getIeeeAddress() != null && message.getDestinationAddress().getNetworkAddress() == null)
 				message.getDestinationAddress().setNetworkAddress(getShortAddress_FromNetworkCache(message.getDestinationAddress().getIeeeAddress()));
 			DataLayer.sendApsSync(timeout, message);
+		} else
+			throw new GatewayException("Gal is not in running state!");
+	}
+	
+	
+	/**
+	 * Sends an InterPAN message.
+	 * 
+	 * @param timeout
+	 *            the desired timeout.
+	 * @param _requestIdentifier
+	 *            the request identifier.
+	 * @param message
+	 *            the message to send.
+	 * @throws IOException
+	 *             if an Input Output error occurs.
+	 * @throws Exception
+	 *             if a general error occurs.
+	 * @throws GatewayException
+	 *             if a ZGD error occurs.
+	 */
+	public void sendInterPANMessage(long timeout, long _requestIdentifier, InterPANMessage message) throws IOException, Exception, GatewayException {
+		if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
+
+			if (message.getDestinationAddress().getIeeeAddress() != null && message.getDestinationAddress().getNetworkAddress() == null)
+				message.getDestinationAddress().setNetworkAddress(getShortAddress_FromNetworkCache(message.getDestinationAddress().getIeeeAddress()));
+			DataLayer.sendInterPANMessaSync(timeout, message);
 		} else
 			throw new GatewayException("Gal is not in running state!");
 	}
@@ -1833,12 +1912,12 @@ public class GalController {
 	 * 
 	 * @return the aps callback identifier.
 	 */
-	public long getApsCallbackIdentifier() {
+	public long getCallbackIdentifier() {
 		synchronized (this) {
-			if (apsCallbackIdentifier == Long.MAX_VALUE) {
-				apsCallbackIdentifier = (long) 1;
+			if (CallbackIdentifier == Long.MAX_VALUE) {
+				CallbackIdentifier = (long) 1;
 			}
-			return apsCallbackIdentifier++;
+			return CallbackIdentifier++;
 		}
 	}
 
