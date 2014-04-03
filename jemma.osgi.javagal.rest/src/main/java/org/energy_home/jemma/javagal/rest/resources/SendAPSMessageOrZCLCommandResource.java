@@ -20,9 +20,10 @@ import org.energy_home.jemma.zgd.GatewayInterface;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.APSMessageResult;
 import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageResult;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.ZCLCommand;
-
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
@@ -163,20 +164,29 @@ public class SendAPSMessageOrZCLCommandResource extends ServerResource {
 		
 		APSMessage apsMessage = null;
 		ZCLCommand zclCommand = null;
+		InterPANMessage interPANMessage = null;
 
 		try {
 			apsMessage = Util.unmarshal(body, APSMessage.class);
 		} catch (Exception je) {
-			Info info = new Info();
-			Status _st = new Status();
-			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-			_st.setMessage(je.getMessage());
-			info.setStatus(_st);
-			Info.Detail detail = new Info.Detail();
-			info.setDetail(detail);
-			getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
-			return ;
+			
 		}
+		
+		
+		try {
+			zclCommand = Util.unmarshal(body, ZCLCommand.class);
+		} catch (Exception je) {
+			
+		}
+		
+		
+		try {
+			interPANMessage = Util.unmarshal(body, InterPANMessage.class);
+		} catch (Exception je) {
+			
+		}
+		
+		
 
 		if (apsMessage != null) {
 			// It's a Send APSMessage invocation
@@ -239,21 +249,13 @@ public class SendAPSMessageOrZCLCommandResource extends ServerResource {
 						MediaType.APPLICATION_XML);
 				return ;
 			}
-		} else {
-			try {
-				zclCommand = Util.unmarshal(body, ZCLCommand.class);
-			} catch (Exception je) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(je.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
-				getResponse().setEntity(Util.marshal(info),
-						MediaType.APPLICATION_XML);
-				return ;
-			}
+		} 
+		
+		
+		else if (zclCommand != null)
+		{
+			
+			
 
 			// It's a Send ZCLCommand invocation
 			try {
@@ -310,6 +312,91 @@ public class SendAPSMessageOrZCLCommandResource extends ServerResource {
 				return ;
 			}
 		}
+		
+		else if (interPANMessage != null)
+		{
+			
+			// It's a Send APSMessage invocation
+						try {
+							if (urilistenerParam == null) {
+								// Sync call because urilistener not present.
+								// Only Asynch is admitted.
+								proxyGalInterface = getRestManager().getClientObjectKey(-1, getClientInfo().getAddress()).getGatewayInterface();
+								int txTime = Util.currentTimeMillis();
+								proxyGalInterface.sendInterPANMessage(timeout,interPANMessage);
+								Info _info = new Info();
+								Status st=new Status();
+								st.setCode((short)GatewayConstants.SUCCESS);
+								_info.setStatus(st);
+								Info.Detail detail = new Info.Detail();
+								InterPANMessageResult interPANMessageResult = new InterPANMessageResult();
+								interPANMessageResult.setConfirmStatus((short)0);
+								//MARCO
+								//###### Aggiungere ASDUHandle
+								interPANMessageResult.setASDUHandle((short)0);
+								detail.setInterPANMessageResult(interPANMessageResult);
+								
+								_info.setDetail(detail);
+									getResponse().setEntity(Util.marshal(_info),
+										MediaType.TEXT_XML);
+								
+								
+								return ;
+							} else {
+								// Async call. We know here that urilistenerParam is not
+								// null...
+								urilistener = urilistenerParam.getValue();
+								// Process async. If urilistener equals "", don't send the
+								// result but wait that the IPHA polls for it using the
+								// request
+								// identifier.
+
+								proxyGalInterface = getRestManager().getClientObjectKey(-1, getClientInfo().getAddress()).getGatewayInterface();
+
+								// TODO control if it's correct this invocation/result
+								proxyGalInterface.sendInterPANMessage(timeout, interPANMessage);
+								Info.Detail detail = new Info.Detail();
+								Info infoToReturn = new Info();
+								Status status = new Status();
+								status.setCode((short) GatewayConstants.SUCCESS);
+								infoToReturn.setStatus(status);
+								infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
+								infoToReturn.setDetail(detail);
+								getResponse().setEntity(Util.marshal(infoToReturn),
+										MediaType.TEXT_XML);
+								return ;
+							}
+						} catch (Exception e1) {
+							Info info = new Info();
+							Status _st = new Status();
+							_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+							_st.setMessage(e1.getMessage());
+							info.setStatus(_st);
+							Info.Detail detail = new Info.Detail();
+							info.setDetail(detail);
+							getResponse().setEntity(Util.marshal(info),
+									MediaType.APPLICATION_XML);
+							return ;
+						}
+			
+			
+		}
+		else
+		{
+			Info info = new Info();
+			Status _st = new Status();
+			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+			_st.setMessage("Wrong xml");
+			info.setStatus(_st);
+			Info.Detail detail = new Info.Detail();
+			info.setDetail(detail);
+			getResponse().setEntity(Util.marshal(info),
+					MediaType.APPLICATION_XML);
+			return ;
+			
+		}
+			
+			
 	}
 
 	/**

@@ -23,7 +23,7 @@ import org.energy_home.jemma.zgd.jaxb.Info;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
-import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
+import org.energy_home.jemma.javagal.rest.RestMessageListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Resources;
@@ -140,7 +140,7 @@ public class CallbacksResource extends ServerResource {
 					getClientInfo().getAddress());
 			proxyGalInterface = rcmal.getGatewayInterface();
 
-			RestApsMessageListener listener = new RestApsMessageListener(
+			RestMessageListener listener = new RestMessageListener(
 					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
 			
 			Long id = proxyGalInterface.createCallback(callback, listener);

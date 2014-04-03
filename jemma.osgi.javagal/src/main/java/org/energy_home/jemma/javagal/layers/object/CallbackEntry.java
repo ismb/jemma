@@ -16,8 +16,8 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 import org.energy_home.jemma.javagal.layers.business.GalController;
-
 import org.energy_home.jemma.zgd.APSMessageListener;
+import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.Callback;
 
 
@@ -31,9 +31,11 @@ import org.energy_home.jemma.zgd.jaxb.Callback;
  */
 public class CallbackEntry {
 	private int proxyIdentifier;
-	private Long apsCallbackIdentifier;
+	private Long CallbackIdentifier;
 	private Callback callback;
+	@Deprecated
 	private APSMessageListener destination;
+	private MessageListener genericDestination;
 
 	/**
 	 * Creates a new empty {@link Callback} entry instance.
@@ -46,8 +48,18 @@ public class CallbackEntry {
 	 * 
 	 * @return the destination.
 	 */
+	@Deprecated
 	public APSMessageListener getDestination() {
 		return destination;
+	}
+	
+	/**
+	 * Gets the destination's message listener.
+	 * 
+	 * @return the destination.
+	 */
+	public MessageListener getGenericDestination() {
+		return genericDestination;
 	}
 
 	/**
@@ -56,8 +68,20 @@ public class CallbackEntry {
 	 * @param destination
 	 *            the APS message listener to set as destination.
 	 */
+	@Deprecated
 	public void setDestination(APSMessageListener destination) {
 		this.destination = destination;
+	}
+	
+	
+	/**
+	 * Sets the destination's  message listener.
+	 * 
+	 * @param destination
+	 *            the APS message listener to set as destination.
+	 */
+	public void setGenericDestination(MessageListener destination) {
+		this.genericDestination = destination;
 	}
 
 	/**
@@ -84,18 +108,18 @@ public class CallbackEntry {
 	 * 
 	 * @return the callback's identifier.
 	 */
-	public Long getApsCallbackIdentifier() {
-		return apsCallbackIdentifier;
+	public Long getCallbackIdentifier() {
+		return CallbackIdentifier;
 	}
 
 	/**
 	 * Sets the callback's identifier.
 	 * 
-	 * @param apsCallbackIdentifier
+	 * @param CallbackIdentifier
 	 *            the callback's identifier.
 	 */
-	public void setApsCallbackIdentifier(Long apsCallbackIdentifier) {
-		this.apsCallbackIdentifier = apsCallbackIdentifier;
+	public void setCallbackIdentifier(Long CallbackIdentifier) {
+		this.CallbackIdentifier = CallbackIdentifier;
 	}
 
 	/**
