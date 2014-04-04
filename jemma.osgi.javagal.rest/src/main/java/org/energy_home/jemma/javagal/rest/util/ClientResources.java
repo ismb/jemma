@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.PropertiesManager;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
+import org.energy_home.jemma.javagal.rest.RestMessageListener;
 import org.energy_home.jemma.javagal.rest.RestClientManagerAndListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
@@ -58,7 +59,9 @@ public class ClientResources {
 	}
 
 	private Log logger = LogFactory.getLog(ClientResources.class);
-	private ConcurrentHashMap<Long, RestApsMessageListener> callbacksEventListeners = new ConcurrentHashMap<Long, RestApsMessageListener>();
+	private ConcurrentHashMap<Long, RestMessageListener> messageCallbacksEventListeners = new ConcurrentHashMap<Long, RestMessageListener>();
+	private ConcurrentHashMap<Long, RestApsMessageListener> messageApscallbacksEventListeners = new ConcurrentHashMap<Long, RestApsMessageListener>();
+	
 	private RestClientManagerAndListener clientEventListener = null;
 	private PropertiesManager propertiesManager = null;
 	private int counterException;
@@ -133,9 +136,22 @@ public class ClientResources {
 	 * @param callbacksEventListeners
 	 *            the map of callbacks event listeners to set.
 	 */
-	public void setCallbacksEventListeners(
+	public void setmessageCallbacksEventListeners(
+			ConcurrentHashMap<Long, RestMessageListener> callbacksEventListeners) {
+		this.messageCallbacksEventListeners = callbacksEventListeners;
+	}
+	
+	
+	
+	/**
+	 * Sets the map of callbacks event listeners.
+	 * 
+	 * @param callbacksEventListeners
+	 *            the map of callbacks event listeners to set.
+	 */
+	public void setMessageApsCallbacksEventListeners(
 			ConcurrentHashMap<Long, RestApsMessageListener> callbacksEventListeners) {
-		this.callbacksEventListeners = callbacksEventListeners;
+		this.messageApscallbacksEventListeners = callbacksEventListeners;
 	}
 
 	/**
@@ -163,8 +179,18 @@ public class ClientResources {
 	 * 
 	 * @return the map of callbacks event listeners.
 	 */
-	public synchronized ConcurrentHashMap<Long, RestApsMessageListener> getCallbacksEventListeners() {
-		return callbacksEventListeners;
+	public synchronized ConcurrentHashMap<Long, RestApsMessageListener> getApsCallbacksEventListeners() {
+		return messageApscallbacksEventListeners;
+	}
+	
+	
+	/**
+	 * Gets the map of callbacks event listeners.
+	 * 
+	 * @return the map of callbacks event listeners.
+	 */
+	public synchronized ConcurrentHashMap<Long, RestMessageListener> getCallbacksEventListeners() {
+		return messageCallbacksEventListeners;
 	}
 
 }

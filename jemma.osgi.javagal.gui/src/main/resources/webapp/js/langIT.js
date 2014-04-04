@@ -61,6 +61,12 @@ var LANG = {
 	    lblTimeBetweenScans : "Time Between Scans",
 	    lblTrustCenterAddress : "Trust Center Address",
 	    lblTrustCenterMasterKey : "Trust Center Master Key",
-	    lblUseInsecureJoin : "Use Insecure Join",
+	    lblUseInsecureJoin : "Use Insecure Join", 
+	    lblProfileConfEndPoint: "Profile",
+	    lblDeviceConfEndPoint: "Device",
+	    lblEndPointEndPoint: "End Point",
+	    lblProfileEndPoint: "Profile Id",
+	    lblDeviceEndPoint: "Device Id",
+	    lblDeviceVersEndPoint: "Device Version"
 	}
 };

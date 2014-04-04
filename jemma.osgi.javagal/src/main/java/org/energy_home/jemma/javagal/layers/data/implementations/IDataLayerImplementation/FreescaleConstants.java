@@ -105,6 +105,12 @@ public class FreescaleConstants {
 	static final short ZTCReadExtAddrRequest = (short) 0xA3D2;
 	static final short ZTCReadExtAddrConfirm = (short) 0xA4D2;
 
+	
+	static final short InterPANDataRequest = (short) 0xA500;
+	static final short InterPANDataConfirm = (short) 0xA601;
+	static final short InterPANDataIndication = (short) 0xA602;
+
+	
 	static final short APSDEDataRequest = (short) 0x9C00;
 	static final short APSDEDataConfirm = (short) 0x9D00;
 	static final short APSDEDataIndication = (short) 0x9D01;

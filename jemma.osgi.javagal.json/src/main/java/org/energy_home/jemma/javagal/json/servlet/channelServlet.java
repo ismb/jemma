@@ -21,7 +21,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.energy_home.jemma.zgd.GalExtenderProxy;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayException;
 import org.energy_home.jemma.zgd.GatewayInterface;
@@ -43,42 +46,58 @@ public class channelServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Detail detail = new Detail();
+		HttpSession session = request.getSession(true);
+		Object done = session.getValue("logon.isDone");
+		if (done != null) {
+			
+			Detail detail = new Detail();
 
-		Short channel = 0;
+			Short channel = 0;
 
-		try {
-			channel = gatewayInterface.getChannelSync(5000);
-		} catch (GatewayException e1) {
+			try {
+				channel =gatewayInterface.getChannelSync(5000);
+			} catch (GatewayException e1) {
+				Info info = new Info();
+				Status status = new Status();
+				status.setCode((short) GatewayConstants.GENERAL_ERROR);
+				status.setMessage(e1.getMessage());
+				info.setStatus(status);
+				info.setDetail(detail);
+				response.getOutputStream().print(gson.toJson(info));
+				return;
+
+			} catch (Exception e1) {
+				Info info = new Info();
+				Status status = new Status();
+				status.setCode((short) GatewayConstants.GENERAL_ERROR);
+				status.setMessage(e1.getMessage());
+				info.setStatus(status);
+				info.setDetail(detail);
+				response.getOutputStream().print(gson.toJson(info));
+				return;
+			}
+
+			detail.getValue().add(channel.toString());
+			Info info = new Info();
+			Status status = new Status();
+			status.setCode((short) GatewayConstants.SUCCESS);
+			info.setStatus(status);
+			info.setDetail(detail);
+
+			response.getOutputStream().print(gson.toJson(info));
+
+		} else {
+			Detail detail = new Detail();
 			Info info = new Info();
 			Status status = new Status();
 			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage(e1.getMessage());
+			status.setMessage("User not logged");
 			info.setStatus(status);
 			info.setDetail(detail);
 			response.getOutputStream().print(gson.toJson(info));
 			return;
 
-		} catch (Exception e1) {
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage(e1.getMessage());
-			info.setStatus(status);
-			info.setDetail(detail);
-			response.getOutputStream().print(gson.toJson(info));
-			return;
 		}
-
-		detail.getValue().add(channel.toString());
-		Info info = new Info();
-		Status status = new Status();
-		status.setCode((short) GatewayConstants.SUCCESS);
-		info.setStatus(status);
-		info.setDetail(detail);
-
-		response.getOutputStream().print(gson.toJson(info));
-
 	}
 
 }

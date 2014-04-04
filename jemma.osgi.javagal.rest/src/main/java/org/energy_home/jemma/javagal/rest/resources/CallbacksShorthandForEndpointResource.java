@@ -21,9 +21,9 @@ import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.Info;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
-
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
+import org.energy_home.jemma.javagal.rest.RestMessageListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.ResourcePathURIs;
@@ -155,7 +155,7 @@ public class CallbacksShorthandForEndpointResource extends ServerResource {
 
 			if (id >= 0) {
 				listener.setCallBackId(id);
-				rcmal.getCallbacksEventListeners().put(id, listener);
+				rcmal.getApsCallbacksEventListeners().put(id, listener);
 
 				Info.Detail detail = new Info.Detail();
 				detail.setCallbackIdentifier(id);

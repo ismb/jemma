@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
@@ -36,7 +35,6 @@ import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManip
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
-import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.MyThread;
@@ -54,6 +52,8 @@ import org.energy_home.jemma.zgd.jaxb.DescriptorCapability;
 import org.energy_home.jemma.zgd.jaxb.Device;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult.ScannedChannel;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.LogicalType;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
@@ -111,19 +111,16 @@ public class DataFreescale implements IDataLayer {
 				while (true) {
 					try {
 						_currentCommand = listOfCommandToSend.poll();
-						if (_currentCommand != null){
+						if (_currentCommand != null) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
 								logger.info(">>> Sending: " + _currentCommand.ToHexString());
 								System.out.println(">>> Sending: " + _currentCommand.ToHexString());
 							}
-								_key.write(_currentCommand);
+							_key.write(_currentCommand);
 						}
-						
-						
-					
-					Thread.sleep(30);
-					}
-					 catch (Exception e) {
+
+						Thread.sleep(30);
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -314,7 +311,10 @@ public class DataFreescale implements IDataLayer {
 								gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
 								gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									//System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress() + "\n\r");
+									// System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:"
+									// +
+									// gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()
+									// + "\n\r");
 									logger.info("Postponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress());
 								}
 							}
@@ -335,13 +335,15 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												//System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress() + "\n\r");
+												// System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
+												// +
+												// messageEvent.getSourceAddress().getNetworkAddress()
+												// + "\n\r");
 
 												logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}
 											try {
 
-												
 												// Insert the node into cache,
 												// but with the
 												// discovery_completed flag a
@@ -417,7 +419,7 @@ public class DataFreescale implements IDataLayer {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
 													gal.getNetworkcache().remove(_indexOnCache);
 												}
-												
+
 											} catch (Exception e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
@@ -547,10 +549,102 @@ public class DataFreescale implements IDataLayer {
 					_zm.setZCLPayload(_payload.getRealByteArray());
 					gal.get_gatewayEventManager().notifyZCLCommand(_zm);
 					gal.getApsManager().APSMessageIndication(messageEvent);
-
+					gal.getMessageManager().APSMessageIndication(messageEvent);
 				}
 			}
 
+			/* INTERPAN-DATA.Indication */
+			else if (_command == FreescaleConstants.InterPANDataIndication) {
+				final InterPANMessageEvent messageEvent = new InterPANMessageEvent();
+				short srcAddressMode = message[3];
+				messageEvent.setSrcAddressMode((long) srcAddressMode);
+				messageEvent.setSrcPANID(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
+
+				BigInteger _ieee = null;
+				Address address = new Address();
+
+				switch (srcAddressMode) {
+				case 0x00:
+					// Reserved (No source address supplied)
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info("Message Discarded: found reserved 0x00 as Source Address Mode ");
+					}// Error found, we don't proceed and discard the
+						// message
+					return;
+				case 0x01:
+					address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[7], (byte) message[6]));
+					_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
+					if (_ieee != null)
+						address.setIeeeAddress(_ieee);
+					messageEvent.setSrcAddress(address);
+					break;
+				case 0x02:
+					address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[7], (byte) message[6]));
+					_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
+					if (_ieee != null)
+						address.setIeeeAddress(_ieee);
+
+					messageEvent.setSrcAddress(address);
+
+					break;
+				default:
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.error("Message Discarded: not valid Source Address Mode");
+					}
+					// Error found, we don't proceed and discard the
+					// message
+					return;
+				}
+
+				short dstAddressMode = message[14];
+				messageEvent.setDstAddressMode((long) dstAddressMode);
+				messageEvent.setDstPANID(DataManipulation.toIntFromShort((byte) message[16], (byte) message[15]));
+
+				switch (dstAddressMode) {
+				case 0x00:
+					// Reserved (No source address supplied)
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info("Message Discarded: found reserved 0x00 as Destination Address Mode ");
+					}// Error found, we don't proceed and discard the
+						// message
+					return;
+				case 0x01:
+					address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[18], (byte) message[17]));
+					_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
+					if (_ieee != null)
+						address.setIeeeAddress(_ieee);
+					messageEvent.setDstAddress(address);
+					break;
+				case 0x02:
+					address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[18], (byte) message[17]));
+					_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
+					if (_ieee != null)
+						address.setIeeeAddress(_ieee);
+
+					messageEvent.setDstAddress(address);
+
+					break;
+				default:
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.error("Message Discarded: not valid Destination Address Mode");
+					}
+					// Error found, we don't proceed and discard the
+					// message
+					return;
+				}
+
+				messageEvent.setProfileID(DataManipulation.toIntFromShort((byte) message[20], (byte) message[19]));
+				messageEvent.setClusterID(DataManipulation.toIntFromShort((byte) message[22], (byte) message[21]));
+
+				int asduLength = message[23];
+				messageEvent.setASDULength(asduLength);
+				messageEvent.setASDU(DataManipulation.subByteArray(message, 27, asduLength + 27));
+				messageEvent.setLinkQuality(message[asduLength + 28]);
+
+				/* Gestione callback */
+				gal.getMessageManager().InterPANMessageIndication(messageEvent);
+
+			}
 			/* APSDE-DATA.Confirm */
 			else if (_command == FreescaleConstants.APSDEDataConfirm) {
 				if (gal.getPropertiesManager().getDebugEnabled())
@@ -574,6 +668,25 @@ public class DataFreescale implements IDataLayer {
 						if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 							synchronized (pl) {
 								pl.getStatus().setCode(message[14]);
+								pl.notify();
+							}
+							break;
+						}
+					}
+				}
+
+			}
+
+			/* INTERPAN-Data.Confirm */
+			else if (_command == FreescaleConstants.InterPANDataConfirm) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					DataManipulation.logArrayHexRadix("Extracted INTERPAN-Data.Confirm", message);
+				synchronized (listLocker) {
+					for (ParserLocker pl : listLocker) {
+
+						if ((pl.getType() == TypeMessage.INTERPAN)) {
+							synchronized (pl) {
+								pl.getStatus().setCode(message[4]);
 								pl.notify();
 							}
 							break;
@@ -2235,6 +2348,61 @@ public class DataFreescale implements IDataLayer {
 		return _res;
 	}
 
+	public ByteArrayObject makeByteArrayFromInterPANMessage(InterPANMessage message) throws Exception {
+		ByteArrayObject _res = new ByteArrayObject();
+		byte sam = (byte) message.getSrcAddressMode();
+		_res.addByte(sam);
+
+		byte dam = (byte) message.getDstAddressMode();
+		_res.addByte(dam);
+
+		_res.addBytesShort(Short.reverseBytes((short) message.getDestPANID()), 2);
+
+		Address dstaddress = message.getDestinationAddress();
+		byte[] _reversed = null;
+		switch (dam) {
+		// TODO Control those address modes!
+		case GatewayConstants.ADDRESS_MODE_SHORT:
+			byte[] networkAddress = DataManipulation.toByteVect(dstaddress.getNetworkAddress(), 8);
+			_reversed = DataManipulation.reverseBytes(networkAddress);
+			for (byte b : _reversed)
+				_res.addByte(b);
+			break;
+		case GatewayConstants.EXTENDED_ADDRESS_MODE:
+			byte[] ieeeAddress = DataManipulation.toByteVect(dstaddress.getIeeeAddress(), 8);
+			_reversed = DataManipulation.reverseBytes(ieeeAddress);
+			for (byte b : _reversed)
+				_res.addByte(b);
+			break;
+		case GatewayConstants.ADDRESS_MODE_ALIAS:
+			// TODO
+			throw new UnsupportedOperationException("Address Mode Alias");
+		default:
+			throw new Exception("Address Mode undefined!");
+
+		}
+
+		_res.addBytesShort(Short.reverseBytes(message.getProfileID().shortValue()), 2);
+
+		_res.addBytesShort(Short.reverseBytes((short) message.getClusterID()), 2);
+
+		if (message.getASDULength() > 0x64) {
+			throw new Exception("ASDU length must 0x64 or less in length");
+		} else {
+			_res.addByte((byte) message.getASDULength());
+
+		}
+
+		for (Byte b : message.getASDU())
+			_res.addByte(b);
+
+		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.InterPANDataRequest);
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			logger.info("Write InterPanMessahe on: " + System.currentTimeMillis() + " Message:" + _res.ToHexString());
+		}
+		return _res;
+	}
+
 	@Override
 	public Status SetModeSelectSync(long timeout) throws IOException, Exception, GatewayException {
 		ByteArrayObject _res = new ByteArrayObject();
@@ -3713,6 +3881,69 @@ public class DataFreescale implements IDataLayer {
 				throw new GatewayException("Error on ZDP-Mgmt_Lqi.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			}
 			return (Mgmt_LQI_rsp) lock.get_objectOfResponse();
+		}
+	}
+
+	@Override
+	public Status sendInterPANMessaSync(long timeout, InterPANMessage message) throws Exception {
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			logger.info("Data_FreeScale.send_aps");
+		}
+		ParserLocker lock = new ParserLocker();
+		lock.setType(TypeMessage.INTERPAN);
+		/* DestAddress + DestEndPoint + SourceEndPoint */
+		BigInteger _DSTAdd = null;
+		if ((message.getDstAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE))
+			_DSTAdd = message.getDestinationAddress().getIeeeAddress();
+		else if ((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT))
+			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
+		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
+			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
+
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			System.out.println("Sending InterPANMessage to: " + String.format("%016X", _DSTAdd));
+		}
+
+		Status status = null;
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			addToSendDataQueue(makeByteArrayFromInterPANMessage(message));
+			synchronized (lock) {
+				try {
+					lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+
+		}
+		if (status.getCode() == ParserLocker.INVALID_ID) {
+
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				logger.error("Timeout expired in send InterPANMessage");
+			}
+			throw new GatewayException("Timeout expired in send InterPANMessage. No Confirm Received.");
+		} else {
+			if (status.getCode() != 0) {
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("Returned Status: " + status.getCode());
+				}
+				throw new GatewayException("Error on  NTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+
+			}
+			return status;
 		}
 	}
 }

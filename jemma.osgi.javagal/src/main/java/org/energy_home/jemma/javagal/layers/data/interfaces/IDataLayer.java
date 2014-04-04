@@ -20,6 +20,7 @@ import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Binding;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
@@ -167,6 +168,22 @@ public interface IDataLayer extends IFrameCallback {
 	 */
 	public Status sendApsSync(long timeout, APSMessage message)
 			throws Exception;
+	
+	
+	/**
+	 * Sends an InterPAN message synchronously.
+	 * 
+	 * @param timeout
+	 *            the desired timeout value.
+	 * @param message
+	 *            the message to send.
+	 * @return the resulting status from ZGD.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public Status sendInterPANMessaSync(long timeout, InterPANMessage message)
+			throws Exception;
+	
 
 	/**
 	 * Gets the Node Descriptor for an address of interest.

@@ -200,7 +200,10 @@ public class ZdoManager /* implements APSMessageListener */{
 
 		}
 
+		
 		gal.getApsManager().APSMessageIndication(message);
+		gal.getMessageManager().APSMessageIndication(message);
+		
 		// TODO ZDPMessage
 		ZDPMessage _zdpM = new ZDPMessage();
 		_zdpM.setClusterID(message.getClusterID());

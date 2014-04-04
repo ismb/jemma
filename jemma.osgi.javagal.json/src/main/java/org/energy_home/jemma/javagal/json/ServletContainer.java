@@ -16,6 +16,8 @@
 package org.energy_home.jemma.javagal.json;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import org.energy_home.jemma.javagal.json.constants.ResourcePathURIs;
 import org.energy_home.jemma.javagal.json.constants.Resources;
@@ -23,6 +25,7 @@ import org.energy_home.jemma.javagal.json.servlet.allLqiInformationsServlet;
 import org.energy_home.jemma.javagal.json.servlet.allPermitJoinServlet;
 import org.energy_home.jemma.javagal.json.servlet.channelServlet;
 import org.energy_home.jemma.javagal.json.servlet.frequencyAgilityServlet;
+import org.energy_home.jemma.javagal.json.servlet.localServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeDescriptorAndServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.resetServlet;
@@ -31,21 +34,21 @@ import org.energy_home.jemma.javagal.json.servlet.versionServlet;
 import org.energy_home.jemma.javagal.json.servlet.wsnNodesServlet;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
-public class ServletContainer {
+public class ServletContainer implements HttpSessionListener{
 
 	HttpService service;
-	GalExtenderProxyFactory gatewayFactory;
 	GatewayInterface gatewayInterface;
 	String prefix = "/json";
-
-	public ServletContainer(HttpService _service, GalExtenderProxyFactory _factory) {
+	
+	public ServletContainer(HttpService _service, GatewayInterface _gatewayInterface) {
+		
 		service = _service;
-		gatewayFactory = _factory;
+		gatewayInterface = _gatewayInterface;
 		try {
-			gatewayInterface = _factory.createGatewayInterfaceObject();
 			registerServlets();
 		} catch (Exception e) {
 
@@ -56,6 +59,9 @@ public class ServletContainer {
 
 	private void registerServlets() {
 		try {
+			
+		
+			
 			/* json/version */
 			service.registerServlet(prefix + Resources.GW_ROOT_URI + ResourcePathURIs.VERSION, new versionServlet(gatewayInterface), null, null);
 			/* json/net/default/channel */
@@ -101,7 +107,15 @@ public class ServletContainer {
 			 * "json/net/default/wsnnodes/services/"
 			 */
 			service.registerServlet(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.WSNNODES + ResourcePathURIs.SERVICES, new nodeServicesServlet(gatewayInterface), null, null);
+			/*
+			 * Defines LocalServices route "/net/default/localnode/services"
+			 */
+			service.registerServlet(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.LOCALNODE_SERVICES, new localServicesServlet(gatewayInterface), null, null);
 
+			
+			
+			
+			
 		} catch (ServletException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -148,6 +162,24 @@ public class ServletContainer {
 		 * Remove route "json/net/default/wsnnodes/services/"
 		 */
 		service.unregister(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.WSNNODES + ResourcePathURIs.SERVICES);
+		/*
+		 * Defines LocalServices route "/net/default/localnode/services"
+		 */
+		service.unregister(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.LOCALNODE_SERVICES);
 
+		
+		
+	}
+
+	@Override
+	public void sessionCreated(HttpSessionEvent arg0) {
+		System.out.print("Session new ");
+		
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent arg0) {
+		System.out.print("Session end ");
+		
 	}
 }

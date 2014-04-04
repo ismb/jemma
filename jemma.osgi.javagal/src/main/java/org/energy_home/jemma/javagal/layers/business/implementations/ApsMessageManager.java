@@ -16,6 +16,7 @@
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
 import org.energy_home.jemma.zgd.APSMessageListener;
+import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Callback;
@@ -23,7 +24,6 @@ import org.energy_home.jemma.zgd.jaxb.Filter;
 import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
 import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
 import org.energy_home.jemma.zgd.jaxb.Level;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
@@ -36,9 +36,9 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
  * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  *
  */
-public class ApsManager {
+public class ApsMessageManager {
 
-	private final static Log logger = LogFactory.getLog(ApsManager.class);
+	private final static Log logger = LogFactory.getLog(ApsMessageManager.class);
 
 	/**
 	 * The local {@link GalController} reference.
@@ -51,7 +51,7 @@ public class ApsManager {
 	 * @param _gal
 	 *            a Gal controller reference.
 	 */
-	public ApsManager(GalController _gal) {
+	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
 
 	}
@@ -67,6 +67,7 @@ public class ApsManager {
 	 * @param message
 	 *            the indication APSMessageEvent to process.
 	 */
+	@Deprecated
 	public void APSMessageIndication(final APSMessageEvent message) {
 		Thread thr = new Thread() {
 			@Override
@@ -76,7 +77,7 @@ public class ApsManager {
 				}
 
 					for (CallbackEntry ce : gal.getCallbacks()) {
-						APSMessageListener apml = ce.getDestination();
+						
 						Callback callback = ce.getCallback();
 						Filter filter = callback.getFilter();
 						if (filter.getLevelSpecification().getLevel().get(0)
@@ -254,7 +255,15 @@ public class ApsManager {
 							// If this point is reached, then a matching
 							// callback is found. Notify the message to its
 							// destination.
+							
+							APSMessageListener apml = ce.getDestination();
+							if (apml != null)
 							apml.notifyAPSMessage(message);
+							
+							MessageListener napml = ce.getGenericDestination();
+							if (napml != null)
+								napml.notifyAPSMessage(message);
+							
 							// Add it to the list of already notified
 							// destinations.
 

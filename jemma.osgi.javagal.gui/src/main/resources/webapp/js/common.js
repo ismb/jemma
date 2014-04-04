@@ -751,6 +751,7 @@ function enableButtonsForUsecases()
 
 function padLeft(pad, tmpStringToHex){
 
+	var pad2 = "00";
 	var pad4 = "0000";
 	var pad16 = "0000000000000000";
 	
@@ -760,20 +761,78 @@ function padLeft(pad, tmpStringToHex){
 	return str;
 }
 
-function padVector(pad, arrOfByte){
+function padLeftInverse(hexToDec){
+
+	var str = parseInt(hexToDec, 16);
+	return str;
+}
+
+function padVector(arrOfByte){
 
 	var pad2 = "00";
 	var tmpStr = "";
 	var tmpChar = "";
 	
-	for(var i = 0; i<arrOfByte.length; )
-    {
+	for(var i = 0; i<arrOfByte.length; ){
 		tmpChar1 = arrOfByte[i].toString(16);
 		tmpChar1 = pad2.substring(0, pad2.length - tmpChar1.length) + tmpChar1;
 		tmpChar2 = arrOfByte[i+1].toString(16);
 		tmpChar2 = pad2.substring(0, pad2.length - tmpChar2.length) + tmpChar2;
-		tmpStr = '0x' + tmpChar1.toUpperCase() + " " + '0x' + tmpChar2.toUpperCase() + " " + tmpStr;
+		tmpStr = tmpStr + '0x' + tmpChar1.toUpperCase() + " " + '0x' + tmpChar2.toUpperCase() + " ";
 		i = i+2;
     }
 	return tmpStr;
+}
+
+function padVectorInverse(arrOfByte){
+
+	var tmpStr = "[";
+	var tmpChar = "";
+	if ((typeof arrOfByte == 'string') && (arrOfByte.length == 79)){
+		var arrOfByte = arrOfByte.split(" ");
+	}
+	
+	for(var i = 0; i<arrOfByte.length; i++){
+		tmpChar1 = parseInt(arrOfByte[i], 16);
+		tmpStr = tmpStr + tmpChar1 + ",";
+    }
+	tmpStr = tmpStr.substring(0, tmpStr.length - 1) + "]";
+	return tmpStr;
+}
+
+function verBigAddr(cp, fieldToVerify){
+	var arrCP = cp.split(' ');
+	var err = 0;
+	if (arrCP.length != 16){
+		alert('Errato formato indirizzo! Verificare il campo ' + fieldToVerify);
+		err = 1;
+	} else {
+		for (var iCounter = 0; iCounter < arrCP.length; iCounter++){
+			var espressione = /^0x[0-9|a-f|A-F]{2}$/;
+			if (!espressione.test(arrCP[iCounter])){
+				alert('Errato formato indirizzo! Verificare il campo ' + fieldToVerify);
+				err = 1;
+				break;
+			}
+		}
+	}
+	if (err == 0){
+		var strRtn = arrCP.join(' ');
+		return strRtn;
+	} else {
+		controlAllOk = false;
+		return null;
+	}
+}
+
+function verShortAddr(cp, fieldToVerify){
+	var espressione = /^0x[0-9|a-f|A-F]{4}$/;
+	cp = cp.trim();
+	if (!espressione.test(cp)){
+		alert('Errato formato indirizzo! Verificare il campo ' + fieldToVerify);
+		controlAllOk = false;
+		return null;
+	} else {
+		return cp;
+	}
 }
