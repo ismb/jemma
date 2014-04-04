@@ -129,5 +129,10 @@ public enum TypeMessage {
 	/**
 	 * The "LQI_REQ" message type.
 	 */
-	LQI_REQ
+	LQI_REQ,
+	
+	/**
+	 * The "INTERPAN" message type.
+	 */
+	INTERPAN
 }

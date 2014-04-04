@@ -12,7 +12,6 @@
 	href="./css/layout-default-latest.css">
 <link rel="stylesheet" type="text/css" href="./css/apprise.css">
 <link rel="stylesheet" type="text/css" href="./css/custom.css">
-
 <script type="text/javascript" src="./js/bignumber.js"></script>
 <script type="text/javascript" src="./js/jsonbigint.js"></script>
 <script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
@@ -184,8 +183,7 @@
 						myGestCPane.templateActivator, 'tplViewDevice');
 				myMenu.newButton('btnViewGraphNodes',
 						myGestCPane.templateActivator, 'tplViewGraphNodes');
-				myMenu.newButton('btnInsertDevice',
-						myGestCPane.templateActivator, 'tplInsertDevice');
+
 				myMenu.newButton('btnManageNetwork',
 						myGestCPane.templateActivator, 'tplManageNetwork');
 			});
@@ -193,12 +191,11 @@
 </head>
 <body>
 	<div id="north" class="ui-layout-north"
-		style="width: 100%; padding: 0px !important;">
+		style="width: 100%; padding: 0px !important; white-space: nowrap;">
 		<div
-			style="width: 300px; height: 100%; background-color: white; float: left;text-align: center;">
-			<br>			
-			Channel Radio: <span id="spChannelRadioHP"></span> <br /> State of
-			network: <span id="spZigBeeState"></span>
+			style="width: 300px; height: 100%; background-color: white; float: left; text-align: center;">
+			<br> Channel Radio: <span id="spChannelRadioHP"></span> <br />
+			State of network: <span id="spZigBeeState"></span>
 		</div>
 		<div
 			style="height: 100%; width: 50%; float: left; background-color: red;">
@@ -212,10 +209,8 @@
 		<button id="btnVersionJGal"></button>
 		<button id="btnViewDevice"></button>
 		<button id="btnViewGraphNodes"></button>
-		<button id="btnInsertDevice"></button>
 		<button id="btnManageNetwork"></button>
 	</div>
 	<div id="center" class="ui-layout-center"></div>
-
 </body>
 </html>

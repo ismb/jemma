@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.zgd;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Aliases;
@@ -23,6 +29,7 @@ import org.energy_home.jemma.zgd.jaxb.BindingList;
 import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.CallbackIdentifierList;
 import org.energy_home.jemma.zgd.jaxb.Filter;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
 import org.energy_home.jemma.zgd.jaxb.LQIInformation;
 import org.energy_home.jemma.zgd.jaxb.Level;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
@@ -36,15 +43,6 @@ import org.energy_home.jemma.zgd.jaxb.Version;
 import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
 import org.energy_home.jemma.zgd.jaxb.ZCLCommand;
 import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 
 /**
  * Proxy object for {@link GalController} object. The proxy pattern enables the
@@ -122,10 +120,12 @@ public class GalExtenderProxy implements IGalExtender {
 	}
 
 	@Override
+	@Deprecated
 	public long createCallback(Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 	}
-
+	
+	@Deprecated
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -144,6 +144,7 @@ public class GalExtenderProxy implements IGalExtender {
 		return gal.createCallback(this.getProxyIdentifier(), _newCallBack, listener);
 	}
 
+	@Deprecated
 	@Override
 	public long createAPSCallback(APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -209,8 +210,6 @@ public class GalExtenderProxy implements IGalExtender {
 		gal.startGatewayDevice(timeout, this.getProxyIdentifier(), true);
 
 	}
-	
-	
 
 	@Override
 	public void startGatewayDevice(long timeout, StartupAttributeInfo sai) throws IOException, Exception, GatewayException {
@@ -272,9 +271,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 		return gal.configureEndpoint(timeout, desc);
-	
-	
-	
+
 	}
 
 	@Override
@@ -291,7 +288,6 @@ public class GalExtenderProxy implements IGalExtender {
 		_add.setNetworkAddress(0xFFFC);
 		gal.leave(_timeout, this.getProxyIdentifier(), _add, mask, true);
 
-		
 	}
 
 	@Override
@@ -377,7 +373,7 @@ public class GalExtenderProxy implements IGalExtender {
 	public Status permitJoinAllSync(long timeout, short duration) throws IOException, Exception, GatewayException {
 		return gal.permitJoinAll(timeout, this.getProxyIdentifier(), duration, false);
 	}
-	
+
 	@Override
 	public void permitJoin(long timeout, Address addrOfInterest, short duration) throws IOException, Exception, GatewayException {
 		gal.permitJoin(timeout, this.getProxyIdentifier(), addrOfInterest, duration, true);
@@ -391,6 +387,11 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public void sendAPSMessage(APSMessage message) throws IOException, Exception, GatewayException {
 		gal.sendAPSMessage(gal.getPropertiesManager().getCommandTimeoutMS(), this.getProxyIdentifier(), message);
+	}
+
+	@Override
+	public void sendInterPANMessage(long timeout, InterPANMessage message) throws IOException, Exception, GatewayException {
+		gal.sendInterPANMessage(timeout, this.getProxyIdentifier(), message);
 	}
 
 	@Override
@@ -524,6 +525,12 @@ public class GalExtenderProxy implements IGalExtender {
 			}
 
 		}
+
+	}
+
+	@Override
+	public long createCallback(Callback callback, MessageListener listener) throws IOException, Exception, GatewayException {
+		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 
 	}
 

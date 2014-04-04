@@ -22,6 +22,7 @@ import org.energy_home.jemma.zgd.jaxb.Binding;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
 import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.CallbackIdentifierList;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
 import org.energy_home.jemma.zgd.jaxb.LQIInformation;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
@@ -119,8 +120,27 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	long createCallback(Callback callback, APSMessageListener listener)
 			throws IOException, Exception, GatewayException;
+	
+	
+	
+	/**
+	 * Allows the creation of a callback to receive InterPAN messages using a
+	 * class of filters
+	 * 
+	 * @param callback
+	 * @param listener
+	 *            to receive notifications
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 * @throws GatewayException
+	 */
+	long createCallback(Callback callback, MessageListener listener)
+			throws IOException, Exception, GatewayException;
+	
 
 	/**
 	 * Allows the creation of a callback to receive APS messages and specifying
@@ -137,6 +157,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	long createAPSCallback(short endpoint, APSMessageListener listener)
 			throws IOException, Exception, GatewayException;
 
@@ -152,6 +173,7 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
+	@Deprecated
 	long createAPSCallback(APSMessageListener listener) throws IOException,
 			Exception, GatewayException;
 
@@ -680,6 +702,20 @@ public interface GatewayInterface {
 	 */
 	void sendAPSMessage(long timeout, APSMessage message) throws IOException,
 			Exception, GatewayException;
+	
+	
+	/**
+	 * Sends an InterPAN message to a node in an asynchronous mode
+	 * 
+	 * @param timeout
+	 * @param message
+	 * @throws IOException
+	 * @throws Exception
+	 * @throws GatewayException
+	 */
+	void sendInterPANMessage(long timeout, InterPANMessage message) throws IOException,
+			Exception, GatewayException;
+	
 
 	/**
 	 * Resets the GAl with the ability to set whether to delete the
