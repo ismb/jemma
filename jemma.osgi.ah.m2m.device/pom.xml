@@ -132,7 +132,7 @@
 				<version>${maven.clean.plugin.version}</version>
 				<configuration>
 					<filesets>
-						<fileset>
+						<!--<fileset>
 							<directory>${project.basedir}/src/main/java/org/energy_home/jemma/m2m</directory>
 							<includes>
 								<include>*.java</include>
@@ -150,7 +150,7 @@
 								<include>*_flag</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
-						</fileset>
+						</fileset>-->
 						<fileset>
 							<directory>${project.basedir}</directory>
 							<includes>
