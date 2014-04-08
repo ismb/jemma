@@ -225,7 +225,8 @@
 						<exclude>src/test/resources/**</exclude>
 					</excludes>  
 				</configuration>
-				<executions>
+				<!--Uncomment this block to add license header to files during package or clean lifecycle phases -->
+<!--			     	<executions>
 					<execution>
 						<id>headers-add-and-check-package</id>
 						<phase>package</phase>
@@ -242,7 +243,7 @@
 							<goal>check</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions>-->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

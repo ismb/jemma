@@ -132,6 +132,7 @@
 				<version>${maven.clean.plugin.version}</version>
 				<configuration>
 					<filesets>
+						<!--Uncomment this to force cleaning and re-generation of classes from xml schemas using jaxb-->
 						<!--<fileset>
 							<directory>${project.basedir}/src/main/java/org/energy_home/jemma/m2m</directory>
 							<includes>
