@@ -1,48 +1,43 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script>
-	function leaveDevice(shortAddress) {
-		var result = window.confirm(
-				'Are you sure you want to leave the selected device: 0x'
-						+ shortAddress.toUpperCase() + '?', 'Leave Command');
-		if (result) {
-			$.ajax(
-					{
-						url : DEFINEPATH.leavePath + "?timeout=00002710&addr="
-								+ shortAddress,
-						type : 'DELETE'
-					}).done(function(data) {
-				var dataBig = json_parse(data);
-				if (dataBig.status.code == 0) {
-					loadData();
-				} else {
-					alert("Error on Leave command: " + dataBig.status.message);
-				}
-			});
+<div id="tplViewDevice">
+	<script>
+	$(document).ready(function(){
+		function leaveDevice(shortAddress) {
+			var result = window.confirm(
+					'Are you sure you want to leave the selected device: 0x'
+							+ shortAddress.toUpperCase() + '?', 'Leave Command');
+			if (result) {
+				$.ajax(
+						{
+							url : DEFINEPATH.leavePath + "?timeout=00002710&addr="
+									+ shortAddress,
+							type : 'DELETE'
+						}).done(function(data) {
+					var dataBig = json_parse(data);
+					if (dataBig.status.code == 0) {
+						loadData();
+					} else {
+						alert("Error on Leave command: " + dataBig.status.message);
+					}
+				});
+			}
 		}
-	}
-
-	function infoDevice(shortAddress) {
-			$.ajax(
-					{
-						url : DEFINEPATH.detailDevicePath + "?timeout=00002710&addr="
-								+ shortAddress,
-						type : 'GET'
-					}).done(function(data) {
-				var dataBig = json_parse(data);
-				if (dataBig.status.code == 0) {
-					alert(data);
-				} else {
-					alert("Error on Info command: " + dataBig.status.message);
-				}
-			});
-		
-	}
-</script>
-</head>
-<body>
-	<template id="tplViewDevice"> <script type="text/javascript">
+	
+		function infoDevice(shortAddress) {
+				$.ajax(
+						{
+							url : DEFINEPATH.detailDevicePath + "?timeout=00002710&addr="
+									+ shortAddress,
+							type : 'GET'
+						}).done(function(data) {
+					var dataBig = json_parse(data);
+					if (dataBig.status.code == 0) {
+						alert(data);
+					} else {
+						alert("Error on Info command: " + dataBig.status.message);
+					}
+				});
+			
+		}
 		function loadData() {
 			$
 					.ajax({
@@ -247,10 +242,8 @@
 					alert("Error on PermitJoin command: " + data.status.message);
 				}
 			});
-		
-		
-		
 		});
+	});
 	</script>
 	<div id="container">
 		<table id="tblViewDevice"></table>
@@ -263,8 +256,4 @@
 			</div>
 		</center>
 	</div>
-
-
-	</template>
-</body>
-</html>
+</div>

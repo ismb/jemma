@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html manifest="cache.manifest">
 	<head>
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	    <title>Java GAL - Console di Gestione</title>
 	    <link rel="stylesheet" type="text/css" href="./css/jquery-ui-1.10.4.custom.css">
@@ -37,38 +41,7 @@
 		    var arrowimages={down:['downarrowclass', './css/images/arrow-down.gif', 25], 
 		    				 right:['rightarrowclass', './css/images/arrow-right.gif']};
 		    
-		    function supportImports(){
-		    	return 'import' in document.createElement('link');
-		    }
-		    if (supportImports()){
-		    	function handleLoad(e){
-		    		console.log('Loaded import: ' + e.target.href);
-		    	}
-		    	function handleError(e){
-		    		console.log('Error loading import: ' + e.target.href);
-		    	}
-		    } else {
-		    	console.log('Your browser not suport dynamic import :(!, then....');
-		    	var arrTplToImport = ['./radioChannel.html', 
-		    	                      './versionJGal.html', 
-		    	                      './viewDevice.html', 
-		    	                      './viewGraphNodes.html', 
-		    	                      './insertDevice.html', 
-		    	                      './manageNetwork.html'];
-		    	for (var iCounter = 0; iCounter < arrTplToImport.length; iCounter++){
-			    	$.ajax({
-						dataType:"html",
-						url: arrTplToImport[iCounter]
-					}).done(function(data){
-			    		$("body").append(data);
-			    	});
-		    	}
-		    }
 		</script>
-	    
-	    <link rel="import" type="text/html" href="./radioChannel.html" onload="handleLoad(event)" onerror="handleError(event)">
-	    <link rel="import" type="text/html" href="./versionJGal.html" onload="handleLoad(event)" onerror="handleError(event)">
-	    <link rel="import" type="text/html" href="./viewDevice.html" onload="handleLoad(event)" onerror="handleError(event)">
 	    
 		<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
 		<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
@@ -200,5 +173,6 @@ Fusce commodo tempor ornare. Lorem ipsum dolor sit amet, consectetur adipiscing 
 
 Proin in luctus felis, vel eleifend ipsum. Aenean nec metus sed metus aliquam placerat vitae id nisl. Curabitur a suscipit turpis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin dictum sem mauris, volutpat tristique erat mattis eget. Fusce varius quis neque vitae facilisis. Duis tincidunt venenatis odio ut ultrices. Pellentesque quis augue sodales nunc pellentesque suscipit. In et felis ac libero facilisis scelerisque a nec nisl. Praesent nisi velit, sagittis ac molestie sit amet, lobortis et dolor. Maecenas id dignissim felis. Integer convallis ut velit at ullamcorper. Suspendisse vitae turpis eget felis varius vulputate quis ac sem. Maecenas rhoncus mi id aliquam venenatis. Ut sed faucibus velit.
 		</div>
+		<!-- div id="ghostDiv" style="display: none;"></div> -->
 	</body>
 </html>
