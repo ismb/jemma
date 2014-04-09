@@ -67,6 +67,8 @@ var LANG = {
 	    lblEndPointEndPoint: "End Point",
 	    lblProfileEndPoint: "Profile Id",
 	    lblDeviceEndPoint: "Device Id",
-	    lblDeviceVersEndPoint: "Device Version"
+	    lblDeviceVersEndPoint: "Device Version",
+	    lblInputCluster: "Input Cluster",
+	    lblOutputCluster: "Output Cluster"
 	}
 };
