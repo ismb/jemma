@@ -67,6 +67,8 @@ public class startUpServlet extends HttpServlet {
 				return;
 			} else {
 				timeoutString = timeoutParam.toString();
+				if (!timeoutString.toLowerCase().startsWith("0x"))
+					timeoutString = "0x"+ timeoutString;
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
@@ -163,6 +165,8 @@ public class startUpServlet extends HttpServlet {
 				return;
 			} else {
 				timeoutString = timeoutParam.toString();
+				if (!timeoutString.toLowerCase().startsWith("0x"))
+					timeoutString = "0x"+ timeoutString;
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {

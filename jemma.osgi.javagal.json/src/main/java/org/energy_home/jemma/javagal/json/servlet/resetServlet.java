@@ -70,6 +70,8 @@ public class resetServlet extends HttpServlet {
 
 			} else {
 				timeoutString = timeoutParam.toString();
+				if (!timeoutString.toLowerCase().startsWith("0x"))
+					timeoutString = "0x"+ timeoutString;
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {

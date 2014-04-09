@@ -74,6 +74,9 @@ public class nodeServicesServlet extends HttpServlet {
 
 			} else {
 				timeoutString = timeoutParam.toString();
+				
+				if (!timeoutString.toLowerCase().startsWith("0x"))
+					timeoutString = "0x"+ timeoutString;
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
@@ -131,7 +134,7 @@ public class nodeServicesServlet extends HttpServlet {
 			Integer endPointInt;
 			if (endPointString.length() > 0) {
 				try {
-					endPointInt = Integer.parseInt(endPointString, 16);
+					endPointInt = Integer.parseInt(endPointString);
 					ServiceDescriptor serviceDescriptor = gatewayInterface.getServiceDescriptorSync(timeout, addressObj, endPointInt.shortValue());
 					Info info = new Info();
 					Status _st = new Status();

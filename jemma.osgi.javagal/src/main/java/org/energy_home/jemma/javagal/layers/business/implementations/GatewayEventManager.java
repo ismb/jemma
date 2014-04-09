@@ -23,6 +23,7 @@ import org.energy_home.jemma.zgd.GatewayEventListenerExtended;
 import org.energy_home.jemma.zgd.IGatewayEventManager;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
@@ -590,5 +591,11 @@ public class GatewayEventManager implements IGatewayEventManager {
 		thr.setName("Thread notifyZCLCommand(final ZCLMessage message)");
 		thr.start();
 
+	}
+
+	@Override
+	public void notifyInterPANMessageEvent(InterPANMessageEvent message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

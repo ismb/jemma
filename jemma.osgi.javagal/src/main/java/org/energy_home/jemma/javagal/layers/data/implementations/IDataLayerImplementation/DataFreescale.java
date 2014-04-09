@@ -643,6 +643,7 @@ public class DataFreescale implements IDataLayer {
 
 				/* Gestione callback */
 				gal.getMessageManager().InterPANMessageIndication(messageEvent);
+				gal.get_gatewayEventManager().notifyInterPANMessageEvent(messageEvent);
 
 			}
 			/* APSDE-DATA.Confirm */
@@ -660,11 +661,9 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						/* DestAddress + DestEndPoint + SourceEndPoint */
-						/*
-						 * if (gal.getPropertiesManager().getDebugEnabled())
-						 * logger.info("APSDE-DATA.Confirm KEY SEND: " +
-						 * pl.get_Key() + " -- KEY Received: " + Key);
-						 */
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.info("APSDE-DATA.Confirm KEY SENT: " + pl.get_Key() + " -- KEY Received: " + Key);
+
 						if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 							synchronized (pl) {
 								pl.getStatus().setCode(message[14]);
@@ -805,10 +804,9 @@ public class DataFreescale implements IDataLayer {
 			/* ZDP-SimpleDescriptor.Response */
 			else if (_command == FreescaleConstants.ZDPSimpleDescriptorResponse) {
 				if (gal.getPropertiesManager().getDebugEnabled())
-					DataManipulation.logArrayHexRadix("Extracted ZDP-ExtendedSimpleDescriptor.Response", message);
+					DataManipulation.logArrayHexRadix("Extracted ZDP-SimpleDescriptor.Response", message);
 				/* Address + EndPoint */
 				Address _add = new Address();
-
 				_add.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
 				byte EndPoint = (byte) message[7];
 				String Key = String.format("%04X", _add.getNetworkAddress()) + String.format("%02X", EndPoint);
@@ -816,6 +814,9 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						/* Address + EndPoint */
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.debug("ZDP-SimpleDescriptor.Response Sent Key: " + pl.get_Key() + " - Received Key: " + Key);
+
 						if ((pl.getType() == TypeMessage.GET_SIMPLE_DESCRIPTOR) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 							synchronized (pl) {
@@ -2151,7 +2152,7 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-		String _key = String.format("%016X", _DSTAdd) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
+		String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
 
 		if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -3260,11 +3261,14 @@ public class DataFreescale implements IDataLayer {
 																							 * Control
 																							 */
 		String Key = String.format("%04X", addrOfInterest.getNetworkAddress()) + String.format("%02X", endpoint);
-
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			logger.info("ZDP-SimpleDescriptor.Request command:" + _res.ToHexString());
+		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_SIMPLE_DESCRIPTOR);
 		lock.set_Key(Key);
 		Status status = null;
+		
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
