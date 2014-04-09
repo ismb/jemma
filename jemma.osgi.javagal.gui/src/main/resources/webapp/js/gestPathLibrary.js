@@ -13,6 +13,5 @@ var DEFINEPATH = {
 	changeChannelPath : "/json/net/default/localnode/frequencyagility?",
 	viewLQI : "/json/net/default/allwsnnodes/lqi",
 	leavePath : "/json/net/default/wsnnodes/",
-	permitJoinPath : "/json/net/default/allwsnnodes/permitjoin",
-	simpleDescriptorPath : "/json/net/default/wsnnodes/services"
+	permitJoinPath : "/json/net/default/allwsnnodes/permitjoin"
 }

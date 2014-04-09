@@ -12,11 +12,28 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
 	that = {};
 	
 	that.templateActivator = function(idTpl){
-
-		var t = window.document.querySelector("#"+idTpl);
 		
-		$("#center").empty();
-		$("#center").append(t.content.cloneNode(true));
+    	var arrTplToImport = {tplCanaleRadio: './radioChannel.html', 
+    	                      tplVersionJGal: './versionJGal.html', 
+    	                      tplViewDevice: './viewDevice.html', 
+    	                      tplViewGraphNodes: './viewGraphNodes.html', 
+    	                      tplInsertDevice: './insertDevice.html', 
+    	                      tplManageNetwork: './manageNetwork.html'};
+    	
+    	var tmpFileToLoad = eval("arrTplToImport."+idTpl);
+    	
+    	$.ajax({
+			dataType:"html",
+			url: tmpFileToLoad //arrTplToImport[iCounter]
+		}).done(function(data){
+			/*$('#ghostDiv').empty();
+    		$("#ghostDiv").append(data);
+    		var childClones = $('#'+idTpl).children().clone(true,true);*/
+    		$('#center').empty();
+    		$('#center').append(data);
+    		
+    		return that;
+    	});
 	};
 	
 	return that;
