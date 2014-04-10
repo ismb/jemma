@@ -17,7 +17,6 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
     	                      tplVersionJGal: './versionJGal.html', 
     	                      tplViewDevice: './viewDevice.html', 
     	                      tplViewGraphNodes: './viewGraphNodes.html', 
-    	                      tplInsertDevice: './insertDevice.html', 
     	                      tplManageNetwork: './manageNetwork.html'};
     	
     	var tmpFileToLoad = eval("arrTplToImport."+idTpl);

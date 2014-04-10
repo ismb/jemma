@@ -800,7 +800,6 @@
 			
 			var objToSend = {startupAttributeInfo:''};
 			objToSend.startupAttributeInfo = rtnObjConfig;
-
 			var data = JSON.stringify(objToSend);
 			
 			switch (buttonInHeaderPressed){
@@ -827,8 +826,6 @@
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
 					break;*/
 			}
-			
-			console.log('data', data);
 			
 			$.ajax({
 				type: type,

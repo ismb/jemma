@@ -17,8 +17,6 @@
 																			}
 														 });
 													}});
-							}
-
 							var infoDevice = function(shortAddress) {
 								$.ajax({
 										url : DEFINEPATH.detailDevicePath + "?timeout=00002710&addr=" + shortAddress,
@@ -166,9 +164,197 @@
 																		alert("Error on PermitJoin command: " + data.status.message);
 																	}
 																});
+						}
+					}
 
-											});
-						});
+			);
+};
+loadData();
+
+$("#dialog-form-device-details").dialog({
+	autoOpen : false,
+	height : 500,
+	width : 500,
+	modal : true,
+	buttons : {
+		Cancel : function() {
+			$(this).dialog("close");
+		}
+	},
+	close : function() {
+		$(this).dialog("close");
+	}
+});
+
+$("#btnOpenNetw")
+		.click(
+				function() {
+					var JoiningInfo = {
+						permitDuration : 60,
+						tcSignificance : true
+					};
+					$
+							.ajax(
+									{
+										url : DEFINEPATH.permitJoinPath
+												+ "?timeout=00002710",
+										type : 'POST',
+										data : JSON
+												.stringify(JoiningInfo),
+										contentType : "application/json; charset=utf-8"
+									})
+							.done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											alert("Now is permit to join for 60 seconds...");
+										} else {
+											alert("Error on PermitJoin command: "
+													+ dataBig.status.message);
+										}
+									});
+				});
+$("#btnCloseNetw").click(
+		function() {
+			var JoiningInfo = {
+				'permitDuration' : 0,
+				'tcSignificance' : true
+			};
+			$.ajax({
+				url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
+				type : 'POST',
+				data : JSON.stringify(JoiningInfo),
+				contentType : "application/json; charset=utf-8"
+			}).done(
+					function(data) {
+						var dataBig = json_parse(data);
+						if (dataBig.status.code == 0) {
+							alert("Now is not permit to join!");
+						} else {
+							alert("Error on PermitJoin command: "
+									+ dataBig.status.message);
+						}
+					});
+
+		});
+
+$("#detail_button_simple_descriptor")
+		.click(
+
+				function() {
+					var short_address = $("#detail_address_hidden")
+							.val();
+					var endpoint = $("#detail_active_endpoints").val();
+					$
+							.ajax(
+									{
+										url : DEFINEPATH.simpleDescriptorPath
+												+ "?timeout=00002710&addr="
+												+ short_address
+												+ "&endpoint="
+												+ endpoint
+									})
+							.done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											/*Profile Section*/
+											var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
+											$("#detail_profile")
+													.val(
+															'0x'
+																	+ padLeft(
+																			4,
+																			profile
+																					.toString(16))
+																			.toUpperCase()
+																			.trim());
+											$('#detail_profile').attr(
+													'readonly', true);
+
+											/*Device Section*/
+											var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
+											$("#detail_device")
+													.val(
+															'0x'
+																	+ padLeft(
+																			4,
+																			device
+																					.toString(16))
+																			.toUpperCase()
+																			.trim());
+											$('#detail_device').attr(
+													'readonly', true);
+
+											/*Device Version Section*/
+											var device_version = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceVersion;
+											$("#detail_device_version")
+													.val(
+															'0x'
+																	+ padLeft(
+																			2,
+																			device_version
+																					.toString(16))
+																			.toUpperCase()
+																			.trim());
+											$('#detail_device_version')
+													.attr('readonly',
+															true);
+
+											/*Input CLuster Section*/
+											var input_cluster = "";
+											$("#detail_input_clusters")
+													.empty();
+											$
+													.each(
+															dataBig.detail.serviceDescriptor.simpleDescriptor.applicationInputCluster,
+															function(
+																	index,
+																	value) {
+																$(
+																		"#detail_input_clusters")
+																		.append(
+																				'<option value="'+value+'">'
+																						+ '0x'
+																						+ padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()
+																						+ '</option>');
+															});
+
+											/*Output CLuster Section*/
+											var output_cluster = "";
+											$("#detail_output_clusters")
+													.empty();
+											$
+													.each(
+															dataBig.detail.serviceDescriptor.simpleDescriptor.applicationOutputCluster,
+															function(
+																	index,
+																	value) {
+																$(
+																		"#detail_output_clusters")
+																		.append(
+																				'<option value="'+value+'">'
+																						+ '0x'
+																						+ padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()
+																						+ '</option>');
+															});
+										} else {
+											alert("Error on simple descriptor request: "
+													+ dataBig.status.message);
+										}
+									});
+				});
+						
 	</script>
 	<div id="container">
 		<table id="tblViewDevice"></table>
@@ -178,5 +364,104 @@
 			<input id="btnOpenNetw" type="button" value="Open Network" /> <input
 				id="btnCloseNetw" type="button" value="Close Network" />
 		</div>
+	</div>
+
+
+	<div id="dialog-form-device-details" title="Device details">
+		<form>
+			<fieldset>
+				<table width="100%" border="0">
+					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_address_hidden" id="detail_address_hidden" /> <label
+							for="detail_address">Address</label></td>
+						<td>
+							<input type="text" name="detail_address" id="detail_address"
+							size="35" class="text ui-widget-content ui-corner-all"></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_active_endpoints">Active
+								EndPoints</label></td>
+						<td valign="top"><select name="detail_active_endpoints"
+							id="detail_active_endpoints"></select> <input
+							id="detail_button_simple_descriptor" type="button"
+							value="Simple Descriptor" /></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_manufacturer">Manufacturer</label></td>
+						<td valign="top"><input type="text"
+							name="detail_manufacturer" id="detail_manufacturer"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_logical_type">Logical
+								Type</label></td>
+						<td valign="top"><input type="text"
+							name="detail_logical_type" id="detail_logical_type"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_is_sleepy">Sleepy
+								device</label></td>
+						<td valign="top"><input type="text" name="detail_is_sleepy"
+							id="detail_is_sleepy"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+				</table>
+			</fieldset>
+			<fieldset>
+				<table width="100%" border="0">
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_profile">Profile</label>
+						</td>
+						<td valign="top"><input type="text" name="detail_profile"
+							id="detail_profile" class="text ui-widget-content ui-corner-all" />
+						</td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_device">Device</label></td>
+						<td valign="top"><input type="text" name="detail_device"
+							id="detail_device" class="text ui-widget-content ui-corner-all" />
+						</td>
+
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_device_version">Device
+								Version</label></td>
+						<td valign="top"><input type="text"
+							name="detail_device_version" id="detail_device_version"
+							class="text ui-widget-content ui-corner-all" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_input_clusters">Input
+								Clusters</label></td>
+						<td valign="top"><select name="detail_input_clusters"
+							id="detail_input_clusters" size="5	" style="width: 100%">
+						</select></td>
+
+					</tr>
+					<tr>
+						<td valign="top" style="width:150px"><label for="detail_output_clusters">Output
+								Clusters</label></td>
+						<td valign="top"><select name="detail_output_clusters"
+							id="detail_output_clusters" size="5" style="width: 100%"></select>
+						</td>
+
+					</tr>
+				</table>
+			</fieldset>
+		</form>
 	</div>
 </div>
