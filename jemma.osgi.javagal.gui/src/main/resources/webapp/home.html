@@ -28,21 +28,6 @@
 		<script type="text/javascript" src="./js/jquery/grid.setcolumns.js"></script>
 		<script type="text/javascript" src="./js/jquery/json2.js"></script>
 		<script type="text/javascript" src="./js/jquery/jstorage.js"></script>
-	
-		<script>
-		
-			// At the top of your script:
-			if ( ! window.console ) console = { log: function(){} };
-			// If you use other console methods, add them to the object literal above
-	
-			// Then, anywhere in your script:
-			console.log('This message will be logged, but will not cause an error in IE7');
-			
-		    var arrowimages={down:['downarrowclass', './css/images/arrow-down.gif', 25], 
-		    				 right:['rightarrowclass', './css/images/arrow-right.gif']};
-		    
-		</script>
-	    
 		<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
 		<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
 		<script type="text/javascript" src="./js/jquery/i18n/grid.locale-it.js"></script>
@@ -59,8 +44,22 @@
 		<script type="text/javascript" src="./js/arbor/arbor-tween.js"></script>
 		<script type="text/javascript" src="./js/arbor/graphics.js"></script>
 		<script type="text/javascript" src="./js/provaArborjs.js"></script>
-		
+		<script type="text/javascript" src="./js/xmlPathLibrary.js"></script>
+		<script type="text/javascript" src="./js/readXML.js"></script>
 		<script type="text/javascript">
+		
+		// At the top of your script:
+		if ( ! window.console ) console = { log: function(){} };
+		// If you use other console methods, add them to the object literal above
+
+		// Then, anywhere in your script:
+		console.log('This message will be logged, but will not cause an error in IE7');
+		
+	    var arrowimages={down:['downarrowclass', './css/images/arrow-down.gif', 25], 
+	    				 right:['rightarrowclass', './css/images/arrow-right.gif']};
+	    
+	    
+	    
 		    $.datepicker.setDefaults($.datepicker.regional[ "it" ]);
 		    $.datepicker.setDefaults({
 		        changeMonth: true,
@@ -95,8 +94,7 @@
 		        apprise(msg,{'newVerify':true, 'textYes':'Si', 'textNo':'No','textCancel':'Annulla'},callback);
 		    }
 		
-		</script>
-		<script type="text/javascript">
+		
 		    $(document).ready(function () {
 		        var javaGalGuiLayout = $('body').layout({
 		        										  resizeWhileDragging: true, 
@@ -136,9 +134,9 @@
 		        	myMenu.newButton('btnViewGraphNodes', myGestCPane.templateActivator, 'tplViewGraphNodes');
 		        	myMenu.newButton('btnManageNetwork', myGestCPane.templateActivator, 'tplManageNetwork');
 		    });
-	    </script>
-		<script type="text/javascript" src="./js/xmlPathLibrary.js"></script>
-		<script type="text/javascript" src="./js/readXML.js"></script>
+		    </script>
+		
+		
 	</head>
 	<body>
 		<div id="north" class="ui-layout-north" style="overflow: hidden;">
