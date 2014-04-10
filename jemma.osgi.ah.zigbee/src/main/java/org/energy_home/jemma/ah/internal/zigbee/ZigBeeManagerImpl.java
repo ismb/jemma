@@ -1448,7 +1448,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 					}
 					
-					localEndpoint = gateway.configureEndpoint(100, sd);
+					localEndpoint = gateway.configureEndpoint(2000, sd);
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 					// subscribe liveness
@@ -1460,7 +1460,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 
 					// start gateway device
-					gateway.startGatewayDevice(0);
+					gateway.startGatewayDevice(2000);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
