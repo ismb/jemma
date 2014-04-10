@@ -175,23 +175,25 @@
 						});
 					};
 				});
-				for (nodePlus in otherInfoOfNode) {
-					var myNodeDeviceType = sys.addNode(nodePlus+'DT', otherInfoOfNode[nodePlus][0].deviceType); //AGGIUNGO UN VERTICE
-					var myNodeRxOnWhenIdle = sys.addNode(nodePlus+'ROWI', otherInfoOfNode[nodePlus][1].rxOnWhenIdle); //AGGIUNGO UN VERTICE
-					var myNodePermitJoin = sys.addNode(nodePlus+'PJ', otherInfoOfNode[nodePlus][2].permitJoin); //AGGIUNGO UN VERTICE
-					var myNodeIEEE = sys.addNode(nodePlus+'IEEE', {mass: 10,
-																		 fixed: false,
-													    			     label: nodePlus,
-													    			     alpha: 1}); //AGGIUNGO UN VERTICE
-					
-					var myDataDT = {color: CLR.doc, length: 50};
-					sys.addEdge(nodePlus, myNodeDeviceType, myDataDT); //E I NODI
-					var myDataRX = {color: CLR.branch, length: 50};
-					sys.addEdge(nodePlus, myNodeRxOnWhenIdle, myDataRX); //E I NODI
-					var myDataPJ = {color: CLR.demo, length: 50};
-					sys.addEdge(nodePlus, myNodePermitJoin, myDataPJ); //E I NODI
-					var myDataIEEE = {color: CLR.demo, length: 50};
-					sys.addEdge(nodePlus, myNodeIEEE, myDataPJ); //E I NODI
+				if (otherInfoOfNode.length > 1){
+					for (nodePlus in otherInfoOfNode) {
+						var myNodeDeviceType = sys.addNode(nodePlus+'DT', otherInfoOfNode[nodePlus][0].deviceType); //AGGIUNGO UN VERTICE
+						var myNodeRxOnWhenIdle = sys.addNode(nodePlus+'ROWI', otherInfoOfNode[nodePlus][1].rxOnWhenIdle); //AGGIUNGO UN VERTICE
+						var myNodePermitJoin = sys.addNode(nodePlus+'PJ', otherInfoOfNode[nodePlus][2].permitJoin); //AGGIUNGO UN VERTICE
+						var myNodeIEEE = sys.addNode(nodePlus+'IEEE', {mass: 10,
+																			 fixed: false,
+														    			     label: nodePlus,
+														    			     alpha: 1}); //AGGIUNGO UN VERTICE
+						
+						var myDataDT = {color: CLR.doc, length: 50};
+						sys.addEdge(nodePlus, myNodeDeviceType, myDataDT); //E I NODI
+						var myDataRX = {color: CLR.branch, length: 50};
+						sys.addEdge(nodePlus, myNodeRxOnWhenIdle, myDataRX); //E I NODI
+						var myDataPJ = {color: CLR.demo, length: 50};
+						sys.addEdge(nodePlus, myNodePermitJoin, myDataPJ); //E I NODI
+						var myDataIEEE = {color: CLR.demo, length: 50};
+						sys.addEdge(nodePlus, myNodeIEEE, myDataPJ); //E I NODI
+					}
 				}
 			}
 			sys.renderer.redraw();
