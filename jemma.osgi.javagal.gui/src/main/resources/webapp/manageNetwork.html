@@ -785,7 +785,7 @@
 		$("#changeStatusGal").submit(function(event){
 			
 			event.preventDefault();
-			var timeout, startMode, url;
+			var timeout, startMode, url, type;
 			
 			rtnObjConfig.channelMask = tmpObjConfig.cMask;
 			rtnObjConfig.deviceType = tmpObjConfig.dType;
@@ -797,20 +797,26 @@
 			rtnObjConfig.shortAddress = padLeftInverse(tmpObjConfig.sAddr);
 			rtnObjConfig.trustCenterAddress = padLeftInverse(tmpObjConfig.tCenterAddr);
 			rtnObjConfig.trustCenterMasterKey = padVectorInverse(tmpObjConfig.tCentMasterK).trim();
+			
+			var objToSend = {startupAttributeInfo:''};
+			objToSend.startupAttributeInfo = rtnObjConfig;
 
-			var data = JSON.stringify(rtnObjConfig);
+			var data = JSON.stringify(objToSend);
 			
 			switch (buttonInHeaderPressed){
 				case 'btnStartGal':
+					type = 'POST';
 					timeout = '00002710';
 					url = DEFINEPATH.startGalPath+"timeout="+timeout+"&start=true";
 					break;
 				case 'btnRestartGal1':
+					type = 'GET';
 					startMode = '00';
 					timeout = '00002710';
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
 					break;
 				case 'btnRestartGal2':
+					type = 'GET';
 					startMode = '01';
 					timeout = '00002710';
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
@@ -825,7 +831,7 @@
 			console.log('data', data);
 			
 			$.ajax({
-				type: "POST",
+				type: type,
 				dataType:"json",
 				data: data,
 				url: url,
