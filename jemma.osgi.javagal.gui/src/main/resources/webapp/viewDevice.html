@@ -481,20 +481,23 @@ $("#detail_button_simple_descriptor")
 						
 	</script>
 	<div id="container">
-		<table id="tblViewDevice"></table>
+	<table style="width:100%" border="2"><tr><td align="center">
+		<table id="tblViewDevice" style="width:100%"></table>
 		<div id="pager"></div>
-		<br />
-		<div align="center">
+		</td></tr>
+		<tr><td align="center">
 			<input id="btnOpenNetw" type="button" value="Open Network" /> <input
 				id="btnCloseNetw" type="button" value="Close Network" />
-		</div>
+		
+		</td></tr>
+		</table>
 	</div>
 
 
 	<div id="dialog-form-device-details" title="Device details">
 		<form>
 			<fieldset>
-				<table width="100%" border="0">
+				<table style="width:100%" border="0">
 					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
 							name="detail_address_hidden" id="detail_address_hidden" /> <label
