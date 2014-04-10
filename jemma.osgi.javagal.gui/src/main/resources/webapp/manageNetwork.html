@@ -785,7 +785,7 @@
 		$("#changeStatusGal").submit(function(event){
 			$.jStorage.set("ChannelRadioValue",null);
 			event.preventDefault();
-			var timeout, startMode, url, type;
+			var timeout, startMode, url, type, errorMsg = '';
 			rtnObjConfig.channelMask = tmpObjConfig.cMask;
 			rtnObjConfig.deviceType = tmpObjConfig.dType;
 			rtnObjConfig.networkKey = padVectorInverse(tmpObjConfig.nKey).trim();
@@ -806,23 +806,27 @@
 					type = 'POST';
 					timeout = '00002710';
 					url = DEFINEPATH.startGalPath+"timeout="+timeout+"&start=true";
+					errorMsg = 'Error in start mode: ';
 					break;
 				case 'btnRestartGal1':
 					type = 'GET';
 					startMode = '00';
 					timeout = '00002710';
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
+					errorMsg = 'Error in restart in Association mode: ';
 					break;
 				case 'btnRestartGal2':
 					type = 'GET';
 					startMode = '01';
 					timeout = '00002710';
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
+					errorMsg = 'Error in restart in NVM mode: ';
 					break;
 				/*case 'btnRestartGal3':
 					startMode = '02';
 					timeout = '00002710';
 					url = DEFINEPATH.reStartGalPath+"timeout="+timeout+"&startMode="+startMode;
+					errorMsg = '';
 					break;*/
 			}
 			
@@ -855,8 +859,7 @@
 					alert("Operation done!");
 					
 				} else {
-					alert("Error on Leave command: "
-							+ dataBig.status.message);
+					alert(errorMsg + dataBig.status.message);
 				}
 			});
 		});
