@@ -783,10 +783,9 @@
 	    });
 		
 		$("#changeStatusGal").submit(function(event){
-			
+			$.jStorage.set("ChannelRadioValue","");
 			event.preventDefault();
 			var timeout, startMode, url, type;
-			
 			rtnObjConfig.channelMask = tmpObjConfig.cMask;
 			rtnObjConfig.deviceType = tmpObjConfig.dType;
 			rtnObjConfig.networkKey = padVectorInverse(tmpObjConfig.nKey).trim();
@@ -829,12 +828,36 @@
 			
 			$.ajax({
 				type: type,
-				dataType:"json",
 				data: data,
 				url: url,
-	            contentType: "application/json; charset=utf-8"
+				contentType : "application/json; charset=utf-8"
 			}).done(function(data){
-				console.log('re-start', data);
+				var dataBig = json_parse(data);
+				if (dataBig.status.code == 0) {
+					$.ajax({
+						dataType:"json",
+						url: DEFINEPATH.channelPath
+					}).done(function(data){
+						
+						if (data.status.code == 0){
+							//Tutto ok
+							var chR = data.detail.value[0];
+							$.jStorage.set("ChannelRadioValue", chR);
+							$('#spChannelRadioHP').text(chR);
+							$('#spZigBeeState').text('ATTIVA').css('color', 'green');
+						} else {
+							//Visualizzo il messaggi odi errore
+							$.jStorage.set("ChannelRadioError", data.status.message);
+							$('#spChannelRadioHP').text(data.status.message);
+							$('#spZigBeeState').text('DISATTIVA').css('color', 'red');
+						}
+					}); 
+					alert("Operation done!");
+					
+				} else {
+					alert("Error on Leave command: "
+							+ dataBig.status.message);
+				}
 			});
 		});
 	});
