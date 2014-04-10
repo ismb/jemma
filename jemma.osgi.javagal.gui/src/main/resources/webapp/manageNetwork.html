@@ -783,7 +783,7 @@
 	    });
 		
 		$("#changeStatusGal").submit(function(event){
-			$.jStorage.set("ChannelRadioValue","");
+			$.jStorage.set("ChannelRadioValue",null);
 			event.preventDefault();
 			var timeout, startMode, url, type;
 			rtnObjConfig.channelMask = tmpObjConfig.cMask;
