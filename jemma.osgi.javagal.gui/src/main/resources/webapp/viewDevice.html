@@ -384,13 +384,20 @@
 													var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
 													$("#detail_profile")
 															.val(
-																	'0x'
+																	getSingleProfileFromID(padLeft(
+																			4,
+																			profile
+																					.toString(16))
+																			.toLowerCase()
+																			.trim()).description
+																			+ ' (0x'
 																			+ padLeft(
 																					4,
 																					profile
 																							.toString(16))
 																					.toUpperCase()
-																					.trim());
+																					.trim()
+																			+ ")");
 													$('#detail_profile').attr(
 															'readonly', true);
 
@@ -398,13 +405,26 @@
 													var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
 													$("#detail_device")
 															.val(
-																	'0x'
+																	getSingleDeviceName(
+																			padLeft(
+																					4,
+																					device
+																							.toString(16))
+																					.toUpperCase()
+																					.trim(),
+																			padLeft(
+																					4,
+																					profile
+																							.toString(16))
+																					.toLowerCase()
+																					.trim())
+																			+ ' (0x'
 																			+ padLeft(
 																					4,
 																					device
 																							.toString(16))
 																					.toUpperCase()
-																					.trim());
+																					.trim()+")");
 													$('#detail_device').attr(
 															'readonly', true);
 
@@ -437,14 +457,19 @@
 																				"#detail_input_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																								+ '0x'
+																								+ getClusterDescription(padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()).description +  ' (0x'
 																								+ padLeft(
 																										4,
 																										value
 																												.toString(16))
 																										.toUpperCase()
 																										.trim()
-																								+ '</option>');
+																								+ ')</option>');
 																	});
 
 													/*Output CLuster Section*/
@@ -461,14 +486,19 @@
 																				"#detail_output_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																								+ '0x'
-																								+ padLeft(
-																										4,
-																										value
-																												.toString(16))
-																										.toUpperCase()
-																										.trim()
-																								+ '</option>');
+																						+ getClusterDescription(padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()).description +  ' (0x'
+																						+ padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()
+																						+ ')</option>');
 																	});
 												} else {
 													alert("Error on simple descriptor request: "

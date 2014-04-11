@@ -128,7 +128,7 @@
 				var dataValue2 = jQuery('#' + idTblOnFire).jqGrid('getCol', 'cepDeviceId', true);
 				
 				if ((typeof dataValue1[0] != 'undefined') && (typeof dataValue2[0] != 'undefined')){
-					var tmpValue = getSingleDeviceName(selectDeviceID);
+					var tmpValue = getSingleDeviceName(selectDeviceID,selectProfileID);
 					
 					jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {profId: "0x" + selectProfileID.toUpperCase()});
 					jQuery("#tblManageNetwork7").jqGrid('setRowData', rowId, {devId: "0x" + selectDeviceID.toUpperCase()});
@@ -464,7 +464,7 @@
 			                                              edittype: 'select', formatter: 'select', editrules: { required: true}, 
 			                                              editoptions: {value: getDeviceTypeParameters()}}], 		
 										  viewrecords: true, 
-										  caption: 'START-UP ATTRIBUTE SET',
+										  caption: 'DEFAULT START-UP ATTRIBUTE SET',
 								          autowidth: true,
 								          subGrid: false,
 								          height: "auto"/*,
