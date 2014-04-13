@@ -1,23 +1,29 @@
-Auto-generated site: 201402200005
+Auto-generated site: 201404131647
 
 ##########################
 Git status
 ##########################
 
-# Sul branch gh-pages
+# On branch gh-pages
 # Changes not staged for commit:
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modificato:   howtoc.md
-#	modificato:   index.html
-#	modificato:   site-generation.log
+#	modified:   getrel.md
+#	modified:   index.md
+#	modified:   site-generation.log
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 5120542cc9cf6d9f1ac114c9be51e7162f21f4de
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Thu Feb 20 00:05:54 2014 +0100
+
+    site updated for MSc thesis page
 
 commit c303954e1fc914350664b6bb5c49dd80c31ba4bf
 Merge: 3adbc47 978aa1d
@@ -42,10 +48,4 @@ Date:   Wed Dec 18 19:28:09 2013 +0100
     re-generated page
 
 commit c6426f7c521a1966bba745a9d37403815b78b53b
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Wed Dec 18 19:22:38 2013 +0100
-
-    Fixed bad character
-
-commit bad9b4acda85984ddda10c0366fe2e0e6d743116
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
