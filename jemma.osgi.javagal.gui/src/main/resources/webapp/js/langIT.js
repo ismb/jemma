@@ -4,15 +4,15 @@
 
 var LANG = {
 	NA : "ND",
-	menu : {btnCanaleRadio : "Gestione Canale Radio",
+	menu : {btnChannelNetwork : "Manage network channel",
 		    btnVersionJGal : "Versione JavaGal",
 		    btnViewDevice : "Visualizzazione device",
 		    btnViewGraphNodes : "Visualizzazione grafo dei nodi",
 		    btnInsertDevice : "Inserimento nuovi device",
 		    btnManageNetwork : "Gestione Rete ZigBee"
 	},
-	centerPane: {btnAutomaticScan : "Selezione automatica",
-	             btnManualScan : "Sposta la rete nel canale selezionato",
+	centerPane: {btnAutomaticScan : "Automatic",
+	             btnManualScan : "Change",
 	             lblVersionId: "Version Identifier",
 	             lblVersionFId: "feature Set Identifier",
 	             lblVersionRpcP: "rpc Protocol",
@@ -32,9 +32,9 @@ var LANG = {
 	            	 
 	},
 	networkManage: {
-		btnStartGal : "Avvia GAL",
-	    btnRestartGal1 : "Reset GAL Ass",
-	    btnRestartGal2 : "Reset GAL NVM",
+		btnStartGal : "Start",
+	    btnRestartGal1 : "Total reset",
+	    btnRestartGal2 : "Stop",
 	    btnRestartGal3 : "Reset GAL TCR",
 	    lblChannelMask : "Channel",
 	    lblConcentratorDiscoveryTime : "Concentrator Discovery Time",

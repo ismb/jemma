@@ -661,9 +661,9 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						/* DestAddress + DestEndPoint + SourceEndPoint */
-						if (gal.getPropertiesManager().getDebugEnabled())
+						/*if (gal.getPropertiesManager().getDebugEnabled())
 							logger.info("APSDE-DATA.Confirm KEY SENT: " + pl.get_Key() + " -- KEY Received: " + Key);
-
+						 */
 						if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 							synchronized (pl) {
 								pl.getStatus().setCode(message[14]);
@@ -3268,7 +3268,7 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.GET_SIMPLE_DESCRIPTOR);
 		lock.set_Key(Key);
 		Status status = null;
-		
+
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3623,36 +3623,33 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public void notifyFrame(final ByteArrayObject frame) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				try {
-
-					byte[] msg = frame.getByteArray();
-					int size = frame.getByteCount(true);
-
-					short[] messageShort = new short[size];
-					for (int i = 0; i < size; i++)
-						messageShort[i] = (short) (msg[i] & 0xff);
-
-					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadixDataReceived("<<< Received data: ", messageShort);
-					addToReceivedDataQueue(size, messageShort);
+	public synchronized void notifyFrame(final ByteArrayObject frame) {
+		try {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.info("<<< Received data:" + frame.ToHexString());
+			byte[] msg = frame.getByteArray();
+			int size = frame.getByteCount(true);
+			short[] messageShort = new short[size];
+			for (int i = 0; i < size; i++)
+				messageShort[i] = (short) (msg[i] & 0xff);
+			addToReceivedDataQueue(size, messageShort);
+			Thread thr = new Thread() {
+				@Override
+				public void run() {
 					try {
 						processMessages();
 					} catch (Exception e) {
 						if (gal.getPropertiesManager().getDebugEnabled())
 							logger.error("Error on notifyFrame:" + e.getMessage());
 					}
-				} catch (Exception e) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						logger.error("Error on notifyFrame: " + e.getMessage());
-				}
-			}
-		};
-		thr.setName("Thread notifyFrame");
-		thr.start();
+				};
+			};
+			thr.setName("Thread notifyFrame");
+			thr.start();
+		} catch (Exception e) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.error("Error on notifyFrame: " + e.getMessage());
+		}
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import java.util.TooManyListenersException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
@@ -244,6 +245,7 @@ public class SerialCommRxTx implements IConnector {
 							buffer[pos++] = (byte) data;
 						}
 						ByteArrayObject frame = new ByteArrayObject(buffer, pos);
+						
 						_caller.getDataLayer().notifyFrame(frame);
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())

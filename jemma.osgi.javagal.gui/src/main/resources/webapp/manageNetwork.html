@@ -782,8 +782,10 @@
 	    	buttonInHeaderPressed = $(this).attr('id');
 	    });
 		
-		$("#changeStatusGal").submit(function(event){
-			$.jStorage.set("ChannelRadioValue",null);
+	    
+	    var fchangeStatuGal = function(){
+	    	
+	    	$.jStorage.set("ChannelRadioValue",null);
 			event.preventDefault();
 			var timeout, startMode, url, type, errorMsg = '';
 			rtnObjConfig.channelMask = tmpObjConfig.cMask;
@@ -862,6 +864,33 @@
 					alert(errorMsg + dataBig.status.message);
 				}
 			});
+	    	
+	    }
+	    
+		$("#changeStatusGal").click(function(event){
+			console.log("Button:" + buttonInHeaderPressed);
+			if (buttonInHeaderPressed == 'btnRestartGal1')
+				{
+				var result = window
+				.confirm(
+						'Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?'
+								,
+						'Total reset',
+						function(result) {
+							if (result) {
+								fchangeStatuGal();
+							}
+						});
+				
+				}
+			else{
+				
+				fchangeStatuGal();
+			}
+			
+			
+			
+			
 		});
 	});
 	</script>
@@ -876,9 +905,9 @@
 		<!-- table id="tblManageNetwork7"></table> -->
 		<!-- table id="tblManageNetwork8"></table> -->
 		<form id="changeStatusGal" style='text-align: center;'>
-          		<button id="btnStartGal" class="tnHeaderHome2" title="Avvia il GAL"></button>
-			<button id="btnRestartGal1" class="tnHeaderHome2" title="Restart in ASSOCIATION Mode"></button>
-			<button id="btnRestartGal2" class="tnHeaderHome2" title="Restart in NVM Mode"></button>
+          	<button id="btnStartGal" class="tnHeaderHome2" title="Start"></button>
+			<button id="btnRestartGal1" class="tnHeaderHome2" title="Total reset"></button>
+			<button id="btnRestartGal2" class="tnHeaderHome2" title="Stop"></button>
 			<!-- button id="btnRestartGal3" class="tnHeaderHome2" title="Restart in TC Replacement Mode"></button> -->
 		</form>
 	</div>

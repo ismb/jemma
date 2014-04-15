@@ -58,6 +58,9 @@ var jGGSxMenu = function(spec){ //spec, optionDB){
 	return that;
 };
 
+
+
+
 var jGGCenterPaneMenu = function(spec){ //spec, optionDB){
 	
 	optionMenu = spec || {};
@@ -71,9 +74,31 @@ var jGGCenterPaneMenu = function(spec){ //spec, optionDB){
 	that.newButton = function(divBtn, callbackFnc, args){
 		superNewButton(divBtn, callbackFnc, args);
 	};
+
 	
 	return that;
 };
+
+
+var jGGCenterPaneMenuChannel = function(spec){ //spec, optionDB){
+	
+	optionMenu = spec || {};
+    optionMenu.widthMenu = 100;
+    optionMenu.langName = optionMenu.langName || "LANG.centerPane.";
+
+	//Constructor
+	var that = jGGSxMenu(optionMenu),
+		superNewButton = that.superior('newButton');
+	
+	that.newButton = function(divBtn, callbackFnc, args){
+		superNewButton(divBtn, callbackFnc, args);
+	};
+
+	
+	return that;
+};
+
+
 
 var jGGNetworkManageMenu = function(spec){ //spec, optionDB){
 	
