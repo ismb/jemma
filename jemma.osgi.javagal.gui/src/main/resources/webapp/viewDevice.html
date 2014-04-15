@@ -279,11 +279,11 @@
 														idle : nObj.capabilityInformation.receiverOnWhenIdle,
 														security : nObj.capabilityInformation.securitySupported,
 														aAdd : nObj.capabilityInformation.allocateAddress,
-														aAct : "<div class=\"contextMenu\" id=\"deviceMenu\"><ul><li id=\"edit\"><span class=\"ui-icon ui-icon-pencil\" style=\"float: left\"></span><a href=\"javascript:infoDevice('"
+														aAct : "<div id=\"deviceMenu\"><ul><li><a href=\"javascript:infoDevice('"
 																+ strNetworkAddress
-																+ "');\"><span style=\"font-size: 11px; font-family: Verdana\">Info Device</span></a></li><li id=\"del\"><span class=\"ui-icon ui-icon-trash\" style=\"float: left\"></span><a href=\"javascript:leaveDevice('"
+																+ "');\">Details</a></li><li><a href=\"javascript:leaveDevice('"
 																+ strNetworkAddress
-																+ "');\"><span style=\"font-size: 11px; font-family: Verdana\">Leave Device</span></a></li></ul></div>"
+																+ "');\">Remove Device</li></ul></div>"
 													});
 										}
 									}
@@ -384,13 +384,20 @@
 													var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
 													$("#detail_profile")
 															.val(
-																	'0x'
+																	getSingleProfileFromID(padLeft(
+																			4,
+																			profile
+																					.toString(16))
+																			.toLowerCase()
+																			.trim()).description
+																			+ ' (0x'
 																			+ padLeft(
 																					4,
 																					profile
 																							.toString(16))
 																					.toUpperCase()
-																					.trim());
+																					.trim()
+																			+ ")");
 													$('#detail_profile').attr(
 															'readonly', true);
 
@@ -398,13 +405,26 @@
 													var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
 													$("#detail_device")
 															.val(
-																	'0x'
+																	getSingleDeviceName(
+																			padLeft(
+																					4,
+																					device
+																							.toString(16))
+																					.toUpperCase()
+																					.trim(),
+																			padLeft(
+																					4,
+																					profile
+																							.toString(16))
+																					.toLowerCase()
+																					.trim())
+																			+ ' (0x'
 																			+ padLeft(
 																					4,
 																					device
 																							.toString(16))
 																					.toUpperCase()
-																					.trim());
+																					.trim()+")");
 													$('#detail_device').attr(
 															'readonly', true);
 
@@ -437,14 +457,19 @@
 																				"#detail_input_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																								+ '0x'
+																								+ getClusterDescription(padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()).description +  ' (0x'
 																								+ padLeft(
 																										4,
 																										value
 																												.toString(16))
 																										.toUpperCase()
 																										.trim()
-																								+ '</option>');
+																								+ ')</option>');
 																	});
 
 													/*Output CLuster Section*/
@@ -461,14 +486,19 @@
 																				"#detail_output_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																								+ '0x'
-																								+ padLeft(
-																										4,
-																										value
-																												.toString(16))
-																										.toUpperCase()
-																										.trim()
-																								+ '</option>');
+																						+ getClusterDescription(padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()).description +  ' (0x'
+																						+ padLeft(
+																								4,
+																								value
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()
+																						+ ')</option>');
 																	});
 												} else {
 													alert("Error on simple descriptor request: "

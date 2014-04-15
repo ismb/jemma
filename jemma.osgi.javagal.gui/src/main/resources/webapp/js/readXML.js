@@ -18,6 +18,11 @@ var getProfiles = function(){
   	return rtnrString;
 };
 
+
+
+
+
+
 /*
  * Restituisce il singolo Profile
  */
@@ -31,10 +36,15 @@ var getSingleProfileFromID = function(prflID){
   	return rtrnPrfl;
 }
 
+var getClusterDescription = function(profileID,clusterID){
+	
+}
+
+
 /*
  * Restituisce il singolo Device-Name
  */
-var getSingleDeviceName = function(dvcID){ 
+var getSingleDeviceName = function(dvcID,selectProfileID){ 
 	var rtrnDvcN = null;
 	var myPrfl = getSingleProfileFromID(selectProfileID);
 	$.each(myPrfl.device, function(iCounter, vDev){
@@ -134,6 +144,11 @@ var getClusterDescription = function(devId){
   	return tmpObj;
 }
 
+
+
+
+
+
 var idClstrIsInMyClusters = function(idClstr){
 	var rtrnBool = false;
 	$.each(myClusters, function(iClstr, valClstr){
@@ -143,6 +158,20 @@ var idClstrIsInMyClusters = function(idClstr){
 	});
 	return rtrnBool;
 }
+
+
+
+var getClusterDescription = function(idClstr){
+	var res = null;
+	$.each(myClusters, function(iClstr, valClstr){
+		if ((idClstr == valClstr.clustersidentifier)){
+			res= valClstr;
+			return;
+		}
+	});
+	return res;
+}
+
 
 var setMyXML = function(xmlObj){
 

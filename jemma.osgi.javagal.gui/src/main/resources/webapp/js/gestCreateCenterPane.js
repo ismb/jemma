@@ -13,7 +13,7 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
 	
 	that.templateActivator = function(idTpl){
 		
-    	var arrTplToImport = {tplCanaleRadio: './radioChannel.html', 
+    	var arrTplToImport = {tplChannelNetwork: './networkChannel.html', 
     	                      tplVersionJGal: './versionJGal.html', 
     	                      tplViewDevice: './viewDevice.html', 
     	                      tplViewGraphNodes: './viewGraphNodes.html', 

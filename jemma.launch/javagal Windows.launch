@@ -22,5 +22,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="jemma.osgi.javagal.gui@default:default,jemma.osgi.javagal.json@default:default,jemma.osgi.javagal.rest@default:default,jemma.osgi.javagal@default:default"/>
+<stringAttribute key="workspace_bundles" value="jemma.osgi.ah.hac.lib@default:default,jemma.osgi.ah.zigbee@default:default,jemma.osgi.javagal.gui@default:default,jemma.osgi.javagal.json@default:default,jemma.osgi.javagal.rest@default:default,jemma.osgi.javagal@default:default"/>
 </launchConfiguration>
