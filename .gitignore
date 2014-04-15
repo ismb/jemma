@@ -1,2 +1,10 @@
 *~
 *.svn.*
+*/META-INF/*
+*.classpath*
+*.project
+*/.settings/*
+*/target/*
+**/m2m/*
+**/.m2m*
+*.gitignore*
