@@ -36,7 +36,6 @@ import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksClient;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.IndesitBridgeClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.BasicClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
@@ -223,7 +222,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerCluster(SimpleMetering4NoksClient.class.getName());
 		greenathomeEndPoint.registerCluster(ThermostatClient.class.getName());
 		greenathomeEndPoint.registerCluster(RelativeHumidityMeasurementClient.class.getName());
-		greenathomeEndPoint.registerCluster(IndesitBridgeClient.class.getName());
 		greenathomeEndPoint.registerCluster(IASZoneClient.class.getName(), this);
 		greenathomeEndPoint.registerCluster(OccupancySensingClient.class.getName());
 		greenathomeEndPoint.registerCluster(TemperatureMeasurementClient.class.getName());
