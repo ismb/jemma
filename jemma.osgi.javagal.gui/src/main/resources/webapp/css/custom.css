@@ -2,7 +2,15 @@
 
 #container{
 	width: 100%;
-	margin:0 auto;
+	height: 100%;
+	margin-left: auto; 
+	margin-right: auto;
+	text-align: center;
+}
+
+.ui-jqgrid {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #rdRadioChannel{
@@ -38,7 +46,4 @@
 
 .italicsFont{
 	font:oblique;
-	
-	
-	
 }

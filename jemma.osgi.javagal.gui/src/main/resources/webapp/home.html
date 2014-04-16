@@ -60,7 +60,7 @@
 	    
 	    
 	    
-		    $.datepicker.setDefaults($.datepicker.regional[ "it" ]);
+		    $.datepicker.setDefaults($.datepicker.regional[ "en" ]);
 		    $.datepicker.setDefaults({
 		        changeMonth: true,
 		        changeYear: true,
@@ -79,7 +79,7 @@
 		    window.confirm = function(msg, title, callback)
 		    {
 		        //jConfirm(msg, title, callback);
-		        apprise(msg, {'verify':true, 'textYes':'Si', 'textNo':'No'},callback);
+		        apprise(msg, {'verify':true, 'textYes':'Yes', 'textNo':'No'},callback);
 		    }
 			
 			
@@ -91,7 +91,7 @@
 		
 		    var confirmV2 = function(msg, callback)
 		    {
-		        apprise(msg,{'newVerify':true, 'textYes':'Si', 'textNo':'No','textCancel':'Annulla'},callback);
+		        apprise(msg,{'newVerify':true, 'textYes':'Yes', 'textNo':'No','textCancel':'Cancel'},callback);
 		    }
 		
 		
@@ -117,12 +117,12 @@
 						var chR = data.detail.value[0];
 						$.jStorage.set("ChannelRadioValue", chR);
 						$('#spChannelRadioHP').text(chR);
-						$('#spZigBeeState').text('ATTIVA').css('color', 'green');
+						$('#spZigBeeState').text('ENABLE').css('color', 'green');
 					} else {
 						//Visualizzo il messaggi odi errore
 						$.jStorage.set("ChannelRadioError", data.status.message);
 						$('#spChannelRadioHP').text(data.status.message);
-						$('#spZigBeeState').text('DISATTIVA').css('color', 'red');
+						$('#spZigBeeState').text('DISABLE').css('color', 'red');
 					}
 				}); 
 		        
@@ -151,7 +151,7 @@
 		            	Actual Channel Network: <span id="spChannelRadioHP"></span><br />
 		            	Status of the Network: <span id="spZigBeeState"></span><br />
 		            </td>
-		            <td valign="middle" width="60%" style="background-color: red"><label class="title">Java GAL - Console di gestione</label></td>
+		            <td valign="middle" width="60%" style="background-color: red"><label class="title">Java GAL - Admin Console</label></td>
 		            <td valign="middle" width="20%"><img src="images/2000px-logo_telecom_italia-svg.png" height="100px"/></td>
 		        </tr>
 		    </table>
