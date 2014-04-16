@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.zigbee;
 
-import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -25,6 +23,7 @@ import java.util.Vector;
 
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 
 public class ZigBeeCommandProvider implements CommandProvider {

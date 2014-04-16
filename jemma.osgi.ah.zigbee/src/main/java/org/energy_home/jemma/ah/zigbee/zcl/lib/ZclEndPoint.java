@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
-import org.energy_home.jemma.ah.zigbee.zcl.IZclServiceEndPoint;
-
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
+import org.energy_home.jemma.ah.zigbee.zcl.IZclServiceEndPoint;
 
 public class ZclEndPoint extends EndPoint implements IZclServiceEndPoint {
 	private ZigBeeDevice device = null; 

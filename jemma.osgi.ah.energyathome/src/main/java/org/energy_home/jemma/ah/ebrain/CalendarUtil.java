@@ -152,7 +152,7 @@ public class CalendarUtil {
         01. gen 2012	Do	 Se 52	Capodanno
         06. gen 2012	Ve	 Se 01	Epifania
         08. apr 2012	Do	 Se 14	Pasqua
-        09. apr 2012	Lu	 Se 15	Lunedi di Pasqua (Pasquetta)
+        09. apr 2012	Lu	 Se 15	Lunedi' di Pasqua (Pasquetta)
         25. apr 2012	Me	 Se 17	Liberazione Italia
         01. mag 2012	Ma	 Se 18	Festa del lavoro
         02. giu 2012	Sa	 Se 22	Festa della Repubblica Italia

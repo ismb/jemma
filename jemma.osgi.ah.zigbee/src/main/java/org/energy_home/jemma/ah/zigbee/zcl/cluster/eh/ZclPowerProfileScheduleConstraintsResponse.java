@@ -15,12 +15,11 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileScheduleConstraintsResponse;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileScheduleConstraintsResponse;
 
 public class ZclPowerProfileScheduleConstraintsResponse {
 

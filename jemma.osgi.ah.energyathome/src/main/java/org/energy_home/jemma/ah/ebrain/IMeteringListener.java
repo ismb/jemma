@@ -15,19 +15,14 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
 
 public interface IMeteringListener {
-
-	
 	void notifyIstantaneousDemandPower(String applianceId, long time, float power) throws M2MHapException;
 	void notifyCurrentSummationDelivered(String applianceId, long time, double totalEnergy) throws M2MHapException;
 	void notifyCurrentSummationReceived(String applianceId, long time, double totalEnergy) throws M2MHapException;
 	
-
 	float getIstantaneousDemandPower(String applianceId);
 	double getCurrentSummationDelivered(String applianceId);
 	double getCurrentSummationReceived(String applianceId);
-
 }

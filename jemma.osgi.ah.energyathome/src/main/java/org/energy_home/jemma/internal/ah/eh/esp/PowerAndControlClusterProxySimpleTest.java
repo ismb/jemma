@@ -15,13 +15,6 @@
  */
 package org.energy_home.jemma.internal.ah.eh.esp;
 
-import org.energy_home.jemma.ah.ebrain.IPowerAndControlListener;
-import org.energy_home.jemma.ah.ebrain.PowerProfileInfo;
-import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
-import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileState;
-import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstraints;
-import org.energy_home.jemma.m2m.ah.ApplianceLog;
-
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceStatisticsServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.EnergyPhasesScheduleStateResponse;
@@ -37,10 +30,17 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.WriteAttributeRecord;
+import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
+import org.energy_home.jemma.ah.ebrain.IPowerAndControlListener;
+import org.energy_home.jemma.ah.ebrain.PowerProfileInfo;
+import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileState;
+import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstraints;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
+import org.energy_home.jemma.m2m.ah.ApplianceLog;
+
 
 public class PowerAndControlClusterProxySimpleTest extends PowerAndControlClusterProxy implements PowerProfileClient {
 	private static final String APPLIANCE_PID = "ah.app.1";

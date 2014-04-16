@@ -42,7 +42,7 @@ public class PatchUpdateBug {
 					+ bc.getBundle().getBundleId());
 			Bundle[] bundles = bc.getBundles();
 			for (int i = 0; i < bundles.length; i++) {
-				if (bundles[i].getSymbolicName().equals("it.telecomitalia.osgi.ah.hac.lib")) {
+				if (bundles[i].getSymbolicName().equals("org.energy_home.jemma.osgi.ah.hac.lib")) {
 					// checks if in this bundle storage area there is an
 					// available configuration in xml format.
 					BundleContext hacLibBundleContext = bundles[i].getBundleContext();

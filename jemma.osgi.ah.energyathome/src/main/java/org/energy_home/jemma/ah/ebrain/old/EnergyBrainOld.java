@@ -15,10 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +23,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
@@ -35,7 +35,7 @@ import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorTask;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 
 public class EnergyBrainOld {
-	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency 
+	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
 	public static final short TRAILING_DIGIT_TENTHS = 3; // trailing digits: thousandths of euros
 	

@@ -15,15 +15,14 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
 import org.osgi.framework.InvalidSyntaxException;
 
 public class CmaCommandProvider implements CommandProvider {

@@ -24,8 +24,8 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
-import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
 import org.energy_home.jemma.m2m.ContentInstance;
+
 
 public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClient {
 
@@ -35,6 +35,12 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 		super(applianceProxyList, ahm2mHapService, subscriptionManager);
 	}
 
+	protected String getAttributeId(String attributeName) {
+		if (attributeName.equals(OnOffServer.ATTR_OnOff_NAME))
+			return AHContainers.attrId_ah_cluster_onoff_status;
+		return null;
+	}
+	
 	public void initServiceCluster(ApplianceProxy applianceProxy) {
 		IAppliance appliance = applianceProxy.getAppliance();
 		if (!appliance.isAvailable())
@@ -50,7 +56,7 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 				try {
 					av = serviceCluster.getLastNotifiedAttributeValue(OnOffServer.ATTR_OnOff_NAME, context);
 					if (av != null && av.getValue() != null) {
-						notifyAttributeValue(appliancePid, eps[j].getId(), OnOffServer.class.getName(), OnOffServer.ATTR_OnOff_NAME, av.getTimestamp(), av.getValue(), true);
+						sendAttributeValue(appliancePid, eps[j].getId(), OnOffServer.class.getName(), OnOffServer.ATTR_OnOff_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 				} catch (Exception e) {
 					log.error("Error while reading last notified onoff attribute value for appliance " + appliancePid);

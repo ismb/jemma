@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
+
+import java.util.Calendar;
+
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
@@ -27,11 +30,8 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
-import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
-
-import java.util.Calendar;
 
 public class ApplianceControlClusterProxy extends ServiceClusterProxy implements ApplianceControlClient {
 	public boolean isRemoteControlEnabled (short remoteEnabledFlags) {
@@ -95,6 +95,23 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 		}
 	}
 	
+	public synchronized int toApplianceTime(int relativeMinutes, boolean relative) {
+		int hours, minutes, mask, result;
+		if (relative) {
+			hours = relativeMinutes / 60;
+			minutes = relativeMinutes % 60;
+			calendar.setTimeInMillis(System.currentTimeMillis());
+			mask = 0x00;
+		} else {
+			calendar.setTimeInMillis(System.currentTimeMillis());
+			calendar.add(Calendar.MINUTE, relativeMinutes);
+			hours = calendar.get(Calendar.HOUR_OF_DAY);
+			minutes = calendar.get(Calendar.MINUTE);
+			mask = 0x40;
+		}
+		result = (hours << 8) | mask | (minutes & 0x3F); 
+		return result;
+	}
 	public synchronized int toApplianceTime(long time, boolean relative) {
 		if (time == 0)
 			return 0;
@@ -138,6 +155,36 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 		calendar  = Calendar.getInstance();
 	}
 
+	protected String getAttributeId(String attributeName) {
+		if (attributeName.equals(ApplianceControlServer.ATTR_StartTime_NAME))
+			return AHContainers.attrId_ah_cluster_applctrl_startTime;
+		if (attributeName.equals(ApplianceControlServer.ATTR_FinishTime_NAME))
+			return AHContainers.attrId_ah_cluster_applctrl_finishTime;
+		if (attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME))
+			return AHContainers.attrId_ah_cluster_applctrl_remainingTime;
+		return null;
+	}
+
+	@Override
+	protected Object decodeAttributeValue(String appliancePid, int endPointId, String attributeName, Object value) {
+		if (attributeName.equals(ApplianceControlServer.ATTR_StartTime_NAME) ||
+				attributeName.equals(ApplianceControlServer.ATTR_FinishTime_NAME) ||
+				attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME)) {
+			try {
+				if (attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME)) {
+					int time = (int) fromApplianceTime(((Integer)value).intValue(), true);
+					return new Integer(time);
+				} else {
+					long time = fromApplianceTime(((Integer)value).intValue(), false);
+					return new Long(time);
+				}
+			} catch (Exception e) {
+				log.error("Error while notifying time attribute for appliance " + appliancePid + ", endPoint " + endPointId, e);
+			}
+		} 
+		return value;
+	}
+	
 	public void initServiceCluster(ApplianceProxy applianceProxy) {
 		IAppliance appliance = applianceProxy.getAppliance();
 		if (!appliance.isAvailable())
@@ -153,24 +200,24 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 				try {
 					av = serviceCluster.getLastNotifiedAttributeValue(ApplianceControlServer.ATTR_StartTime_NAME, context);
 					if (av != null && av.getValue() != null) {
-						notifyAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
 								ApplianceControlServer.ATTR_StartTime_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 					av = serviceCluster.getLastNotifiedAttributeValue(ApplianceControlServer.ATTR_FinishTime_NAME, context);
 					if (av != null && av.getValue() != null) {
-						notifyAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
 								ApplianceControlServer.ATTR_FinishTime_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 					av = serviceCluster.getLastNotifiedAttributeValue(ApplianceControlServer.ATTR_RemainingTime_NAME, context);
 					if (av != null && av.getValue() != null) {
-						notifyAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), ApplianceControlServer.class.getName(), 
 								ApplianceControlServer.ATTR_RemainingTime_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 					SignalStateResponse stateResponse = ((ApplianceControlServer)serviceCluster).execSignalState(applianceProxy.getApplicationRequestContext());
 					if (stateResponse != null) {
-						super.notifyAttributeValue(appliancePid,  eps[j].getId(), null, AHContainers.attrId_ah_cluster_applctrl_status, 
+						sendAttributeValue(appliancePid,  eps[j].getId(), AHContainers.attrId_ah_cluster_applctrl_status, 
 								System.currentTimeMillis(), stateResponse.ApplianceStatus, true);
-						super.notifyAttributeValue(appliancePid, eps[j].getId(), null, AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
 								isRemoteControlEnabled(stateResponse.RemoteEnableFlags), true);
 					}
 				} catch (Exception e) {
@@ -193,9 +240,9 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 				try {
 					SignalStateResponse stateResponse = applianceControlServer.execSignalState(applianceProxy.getApplicationRequestContext());
 					if (stateResponse != null) {
-						super.notifyAttributeValue(appliancePid, eps[j].getId(), null, AHContainers.attrId_ah_cluster_applctrl_status, System.currentTimeMillis(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), AHContainers.attrId_ah_cluster_applctrl_status, System.currentTimeMillis(), 
 								stateResponse.ApplianceStatus, true);
-						super.notifyAttributeValue(appliancePid, eps[j].getId(), null, AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
+						sendAttributeValue(appliancePid, eps[j].getId(), AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
 								isRemoteControlEnabled(stateResponse.RemoteEnableFlags), true);
 					}
 				} catch (Exception e) {
@@ -204,131 +251,110 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 		}
 	}
 	
-	public ContentInstance execCommand(String appliancePid, int endPointId, String containerName, ContentInstance ci) {
-		try {
-			ApplianceProxy applianceProxy = applianceProxyList.getApplianceProxy(appliancePid);
-			IAppliance appliance = applianceProxy.getAppliance();
-			if (!appliance.isAvailable())
-				return null;
-			IEndPoint endPoint = appliance.getEndPoint(endPointId);
-			DeviceCategory deviceCategory = ahm2mHapService.getDeviceCategory(appliancePid, endPointId);
-			if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_status)) {
-				Short value = (Short) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					short command = toApplianceCommand(value.shortValue());
-					if (command > 0)
-						((ApplianceControlServer)applianceControl).execCommandExecution(command,  applianceProxy.getApplicationRequestContext());
-					else 
-						return null;
-				} else {
-					return null;
-				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_startTime)) {
-				Long value = (Long) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_StartTime_NAME;
-					record.value = toApplianceTime(value, deviceCategory == null || !(deviceCategory == deviceCategory.Oven));
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_finishTime)) {
-				Long value = (Long) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_FinishTime_NAME;
-					record.value = toApplianceTime(value, deviceCategory == null || !(deviceCategory == deviceCategory.Oven));
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-// Remaining time is not writeable
-//			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_remainingTime)) {
-//				Integer value = (Integer) ci.getContent();
-//				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-//				if (applianceControl != null && applianceControl.isAvailable()) {
-//					WriteAttributeRecord record = new WriteAttributeRecord();
-//					record.name = ApplianceControlServer.ATTR_RemainingTime_NAME;
-//					record.value = toApplianceDuration(value);
-//					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-//				} else {
-//					return null;
-//				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_cycleTarget0)) {
-				Short value = (Short) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_CycleTarget0_NAME;
-					record.value = value;
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_cycleTarget1)) {
-				Short value = (Short) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_CycleTarget1_NAME;
-					record.value = value;
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_temperatureTarget0)) {
-				Integer value = (Integer) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_TemperatureTarget0_NAME;
-					record.value = value;
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-			} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_temperatureTarget1)) {
-				Integer value = (Integer) ci.getContent();
-				IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
-				if (applianceControl != null && applianceControl.isAvailable()) {
-					WriteAttributeRecord record = new WriteAttributeRecord();
-					record.name = ApplianceControlServer.ATTR_TemperatureTarget1_NAME;
-					record.value = value;
-					((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
-				} else {
-					return null;
-				}
-			}
-			return ci;
-		} catch (Exception e) {
-			log.error("Error shile managing appliance control command for appliance " + appliancePid + ", end point " + endPointId  + ", container " + containerName, e);
+	public ContentInstance execCommand(String appliancePid, int endPointId, String containerName, ContentInstance ci) 
+			throws ApplianceException, ServiceClusterException {
+		ApplianceProxy applianceProxy = applianceProxyList.getApplianceProxy(appliancePid);
+		IAppliance appliance = applianceProxy.getAppliance();
+		if (!appliance.isAvailable())
 			return null;
+		IEndPoint endPoint = appliance.getEndPoint(endPointId);
+		DeviceCategory deviceCategory = ahm2mHapService.getDeviceCategory(appliancePid, endPointId);
+		if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_status)) {
+			Short value = (Short) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				short command = toApplianceCommand(value.shortValue());
+				if (command > 0)
+					((ApplianceControlServer)applianceControl).execCommandExecution(command,  applianceProxy.getApplicationRequestContext());
+				else 
+					return null;
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_startTime)) {
+			Long value = (Long) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_StartTime_NAME;
+				record.value = toApplianceTime(value, true); //deviceCategory == null || !(deviceCategory == deviceCategory.Oven));
+				IEndPointRequestContext epCtxt = applianceProxy.getApplicationRequestContext();
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, epCtxt);
+				((ApplianceControlServer)applianceControl).execCommandExecution((short)0x01, epCtxt);
+
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_finishTime)) {
+			Long value = (Long) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_FinishTime_NAME;
+				record.value = toApplianceTime(value, true); // deviceCategory == null || !(deviceCategory == deviceCategory.Oven));
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_remainingTime)) {
+			Integer value = (Integer) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_RemainingTime_NAME;
+				record.value = toApplianceTime(value, true);// deviceCategory == null || !(deviceCategory == deviceCategory.Oven));
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_cycleTarget0)) {
+			Short value = (Short) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_CycleTarget0_NAME;
+				record.value = value;
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_cycleTarget1)) {
+			Short value = (Short) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_CycleTarget1_NAME;
+				record.value = value;
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_temperatureTarget0)) {
+			Integer value = (Integer) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_TemperatureTarget0_NAME;
+				record.value = value;
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
+		} else if (containerName.equals(AHContainers.attrId_ah_cluster_applctrl_temperatureTarget1)) {
+			Integer value = (Integer) ci.getContent();
+			IServiceCluster applianceControl = applianceProxy.getServiceCluster(endPointId, ApplianceControlServer.class.getName());
+			if (applianceControl != null && applianceControl.isAvailable()) {
+				WriteAttributeRecord record = new WriteAttributeRecord();
+				record.name = ApplianceControlServer.ATTR_TemperatureTarget1_NAME;
+				record.value = value;
+				((ApplianceControlServer)applianceControl).execWriteFunctions(new WriteAttributeRecord[] {record}, applianceProxy.getApplicationRequestContext());
+			} else {
+				return null;
+			}
 		}
+		return ci;
 	}
 	
-	public void notifyAttributeValue(String appliancePid, int endPointId, String clusterName, String attributeName, long timestamp, Object value, boolean isBatch) {
-		if (attributeName.equals(ApplianceControlServer.ATTR_StartTime_NAME) ||
-				attributeName.equals(ApplianceControlServer.ATTR_FinishTime_NAME) ||
-				attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME)) {
-			try {
-				if (attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME)) {
-					int time = (int) fromApplianceTime(((Integer)value).intValue(), true);
-					super.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, time, isBatch);
-				} else {
-					long time = fromApplianceTime(((Integer)value).intValue(), false);
-					super.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, time, isBatch);
-				}
-			} catch (Exception e) {
-				log.error("Error while notifying time attribute for appliance " + appliancePid + ", endPoint " + endPointId, e);
-			}
-		} else {
-			super.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, value, isBatch);
-		}
-	}
 
 	public void execSignalStateNotification(short ApplianceStatus,
 			short RemoteEnableFlags, int ApplianceStatus2,
@@ -338,9 +364,9 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 		int endPointId = peerEndPoint.getId();
 		String appliancePid = peerEndPoint.getAppliance().getPid();
 		try {
-			super.notifyAttributeValue(appliancePid, endPointId, null, AHContainers.attrId_ah_cluster_applctrl_status, System.currentTimeMillis(),
+			sendAttributeValue(appliancePid, endPointId, AHContainers.attrId_ah_cluster_applctrl_status, System.currentTimeMillis(),
 				new Short(ApplianceStatus), true);
-			super.notifyAttributeValue(appliancePid, endPointId, null, AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
+			sendAttributeValue(appliancePid, endPointId, AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
 					isRemoteControlEnabled(RemoteEnableFlags), true);
 		} catch (Exception e) {
 			log.error("Error while receiving signal state notification appliance status for appliance " + appliancePid + ", endPoint " + endPointId, e);

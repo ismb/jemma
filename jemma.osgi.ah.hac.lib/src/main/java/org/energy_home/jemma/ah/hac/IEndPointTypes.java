@@ -16,6 +16,7 @@
 package org.energy_home.jemma.ah.hac;
 
 public interface IEndPointTypes {
+	public static final String ZIGBEE_GENERIC_DEVICE = "ah.ep.zigbee.Generic";
 	public static final String ZIGBEE_METERING_DEVICE = "ah.ep.zigbee.MeteringDevice";
 	public static final String ZIGBEE_LOAD_CONTROL_DEVICE = "ah.ep.zigbee.LoadControlDevice";
 	public static final String ZIGBEE_WHITE_GOODS = "ah.ep.zigbee.WhiteGoods";

@@ -251,8 +251,7 @@ public class GalController {
 	public synchronized ApsMessageManager getApsManager() {
 		return apsManager;
 	}
-	
-	
+
 	/**
 	 * Gets the Message manager APS/INTERPAN.
 	 * 
@@ -261,8 +260,6 @@ public class GalController {
 	public synchronized MessageManager getMessageManager() {
 		return messageManager;
 	}
-	
-	
 
 	/**
 	 * Gets the Zdo manager.
@@ -518,8 +515,8 @@ public class GalController {
 		LQIInformation _lqi = new LQIInformation();
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode x : _list) {
-
-			logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + "DiscoveryCompleted:" + x.is_discoveryCompleted());
+			if (PropertiesManager.getDebugEnabled())
+				logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + " - DiscoveryCompleted:" + x.is_discoveryCompleted());
 			if (x.is_discoveryCompleted()) {
 				LQINode _lqinode = new LQINode();
 				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
@@ -1022,11 +1019,10 @@ public class GalController {
 		}
 		return id;
 	}
-	
-	
+
 	/**
-	 * Creates a callback to receive APS/ZDP/ZCL/InterPAN messages using a class of
-	 * filters.
+	 * Creates a callback to receive APS/ZDP/ZCL/InterPAN messages using a class
+	 * of filters.
 	 * 
 	 * @param proxyIdentifier
 	 *            the proxy identifier for the callback
@@ -1276,8 +1272,7 @@ public class GalController {
 		} else
 			throw new GatewayException("Gal is not in running state!");
 	}
-	
-	
+
 	/**
 	 * Sends an InterPAN message.
 	 * 

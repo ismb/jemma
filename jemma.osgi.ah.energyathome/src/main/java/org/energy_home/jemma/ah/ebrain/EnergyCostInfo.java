@@ -17,8 +17,6 @@ package org.energy_home.jemma.ah.ebrain;
 
 import java.io.Serializable;
 
-import javax.sound.sampled.ReverbType;
-
 public class EnergyCostInfo implements Serializable {
 	volatile float cost, minCost, maxCost;
 	volatile long startTime, endTime;

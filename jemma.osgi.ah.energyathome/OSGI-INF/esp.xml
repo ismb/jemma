@@ -24,5 +24,6 @@
    </service>
    <reference bind="setExecutorService" cardinality="1..1" interface="org.energy_home.jemma.utils.thread.ExecutorService" name="ExecutorService" policy="static" unbind="unsetExecutorService"/>
    <reference bind="setHapService" cardinality="1..1" interface="org.energy_home.jemma.ah.hap.client.IM2MHapService" name="HapService" policy="static" unbind="unsetHapService"/>
-   <reference bind="setESPEventsDispatcher" unbind="unsetESPEventsDispatcher" cardinality="1..1" interface="org.energy_home.jemma.osgi.ah.eh.esp.IESPEventsDispatcher" name="IESPEventsDispatcher" policy="static"/>
+   <reference bind="setESPEventsDispatcher" cardinality="1..1" interface="org.energy_home.jemma.osgi.ah.eh.esp.IESPEventsDispatcher" name="ESPEventsDispatcher" policy="static" unbind="unsetESPEventsDispatcher"/>
+   <property name="ah.application.name" type="String" value="ah.eh.esp"/>
 </scr:component>

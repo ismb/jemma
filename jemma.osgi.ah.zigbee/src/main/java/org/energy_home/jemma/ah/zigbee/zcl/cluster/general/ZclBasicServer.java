@@ -16,10 +16,12 @@
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.BasicServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -31,11 +33,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBoolean;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeString;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.BasicServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclBasicServer extends ZclServiceCluster implements BasicServer, ZigBeeDeviceListener {
 

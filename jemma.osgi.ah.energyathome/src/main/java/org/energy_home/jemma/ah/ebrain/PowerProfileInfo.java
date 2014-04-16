@@ -15,11 +15,7 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
 
@@ -38,13 +34,13 @@ public class PowerProfileInfo {
 		 * The PowerProfileState allows a device server to communicate its current
 		 * Power Profile(s) to the client.
 		 * The Power Profile record support the following fields:
-		 * -  Power Profile ID: the identifier of the Power Profile as requested;
-		 * -  Energy Phase ID: The current Energy Phase ID of the specific Profile ID; this value shall be
+		 * - Power Profile ID: the identifier of the Power Profile as requested;
+		 * - Energy Phase ID: The current Energy Phase ID of the specific Profile ID; this value shall be
 		 *    set to invalid 0xFF when PowerProfileState indicates a Power Profile in POWER_PROFILE_IDLE state
-		 * -  PowerProfileRemoteControl: it indicates if the PowerProfile is currently remotely
-		 *    controllable or not;  if the Power Profile is not remotely controllable is cannot be
+		 * - PowerProfileRemoteControl: it indicates if the PowerProfile is currently remotely
+		 *   controllable or not;  if the Power Profile is not remotely controllable is cannot be
 		 *    scheduled by a Power Profile client
-		 * -  PowerProfileState: an enumeration field representing the current state of the Power
+		 * - PowerProfileState: an enumeration field representing the current state of the Power
 		 *    Profile
 		 * 
 		 * Enumeration  Value  Description
@@ -128,7 +124,7 @@ public class PowerProfileInfo {
 		}
 		
         public boolean isApplianceStarted() {
-            // all phases other than one means its started
+            // all phases other than one means it's started
             if (energyPhaseId > 1) return true;
             if (state == ENERGY_PHASE_PAUSED || state == ENERGY_PHASE_RUNNING) return true;
             // in all other states of the 1st phase are not considered running

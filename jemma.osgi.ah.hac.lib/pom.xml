@@ -75,7 +75,7 @@
 						<Service-Component>OSGI-INF/application_proxy.xml</Service-Component>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
 					</instructions>
 				</configuration>
 			</plugin>

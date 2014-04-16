@@ -17,7 +17,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.energy_home.jemma.osgi.ah.felix.console.web">
-   <implementation class="org.energy_home.jemma.osgi.ah.felix.console.web.HacWebCommandProvider"/>
+   <implementation class="org.energy_home.jemma.ah.felix.console.web.HacWebCommandProvider"/>
    <service>
       <provide interface="javax.servlet.Servlet"/>
    </service>

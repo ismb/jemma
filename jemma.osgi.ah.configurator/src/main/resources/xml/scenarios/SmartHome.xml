@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<configuration>
+    <locations>
+    	<location icon="other.png" name="Other" pid="0"/>
+        <location icon="kitchen.png" name="Kitchen" pid="1"/>
+        <location icon="studio.png" name="Studio" pid="2"/>
+        <location icon="garden.png" name="Garden" pid="3"/>
+        <location icon="bathroom.png" name="Bathroom" pid="4"/>
+        <location icon="bedroom.png" name="Bedroom" pid="5"/>
+        <location icon="livingroom.png" name="Living Room" pid="6"/>
+        <location icon="laboratory.png" name="Lab" pid="7"/>
+        <location icon="hall.png" name="Hall" pid="8"/>
+        <location icon="corridor.png" name="Corridor" pid="9"/>
+    </locations>
+    <categories>
+        <category icon="other.png" name="Other" pid="1"/> <!-- Altro -->
+        <category icon="lamp.png" name="Lamp" pid="2"/> <!-- Lampada -->
+        <category icon="water_heater.png" name="Water Heater" pid="3"/> <!-- Boiler -->
+        <category icon="tv.png" name="TV" pid="4"/> <!-- TV -->
+        <category icon="pc.png" name="PC" pid="5"/> <!-- PC -->
+        <category icon="oven.png" name="Oven" pid="6"/> <!-- Forno -->
+        <category icon="iron.png" name="Iron" pid="7"/> <!-- Ferro da stiro -->
+        <category icon="refrigerator.png" name="Refrigerator" pid="8"/> <!-- Frigo -->
+        <category icon="dish_washer.png" name="Dish Washer" pid="9"/> <!-- Lavastoviglie -->
+        <category icon="air_conditioner.png" name="Air Conditioner" pid="10"/> <!-- Condizionatore -->
+        <category icon="washing_machine.png" name="Washing Machine" pid="11"/> <!-- Lavatrice -->
+        <category icon="meter.png" name="Meter" pid="12"/> <!-- Smart Info -->
+        <category icon="jolly_smart_plug.png" name="Jolly Smart Plug" pid="13"/> <!-- Jolly Smart Plug -->	  
+ 		
+		<category icon="production_meter.png" name="Production Meter" pid="14"/> <!-- Contatore fotovoltaico -->
+		<category icon="secondary_meter.png" name="Secondary Meter" pid="15"/> <!-- Contatore secondario -->
+		<category icon="printer.png" name="Printer" pid="16"/> <!-- Stampante -->
+		<category icon="modem-router.png" name="Modem-Router" pid="17"/> <!-- Modem/Router -->	
+		<category icon="decoder-recorder-player.png" name="Decoder-Recorder-Player" pid="18"/> <!-- Decoder/Recorder/Player -->	
+		<category icon="home_theatre-stereo.png" name="Home Theatre-Stereo" pid="19"/> <!-- Home Theatre/Stereo -->	
+		<category icon="play_station.png" name="Play Station" pid="20"/> <!-- Play Station -->	
+		<category icon="media_center.png" name="Media Center" pid="21"/> <!-- Media Center -->			
+		<category icon="freezer.png" name="Freezer" pid="22"/> <!-- Congelatore -->  		
+        <category icon="washer_dryer.png" name="Washer Dryer" pid="23"/> <!-- Asciugatrice -->  	
+		<category icon="vacuum_cleaner.png" name="Vacuum Cleaner" pid="24"/> <!-- Aspirapolvere -->
+		<category icon="hair_dryer.png" name="Hair Dryer" pid="25"/> <!-- Phon -->
+	    <category icon="bread_machine.png" name="Bread Machine" pid="26"/> <!-- Macchina del pane --> 
+		<category icon="coffee_machine.png" name="Coffee Machine" pid="27"/> <!-- Macchina del caffè--> 
+		<category icon="toaster.png" name="Toaster" pid="28"/> <!-- Tosta pane --> 
+		<category icon="food_robot.png" name="Food Robot" pid="29"/> <!-- Robot cucina --> 
+		<category icon="water_purifier.png" name="Water Purifier" pid="30"/> <!-- Depuratore acqua --> 
+		<category icon="hob.png" name="Hob" pid="31"/> <!-- Piano cottura --> 	
+	    <category icon="electric_heater.png" name="Electric Heater" pid="32"/> <!-- Stufa elettrica --> 	
+		<category icon="swimming_pool_pump.png" name="Swimming pool pump" pid="33"/> <!-- Pompa piscina -->
+    </categories>
+	<rules>
+		<rule filter ="(&amp;(pid1=ah.app.SmartHome)(pid2=*))"/>
+	</rules>
+</configuration>

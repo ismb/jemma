@@ -58,7 +58,7 @@ public class ApplianceLog {
 }
 
 
-//package it.telecomitalia.m2m.ah;
+//package org.energy_home.jemma.m2m.ah;
 //
 //import javax.xml.bind.annotation.XmlAccessType;
 //import javax.xml.bind.annotation.XmlAccessorType;

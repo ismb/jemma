@@ -15,18 +15,17 @@
  */
 package org.energy_home.jemma.internal.ah.eh.esp;
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringServer;
+import org.energy_home.jemma.ah.ebrain.EnergyBrainCore;
+import org.energy_home.jemma.ah.ebrain.IMeteringProxy;
 import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.ah.ebrain.EnergyBrainCore;
-import org.energy_home.jemma.ah.ebrain.IMeteringProxy;
 
 public class SimpleMeteringServerObject extends ServiceCluster implements SimpleMeteringServer {
 	private static final Log log = LogFactory.getLog(SimpleMeteringServerObject.class);

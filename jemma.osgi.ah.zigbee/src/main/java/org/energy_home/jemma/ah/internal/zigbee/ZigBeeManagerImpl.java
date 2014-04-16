@@ -15,9 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.zigbee;
 
-import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
-import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,6 +45,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
+import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
+import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -67,6 +66,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyQueryResponse;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
@@ -79,7 +79,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringCli
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayEventListener;
@@ -93,12 +92,12 @@ import org.energy_home.jemma.zgd.jaxb.BindingList;
 import org.energy_home.jemma.zgd.jaxb.Device;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
+import org.energy_home.jemma.zgd.jaxb.NodeServices.ActiveEndpoints;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
 import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.TxOptions;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
-import org.energy_home.jemma.zgd.jaxb.NodeServices.ActiveEndpoints;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -292,7 +291,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	private static final Log log = LogFactory.getLog(ZigBeeManagerImpl.class);
 
-	public static final String propertyFilename = "it.telecomitalia.ah.zigbee.properties";
+	public static final String propertyFilename = "org.energy_home.jemma.ah.zigbee.properties";
 	private String propertiesFilename = ".";
 	private ZigBeeManagerProperties cmProps = new ZigBeeManagerProperties();
 
@@ -1416,6 +1415,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
+					outputClusters.add(new Integer(0x0201));
+					
 					
 					if (enableEnergyAtHomeClusters) {
 						// This is the list of Client side clusters supported by E@H
@@ -1432,9 +1433,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 						outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
 						outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
-						outputClusters.add(new Integer(0x0201));	//Thermostat cluster
 					}
-				
+
 					// This is the list of Server side clusters supported by E@H
 					inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
 					inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
@@ -1447,7 +1447,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					if (enableAllClusters) {
 						inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 					}
-					
+					/*Ho cambiato il valore di timeout perch&egrave; 100ms &egrave; troppo poco [Marco Nieddu]*/
 					localEndpoint = gateway.configureEndpoint(2000, sd);
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
@@ -1460,7 +1460,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 
 					// start gateway device
-					gateway.startGatewayDevice(2000);
+					gateway.startGatewayDevice(0);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1498,7 +1498,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			return false;
 		}
 		
-		String testevent = this.ctxt.getBundleContext().getProperty("it.telecomitalia.ah.zigbee.zcl.testevent");
+		String testevent = this.ctxt.getBundleContext().getProperty("org.energy_home.jemma.ah.zigbee.zcl.testevent");
 		
 		try {
 			if (Boolean.parseBoolean(testevent)) {
@@ -1663,10 +1663,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	protected Dictionary getConfiguration() {
 		Dictionary config = new Hashtable();
-		config.put("it.telecomitalia.ah.adapter.zigbee.lqi", cmProps.isLqiEnabled() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.reconnect", cmProps.getReconnectToJGalDelay() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.discovery.delay", cmProps.getDiscoveryDelay() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.discovery.initialdelay", cmProps.getInitialDiscoveryDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.lqi", cmProps.isLqiEnabled() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.reconnect", cmProps.getReconnectToJGalDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.discovery.delay", cmProps.getDiscoveryDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.discovery.initialdelay", cmProps.getInitialDiscoveryDelay() + "");
 		return config;
 	}
 

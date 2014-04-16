@@ -23,9 +23,9 @@ package org.energy_home.jemma.ah.hac;
 
 public interface ILocation {
 	
-	public static final String PROP_LOCATION_NAME = "it.telecomitalia.ah.location.name";
-	public static final String PROP_LOCATION_PID = "it.telecomitalia.ah.location.pid";
-	public static final String PROP_LOCATION_ICON = "it.telecomitalia.ah.location.icon";
+	public static final String PROP_LOCATION_NAME = "org.energy_home.jemma.ah.location.name";
+	public static final String PROP_LOCATION_PID = "org.energy_home.jemma.ah.location.pid";
+	public static final String PROP_LOCATION_ICON = "org.energy_home.jemma.ah.location.icon";
 	
 	/**
 	 * Returns the location name (i.e. "Kitchen").

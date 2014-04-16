@@ -49,7 +49,7 @@ public class HapCoreService extends M2MHapServiceObject implements BundleActivat
 	private static long EMULATED_START_TIME = 0;
 
 	static {
-		String startTimeStr = System.getProperty("it.telecomitalia.ah.test.hap.client.startTime");
+		String startTimeStr = System.getProperty("org.energy_home.jemma.ah.test.hap.client.startTime");
 		if (!Utils.isNullOrEmpty(startTimeStr)) {
 			Calendar c = DateTimeConverter.parseDateTime(startTimeStr);
 			EMULATED_START_TIME = c.getTimeInMillis();

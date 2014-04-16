@@ -15,21 +15,14 @@
  */
 package org.energy_home.jemma.ah.ebrain.algo;
 
-import java.util.*;
 
+import java.util.Calendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.TwoTierDailyTariff;
-
-/*
- * Daily Tariff for the week. It assumes that each profile is a segment that specifies a tariff
- * in KW/hour for a given start/end interval. Unit cost is expressed in hundredth-millesimals of euro,
- * Time units are 4-digit integer, the 2 highest are the hour and the 2 lowest are the minutes.
- * Each Daily profile will be an array of such interval profiles.
- */
 
 public abstract class DailyTariff {
 	private static final Log log = LogFactory.getLog(DailyTariff.class);

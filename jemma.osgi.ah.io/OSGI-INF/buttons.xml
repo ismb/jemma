@@ -17,6 +17,6 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayButtons"/>
+   <implementation class="org.energy_home.jemma.ah.io.flexgateway.FlexGatewayButtons"/>
    <reference bind="setEventAdmin" cardinality="0..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="dynamic" unbind="unsetEventAdmin"/>
 </scr:component>

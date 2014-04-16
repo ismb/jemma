@@ -29,9 +29,6 @@ import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceManager;
 import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
-import org.energy_home.jemma.ah.hac.lib.Appliance;
-import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
 import org.energy_home.jemma.ah.hac.lib.ext.ConfigServerCluster;
 
 /**

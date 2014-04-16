@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
@@ -44,7 +43,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
 public abstract class BasicServiceCluster implements IServiceCluster, IServiceClusterListener {
 	static final String APPLIANCE_INVALID_OR_NOT_AVAILABLE = "Appliance invalid or not available";
 	static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error";	
-	static final String CLUSTER_PACKAGE_NAME_PREFIX = "it.telecomitalia.";
+	static final String CLUSTER_PACKAGE_NAME_PREFIX = "org.energy_home.jemma.";
 	static final String INVALID_CLUSTER_CLASS_MESSAGE = "Invalid cluster class";	
 	static final ISubscriptionParameters SUBSCRIPTION_PARAMETERS = new SubscriptionParameters();
 	

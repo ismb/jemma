@@ -15,12 +15,11 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class ZclEndPointFactory {
 	private final static Log log = LogFactory.getLog(ZclEndPointFactory.class);
@@ -69,7 +68,7 @@ public class ZclEndPointFactory {
 		case ZIGBEE_IAS_ZONE_ID:
 			return IEndPointTypes.ZIGBEE_IAS_ZONE;				
 		default:
-			return null;
+			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		
 	}
 	

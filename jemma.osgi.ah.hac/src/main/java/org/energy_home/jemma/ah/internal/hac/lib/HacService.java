@@ -15,21 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IApplianceFactory;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
-import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
-import org.energy_home.jemma.ah.hac.lib.ext.Category;
-import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
-import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
-import org.energy_home.jemma.ah.hac.lib.ext.Location;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -61,6 +46,20 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IApplianceFactory;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
+import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
+import org.energy_home.jemma.ah.hac.lib.ext.Category;
+import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
+import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
+import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
+import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
@@ -129,7 +128,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 	private boolean saveConfigurationToCurrent = true;
 	private static final String servicePid = "org.telecomitalia.hac";
-	private final static String SCENARIOS_PATH = "xml/scenarios/";
+	private final static String SCENARIOS_PATH = "";
 
 	private String defaultConfig = "defaultconfig";
 	private String configurationFilename = "hac-config";
@@ -195,7 +194,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		locationsDb.setConfigurationAdmin(configAdmin);
 
 		Dictionary props = new Hashtable();
-		props.put(Constants.SERVICE_PID, "it.telecomitalia.osgi.ah.hac.locations");
+		props.put(Constants.SERVICE_PID, "org.energy_home.jemma.osgi.ah.hac.locations");
 
 		locationsServiceReg = bc.registerService(ManagedServiceFactory.class.getName(), locationsDb, props);
 	}
@@ -1065,13 +1064,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			try {
 				if (storageArea) {
 					String configFilename = SCENARIOS_PATH + configName + ".xml";
-					if (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch)) {
+					if (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch)) {
 						patched  = PatchUpdateBug.patchUpdateBugOnHacLib(bc, configFilename);
 					}
 					configFile = bc.getDataFile(configFilename);
 					log.debug("storage area is " + configFile);
 					stream = new FileInputStream(configFile);
-					
 				} else {
 					File f = new File(configName);
 					if (f.isAbsolute()) {
@@ -1126,7 +1124,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				}
 			}
 			
-			if (patched && (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch))) {
+			if (patched && (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch))) {
 				PatchUpdateBug.moveFactoryConfigurations(configAdmin, LocationsService.FACTORY_PID);
 			}
 
@@ -1447,7 +1445,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	public boolean postConfiguration(String data) {
 		synchronized (lockHacService) {
 			// url of the energy at home application
-			String applUrl = bc.getProperty("it.telecomitalia.energyathome.url");
+			String applUrl = bc.getProperty("org.energy_home.jemma.energyathome.url");
 			if (applUrl == null) {
 				applUrl = "http://163.162.180.229:8282/energyathome";
 			}
@@ -1813,26 +1811,6 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			}
 		}
 	}
-
-	private void manageMultiEndPointConfiguration(Dictionary props, Dictionary oldProps, String applianceProperty, String endPointsProperty) {
-		String value = (String) props.get(applianceProperty);
-		String[] values = (String[]) props.get(endPointsProperty);
-		if (values == null) {
-			values = (String[])  oldProps.get(endPointsProperty);
-		}	
-		if (value == null && values != null && values.length > 0) {
-			// If no appliance property is present and end point 0 property is present, the appliance property is created/aligned  
-			props.put(applianceProperty, values[0]);
-		}	
-		if (value != null && values != null && values.length > 0 && !value.equals(values[0])) {
-			// If appliance property is present and end point properties are already present or updated,
-			// all end point corresponding properties are reset to appliance property			
-			for (int i = 0; i < values.length; i++) {
-				values[i] = (String)value;				
-			}
-			props.put(endPointsProperty, values);
-		}
-	}
 	
 	/**
 	 * Checks and adds or updates some properties contained in
@@ -1876,12 +1854,6 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				props.put(key, customConfig.get(key));
 			}
 		}	
-
-		// For compatibility with old applications (i.e. green@home), appliance common property is always managed
-		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_NAME_PROPERTY, IAppliance.END_POINT_NAMES_PROPERTY);
-		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, IAppliance.END_POINT_CATEGORY_PIDS_PROPERTY);
-		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_LOCATION_PID_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
-		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_ICON_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
 		
 	}
 

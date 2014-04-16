@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.0.2</version>
+	<name>ZigBee Appliances</name>
+
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>
+	</properties>
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>0.1.0</version>
+	</parent>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Import-Package> org.energy_home.jemma.ah.cluster.ah,
+							 org.energy_home.jemma.ah.cluster.zigbee.security,
+							 org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)",
+							 org.energy_home.jemma.ah.zigbee,
+							 org.energy_home.jemma.ah.zigbee.zcl.lib,
+							 org.apache.commons.logging;version="1.0.4",
+							 org.osgi.framework;version="1.3.0",
+							 org.osgi.service.cm,
+							 org.osgi.service.device;version="1.1.0",*
+						</Import-Package>
+						<Export-Package>!*
+						</Export-Package>
+						<Bundle-Activator>org.energy_home.jemma.ah.zigbee.appliances.Activator</Bundle-Activator>
+						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
+						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
+						<Bundle-Category>Automation@Home</Bundle-Category>
+						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>${org.eclipse.osgi.version}</version>
+		</dependency>		    			    
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi.services</artifactId>
+			<version>${org.eclipse.osgi.services.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.logging</artifactId>
+			<version>${org.apache.commons.logging.version}</version>
+		</dependency>
+	</dependencies>
+</project>

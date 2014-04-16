@@ -15,6 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
+import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
@@ -22,11 +26,6 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
-import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclOnOffClient extends ZclServiceCluster implements OnOffClient, ZigBeeDeviceListener {
 

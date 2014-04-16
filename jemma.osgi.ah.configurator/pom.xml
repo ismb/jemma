@@ -47,15 +47,16 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Service-Component>OSGI-INF/configurator.xml</Service-Component>
+						<Service-Component>OSGI-INF/configurator.xml, OSGI-INF/configurator_commands.xml</Service-Component>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home Configurator</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
 						<Import-Package> org.energy_home.jemma.ah.hac,
 							 org.energy_home.jemma.ah.hac.lib;version="3.0.1",
 							 org.energy_home.jemma.ah.hac.lib.ext;version="3.0.2",
 							 javax.xml.parsers,
 							 org.apache.commons.logging,
+							 org.eclipse.osgi.framework.console,
 							 org.osgi.framework,
 							 org.osgi.service.cm,
 							 org.osgi.service.component,
@@ -66,7 +67,6 @@
 						</Import-Package>
 						<Export-Package>org.energy_home.jemma.ah.configurator;version="1.0.1"
 						</Export-Package>
-						<Include-Resource>{maven-resources}, xml=xml/</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>

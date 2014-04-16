@@ -15,6 +15,10 @@
  */
 package org.energy_home.jemma.internal.ah.eh.esp;
 
+import java.util.Arrays;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceStatisticsClient;
@@ -30,24 +34,18 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileStateResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.NotFoundException;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
-
-import java.util.Arrays;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo;
+import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
 import org.energy_home.jemma.ah.ebrain.IPowerAndControlListener;
 import org.energy_home.jemma.ah.ebrain.IPowerAndControlProxy;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo;
-import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileState;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstraints;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IAttributeValue;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.NotFoundException;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 
 public class PowerAndControlClusterProxy extends ServiceClusterProxy implements PowerProfileClient, IPowerAndControlProxy {
@@ -92,7 +90,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 
 	private static final long ZIGBEE_UTC_DELTA_SECONDS = 946684800;
 	
-	public static final int ISO4217_CURRENCY_CODE = 978; // Euro currency 
+	public static final int ISO4217_CURRENCY_CODE = 978; // Euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
 	public static final short TRAILING_DIGIT_TENTHS = 3; // trailing digits: thousandths of euros
 	

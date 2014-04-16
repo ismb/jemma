@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
-import org.energy_home.jemma.ah.hap.client.AHContainers;
-import org.energy_home.jemma.ah.hap.client.EHContainers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +24,8 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hap.client.AHContainers;
+import org.energy_home.jemma.ah.hap.client.EHContainers;
 
 public class HapServiceConfiguration {
 	private static final Log log = LogFactory.getLog(HapServiceConfiguration.class);
@@ -38,10 +38,10 @@ public class HapServiceConfiguration {
 
 	private static final String BATCH_REQUEST_BASE_DIR_PROPERY_NAME = "org.energy_home.jemma.ah.hap.client.cacheFilesDir";
 	
-	private static final String BATCH_REQUEST_TIMEOUT_PROPERY_NAME = "it.telecomitalia.ah.hap.client.batchMillisecTimeout";
-	private static final String SEND_EMPTY_BATCH_REQUEST_PROPERY_NAME = "it.telecomitalia.ah.hap.client.sendEmptyBatchRequest";
-	private static final String CACHED_ATTRIBUTE_ID_FILTER_PROPERY_NAME = "it.telecomitalia.ah.hap.client.cachedAttributeIdFilter";
-	private static final String LOCAL_ONLY_ATTRIBUTE_ID_FILTER_PROPERY_NAME = "it.telecomitalia.ah.hap.client.localOnlyAttributeIdFilter";
+	private static final String BATCH_REQUEST_TIMEOUT_PROPERY_NAME = "org.energy_home.jemma.ah.hap.client.batchMillisecTimeout";
+	private static final String SEND_EMPTY_BATCH_REQUEST_PROPERY_NAME = "org.energy_home.jemma.ah.hap.client.sendEmptyBatchRequest";
+	private static final String CACHED_ATTRIBUTE_ID_FILTER_PROPERY_NAME = "org.energy_home.jemma.ah.hap.client.cachedAttributeIdFilter";
+	private static final String LOCAL_ONLY_ATTRIBUTE_ID_FILTER_PROPERY_NAME = "org.energy_home.jemma.ah.hap.client.localOnlyAttributeIdFilter";
 
 	private static File f = null;
 	private static Properties configProperties = null;
@@ -93,8 +93,12 @@ public class HapServiceConfiguration {
 			localOnlyAttributeIdFilterStr = System.getProperty(LOCAL_ONLY_ATTRIBUTE_ID_FILTER_PROPERY_NAME);
 		if (Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr))
 			// TODO:!!! this is a hack for compatibility with default configuration in Energy@home trial
-			// To enable the sending of new AHContainers with Energy@home application a specific filter must be 
-			// defined for the following two containers: ah.cluster.metering.deliveredEnergySum,ah.cluster.metering.receivedEnergySum
+			// An empty filter ("[]") can be used to send all managed resources to the HAP platform 
+			// To enable the sending of new AHContainers with Energy@home application a filter must be 
+			// defined as follows: "[ah.cluster.metering.,ah.cluster.applctrl.,ah.cluster.powerprofile.]"  
+			// If all delivered and received instantaneous power values have to be sent to the HAP platform, the
+			// filter can be defined as follows: "[ah.cluster.metering.deliveredEnergySum,
+			// ah.cluster.metering.receivedEnergySum,ah.cluster.applctrl.,ah.cluster.powerprofile.]"
 			localOnlyAttributeIdFilterStr = AHContainers.CLUSTER_CONTAINERS_PREFIX;
 		if (!Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr)) {
 			LOCAL_ONLY_ATTRIBUTE_ID_FILTER = propertyValueToStringArray(localOnlyAttributeIdFilterStr);

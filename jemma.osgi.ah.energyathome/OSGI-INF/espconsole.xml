@@ -23,4 +23,4 @@
    </service>
    <reference bind="setESPService" cardinality="1..1" interface="org.energy_home.jemma.ah.eh.esp.ESPService" name="ESPService" policy="static" unbind="unsetESPService"/>
    <property name="osgi.command.scope" type="String" value="esp"/>
-</scr:component>
+</scr:component>

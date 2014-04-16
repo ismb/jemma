@@ -15,23 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IApplianceFactory;
-import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
-import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
-import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
-import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
-import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
-import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
-import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-import org.energy_home.jemma.ah.hac.lib.Appliance;
-import org.energy_home.jemma.ah.hac.lib.EndPoint;
-import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,6 +40,22 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IApplianceFactory;
+import org.energy_home.jemma.ah.hac.IEndPoint;
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.ah.hac.lib.Appliance;
+import org.energy_home.jemma.ah.hac.lib.EndPoint;
+import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
+import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
+import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationException;
@@ -140,7 +139,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	}
 
 	public void modified(ComponentContext ctxt, Map props) {
-		Object a = props.get("it.telecomitalia.ah.connadmin.rules");
+		Object a = props.get("org.energy_home.jemma.ah.connadmin.rules");
 		log.debug("modified");
 	}
 
@@ -745,7 +744,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 
 		String configFilename = SCENARIOS_PATH + CONFIG_FILENAME;
 		try {
-			if (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch)) {
+			if (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch)) {
 				patched  = PatchUpdateBug.patchUpdateBugOnHacLib(this.ctxt.getBundleContext(), configFilename);
 			}
 			configFile = ctxt.getBundleContext().getDataFile(configFilename);

@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import org.energy_home.jemma.ah.cluster.zigbee.eh.LoadManagementAcknowledge;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.LoadManagementAcknowledge;
 
 public class ZclLoadManagementAcknowledge {
 

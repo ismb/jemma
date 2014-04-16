@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,7 +70,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	
 	public static int getFastForwardFactor() {
 		int fastForwardFactor = 1;
-		String fff = System.getProperty("it.telecomitalia.ah.hap.client.fastForwardFactor");
+		String fff = System.getProperty("org.energy_home.jemma.ah.hap.client.fastForwardFactor");
 		try {
 			if (!Utils.isNullOrEmpty(fff)) {
 				fastForwardFactor = Integer.parseInt(fff);
@@ -82,13 +83,34 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	}
 
 	public static void setFastForwardFactor(int value) {
-		System.setProperty("it.telecomitalia.ah.hap.client.fastForwardFactor", new Integer(value).toString());
+		System.setProperty("org.energy_home.jemma.ah.hap.client.fastForwardFactor", new Integer(value).toString());
 	}
 
 	public static HapServiceManager get() {
 		return instance;
 	}
 
+	public static boolean checkItemsOnContainerIdFilter(ContentInstanceItems items, M2MContainerAddress containerAddressFilter) {
+		M2MContainerAddress itemsContainerAddress;
+		try {
+			itemsContainerAddress = new M2MContainerAddress(items.getAddressedId());
+		} catch (IllegalArgumentException e) {
+			log.error("Invalid items addressed id " + items.getAddressedId(), e);
+			return false;
+		}
+		return M2MContainerAddress.match(itemsContainerAddress, containerAddressFilter);
+	}
+
+	public static boolean checkAttributeIdFilter(String[] attributeIdFilter, String containerNameOrAddressedId) {
+		if (attributeIdFilter == null)
+			return false;
+		for (int i = 0; i < attributeIdFilter.length; i++) {
+			if (attributeIdFilter[i] != null && containerNameOrAddressedId != null && containerNameOrAddressedId.contains(attributeIdFilter[i]))
+				return true;
+		}
+		return false;
+	}
+	
 	private class ServiceStatus {
 		private boolean started = false;
 		private boolean exited = false;
@@ -197,12 +219,13 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		return instancesList.get(0);
 	}
 	
-	private ContentInstanceItemsList createContentInstanceItemsList(Map<String, ContentInstanceItems> currentCisItems, AHContainerAddress containerIdFilter) {
-		return createContentInstanceItemsList(currentCisItems, containerIdFilter, M2MNetworkScl.CONTENT_INSTANCE_OLDEST_ID, M2MNetworkScl.CONTENT_INSTANCE_LATEST_ID);
+	private ContentInstanceItemsList createContentInstanceItemsList(Map<String, ContentInstanceItems> currentCisItems, AHContainerAddress containerIdFilter,
+			String[] containerNamesFilter) {
+		return createContentInstanceItemsList(currentCisItems, containerIdFilter, containerNamesFilter, M2MNetworkScl.CONTENT_INSTANCE_OLDEST_ID, M2MNetworkScl.CONTENT_INSTANCE_LATEST_ID);
 	}
 	
 	private ContentInstanceItemsList createContentInstanceItemsList(Map<String, ContentInstanceItems> currentCisItems, AHContainerAddress containerIdFilter,
-			long startInstanceId, long endInstanceId)
+			String[] containerNamesFilter, long startInstanceId, long endInstanceId)
 	{
 		ContentInstanceItemsList ciisList = new ContentInstanceItemsList();
 		ContentInstanceItems ciis = null;
@@ -210,7 +233,8 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		for (Iterator<Map.Entry<String, ContentInstanceItems>> iterator = currentCisItems.entrySet().iterator(); iterator.hasNext();) {
 			pairs = iterator.next();
 			ciis = (ContentInstanceItems) pairs.getValue();
-			if (containerIdFilter == null || checkItemsOnContainerIdFilter(ciis, ((AHM2MContainerAddress)containerIdFilter).getM2MContainerAdress())) {
+			if ((containerIdFilter == null || checkItemsOnContainerIdFilter(ciis, ((AHM2MContainerAddress)containerIdFilter).getM2MContainerAdress()))
+					&& (containerNamesFilter == null || checkAttributeIdFilter(containerNamesFilter, ciis.getAddressedId()))) {
 				ContentInstanceItems filteredCiis = new ContentInstanceItems();
 				for (Iterator iterator2 = ciis.getContentInstances().iterator(); iterator2.hasNext();) {
 					ContentInstance ci = (ContentInstance) iterator2.next();
@@ -285,7 +309,8 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			synchronized (cisItems) {
 				currentCisItems = createContentInstanceBatchRequest(cisItems);
 				cisItems.clear();
-				currentLatestCisItems = createContentInstanceItemsList(latestCisItems, null);
+				// Only cached attributes are stored on file system
+				currentLatestCisItems = createContentInstanceItemsList(latestCisItems, null, HapServiceConfiguration.CACHED_ATTRIBUTE_ID_FILTER);
 				int contentInstanceItemListSize = currentCisItems.getContentInstanceItems().size();
 				if (deviceId == null) {
 					String errorMsg = "M2M Device invalid device id - " + contentInstanceItemListSize
@@ -313,7 +338,8 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		int batchRequestCounter = 0;
 		try {
 			while (currentCisItems != null && batchRequestCounter < SUBSEQUENT_BUFFERED_BATCH_REQUESTS) {
-				m2mNetworkScl.sendContentInstanceBatchRequest(currentCisItems);
+				if (!isLocalOnlyM2MDevice())
+					m2mNetworkScl.sendContentInstanceBatchRequest(currentCisItems);
 				// TODO add here parsing of batch request response to detect specific errors
 				lastBatchRequestOKTimestamp = new Long(now);
 				if (usingBuffer) {
@@ -470,37 +496,21 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		}
 	}
 
+	private void checkM2MDeviceStartedStatus() throws M2MHapException {
+		if (!m2mDevice.isStarted())
+			throw new M2MHapException("Hap service not started");
+	}
+	
 	private void checkM2MDeviceConnectedStatus() throws M2MHapException {
 		if (!m2mDevice.isConnected())
 			throw new M2MHapException("Hap service not connected");
 	}
 
-	private void checkM2MDeviceStartedStatus() throws M2MHapException {
-		if (!m2mDevice.isStarted())
-			throw new M2MHapException("Hap service not started");
+	private boolean isLocalOnlyM2MDevice() {
+		M2MDeviceConfig deviceConfig = m2mDevice.getConfiguration();
+		return (deviceConfig != null) ? deviceConfig.isLocalOnly() : false;
 	}
 
-	private boolean checkItemsOnContainerIdFilter(ContentInstanceItems items, M2MContainerAddress containerAddressFilter) {
-		M2MContainerAddress itemsContainerAddress;
-		try {
-			itemsContainerAddress = new M2MContainerAddress(items.getAddressedId());
-		} catch (IllegalArgumentException e) {
-			log.error("Invalid items addressed id " + items.getAddressedId(), e);
-			return false;
-		}
-		return M2MContainerAddress.match(itemsContainerAddress, containerAddressFilter);
-	}
-
-	private static boolean checkAttributeIdFilter(String[] attributeIdFilter, String containerNameOrAddressedId) {
-		if (attributeIdFilter == null)
-			return false;
-		for (int i = 0; i < attributeIdFilter.length; i++) {
-			if (attributeIdFilter[i] != null && containerNameOrAddressedId != null && containerNameOrAddressedId.contains(attributeIdFilter[i]))
-				return true;
-		}
-		return false;
-	}
-	
 	public String getLocalHagId(String user) {
 		return m2mDevice.getConfiguration().getSclId();
 	}
@@ -561,7 +571,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	public ContentInstanceItemsList getCachedLatestContentInstanceItemsList(String user, AHContainerAddress containerIdFilter)
 			throws M2MHapException {
 		synchronized (cisItems) {	
-			return createContentInstanceItemsList(latestCisItems, containerIdFilter);
+			return createContentInstanceItemsList(latestCisItems, containerIdFilter, null);
 		}
 	}
 	
@@ -571,18 +581,21 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	public ContentInstanceItemsList getLocalContentInstanceItemsList(String user, AHContainerAddress containerAddressFilter) {
 		synchronized (localCisItems) {
-			return createContentInstanceItemsList(localCisItems, containerAddressFilter);				
+			return createContentInstanceItemsList(localCisItems, containerAddressFilter, null);				
 		}
 	}
 	
 	public ContentInstanceItemsList getLocalContentInstanceItemsList(String user, AHContainerAddress containerAddressFilter,
 			long startInstanceId, long endInstanceId) {
 		synchronized (localCisItems) {
-			return createContentInstanceItemsList(localCisItems, containerAddressFilter, startInstanceId, endInstanceId);
+			return createContentInstanceItemsList(localCisItems, containerAddressFilter, null, startInstanceId, endInstanceId);
 		}
 	}
 	
 	public ContentInstance getContentInstance(String user, AHContainerAddress containerId, long instanceId) throws M2MHapException {
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (isLocalOnlyM2MDevice)
+			return null;
 		checkM2MDeviceConnectedStatus();
 		try {
 			return m2mNetworkScl.getSclContentInstance(((AHM2MContainerAddress)containerId).getM2MContainerAdress(), instanceId);
@@ -593,6 +606,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	public ContentInstanceItemsList getContentInstanceItemsList(String user, AHContainerAddress containerId, long instanceId)
 			throws M2MHapException {
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (isLocalOnlyM2MDevice)
+			return null;
 		checkM2MDeviceConnectedStatus();
 		try {
 			return m2mNetworkScl.getSclContentInstanceItemsList(((AHM2MContainerAddress)containerId).getM2MContainerAdress(), instanceId);
@@ -603,6 +619,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	public ContentInstanceItems getContentInstanceItems(String user, AHContainerAddress containerId, long startInstanceId,
 			long endInstanceId) throws M2MHapException {
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (isLocalOnlyM2MDevice)
+			return null;
 		checkM2MDeviceConnectedStatus();
 		try {
 			return m2mNetworkScl.getSclContentInstanceItems(((AHM2MContainerAddress)containerId).getM2MContainerAdress(), startInstanceId, endInstanceId);
@@ -613,6 +632,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	public ContentInstanceItemsList getContentInstanceItemsList(String user, AHContainerAddress containerIdFilter, long startInstanceId,
 			long endInstanceId) throws M2MHapException {
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (isLocalOnlyM2MDevice)
+			return null;
 		checkM2MDeviceConnectedStatus();
 		try {
 			return m2mNetworkScl.getSclContentInstanceItemsList(((AHM2MContainerAddress)containerIdFilter).getM2MContainerAdress(), startInstanceId, endInstanceId);
@@ -631,7 +653,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	public ContentInstance createContentInstanceBatch(String user, AHContainerAddress containerId, ContentInstance contentInstance)
 			throws M2MHapException {
-		checkM2MDeviceStartedStatus();
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (!isLocalOnlyM2MDevice)
+			checkM2MDeviceStartedStatus();
 		createLocalContentInstance(user, containerId, contentInstance);
 		if (checkAttributeIdFilter(HapServiceConfiguration.LOCAL_ONLY_ATTRIBUTE_ID_FILTER, containerId.getContainerName()))
 			// Local only container
@@ -648,12 +672,10 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			}
 			ciis.getContentInstances().add(contentInstance);
 			String containerName = containerId.getContainerName();
-			if (checkAttributeIdFilter(HapServiceConfiguration.CACHED_ATTRIBUTE_ID_FILTER, containerName)) {
-				ciisLatest = new ContentInstanceItems();
-				ciisLatest.setAddressedId(contentInstanceAddresssedId);
-				ciisLatest.getContentInstances().add(contentInstance);
-				latestCisItems.put(contentInstanceAddresssedId, ciisLatest);
-			}
+			ciisLatest = new ContentInstanceItems();
+			ciisLatest.setAddressedId(contentInstanceAddresssedId);
+			ciisLatest.getContentInstances().add(contentInstance);
+			latestCisItems.put(contentInstanceAddresssedId, ciisLatest);
 		}
 		return contentInstance;
 	}
@@ -673,30 +695,31 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	
 	private ContentInstance createContentInstance(String user, AHContainerAddress containerId, ContentInstance contentInstance, boolean useLocalCache)
 			throws M2MHapException {
-		checkM2MDeviceStartedStatus();
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (!isLocalOnlyM2MDevice)
+			checkM2MDeviceStartedStatus();
 		if (useLocalCache) {
 			createLocalContentInstance(user, containerId, contentInstance);
 			if (checkAttributeIdFilter(HapServiceConfiguration.LOCAL_ONLY_ATTRIBUTE_ID_FILTER, containerId.getContainerName()))
 				// Local only container
 				return contentInstance;
 		}
-		checkM2MDeviceConnectedStatus();
 		String contentInstanceAddresssedId = ((AHM2MContainerAddress)containerId).getM2MContainerAdress().getContentInstancesUrl();
-
-		try {
-			contentInstance = m2mNetworkScl.createSclContentInstance(((AHM2MContainerAddress)containerId).getM2MContainerAdress(), contentInstance);
-		} catch (M2MServiceException e) {
-			throw new M2MHapException(HAP_SERVER_COMMUNICATION_PROBLEMS);
+		if (!isLocalOnlyM2MDevice) {
+			checkM2MDeviceConnectedStatus();
+			try {
+				contentInstance = m2mNetworkScl.createSclContentInstance(((AHM2MContainerAddress)containerId).getM2MContainerAdress(), contentInstance);
+			} catch (M2MServiceException e) {
+				throw new M2MHapException(HAP_SERVER_COMMUNICATION_PROBLEMS);
+			}
 		}
 		synchronized (cisItems) {
 			ContentInstanceItems ciisLatest = null;
 			String containerName = containerId.getContainerName();
-			if (checkAttributeIdFilter(HapServiceConfiguration.CACHED_ATTRIBUTE_ID_FILTER, containerName)) {
-				ciisLatest = new ContentInstanceItems();
-				ciisLatest.setAddressedId(contentInstanceAddresssedId);
-				ciisLatest.getContentInstances().add(contentInstance);
-				latestCisItems.put(contentInstanceAddresssedId, ciisLatest);
-			}
+			ciisLatest = new ContentInstanceItems();
+			ciisLatest.setAddressedId(contentInstanceAddresssedId);
+			ciisLatest.getContentInstances().add(contentInstance);
+			latestCisItems.put(contentInstanceAddresssedId, ciisLatest);
 		}
 		return contentInstance;
 	}
@@ -709,7 +732,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	}
 	
 	public ContentInstance createContentInstanceQueued(String user, AHContainerAddress containerId, ContentInstance contentInstance, boolean sync) throws M2MHapException {
-		checkM2MDeviceStartedStatus();
+		boolean isLocalOnlyM2MDevice = isLocalOnlyM2MDevice();
+		if (!isLocalOnlyM2MDevice)
+			checkM2MDeviceStartedStatus();
 		Map<AHContainerAddress, HapContentInstancesQueue> queuesMap = sync ? syncContentInstancesQueuesMap : contentInstancesQueuesMap;
 		HapContentInstancesQueue ciQueue = null;
 		createLocalContentInstance(user, containerId, contentInstance);

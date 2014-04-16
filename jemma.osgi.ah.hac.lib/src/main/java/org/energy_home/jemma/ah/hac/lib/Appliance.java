@@ -44,12 +44,9 @@ import org.energy_home.jemma.ah.hac.lib.internal.AppliancesProxy;
  * 
  */
 public class Appliance extends BasicAppliance implements IManagedAppliance {
-	public static final String APPLIANCE_EPS_TYPES_PROPERTY = "ah.app.eps.types";
-	public static final String APPLIANCE_EPS_IDS_PROPERTY = "ah.app.eps.ids";
-	
 //  In driver mode IManagedAppliance service is unregistered in case of zigbee node disconnection
 	private static final String AH_HAC_LIGHT_MODE = "driver";
-	private static final String AH_EXECUTION_MODE = System.getProperty("it.telecomitalia.ah.hac.mode");
+	private static final String AH_EXECUTION_MODE = System.getProperty("org.energy_home.jemma.ah.hac.mode");
 	
 	private static boolean isHacDriverModeActive() {
 		return AH_HAC_LIGHT_MODE.equals(AH_EXECUTION_MODE);

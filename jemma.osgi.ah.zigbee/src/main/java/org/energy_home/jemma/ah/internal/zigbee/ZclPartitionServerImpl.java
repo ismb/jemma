@@ -15,6 +15,16 @@
  */
 package org.energy_home.jemma.ah.internal.zigbee;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.PartitionServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.ReadHandshakeParamResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.TransferPartitionedFrameCommand;
@@ -36,17 +46,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeClusterID;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 class PartitionedFrame {
 	private boolean _ack = false;

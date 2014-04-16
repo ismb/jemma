@@ -18,6 +18,10 @@ package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.DeviceTemperatureConfigurationServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -28,11 +32,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI24;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.DeviceTemperatureConfigurationServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclDeviceTemperatureConfigurationServer extends ZclServiceCluster implements DeviceTemperatureConfigurationServer,
 		ZigBeeDeviceListener {

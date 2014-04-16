@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
@@ -22,10 +25,6 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.WriteAttributeRecord;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
@@ -38,10 +37,10 @@ import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclAbstractDataType;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI24;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI16;
 
 public class ZclApplianceControlServer extends ZclServiceCluster implements ApplianceControlServer, ZigBeeDeviceListener {
 

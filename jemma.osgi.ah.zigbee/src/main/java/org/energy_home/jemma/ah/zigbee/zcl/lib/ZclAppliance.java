@@ -15,18 +15,16 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
+import java.util.Dictionary;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IHacDevice;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.DriverAppliance;
-
-import java.util.Dictionary;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.internal.zigbee.ZigBeeManagerImpl;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;

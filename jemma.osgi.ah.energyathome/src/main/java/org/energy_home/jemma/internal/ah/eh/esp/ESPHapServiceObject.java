@@ -313,7 +313,6 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			log.info("getHourlyProducedEnergyForecastWithHapCache returned null or empty list, trying to use previous day data");
 			items = getHourlyProducedEnergyForecast(containerId);
 		}
-		log.info("getHourlyProducedEnergyForecastWithHapCache returned: " + items);
 		return toFloatValueList(items);	
 	}
 		
@@ -325,7 +324,8 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			result = getHourlyProducedEnergyForecastWithHapCache(containerId);
 		} catch (Exception e) {
 			log.error("retrieveHourlyProducedEnergyForecast exception while retrieving forecast data for produced energy", e);
-		}		
+		}
+		log.info("retrieveHourlyProducedEnergyForecast returned " + result);
 		if (result != null)
 			return result;
 		// Backup solution if no result are returned by previous query (uses produced energy data collected in the previous 24 hours)
@@ -335,6 +335,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		} catch (Exception e) {
 			log.error("retrieveHourlyProducedEnergyForecast exception while retrieving previous day data for produced energy", e);
 		}
+		log.info("retrieveHourlyProducedEnergyForecast returned " + result);
 		return result;
 	}
 	
@@ -420,7 +421,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	}
 	
 	/* (non-Javadoc)
-	 * @see it.telecomitalia.internal.ah.eh.esp.IHapProxy#storeEvent(java.lang.String, long, int)
+	 * @see org.energy_home.jemma.internal.ah.eh.esp.IHapProxy#storeEvent(java.lang.String, long, int)
 	 */
 	public void storeEvent(String applianceId, long timestamp, int eventType) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);

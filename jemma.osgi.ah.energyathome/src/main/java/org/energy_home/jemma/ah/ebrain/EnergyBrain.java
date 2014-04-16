@@ -15,9 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +23,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorListener;
 import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorTask;
@@ -52,17 +51,7 @@ public class EnergyBrain implements IBasicApplianceListener {
 			// TODO Auto-generated method stub
 			
 		}
-		/* Removed in demo_amsterdam version
-		public void storeDeliveredPower(String applianceId, long time, float power) throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
 		
-		public void storeOnOffStatus(String appliancePid, long timestamp, boolean value) throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
-		*/
 		public void storeDeliveredEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo)
 				throws Exception {
 			// TODO Auto-generated method stub

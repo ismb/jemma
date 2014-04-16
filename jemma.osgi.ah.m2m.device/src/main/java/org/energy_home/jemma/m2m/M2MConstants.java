@@ -19,15 +19,18 @@ package org.energy_home.jemma.m2m;
 public abstract class M2MConstants {
 	private static String CONFIGURED_CLIENT_VERSION = null;
 	static {
-		String clientVersion = System.getProperty("it.telecomitalia.m2m.device.enableProtocolVersion");
+		String clientVersion = System.getProperty("org.energy_home.jemma.m2m.device.enableProtocolVersion");
 		if (clientVersion == null || clientVersion.equals("true"))
-			// TODO!!! client version need to be read from manifest file
-			CONFIGURED_CLIENT_VERSION = "1.2.13";
+			// TODO:!!! client version need to be read from manifest file
+			CONFIGURED_CLIENT_VERSION = "1.2.15";
 		else
 			CONFIGURED_CLIENT_VERSION = null;
 	}
 	
 	public static final String CLIENT_VERSION = CONFIGURED_CLIENT_VERSION;
+	
+	// No connection with M2M Network platform is performed if this id is configured for the M2M Device
+	public static final String LOCAL_ONLY_DEVICE_ID = "local";
 	
 	public static final String URL_HTTP_PREFIX = "http://";
 	public static final String URL_PORT_PREFIX = ":";

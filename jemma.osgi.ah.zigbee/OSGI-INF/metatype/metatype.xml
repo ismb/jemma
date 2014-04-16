@@ -19,18 +19,18 @@
   
   	<OCD description="ZigBee Refining Driver" 
        	name="ZigBee Refining Driver"
-       	id="it.telecomitalia.osgi.ah.adapter.zigbee">
-    	<AD name="Reconnect to jGal Delay"  id="it.telecomitalia.ah.adapter.zigbee.reconnect" required="true" type="Integer" default="5"/>
-    	<AD name="LQI" id="it.telecomitalia.ah.adapter.zigbee.lqi" required="true" type="Boolean" default="false"/>
-    	<AD name="Initial LQI Delay"  id="it.telecomitalia.ah.adapter.zigbee.discovery.initialdelay" required="true" type="Integer" default="15"/>
-    	<AD name="LQI Interval"  id="it.telecomitalia.ah.adapter.zigbee.discovery.delay" required="true" type="Integer" default="0"/>
-    	<AD name="Timeouts"  id="it.telecomitalia.ah.adapter.zigbee.timeouts" required="true" type="Integer" default="7000"/>   
+       	id="org.energy_home.jemma.osgi.ah.adapter.zigbee">
+    	<AD name="Reconnect to jGal Delay"  id="org.energy_home.jemma.ah.adapter.zigbee.reconnect" required="true" type="Integer" default="5"/>
+    	<AD name="LQI" id="org.energy_home.jemma.ah.adapter.zigbee.lqi" required="true" type="Boolean" default="false"/>
+    	<AD name="Initial LQI Delay"  id="org.energy_home.jemma.ah.adapter.zigbee.discovery.initialdelay" required="true" type="Integer" default="15"/>
+    	<AD name="LQI Interval"  id="org.energy_home.jemma.ah.adapter.zigbee.discovery.delay" required="true" type="Integer" default="0"/>
+    	<AD name="Timeouts"  id="org.energy_home.jemma.ah.adapter.zigbee.timeouts" required="true" type="Integer" default="7000"/>   
 	</OCD>
   
-   	<Designate pid="it.telecomitalia.osgi.ah.adapter.zigbee">
-        <Object ocdref="it.telecomitalia.osgi.ah.adapter.zigbee">
-      		<Attribute adref="it.telecomitalia.ah.adapter.zigbee.reconnect" content="5"/>
-      		<Attribute adref="it.telecomitalia.ah.adapter.zigbee.lqi" content="false"/>
+   	<Designate pid="org.energy_home.jemma.osgi.ah.adapter.zigbee">
+        <Object ocdref="org.energy_home.jemma.osgi.ah.adapter.zigbee">
+      		<Attribute adref="org.energy_home.jemma.ah.adapter.zigbee.reconnect" content="5"/>
+      		<Attribute adref="org.energy_home.jemma.ah.adapter.zigbee.lqi" content="false"/>
     	</Object>
   	</Designate>
   

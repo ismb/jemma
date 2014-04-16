@@ -47,7 +47,7 @@ public interface IServiceCluster {
 
 	/**
 	 * Returns the name of this service cluster (e.g.
-	 * {@code "it.telecomitalia.ah.cluster.zigbee.general.OnOffServer"} in case
+	 * {@code "org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer"} in case
 	 * of a server side implementation of the OnOff ZigBee cluster)
 	 * 
 	 * @return The name of this service cluster
@@ -56,7 +56,7 @@ public interface IServiceCluster {
 
 	/**
 	 * Returns the type of this service cluster (e.g.
-	 * {@code "it.telecomitalia.ah.cluster.zigbee.general.OnOff"} in case of a
+	 * {@code "org.energy_home.jemma.ah.cluster.zigbee.general.OnOff"} in case of a
 	 * client or server side implementation of the OnOff ZigBee cluster)
 	 * 
 	 * @return The name of this service cluster
@@ -90,7 +90,7 @@ public interface IServiceCluster {
 	 * @param attributeName
 	 *            The name of the attribute (e.g.
 	 *            {@code
-	 *            it.telecomitalia.ah.cluster.zigbee
+	 *            org.energy_home.jemma.ah.cluster.zigbee
 	 *            .general.OnOffServer.ATTR_OnOff_NAME)}
 	 * @param endPointRequestContext
 	 *            The request context, including the connected end point that
@@ -125,7 +125,7 @@ public interface IServiceCluster {
 	 * @param attributeName
 	 *            The name of the attribute (e.g.
 	 *            {@code
-	 *            it.telecomitalia.ah.cluster.zigbee
+	 *            org.energy_home.jemma.ah.cluster.zigbee
 	 *            .general.OnOffServer.ATTR_OnOff_NAME)}
 	 * @param parameters
 	 *            The requested subscription parameters (
@@ -170,7 +170,7 @@ public interface IServiceCluster {
 	 * @param attributeName
 	 *            The name of the attribute (e.g.
 	 *            {@code
-	 *            it.telecomitalia.ah.cluster.zigbee
+	 *            org.energy_home.jemma.ah.cluster.zigbee
 	 *            .general.OnOffServer.ATTR_OnOff_NAME)}
 	 * @param endPointRequestContext
 	 *            The request context, including the connected end point that
@@ -196,7 +196,7 @@ public interface IServiceCluster {
 	 * @param attributeName
 	 *            The name of the attribute (e.g.
 	 *            {@code
-	 *            it.telecomitalia.ah.cluster.zigbee
+	 *            org.energy_home.jemma.ah.cluster.zigbee
 	 *            .general.OnOffServer.ATTR_OnOff_NAME)}
 	 * @param attributeValue
 	 *            The value
@@ -224,7 +224,7 @@ public interface IServiceCluster {
 	 * @param commandName
 	 *            The name of the command to invoke (e.g.
 	 *            {@code
-	 *            it.telecomitalia.ah.cluster.zigbee.general.OnOffServer.CMD_Toggle_NAME
+	 *            org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer.CMD_Toggle_NAME
 	 *            * })
 	 * @param parameters
 	 *            An array with all the parameters associated to the specific
@@ -247,5 +247,6 @@ public interface IServiceCluster {
 	 */
 	public Object execCommand(String commandName, Object[] parameters, IEndPointRequestContext endPointRequestContext)
 			throws ApplianceException, ServiceClusterException;
-
+	
+	public String[] getSupportedAttributeNames(IEndPointRequestContext endPointRequestContext) throws ApplianceException, ServiceClusterException;
 }

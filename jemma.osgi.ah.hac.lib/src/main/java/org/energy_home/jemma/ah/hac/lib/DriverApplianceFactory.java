@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-
-
-
-
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IHacDevice;
 import org.energy_home.jemma.ah.hac.IManagedAppliance;
@@ -46,7 +42,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 	HashMap appliance2tracker = new HashMap();	
 	
 	void started(BundleContext bc) {
-		String enableAutoInstallStr = this.bc.getProperty("it.telecomitalia.ah.driver.autoinstall");
+		String enableAutoInstallStr = this.bc.getProperty("org.energy_home.jemma.ah.driver.autoinstall");
 		if (!isNullOrEmpty(enableAutoInstallStr)) {
 			try {
 				enableAutoInstall = Boolean.parseBoolean(enableAutoInstallStr);

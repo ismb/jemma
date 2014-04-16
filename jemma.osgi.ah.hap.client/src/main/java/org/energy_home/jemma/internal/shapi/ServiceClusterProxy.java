@@ -15,23 +15,29 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
-import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ContentInstanceItems;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public  class ServiceClusterProxy extends ServiceCluster {
+	private static final String CORE_CLUSTERS_ATTRIBUTE_ID_PREFIX = "ah.cluster.ah";
+	private static final String CORE_CLUSTERS_ATTRIBUTE_NAME_PREFIX = "org.energy_home.jemma.ah.cluster.ah";
+	private static final String TELECOMITALIA_PACKAGE_PREFIX = "org.energy_home.jemma.";
+	
 	protected static final Log log = LogFactory.getLog(ServiceClusterProxy.class);
 	
 	public static boolean isAnUnconfirmedCommand(AHContainerAddress containerAddress) {
@@ -60,14 +66,33 @@ public  class ServiceClusterProxy extends ServiceCluster {
 	protected ApplianceProxyList applianceProxyList;
 	protected ISubscriptionManager subscriptionManager;
 	
-	private void manageSubscriptions(String appliancePid, Integer endPointId, String clusterName, String attributeName, ContentInstance ci) {
+	private void manageSubscriptions(String appliancePid, Integer endPointId, String attributeId, ContentInstance ci) {
 		if (subscriptionManager.checkActiveSubscriptions()) {
 			ContentInstanceItems cisItems = new ContentInstanceItems();
-			cisItems.setAddressedId(ahm2mHapService.getLocalAddressedId(appliancePid, endPointId, clusterName, attributeName));
+			cisItems.setAddressedId(ahm2mHapService.getLocalAddressedId(appliancePid, endPointId, attributeId));
 			cisItems.getContentInstances().add(ci);
 			subscriptionManager.notifyContentInstanceItems(cisItems);
 		}
 	}	
+	
+	private String getAttributeId(String clusterName, String attributeName) {
+		if (clusterName == null || clusterName.equals("")) {
+			return attributeName;
+		} else if (clusterName.equals(ConfigServer.class.getName())) {
+			String attributeId = clusterName + "." + attributeName;
+			return attributeId.substring(TELECOMITALIA_PACKAGE_PREFIX.length());
+		} else {
+			return getAttributeId(attributeName);
+		}		
+	}
+	
+	protected String getAttributeId(String attributeName) {
+		return null;
+	}
+	
+	protected Object decodeAttributeValue(String appliancePid, int endPointId, String attributeId, Object value) {
+		return value;
+	}
 	
 	public ServiceClusterProxy (ApplianceProxyList applianceProxyList, AHM2MHapService ahm2mHapService, ISubscriptionManager subscriptionManager) throws ApplianceException {
 		super();
@@ -82,25 +107,35 @@ public  class ServiceClusterProxy extends ServiceCluster {
 	public void checkServiceCluster(ApplianceProxy applianceProxy) {		
 	}
 	
-	public ContentInstance execCommand(String appliancePid, int endPointId, String containerName, ContentInstance ci) {
+	public ContentInstance execCommand(String appliancePid, int endPointId, String containerName, ContentInstance ci) throws ApplianceException, ServiceClusterException {
 		return null;
 	}
 	
-	public void notifyAttributeValue(String appliancePid, int endPointId, String clusterName, String attributeName, long timestamp, Object value, boolean batchRequest) {
+	public final void sendAttributeValue(String appliancePid, int endPointId, String clusterName, String attributeName, long timestamp, Object value, boolean batchRequest) {
 		try {
-			ContentInstance ci = ahm2mHapService.sendAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, value, batchRequest);	
-			manageSubscriptions(appliancePid, endPointId, clusterName, attributeName, ci);		
+			String attributeId = getAttributeId(clusterName, attributeName);
+			if (attributeId == null) {
+				log.info("Received attribute value for unexported attribute: " + clusterName + ", " + attributeName);
+			} else {
+				Object decodedValue = decodeAttributeValue(appliancePid, endPointId, attributeName, value);	
+				sendAttributeValue(appliancePid, endPointId, attributeId, timestamp, decodedValue, batchRequest);
+			}
 		} catch (Exception e) {
 			log.error("Error in notifyAttributeValue for appliance " + appliancePid, e);
 		}
 	}
 	
-	public void notifyAttributeValue(String attributeName, IAttributeValue attributeValue, IEndPointRequestContext endPointRequestContext) {
+	public final void sendAttributeValue(String appliancePid, int endPointId, String attributeId, long timestamp, Object value, boolean batchRequest) throws HacException {
+		ContentInstance ci = ahm2mHapService.sendAttributeValue(appliancePid, endPointId, attributeId, timestamp, value, batchRequest);	
+		manageSubscriptions(appliancePid, endPointId, attributeId, ci);	
+	}
+	
+	public final void notifyAttributeValue(String attributeName, IAttributeValue attributeValue, IEndPointRequestContext endPointRequestContext) {
 		try {
 			IEndPoint peerEndPoint = endPointRequestContext.getPeerEndPoint();
 			String appliancePid = peerEndPoint.getAppliance().getPid();
 			int endPointId = peerEndPoint.getId();
-			notifyAttributeValue(appliancePid, endPointId, HacCommon.getPeerClusterName(getName()), attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), true);		
+			sendAttributeValue(appliancePid, endPointId, HacCommon.getPeerClusterName(getName()), attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), true);		
 		} catch (Exception e) {
 			log.error("notifyAttributeValue error", e);
 		}

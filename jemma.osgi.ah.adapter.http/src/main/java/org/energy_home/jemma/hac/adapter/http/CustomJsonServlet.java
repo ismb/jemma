@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.hac.adapter.http;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.useradmin.Authorization;
 
@@ -52,7 +52,16 @@ public class CustomJsonServlet extends HttpServlet {
 		String methodName;
 		
 		HttpSession session = req.getSession(true);
-		
+		//log.debug("Session is " + session.getId());
+
+//		Counter counter;
+//		if (session.isNew()) {
+//			counter = new Counter();
+//			session.setAttribute("counter", counter);
+//		}
+//
+//		counter = ((Counter) session.getAttribute("counter"));
+//		counter.increment();
 
 		objectid = req.getParameter("objectid");
 		if (objectid == null) {

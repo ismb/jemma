@@ -16,9 +16,7 @@
 package org.energy_home.jemma.osgi.utils.equinox.console;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Dictionary;
-
 
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;

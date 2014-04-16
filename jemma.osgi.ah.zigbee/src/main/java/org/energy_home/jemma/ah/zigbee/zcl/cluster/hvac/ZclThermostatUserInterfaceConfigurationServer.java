@@ -18,17 +18,16 @@ package org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.energy_home.jemma.ah.cluster.zigbee.hvac.ThermostatUserInterfaceConfigurationServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.hvac.ThermostatUserInterfaceConfigurationServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclThermostatUserInterfaceConfigurationServer extends ZclServiceCluster implements
 		ThermostatUserInterfaceConfigurationServer, ZigBeeDeviceListener {

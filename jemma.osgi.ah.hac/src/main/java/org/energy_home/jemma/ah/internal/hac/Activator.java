@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
 	public void start(BundleContext bc) throws Exception {
-		boolean enableUpdateBugPatch = getProperty("it.telecomitalia.ah.updatepatch", false);
+		boolean enableUpdateBugPatch = getProperty("org.energy_home.jemma.ah.updatepatch", false);
 		if (enableUpdateBugPatch) {
 			PatchUpdateBug.patchUpdateBugOnHac(bc, "/hac-config.xml");
 			PatchUpdateBug.patchUpdateBugOnHac(bc, "/cms-config.xml");
@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
 	}
 	
 	boolean getProperty(String name, boolean defaultValue) {
-		String value = System.getProperty("it.telecomitalia.ah.updatepatch");
+		String value = System.getProperty("org.energy_home.jemma.ah.updatepatch");
 		
 		if (value != null) {
 			if (value.equals("true")) {

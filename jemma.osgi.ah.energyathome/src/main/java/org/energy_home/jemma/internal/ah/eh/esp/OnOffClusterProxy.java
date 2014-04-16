@@ -15,20 +15,19 @@
  */
 package org.energy_home.jemma.internal.ah.eh.esp;
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
+import org.energy_home.jemma.ah.ebrain.IOnOffListener;
+import org.energy_home.jemma.ah.ebrain.IOnOffProxy;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.IServiceClusterListener;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.ah.ebrain.IOnOffListener;
-import org.energy_home.jemma.ah.ebrain.IOnOffProxy;
 
 public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClient, IServiceClusterListener, IOnOffProxy {
 	private static final Log log = LogFactory.getLog(OnOffClusterProxy.class);

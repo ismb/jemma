@@ -270,7 +270,7 @@ public class SerialCommRxTx implements IConnector {
 			connected = true;
 		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Starting inizialize procedure for: PortName=" + commport + "Speed=" + boudrate);
+			logger.info("Starting inizialize procedure for: PortName=" + commport + "Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}

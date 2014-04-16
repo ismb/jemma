@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceFactory;
@@ -43,7 +41,6 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
-import org.energy_home.jemma.ah.hac.IServiceClusterListener;
 import org.energy_home.jemma.ah.hac.IServiceClustersListener;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.NotAuthorized;
@@ -51,14 +48,12 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
-import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
 import org.energy_home.jemma.ah.hac.lib.ext.EndPointRequestContext;
 import org.energy_home.jemma.ah.hac.lib.ext.ICoreApplication;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-//import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
-import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -85,9 +80,9 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	protected static final int INITIAL_APPLICATION_NUMBER = 3;
 	
-	// Driver mode is used when it.telecomitalia.osgi.ah.hac bundle id not available (no appliance configuration information is available)
+	// Driver mode is used when org.energy_home.jemma.osgi.ah.hac bundle id not available (no appliance configuration information is available)
 	private static final String AH_HAC_DRIVER_MODE = "driver";
-	private static final String AH_EXECUTION_MODE = System.getProperty("it.telecomitalia.ah.hac.mode");
+	private static final String AH_EXECUTION_MODE = System.getProperty("org.energy_home.jemma.ah.hac.mode");
 	
 	public static final String APPLIANCE_TYPE = "ah.app.proxy";
 	public static final String END_POINT_TYPE = "ah.ep.zigbee.proxy";

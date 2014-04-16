@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.zigbee;
 
-import java.net.URL;
-
 import org.energy_home.jemma.ah.internal.utils.PersistentProperties;
 
 public class Props extends PersistentProperties {

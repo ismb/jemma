@@ -15,10 +15,10 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
+
 import java.util.Calendar;
 
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
-import org.energy_home.jemma.ah.ebrain.algo.DailyTariff.TariffIntervals;
 	/*
 	 * Daily Tariff for the week. It assumes that each profile is a segment that specifies a tariff
 	 * in KW/hour for a given start/end interval. Cost unit is expressed in hundredth-millesimals of euro,

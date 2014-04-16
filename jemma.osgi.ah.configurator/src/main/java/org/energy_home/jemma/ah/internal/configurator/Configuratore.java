@@ -15,16 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.configurator;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-import org.energy_home.jemma.ah.hac.lib.ext.Category;
-import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
-import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-import org.energy_home.jemma.ah.hac.lib.ext.Location;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,6 +45,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.energy_home.jemma.ah.configurator.IConfigurator;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
+import org.energy_home.jemma.ah.hac.lib.ext.Category;
+import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
+import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
+import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -75,12 +77,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.energy_home.jemma.ah.configurator.IConfigurator;
-
-//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class Configuratore implements FrameworkListener, IConfigurator {
 
@@ -100,7 +96,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	private Vector configurationsVector = new Vector();
 	private Vector rules = new Vector();
 
-	private final static String SCENARIOS_PATH = "xml/scenarios/";
+	private final static String SCENARIOS_PATH = "/xml/scenarios/";
 
 	private IHacService hacService;
 
@@ -176,12 +172,10 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	 */
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
-
 		Role role = ua.createRole(name, roleType);
 		if (role == null) {
 			role = ua.getRole(name);
 		}
-
 		return role;
 	}
 
@@ -221,31 +215,35 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		User installUser = (User) this.createRole(ua, "Install", Role.USER);
 		User homeUser = (User) this.createRole(ua, "Home", Role.USER);
 		User cedacUser = (User) this.createRole(ua, "Cedac", Role.USER);
-		User adminUser = (User) this.createRole(ua, "admin", Role.USER);
+		User adminUser = (User) this.createRole(ua, "Admin", Role.USER);
+		User indesitUser = (User) this.createRole(ua, "Indesit", Role.USER);
+		User electroluxUser = (User) this.createRole(ua, "Electrolux", Role.USER);
+		User enelUser = (User) this.createRole(ua, "Enel", Role.USER);
+		User telecomitaliaUser = (User) this.createRole(ua, "Telecomitalia", Role.USER);
 
-		this.setUserCredentials(installUser, "InstallUser");
-		this.setUserCredentials(homeUser, "HomeUser");
-		this.setUserCredentials(cedacUser, "CedacUser");
-		this.setUserCredentials(adminUser, "admin");
+		this.setUserCredentials(installUser, "Install");
+		this.setUserCredentials(homeUser, "Home");
+		this.setUserCredentials(cedacUser, "Cedac");
+		this.setUserCredentials(adminUser, "Admin");
+		this.setUserCredentials(indesitUser, "Indesit");
+		this.setUserCredentials(electroluxUser, "Electrolux");
+		this.setUserCredentials(telecomitaliaUser, "Telecomitalia");
 
 		// Fills the Administrators group
 		administratorsGroup.addMember(adminUser);
 
 		residentsGroup.addMember(homeUser);
 
+		membersGroup.addMember(indesitUser);
+		membersGroup.addMember(electroluxUser);
+		membersGroup.addMember(enelUser);
+		membersGroup.addMember(telecomitaliaUser);
+
 		felixWebConsoleAccess.addMember(administratorsGroup);
 		homeEnergyPortalView.addMember(membersGroup);
 		remoteAccess.addMember(administratorsGroup);
 		softwareUpgradeAccess.addMember(administratorsGroup);
 		serviceGroup.addMember(cedacUser);
-
-		/*
-		membersGroup.addMember(indesitUser);
-		membersGroup.addMember(electroluxUser);
-		membersGroup.addMember(enelUser);
-		membersGroup.addMember(telecomitaliaUser);
-		*/
-
 
 		homeEnergyPortalConfiguration.addMember(serviceGroup);
 		homeEnergyPortalConfiguration.addMember(administratorsGroup);
@@ -304,7 +302,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 
 		log.debug("try to load configuration '" + configName + "'");
-		
+
 		try {
 			if (storageArea) {
 				String configFilename = SCENARIOS_PATH + configName + ".xml";
@@ -312,14 +310,13 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 				log.debug("storage area is " + configFile);
 				stream = new FileInputStream(configFile);
 			} else {
-
 				File f = new File(configName);
 				if (f.isAbsolute()) {
 					stream = new FileInputStream(configName);
 				} else {
 					String configFilename = SCENARIOS_PATH + configName + ".xml";
-					//URL url = new URL("platform:/plugin/jemma.osgi.ah.configurator/"+configFilename);
-					URL url = bc.getBundle().getEntry(configFilename);
+					//URL url = bc.getBundle().getEntry(configFilename);
+					URL url = this.getClass().getResource(configFilename);
 					if (url == null) {
 						log.error("unable to open file " + configFilename);
 						return false;
@@ -1033,7 +1030,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 			hacService.addCategory(category);
 		}
 
-		//FIXME: check PID				
+				
 		Configuration[] configurations = configurationAdmin.listConfigurations("(" + ConfigurationAdmin.SERVICE_FACTORYPID + "=" + "org.energy_home.jemma.osgi.ah.hac.locations" + ")" );
 		if (configurations != null) {
 			for (int i = 0; i < configurations.length; i++) {

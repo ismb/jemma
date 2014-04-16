@@ -18,25 +18,25 @@
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
      <OCD description="Locations DB" 
        	name="Locations"
-       	id="it.telecomitalia.osgi.ah.hac.locations">
-    	<AD name="Name"  id="it.telecomitalia.ah.location.name" type="String" default=""/>
-    	<AD name="Icon"  id="it.telecomitalia.ah.location.icon" type="String" default=""/>
-    	<AD name="Pid"  id="it.telecomitalia.ah.location.pid" type="String" default=""/>
+       	id="org.energy_home.jemma.osgi.ah.hac.locations">
+    	<AD name="Name"  id="org.energy_home.jemma.ah.location.name" type="String" default=""/>
+    	<AD name="Icon"  id="org.energy_home.jemma.ah.location.icon" type="String" default=""/>
+    	<AD name="Pid"  id="org.energy_home.jemma.ah.location.pid" type="String" default=""/>
 	</OCD>
   
-   	<Designate pid="it.telecomitalia.osgi.ah.hac.locations" factoryPid="it.telecomitalia.osgi.ah.hac.locations" >
-        <Object ocdref="it.telecomitalia.osgi.ah.hac.locations">
+   	<Designate pid="org.energy_home.jemma.osgi.ah.hac.locations" factoryPid="org.energy_home.jemma.osgi.ah.hac.locations" >
+        <Object ocdref="org.energy_home.jemma.osgi.ah.hac.locations">
     	</Object>
   	</Designate> 
   	
   	<OCD description="Connection Admin Manager" 
        	name="Connection Admin Manager"
-       	id="it.telecomitalia.osgi.ah.connection.admin">
-    	<AD name="Rule"  id="it.telecomitalia.ah.connadmin.rules" type="String" cardinality="10"/>  
+       	id="org.energy_home.jemma.osgi.ah.connection.admin">
+    	<AD name="Rule"  id="org.energy_home.jemma.ah.connadmin.rules" type="String" cardinality="10"/>  
 	</OCD>
   
-     <Designate pid="it.telecomitalia.osgi.ah.connection.admin">
-        <Object ocdref="it.telecomitalia.osgi.ah.connection.admin">
+     <Designate pid="org.energy_home.jemma.osgi.ah.connection.admin">
+        <Object ocdref="org.energy_home.jemma.osgi.ah.connection.admin">
     	</Object>
   	</Designate>
 </metatype:MetaData>

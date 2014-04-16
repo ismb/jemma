@@ -19,6 +19,8 @@ import java.util.Properties;
 
 public interface M2MDeviceConfig {
 
+	public boolean isLocalOnly();
+	
 	public boolean isValid();
 
 	public Properties getProperties();

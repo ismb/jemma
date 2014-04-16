@@ -15,16 +15,16 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.IServiceClusterListener;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
-
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EndPointProxy extends EndPoint implements IEndPoint {
 	private Map serviceClusterProxyMap = new HashMap();

@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceEventsAndAlertsClient;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceEventsAndAlertsServer;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.GetAlertsResponse;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -24,13 +30,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI24;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceEventsAndAlertsClient;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceEventsAndAlertsServer;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.GetAlertsResponse;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclApplianceEventsAndAlertsClient extends ZclServiceCluster implements ApplianceEventsAndAlertsClient,
 		ZigBeeDeviceListener {
@@ -106,7 +105,7 @@ public class ZclApplianceEventsAndAlertsClient extends ZclServiceCluster impleme
 
 	protected IZclFrame parseGetEventsAndAlerts(ApplianceEventsAndAlertsServer o, IZclFrame zclFrame) throws ApplianceException,
 			ServiceClusterException {
-		GetAlertsResponse r = o.execGetAlerts(null);
+		GetAlertsResponse r = o.execGetAlerts(endPoint.getDefaultRequestContext());
 		int size = ZclGetAlertsResponse.zclSize(r);
 		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
 		zclResponseFrame.setCommandId(0);

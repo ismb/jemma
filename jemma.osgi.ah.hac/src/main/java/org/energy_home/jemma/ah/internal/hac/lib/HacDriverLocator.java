@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +28,7 @@ import org.apache.felix.bundlerepository.Property;
 import org.apache.felix.bundlerepository.Repository;
 import org.apache.felix.bundlerepository.RepositoryAdmin;
 import org.apache.felix.bundlerepository.Resource;
+import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
@@ -64,7 +63,7 @@ public class HacDriverLocator implements DriverLocator {
 		// http://www.myrepository.it/repository
 		// file://C:/repository
 
-		String repositoryPath = bc.getProperty("it.telecomitalia.ah.hac.repository");
+		String repositoryPath = bc.getProperty("org.energy_home.jemma.ah.hac.repository");
 		if (repositoryPath != null) {
 			this.repositoryPath = repositoryPath;
 		}
@@ -158,7 +157,7 @@ public class HacDriverLocator implements DriverLocator {
 			driverIds.add(driverId);
 		}
 
-//!!!!!!Multieps: sembra che vengano comunque restituiti tutti i driver registrati (viene ancora usato device_serial per match su driver gia allocato?)		
+//!!!!!!Multieps: sembra che vengano comunque restituiti tutti i driver registrati (viene ancora usato device_serial per match su driver gia' allocato?)		
 		
 		// select a set of DRIVER_IDs that may match the requested driver
 		// the following code should be technology independent
@@ -177,7 +176,7 @@ public class HacDriverLocator implements DriverLocator {
 //			System.out.println(e.getMessage());
 //		}
 //
-//		driverIds.add("it.telecomitalia.ah.zigbee.generic");
+//		driverIds.add("org.energy_home.jemma.ah.zigbee.generic");
 //
 //		if ((nodeEndPoints != null) && (nodeEndPoints.length == 1) && (profile_id != null) && (device_id != null) && (manufacturer_code != null)) {
 //			int p_id = profile_id.intValue();
@@ -194,7 +193,7 @@ public class HacDriverLocator implements DriverLocator {
 //					break;
 //
 //				case 0x0008:
-//					driverIds.add(new String("it.telecomitalia.ah.zigbee.rangeextender"));
+//					driverIds.add(new String("org.energy_home.jemma.ah.zigbee.rangeextender"));
 //					break;
 //
 //				case 0x0009:
@@ -211,9 +210,9 @@ public class HacDriverLocator implements DriverLocator {
 //
 //				case 0x0301:
 //					if (m_code == 0x1071) {
-//						driverIds.add(new String("it.telecomitalia.zigbee.4noks.thermostat"));
+//						driverIds.add(new String("org.energy_home.jemma.zigbee.4noks.thermostat"));
 //					} else {
-//						driverIds.add(new String("it.telecomitalia.zigbee.thermostat"));
+//						driverIds.add(new String("org.energy_home.jemma.zigbee.thermostat"));
 //					}
 //					break;
 //
@@ -227,12 +226,12 @@ public class HacDriverLocator implements DriverLocator {
 //
 //				case 0x0501:
 //				case 0x0053:
-//					driverIds.add(new String("it.telecomitalia.ah.zigbee.metering"));
+//					driverIds.add(new String("org.energy_home.jemma.ah.zigbee.metering"));
 //					break;
 //
 //				case 0x0504:
 //				case 0x0051:
-//					driverIds.add(new String("it.telecomitalia.zigbee.smartplug"));
+//					driverIds.add(new String("org.energy_home.jemma.zigbee.smartplug"));
 //					break;
 //
 //				case 0x0A04:
@@ -268,7 +267,7 @@ public class HacDriverLocator implements DriverLocator {
 //					break;
 //				case 0x0501:
 //					// Energy@Home Metering Device
-//					driverIds.add(new String("it.telecomitalia.ah.zigbee.metering"));
+//					driverIds.add(new String("org.energy_home.jemma.ah.zigbee.metering"));
 //					break;
 //
 //				case 0x0A04:
@@ -292,13 +291,13 @@ public class HacDriverLocator implements DriverLocator {
 //				}
 //			} else if (p_id == 0xA1E0) {
 //				if (d_id == 0x0001) {
-//					driverIds.add(new String("it.telecomitalia.ah.zigbee.testharness"));
+//					driverIds.add(new String("org.energy_home.jemma.ah.zigbee.testharness"));
 //				}
 //			} else if (p_id == 0x0107) {
 //				// Telecom ZigBee Profile
 //				switch (d_id) {
 //				case 0x0101: // ZIN device
-//					driverIds.add(new String("it.telecomitalia.ah.zigbee.zin"));
+//					driverIds.add(new String("org.energy_home.jemma.ah.zigbee.zin"));
 //					break;
 //
 //				default:
@@ -306,7 +305,7 @@ public class HacDriverLocator implements DriverLocator {
 //				}
 //			} else {
 //				// default driver for a ZCL appliance
-//				driverIds.add(new String("it.telecomitalia.ah.driver.zcl"));
+//				driverIds.add(new String("org.energy_home.jemma.ah.driver.zcl"));
 //			}
 //		} else if (deviceCategory.equals("Plugwise")) {
 //			// default driver for the device

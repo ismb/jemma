@@ -15,9 +15,8 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
-
 import org.energy_home.jemma.ah.hac.IEndPoint;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 
 public interface IZclServiceEndPoint extends IEndPoint {
 	public ZigBeeDevice zclGetZigBeeDevice();

@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.hac;
 
+import org.energy_home.jemma.ah.hac.lib.Appliance;
+
 /**
  * This interface is used to notify connections and disconnection of peer
  * appliances.

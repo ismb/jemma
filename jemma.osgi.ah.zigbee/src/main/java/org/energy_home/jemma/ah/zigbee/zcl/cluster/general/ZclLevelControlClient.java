@@ -15,6 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlClient;
+import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
@@ -24,11 +28,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlClient;
-import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclLevelControlClient extends ZclServiceCluster implements LevelControlClient, ZigBeeDeviceListener {
 

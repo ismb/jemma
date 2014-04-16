@@ -15,6 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.zll;
 
+import org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlClient;
+import org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
@@ -25,11 +29,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlClient;
-import org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclLightLinkColorControlClient extends ZclServiceCluster implements ColorControlClient, ZigBeeDeviceListener {
 

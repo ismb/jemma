@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
-
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.OccupancySensingClient;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 
 public class ZclOccupancySensingClient
     extends ZclServiceCluster
