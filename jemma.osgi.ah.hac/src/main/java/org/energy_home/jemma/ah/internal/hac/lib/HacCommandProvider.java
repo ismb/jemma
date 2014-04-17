@@ -15,6 +15,13 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.eclipse.osgi.framework.console.CommandInterpreter;
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.HacException;
 import org.energy_home.jemma.ah.hac.IAppliance;
@@ -27,14 +34,6 @@ import org.energy_home.jemma.ah.hac.lib.ext.Category;
 import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Vector;
-
-import org.eclipse.osgi.framework.console.CommandInterpreter;
-import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.device.DriverLocator;
 import org.slf4j.Logger;

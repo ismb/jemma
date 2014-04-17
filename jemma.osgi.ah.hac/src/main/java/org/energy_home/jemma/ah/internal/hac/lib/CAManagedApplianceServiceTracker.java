@@ -15,10 +15,9 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-
 import java.util.Map;
 
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;

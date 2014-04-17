@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
+import java.util.Calendar;
+
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
@@ -30,8 +32,6 @@ import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
-
-import java.util.Calendar;
 
 public class ApplianceControlClusterProxy extends ServiceClusterProxy implements ApplianceControlClient {
 	public boolean isRemoteControlEnabled (short remoteEnabledFlags) {

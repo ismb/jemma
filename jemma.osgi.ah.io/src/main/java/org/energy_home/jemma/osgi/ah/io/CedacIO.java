@@ -22,8 +22,8 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayLed2;
 import org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayBuzz;
+import org.energy_home.jemma.osgi.ah.io.flexgateway.FlexGatewayLed2;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

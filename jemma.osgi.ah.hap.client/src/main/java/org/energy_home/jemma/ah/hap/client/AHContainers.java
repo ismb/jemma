@@ -15,14 +15,14 @@
  */
 package org.energy_home.jemma.ah.hap.client;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
 import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringServer;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AHContainers {
 

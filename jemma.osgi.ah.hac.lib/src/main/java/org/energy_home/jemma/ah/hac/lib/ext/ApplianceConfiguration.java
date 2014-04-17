@@ -15,11 +15,11 @@
  */
 package org.energy_home.jemma.ah.hac.lib.ext;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.energy_home.jemma.ah.hac.IAppliance;
 
 /**
  * Appliance configuration object uses only end point specific configuration properties 

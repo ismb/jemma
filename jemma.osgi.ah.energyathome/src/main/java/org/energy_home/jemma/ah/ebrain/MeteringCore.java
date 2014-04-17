@@ -33,11 +33,11 @@ import org.energy_home.jemma.ah.hap.client.M2MHapException;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
+import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
+import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 import org.energy_home.jemma.shal.DeviceInfo;
 import org.energy_home.jemma.shal.DeviceListener;
 import org.energy_home.jemma.shal.DeviceService;
-import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
-import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 
 public class MeteringCore implements IMeteringListener, DeviceListener {
 	private static final Log log = LogFactory.getLog(MeteringCore.class.getSimpleName());

@@ -16,9 +16,13 @@
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -26,12 +30,6 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
-import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 
 public class ZclIdentifyServer extends ZclServiceCluster implements IdentifyServer, ZigBeeDeviceListener {
 

@@ -15,17 +15,13 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.lib.ext.Location;
-
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
 
-import org.osgi.framework.InvalidSyntaxException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;

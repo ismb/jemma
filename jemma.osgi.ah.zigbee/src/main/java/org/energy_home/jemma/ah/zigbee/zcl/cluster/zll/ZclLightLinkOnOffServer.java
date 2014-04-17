@@ -15,9 +15,8 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.zll;
 
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
-
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
 
 public class ZclLightLinkOnOffServer extends ZclOnOffServer {
 	public ZclLightLinkOnOffServer() throws ApplianceException {

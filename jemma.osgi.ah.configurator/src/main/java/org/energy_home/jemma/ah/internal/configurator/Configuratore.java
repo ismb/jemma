@@ -15,16 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.configurator;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-import org.energy_home.jemma.ah.hac.lib.ext.Category;
-import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
-import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-import org.energy_home.jemma.ah.hac.lib.ext.Location;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,6 +45,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.energy_home.jemma.ah.configurator.IConfigurator;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
+import org.energy_home.jemma.ah.hac.lib.ext.Category;
+import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
+import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
+import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -75,9 +77,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.energy_home.jemma.ah.configurator.IConfigurator;
 
 //import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 //import com.sun.org.apache.xml.internal.serialize.XMLSerializer;

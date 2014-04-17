@@ -15,13 +15,13 @@
  */
 package org.energy_home.jemma.ah.app.impl;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.energy_home.jemma.ah.app.EnergyAtHomeApp;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 public class Activator implements BundleActivator, EnergyAtHomeApp {
 	private ServiceRegistration service = null;

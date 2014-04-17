@@ -15,12 +15,6 @@
  */
 package org.energy_home.jemma.ah.webui.energyathome;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,12 +26,17 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IAttributeValue;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
+import org.energy_home.jemma.hac.adapter.http.HttpServletBinder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
-import org.energy_home.jemma.hac.adapter.http.HttpServletBinder;
 
 public class HttpAhBinder implements EventHandler, HttpServletBinder {
 

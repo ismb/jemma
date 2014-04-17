@@ -15,16 +15,15 @@
  */
 package org.energy_home.jemma.osgi.ah.zigbee.appliances.generic;
 
+import java.util.Dictionary;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
-
-import java.util.Dictionary;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.device.Driver;
 

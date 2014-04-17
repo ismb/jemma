@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
-
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceIdentificationClient;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 
 public class ZclApplianceIdentificationClient extends ZclServiceCluster implements ApplianceIdentificationClient,
 		ZigBeeDeviceListener {

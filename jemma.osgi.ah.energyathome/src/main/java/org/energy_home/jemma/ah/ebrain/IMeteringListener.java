@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
 
 public interface IMeteringListener {

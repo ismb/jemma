@@ -16,7 +16,6 @@
 package org.energy_home.jemma.ah.hac.lib.ext;
 
 import java.lang.reflect.Proxy;
-import java.util.Map;
 
 import org.energy_home.jemma.ah.cluster.ah.ConfigClient;
 import org.energy_home.jemma.ah.hac.ApplianceException;

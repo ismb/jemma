@@ -15,10 +15,9 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-
 import java.util.HashMap;
 
+import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;

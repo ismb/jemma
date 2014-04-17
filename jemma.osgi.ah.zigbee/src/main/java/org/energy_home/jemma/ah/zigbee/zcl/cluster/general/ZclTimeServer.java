@@ -16,10 +16,12 @@
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.TimeServer;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -30,11 +32,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUTCTime;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.TimeServer;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclTimeServer extends ZclServiceCluster implements TimeServer, ZigBeeDeviceListener {
 

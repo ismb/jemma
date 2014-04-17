@@ -15,11 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +22,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;

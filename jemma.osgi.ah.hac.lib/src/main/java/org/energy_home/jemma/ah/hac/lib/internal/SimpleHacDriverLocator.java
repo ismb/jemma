@@ -22,7 +22,6 @@ import java.util.Vector;
 
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.service.device.DriverLocator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

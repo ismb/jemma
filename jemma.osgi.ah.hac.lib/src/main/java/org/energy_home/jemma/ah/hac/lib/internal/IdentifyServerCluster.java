@@ -15,14 +15,14 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IdentifyServerCluster extends ServiceCluster implements IdentifyServer {
 	private static final Logger LOG = LoggerFactory.getLogger(IdentifyServerCluster.class);

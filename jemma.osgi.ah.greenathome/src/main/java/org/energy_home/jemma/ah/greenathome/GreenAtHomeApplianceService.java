@@ -15,6 +15,13 @@
  */
 package org.energy_home.jemma.ah.greenathome;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.HacException;
@@ -23,13 +30,6 @@ import org.energy_home.jemma.ah.hac.ICategory;
 import org.energy_home.jemma.ah.hac.ILocation;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
-
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 public interface GreenAtHomeApplianceService {
 

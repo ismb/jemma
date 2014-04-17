@@ -22,17 +22,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceManager;
 import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
-import org.energy_home.jemma.ah.hac.lib.Appliance;
-import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
 import org.energy_home.jemma.ah.hac.lib.ext.ConfigServerCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of {@link IAppliance} interface

@@ -15,9 +15,8 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.zll;
 
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
-
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 
 public class ZclLightLinkIdentifyServer extends ZclIdentifyServer {
 	public ZclLightLinkIdentifyServer() throws ApplianceException {

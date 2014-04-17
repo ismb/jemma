@@ -15,6 +15,29 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.util.EntityUtils;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.HacException;
@@ -42,41 +65,16 @@ import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstanceItemsStatus;
 import org.energy_home.jemma.m2m.ContentInstancesBatchRequest;
 import org.energy_home.jemma.m2m.ContentInstancesBatchResponse;
-import org.energy_home.jemma.m2m.SubscriptionItems;
-import org.energy_home.jemma.m2m.Subscription;
 import org.energy_home.jemma.m2m.M2MConstants;
 import org.energy_home.jemma.m2m.M2MXmlConverter;
 import org.energy_home.jemma.m2m.M2MXmlObject;
 import org.energy_home.jemma.m2m.Scl;
 import org.energy_home.jemma.m2m.SclItems;
 import org.energy_home.jemma.m2m.SclStatusEnumeration;
-
+import org.energy_home.jemma.m2m.Subscription;
+import org.energy_home.jemma.m2m.SubscriptionItems;
 import org.energy_home.jemma.utils.rest.RestClient;
 import org.energy_home.jemma.utils.thread.ExecutorService;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.util.EntityUtils;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 //import org.apache.http.client.ClientProtocolException;

@@ -15,15 +15,12 @@
  */
 package org.energy_home.jemma.osgi.ah.io.flexgateway;
 
-import org.energy_home.jemma.osgi.ah.io.Color;
-import org.energy_home.jemma.osgi.ah.io.PlatformsUtil;
-
 import java.io.File;
 import java.io.FileWriter;
-import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.osgi.ah.io.PlatformsUtil;
 
 public class FlexGatewayBuzz {
 

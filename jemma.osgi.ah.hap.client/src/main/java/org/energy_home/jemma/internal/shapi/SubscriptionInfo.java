@@ -15,10 +15,10 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
-import org.energy_home.jemma.m2m.Subscription;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.energy_home.jemma.m2m.Subscription;
 
 public class SubscriptionInfo {
 	Subscription subscription;

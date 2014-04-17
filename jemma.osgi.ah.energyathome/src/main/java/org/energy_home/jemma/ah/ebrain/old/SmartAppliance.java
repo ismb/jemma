@@ -15,15 +15,15 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
-import java.util.*;
+import java.util.Calendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.*;
 
 
 /*

@@ -15,19 +15,6 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
-import java.util.HashMap;
-
-import org.energy_home.jemma.ah.zigbee.IZclFrame;
-import org.energy_home.jemma.ah.zigbee.ZCL;
-import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
-import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
-import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
-import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeString;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
 import org.energy_home.jemma.ah.cluster.zigbee.general.AddGroupResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.GetGroupMembershipResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.GroupsClient;
@@ -36,6 +23,15 @@ import org.energy_home.jemma.ah.cluster.zigbee.general.RemoveGroupResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.ViewGroupResponse;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.zigbee.IZclFrame;
+import org.energy_home.jemma.ah.zigbee.ZCL;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
+import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeString;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
 
 public class ZclGroupsClient extends ZclServiceCluster implements GroupsClient, ZigBeeDeviceListener {
 

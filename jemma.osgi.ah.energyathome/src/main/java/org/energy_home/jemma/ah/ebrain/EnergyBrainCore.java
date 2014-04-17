@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import org.energy_home.jemma.ah.ebrain.algo.SolarIrradianceProfile.SkyCover;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -29,6 +27,7 @@ import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.ebrain.algo.EnergyAllocator;
 import org.energy_home.jemma.ah.ebrain.algo.ParticleSwarmScheduler;
 import org.energy_home.jemma.ah.ebrain.algo.SolarIrradianceProfile;
+import org.energy_home.jemma.ah.ebrain.algo.SolarIrradianceProfile.SkyCover;
 import org.energy_home.jemma.ah.ebrain.algo.SwarmStatistics;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;

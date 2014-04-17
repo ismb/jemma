@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.internal.shapi;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
@@ -27,9 +29,6 @@ import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ContentInstanceItems;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public  class ServiceClusterProxy extends ServiceCluster {
 	protected static final Log log = LogFactory.getLog(ServiceClusterProxy.class);

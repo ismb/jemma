@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.IAppliance;
@@ -37,6 +35,8 @@ import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the {@code IEndPoint} interface

@@ -15,21 +15,6 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IApplianceFactory;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IManagedAppliance;
-import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
-import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
-import org.energy_home.jemma.ah.hac.lib.ext.Category;
-import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
-import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
-import org.energy_home.jemma.ah.hac.lib.ext.Location;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,6 +44,20 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IApplianceFactory;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IManagedAppliance;
+import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
+import org.energy_home.jemma.ah.hac.lib.ext.Category;
+import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
+import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
+import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
+import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;

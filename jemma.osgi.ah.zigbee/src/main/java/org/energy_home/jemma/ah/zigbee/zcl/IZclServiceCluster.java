@@ -15,9 +15,8 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
-
 import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 
 public interface IZclServiceCluster extends IServiceCluster {
 	public void zclAttach(ZigBeeDevice device);

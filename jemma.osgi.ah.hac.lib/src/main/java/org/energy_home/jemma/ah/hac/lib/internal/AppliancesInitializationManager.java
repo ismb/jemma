@@ -17,7 +17,6 @@ package org.energy_home.jemma.ah.hac.lib.internal;
 
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
-import org.energy_home.jemma.ah.cluster.zigbee.measurement.TemperatureMeasurementServer;
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.IlluminanceMeasurementServer;
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.OccupancySensingServer;
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.RelativeHumidityMeasurementServer;
@@ -29,9 +28,7 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
-import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

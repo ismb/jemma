@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -27,11 +26,8 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceFactory;
@@ -43,7 +39,6 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
-import org.energy_home.jemma.ah.hac.IServiceClusterListener;
 import org.energy_home.jemma.ah.hac.IServiceClustersListener;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.NotAuthorized;
@@ -51,20 +46,21 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
-import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+//import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
+import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
 import org.energy_home.jemma.ah.hac.lib.ext.EndPointRequestContext;
 import org.energy_home.jemma.ah.hac.lib.ext.ICoreApplication;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
-//import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
-import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.device.DriverLocator;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AppliancesBasicProxy extends Appliance implements IAppliancesBasicProxy, IServiceClustersListener {
 

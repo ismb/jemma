@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.hac.adapter.http;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -27,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.energy_home.jemma.ah.hac.IAppliance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

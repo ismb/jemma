@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.hac;
 
+import org.energy_home.jemma.ah.hac.lib.Appliance;
+
 /**
  * Provides the description of an appliance class
  * 

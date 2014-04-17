@@ -15,9 +15,6 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
-import org.energy_home.jemma.ah.hap.client.AHContainers;
-import org.energy_home.jemma.ah.hap.client.EHContainers;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
@@ -26,6 +23,8 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hap.client.AHContainers;
+import org.energy_home.jemma.ah.hap.client.EHContainers;
 
 public class HapServiceConfiguration {
 	private static final Log log = LogFactory.getLog(HapServiceConfiguration.class);

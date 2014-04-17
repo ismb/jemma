@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.osgi.ah.zigbee.appliances.generic;
 
-import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
-
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

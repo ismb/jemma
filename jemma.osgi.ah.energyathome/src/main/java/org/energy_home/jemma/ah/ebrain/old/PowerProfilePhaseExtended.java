@@ -15,9 +15,8 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
-import org.energy_home.jemma.ah.ebrain.CalendarUtil;
-
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
+import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 
 public class PowerProfilePhaseExtended {
 	// A % number that bias the allocated power consumption between the peak power (100%)

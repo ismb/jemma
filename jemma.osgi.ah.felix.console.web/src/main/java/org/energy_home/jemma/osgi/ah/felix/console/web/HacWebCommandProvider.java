@@ -15,19 +15,6 @@
  */
 package org.energy_home.jemma.osgi.ah.felix.console.web;
 
-import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
-import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
-import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
-import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
-import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
-import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -47,6 +34,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.IEndPoint;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
+import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
+import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
+import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
+import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
+import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
 
 public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractWebConsolePlugin {
 	private static final long serialVersionUID = -7727225969825874601L;

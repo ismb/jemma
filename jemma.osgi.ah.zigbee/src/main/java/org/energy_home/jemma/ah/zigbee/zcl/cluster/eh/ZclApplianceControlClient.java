@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.eh;
 
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
+import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZclFrame;
@@ -25,13 +31,6 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI24;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
-import org.energy_home.jemma.ah.hac.ServiceClusterException;
 
 public class ZclApplianceControlClient extends ZclServiceCluster implements ApplianceControlClient, ZigBeeDeviceListener {
 

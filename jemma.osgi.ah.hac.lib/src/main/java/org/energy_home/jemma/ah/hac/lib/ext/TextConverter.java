@@ -26,7 +26,6 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,10 +15,6 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
-import org.energy_home.jemma.ah.hac.HacException;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.lib.AttributeValue;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +23,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.HacException;
+import org.energy_home.jemma.ah.hac.IAttributeValue;
+import org.energy_home.jemma.ah.hac.lib.AttributeValue;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.ah.hap.client.IM2MHapService;

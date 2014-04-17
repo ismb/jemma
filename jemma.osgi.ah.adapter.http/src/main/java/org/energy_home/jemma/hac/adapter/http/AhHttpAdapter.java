@@ -15,12 +15,6 @@
  */
 package org.energy_home.jemma.hac.adapter.http;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -36,6 +30,11 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IAttributeValue;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.hac.adapter.http.contexts.UserAdminBasicHttpContext;
 import org.energy_home.jemma.hac.adapter.http.impl.HacHttpContext;
 import org.energy_home.jemma.hac.adapter.http.impl.SecureBasicHttpContext;

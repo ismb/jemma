@@ -15,13 +15,12 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.general;
 
+import org.energy_home.jemma.ah.cluster.zigbee.general.GetAlarmResponse;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI32;
-
-import org.energy_home.jemma.ah.cluster.zigbee.general.GetAlarmResponse;
 
 public class ZclGetAlarmResponse {
 

@@ -15,11 +15,16 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.energy_home.jemma.ah.cluster.zigbee.eh.GetOverallSchedulePriceResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.GetPowerProfilePriceExtendedResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.GetPowerProfilePriceResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
+import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
-
-import org.energy_home.jemma.ah.cluster.zigbee.eh.*;
 
 /*
  * This class is the hub of all information, data, state of a remote appliance. It contains a working status 

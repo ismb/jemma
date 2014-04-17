@@ -15,6 +15,13 @@
  */
 package org.energy_home.jemma.ah.internal.zigbee;
 
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.equinox.internal.util.timer.Timer;
+import org.eclipse.equinox.internal.util.timer.TimerListener;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.MalformedMessageException;
 import org.energy_home.jemma.ah.hac.NotAuthorized;
@@ -23,21 +30,12 @@ import org.energy_home.jemma.ah.hac.ReadOnlyAttributeException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
-
-import java.util.Hashtable;
-import java.util.Vector;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.equinox.internal.util.timer.Timer;
-import org.eclipse.equinox.internal.util.timer.TimerListener;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.ZigBeeException;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclException;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;

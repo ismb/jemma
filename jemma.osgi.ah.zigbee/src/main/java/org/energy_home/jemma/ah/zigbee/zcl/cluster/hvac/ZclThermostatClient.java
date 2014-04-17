@@ -15,11 +15,10 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac;
 
-import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
-
 import org.energy_home.jemma.ah.cluster.zigbee.hvac.ThermostatClient;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
 
 public class ZclThermostatClient extends ZclServiceCluster implements ThermostatClient, ZigBeeDeviceListener {
 

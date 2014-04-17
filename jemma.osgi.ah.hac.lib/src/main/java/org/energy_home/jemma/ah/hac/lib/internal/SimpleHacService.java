@@ -37,7 +37,6 @@ import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
 import org.energy_home.jemma.ah.hac.lib.ext.Location;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

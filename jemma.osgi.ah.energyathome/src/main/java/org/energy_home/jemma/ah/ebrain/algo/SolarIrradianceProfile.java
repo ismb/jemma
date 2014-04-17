@@ -16,10 +16,10 @@
 package org.energy_home.jemma.ah.ebrain.algo;
 
 
-import org.energy_home.jemma.ah.ebrain.CalendarUtil;
-
 import java.util.Calendar;
 import java.util.List;
+
+import org.energy_home.jemma.ah.ebrain.CalendarUtil;
 
 public class SolarIrradianceProfile {
 	

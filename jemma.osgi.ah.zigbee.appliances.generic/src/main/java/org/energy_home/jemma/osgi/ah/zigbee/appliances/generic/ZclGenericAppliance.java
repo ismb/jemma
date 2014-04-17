@@ -15,13 +15,6 @@
  */
 package org.energy_home.jemma.osgi.ah.zigbee.appliances.generic;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPointFactory;
-
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -31,6 +24,12 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IEndPoint;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPointFactory;
 
 public class ZclGenericAppliance extends ZclAppliance {
 	private static final Log log = LogFactory.getLog(ZclGenericAppliance.class);

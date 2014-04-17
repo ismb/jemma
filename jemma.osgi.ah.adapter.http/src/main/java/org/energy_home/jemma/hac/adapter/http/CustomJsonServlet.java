@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.hac.adapter.http;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.useradmin.Authorization;
 

@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-
-
-
-
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IHacDevice;
 import org.energy_home.jemma.ah.hac.IManagedAppliance;
