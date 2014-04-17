@@ -34,6 +34,8 @@ public class Activator implements BundleActivator {
 		 */		
 		applicationFactories.add(new ZclBitronhomeSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclBitronhomeRemoteControlApplianceFactory());
+		applicationFactories.add(new ZclURMETTemeratureHumidityApplianceFactory());
+		applicationFactories.add(new ZclURMETSmokeDetectorSirenApplianceFactory());
 		/**
 		 * Ends bitronhome 
 		 */
