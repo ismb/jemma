@@ -419,8 +419,6 @@ public class GalController {
 		for (WrapperWSNNode x : _list0) {
 			if (x.is_discoveryCompleted())
 				_list.getWSNNode().add(x.get_node());
-			if (PropertiesManager.getDebugEnabled())
-				System.out.println(x.get_node().getAddress().getNetworkAddress() + "-" + x.is_discoveryCompleted());
 		}
 
 		return _list;
@@ -1765,7 +1763,7 @@ public class GalController {
 					/* Read the ShortAddress of the GAL */
 					try {
 						_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
-						System.out.println("Readed Network Addres of Gal: " + _NetworkAdd);
+						//System.out.println("Readed Network Addres of Gal: " + _NetworkAdd);
 					} catch (Exception e) {
 						if (PropertiesManager.getDebugEnabled()) {
 							logger.error("Error retrieving the Gal Network Address!");
@@ -1775,7 +1773,7 @@ public class GalController {
 					/* Read the IEEEAddress of the GAL */
 					try {
 						_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
-						System.out.println("Readed IEEE Addres of Gal: " + _IeeeAdd);
+						//System.out.println("Readed IEEE Addres of Gal: " + _IeeeAdd);
 
 					} catch (Exception e) {
 						if (PropertiesManager.getDebugEnabled()) {
@@ -1819,10 +1817,10 @@ public class GalController {
 								getNetworkcache().get(_index).set_node(galNodeWrapper.get_node());
 							}
 
-							System.out.println("Readed Node Descriptor of Gal.");
+							//System.out.println("Readed Node Descriptor of Gal.");
 
 						} else {
-							System.out.println("ERROR on Read Node Descriptor of Gal.");
+							//System.out.println("ERROR on Read Node Descriptor of Gal.");
 							if (PropertiesManager.getDebugEnabled()) {
 								logger.error("ERROR on Read Node Descriptor of Gal.!");
 							}
@@ -1844,8 +1842,8 @@ public class GalController {
 							_st.setMessage("Error on permitJoin(0) for the GAL node on startup!");
 
 							get_gatewayEventManager().notifyGatewayStartResult(_st);
-							System.out.println("Permit join close GAL executed.");
-							System.out.println("Sent NetworkStart event");
+							//System.out.println("Permit join close GAL executed.");
+							//System.out.println("Sent NetworkStart event");
 
 						}
 					} catch (Exception e) {

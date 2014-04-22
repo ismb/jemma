@@ -114,7 +114,7 @@ public class DataFreescale implements IDataLayer {
 						if (_currentCommand != null) {
 							if (gal.getPropertiesManager().getDebugEnabled()) {
 								logger.info(">>> Sending: " + _currentCommand.ToHexString());
-								System.out.println(">>> Sending: " + _currentCommand.ToHexString());
+								//System.out.println(">>> Sending: " + _currentCommand.ToHexString());
 							}
 							_key.write(_currentCommand);
 						}
@@ -364,12 +364,12 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-												System.out.println("Sending IeeeReq to:" + _address.getNetworkAddress());
+												//System.out.println("Sending IeeeReq to:" + _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													System.out.println("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
+													//System.out.println("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
 
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
@@ -379,7 +379,7 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													System.out.println("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
+													//System.out.println("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
 
 												}
 
@@ -412,7 +412,7 @@ public class DataFreescale implements IDataLayer {
 											} catch (GatewayException e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
-												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												//System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
@@ -422,7 +422,7 @@ public class DataFreescale implements IDataLayer {
 
 											} catch (Exception e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												//System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -2155,9 +2155,7 @@ public class DataFreescale implements IDataLayer {
 		String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
 
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			System.out.println("Sending Aps message to: " + String.format("%016X", _DSTAdd));
-		}
+		
 
 		Status status = null;
 		try {
@@ -2407,7 +2405,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public Status SetModeSelectSync(long timeout) throws IOException, Exception, GatewayException {
 		ByteArrayObject _res = new ByteArrayObject();
-		_res.addByte((byte) 0x00);/* UART Tx Blocking */
+		_res.addByte((byte) 0x01);/* UART Tx Blocking */
 		_res.addByte((byte) 0x02);/* MCPS */
 		_res.addByte((byte) 0x02);/* MLME */
 		_res.addByte((byte) 0x02);/* ASP */
@@ -2904,7 +2902,7 @@ public class DataFreescale implements IDataLayer {
 		// Control
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
-			System.out.println("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
+			//System.out.println("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
 		}
 
 		ParserLocker lock = new ParserLocker();
@@ -3902,9 +3900,7 @@ public class DataFreescale implements IDataLayer {
 		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			System.out.println("Sending InterPANMessage to: " + String.format("%016X", _DSTAdd));
-		}
+		
 
 		Status status = null;
 		try {

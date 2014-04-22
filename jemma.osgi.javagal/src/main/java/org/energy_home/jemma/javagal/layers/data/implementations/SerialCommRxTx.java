@@ -260,8 +260,8 @@ public class SerialCommRxTx implements IConnector {
 		}
 		DataLayer.cpuReset();
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Waiting 2,5 seconds after command CPUReset...");
-		Thread.sleep(2500);
+			logger.info("Waiting 3,5 seconds after command CPUReset...");
+		Thread.sleep(3500);
 		synchronized (this) {
 			connected = true;
 		}
