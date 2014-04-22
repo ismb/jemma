@@ -2407,7 +2407,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public Status SetModeSelectSync(long timeout) throws IOException, Exception, GatewayException {
 		ByteArrayObject _res = new ByteArrayObject();
-		_res.addByte((byte) 0x01);/* UART Tx Blocking */
+		_res.addByte((byte) 0x00);/* UART Tx Blocking */
 		_res.addByte((byte) 0x02);/* MCPS */
 		_res.addByte((byte) 0x02);/* MLME */
 		_res.addByte((byte) 0x02);/* ASP */
@@ -2417,6 +2417,7 @@ public class DataFreescale implements IDataLayer {
 		_res.addByte((byte) 0x02);/* AFDE */
 		_res.addByte((byte) 0x02);/* APSME */
 		_res.addByte((byte) 0x02);/* ZDP */
+		_res.addByte((byte) 0x02);/* HealthCare */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCModeSelectRequest);/*
 																						 * StartSequence
 																						 * +

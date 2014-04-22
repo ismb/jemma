@@ -1,7 +1,3 @@
-/**
- Prova Fetch 2
- */
-
 var LANG = {
 	NA : "ND",
 	menu : {btnChannelNetwork : "Manage network channel",
@@ -14,20 +10,21 @@ var LANG = {
 	centerPane: {btnAutomaticScan : "Automatic",
 	             btnManualScan : "Change",
 	             lblVersionId: "Version Identifier",
-	             lblVersionFId: "feature Set Identifier",
-	             lblVersionRpcP: "rpc Protocol",
-	             lblDeviceNetAdd: "network Address",
-	             lblDeviceIeeAdd: "ieee Address",
+	             lblVersionFId: "Feature Set Identifier",
+	             lblVersionRpcP: "Rpc Protocol",
+	             lblDeviceNetAdd: "Network Address",
+	             lblDeviceIeeAdd: "Ieee Address",
 	             lblDeviceSIndex: "start Index",
-	             lblDeviceAssDev: "associated Devices",
-	             lblDeviceAltPan: "alternate Pan Coordinator",
-	             lblDeviceDevFFD: "device Is FFD",
-	             lblDeviceMainPo: "mains Powered",
-	             lblDeviceRecOWI: "receiver On When Idle",
-	             lblDeviceSecSup: "security Supported",
-	             lblDeviceAllAdd: "allocate Address",
-	             lblDeviceAddress: "address",
-	             lblDeviceCInfo: "capability Information",
+	             lblDeviceAssDev: "Associated Devices",
+	             lblDeviceAltPan: "Alternate Pan Coordinator",
+	             lblDeviceDevFFD: "Device Is FFD",
+	             lblDeviceMainPo: "Mains Powered",
+	             lblDeviceLogical: "Device Type",
+	             lblDeviceRecOWI: "Receiver On When Idle",
+	             lblDeviceSecSup: "Security Supported",
+	             lblDeviceAllAdd: "Allocate Address",
+	             lblDeviceAddress: "Address",
+	             lblDeviceCInfo: "Capability Information",
 		             lblActions: "Actions"
 	            	 
 	},

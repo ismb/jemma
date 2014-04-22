@@ -1194,15 +1194,12 @@
 												 */
 											});
 
-							var buttonInHeaderPressed;
-							$('.tnHeaderHome2').click(function(event) {
-								buttonInHeaderPressed = $(this).attr('id');
-							});
+							
 
-							var fchangeStatuGal = function() {
+							var fchangeStatuGal = function(buttonInHeaderPressed) {
 
 								$.jStorage.set("ChannelRadioValue", null);
-								event.preventDefault();
+								//event.preventDefault();
 								var timeout, startMode, url, type, errorMsg = '';
 								rtnObjConfig.channelMask = tmpObjConfig.cMask;
 								rtnObjConfig.deviceType = tmpObjConfig.dType;
@@ -1327,30 +1324,19 @@
 
 							}
 
-							$("#changeStatusGal")
-									.click(
-											function(event) {
-												console
-														.log("Button:"
-																+ buttonInHeaderPressed);
-												if (buttonInHeaderPressed == 'btnRestartGal1') {
-													var result = window
-															.confirm(
-																	'Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?',
-																	'Total reset',
-																	function(
-																			result) {
-																		if (result) {
-																			fchangeStatuGal();
-																		}
-																	});
+							$('#btnRestartGal1').click(function(event) {
+								var result = window.confirm('Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?','Total reset',function(result) {if (result) {fchangeStatuGal('btnRestartGal1');}});
+							});
+							
+							
+							$('#btnStartGal').click(function(event) {fchangeStatuGal('btnRestartGal1');});
+											
+							$('#btnRestartGal2').click(function(event) {fchangeStatuGal('btnRestartGal2');});
+							
+										 
 
-												} else {
-
-													fchangeStatuGal();
-												}
-
-											});
+								
+							
 						});
 	</script>
 
@@ -1363,11 +1349,10 @@
 		<!-- table id="tblManageNetwork6"></table> -->
 		<!-- table id="tblManageNetwork7"></table> -->
 		<!-- table id="tblManageNetwork8"></table> -->
-		<form id="changeStatusGal" style='text-align: center;'>
-			<button id="btnStartGal" class="tnHeaderHome2" title="Start"></button>
-			<button id="btnRestartGal1" class="tnHeaderHome2" title="Total reset"></button>
-			<button id="btnRestartGal2" class="tnHeaderHome2" title="Stop"></button>
-			<!-- button id="btnRestartGal3" class="tnHeaderHome2" title="Restart in TC Replacement Mode"></button> -->
-		</form>
+		<input type="button" id="btnStartGal" class="tnHeaderHome2" title="Start" />
+		<input type="button" id="btnRestartGal1" class="tnHeaderHome2" title="Total reset" />
+		<input type="button" id="btnRestartGal2" class="tnHeaderHome2" title="Stop" />
+		<!-- button id="btnRestartGal3" class="tnHeaderHome2" title="Restart in TC Replacement Mode"></button> -->
+
 	</div>
 </div>

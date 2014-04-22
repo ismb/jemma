@@ -1,206 +1,601 @@
-<div id="tplViewGraphNodes"> 
+<div id="tplViewGraphNodes">
 	<script type="text/javascript">
-	$(document).ready(function(){
-		$.ajax({
-			url : DEFINEPATH.viewLQI
-		}).done(function(data) {
-		    var CLR = {
-		    	      branch:"#b2b19d",
-		    	      code:"orange",
-		    	      doc:"#922E00",
-		    	      demo:"#a7af00"
-    	    }
+	(function($){
+		  var Renderer = function(elt){
+			  
+			nodeBoxes = {}
+		    var dom = $(elt)
+		    var canvas = dom.get(0)
+		    var ctx = canvas.getContext("2d");
+		    var gfx = arbor.Graphics(canvas)
+		    var sys = null
 
-			var colorLQI, weightLQI;
-		    var allNodes = new Array();
-			var otherInfoOfNode = new Array();
-			//var sys = arbor.ParticleSystem(500);
-			var sys = arbor.ParticleSystem({stiffness:900, repulsion:20000, gravity: false, dt:0.015, precision: 0.2});
-			sys.renderer = new Renderer('#viewPortGraphNodes');
-			var dataBig = json_parse(data);
-			var lqiNodes = dataBig.detail.lqiInformation[0].lqiNode;
-			if (typeof lqiNodes != 'undefined'){
-				$.each(lqiNodes, function(i, node) {
-					
-					var strIeeeAddress = padLeft(16, node.nodeAddress.toString(16)).toUpperCase();
-					var codeManufacturer = strIeeeAddress.substring(0,4);
-					var colorManufacturer, nameManufacturer, alphaInfo;
-					switch (codeManufacturer){
-						case DEFINEMANUFACTURER.FREESCALE:
-						  	colorManufacturer = 'blue'; 
-						  	nameManufacturer = 'FREESCALE';
-						  	alphaInfo = 1;
-					  		break; 
-						case DEFINEMANUFACTURER.FOURNOKS:
-						  	colorManufacturer = 'cyan'; 
-						  	nameManufacturer = '4-NOKS';
-						  	alphaInfo = 1;
-						  	break; 
-					}
-					
-					var myData = {mass: 100,
-								  label: nameManufacturer,
-								  color: colorManufacturer,
-								  alpha: alphaInfo,
-								  shape: 'dot'
-					};
-					var myNode = sys.addNode(strIeeeAddress, myData); //AGGIUNGO UN VERTICE
-					otherInfoOfNode[padLeft(16, node.nodeAddress.toString(16)).toUpperCase()] = new Array();
-					if (typeof node.neighborList != 'undefined'){
-						var lqiNodeNeighborList = node.neighborList.neighbor;
-						allNodes.push({name: padLeft(16, node.nodeAddress.toString(16)).toUpperCase(), node: myNode, neighbor: lqiNodeNeighborList});
-					}
-				});
-				$.each(allNodes, function(i, node) {
-					if (typeof node.neighbor != 'undefined') {
-						$.each(node.neighbor, function(i, edge) {
-							if (edge.lqi < 50){
-									colorLQI = '#ff0000';
-									weightLQI = 0.1;
-							} else if ((edge.lqi > 50) && (edge.lqi < 100)){
-									colorLQI = '#ff69b4';
-									weightLQI = 0.2;
-							} else if ((edge.lqi > 100) && (edge.lqi < 150)){
-									colorLQI = '#fdb11b';
-									weightLQI = 0.3;
-							} else if ((edge.lqi > 150) && (edge.lqi < 200)){
-									colorLQI = '#31962a';
-									weightLQI = 0.4;
-							} else if (edge.lqi > 200){
-									colorLQI = '#9aff69';
-									weightLQI = 0.5;
-							}
-							weightLQI = 0.5;
-							var myData = {weight: edge.lqi/50,
-										  color: colorLQI,
-										  length: 200};
-							var tmpEdge = sys.addEdge(node.name, padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase(), myData); //E I NODI
-							
-							var dataToShift = edge.deviceTypeRxOnWhenIdleRelationship;
-							var tmp = dataToShift;
-							var deviceType = ((tmp << 30) >> 30);
-							var deviceTypeString, deviceTypeColor;
-							switch (deviceType){
-								case 0: 
-									deviceTypeString = 'ZigBee coordinator';
-									deviceTypeColor = '#e9ae11';
-									break;
-								case 1: 
-									deviceTypeString = 'ZigBee router';
-									deviceTypeColor = '#388f89';
-									break;
-								case 2: 
-									deviceTypeString = 'ZigBee end device';
-									deviceTypeColor = '#e796af';
-									break;
-								case 3: 
-									deviceTypeString = 'Unknown';
-									deviceTypeColor = null;
-									break;
-							}
-								tmp = dataToShift;
-							var rxOnWhenIdle = ((tmp << 28) >> 30);
-							var rxOnWhenIdleString, rxOnWhenIdleColor;
-							switch (rxOnWhenIdle){
-								case 0: 
-									rxOnWhenIdleString = 'RxOnWhenIdle = false';
-									rxOnWhenIdleColor = '#dc143c';
-									break;
-								case 1: 
-									rxOnWhenIdleString = 'RxOnWhenIdle = true';
-									rxOnWhenIdleColor = '#217346';
-									break;
-								case 2: 
-									rxOnWhenIdleString = 'Unknown';
-									rxOnWhenIdleColor = null;
-									break;
-							}
-								tmp = dataToShift;
-							var relationship = ((tmp << 25) >> 30);
-							var relationshipString;
-							switch (relationship){
-								case 0: 
-									relationshipString = 'Neighbor is the parent';
-									break;
-								case 1: 
-									relationshipString = 'Neighbor is a child';
-									break;
-								case 2: 
-									relationshipString = 'Neighbor is a sibling';
-									break;
-								case 3: 
-									relationshipString = 'None of the above';
-									break;
-								case 4: 
-									relationshipString = 'Previous child';
-									break;
-							}
-							var permitJoin = edge.permitJoining;
-							var permitJoinString, permitJoinColor;
-							switch (permitJoin){
-								case 0: 
-									permitJoinString = 'is not permitting join';
-									permitJoinColor = '#dc143c';
-									break;
-								case 1: 
-									permitJoinString = 'is permitting join';
-									permitJoinColor = '#217346';
-									break;
-								case 2: 
-									permitJoinString = 'Unknown';
-									permitJoinColor = null;
-									break;
-							}
-							var nameTmp = padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase();
-							if (otherInfoOfNode[nameTmp].length == 0){
-								otherInfoOfNode[nameTmp].push({deviceType: {mass: 30,
-																			fixed: false,
-																		    deviceType: deviceType,
-														    			    label: deviceTypeString,
-														    			    color: deviceTypeColor,
-														    			    alpha: 1}});
-								otherInfoOfNode[nameTmp].push({rxOnWhenIdle: {mass: 20,
-																			  fixed: false,
-																			  rxOnWhenIdle: rxOnWhenIdle,
-														    			      label: rxOnWhenIdleString,
-														    			      color: rxOnWhenIdleColor,
-														    			      alpha: 1}});
-								otherInfoOfNode[nameTmp].push({permitJoin: {mass: 10,
-																			fixed: false,
-																		    deviceType: permitJoin,
-														    			    label: permitJoinString,
-														    			    color: permitJoinColor,
-														    			    alpha: 1}});
-							}
-						});
-					};
-				});
-				if (otherInfoOfNode.length > 1){
-					for (nodePlus in otherInfoOfNode) {
-						var myNodeDeviceType = sys.addNode(nodePlus+'DT', otherInfoOfNode[nodePlus][0].deviceType); //AGGIUNGO UN VERTICE
-						var myNodeRxOnWhenIdle = sys.addNode(nodePlus+'ROWI', otherInfoOfNode[nodePlus][1].rxOnWhenIdle); //AGGIUNGO UN VERTICE
-						var myNodePermitJoin = sys.addNode(nodePlus+'PJ', otherInfoOfNode[nodePlus][2].permitJoin); //AGGIUNGO UN VERTICE
-						var myNodeIEEE = sys.addNode(nodePlus+'IEEE', {mass: 10,
-																			 fixed: false,
-														    			     label: nodePlus,
-														    			     alpha: 1}); //AGGIUNGO UN VERTICE
+		    var _vignette = null
+		    var selected = null,
+		        nearest = null,
+		        _mouseP = null;
+
+		    var intersect_line_line = function(p1, p2, p3, p4)
+		  	{
+		  		var denom = ((p4.y - p3.y)*(p2.x - p1.x) - (p4.x - p3.x)*(p2.y - p1.y));
+		  		if (denom === 0) return false // lines are parallel
+		  		var ua = ((p4.x - p3.x)*(p1.y - p3.y) - (p4.y - p3.y)*(p1.x - p3.x)) / denom;
+		  		var ub = ((p2.x - p1.x)*(p1.y - p3.y) - (p2.y - p1.y)*(p1.x - p3.x)) / denom;
+
+		  		if (ua < 0 || ua > 1 || ub < 0 || ub > 1)  return false
+		  		return arbor.Point(p1.x + ua * (p2.x - p1.x), p1.y + ua * (p2.y - p1.y));
+		  	}
+		    
+		    var intersect_line_box = function(p1, p2, boxTuple)
+		  	{
+		  	  var p3 = {x:boxTuple[0], y:boxTuple[1]},
+		      	  w = boxTuple[2],
+		      	  h = boxTuple[3]
+		  	  
+		  		var tl = {x: p3.x, y: p3.y};
+		  		var tr = {x: p3.x + w, y: p3.y};
+		  		var bl = {x: p3.x, y: p3.y + h};
+		  		var br = {x: p3.x + w, y: p3.y + h};
+
+		      return intersect_line_line(p1, p2, tl, tr) ||
+		             intersect_line_line(p1, p2, tr, br) ||
+		             intersect_line_line(p1, p2, br, bl) ||
+		             intersect_line_line(p1, p2, bl, tl) ||
+		             false
+		  	}
+		    
+		    
+		    var that = {
+		      init:function(pSystem){
+		        sys = pSystem
+		        sys.screen({size:{width:dom.width(), height:dom.height()}, padding:[0,0,0,0]});
+		        $(window).resize(that.resize)
+		        that.resize()
+		        that._initMouseHandling()
+		      },
+		      resize:function(){
+		        canvas.width = $(window).width() - 310
+		        canvas.height = .75* $(window).height() - 50
+		        sys.screen({size:{width:canvas.width, height:canvas.height}})
+		        _vignette = null
+		        that.redraw()
+		      },
+		      redraw:function(){
+		        gfx.clear()
+		        sys.eachNode(function(node, pt){
+		          var w = 20
+		          var w1 = 40
+		          if (node.data.alpha===0) return
+		            nodeBoxes[node.name] = [pt.x-w/2, pt.y-w/2, w,w]
+		        	  //permitJoinString,permitJoinColor,relationshipString,rxOnWhenIdleString,rxOnWhenIdleColor,deviceTypeString,deviceTypeColor,shortAddress
+		        	gfx.oval(pt.x-w1/2, pt.y-w1/2, w1, w1, {fill:node.data.color, alpha:node.data.alpha});
+		        	gfx.rect(pt.x-w/2, pt.y-8, w, 20, 4, {fill:node.data.deviceTypeColor, alpha:node.data.alpha});
+		          	gfx.text(node.name + "-" + node.data.shortAddress , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
+		            //Label
+		            //gfx.text(node.data.label, pt.x, pt.y+ 37, {color:"Black", align:"center", font:"Arial", size:12});
+		            //DeviceType
+		            //gfx.text(node.data.deviceTypeString, pt.x, pt.y+ 47, {color:node.data.deviceTypeColor, align:"center", font:"Arial", size:12});
+			        //PermitJoin
+		            //gfx.text(node.data.permitJoinString, pt.x, pt.y+ 57, {color:'Black', align:"center", font:"Arial", size:12});
+		            //Sleepy
+			        //gfx.text(node.data.rxOnWhenIdleString, pt.x, pt.y+ 67, {color:'Black', align:"center", font:"Arial", size:12});
+		          
+		        })
+		        sys.eachEdge(function(edge, pt1, pt2){
+		        	if (edge.source != edge.target)
+		        		{
+		        	if (edge.data.counter == 0)
+			          {	  
+			        	  pt1.y += 8;
+			        	  pt1.x += 8;
+			          	  pt2.y += 8;
+			          	  pt2.x += 8;
+			          }
+			          else
+			        	  {
+				        	  pt1.y -= 8;
+				        	  pt1.x -= 8;
+				          	  pt2.y -= 8;
+				          	  pt2.x -= 8;
+			        	  }
+		        	      var weight = edge.data.weight
+		        	      var color = edge.data.color
+		        	      if (!color || (""+color).match(/^[ \t]*$/)) color = null
+		        	      // find the start point
+		        	      var tail = intersect_line_box(pt1, pt2, nodeBoxes[edge.source.name])
+		        	      var head = intersect_line_box(tail, pt2, nodeBoxes[edge.target.name])
+		        	      ctx.save() 
+   	        	          ctx.beginPath()
+	        	          if (!isNaN(weight)) ctx.lineWidth = weight
+	        	          if (color) ctx.strokeStyle = color
+	        	          // if (color) trace(color)
+	        	          ctx.fillStyle = null
+	        	          ctx.moveTo(tail.x, tail.y)
+	        	          ctx.lineTo(head.x, head.y)
+	        	          ctx.stroke()
+		        	      ctx.restore()
+		        	      
+		        	      if (edge.data.directed){
+		        	        ctx.save()
+		        	          var wt = !isNaN(weight) ? parseFloat(weight) : ctx.lineWidth
+		        	          var arrowLength = 6 + wt
+		        	          var arrowWidth = 2 + wt
+		        	          ctx.fillStyle = 'Black'
+		        	          ctx.translate(head.x, head.y);
+		        	          ctx.rotate(Math.atan2(head.y - tail.y, head.x - tail.x));
+		        	          ctx.clearRect(-arrowLength/2,-wt/2, arrowLength/2,wt)
+		        	          ctx.beginPath();
+		        	          ctx.moveTo(-arrowLength, arrowWidth);
+		        	          ctx.lineTo(0, 0);
+		        	          ctx.lineTo(-arrowLength, -arrowWidth);
+		        	          ctx.lineTo(-arrowLength * 0.8, -0);
+		        	          ctx.closePath();
+		        	          ctx.fill();
+ 		        	          ctx.restore()
+		        	          ctx.fillStyle = (color) ? color : ctx.strokeStyle
+		        	      }
+		        	      
+		        	      var xmax, ymax, xmin, ymin;
+				          if (pt2.x > pt1.x)
+				          {
+				        	  xmax = pt2.x;
+				        	  xmin = pt1.x;
+				          }
+				          else
+				          { 
+				        	  xmax = pt1.x;
+				          	  xmin = pt2.x;
+				          }
+
+				          if (pt2.y > pt1.y)
+				          {
+				        	  ymax = pt2.y;
+				        	  ymin = pt1.y;
+				          }		        	  
+				          else 
+				          {
+				        	  ymax = pt1.y;
+				        	  ymin = pt2.y;
+				          }
+				          gfx.text(edge.data.value,(xmin + (xmax - xmin) /2) , (ymin + (ymax - ymin) /2), {color:'Black', align:"center", font:"Arial", size:16});
+		        		}})
+		        that._drawVignette()
+		      },
+		      _drawVignette:function(){
+		        var w = canvas.width
+		        var h = canvas.height
+		        var r = 20
+		        if (!_vignette){
+		          var top = ctx.createLinearGradient(0,0,0,r)
+		          top.addColorStop(0, "#e0e0e0")
+		          top.addColorStop(.7, "rgba(255,255,255,0)")
+
+		          var bot = ctx.createLinearGradient(0,h-r,0,h)
+		          bot.addColorStop(0, "rgba(255,255,255,0)")
+		          bot.addColorStop(1, "white")
+		          _vignette = {top:top, bot:bot}
+		        }
+		        
+		        // top
+		        ctx.fillStyle = _vignette.top
+		        ctx.fillRect(0,0, w,r)
+
+		        // bot
+		        ctx.fillStyle = _vignette.bot
+		        ctx.fillRect(0,h-r, w,r)
+		      },
+
+		      switchMode:function(e){
+		        if (e.mode=='hidden'){
+		          dom.stop(true).fadeTo(e.dt,0, function(){
+		            if (sys) sys.stop()
+		            $(this).hide()
+		          })
+		        }else if (e.mode=='visible'){
+		          dom.stop(true).css('opacity',0).show().fadeTo(e.dt,1,function(){
+		            that.resize()
+		          })
+		          if (sys) sys.start()
+		        }
+		      },
+		      
+		      switchSection:function(newSection){
+		        var parent = sys.getEdgesFrom(newSection)[0].source
+		        var children = $.map(sys.getEdgesFrom(newSection), function(edge){
+		          return edge.target
+		        })
+		        
+		        sys.eachNode(function(node){
+		          if (node.data.shape=='dot') return // skip all but leafnodes
+
+		          var nowVisible = ($.inArray(node, children)>=0)
+		          var newAlpha = (nowVisible) ? 1 : 0
+		          var dt = (nowVisible) ? .5 : .5
+		          sys.tweenNode(node, dt, {alpha:newAlpha})
+
+		          if (newAlpha==1){
+		            node.p.x = parent.p.x + .05*Math.random() - .025
+		            node.p.y = parent.p.y + .05*Math.random() - .025
+		            node.tempMass = .001
+		          }
+		        })
+		      },
+		      
+		      
+		      _initMouseHandling:function(){
+		        // no-nonsense drag and drop (thanks springy.js)
+		        selected = null;
+		        nearest = null;
+		        var dragged = null;
+		        var oldmass = 1
+
+		        var _section = null
+
+		        var handler = {
+		          moved:function(e){
+		            var pos = $(canvas).offset();
+		            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
+		            nearest = sys.nearest(_mouseP);
+
+		            if (!nearest.node) return false
+
+		            if (nearest.node.data.shape!='dot'){
+		              selected = (nearest.distance < 50) ? nearest : null
+		              if (selected){
+		              }
+		              else{
+		                 dom.removeClass('linkable')
+		                 window.status = ''
+		              }
+		            }
+		            
+		            return false
+		          },
+		          clicked:function(e){
+		            var pos = $(canvas).offset();
+		            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
+		            nearest = dragged = sys.nearest(_mouseP);
+		            
+		            if (nearest && selected && nearest.node===selected.node){
+		              var link = selected.node.data.link
+		              return false
+		            }
+		            
+		            
+		            if (dragged && dragged.node !== null) dragged.node.fixed = true
+
+		            $(canvas).unbind('mousemove', handler.moved);
+		            $(canvas).bind('mousemove', handler.dragged)
+		            $(window).bind('mouseup', handler.dropped)
+
+		            return false
+		          },
+		          dragged:function(e){
+		            var old_nearest = nearest && nearest.node._id
+		            var pos = $(canvas).offset();
+		            var s = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
+
+		            if (!nearest) return
+		            if (dragged !== null && dragged.node !== null){
+		              var p = sys.fromScreen(s)
+		              dragged.node.p = p
+		            }
+
+		            return false
+		          },
+
+		          dropped:function(e){
+		            if (dragged===null || dragged.node===undefined) return
+		            if (dragged.node !== null) dragged.node.fixed = false
+		            dragged.node.tempMass = 1000
+		            dragged = null;
+		            // selected = null
+		            $(canvas).unbind('mousemove', handler.dragged)
+		            $(window).unbind('mouseup', handler.dropped)
+		            $(canvas).bind('mousemove', handler.moved);
+		            _mouseP = null
+		            return false
+		          }
+		        }
+		        $(canvas).mousedown(handler.clicked);
+		        $(canvas).mousemove(handler.moved);
+		      }
+		    }
+		    return that
+		  }
+		  
+		  
+		 
+		  
+		  
+		  
+		  $(document).ready(function(){
+		    var CLR = {
+		      branch:"#b2b19d",
+		      code:"orange",
+		      doc:"#922E00",
+		      demo:"#a7af00"
+		    }
+		    
+			$.ajax({
+				url : DEFINEPATH.viewLQI
+			}).done(function(data) {
+				
+				  Nodes = {
+					      nodes:{},
+					      edges:{}
+					    };
+
+				  var dataBig = json_parse(data);
+				var lqiNodes = dataBig.detail.lqiInformation[0].lqiNode;
+				if (typeof lqiNodes != 'undefined'){
+					$.each(lqiNodes, function(i, node) {
 						
-						var myDataDT = {color: CLR.doc, length: 50};
-						sys.addEdge(nodePlus, myNodeDeviceType, myDataDT); //E I NODI
-						var myDataRX = {color: CLR.branch, length: 50};
-						sys.addEdge(nodePlus, myNodeRxOnWhenIdle, myDataRX); //E I NODI
-						var myDataPJ = {color: CLR.demo, length: 50};
-						sys.addEdge(nodePlus, myNodePermitJoin, myDataPJ); //E I NODI
-						var myDataIEEE = {color: CLR.demo, length: 50};
-						sys.addEdge(nodePlus, myNodeIEEE, myDataPJ); //E I NODI
+						var strIeeeAddress = padLeft(16, node.nodeAddress.toString(16)).toUpperCase();
+						var codeManufacturer = strIeeeAddress.substring(0,4);
+						var colorManufacturer, nameManufacturer, alphaInfo;
+						switch (codeManufacturer){
+							case DEFINEMANUFACTURER.FREESCALE:
+							  	colorManufacturer = 'blue'; 
+							  	nameManufacturer = 'Freescale';
+							  	alphaInfo = 1;
+						  		break; 
+							case DEFINEMANUFACTURER.FOURNOKS:
+							  	colorManufacturer = 'grey'; 
+							  	nameManufacturer = '4-Noks';
+							  	alphaInfo = 1;
+							  	break; 
+							case DEFINEMANUFACTURER.FLEXGRID:
+							  	colorManufacturer = 'yellow'; 
+							  	nameManufacturer = 'FlexGrid';
+							  	alphaInfo = 1;
+							  	break; 
+							 default:
+							  	colorManufacturer = 'red'; 
+							  	nameManufacturer = 'Manufacturer:Unknown';
+							  	alphaInfo = 1;
+							  	break; 
+						}
+						
+						
+						if (!Nodes.nodes[strIeeeAddress])
+							Nodes.nodes[strIeeeAddress] = {};
+						Nodes.nodes[strIeeeAddress]['color']   = colorManufacturer;
+						Nodes.nodes[strIeeeAddress]['shape']   = 'dot';
+						Nodes.nodes[strIeeeAddress]['label']   = nameManufacturer;
+						Nodes.nodes[strIeeeAddress]['alpha']   = alphaInfo;
+						
+						
+						
+						
+						if (node.neighborList)
+								{
+								var nears;
+								var colorLQI;
+								$.each(node.neighborList.neighbor, function(i, edge) {
+									if (edge.lqi < 50){
+											colorLQI = '#ff0000';
+											weightLQI = 0.1;
+									} else if ((edge.lqi > 50) && (edge.lqi < 100)){
+											colorLQI = '#ff69b4';
+											weightLQI = 0.2;
+									} else if ((edge.lqi > 100) && (edge.lqi < 150)){
+											colorLQI = '#fdb11b';
+											weightLQI = 0.3;
+									} else if ((edge.lqi > 150) && (edge.lqi < 200)){
+											colorLQI = '#31962a';
+											weightLQI = 0.4;
+									} else if (edge.lqi > 200){
+											colorLQI = '#9aff69';
+											weightLQI = 0.5;
+									}
+									weightLQI = 0.5;
+									var myData = {weight: 2,
+												  color: colorLQI,
+												  length: 100,
+												  value:edge.lqi,
+												  counter: 0,
+												  directed:true};
+									
+									
+									if (Nodes.edges[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()] && Nodes.edges[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()][strIeeeAddress])
+									{
+										myData.counter++;
+										
+									}
+									if (!Nodes.edges[strIeeeAddress])
+										Nodes.edges[strIeeeAddress] = {};
+									Nodes.edges[strIeeeAddress][padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()] = myData;
+									
+									
+									var dataToShift = edge.deviceTypeRxOnWhenIdleRelationship;
+									var tmp = dataToShift;
+									var deviceType = (tmp & 3);
+									console.log("deviceType: " + deviceType);
+									
+									tmp = dataToShift;
+									var rxOnWhenIdle = ((tmp & 12) >> 2);
+									//console.log("rxOnWhenIdle: " + rxOnWhenIdle);
+									var rxOnWhenIdleString, rxOnWhenIdleColor;
+									switch (rxOnWhenIdle){
+										case 0: 
+											rxOnWhenIdleString = 'RxOnWhenIdle = false';
+											rxOnWhenIdleColor = '#dc143c';
+											break;
+										case 1: 
+											rxOnWhenIdleString = 'RxOnWhenIdle = true';
+											rxOnWhenIdleColor = '#217346';
+											break;
+										case 2: 
+											rxOnWhenIdleString = 'RxOnWhenIdle:Unknown';
+											rxOnWhenIdleColor = null;
+											break;
+									}
+									
+									
+									var deviceTypeString, deviceTypeColor;
+									switch (deviceType){
+										case 0: 
+											deviceTypeString = 'Coordinator';
+											deviceTypeColor = '#e9ae11';
+											break;
+										case 1: 
+											deviceTypeString = 'Router';
+											deviceTypeColor = '#388f89';
+											break;
+										case 2: 
+											if (rxOnWhenIdle == 1)
+												{
+											deviceTypeString = 'End Device Sleepy';
+											deviceTypeColor = '#e796af';
+												}
+											else
+												{
+												deviceTypeString = 'End Device';
+												deviceTypeColor = '#e7aabb';
+												
+												
+												}
+											break;
+										case 3: 
+											deviceTypeString = 'DeviceType:Unknown';
+											deviceTypeColor = null;
+											break;
+									}
+									
+										tmp = dataToShift;
+									var relationship = ((tmp & 112) >> 4);
+									//console.log("relationship: " + relationship);
+									var relationshipString;
+									switch (relationship){
+										case 0: 
+											relationshipString = 'Neighbor is the parent';
+											break;
+										case 1: 
+											relationshipString = 'Neighbor is a child';
+											break;
+										case 2: 
+											relationshipString = 'Neighbor is a sibling';
+											break;
+										case 3: 
+											relationshipString = 'None of the above';
+											break;
+										case 4: 
+											relationshipString = 'Previous child';
+											break;
+									}
+									var permitJoin = edge.permitJoining;
+									var permitJoinString, permitJoinColor;
+									//console.log("permitJoin: " + permitJoin);
+									switch (permitJoin){
+										case 0: 
+											permitJoinString = 'PermitJoin: false';
+											permitJoinColor = '#dc143c';
+											break;
+										case 1: 
+											permitJoinString = 'PermitJoin: true';
+											permitJoinColor = '#217346';
+											break;
+										case 2: 
+											permitJoinString = 'PermitJoin: Unknown';
+											permitJoinColor = null;
+											break;
+									}
+									
+									
+									if (!Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()])
+										Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()] = {};
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['permitJoinString']   = permitJoinString;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['permitJoinColor']    = permitJoinColor;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['relationshipString'] = relationshipString;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['rxOnWhenIdleString'] = rxOnWhenIdleString;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['rxOnWhenIdleColor']  = rxOnWhenIdleColor;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['deviceTypeString']   =  deviceTypeString;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['deviceTypeColor']    = deviceTypeColor;
+									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['shortAddress']       = padLeft(4, edge.shortAddress.toString(16)).toUpperCase();
+												
+						}
+								
+								);		
 					}
+						
+					});
 				}
-			}
-			sys.renderer.redraw();
-		});
-	});
+				sys = arbor.ParticleSystem();
+			    sys.parameters({stiffness:1000, repulsion:1.000, gravity:false, dt:0.0,friction: '1.0',fps:1,precision :1});
+			    sys.renderer = Renderer("#sitemap");
+			    sys.graft(Nodes);
+			});
+		  })
+		})(this.jQuery)
 	</script>
-	<div id="container">
-		<canvas id="viewPortGraphNodes" width="1100" height="500"></canvas>
+	<div id="arbor">
+		<div id="nav"></div>
+		<canvas id="sitemap" width="100" height="100"></canvas>
+	</div>
+	<div>
+		<table>
+			<tr>
+				<td valign="top" width="300">Device Type:
+					<table width="100%">
+						<tr>
+							<td style="background-color: #e9ae11">Coordinator</td>
+						</tr>
+						<tr>
+							<td style="background-color: #388f89">Router</td>
+						</tr>
+						<tr>
+							<td style="background-color: #e7aabb">EndDevice</td>
+						</tr>
+						<tr>
+							<td style="background-color: #e796af">Sleepy EndDevice</td>
+						</tr>
+
+
+
+					</table>
+				</td>
+				<td valign="top" width="300">Manufacturer:
+					<table width="100%">
+						<tr>
+							<td style="background-color: blue">Freescale</td>
+						</tr>
+						<tr>
+							<td style="background-color: yellow">FlexGrid</td>
+						</tr>
+						<tr>
+							<td style="background-color: grey">4-Noks</td>
+						</tr>
+						<tr>
+							<td style="background-color: red">Unnown</td>
+						</tr>
+					</table>
+				</td>
+				<td valign="top" width="300">Link Status:
+					<table width="100%">
+						<tr>
+							<td style="background-color: #ff0000"><50</td>
+						</tr>
+						<tr>
+							<td style="background-color: #ff69b4"> >50<100</td>
+						</tr>
+						<tr>
+							<td style="background-color: #fdb11b">>100<150</td>
+						</tr>
+						<tr>
+							<td style="background-color: #31962a">>150<200</td>
+						</tr>
+						<tr>
+							<td style="background-color: #9aff69">>200</td>
+						</tr>
+					</table>
+					
+					
+									
+									
+				</td>
+			</tr>
+		</table>
+
 	</div>
 </div>

@@ -147,6 +147,7 @@
 															LANG.centerPane.lblDeviceAltPan,
 															LANG.centerPane.lblDeviceDevFFD,
 															LANG.centerPane.lblDeviceMainPo,
+															LANG.centerPane.lblDeviceLogical,
 															LANG.centerPane.lblDeviceRecOWI,
 															LANG.centerPane.lblDeviceSecSup,
 															LANG.centerPane.lblDeviceAllAdd,
@@ -179,15 +180,22 @@
 														width : 140,
 														align : "center",
 														hidden : true
+														
 													}, {
 														name : 'powered',
 														width : 150,
 														align : "center",
 														hidden : true
 													}, {
+														name : 'logical',
+														width : 110,
+														align : "center"
+														
+													},{
 														name : 'idle',
 														width : 220,
-														align : "center"
+														align : "center",
+														hidden : true
 													}, {
 														name : 'security',
 														width : 180,
@@ -263,6 +271,16 @@
 											var strIeeeAddress = padLeft(16,
 													nObj.address.ieeeAddress
 															.toString(16));
+											if (strNetworkAddress == 0) 
+												vLogical="Coordinator";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false) 
+												vLogical="Sleepy EndDevice"; 
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true && nObj.capabilityInformation.deviceIsFFD == true) 
+												vLogical="End Device"; 
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true && nObj.capabilityInformation.deviceIsFFD == false) 
+												vLogical="Router"; 
+											
+											
 											mydataViewDevice
 													.push({
 														nAdd : '0x'
@@ -271,6 +289,7 @@
 														iAdd : '0x'
 																+ strIeeeAddress
 																		.toUpperCase(),
+														logical: vLogical,
 														start : nObj.startIndex,
 														devices : associatedString,
 														alt : nObj.capabilityInformation.alternatePanCoordinator,

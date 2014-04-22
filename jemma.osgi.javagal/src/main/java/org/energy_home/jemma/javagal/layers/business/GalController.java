@@ -1804,6 +1804,7 @@ public class GalController {
 							galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
 							galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
 							galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
+							
 							galNodeWrapper.reset_numberOfAttempt();
 							galNodeWrapper.set_discoveryCompleted(true);
 							int _index = -1;
