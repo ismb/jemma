@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.hac.adapter.http;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 
