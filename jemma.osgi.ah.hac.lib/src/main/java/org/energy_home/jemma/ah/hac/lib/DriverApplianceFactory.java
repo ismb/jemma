@@ -42,7 +42,7 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 	HashMap appliance2tracker = new HashMap();	
 	
 	void started(BundleContext bc) {
-		String enableAutoInstallStr = this.bc.getProperty("it.telecomitalia.ah.driver.autoinstall");
+		String enableAutoInstallStr = this.bc.getProperty("org.energy_home.jemma.ah.driver.autoinstall");
 		if (!isNullOrEmpty(enableAutoInstallStr)) {
 			try {
 				enableAutoInstall = Boolean.parseBoolean(enableAutoInstallStr);

@@ -42,7 +42,7 @@ public class AppliancesInitializationManager {
 	}
 	
 	static {
-		String enableAutoInstallStr = System.getProperty("it.telecomitalia.ah.driver.autoinstall");
+		String enableAutoInstallStr = System.getProperty("org.energy_home.jemma.ah.driver.autoinstall");
 		if (!isNullOrEmpty(enableAutoInstallStr)) {
 			try {
 				enableAutoInstall = Boolean.parseBoolean(enableAutoInstallStr);

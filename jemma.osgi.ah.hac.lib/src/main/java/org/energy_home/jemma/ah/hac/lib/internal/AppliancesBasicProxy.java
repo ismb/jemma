@@ -47,7 +47,6 @@ import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.ApplianceFactory;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
-//import org.energy_home.jemma.ah.hac.lib.ext.ServiceClusterProxyHandler;
 import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.ApplianceManager;
 import org.energy_home.jemma.ah.hac.lib.ext.EndPointRequestContext;
@@ -81,9 +80,9 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 	
 	protected static final int INITIAL_APPLICATION_NUMBER = 3;
 	
-	// Driver mode is used when it.telecomitalia.osgi.ah.hac bundle id not available (no appliance configuration information is available)
+	// Driver mode is used when org.energy_home.jemma.osgi.ah.hac bundle id not available (no appliance configuration information is available)
 	private static final String AH_HAC_DRIVER_MODE = "driver";
-	private static final String AH_EXECUTION_MODE = System.getProperty("it.telecomitalia.ah.hac.mode");
+	private static final String AH_EXECUTION_MODE = System.getProperty("org.energy_home.jemma.ah.hac.mode");
 	
 	public static final String APPLIANCE_TYPE = "ah.app.proxy";
 	public static final String END_POINT_TYPE = "ah.ep.zigbee.proxy";

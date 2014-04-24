@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.hac.lib.ext;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +25,7 @@ import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.IConfigurationInfoService;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 
-public interface IAppliancesProxy extends IAppliancesBasicProxy, IConfigurationInfoService{
-	
+public interface IAppliancesProxy extends IAppliancesBasicProxy, IConfigurationInfoService {
 	
 	public abstract List getInstallingAppliances();
 	

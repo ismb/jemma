@@ -23,6 +23,7 @@
    <service>
       <provide interface="org.energy_home.jemma.ah.hac.IAppliancesBasicProxy"/>
       <provide interface="org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy"/>
+      <provide interface="org.energy_home.jemma.ah.hac.IConfigurationInfoService"/>
    </service>
    <reference bind="setEventAdmin" cardinality="0..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="dynamic" unbind="unsetEventAdmin"/>
    <reference bind="addApplicationService" cardinality="0..n" interface="org.energy_home.jemma.ah.hac.IApplicationService" name="IApplicationService" policy="dynamic" unbind="removeApplicationService"/>

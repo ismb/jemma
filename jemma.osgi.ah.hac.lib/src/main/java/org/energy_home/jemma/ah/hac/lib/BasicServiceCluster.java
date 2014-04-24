@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public abstract class BasicServiceCluster implements IServiceCluster, IServiceClusterListener {
 	static final String APPLIANCE_INVALID_OR_NOT_AVAILABLE = "Appliance invalid or not available";
 	static final String UNEXPECTED_ERROR_MESSAGE = "Unexpected error";	
-	static final String CLUSTER_PACKAGE_NAME_PREFIX = "it.telecomitalia.";
+	static final String CLUSTER_PACKAGE_NAME_PREFIX = "org.energy_home.jemma.";
 	static final String INVALID_CLUSTER_CLASS_MESSAGE = "Invalid cluster class";	
 	static final ISubscriptionParameters SUBSCRIPTION_PARAMETERS = new SubscriptionParameters();
 	static final Logger LOG = LoggerFactory.getLogger(BasicServiceCluster.class);

@@ -50,7 +50,7 @@ public class Appliance extends BasicAppliance implements IManagedAppliance {
 	
 //  In driver mode IManagedAppliance service is unregistered in case of zigbee node disconnection
 	private static final String AH_HAC_LIGHT_MODE = "driver";
-	private static final String AH_EXECUTION_MODE = System.getProperty("it.telecomitalia.ah.hac.mode");
+	private static final String AH_EXECUTION_MODE = System.getProperty("org.energy_home.jemma.ah.hac.mode");
 	
 	private static boolean isHacDriverModeActive() {
 		return AH_HAC_LIGHT_MODE.equals(AH_EXECUTION_MODE);
