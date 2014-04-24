@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.greenathome;
 
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -243,7 +244,7 @@ public interface GreenAtHomeApplianceService {
 	public Long getInitialConfigurationTime();
 	
 	
-	
+	//TODO: check merge, methods below not in 3.3.0
 	/*
 	 * 
 	 * 

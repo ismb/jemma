@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,6 +114,8 @@ import org.energy_home.jemma.m2m.ContentInstance;
 import org.osgi.service.http.HttpService;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+//TODO: check merge, a lot's of changes in this class from 3.3.0
 
 public class GreenathomeAppliance extends Appliance implements HttpImplementor, IServiceClustersListener, IPeerAppliancesListener,
 		IManagedAppliance, GreenAtHomeApplianceService, IASZoneClient, ApplianceControlClient, IlluminanceMeasurementClient {
@@ -1635,9 +1638,9 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	
 	private String encodeGenericApplianceType (String appType, String endPointType) {
 		String result = appType;
-		if (appType.equals("it.telecomitalia.ah.zigbee.generic")) {
+		if (appType.equals("org.energy_home.jemma.ah.zigbee.generic")) {
 			if (endPointType.equals(IEndPointTypes.ZIGBEE_METERING_DEVICE)) {
-				result =  "it.telecomitalia.ah.zigbee.metering";
+				result =  "org.energy_home.jemma.ah.zigbee.metering";
 			} else if (endPointType.equals(IEndPointTypes.ZIGBEE_WHITE_GOODS)) {
 				result = "com.indesit.ah.app.whitegood";
 			} else {
@@ -1866,7 +1869,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (measuredValue != null) {
 				double value = ((double) ((Integer) measuredValue.getValue()).intValue()) / 100;
 				attributeValue = new AttributeValueExtended("Temperature", new AttributeValue(
-						new DecimalFormat("#.##").format(value) + " °C"));
+						new DecimalFormat("#.##").format(value) + " ^C"));
 
 				if (attributeValue != null)
 					props.put("device_value", attributeValue);
