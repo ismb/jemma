@@ -16,11 +16,11 @@
 package org.energy_home.jemma.ah.internal.zigbee;
 
 public class ZigBeeManagerProperties extends ConfigurationAdminProperties {
-	public static final String PROP_ENABLE_LQI = "it.telecomitalia.ah.adapter.zigbee.lqi";
-	public static final String PROP_DISCOVERY_DELAY = "it.telecomitalia.ah.adapter.zigbee.discovery.delay";
-	public static final String PROP_DISCOVERY_INITIAL_DELAY = "it.telecomitalia.ah.adapter.zigbee.discovery.initialdelay";
-	public static final String PROP_ZGD_RECONNECT_DELAY = "it.telecomitalia.ah.adapter.zigbee.reconnect";
-	public static final String PROP_TIMEOUTS = "it.telecomitalia.ah.adapter.zigbee.timeouts";
+	public static final String PROP_ENABLE_LQI = "org.energy_home.jemma.ah.adapter.zigbee.lqi";
+	public static final String PROP_DISCOVERY_DELAY = "org.energy_home.jemma.ah.adapter.zigbee.discovery.delay";
+	public static final String PROP_DISCOVERY_INITIAL_DELAY = "org.energy_home.jemma.ah.adapter.zigbee.discovery.initialdelay";
+	public static final String PROP_ZGD_RECONNECT_DELAY = "org.energy_home.jemma.ah.adapter.zigbee.reconnect";
+	public static final String PROP_TIMEOUTS = "org.energy_home.jemma.ah.adapter.zigbee.timeouts";
 
 	static final boolean DEFAULT_ENABLE_LQI = false;
 	static final int DEFAULT_DISCOVERY_DELAY = 0;

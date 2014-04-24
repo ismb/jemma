@@ -101,8 +101,9 @@ public class ZclApplianceEventsAndAlertsServer extends ZclServiceCluster impleme
 		}
 		if (o == null)
 			return null;
-		
-		o.execAlertsNotification(Events, null);
+		//TODO: check merge, following line was different in 3.3.0
+		//o.execAlertsNotification(Events, null);
+		o.execAlertsNotification(Events, endPoint.getDefaultRequestContext());
 		return null;
 	}
 

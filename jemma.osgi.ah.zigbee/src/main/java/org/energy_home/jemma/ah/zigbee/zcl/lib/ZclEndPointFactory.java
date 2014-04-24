@@ -68,7 +68,7 @@ public class ZclEndPointFactory {
 		case ZIGBEE_IAS_ZONE_ID:
 			return IEndPointTypes.ZIGBEE_IAS_ZONE;				
 		default:
-			return null;
+			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		
 	}
 	

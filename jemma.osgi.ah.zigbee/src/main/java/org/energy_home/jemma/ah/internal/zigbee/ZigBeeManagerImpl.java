@@ -293,7 +293,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	private static final Log log = LogFactory.getLog(ZigBeeManagerImpl.class);
 
-	public static final String propertyFilename = "it.telecomitalia.ah.zigbee.properties";
+	public static final String propertyFilename = "org.energy_home.jemma.ah.zigbee.properties";
 	private String propertiesFilename = ".";
 	private ZigBeeManagerProperties cmProps = new ZigBeeManagerProperties();
 
@@ -551,13 +551,14 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						try {
 							device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
 						} catch (ZclException e) {
-							if (!zclFrame.isDefaultResponseDisabled()) {
-								IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
-								this.post(msg, zclResponseFrame);
-								log.error(getIeeeAddressHex(srcAddress)
-										+ ": messageReceived(): Sent to device a default response with status code "
-										+ e.getStatusCode());
-							}
+							//TODO: check merge, following if was commented in 3.3.0
+							// if (!zclFrame.isDefaultResponseDisabled()) {
+							IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
+							this.post(msg, zclResponseFrame);
+							log.error(getIeeeAddressHex(srcAddress)
+									+ ": messageReceived(): Sent to device a default response with status code "
+									+ e.getStatusCode());
+							// }
 						}
 
 						if (enableNotifyFrameLogs) {

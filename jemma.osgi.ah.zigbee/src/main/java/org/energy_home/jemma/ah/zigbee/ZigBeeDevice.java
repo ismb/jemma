@@ -15,10 +15,11 @@
  */
 package org.energy_home.jemma.ah.zigbee;
 
-import org.energy_home.jemma.ah.hac.IHacDevice;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
+
+import org.energy_home.jemma.ah.hac.IHacDevice;
 
 public interface ZigBeeDevice extends IHacDevice {
 
