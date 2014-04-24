@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.internal.ah.hap.client;
 
+//import org.energy_home.jemma.ah.FloatCDV;
+//import org.energy_home.jemma.m2m.Content;
+//import org.energy_home.jemma.m2m.ContentInstance;
+//import org.energy_home.jemma.m2m.ContentInstanceItems;
+//import org.energy_home.jemma.m2m.ContentInstanceItemsList;
+//import org.energy_home.jemma.m2m.ContentInstancesBatchRequest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -258,9 +264,9 @@ public class XmlIndexedCircularBuffer {
 	//
 	// public static void main(String[] args) {
 	// XmlIndexedCircularBuffer b1 = new XmlIndexedCircularBuffer(12,
-	// "it.telecomitalia.hap.client1", "batch.request.");
+	// "org.energy_home.jemma.hap.client1", "batch.request.");
 	// XmlIndexedCircularBuffer b2 = new XmlIndexedCircularBuffer(12,
-	// "it.telecomitalia.hap.client1", "cache.latest.");
+	// "org.energy_home.jemma.hap.client1", "cache.latest.");
 	// printFirstAndLastItems(b1);
 	// printFirstAndLastItems(b2);
 	//

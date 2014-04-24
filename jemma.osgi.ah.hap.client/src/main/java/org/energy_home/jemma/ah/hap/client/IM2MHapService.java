@@ -50,15 +50,9 @@ public interface IM2MHapService {
 	
 	public AHContainerAddress getHagContainerAddress(String containerName) throws M2MHapException;
 	
-	public AHContainerAddress getLocalContainerAddress(String containerName) throws M2MHapException;
-	
 	public AHContainerAddress getHagContainerAddress(String appliancePid, String endPointId, String containerName) throws M2MHapException;
 	
-	public AHContainerAddress getLocalContainerAddress(String appliancePid, String endPointId, String containerName) throws M2MHapException;
-
 	public AHContainerAddress getHagContainerAddress(String appliancePid, Integer endPointId, String containerName) throws M2MHapException;
-	
-	public AHContainerAddress getLocalContainerAddress(String appliancePid, Integer endPointId, String containerName) throws M2MHapException;
 	
 	public ContentInstance getLatestContentInstance(AHContainerAddress containerAddress) throws M2MHapException;
 
@@ -66,20 +60,13 @@ public interface IM2MHapService {
 	
 	public ContentInstance getContentInstance(AHContainerAddress containerAddress, long instanceId) throws M2MHapException;
 
-	public ContentInstance getLocalContentInstance(AHContainerAddress containerAddress) throws M2MHapException;
-		
 	public ContentInstanceItemsList getContentInstanceItemsList(AHContainerAddress containerAddress, long instanceId)
 			throws M2MHapException;
 
-	public ContentInstanceItemsList getLocalContentInstanceItemsList(AHContainerAddress containerAddressFilter) throws M2MHapException;
-	
 	public ContentInstanceItems getContentInstanceItems(AHContainerAddress containerAddress, long startInstanceId, long endInstanceId)
 			throws M2MHapException;
 	
 	public ContentInstanceItemsList getContentInstanceItemsList(AHContainerAddress containerAddressFilter, long startInstanceId,
-			long endInstanceId) throws M2MHapException;
-
-	public ContentInstanceItemsList getLocalContentInstanceItemsList(AHContainerAddress containerAddressFilter, long startInstanceId, 
 			long endInstanceId) throws M2MHapException;
 	
 	public ContentInstance createContentInstanceBatch(AHContainerAddress containerAddress, long instanceId, Object content)

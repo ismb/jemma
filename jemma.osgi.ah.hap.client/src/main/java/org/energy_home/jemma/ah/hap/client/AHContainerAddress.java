@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.hap.client;
 
+
 import java.util.WeakHashMap;
 
 import org.energy_home.jemma.ah.m2m.device.M2MContainerAddress;
@@ -28,6 +29,7 @@ public class AHContainerAddress {
 	public static final String DEFAULT_APPLIANCE_PREFIX = "ah.app.";
 	public static final String DEFAULT_END_POINT_ID = new Integer(1).toString();
 	public static final String ALL_ID_FILTER = M2MContainerAddress.ALL_ID_FILTER;
+	public static final String POSITIVE_ID_FILTER = M2MContainerAddress.POSITIVE_ID_FILTER;
 
 	// Note: null and empty strings generate the same hash code
 	private static int getHashCode(String s0, String s1, String s2, String s3, Boolean b) {

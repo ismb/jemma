@@ -19,18 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
-import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
-import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringServer;
-
 public class AHContainers {
 
 	private static Map<String, Class> attrIdsClassMap = null;
-
-	private static final String CORE_CLUSTERS_ATTRIBUTE_ID_PREFIX = "ah.cluster.ah";
-	private static final String CORE_CLUSTERS_ATTRIBUTE_NAME_PREFIX = "org.energy_home.jemma.ah.cluster";
-	private static final String TELECOMITALIA_PACKAGE_PREFIX = "org.energy_home.jemma.";
 
 	public static final String CORE_CONTAINERS_PREFIX = "ah.core.";
 	public static final String CLUSTER_CONTAINERS_PREFIX = "ah.cluster.";
@@ -56,6 +47,7 @@ public class AHContainers {
 	public static final String attrId_ah_cluster_ah_ConfigServer_LocationPid = "ah.cluster.ah.ConfigServer.LocationPid";
 	public static final String attrId_ah_core_config_location = "ah.core.config.location";
 		
+	public static final String attrId_ah_cluster_metering_prefix = "ah.cluster.metering.";
 //	public static final String attrId_ah_eh_esp_deliveredEnergySum = "ah.eh.esp.deliveredEnergySum";
 	public static final String attrId_ah_cluster_metering_deliveredEnergySum = "ah.cluster.metering.deliveredEnergySum";	
 //	public static final String attrId_ah_eh_esp_receivedEnergySum = "ah.eh.esp.receivedEnergySum";
@@ -87,7 +79,7 @@ public class AHContainers {
 	public static final String attrId_ah_cluster_illuminance_prefix = "ah.cluster.illuminance.";
 	public static final String attrId_ah_cluster_illuminance_value = "ah.cluster.illuminance.value";
 
-	public static final String attrId_ah_cluster_ias_prexif = "ah.cluster.ias";
+	public static final String attrId_ah_cluster_ias_prexif = "ah.cluster.ias.";
 //	public static final String attrId_ah_aal_doorstatus = "ah.aal.doorstatus";
 	public static final String attrId_ah_cluster_iascontact_open = "ah.cluster.iascontact.open";	
 //	public static final String attrId_ah_aal_waterstatus = "ah.aal.waterstatus";
@@ -106,6 +98,12 @@ public class AHContainers {
 	public static final String attrId_ah_cluster_applctrl_cycleTarget1 = "ah.cluster.applctrl.cycleTarget1";	
 	public static final String attrId_ah_cluster_applctrl_temperatureTarget0 = "ah.cluster.applctrl.temperatureTarget0";	
 	public static final String attrId_ah_cluster_applctrl_temperatureTarget1 = "ah.cluster.applctrl.temperatureTarget1";	
+	
+	public static final String attrId_ah_cluster_applevents_prefix = "ah.cluster.applevents.";
+	public static final String attrId_ah_cluster_applevents_event = "ah.cluster.applevents.event";
+	public static final String attrId_ah_cluster_applevents_alerts = "ah.cluster.applevents.alerts";
+	
+	public static final String attrId_ah_cluster_powerprofile_prefix = "ah.cluster.powerprofile.";
 	
 	static {
 		Map<String, Class> attributeIdsMap = new HashMap<String, Class>(3);
@@ -147,6 +145,9 @@ public class AHContainers {
 		attributeIdsMap.put(attrId_ah_cluster_applctrl_temperatureTarget0, Integer.class);
 		attributeIdsMap.put(attrId_ah_cluster_applctrl_temperatureTarget1, Integer.class);
 		
+		attributeIdsMap.put(attrId_ah_cluster_applevents_event, Short.class);
+		attributeIdsMap.put(attrId_ah_cluster_applevents_alerts, Integer.class);
+		
 		attrIdsClassMap = Collections.unmodifiableMap(attributeIdsMap);
 	};
 
@@ -158,47 +159,5 @@ public class AHContainers {
 		String[] result = new String[attrIdsClassMap.size()];
 		attrIdsClassMap.keySet().toArray(result);
 		return result;
-	}
-
-	public static String getClusterName(String attributeId) {
-		// TODO:!!! Implementation needs to be extended/generalized
-		if (attributeId.equals(attrId_ah_cluster_applctrl_cycleTarget0) ||
-				attributeId.equals(attrId_ah_cluster_applctrl_cycleTarget1) ||
-				attributeId.equals(attrId_ah_cluster_applctrl_temperatureTarget0) ||
-				attributeId.equals(attrId_ah_cluster_applctrl_temperatureTarget1))
-			return ApplianceControlServer.class.getName();		
-		else 
-			return null;
-	}
-	
-	public static String getClusterAttributeId(String clusterName, String attributeName) {
-		if (clusterName == null || clusterName.equals("")) {
-			return attributeName;
-		} else if (clusterName.equals(ConfigServer.class.getName())) {
-			String attributeId = clusterName + "." + attributeName;
-			return attributeId.substring(TELECOMITALIA_PACKAGE_PREFIX.length());
-		} else if (clusterName.equals(SimpleMeteringServer.class.getName())) {
-			if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME))
-				return AHContainers.attrId_ah_cluster_metering_deliveredEnergySum;
-			if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME))
-				return AHContainers.attrId_ah_cluster_metering_receivedEnergySum;
-			if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME))
-				return AHContainers.attrId_ah_cluster_metering_deliveredPower;
-			return null;
-		} else if (clusterName.equals(OnOffServer.class.getName())) {
-			if (attributeName.equals(OnOffServer.ATTR_OnOff_NAME))
-				return AHContainers.attrId_ah_cluster_onoff_status;
-			return null;
-		} else if (clusterName.equals(ApplianceControlServer.class.getName())) {
-			if (attributeName.equals(ApplianceControlServer.ATTR_StartTime_NAME))
-				return AHContainers.attrId_ah_cluster_applctrl_startTime;
-			if (attributeName.equals(ApplianceControlServer.ATTR_FinishTime_NAME))
-				return AHContainers.attrId_ah_cluster_applctrl_finishTime;
-			if (attributeName.equals(ApplianceControlServer.ATTR_RemainingTime_NAME))
-				return AHContainers.attrId_ah_cluster_applctrl_remainingTime;
-			return null;
-		}
-		
-		return null;
 	}
 }

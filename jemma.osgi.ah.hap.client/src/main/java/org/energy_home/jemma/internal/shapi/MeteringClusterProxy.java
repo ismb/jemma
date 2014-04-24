@@ -24,8 +24,9 @@ import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
-import org.energy_home.jemma.internal.ah.hap.client.AHM2MHapService;
+import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
+
 
 public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleMeteringClient {
 	public static float interpretFormatting(short formatting) {
@@ -40,7 +41,17 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		super(applianceProxyList, ahm2mHapService, subscriptionManager);
 	}
 
-	public void notifyAttributeValue(String appliancePid, int endPointId, String clusterName, String attributeName, long timestamp, Object value, boolean isBatch) {
+	protected String getAttributeId(String attributeName) {
+		if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME))
+			return AHContainers.attrId_ah_cluster_metering_deliveredEnergySum;
+		if (attributeName.equals(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME))
+			return AHContainers.attrId_ah_cluster_metering_receivedEnergySum;
+		if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME))
+			return AHContainers.attrId_ah_cluster_metering_deliveredPower;
+		return null;
+	}
+
+	protected Object decodeAttributeValue(String appliancePid, int endPointId, String attributeName, Object value) {
 		ApplianceProxy applianceProxy = applianceProxyList.getApplianceProxy(appliancePid);
 		IAppliance appliance = applianceProxy.getAppliance();
 		IEndPoint endPoint = appliance.getEndPoint(endPointId);
@@ -55,7 +66,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 					try {
 						short summationFormatting = simpleMeteringServer.getSummationFormatting(applianceProxy.getLastReadApplicationRequestContext());			
 						Double energy = interpretFormatting(summationFormatting)*((Long)value).doubleValue(); 
-						super.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, energy, isBatch);
+						return energy;
 					} catch (Exception e) {
 						log.error("Error while reading summation formatting for appliance " + applianceProxy.getAppliance().getPid() + ", endPoint " + endPointId, e);
 					}
@@ -64,14 +75,18 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 					try {
 						short demandFormatting = simpleMeteringServer.getDemandFormatting(applianceProxy.getLastReadApplicationRequestContext());			
 						Float power = interpretFormatting(demandFormatting)*((Integer)value).floatValue(); 
-						super.notifyAttributeValue(appliancePid, endPointId, clusterName, attributeName, timestamp, power, isBatch);
+						return power;
 					} catch (Exception e) {
 						log.error("Error while reading demand formatting for appliance " + applianceProxy.getAppliance().getPid()  + ", endPoint " + endPointId, e);
-	
 					}
 				}
 			}
 		}
+		return value;
+	}
+	
+	public void notifyAttributeValue(String appliancePid, int endPointId, String clusterName, String attributeName, long timestamp, Object value, boolean isBatch) {
+
 	}
 
 	public void initServiceCluster(ApplianceProxy applianceProxy) {
