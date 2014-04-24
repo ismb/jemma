@@ -34,7 +34,7 @@ var InterfaceEnergyHome = {
 	ERR_NO_PRODUCTION : 6,
 	visError : null,
 
-	serviceName : "it.telecomitalia.ah.greenathome.GreenAtHomeApplianceService",
+	serviceName : "org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService",
 	objService : null,
 	// costanti per parametri chiamate
 	MINUTE : 0,
@@ -49,13 +49,14 @@ var InterfaceEnergyHome = {
 	AVG : 4,
 	DELTA : 5,
 	PID_TOTALE : null,
+	//TODO: check merge, do these declarations need to be renamed?
 	WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
 	SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
 	SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
-	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cos“ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
-	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lÕutente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
+	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cosï¿½ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
+	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lï¿½utente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
 	CONSUMO : "ah.eh.esp.Energy",
 	COSTO : "ah.eh.esp.EnergyCost",
 	PRODUZIONE : "ah.eh.esp.ProducedEnergy",
@@ -191,7 +192,8 @@ InterfaceEnergyHome.Abort = function() {
  * JSONRpcClient.Exception.CODE_ERR_MARSHALL = 593;
  */
 InterfaceEnergyHome.GestErrorEH = function(func, err) {
-	hideSpinner();
+	//TODO: check merge, following line was commented in 3.3.0
+	//hideSpinner();
 	var msg;
 	InterfaceEnergyHome.visError = InterfaceEnergyHome.ERR_GENERIC;
 	
@@ -345,14 +347,15 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 	} else{
 		param1 = InterfaceEnergyHome.CONSUMO;
 	}
-
-	if (intervallo == -1) {
+	//TODO: check merge, following commented block was not in 3.3.0
+/*	if (intervallo == -1) {
 		param2 = InterfaceEnergyHome.MINUTE;
 		// dataInizio.setHours(0);
 		// dataFine.setHours(23);
 		// dataFine.setMinutes(30);
 		paramTr = Tracing.QT_IERI;
-	} else if (intervallo == 0) {
+	} else if (intervallo == 0) {*/
+	if (intervallo == 0) {
 		param2 = InterfaceEnergyHome.HOUR;
 		// dataInizio.setHours(0);
 		// dataFine.setHours(23);
@@ -373,14 +376,9 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 	// solo se anche piattaforma
 	if (InterfaceEnergyHome.mode > 1) {
 		try {
-			InterfaceEnergyHome.objService.getAttributeData(InterfaceEnergyHome.BackStorico, 
-															pid, 
-															param1, 
-															dataInizio.getTime(), 
-															dataFine.getTime(), 
-															param2, 
-															true, 
-															InterfaceEnergyHome.DELTA);
+			InterfaceEnergyHome.objService.getAttributeData(InterfaceEnergyHome.BackStorico, pid, param1, 
+															dataInizio.getTime(), dataFine.getTime(), param2, 
+															true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
 			InterfaceEnergyHome.BackStorico(null, err);
 		}
@@ -400,7 +398,8 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		g = Math.floor(diff / (24 * 60 * 60 * 1000)) + 1;
 
 		//console.log(20, InterfaceEnergyHome.MODULE, "   diff = " + diff + "  giorni = " + g);
-		if (intervallo == -1) {
+		//TODO: check merge, following commented block was not in 3.3.0
+/*		if (intervallo == -1) {
 			if (tipo == "Costo"){
 				val = StoricoCostoO;
 			} else if (tipo == "Produzione"){
@@ -408,7 +407,8 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 			} else {
 				val = StoricoConsumoO;
 			}
-		} else if (intervallo == 0) {
+		} else if (intervallo == 0) {*/
+		if (intervallo == 0) {
 			if (tipo == "Costo"){
 				val = StoricoCostoI;
 			} else if (tipo == "Produzione"){
@@ -444,6 +444,24 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 				val = {"list" : StoricoConsumoA.list.slice(0, g)};
 			}
 		}
+		/**
+		 * da rivedere !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+		 * if (pid !="homeauto") { 
+		 * //se e' un singolo elettrodomestico prendo una percentuale 
+		 * // cerco
+		 * percentuale perc = 100; 
+		 * for (j = 0; j < StoricoElettr.length; j++) {
+		 * 		if (StoricoElettr[j].id == pid) { 
+		 * 			perc = StoricoElettr[j].perc;
+		 * 			break; 
+		 * 		} 
+		 * } 
+		 * valP = {"list":[]}; 
+		 * for (j = 0; j < val.list.length; j++)
+		 * 		valP.list[j] = val.list[j] * perc / 100;
+		 * InterfaceEnergyHome.BackStorico(valP, null); 
+		 * } else {}
+		 */
 		InterfaceEnergyHome.BackStorico(val, null);
 	}
 }
