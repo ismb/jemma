@@ -17,7 +17,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-   <implementation class="org.energy_home.jemma.osgi.ah.io.CedacIO"/>
+   <implementation class="org.energy_home.jemma.ah.io.CedacIO"/>
    <service>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
@@ -27,6 +27,7 @@
    		org/osgi/framework/FrameworkEvent/*
    		ah/zigbee/*
    		ah/identify/*
+   		ah/eh/overload/*
    		ah/*
    </property>
    <reference bind="bindService" cardinality="0..1" interface="org.energy_home.jemma.ah.m2m.device.M2MNetworkScl" name="M2MNetworkScl" policy="dynamic" unbind="unbindService"/>

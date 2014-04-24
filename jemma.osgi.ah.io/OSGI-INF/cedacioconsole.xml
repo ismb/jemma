@@ -17,7 +17,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.energy_home.jemma.osgi.ah.io.CedacIOConsole"/>
+   <implementation class="org.energy_home.jemma.ah.io.CedacIOConsole"/>
    <service>
       <provide interface="org.eclipse.osgi.framework.console.CommandProvider"/>
    </service>
