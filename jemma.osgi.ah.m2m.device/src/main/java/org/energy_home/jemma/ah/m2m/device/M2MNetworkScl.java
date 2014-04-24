@@ -22,6 +22,7 @@ import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 import org.energy_home.jemma.m2m.ContentInstancesBatchRequest;
 import org.energy_home.jemma.m2m.ContentInstancesBatchResponse;
 
+
 public interface M2MNetworkScl {
 
 	public static final long CONTENT_INSTANCE_LATEST_ID = -1;

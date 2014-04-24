@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.internal.ah.m2m.device;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +34,7 @@ import org.energy_home.jemma.utils.encrypt.TripleDESEnc;
 
 public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	private static final Log log = LogFactory.getLog(M2MDeviceConfigObject.class);
-	private static final String SP_SYSTEM_PROPERTY_PREFIX = "it.telecomitalia.m2m.device.";
+	private static final String SP_SYSTEM_PROPERTY_PREFIX = "org.energy_home.jemma.m2m.device.";
 	private static final String SP_CONNECTION_CONFIG_DIR = SP_SYSTEM_PROPERTY_PREFIX + "configDir";
 	private static final String CONFIG_FILE_NAME = SP_SYSTEM_PROPERTY_PREFIX + "config.properties";
 	private static final String CONNECTION_ID_PREFIX = "cid-";
@@ -58,7 +59,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 		String encKey = null;
 		try {
-			//FIXME: no password class 
+			//TODO: check merge, class org.energy_home.jemma.internal.ah.m2m.device.EHSettings not in JEMMA!
 			Class ehSettingsClass = Class.forName("org.energy_home.jemma.internal.ah.m2m.device.EHSettings");
 			Field field = ehSettingsClass.getDeclaredField("key");
 			field.setAccessible(true);
@@ -252,6 +253,10 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 	// *** M2MDeviceConfig interface
 
+	public boolean isLocalOnly() {
+		return deviceId.equals(M2MConstants.LOCAL_ONLY_DEVICE_ID);
+	}
+	
 	public boolean isValid() {
 		return deviceId != null && !deviceId.equals("");
 	}

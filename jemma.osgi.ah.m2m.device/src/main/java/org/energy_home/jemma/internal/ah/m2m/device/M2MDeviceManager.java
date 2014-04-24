@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.internal.ah.m2m.device;
 
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -394,28 +395,33 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 	private void startup() throws M2MServiceException {
 		synchronized (deviceStatus) {
 			log.info("M2M Device startup requested: " + deviceConfig.getProperties());
-			if (!deviceConfig.isValid())
-				throw new M2MConfigException("Startup method failed: incomplete configuration");
-
-			if (deviceStatus.isValid()) {
-				log.info("M2M Device already started");
-				return;
+			
+			if (!deviceConfig.isLocalOnly()) {		
+				if (!deviceConfig.isValid())
+					throw new M2MConfigException("Startup method failed: incomplete configuration");
+	
+				if (deviceStatus.isValid()) {
+					log.info("M2M Device already started");
+					return;
+				}
+				jaxbConverterFactory = HttpEntityXmlConverter.getConnectionConverter();
+				try {
+					restClient = RestClient.get();
+					networkConnectionUri = new URI(deviceConfig.getConnectionBaseUri());
+				} catch (URISyntaxException e) {
+					M2MUtils.mapDeviceException(log, e, "Invalid base uri configuration");
+				}
+				restClient.setCredential(networkConnectionUri.getHost(), networkConnectionUri.getPort(),
+						deviceConfig.getConnectionId(), deviceConfig.getConnectionToken());
 			}
-			jaxbConverterFactory = HttpEntityXmlConverter.getConnectionConverter();
-			try {
-				restClient = RestClient.get();
-				networkConnectionUri = new URI(deviceConfig.getConnectionBaseUri());
-			} catch (URISyntaxException e) {
-				M2MUtils.mapDeviceException(log, e, "Invalid base uri configuration");
-			}
-			restClient.setCredential(networkConnectionUri.getHost(), networkConnectionUri.getPort(),
-					deviceConfig.getConnectionId(), deviceConfig.getConnectionToken());
-
 			deviceStatus.setValid(true);
 			// First connection is scheduled so that OSGi framework startup is
 			// not blocked by timeout on network connection
 			notifyStartedStatusToListeners();
-			scheduleConnectTask(100, deviceConfig.getConnectionRetryTimeout());
+			if (!deviceConfig.isLocalOnly())
+				scheduleConnectTask(100, deviceConfig.getConnectionRetryTimeout());
+			else
+				log.info("M2M Device local only configuration");
 			log.info("M2M Device startup completed");
 		}
 	}
@@ -423,11 +429,13 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 	private void shutdown() {
 		synchronized (deviceStatus) {
 			log.info("M2M Device shutdown requested");
+
 			cancelTimer();
 			if (deviceStatus.isConnected())
 				disconnect();
 			if (restClient != null)
 				restClient.release();
+
 			jaxbConverterFactory = null;
 			restClient = null;
 			networkConnectionUri = null;

@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.m2m.device</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.2.13</version>
+	<version>1.2.15</version>
 	<name>M2M Device</name>
 
 	<parent>
@@ -130,10 +130,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>${maven.clean.plugin.version}</version>
-				<configuration>
+<!--				<configuration>
 					<filesets>
-						<!--Uncomment this to force cleaning and re-generation of classes from xml schemas using jaxb-->
-						<!--<fileset>
+						<fileset>
 							<directory>${project.basedir}/src/main/java/org/energy_home/jemma/m2m</directory>
 							<includes>
 								<include>*.java</include>
@@ -151,7 +150,7 @@
 								<include>*_flag</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
-						</fileset>-->
+						</fileset>
 						<fileset>
 							<directory>${project.basedir}</directory>
 							<includes>
@@ -165,7 +164,7 @@
 						</fileset>
 					</filesets>
 					<verbose>true</verbose>
-				</configuration>
+				</configuration>-->
 			</plugin>
 		</plugins>
 	</build>

@@ -18,8 +18,8 @@
         <appinfo> 
             <jaxb:globalBindings> 
                 <jaxb:javaType name="java.util.Calendar" xmlType="dateTime"
-                    parseMethod="it.telecomitalia.internal.xml.utils.DateTimeAdapter.parseDateTime"
-                    printMethod="it.telecomitalia.internal.xml.utils.DateTimeAdapter.printDateTime"
+                    parseMethod="org.energy_home.jemma.internal.xml.utils.DateTimeAdapter.parseDateTime"
+                    printMethod="org.energy_home.jemma.internal.xml.utils.DateTimeAdapter.printDateTime"
                 />
             </jaxb:globalBindings> 
         </appinfo> 
@@ -293,7 +293,14 @@ This resource is the root for all resources that are residing on the hosting SCL
                             URI used to send notifications
                         </documentation>
                     </annotation>
-                </element>          
+                </element>   
+                <element minOccurs="1" name="AddressedIdFilter" type="anyURI">
+                    <annotation>
+                        <documentation>
+                            URI used to filter notifications 
+                        </documentation>
+                    </annotation>
+                </element> 
             </sequence>            
 		</complexType>
     </element> 
