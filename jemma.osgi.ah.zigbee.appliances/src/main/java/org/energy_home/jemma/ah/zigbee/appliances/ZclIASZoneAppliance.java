@@ -15,13 +15,12 @@
  */
 package org.energy_home.jemma.ah.zigbee.appliances;
 
-import java.util.Dictionary;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
+import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclAlarmsServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
@@ -29,6 +28,11 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfiguration
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+
+import java.util.Dictionary;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ZclIASZoneAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;

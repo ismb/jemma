@@ -15,13 +15,14 @@
  */
 package org.energy_home.jemma.ah.zigbee.appliances;
 
-import java.util.Dictionary;
-
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
+
+import java.util.Dictionary;
+
 import org.osgi.service.device.Driver;
 
 public class ZclRangeExtenderApplianceFactory extends DriverApplianceFactory implements Driver {
