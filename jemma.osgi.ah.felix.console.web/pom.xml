@@ -24,7 +24,7 @@
 	<artifactId>jemma.osgi.ah.felix.console.web</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.9</version>
-	<name>AH Felix Web Console</name>
+	<name>AH Apache Felix Web Console Plugin</name>
 
 	<parent>
 		<groupId>org.energy-home</groupId>
