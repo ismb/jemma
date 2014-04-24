@@ -14,7 +14,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License (LGPL) for more details.
 
-
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.energy_home.jemma.osgi.ah.eh.espconsole">
    <implementation class="org.energy_home.jemma.osgi.ah.eh.esp.ESPCommandProvider"/>
@@ -24,3 +23,4 @@
    <reference bind="setESPService" cardinality="1..1" interface="org.energy_home.jemma.ah.eh.esp.ESPService" name="ESPService" policy="static" unbind="unsetESPService"/>
    <property name="osgi.command.scope" type="String" value="esp"/>
 </scr:component>
+

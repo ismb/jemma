@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.ebrain.old;
 
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorTask;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 
 public class EnergyBrainOld {
-	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency 
+	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
 	public static final short TRAILING_DIGIT_TENTHS = 3; // trailing digits: thousandths of euros
 	

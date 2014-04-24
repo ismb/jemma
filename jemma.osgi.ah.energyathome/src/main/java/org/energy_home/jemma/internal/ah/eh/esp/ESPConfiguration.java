@@ -46,7 +46,7 @@ public class ESPConfiguration {
 	private static final String CONTRACTUAL_POWER_THRESHOLD_PROPERTY_NAME = "contractualPowerThreshold";
 	private static final String PEAK_PRODUCED_POWER_PROPERTY_NAME = "peakProducedPower";
 	private static final String SMART_INFO_PID_PROPERTY_NAME = "smartInfoPid";
-	
+
 	private static File f = null;
 	private static Properties configProperties = null;
 

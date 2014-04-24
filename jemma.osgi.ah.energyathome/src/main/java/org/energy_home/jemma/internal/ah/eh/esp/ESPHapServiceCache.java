@@ -30,7 +30,6 @@ import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 
-
 // TODO: code needs to be reviewed (only week day cache is currently used)
 public class ESPHapServiceCache {
 	private static final Log log = LogFactory.getLog(ESPHapServiceCache.class);

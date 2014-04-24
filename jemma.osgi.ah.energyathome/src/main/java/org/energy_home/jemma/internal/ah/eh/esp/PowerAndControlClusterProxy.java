@@ -90,7 +90,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 
 	private static final long ZIGBEE_UTC_DELTA_SECONDS = 946684800;
 	
-	public static final int ISO4217_CURRENCY_CODE = 978; // Euro currency 
+	public static final int ISO4217_CURRENCY_CODE = 978; // Euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
 	public static final short TRAILING_DIGIT_TENTHS = 3; // trailing digits: thousandths of euros
 	

@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.shal.DeviceInfo;

@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.ebrain.algo;
 
+
 import java.util.Calendar;
 
 import org.apache.commons.logging.Log;

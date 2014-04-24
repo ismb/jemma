@@ -14,7 +14,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License (LGPL) for more details.
 
-
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.energy_home.jemma.osgi.ah.eh.esp">
    <implementation class="org.energy_home.jemma.internal.ah.eh.esp.ESPApplication"/>
@@ -24,5 +23,6 @@
    </service>
    <reference bind="setExecutorService" cardinality="1..1" interface="org.energy_home.jemma.utils.thread.ExecutorService" name="ExecutorService" policy="static" unbind="unsetExecutorService"/>
    <reference bind="setHapService" cardinality="1..1" interface="org.energy_home.jemma.ah.hap.client.IM2MHapService" name="HapService" policy="static" unbind="unsetHapService"/>
-   <reference bind="setESPEventsDispatcher" unbind="unsetESPEventsDispatcher" cardinality="1..1" interface="org.energy_home.jemma.osgi.ah.eh.esp.IESPEventsDispatcher" name="IESPEventsDispatcher" policy="static"/>
+   <reference bind="setESPEventsDispatcher" cardinality="1..1" interface="org.energy_home.jemma.osgi.ah.eh.esp.IESPEventsDispatcher" name="ESPEventsDispatcher" policy="static" unbind="unsetESPEventsDispatcher"/>
+   <property name="ah.application.name" type="String" value="ah.eh.esp"/>
 </scr:component>

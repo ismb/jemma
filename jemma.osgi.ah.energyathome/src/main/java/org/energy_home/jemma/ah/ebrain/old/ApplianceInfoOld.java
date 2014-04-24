@@ -26,6 +26,7 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ScheduledPhase;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 
+
 /*
  * This class is the hub of all information, data, state of a remote appliance. It contains a working status 
  * of a remote appliance and is the object passed to the various logic and algorithms to perform calculations
@@ -67,7 +68,7 @@ public class ApplianceInfoOld {
 		return ap;
 	}
 	
-	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency 
+	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
 	public static final short TRAILING_DIGIT_TENTHS = 3; // trailing digits: thousandths of euros
 	public static final int MILLISECONDS_IN_MINUTE = 60 * 1000;

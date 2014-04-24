@@ -41,6 +41,7 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 
+
 public class PowerAndControlClusterProxySimpleTest extends PowerAndControlClusterProxy implements PowerProfileClient {
 	private static final String APPLIANCE_PID = "ah.app.1";
 	

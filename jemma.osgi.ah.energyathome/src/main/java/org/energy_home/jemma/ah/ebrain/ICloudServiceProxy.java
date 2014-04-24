@@ -21,6 +21,7 @@ import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 
+
 public interface ICloudServiceProxy {
 	public static final int EVENT_INVALID_CURRENT_SUMMATION_DELIVERED_VALUE = 1;
 	public static final int EVENT_INVALID_DELTA_ENERGY_VALUE = 2;

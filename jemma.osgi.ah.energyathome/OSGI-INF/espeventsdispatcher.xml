@@ -14,7 +14,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License (LGPL) for more details.
 
-
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.energy_home.jemma.osgi.ah.eh.ESPEventDispatcher">
    <implementation class="org.energy_home.jemma.osgi.ah.eh.esp.ESPEventsDispatcher"/>

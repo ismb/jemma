@@ -26,6 +26,7 @@ import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 
 
+
 /*
  * This informative object represents a smart appliance and is a container
  * of the latest received profile (to evolve into a set of profiles).
