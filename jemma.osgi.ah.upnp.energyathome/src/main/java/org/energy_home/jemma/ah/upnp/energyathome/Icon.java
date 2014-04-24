@@ -15,10 +15,9 @@
  */
 package org.energy_home.jemma.ah.upnp.energyathome;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.osgi.service.upnp.UPnPIcon;
+import java.io.InputStream;
+import java.io.IOException;
 
 public final class Icon implements UPnPIcon {
 
