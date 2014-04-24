@@ -63,7 +63,7 @@ public class HacDriverLocator implements DriverLocator {
 		// http://www.myrepository.it/repository
 		// file://C:/repository
 
-		String repositoryPath = bc.getProperty("it.telecomitalia.ah.hac.repository");
+		String repositoryPath = bc.getProperty("org.energy_home.jemma.ah.hac.repository");
 		if (repositoryPath != null) {
 			this.repositoryPath = repositoryPath;
 		}

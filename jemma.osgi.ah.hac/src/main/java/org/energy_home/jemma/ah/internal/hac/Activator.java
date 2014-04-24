@@ -26,19 +26,19 @@ public class Activator implements BundleActivator {
 
 	public void start(BundleContext bc) throws Exception {
 		LOG.info("Bundle jemma.osgi.ah.hac starting");
-		boolean enableUpdateBugPatch = getProperty("it.telecomitalia.ah.updatepatch", false);
+		boolean enableUpdateBugPatch = getProperty("org.energy_home.jemma.ah.updatepatch", false);
 		if (enableUpdateBugPatch) {
 			PatchUpdateBug.patchUpdateBugOnHac(bc, "/hac-config.xml");
 			PatchUpdateBug.patchUpdateBugOnHac(bc, "/cms-config.xml");
 		}
-		
 	}
 
 	public void stop(BundleContext arg0) throws Exception {
+
 	}
 	
 	boolean getProperty(String name, boolean defaultValue) {
-		String value = System.getProperty("it.telecomitalia.ah.updatepatch");
+		String value = System.getProperty("org.energy_home.jemma.ah.updatepatch");
 		
 		if (value != null) {
 			if (value.equals("true")) {

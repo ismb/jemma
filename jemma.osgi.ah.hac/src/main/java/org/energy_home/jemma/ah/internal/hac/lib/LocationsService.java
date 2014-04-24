@@ -35,7 +35,7 @@ public class LocationsService implements ManagedServiceFactory {
 	
 	private ConfigurationAdmin configAdmin;
 	
-	static final String FACTORY_PID = "it.telecomitalia.osgi.ah.hac.locations";
+	static final String FACTORY_PID = "org.energy_home.jemma.osgi.ah.hac.locations";
 	
 	public LocationsService() {
 		
@@ -84,7 +84,7 @@ public class LocationsService implements ManagedServiceFactory {
 
 	public void clear() {		
 		try {
-			Configuration[] configurations = configAdmin.listConfigurations("(it.telecomitalia.ah.location.name=*)");
+			Configuration[] configurations = configAdmin.listConfigurations("(org.energy_home.jemma.ah.location.name=*)");
 			if (configurations != null)
 				for (int i = 0; i < configurations.length; i++) {
 					configurations[i].delete();

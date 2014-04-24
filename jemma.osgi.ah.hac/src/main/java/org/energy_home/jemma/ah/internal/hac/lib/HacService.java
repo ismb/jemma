@@ -130,7 +130,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 	private boolean saveConfigurationToCurrent = true;
 	private static final String servicePid = "org.telecomitalia.hac";
-	private final static String SCENARIOS_PATH = "xml/scenarios/";
+	//TODO: check merge, path was empty in 3.3.0
+	//private final static String SCENARIOS_PATH = "xml/scenarios/";
+	private final static String SCENARIOS_PATH = "";
 
 	private String defaultConfig = "defaultconfig";
 	private String configurationFilename = "hac-config";
@@ -194,7 +196,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		locationsDb.setConfigurationAdmin(configAdmin);
 
 		Dictionary props = new Hashtable();
-		props.put(Constants.SERVICE_PID, "it.telecomitalia.osgi.ah.hac.locations");
+		props.put(Constants.SERVICE_PID, "org.energy_home.jemma.osgi.ah.hac.locations");
 
 		locationsServiceReg = bc.registerService(ManagedServiceFactory.class.getName(), locationsDb, props);
 	}
@@ -1067,13 +1069,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			try {
 				if (storageArea) {
 					String configFilename = SCENARIOS_PATH + configName + ".xml";
-					if (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch)) {
+					if (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch)) {
 						patched  = PatchUpdateBug.patchUpdateBugOnHacLib(bc, configFilename);
 					}
 					configFile = bc.getDataFile(configFilename);
 					LOG.debug("storage area is " + configFile);
-					stream = new FileInputStream(configFile);
-					
+					stream = new FileInputStream(configFile);					
 				} else {
 					File f = new File(configName);
 					if (f.isAbsolute()) {
@@ -1451,7 +1452,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	public boolean postConfiguration(String data) {
 		synchronized (lockHacService) {
 			// url of the energy at home application
-			String applUrl = bc.getProperty("it.telecomitalia.energyathome.url");
+			String applUrl = bc.getProperty("org.energy_home.jemma.energyathome.url");
 			if (applUrl == null) {
 				applUrl = "http://163.162.180.229:8282/energyathome";
 			}
@@ -1819,7 +1820,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			}
 		}
 	}
-
+	//TODO: check merge, method below missing in 3.3.0
 	private void manageMultiEndPointConfiguration(Dictionary props, Dictionary oldProps, String applianceProperty, String endPointsProperty) {
 		String value = (String) props.get(applianceProperty);
 		String[] values = (String[]) props.get(endPointsProperty);
@@ -1882,7 +1883,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				props.put(key, customConfig.get(key));
 			}
 		}	
-
+		//TODO: check merge, 5 lines below were missing in 3.3.0
 		// For compatibility with old applications (i.e. green@home), appliance common property is always managed
 		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_NAME_PROPERTY, IAppliance.END_POINT_NAMES_PROPERTY);
 		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, IAppliance.END_POINT_CATEGORY_PIDS_PROPERTY);
