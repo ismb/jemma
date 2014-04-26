@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -24,10 +26,8 @@ import org.energy_home.jemma.zgd.jaxb.Filter;
 import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
 import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
 import org.energy_home.jemma.zgd.jaxb.Level;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages received APS messages. When an APS indication is received it is
@@ -38,7 +38,7 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
  */
 public class ApsMessageManager {
 
-	private final static Log logger = LogFactory.getLog(ApsMessageManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ApsMessageManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -73,7 +73,7 @@ public class ApsMessageManager {
 			@Override
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication in process...");
+					LOG.debug("Aps Message Indication in process...");
 				}
 
 					for (CallbackEntry ce : gal.getCallbacks()) {
@@ -184,7 +184,8 @@ public class ApsMessageManager {
 												}
 											}
 										} else if (msam == 0x03) {
-											logger.info("AIA");
+											//FIXME is this the right debug level and message ?
+											LOG.info("AIA");
 
 											// ASK No ieee address defined in
 											// the AddressSpecification
