@@ -15,10 +15,11 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
+import org.energy_home.jemma.javagal.layers.presentation.Activator;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.Address;
@@ -39,7 +40,7 @@ import org.energy_home.jemma.zgd.jaxb.Level;
  */
 public class MessageManager {
 
-	private final static Log logger = LogFactory.getLog(MessageManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( MessageManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -73,7 +74,7 @@ public class MessageManager {
 			@Override
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication in process...");
+					LOG.debug("Aps Message Indication in process...");
 				}
 
 				for (CallbackEntry ce : gal.getCallbacks()) {
@@ -174,7 +175,7 @@ public class MessageManager {
 											}
 										}
 									} else if (msam == 0x03) {
-										logger.info("AIA");
+										LOG.warn("AIA"); //FIXME is this something expected or not ? maybe a better log message would also help ...
 
 										// ASK No ieee address defined in
 										// the AddressSpecification
@@ -275,7 +276,7 @@ public class MessageManager {
 			@Override
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication in process...");
+					LOG.debug("Aps Message Indication in process...");
 				}
 
 				for (CallbackEntry ce : gal.getCallbacks()) {

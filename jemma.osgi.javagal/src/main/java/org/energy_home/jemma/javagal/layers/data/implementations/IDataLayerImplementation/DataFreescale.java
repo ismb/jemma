@@ -311,7 +311,7 @@ public class DataFreescale implements IDataLayer {
 								gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
 								gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									// System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:"
+									// LOG.debug("\n\rPostponing  timer Freshness by Aps.Indication for node:"
 									// +
 									// gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()
 									// + "\n\r");
@@ -335,7 +335,7 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												// System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
+												// LOG.debug("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
 												// +
 												// messageEvent.getSourceAddress().getNetworkAddress()
 												// + "\n\r");
@@ -364,12 +364,12 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled())
 													LOG.trace("Sending IeeeReq to:" + _address.getNetworkAddress());
-												System.out.println("Sending IeeeReq to:" + _address.getNetworkAddress());
+												LOG.debug("Sending IeeeReq to:" + _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													LOG.trace("Read Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													System.out.println("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
+													LOG.debug("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
 
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
@@ -379,7 +379,7 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													LOG.trace("Read NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													System.out.println("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
+													LOG.debug("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
 
 												}
 
@@ -412,7 +412,7 @@ public class DataFreescale implements IDataLayer {
 											} catch (GatewayException e) {
 												LOG.warn("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
-												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												LOG.debug("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
@@ -422,7 +422,7 @@ public class DataFreescale implements IDataLayer {
 
 											} catch (Exception e) {
 												LOG.warn("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												LOG.debug("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -2158,7 +2158,7 @@ public class DataFreescale implements IDataLayer {
 		lock.set_Key(_key);
 
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			System.out.println("Sending Aps message to: " + String.format("%016X", _DSTAdd));
+			LOG.debug("Sending Aps message to: " + String.format("%016X", _DSTAdd));
 		}
 
 		Status status = null;
@@ -3903,7 +3903,7 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			System.out.println("Sending InterPANMessage to: " + String.format("%016X", _DSTAdd));
+			LOG.debug("Sending InterPANMessage to: " + String.format("%016X", _DSTAdd));
 		}
 
 		Status status = null;
