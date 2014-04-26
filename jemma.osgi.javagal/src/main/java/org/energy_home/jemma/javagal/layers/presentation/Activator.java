@@ -21,8 +21,8 @@ import org.energy_home.jemma.zgd.GatewayInterface;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
@@ -40,7 +40,7 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
 	private BundleContext bc;
 	private GalExtenderProxyFactory _fac = null;
-	private final static Log log = LogFactory.getLog(Activator.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	private ServiceRegistration gatewayInterfaceRegistration;
 	private ServiceRegistration gatewayFactoryRegistration;
 
@@ -50,7 +50,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		log.info("Starting Gal:Osgi...");
+		LOG.info("Starting Gal:Osgi...");
 		bc = context;
 		try {
 			String _path = File.separator
@@ -90,10 +90,9 @@ public class Activator implements BundleActivator {
 					GalExtenderProxyFactory.class.getName(),
 					gatewayFactoryServiceFactory, null);
 
-			log.info("Gal:Osgi Started!");
+			LOG.info("Gal:Osgi Started!");
 		} catch (Exception e) {
-			log.error("Error Creating Gal Osgi: " + e.getMessage());
-			log.info("Error Creating Gal Osgi: " + e.getMessage());
+			LOG.error("Error Creating Gal Osgi: ",e);
 		}
 	}
 
@@ -118,7 +117,7 @@ public class Activator implements BundleActivator {
 			}
 		}
 
-		log.info("Gal Osgi Stopped!");
+		LOG.info("Gal Osgi Stopped!");
 	}
 
 	/**
@@ -131,12 +130,12 @@ public class Activator implements BundleActivator {
 			try {
 				 gatewayInterface = _fac
 						.createGatewayInterfaceObject();
-				log.info("Called getService!");
+				 LOG.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
-				log.error(e);
-				return null;
+				LOG.error("Exception in GatewayInterfaceServiceFactory getService",e);
 			}
+			return null;
 		}
 
 		@Override
@@ -149,7 +148,7 @@ public class Activator implements BundleActivator {
 				e.printStackTrace();
 			}
 
-			log.info("Called UngetService!");
+			LOG.debug("Called UngetService!");
 		}
 	}
 
@@ -165,7 +164,7 @@ public class Activator implements BundleActivator {
 			try {
 				return _fac;
 			} catch (Exception e) {
-				log.error(e);
+				LOG.error("Exception in GatewayFactoryServiceFactory getService",e);
 				return null;
 			}
 		}
