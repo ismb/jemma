@@ -19,8 +19,8 @@ package org.energy_home.jemma.javagal.rest;
 import java.io.File;
 import java.math.BigInteger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.rest.util.Resources;
 import org.energy_home.jemma.zgd.*;
 import org.osgi.framework.BundleActivator;
@@ -36,7 +36,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  */
 public class Activator implements BundleActivator {
-	Log log = LogFactory.getLog(Activator.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	private static BundleContext context;
 	PropertiesManager PropertiesManager = null;
 
@@ -57,12 +57,12 @@ public class Activator implements BundleActivator {
 		PropertiesManager = new PropertiesManager(bundleContext.getBundle().getResource(_path));
 
 		if (PropertiesManager.getDebugEnabled())
-			log.info("Starting Rest bundle");
+			LOG.info("Starting Rest bundle");
 		Activator.context = bundleContext;
 		serviceTracker = new GatewayInterfaceFactoryTracker(context);
 		serviceTracker.open();
 		if (PropertiesManager.getDebugEnabled())
-			log.info("Rest bundle started!");
+			LOG.info("jemma.osgi.javagal.rest bundle started");
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		if (PropertiesManager.getDebugEnabled())
-			log.info("Stopping Rest bundle");
+			LOG.info("jemma.osgi.javagal.rest bundle stopping");
 		Activator.context = null;
 		serviceTracker.close();
 		serviceTracker = null;
@@ -80,7 +80,7 @@ public class Activator implements BundleActivator {
 			restManager.deleteFactory();
 		}
 		if (PropertiesManager.getDebugEnabled())
-			log.info("Stopped Rest bundle");
+			LOG.info("jemma.osgi.javagal.rest bundle stopped");
 		PropertiesManager = null;
 	}
 
@@ -97,7 +97,6 @@ public class Activator implements BundleActivator {
 		GalExtenderProxyFactory gatewayFactory;
 
 		BundleContext _context = null;
-		private final Log logger = LogFactory.getLog(GatewayInterfaceFactoryTracker.class);
 
 		public GatewayInterfaceFactoryTracker(BundleContext context) {
 			// super(context, GalExtenderProxyFactory.class.getName(), null);
@@ -117,7 +116,7 @@ public class Activator implements BundleActivator {
 			restManager = new RestManager(PropertiesManager, gatewayFactory);
 
 			if (PropertiesManager.getDebugEnabled())
-				logger.info("ZGD started. Rest Manager can serve requests.");
+				Activator.LOG.debug("ZGD started. Rest Manager can serve requests.");
 
 			return null;
 		}

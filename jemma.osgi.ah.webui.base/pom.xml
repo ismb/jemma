@@ -73,11 +73,6 @@
 			<artifactId>org.eclipse.osgi.services</artifactId>
 			<version>${org.eclipse.osgi.services.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
-		</dependency>
 	</dependencies>
 
 
