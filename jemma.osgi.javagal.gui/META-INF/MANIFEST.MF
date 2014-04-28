@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398331705804
+Bnd-LastModified: 1398695293421
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-ManifestVersion: 2

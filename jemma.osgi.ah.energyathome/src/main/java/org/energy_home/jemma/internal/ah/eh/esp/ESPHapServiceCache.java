@@ -193,7 +193,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items);
+				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)
@@ -216,7 +216,7 @@ public class ESPHapServiceCache {
 			if (itemsList != null) {
 				cache = new QueryResult<ContentInstanceItemsList>(itemsList, System.currentTimeMillis());
 				cacheItemsListMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + itemsList);
+				log.info("Created local cache for container " + containerId + "\n:" + itemsList.toXmlPrintableString());
 			} 
 		}
 		if (cache == null || startTime < cacheStartTime || endTime > cacheEndTime)
@@ -231,7 +231,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheWeekDayItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items);
+				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)
@@ -246,7 +246,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheHourlyProducedEnergyForecastItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items);
+				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)
