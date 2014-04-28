@@ -15,23 +15,23 @@
  */
 package org.energy_home.jemma.ah.internal.hac.lib;
 
+
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 import org.energy_home.jemma.ah.hac.HacException;
 import org.energy_home.jemma.ah.hac.ILocation;
 import org.energy_home.jemma.ah.hac.lib.ext.Location;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LocationsService implements ManagedServiceFactory {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(LocationsService.class);
 	
 	private ConfigurationAdmin configAdmin;
 	
@@ -77,7 +77,7 @@ public class LocationsService implements ManagedServiceFactory {
 			c.update(props);
 			
 		} catch (Exception e) {
-			LOG.warn(e.getMessage(), e);
+			System.out.println(e.getMessage());
 		}
 		return location;
 	}
@@ -90,9 +90,8 @@ public class LocationsService implements ManagedServiceFactory {
 					configurations[i].delete();
 				}
 		} catch (IOException e) {
-			LOG.warn(e.getMessage(), e);
+			
 		} catch (Exception e) {
-			LOG.warn(e.getMessage(), e);
 		}
 	}
 
@@ -106,7 +105,8 @@ public class LocationsService implements ManagedServiceFactory {
 		try {
 			location = (Location) pid2location.remove(pid);
 		} catch (Throwable e) {
-			LOG.warn(e.getMessage(), e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return;
 		}
 		

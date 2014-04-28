@@ -24,24 +24,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Dictionary;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PatchUpdateBug {
-	private static final Logger LOG = LoggerFactory.getLogger(PatchUpdateBug.class);
-	
+	private static final Log log = LogFactory.getLog(PatchUpdateBug.class);
+
 	public static boolean patchUpdateBugOnHacLib(BundleContext bc, String configFilename) {
 		File dstFile = bc.getDataFile(configFilename);
 		if (!dstFile.exists()) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("configuration file " + configFilename + " not found in storage area of bundle "
-						+ bc.getBundle().getBundleId());
-			}
+			log.debug("configuration file " + configFilename + " not found in storage area of bundle "
+					+ bc.getBundle().getBundleId());
 			Bundle[] bundles = bc.getBundles();
 			for (int i = 0; i < bundles.length; i++) {
 				if (bundles[i].getSymbolicName().equals("org.energy_home.jemma.osgi.ah.hac")) {
@@ -77,7 +75,6 @@ public class PatchUpdateBug {
 		try {
 			configurations = cm.listConfigurations("&(" + ConfigurationAdmin.SERVICE_FACTORYPID + "=" + factoryPid + ")");
 		} catch (Exception e1) {
-			LOG.warn(e1.getMessage(), e1);
 			return false;
 		}
 
@@ -86,7 +83,6 @@ public class PatchUpdateBug {
 			try {
 				factoryConfiguration = cm.createFactoryConfiguration(factoryPid);
 			} catch (IOException e) {
-				LOG.warn(e.getMessage());
 				return false;
 			}
 
@@ -97,7 +93,6 @@ public class PatchUpdateBug {
 					factoryConfiguration.update(srcProps);
 					srcConfiguration.delete();
 				} catch (IOException e) {
-					LOG.warn(e.getMessage(), e);
 					continue;
 				}
 			}
@@ -117,12 +112,12 @@ public class PatchUpdateBug {
 			}
 			in.close();
 			out.close();
-			LOG.trace("File copied.");
+			System.out.println("File copied.");
 		} catch (FileNotFoundException ex) {
-			LOG.warn(ex.getMessage() + " in the specified directory.", ex);
+			log.error(ex.getMessage() + " in the specified directory.");
 			return false;
 		} catch (IOException e) {
-			LOG.warn(e.getMessage(), e);
+			log.error(e);
 			return false;
 		}
 		return true;

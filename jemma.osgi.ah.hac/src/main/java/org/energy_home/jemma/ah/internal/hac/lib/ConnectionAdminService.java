@@ -34,6 +34,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.equinox.internal.util.timer.Timer;
@@ -59,8 +61,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -80,8 +80,8 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	private final static String SCENARIOS_PATH = "";
 	private final static String CONFIG_FILENAME = "cms-config.xml";
 
-	private static final Logger LOG = LoggerFactory.getLogger(ConnectionAdminService.class);
-	
+	private static final Log log = LogFactory.getLog(ConnectionAdminService.class);
+
 	private DocumentBuilderFactory factory;
 
 	protected ArrayList positiveRules = new ArrayList();
@@ -116,10 +116,11 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	private ComponentContext ctxt;
 
 	public ConnectionAdminService() {
+		log.debug("");
 	}
 
 	public synchronized void activate(ComponentContext ctxt, Map props) {
-		LOG.debug("activated");
+		log.debug("activated");
 		this.ctxt = ctxt;
 		this.loadConfiguration();
 		
@@ -130,7 +131,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	}
 
 	public synchronized void deactivate(ComponentContext ctxt) {
-		LOG.debug("deactivated");
+		log.debug("deactivated");
 		if (this.managedApplianceServiceTracker != null) {
 			this.managedApplianceServiceTracker.close();
 		}
@@ -138,15 +139,14 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	}
 
 	public void modified(ComponentContext ctxt, Map props) {
-		Object a = props.get("it.telecomitalia.ah.connadmin.rules");
-		LOG.debug("modified");
+		Object a = props.get("org.energy_home.jemma.ah.connadmin.rules");
+		log.debug("modified");
 	}
 
 	public synchronized void setManagedAppliance(IManagedAppliance appliance, Map props) {
 		String appStatus;
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("set Appliance " + appliance.getPid());
-		}
+		log.debug("set Appliance " + appliance.getPid());
+
 		// skip any appliance that is under installation
 		if (((appStatus = (String) props.get("ah.status")) != null) && (appStatus.equals("installing"))) {
 			return;
@@ -163,9 +163,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	}
 
 	public synchronized void unsetManagedAppliance(IManagedAppliance appliance) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("unset Appliance " + appliance.getPid());
-		}
+		log.debug("unset Appliance " + appliance.getPid());
 		this.deactivateConnections(appliance);
 		this.pid2appliance.remove(appliance.getPid());
 	}
@@ -195,8 +193,8 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		// configured connections exist that have this IManagedAppliance as an
 		// edge
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("new appliance with pid '" + appliance.getPid() + "' found, checks if there are connections pending for it");
+		if (log.isDebugEnabled()) {
+			log.debug("new appliance with pid '" + appliance.getPid() + "' found, checks if there are connections pending for it");
 		}
 
 		for (Iterator it = this.pid2appliance.values().iterator(); it.hasNext();) {
@@ -207,7 +205,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 						appliance2.getPid().equals(CORE_APP_PID) || appliance2.getPid().equals(CORE_APP_PID)) {
 					boolean res = activateConnection(appliance, appliance2);
 					if (res) {
-						LOG.debug(appliance.getPid() + " <--> " + appliance2.getPid());
+						log.debug(appliance.getPid() + " <--> " + appliance2.getPid());
 					}					
 				}
 			}
@@ -266,7 +264,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		if (connectedAppliancesPids != null) {
 			for (int i = 0; i < connectedAppliancesPids.length; i++) {
 				if (this.deactivateConnection(appliance.getPid(), connectedAppliancesPids[i])) {
-					LOG.debug(appliance.getPid() + " <  > " + connectedAppliancesPids[i]);
+					log.debug(appliance.getPid() + " <  > " + connectedAppliancesPids[i]);
 				}
 			}
 		}
@@ -304,7 +302,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 
 	protected boolean deactivateConnection(IManagedAppliance appliance1, IManagedAppliance appliance2) {
 		if (appliance1 == null || appliance2 == null) {
-			LOG.warn("Appliance connection failed because at least one managed appliance is null");
+			log.error("Appliance connection failed because at least one managed appliance is null");
 			return false;
 		}
 		
@@ -368,9 +366,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 
 	public synchronized IAppliance[] getPeerAppliances(String appliancePid, int endPointId, int propertyKey, String propertyValue)
 			throws HacException {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("called browsePeerAppliances from " + appliancePid);
-		}
+		log.debug("called browsePeerAppliances from " + appliancePid);
 		IManagedAppliance managedAppliance = (IManagedAppliance) pid2appliance.get(appliancePid);
 		IAppliance peerAppliance = null;
 		IApplianceFactory peerApplianceFactory = null;
@@ -458,7 +454,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		try {
 			filter = this.ctxt.getBundleContext().createFilter(filterString);
 		} catch (InvalidSyntaxException e) {
-			LOG.debug("syntax error in filter " + filterString);
+			log.fatal("syntax error in filter " + filterString);
 			throw new ApplianceException("Internal error");
 		}
 
@@ -474,7 +470,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 
 	private void validateConnection(String appliance1Pid, String appliance2Pid) throws ApplianceException {
 		if (appliance1Pid.equals(appliance2Pid)) {
-			LOG.warn("connecting an application to itself is not allowed");
+			log.error("connecting an application to itself is not allowed");
 			throw new ApplianceException("connection between an appliance and itself not allowed");
 		}
 	}
@@ -497,7 +493,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 					if (checkConnectivityOnDb(appliance1.getPid(), appliance2.getPid())) {
 						boolean res = activateConnection(appliance1, appliance2);
 						if (res) {
-							LOG.debug(appliance1.getPid() + " <--> " + appliance2.getPid());
+							log.debug(appliance1.getPid() + " <--> " + appliance2.getPid());
 						}
 					}
 				}
@@ -508,9 +504,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	}
 
 	private void addedRuleEvent(Filter filter) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("added rule " + filter.toString() + ". This rule will be applied each time a new appliance wil be detected.");
-		}
+		log.debug("added rule " + filter.toString() + ". This rule will be applied each time a new appliance wil be detected.");
 	}
 
 	private boolean activateConnection(String managedAppliancePid1, String managedAppliancePid2) {
@@ -530,7 +524,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 	 */
 	protected boolean activateConnection(IManagedAppliance managedAppliance1, IManagedAppliance managedAppliance2) {	
 		if (managedAppliance1 == null || managedAppliance2 == null) {
-			LOG.warn("Appliance connection failed because at least one managed appliance is null");
+			log.error("Appliance connection failed because at least one managed appliance is null");
 			return false;
 		}
 		
@@ -538,7 +532,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		String appliance2Pid = managedAppliance2.getPid();
 		IEndPoint[] endPoints = managedAppliance1.getEndPoints();
 		if (endPoints == null || endPoints.length < 1 || endPoints == null || endPoints.length < 1) {
-			LOG.warn("Appliance connection failed because first end point list is null or has less than 2 elements: " +  managedAppliance1.getPid() + " <> " +  managedAppliance2.getPid());
+			log.error("Appliance connection failed because first end point list is null or has less than 2 elements: " +  managedAppliance1.getPid() + " <> " +  managedAppliance2.getPid());
 			return false;
 		}		
 		
@@ -551,7 +545,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		}
 		endPoints = managedAppliance2.getEndPoints();
 		if (endPoints == null || endPoints.length < 1 || endPoints == null || endPoints.length < 1) {
-			LOG.warn("Appliance connection failed because first end point list is null or has less than 2 elements: " +  managedAppliance1.getPid() + " <> " +  managedAppliance2.getPid());
+			log.error("Appliance connection failed because first end point list is null or has less than 2 elements: " +  managedAppliance1.getPid() + " <> " +  managedAppliance2.getPid());
 			return false;
 		}		
 		EndPoint[] endPoints2 = new EndPoint[endPoints.length];
@@ -578,7 +572,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		StringBuilder sb = new StringBuilder("Appliance connection completed:\n");
 		connectionToString(sb, managedAppliance1, endPoints1, peerAppliances1);
 		connectionToString(sb, managedAppliance2, endPoints2, peerAppliances2);
-		LOG.trace(sb.toString());
+		log.info(sb.toString());
 		notifyConnectedPeerAppliances(manager1, endPoints1, peerAppliances1);
 		notifyConnectedPeerAppliances(manager2, endPoints2, peerAppliances2);
 		return true;
@@ -646,9 +640,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 								peerEndPoint.registerCluster(peerServiceCluster);
 								isPeerEndPointValid = true;
 							} catch (ApplianceException e) {
-								if (LOG.isErrorEnabled()) {
-									LOG.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
-								}
+								log.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
 								return null;
 							}
 						}
@@ -663,9 +655,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 								peerEndPoint.registerClusterListener(clusterListenersNames[k]);
 								isPeerEndPointValid = true;
 							} catch (ApplianceException e) {
-								if (LOG.isErrorEnabled()) {
-									LOG.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
-								}
+								log.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
 								return null;	
 							}
 					}
@@ -675,9 +665,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 						peerAppliance.addPeerEndPoint(peerEndPoint);
 						isPeerApplianceValid = true;
 					} catch (ApplianceException e) {
-						if (LOG.isErrorEnabled()) {
-							LOG.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
-						}
+						log.error("Exception while creating unidrectional connection: " +  managedAppliance1.getPid() + " -> " +  managedAppliance2.getPid(), e);
 						return null;
 					}
 				}
@@ -736,17 +724,15 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 
 	protected synchronized void dumpConnections() {
 		if (this.positiveRules.size() == 0) {
-			LOG.trace("Rules: <none>");
+			log.debug("Rules: <none>");
 			return;
 		} else {
-			LOG.trace("Rule number\tRule");
-			LOG.trace("-----------\t--------------------");
+			log.debug("Rule number\tRule");
+			log.debug("-----------\t--------------------");
 		}
 
 		for (int i = 0; i < this.positiveRules.size(); i++) {
-			if (LOG.isTraceEnabled()) {
-				LOG.trace(i + "\t\t" + this.positiveRules.get(i));
-			}
+			log.debug(i + "\t\t" + this.positiveRules.get(i));
 		}
 	}
 
@@ -754,22 +740,18 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		File configFile;
 		InputStream stream = null;
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("try to load '" + CONFIG_FILENAME + "'");
-		}
-		
+		log.debug("try to load '" + CONFIG_FILENAME + "'");
+
 		String configFilename = SCENARIOS_PATH + CONFIG_FILENAME;
 		try {
-			if (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch)) {
+			if (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch)) {
 				patched  = PatchUpdateBug.patchUpdateBugOnHacLib(this.ctxt.getBundleContext(), configFilename);
 			}
 			configFile = ctxt.getBundleContext().getDataFile(configFilename);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("storage area is " + configFile);
-			}
+			log.debug("storage area is " + configFile);
 			stream = new FileInputStream(configFile);
 		} catch (FileNotFoundException e) {
-			LOG.debug("no previously saved configuration found");
+			log.info("no previously saved configuration found");
 			return false;
 		}
 
@@ -784,19 +766,17 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 			// configuration present in memory
 			traverseConfigurationTree(doc);
 		} catch (IOException e) {
-			LOG.warn(e.getMessage(), e);
+			e.printStackTrace();
 			return false;
 		} catch (SAXException e) {
-			LOG.warn(e.getMessage(), e);
+			e.printStackTrace();
 			return false;
 		} catch (Exception e) {
-			LOG.warn(e.getMessage(), e);
+			e.printStackTrace();
 			return false;
 		}
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("configuration '" + configFilename + "' loaded successfully");
-		}
+		log.info("configuration '" + configFilename + "' loaded successfully");
 		return true;
 	}
 
@@ -805,7 +785,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		try {
 			docBuilder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e);
 			return null;
 		}
 
@@ -834,13 +814,13 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		}
 
 		String xmlConfig = doc2xmlString(doc);
-		if (LOG.isDebugEnabled())
-			LOG.debug(xmlConfig);
+		if (log.isDebugEnabled())
+			log.debug(xmlConfig);
 
 		// save the configuration on the filesystem
 		File configFile = this.ctxt.getBundleContext().getDataFile(SCENARIOS_PATH + CONFIG_FILENAME);
-		if (LOG.isDebugEnabled())
-			LOG.debug("saving configuration into " + configFile.getPath());
+		if (log.isDebugEnabled())
+			log.debug("saving configuration into " + configFile.getPath());
 
 		if (!configFile.isFile()) {
 			try {
@@ -858,7 +838,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 					return false;
 				}
 			} catch (IOException e1) {
-				LOG.warn("unable to create file " + configFile.getPath(), e1);
+				log.error("unable to create file " + configFile.getPath());
 				return false;
 			}
 		}
@@ -870,16 +850,14 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 			fos.write(xmlConfig.getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
-			LOG.warn("unable to open file " + configFile + " for writing.", e);
+			log.error("unable to open file " + configFile + " for writing.");
 			return false;
 		} catch (IOException e) {
-			LOG.warn("unable to write file " + configFile, e);
+			log.error("unable to write file " + configFile);
 			return false;
 		}
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("configuration '" + CONFIG_FILENAME + "' saved successfully");
-		}
+		log.info("configuration '" + CONFIG_FILENAME + "' saved successfully");
 		return true;
 	}
 
@@ -916,7 +894,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 			strWriter.close();
 
 		} catch (IOException ioEx) {
-			LOG.error("exception: " + ioEx.getMessage());
+			log.error("exception: " + ioEx);
 			return null;
 		}
 		return xmlStr;
@@ -946,7 +924,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 				try {
 					this.internalAddBindRule(filter);
 				} catch (InvalidSyntaxException e) {
-					LOG.warn(e.getMessage(), e);
+					log.error(e);
 				}
 
 			}
@@ -1063,7 +1041,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 		for (Iterator it = this.pid2appliance.values().iterator(); it.hasNext();) {
 			IManagedAppliance appliance1 = (IManagedAppliance) it.next();
 			if (appliance1 == null) {
-				LOG.warn("null appliance");
+				log.fatal("null appliance");
 				continue;
 			}
 
@@ -1074,7 +1052,7 @@ public class ConnectionAdminService implements TimerListener, IConnectionAdminSe
 					boolean stillConnected = this.checkConnectivityOnDb(appliance1.getPid(), connectedAppliancesPids[i]);
 					if (!stillConnected) {
 						if (this.deactivateConnection(appliance1.getPid(), connectedAppliancesPids[i])) {
-							LOG.debug(appliance1.getPid() + " <  > " + connectedAppliancesPids[i]);
+							log.debug(appliance1.getPid() + " <  > " + connectedAppliancesPids[i]);
 						}
 					}
 				}

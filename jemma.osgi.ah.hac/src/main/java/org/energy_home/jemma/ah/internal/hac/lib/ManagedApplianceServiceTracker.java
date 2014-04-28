@@ -22,12 +22,8 @@ import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ManagedApplianceServiceTracker extends ServiceTracker {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ManagedApplianceServiceTracker.class);
 
 	private HacService hacService;
 
@@ -45,7 +41,8 @@ public class ManagedApplianceServiceTracker extends ServiceTracker {
 		try {
 			this.hacService.setManagedAppliance(appliance, props);
 		} catch (ApplianceException e) {
-			LOG.warn(e.getMessage(), e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return appliance;

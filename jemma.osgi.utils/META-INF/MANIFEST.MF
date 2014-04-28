@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695280666
+Bnd-LastModified: 1398700619862
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Activator: org.energy_home.jemma.osgi.utils.Activator
@@ -22,8 +22,8 @@ Export-Package: org.energy_home.jemma.osgi.utils.equinox.console;uses:="
  client.methods,org.apache.http.impl.conn.tsccm,org.apache.http.util,org
  .apache.http.auth,org.apache.http";version="1.0.0",org.energy_home.jemm
  a.utils.thread;version="1.0.0",org.energy_home.jemma.utils.xml.jaxb;use
- s:="javax.xml.bind,javax.xml.namespace,com.sun.xml.internal.bind.marsha
- ller";version="1.0.0"
+ s:="javax.xml.bind,com.sun.xml.internal.bind.marshaller,javax.xml.names
+ pace";version="1.0.0"
 Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  l,javax.crypto,javax.crypto.spec,javax.xml.bind,javax.xml.bind.annotati
  on,javax.xml.bind.annotation.adapters,javax.xml.bind.helpers,javax.xml.

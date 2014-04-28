@@ -22,24 +22,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Dictionary;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 public class PatchUpdateBug {
-		
-	private static final Logger LOG = LoggerFactory.getLogger(PatchUpdateBug.class);
+	private static final Log log = LogFactory.getLog(PatchUpdateBug.class);
 
 	public static boolean patchUpdateBugOnHac(BundleContext bc, String configFilename) {
 		File srcFile = bc.getDataFile(configFilename);
 		if (srcFile.exists()) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("configuration file " + configFilename + " found in storage area of bundle "
-						+ bc.getBundle().getBundleId());
-			}
+			log.debug("configuration file " + configFilename + " found in storage area of bundle "
+					+ bc.getBundle().getBundleId());
 			Bundle[] bundles = bc.getBundles();
 			for (int i = 0; i < bundles.length; i++) {
 				if (bundles[i].getSymbolicName().equals("org.energy_home.jemma.osgi.ah.hac.lib")) {
@@ -48,7 +48,6 @@ public class PatchUpdateBug {
 					BundleContext hacLibBundleContext = bundles[i].getBundleContext();
 					Version version = bundles[i].getVersion();
 					if (hacLibBundleContext == null) {
-						LOG.debug("The bundle has not yet started");
 						// The bundle is has not been started, yet!!!
 						return false;
 					}
@@ -82,12 +81,12 @@ public class PatchUpdateBug {
 			}
 			in.close();
 			out.close();
-			LOG.trace("File copied.");
+			System.out.println("File copied.");
 		} catch (FileNotFoundException ex) {
-			LOG.warn(ex.getMessage() + " in the specified directory.", ex);
+			log.error(ex.getMessage() + " in the specified directory.");
 			return false;
 		} catch (IOException e) {
-			LOG.warn(e.getMessage(),e);
+			log.error(e);
 			return false;
 		}
 		return true;

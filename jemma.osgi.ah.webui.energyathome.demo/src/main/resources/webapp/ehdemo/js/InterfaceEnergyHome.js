@@ -49,7 +49,6 @@ var InterfaceEnergyHome = {
 	AVG : 4,
 	DELTA : 5,
 	PID_TOTALE : null,
-	//TODO: check merge, do these declarations need to be renamed?
 	WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
 	SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
 	SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
@@ -192,7 +191,6 @@ InterfaceEnergyHome.Abort = function() {
  * JSONRpcClient.Exception.CODE_ERR_MARSHALL = 593;
  */
 InterfaceEnergyHome.GestErrorEH = function(func, err) {
-	//TODO: check merge, following line was commented in 3.3.0
 	//hideSpinner();
 	var msg;
 	InterfaceEnergyHome.visError = InterfaceEnergyHome.ERR_GENERIC;
@@ -314,7 +312,7 @@ InterfaceEnergyHome.GetElettrStorico = function(backFunc) {
 		}
 	} else {
 		// per test
-		val = ListaElettr1;
+		val = ListaElettr;
 		InterfaceEnergyHome.BackElettrStorico(val, null);
 	}
 }
@@ -347,14 +345,7 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 	} else{
 		param1 = InterfaceEnergyHome.CONSUMO;
 	}
-	//TODO: check merge, following commented block was not in 3.3.0
-/*	if (intervallo == -1) {
-		param2 = InterfaceEnergyHome.MINUTE;
-		// dataInizio.setHours(0);
-		// dataFine.setHours(23);
-		// dataFine.setMinutes(30);
-		paramTr = Tracing.QT_IERI;
-	} else if (intervallo == 0) {*/
+
 	if (intervallo == 0) {
 		param2 = InterfaceEnergyHome.HOUR;
 		// dataInizio.setHours(0);
@@ -398,16 +389,6 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		g = Math.floor(diff / (24 * 60 * 60 * 1000)) + 1;
 
 		//console.log(20, InterfaceEnergyHome.MODULE, "   diff = " + diff + "  giorni = " + g);
-		//TODO: check merge, following commented block was not in 3.3.0
-/*		if (intervallo == -1) {
-			if (tipo == "Costo"){
-				val = StoricoCostoO;
-			} else if (tipo == "Produzione"){
-				val = StoricoProduzioneO;
-			} else {
-				val = StoricoConsumoO;
-			}
-		} else if (intervallo == 0) {*/
 		if (intervallo == 0) {
 			if (tipo == "Costo"){
 				val = StoricoCostoI;

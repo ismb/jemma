@@ -30,9 +30,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
+
 public class JaxbConverter {
-//	private static String prefixMapperProperty = "com.sun.xml.internal.bind.namespacePrefixMapper";
-	private static String prefixMapperProperty = "com.sun.xml.bind.namespacePrefixMapper";
+	private static String prefixMapperProperty = "com.sun.xml.internal.bind.namespacePrefixMapper";
 
 	public static final String UTF8_CHAR_ENCODING = "UTF8";
 		
@@ -54,8 +55,9 @@ public class JaxbConverter {
 		jaxbContext = factory.createJaxbContext(factory.getContextPath());
 		xmlMarshaller = jaxbContext.createMarshaller();
 		xmlUnmarshaller = jaxbContext.createUnmarshaller();
-//		NamespacePrefixMapper nsPrefixMapper = factory.getNamespacePrefixMapper();
-//		if (nsPrefixMapper != null)
+		NamespacePrefixMapper nsPrefixMapper = factory.getNamespacePrefixMapper();
+		if (nsPrefixMapper != null)
+			xmlMarshaller.setProperty(prefixMapperProperty, nsPrefixMapper);
 		
 	}
 	
