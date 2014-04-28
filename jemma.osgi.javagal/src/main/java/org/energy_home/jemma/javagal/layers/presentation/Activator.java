@@ -55,6 +55,9 @@ public class Activator implements BundleActivator {
 		try {
 			String _path = File.separator
 					+ "config.properties";
+			
+			
+			
 
 			PropertiesManager PropertiesManager = new PropertiesManager(bc
 					.getBundle().getResource(_path));

@@ -47,11 +47,13 @@ var getClusterDescription = function(profileID,clusterID){
 var getSingleDeviceName = function(dvcID,selectProfileID){ 
 	var rtrnDvcN = null;
 	var myPrfl = getSingleProfileFromID(selectProfileID);
+	if (myPrfl && myPrfl.device)
+		{
 	$.each(myPrfl.device, function(iCounter, vDev){
 		if (dvcID == vDev.deviceidentifier){
 			rtrnDvcN = vDev.description;
 		}
-	});
+	});}
   	return rtrnDvcN;
 }
 

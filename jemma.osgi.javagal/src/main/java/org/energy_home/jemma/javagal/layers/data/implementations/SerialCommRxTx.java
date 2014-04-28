@@ -102,16 +102,19 @@ public class SerialCommRxTx implements IConnector {
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.setRTS(true);
 					serialPort.setDTR(true);
-					serialPort.enableReceiveTimeout(2000);
+					serialPort.enableReceiveTimeout(9000);
 					in = serialPort.getInputStream();
 					serialReader = new SerialReader(in, this);
+					serialPort.notifyOnDataAvailable(true);
 					try {
 						serialPort.addEventListener(serialReader);
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							logger.error("Added SerialPort event listener");
 					} catch (TooManyListenersException e) {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
 					}
-					serialPort.notifyOnDataAvailable(true);
+					
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						logger.info("Connection on " + portName + " established");
 					return true;
@@ -250,6 +253,7 @@ public class SerialCommRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
+		
 		synchronized (this) {
 			connected = true;
 		}
@@ -258,19 +262,23 @@ public class SerialCommRxTx implements IConnector {
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
-		DataLayer.cpuReset();
+		
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Waiting 3,5 seconds after command CPUReset...");
+		DataLayer.cpuReset();
 		Thread.sleep(3500);
-		synchronized (this) {
+		
+		 synchronized (this) {
 			connected = true;
 		}
+		
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
 		else {
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.info("Connected: PortName=" + commport + "Speed=" + boudrate);
+			
 			synchronized (this) {
 				connected = true;
 			}

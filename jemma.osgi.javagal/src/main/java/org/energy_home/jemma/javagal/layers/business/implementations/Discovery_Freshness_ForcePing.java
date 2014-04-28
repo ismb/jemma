@@ -299,6 +299,9 @@ public class Discovery_Freshness_ForcePing {
 						_s.setCode((short) 0x00);
 						_s.setMessage("Successful - " + funcionName + " Algorithm");
 						gal.get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
+						/* Saving the Panid in order to leave the Philips light */
+						gal.getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
+						/**/
 					}
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {

@@ -180,7 +180,7 @@
 														width : 140,
 														align : "center",
 														hidden : true
-														
+
 													}, {
 														name : 'powered',
 														width : 150,
@@ -190,8 +190,8 @@
 														name : 'logical',
 														width : 110,
 														align : "center"
-														
-													},{
+
+													}, {
 														name : 'idle',
 														width : 220,
 														align : "center",
@@ -271,16 +271,17 @@
 											var strIeeeAddress = padLeft(16,
 													nObj.address.ieeeAddress
 															.toString(16));
-											if (strNetworkAddress == 0) 
-												vLogical="Coordinator";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == false) 
-												vLogical="Sleepy EndDevice"; 
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == true && nObj.capabilityInformation.deviceIsFFD == true) 
-												vLogical="End Device"; 
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == true && nObj.capabilityInformation.deviceIsFFD == false) 
-												vLogical="Router"; 
-											
-											
+											if (strNetworkAddress == 0)
+												vLogical = "Coordinator";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false)
+												vLogical = "Sleepy EndDevice";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true
+													&& nObj.capabilityInformation.deviceIsFFD == true)
+												vLogical = "End Device";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true
+													&& nObj.capabilityInformation.deviceIsFFD == false)
+												vLogical = "Router";
+
 											mydataViewDevice
 													.push({
 														nAdd : '0x'
@@ -289,7 +290,7 @@
 														iAdd : '0x'
 																+ strIeeeAddress
 																		.toUpperCase(),
-														logical: vLogical,
+														logical : vLogical,
 														start : nObj.startIndex,
 														devices : associatedString,
 														alt : nObj.capabilityInformation.alternatePanCoordinator,
@@ -310,7 +311,8 @@
 											mydataViewDevice);
 								}
 
-								$("#tblViewDevice").jqGrid('setGridHeight',$("#container").height());
+								$("#tblViewDevice").jqGrid('setGridHeight',
+										$("#container").height());
 							});
 		}
 
@@ -403,49 +405,82 @@
 												if (dataBig.status.code == 0) {
 													/*Profile Section*/
 													var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
-													$("#detail_profile")
-															.val(
-																	getSingleProfileFromID(padLeft(
-																			4,
-																			profile
-																					.toString(16))
-																			.toLowerCase()
-																			.trim()).description
-																			+ ' (0x'
-																			+ padLeft(
-																					4,
-																					profile
-																							.toString(16))
-																					.toUpperCase()
-																					.trim()
-																			+ ")");
+													var profileDesc = getSingleProfileFromID(padLeft(
+															4,
+															profile
+																	.toString(16))
+															.toLowerCase()
+															.trim());
+													if (profileDesc) {
+														$("#detail_profile")
+																.val(
+																		profileDesc.description
+																				+ ' (0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ ")");
+													} else {
+
+														$("#detail_profile")
+																.val(
+																		'Unknown profile - 0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				);
+
+													}
+
 													$('#detail_profile').attr(
 															'readonly', true);
 
 													/*Device Section*/
 													var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
+													var deviceDescr = getSingleDeviceName(
+															padLeft(
+																	4,
+																	device
+																			.toString(16))
+																	.toUpperCase()
+																	.trim(),
+															padLeft(
+																	4,
+																	profile
+																			.toString(16))
+																	.toLowerCase()
+																	.trim());
+													if (deviceDescr)
+														{
 													$("#detail_device")
 															.val(
-																	getSingleDeviceName(
-																			padLeft(
-																					4,
-																					device
-																							.toString(16))
-																					.toUpperCase()
-																					.trim(),
-																			padLeft(
-																					4,
-																					profile
-																							.toString(16))
-																					.toLowerCase()
-																					.trim())
+																	deviceDescr
 																			+ ' (0x'
 																			+ padLeft(
 																					4,
 																					device
 																							.toString(16))
 																					.toUpperCase()
-																					.trim()+")");
+																					.trim()
+																			+ ")");}
+													else
+														{$("#detail_device")
+														.val(
+																
+																		'Unknown device - 0x'
+																		+ padLeft(
+																				4,
+																				device
+																						.toString(16))
+																				.toUpperCase()
+																				.trim()
+																		);}
 													$('#detail_device').attr(
 															'readonly', true);
 
@@ -474,16 +509,20 @@
 																	function(
 																			index,
 																			value) {
+																		
+																		
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
 																		$(
 																				"#detail_input_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																								+ getClusterDescription(padLeft(
-																										4,
-																										value
-																												.toString(16))
-																										.toUpperCase()
-																										.trim()).description +  ' (0x'
+																								+ ((clusterDescr) ? clusterDescr.description : "Unknown cluster")
+																								+ ' (0x'
 																								+ padLeft(
 																										4,
 																										value
@@ -503,29 +542,35 @@
 																	function(
 																			index,
 																			value) {
+																		
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
+																		
+																		
+																		
 																		$(
 																				"#detail_output_clusters")
 																				.append(
 																						'<option value="'+value+'">'
-																						+ getClusterDescription(padLeft(
-																								4,
-																								value
-																										.toString(16))
-																								.toUpperCase()
-																								.trim()).description +  ' (0x'
-																						+ padLeft(
-																								4,
-																								value
-																										.toString(16))
-																								.toUpperCase()
-																								.trim()
-																						+ ')</option>');
+																								+ ((clusterDescr)? clusterDescr.description : "Unknown cluster")
+																								+ ' (0x'
+																								+ padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()
+																								+ ')</option>');
 																	});
 												} else {
 													alert("Error on simple descriptor request: "
 															+ dataBig.status.message);
 												}
-												
+
 											});
 
 						});
@@ -534,16 +579,18 @@
 	</script>
 	<div id="container">
 		<!-- <table style="width: 100%; height: 100%" border="1" -->
-			<!-- <tr -->
-				<!-- <td align="center" -->
-					<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
-					<!-- div id="pager"></div -->
-				<!-- </td -->
-			<!-- </tr -->
-			<!-- <tr -->
-				<!-- <td align="center"><br / --> 
-				<input id="btnOpenNetw" type="button" value="Open Network" /> <input id="btnCloseNetw" type="button" value="Close Network" /></td>
-			<!-- </tr -->
+		<!-- <tr -->
+		<!-- <td align="center" -->
+		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+		<!-- div id="pager"></div -->
+		<!-- </td -->
+		<!-- </tr -->
+		<!-- <tr -->
+		<!-- <td align="center"><br / -->
+		<input id="btnOpenNetw" type="button" value="Open Network" /> <input
+			id="btnCloseNetw" type="button" value="Close Network" />
+		</td>
+		<!-- </tr -->
 		<!-- </table -->
 	</div>
 

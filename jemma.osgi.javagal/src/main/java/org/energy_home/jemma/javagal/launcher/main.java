@@ -56,6 +56,7 @@ public class main {
 	public static void main(String[] args) {
 		logger.info("Starting Gal:Java!");
 		PropertiesManager PropertiesManager = null;
+		
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i].charAt(0)) {
 			case '-':
@@ -66,6 +67,8 @@ public class main {
 				case 'c':
 					String _path = File.separator + "resources"
 							+ File.separator + args[++i].replace("\"", "");
+
+					
 
 					PropertiesManager = new PropertiesManager(Thread
 							.currentThread().getContextClassLoader()

@@ -408,12 +408,12 @@ public class DataFreescale implements IDataLayer {
 												Status _st = new Status();
 												_st.setCode((short) GatewayConstants.SUCCESS);
 												gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+												/* Saving the Panid in order to leave the Philips light */
+												gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
+												/**/
 
 											} catch (GatewayException e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-
-												//System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -422,7 +422,6 @@ public class DataFreescale implements IDataLayer {
 
 											} catch (Exception e) {
 												logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-												//System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -2397,7 +2396,7 @@ public class DataFreescale implements IDataLayer {
 
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.InterPANDataRequest);
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("Write InterPanMessahe on: " + System.currentTimeMillis() + " Message:" + _res.ToHexString());
+			logger.info("Write InterPanMessage on: " + System.currentTimeMillis() + " Message:" + _res.ToHexString());
 		}
 		return _res;
 	}
@@ -3887,7 +3886,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public Status sendInterPANMessaSync(long timeout, InterPANMessage message) throws Exception {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("Data_FreeScale.send_aps");
+			logger.info("Data_FreeScale.send_InterPAN");
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.INTERPAN);
@@ -3938,7 +3937,7 @@ public class DataFreescale implements IDataLayer {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Returned Status: " + status.getCode());
 				}
-				throw new GatewayException("Error on  NTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+				throw new GatewayException("Error on  INTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 
 			}
 			return status;
