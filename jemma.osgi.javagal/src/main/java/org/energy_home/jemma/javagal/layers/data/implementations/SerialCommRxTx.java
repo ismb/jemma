@@ -109,7 +109,7 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						serialPort.addEventListener(serialReader);
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							logger.error("Added SerialPort event listener");
+							logger.info("Added SerialPort event listener");
 					} catch (TooManyListenersException e) {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
@@ -232,7 +232,6 @@ public class SerialCommRxTx implements IConnector {
 							buffer[pos++] = (byte) data;
 						}
 						ByteArrayObject frame = new ByteArrayObject(buffer, pos);
-						
 						_caller.getDataLayer().notifyFrame(frame);
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())

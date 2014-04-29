@@ -109,16 +109,17 @@
 		
 		
 		    $(document).ready(function () {
-		        var javaGalGuiLayout = $('body').layout({
+		        var westsize = '25%';
+		    	var javaGalGuiLayout = $('body').layout({
 		        										  resizeWhileDragging: true, 
-		        										  sizable: false, 
+		        										  sizable: true, 
 		        										  animatePaneSizing: true, 
 		        										  fxSpeed: 'slow', 
-		        										  north__size: "25%", 
-		        										  center__size: "80%", 
-		        										  west__size: "20%", 
+		        										  west__size: westsize, 
 		        										  spacing_open: 0, 
 		        										  spacing_closed: 0});
+		    	
+		    	$("#westTD").css( "width", westsize);
 		    	$.jStorage.set("ChannelRadioValue",null);
 		        $.ajax({
 					dataType:"json",
@@ -160,11 +161,11 @@
 		<div id="north" class="ui-layout-north" style="overflow: hidden;">
 		    <table>
 		        <tr>
-		            <td valign="middle" align="left" width="20%">
+		            <td valign="middle" align="left" id="westTD">
 		            	Actual Channel Network: <span id="spChannelRadioHP"></span><br />
 		            	Status of the Network: <span id="spZigBeeState"></span><br />
 		            </td>
-		            <td valign="middle" width="60%" style="background-color: red"><label class="title">Java GAL - Admin Console</label></td>
+		            <td valign="middle" align="center"  style="background-color: red"><label class="title">Java GAL - Admin Console</label></td>
 		            <td valign="middle" width="20%"><img src="images/2000px-logo_telecom_italia-svg.png" height="100px"/></td>
 		        </tr>
 		    </table>

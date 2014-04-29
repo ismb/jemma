@@ -91,6 +91,8 @@ public class DataFreescale implements IDataLayer {
 
 	public final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
+	private LinkedBlockingQueue<ByteArrayObject> tmpDataQueue = new LinkedBlockingQueue<ByteArrayObject>();
+
 	/**
 	 * Creates a new instance with a reference to the Gal Controller.
 	 * 
@@ -104,31 +106,74 @@ public class DataFreescale implements IDataLayer {
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
-		Thread thr = new Thread() {
+
+		Thread thrSender = new Thread() {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommand;
 				while (true) {
-					try {
-						_currentCommand = listOfCommandToSend.poll();
-						if (_currentCommand != null) {
-							if (gal.getPropertiesManager().getDebugEnabled()) {
-								logger.info(">>> Sending: " + _currentCommand.ToHexString());
-								//System.out.println(">>> Sending: " + _currentCommand.ToHexString());
+					synchronized (listOfCommandToSend) {
+						try {
+							listOfCommandToSend.wait();
+							_currentCommand = listOfCommandToSend.poll();
+							if (_currentCommand != null) {
+								if (gal.getPropertiesManager().getDebugEnabled()) {
+									logger.info(">>> Sending: " + _currentCommand.ToHexString());
+								}
+								_key.write(_currentCommand);
 							}
-							_key.write(_currentCommand);
+							// Thread.sleep(30);
+						} catch (InterruptedException e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error on lock data to Send: " + e.toString());
+						} catch (Exception e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error Sending command: " + e.toString());
 						}
-
-						Thread.sleep(30);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
-
 			}
 		};
-		thr.start();
+		thrSender.start();
+
+		Thread thrReceiver = new Thread() {
+			@Override
+			public void run() {
+				ByteArrayObject _currentCommandReived;
+				while (true) {
+					synchronized (tmpDataQueue) {
+						try {
+							tmpDataQueue.wait();
+							_currentCommandReived = tmpDataQueue.poll();
+							if (_currentCommandReived != null) {
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
+								byte[] msg = _currentCommandReived.getByteArray();
+								int size = _currentCommandReived.getByteCount(true);
+								short[] messageShort = new short[size];
+								for (int i = 0; i < size; i++)
+									messageShort[i] = (short) (msg[i] & 0xff);
+								addToReceivedDataQueue(size, messageShort);
+							}
+						} catch (InterruptedException e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error on lock data Received: " + e.toString());
+
+						}
+
+					}
+					try {
+						processMessages();
+					} catch (Exception e) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.error("Error on data Received: " + e.toString());
+
+					}
+				}
+			}
+
+		};
+		thrReceiver.start();
 
 	}
 
@@ -193,29 +238,27 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
-	public void addToReceivedDataQueue(int size, short[] buff) {
+	public synchronized void addToReceivedDataQueue(int size, short[] buff) {
 
-		synchronized (this) {
-			for (int i = 0; i < size; i++)
-				receivedDataQueue.add(buff[i]);
+		for (int i = 0; i < size; i++)
+			receivedDataQueue.add(buff[i]);
 
-			while (!receivedDataQueue.isEmpty()) {
-				int first_element = receivedDataQueue.get(0);
-
-				if (first_element != DataManipulation.SEQUENCE_START) {
-					receivedDataQueue.remove(0);
-					continue;
-				}
-
-				short[] tempArray = createMessageFromRowData();
-				if (tempArray != null) {
-					messages.add(tempArray);
-
-				} else
-					break;
-
+		while (!receivedDataQueue.isEmpty()) {
+			int first_element = receivedDataQueue.get(0);
+			if (first_element != DataManipulation.SEQUENCE_START) {
+				receivedDataQueue.remove(0);
+				continue;
 			}
+
+			short[] tempArray = createMessageFromRowData();
+			if (tempArray != null) {
+				messages.add(tempArray);
+
+			} else
+				break;
+
 		}
+
 	}
 
 	public void processMessages() throws Exception {
@@ -364,12 +407,18 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-												//System.out.println("Sending IeeeReq to:" + _address.getNetworkAddress());
+												// System.out.println("Sending IeeeReq to:"
+												// +
+												// _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													//System.out.println("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
+													// System.out.println("Readed Ieee of the new node:"
+													// +
+													// _address.getNetworkAddress()
+													// + " Ieee: " +
+													// ieee.toString());
 
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
@@ -379,7 +428,9 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													//System.out.println("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
+													// System.out.println("Readed NodeDescriptor of the new node:"
+													// +
+													// _address.getNetworkAddress());
 
 												}
 
@@ -408,7 +459,10 @@ public class DataFreescale implements IDataLayer {
 												Status _st = new Status();
 												_st.setCode((short) GatewayConstants.SUCCESS);
 												gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
-												/* Saving the Panid in order to leave the Philips light */
+												/*
+												 * Saving the Panid in order to
+												 * leave the Philips light
+												 */
 												gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
 												/**/
 
@@ -660,8 +714,10 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						/* DestAddress + DestEndPoint + SourceEndPoint */
-						/*if (gal.getPropertiesManager().getDebugEnabled())
-							logger.info("APSDE-DATA.Confirm KEY SENT: " + pl.get_Key() + " -- KEY Received: " + Key);
+						/*
+						 * if (gal.getPropertiesManager().getDebugEnabled())
+						 * logger.info("APSDE-DATA.Confirm KEY SENT: " +
+						 * pl.get_Key() + " -- KEY Received: " + Key);
 						 */
 						if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 							synchronized (pl) {
@@ -1863,7 +1919,10 @@ public class DataFreescale implements IDataLayer {
 	private final ChecksumControl csc = new ChecksumControl();
 
 	public synchronized void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
-		listOfCommandToSend.put(toAdd);
+		synchronized (listOfCommandToSend) {
+			listOfCommandToSend.put(toAdd);
+			listOfCommandToSend.notify();
+		}
 	}
 
 	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
@@ -2153,8 +2212,6 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 		String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
-
-		
 
 		Status status = null;
 		try {
@@ -2901,7 +2958,8 @@ public class DataFreescale implements IDataLayer {
 		// Control
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
-			//System.out.println("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
+			// System.out.println("ZDP-IEEE_addr.Request.Request:" +
+			// _res.ToHexString());
 		}
 
 		ParserLocker lock = new ParserLocker();
@@ -3622,31 +3680,9 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public synchronized void notifyFrame(final ByteArrayObject frame) {
-		try {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.info("<<< Received data:" + frame.ToHexString());
-			byte[] msg = frame.getByteArray();
-			int size = frame.getByteCount(true);
-			short[] messageShort = new short[size];
-			for (int i = 0; i < size; i++)
-				messageShort[i] = (short) (msg[i] & 0xff);
-			addToReceivedDataQueue(size, messageShort);
-			Thread thr = new Thread() {
-				@Override
-				public void run() {
-					try {
-						processMessages();
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on notifyFrame:" + e.getMessage());
-					}
-				};
-			};
-			thr.setName("Thread notifyFrame");
-			thr.start();
-		} catch (Exception e) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.error("Error on notifyFrame: " + e.getMessage());
+		synchronized (tmpDataQueue) {
+			tmpDataQueue.add(frame);
+			tmpDataQueue.notify();
 		}
 	}
 
@@ -3898,8 +3934,6 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-
-		
 
 		Status status = null;
 		try {
