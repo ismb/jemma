@@ -237,7 +237,7 @@ public class DataFreescale implements IDataLayer {
 		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
 
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.debugLogArrayHexRadix("Analizing Raw Data", copyList);
+			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 			
