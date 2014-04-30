@@ -18,13 +18,13 @@ package org.energy_home.jemma.ah.internal.hac.lib;
 import java.io.File;
 import java.io.FileWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Led {
 
-	protected static final Log log = LogFactory.getLog(Led.class);
-
+	private static final Logger LOG = LoggerFactory.getLogger(Led.class);
+	
 	/**
 	 * Interface to the led system of the SheevaPlug
 	 * 
@@ -42,7 +42,7 @@ public class Led {
 
 			if (ledFile.exists() && ledFile.isFile()) {
 			} else {
-				log.debug("The led file doesn't exist");
+				LOG.debug("The led file doesn't exist");
 				return false;
 			}
 
@@ -60,7 +60,7 @@ public class Led {
 				return true;
 
 			} catch (Exception e) {
-				log.error("setting led " + e.getMessage());
+				LOG.debug("setting led " + e.getMessage());
 			}
 		}
 		return false;

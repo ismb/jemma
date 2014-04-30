@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.shal.DeviceInfo;
 
 public class SmartMeterInfo extends ApplianceInfo {
+	//TODO: check merge, line below not in 3.3.0
+	//public static final int PRODUCED_ENERGY_MIN_INTERVAL = 10000;//MILLISECONDS_IN_MINUTE;
 	protected static final Log log = LogFactory.getLog(SmartMeterInfo.class.getSimpleName());
 	
 	public SmartMeterInfo(DeviceInfo info) {
@@ -76,6 +78,8 @@ public class SmartMeterInfo extends ApplianceInfo {
 		
 		long elapsedTime = newTime - lastValidProducedEnergyTime;
 		if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
+			//TODO: check merge, if condition was different in 3.3.0
+			//if (elapsedTime < PRODUCED_ENERGY_MIN_INTERVAL) {
 			if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
 				log.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
 				return eci;

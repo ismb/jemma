@@ -51,7 +51,18 @@ public class EnergyBrain implements IBasicApplianceListener {
 			// TODO Auto-generated method stub
 			
 		}
+		//TODO: check merge, was uncommented in 3.3.0
+		/* Removed in demo_amsterdam version
+		public void storeDeliveredPower(String applianceId, long time, float power) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
 		
+		public void storeOnOffStatus(String appliancePid, long timestamp, boolean value) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		*/
 		public void storeDeliveredEnergyCostPowerInfo(String applianceId, EnergyCostInfo eci, MinMaxPowerInfo powerInfo)
 				throws Exception {
 			// TODO Auto-generated method stub

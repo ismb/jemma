@@ -29,8 +29,13 @@ import org.energy_home.jemma.ah.hac.NotAuthorized;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceClusterProxy implements InvocationHandler  {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ServiceClusterProxy.class);
+	
 	private static final String APPLICATION_NOT_READY = "No service cluster available: application not ready";
 	
 	private static final String GET_END_POINT_CLUSTER_METHOD = "getEndPoint";
@@ -141,7 +146,7 @@ public class ServiceClusterProxy implements InvocationHandler  {
 						if (t != null && t instanceof Exception)
 							throw t;
 					}
-					e.printStackTrace();
+					LOG.debug(e.getMessage(), e);
 					throw new ServiceClusterException("Unknown error while executing application service cluster request");
 				}
 			}

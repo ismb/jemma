@@ -40,8 +40,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.equinox.internal.util.timer.Timer;
@@ -70,6 +68,8 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -80,6 +80,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class HacService implements TimerListener, FrameworkListener, IHacService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(HacService.class);
 
 	private static String replaceIvalidPidChars(String appliancePid) {
 		char[] chars = appliancePid.toCharArray();
@@ -128,6 +130,8 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 	private boolean saveConfigurationToCurrent = true;
 	private static final String servicePid = "org.telecomitalia.hac";
+	//TODO: check merge, path was empty in 3.3.0
+	//private final static String SCENARIOS_PATH = "xml/scenarios/";
 	private final static String SCENARIOS_PATH = "";
 
 	private String defaultConfig = "defaultconfig";
@@ -149,8 +153,6 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 //	private CoreAppliance coreAppliance = null;
 	private boolean patched = false; // true if an upgrade from 2.2.8 to 3.0.5 (hac.lib) has been detected.
 	private boolean enableUpdatePatch = false;
-
-	private static final Log log = LogFactory.getLog(HacService.class);
 
 	public IApplianceFactory getFactoryFromManagedAppliance(IManagedAppliance appliance) {
 		if (appliance == null)
@@ -213,7 +215,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 			Led.setLed(0);
 			this.bc.removeFrameworkListener(this);
-			log.debug("deactivated");
+			LOG.debug("deactivated");
 //			coreAppliance.stop();
 			if (this.managedApplianceServiceTracker != null)
 				this.managedApplianceServiceTracker.close();
@@ -264,20 +266,20 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			String appliancePid = appliance.getPid();
 
 			if (appliancePid == null) {
-				log.warn("the managed appliance doesn't have an associated pid, discarding it!");
+				LOG.warn("the managed appliance doesn't have an associated pid, discarding it!");
 				return;
 			}
 
 			if (!pid2appliance.contains(appliancePid)) {
 				pid2appliance.put(appliancePid, appliance);
 			} else {
-				log.warn("discarding appliance because it has a duplicated appliance.pid");
+				LOG.warn("discarding appliance because it has a duplicated appliance.pid");
 				return;
 			}
 
 			String appStatus = (String) appProps.get("ah.status");
 			if (appStatus != null && (appStatus.equals("installing"))) {
-				log.debug("New appliance to install detected: " + appliancePid);
+				LOG.debug("New appliance to install detected: " + appliancePid);
 				installingAppliances.add(appliance);
 			} else {
 				appliances.add(appliance);
@@ -291,6 +293,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			try {
 				c = getApplianceCAConfiguration(appliancePid);
 			} catch (Exception e) {
+				LOG.warn(e.getMessage(), e);
 				return;
 			}
 
@@ -303,24 +306,24 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 					if (factoryPid == null) {
 						if (!appliance.isSingleton())
-							log.error("the appliance doesn't have the ah.app.type property set and is not a singleton");
+							LOG.debug("the appliance doesn't have the ah.app.type property set and is not a singleton");
 						return;
 					}
 					
 					IApplianceFactory applianceFactory = this.getApplianceFactory(factoryPid);
 
 					if (applianceFactory == null) {
-						log.error("no factory for type " + factoryPid);
+						LOG.debug("no factory for type " + factoryPid);
 						return;
 					}
 					try {
 						Configuration[] configurations = this.getApplianceCAConfigurations(appliancePid);
 						if (configurations == null) {
 							c = this.configAdmin.createFactoryConfiguration(factoryPid, null);
-							log.debug("created configuration for appliance.pid " + appliancePid);
+							LOG.debug("created configuration for appliance.pid " + appliancePid);
 						}
 					} catch (Exception e) {
-						log.error(e);
+						LOG.warn(e.getMessage(), e);
 						return;
 					}
 				}
@@ -339,7 +342,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				try {
 					c.update(props);
 				} catch (IOException e) {
-					log.error(e);
+					LOG.debug(e.getMessage());
 				}
 			}
 		}
@@ -361,19 +364,19 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	}
 
 	protected void updatedManagedAppliance(IManagedAppliance appliance, final Map props) {
-		log.debug("called updated method");
+		LOG.debug("called updated method");
 		// this method is called when the service properties are updated
 		synchronized (lockHacService) {
 			String appliancePid = appliance.getPid();
 
 			if (appliancePid == null) {
-				log.warn("the managed appliance doesn't have an associated pid, discarding it!");
+				LOG.warn("the managed appliance doesn't have an associated pid, discarding it!");
 				return;
 			}
 
 			Object a = pid2appliance.get(appliancePid);
 			if (a == null) {
-				log.fatal("updated unknown appliance " + appliancePid);
+				LOG.debug("updated unknown appliance " + appliancePid);
 				return;
 			}
 
@@ -382,7 +385,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				// !!!Multieps: a concurrent update can occur (device access and
 				// configuration admin can concurrenlty attach and update the
 				// application)
-				log.info("appliance with installing state detected. Why? The appliance pid is " + appliancePid);
+				LOG.debug("appliance with installing state detected. Why? The appliance pid is " + appliancePid);
 				return;
 			} else {
 				// !!!Multieps: a concurrent update can occur (device access and
@@ -429,12 +432,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		synchronized (lockHacService) {
 			String type = (String) props.get("service.pid");
 			if ((type == null) || (type != null) && (type.length() == 0)) {
-				log.error("the appliance factory doesn't have the service.pid set");
+				LOG.debug("the appliance factory doesn't have the service.pid set");
 				throw new HacException("type missing in appliance factory " + s.getName());
 			}
 
 			if (type2applianceFactory.get(type) != null) {
-				log.error("two different appliance factories serve the same type '" + s.getDescriptor().getType() + "'");
+				LOG.debug("two different appliance factories serve the same type '" + s.getDescriptor().getType() + "'");
 				return;
 			}
 
@@ -451,7 +454,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			applianceFactories.remove(s);
 			type2applianceFactory.remove(type);
 
-			log.debug("removed IApplianceType " + type);
+			LOG.debug("removed IApplianceType " + type);
 		}
 	}
 
@@ -488,7 +491,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 		Configuration c = null;
 
-		log.debug("adding configuration for appliance " + pid);
+		LOG.debug("adding configuration for appliance " + pid);
 
 		try {
 			Configuration[] configurations = getApplianceCAConfigurations(pid);
@@ -498,11 +501,11 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				// remove old property service.pid
 				props.remove(Constants.SERVICE_PID);
 				props.put("appliance.pid", pid);
-				log.debug("created configuration for appliance.pid " + pid);
+				LOG.debug("created configuration for appliance.pid " + pid);
 				c.update(props);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			LOG.warn(e.getMessage(), e);
 		}
 	}
 
@@ -547,7 +550,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	}
 
 	protected void deleteConfiguration(String type, String pid) {
-		log.debug("delete configuration for device " + pid);
+		LOG.debug("delete configuration for device " + pid);
 		Dictionary configurations = getAvailableConfigurations(type);
 		if (configurations != null) {
 			configurations.remove(pid);
@@ -564,15 +567,15 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		if (!res) {
 			/* switch to factory default */
 			if ((defaultConfig != null) && !defaultConfig.equals("")) {
-				log.debug("no saved configuration found, try to load '" + defaultConfig + "'");
+				LOG.debug("no saved configuration found, try to load '" + defaultConfig + "'");
 				if (loadConfiguration(defaultConfig, false)) {
 					// log.debug("configuration '" + defaultConfig +
 					// "' loaded successfully");
 				} else {
-					log.debug("no saved configuration found and unable to read configuration '" + defaultConfig + "'");
+					LOG.debug("no saved configuration found and unable to read configuration '" + defaultConfig + "'");
 				}
 			} else {
-				log.debug("no saved configuration found and no configuration specified. Skip loading configuration");
+				LOG.debug("no saved configuration found and no configuration specified. Skip loading configuration");
 			}
 		}
 	}
@@ -664,7 +667,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		}
 
 		if (found) {
-			log.error("device names must be unique");
+			LOG.debug("device names must be unique");
 			return false;
 		}
 
@@ -692,7 +695,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		synchronized (lockHacService) {
 			Vector result = new Vector();
 
-			log.debug("called browseDevices");
+			LOG.debug("called browseDevices");
 			IManagedAppliance d = null;
 
 			if (key_type == IAppliance.APPLIANCE_TYPE_PROPERTY_KEY) {
@@ -809,7 +812,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 					}
 					return true;
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.warn(e.getMessage(), e);
 				}
 
 			}
@@ -857,7 +860,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	 */
 
 	private void update(Map props) {
-		log.debug("received configuration");
+		LOG.debug("received configuration");
 		// boolean enableAutoInstall = getProperty(props,
 		// PROP_ENABLE_AUTOINSTALL, DEFAULT_ENABLE_AUTOINSTALL);
 		// enableAutoInstall
@@ -872,9 +875,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 						configurations[i].delete();
 					}
 			} catch (IOException e) {
-				log.error("exception deleting configurations", e);
+				LOG.warn("exception deleting configurations", e);
 			} catch (Exception e) {
-				log.error("exception deleting configurations", e);
+				LOG.warn("exception deleting configurations", e);
 			}
 
 			categories.clear();
@@ -938,12 +941,14 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		}
 
 		String xmlConfig = doc2xmlString(doc);
-		if (log.isDebugEnabled())
-			log.debug(xmlConfig);
+		if (LOG.isDebugEnabled())
+			LOG.debug(xmlConfig);
 
 		// save the configuration on the filesystem
 		File configFile = bc.getDataFile(SCENARIOS_PATH + configName + ".xml");
-		log.debug("saving configuration into " + configFile.getPath());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("saving configuration into " + configFile.getPath());
+		}
 		if (!configFile.isFile()) {
 			try {
 
@@ -960,7 +965,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 					return false;
 				}
 			} catch (IOException e1) {
-				log.error("unable to create file " + configFile.getPath());
+				LOG.warn("unable to create file " + configFile.getPath(), e1);
 				return false;
 			}
 		}
@@ -972,14 +977,14 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			fos.write(xmlConfig.getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
-			log.error("unable to open file " + configFile + " for writing.");
+			LOG.warn("unable to open file " + configFile + " for writing.", e);
 			return false;
 		} catch (IOException e) {
-			log.error("unable to write file " + configFile);
+			LOG.warn("unable to write file " + configFile, e);
 			return false;
 		}
 
-		log.info("configuration '" + configName + "' saved successfully");
+		LOG.debug("configuration '" + configName + "' saved successfully");
 		return true;
 	}
 
@@ -1059,8 +1064,8 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				storageArea = true;
 			}
 
-			log.debug("try to load '" + configName + "'");
-
+			LOG.debug("try to load '" + configName + "'");
+			
 			try {
 				if (storageArea) {
 					String configFilename = SCENARIOS_PATH + configName + ".xml";
@@ -1068,8 +1073,8 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 						patched  = PatchUpdateBug.patchUpdateBugOnHacLib(bc, configFilename);
 					}
 					configFile = bc.getDataFile(configFilename);
-					log.debug("storage area is " + configFile);
-					stream = new FileInputStream(configFile);
+					LOG.debug("storage area is " + configFile);
+					stream = new FileInputStream(configFile);					
 				} else {
 					File f = new File(configName);
 					if (f.isAbsolute()) {
@@ -1078,17 +1083,17 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 						String configFilename = SCENARIOS_PATH + configName + ".xml";
 						URL url = bc.getBundle().getEntry(configFilename);
 						if (url == null) {
-							log.warn("unable to open file " + configFilename);
+							LOG.debug("unable to open file " + configFilename);
 							return false;
 						}
 						stream = url.openStream();
 					}
 				}
 			} catch (FileNotFoundException e) {
-				log.warn("no saved configuration '" + configName + "'");
+				LOG.warn("no saved configuration '" + configName + "'", e);
 				return false;
 			} catch (IOException e) {
-				log.error("unable to open file " + configName);
+				LOG.warn("unable to open file " + configName, e);
 				return false;
 			}
 
@@ -1105,13 +1110,13 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				// configuration present in memory
 				traverseConfigurationTree(doc);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.warn(e.getMessage(), e);
 				return false;
 			} catch (SAXException e) {
-				e.printStackTrace();
+				LOG.warn(e.getMessage(), e);
 				return false;
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.warn(e.getMessage(), e);
 				return false;
 			}
 
@@ -1119,22 +1124,22 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				try {
 					stream.close();
 				} catch (IOException e) {
-					log.fatal(e);
+					LOG.warn(e.getMessage(), e);
 					return false;
 				}
 			}
 			
-			if (patched && (getProperty("org.energy_home.jemma.ah.updatepatch", enableUpdatePatch))) {
+			if (patched && (getProperty("it.telecomitalia.ah.updatepatch", enableUpdatePatch))) {
 				PatchUpdateBug.moveFactoryConfigurations(configAdmin, LocationsService.FACTORY_PID);
 			}
 
-			log.info("loaded successfully the previously saved configuration");
+			LOG.debug("loaded successfully the previously saved configuration");
 			return true;
 		}
 	}
 
 	public void updated(Dictionary props) throws ConfigurationException {
-		log.debug("received props");
+		LOG.debug("received props");
 	}
 
 	protected String doc2xmlString(Document doc) {
@@ -1170,7 +1175,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			strWriter.close();
 
 		} catch (IOException ioEx) {
-			log.error("exception: " + ioEx);
+			LOG.error("exception: " + ioEx);
 			return null;
 		}
 		return xmlStr;
@@ -1207,7 +1212,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				} catch (HacException e) {
 					// this is a duplicate location, skip it by putting a log
 					// message
-					log.warn("error while adding location found reading configuration file");
+					LOG.warn("error while adding location found reading configuration file", e);
 				}
 			}
 			if (tag == "category") {
@@ -1220,7 +1225,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				} catch (HacException e) {
 					// this is a duplicate location, skip it by putting a log
 					// message
-					log.warn("error while adding location found reading configuration file");
+					LOG.warn("error while adding location found reading configuration file", e);
 				}
 			} else if ((tag == "appliance") && (loadAppliances)) {
 				/*
@@ -1242,7 +1247,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 				Object propValue = traversePropertyNode(lastNode);
 				if (propValue == null) {
-					log.error("null property " + name);
+					LOG.debug("null property " + name);
 				} else {
 					properties.put(name, propValue);
 				}
@@ -1271,17 +1276,17 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 							String locationPid = (String) properties.get(IAppliance.APPLIANCE_LOCATION_PID_PROPERTY);
 							String categoryPid = (String) properties.get(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY);
 							if ((locationPid != null) && (this.locationsDb.getByPid(locationPid) == null)) {
-								log.debug("WARNING: device " + servicePid + " specifies an unknown location pid");
+								LOG.debug("WARNING: device " + servicePid + " specifies an unknown location pid");
 							} else if ((categoryPid != null) && (this.categories.getCategoryByPid(categoryPid) == null)) {
-								log.debug("WARNING: device " + servicePid + " specifies an unknown category pid");
+								LOG.debug("WARNING: device " + servicePid + " specifies an unknown category pid");
 							} else {
 								createConfiguration(type, appliancePid, properties);
 							}
 						} else {
-							log.error("during reading configuration: unable to retrieve driver pid");
+							LOG.debug("during reading configuration: unable to retrieve driver pid");
 						}
 					} catch (Exception e) {
-						log.debug(e.getMessage());
+						LOG.warn(e.getMessage(), e);
 					}
 				}
 			}
@@ -1321,7 +1326,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 						if (res != null) {
 							container.add(res);
-							log.debug("added to vector " + res.toString());
+							LOG.debug("added to vector " + res.toString());
 						}
 					}
 
@@ -1359,7 +1364,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			// applyConfigurations();
 			Led.setLed(1);
 		}
-		log.debug(fe.toString() + " type " + fe.getType());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(fe.toString() + " type " + fe.getType());
+		}
 	}
 
 	public Location getLocation(String locationPid) {
@@ -1468,15 +1475,15 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			try {
 				statusCode = client.executeMethod(method);
 			} catch (HttpException e) {
-				log.error(e);
+				LOG.warn(e.getMessage(), e);
 				return false;
 			} catch (IOException e) {
-				log.error(e);
+				LOG.warn(e.getMessage(), e);
 				return false;
 			}
 
 			if (statusCode != HttpStatus.SC_OK) {
-				log.error("method failed: " + method.getStatusLine());
+				LOG.warn("method failed: " + method.getStatusLine());
 				return false;
 			}
 
@@ -1485,12 +1492,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			try {
 				responseBody = method.getResponseBodyAsString();
 			} catch (IOException e1) {
-				log.error(e1);
+				LOG.warn(e1.getMessage(), e1);
 				return false;
 			}
 
-			if (log.isDebugEnabled())
-				log.debug(new String(responseBody));
+			if (LOG.isDebugEnabled())
+				LOG.debug(new String(responseBody));
 
 			return true;
 		}
@@ -1558,19 +1565,21 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 					this.clean();
 
 					File configFilesDirectory = bc.getDataFile(SCENARIOS_PATH);
-					log.debug("deleting directory " + configFilesDirectory.getPath());
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("deleting directory " + configFilesDirectory.getPath());
+					}
 					boolean deleted = false;
 					if (configFilesDirectory.isDirectory()) {
 						deleted = deleteDirectory(configFilesDirectory);
 					}
 				} catch (Exception e) {
-					log.error("during reset exception contains '" + e.getMessage() + "'");
+					LOG.warn("during reset exception contains '" + e.getMessage() + "'", e);
 					return false;
 				}
 			} else if (level == 1) {
 				try {
 					int time = 4;
-					log.info("shutdown in " + (time * 60) + " seconds");
+					LOG.debug("shutdown in " + (time * 60) + " seconds");
 					String osName = System.getProperty("os.name");
 					String shutdownCommand = null;
 					if (osName.equals("Linux")) {
@@ -1584,7 +1593,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 						return false;
 					}
 				} catch (IOException e) {
-					log.error("exception during shutdown " + e.getMessage());
+					LOG.warn("exception during shutdown " + e.getMessage(), e);
 				}
 			} else if (level == 2) {
 				this.clean();
@@ -1614,7 +1623,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		try {
 			docBuilder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			log.error(e);
+			LOG.error(e.getMessage());
 			return null;
 		}
 
@@ -1709,7 +1718,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 					// any property service.pid
 					// props.remove(Constants.SERVICE_PID);
 					props.put("appliance.pid", appliancePid);
-					log.debug("created configuration for appliance.pid " + appliancePid);
+					LOG.debug("created configuration for appliance.pid " + appliancePid);
 				}
 
 				// remove the ah.status properties to force appliance
@@ -1719,7 +1728,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 				this.installingAppliances.remove(appliance);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.debug(e.getMessage());
 				throw new HacException("unable to install appliance");
 			}
 		}
@@ -1750,7 +1759,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 				this.installingAppliances.remove(appliance);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.debug(e.getMessage());
 				throw new HacException("unable to install appliance");
 			}
 		}
@@ -1772,7 +1781,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 
 				c.update(props);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.debug(e.getMessage());
 				throw new HacException(e.getMessage());
 			}
 		}
@@ -1797,18 +1806,38 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				if (factoryPid != null) {
 					c = this.configAdmin.createFactoryConfiguration(factoryPid, null);
 					props.put("appliance.pid", appliancePid);
-					log.debug("created factory configuration for appliance.pid " + appliancePid);
+					LOG.debug("created factory configuration for appliance.pid " + appliancePid);
 				} else {
 					c = this.configAdmin.getConfiguration(appliancePid);
 					props.put("appliance.pid", appliancePid);
-					log.debug("created factory configuration for appliance.pid " + appliancePid);
+					LOG.debug("created factory configuration for appliance.pid " + appliancePid);
 				}
 
 				c.update(props);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.debug(e.getMessage());
 				throw new HacException(e.getMessage());
 			}
+		}
+	}
+	//TODO: check merge, method below missing in 3.3.0
+	private void manageMultiEndPointConfiguration(Dictionary props, Dictionary oldProps, String applianceProperty, String endPointsProperty) {
+		String value = (String) props.get(applianceProperty);
+		String[] values = (String[]) props.get(endPointsProperty);
+		if (values == null) {
+			values = (String[])  oldProps.get(endPointsProperty);
+		}	
+		if (value == null && values != null && values.length > 0) {
+			// If no appliance property is present and end point 0 property is present, the appliance property is created/aligned  
+			props.put(applianceProperty, values[0]);
+		}	
+		if (value != null && values != null && values.length > 0 && !value.equals(values[0])) {
+			// If appliance property is present and end point properties are already present or updated,
+			// all end point corresponding properties are reset to appliance property			
+			for (int i = 0; i < values.length; i++) {
+				values[i] = (String)value;				
+			}
+			props.put(endPointsProperty, values);
 		}
 	}
 	
@@ -1833,7 +1862,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		if (applianceType == null) {
 			// FIXME: nella configurazione NON compare mai la ah.app.type
 			// property!!!!! Perche?
-			log.fatal(IAppliance.APPLIANCE_TYPE_PROPERTY + " property not found in record");
+			LOG.warn(IAppliance.APPLIANCE_TYPE_PROPERTY + " property not found in record");
 		}
 		
 		// Restore some key properties: it seems it does not associate to new service registration properties 
@@ -1854,6 +1883,12 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				props.put(key, customConfig.get(key));
 			}
 		}	
+		//TODO: check merge, 5 lines below were missing in 3.3.0
+		// For compatibility with old applications (i.e. green@home), appliance common property is always managed
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_NAME_PROPERTY, IAppliance.END_POINT_NAMES_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, IAppliance.END_POINT_CATEGORY_PIDS_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_LOCATION_PID_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
+		manageMultiEndPointConfiguration(props, oldProps, IAppliance.APPLIANCE_ICON_PROPERTY, IAppliance.END_POINT_LOCATION_PIDS_PROPERTY);
 		
 	}
 
@@ -1863,9 +1898,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		synchronized (networkManagers) {
 			String key = (String) properties.get("network.type");
 			if (key == null)
-				log.error("addNetworkManager: eceived invalid network type property");
+				LOG.debug("addNetworkManager: received invalid network type property");
 			else {
-				log.info("Adding network manager for " + key);
+				LOG.debug("Adding network manager for " + key);
 				networkManagers.put(key, manager);
 			}
 		}
@@ -1875,9 +1910,9 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		synchronized (networkManagers) {
 			String key = (String) properties.get("network.type");
 			if (key == null)
-				log.error("removeNetworkManager: eceived invalid network type property");
+				LOG.debug("removeNetworkManager: received invalid network type property");
 			else {
-				log.info("Removing network manager for " + key);
+				LOG.debug("Removing network manager for " + key);
 				networkManagers.remove(key);
 			}
 		}
@@ -1888,7 +1923,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 		try {
 			c = getApplianceCAConfiguration(appliancePid);
 		} catch (Exception e) {
-			log.error("getManagedConfiguration(" + appliancePid + ") error", e);
+			LOG.error("getManagedConfiguration(" + appliancePid + ") error", e);
 		}
 		if (c != null)
 			return c.getProperties();
@@ -1905,7 +1940,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			return nm.isNetworkOpen();
 		} catch (Exception e) {
 			String msg = "isNetworkOpen: error while opening network " + networkType;
-			log.error(msg, e);
+			LOG.debug(msg, e);
 			throw new HacException(msg);
 		}
 	}
@@ -1920,7 +1955,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			nm.openNetwork();
 		} catch (Exception e) {
 			String msg = "openNetwork: error while opening network " + networkType;
-			log.error(msg, e);
+			LOG.debug(msg, e);
 			throw new HacException(msg);
 		}
 	}
@@ -1935,7 +1970,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			nm.openNetwork(duration);
 		} catch (Exception e) {
 			String msg = "openNetwork: error while opening network " + networkType;
-			log.error(msg, e);
+			LOG.debug(msg, e);
 			throw new HacException(msg);
 		}
 	}
@@ -1950,7 +1985,7 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 			nm.closeNetwork();
 		} catch (Exception e) {
 			String msg = "closeNetwork: error while opening network " + networkType;
-			log.error(msg, e);
+			LOG.debug(msg, e);
 			throw new HacException(msg);
 		}
 	}

@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.IAppliance;
@@ -37,6 +35,8 @@ import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the {@code IEndPoint} interface
@@ -50,9 +50,9 @@ public class EndPoint extends BasicEndPoint {
 	private static final String INVALID_CLUSTER_NAME_MESSAGE = "Invalid cluster name";
 	
 	private static final String CLUSTER_DEFAULT_IMPL_POSTFIX = "Cluster";
-
-	private static final Log log = LogFactory.getLog(EndPoint.class);
-
+	
+	private static final Logger LOG = LoggerFactory.getLogger(EndPoint.class);
+	
 	IPeerAppliancesListener peerAppliancesListener;
 	// Each item is indexed by peerAppliancePid and its value is an IEndPoint List
 	HashMap peerAppliances;
@@ -141,7 +141,7 @@ public class EndPoint extends BasicEndPoint {
 			try {
 				peerAppliancesListener.notifyPeerApplianceUpdated(peerAppliancePid);
 			} catch (Throwable e) {
-				log.error("exception returned by notifyPeerApplianceUpdated() for appliance " + peerAppliancePid, e);
+				LOG.warn("exception returned by notifyPeerApplianceUpdated() for appliance " + peerAppliancePid, e);
 			}
 		}
 	}
@@ -232,7 +232,7 @@ public class EndPoint extends BasicEndPoint {
 		Method[] methods = clusterIf.getMethods();
 
 		if (clusterImpl == null || !clusterIf.isAssignableFrom(clusterImpl.getClass())) {
-			log.error(clusterImpl.getClass().getName() + " must inherit from " + clusterName + " in order to use registerCluster(clusterName, implClass)");
+			LOG.debug(clusterImpl.getClass().getName() + " must inherit from " + clusterName + " in order to use registerCluster(clusterName, implClass)");
 			throw new ApplianceValidationException("Invalid cluster interface class");
 		}
 

@@ -22,7 +22,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<name>JEMMA</name>
 
 	<properties>
@@ -94,6 +94,7 @@
 		<!--<org.energy-home.jemma.osgi.zgd.version>1.4.1</org.energy-home.jemma.osgi.zgd.version>-->
 		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.26</org.energy-home.jemma.osgi.ah.zigbee.version>
 		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.12</org.energy-home.jemma.osgi.ah.webui.base.version>
+		<org.energy-home.jemma.osgi.javagal.version>2.0.1</org.energy-home.jemma.osgi.javagal.version>
 	</properties>
 
 	<modules>
@@ -110,12 +111,11 @@
 		<module>jemma.osgi.javagal.rest</module>
 		<module>jemma.osgi.javagal.gui</module>
 		<module>jemma.osgi.javagal.json</module>
-		<!--<module>jemma.osgi.device.zgd</module>-->
 		<module>jemma.osgi.ah.felix.console.web</module>
-		<!--<module>jemma.osgi.zgd</module>-->
 		<module>jemma.osgi.ah.energyathome</module>
 		<module>jemma.osgi.ah.greenathome</module>
 		<module>jemma.osgi.ah.webui.base</module>
+		<module>jemma.osgi.ah.webui.energyathome</module>
 		<module>jemma.osgi.ah.webui.energyathome.demo</module>
 		<module>jemma.osgi.ah.adapter.http</module>
 		<module>jemma.osgi.ah.app</module>
@@ -124,10 +124,6 @@
 		<module>jemma.osgi.ah.zigbee.appliances</module>
 		<module>Distribution</module>
 	</modules>
-	
-	
-	
-
 
 	<build>
 		<resources>
@@ -159,7 +155,6 @@
 				<manifestLocation>META-INF</manifestLocation>
 				<instructions>
 				    <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-				    <!--<DynamicImport-Package>com.sun.xml.internal.bind.*</DynamicImport-Package>-->
 				    <Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
 				</instructions>
 			    </configuration>
@@ -204,7 +199,7 @@
 					</descriptors>
 				</configuration>
 			</plugin>
-			<plugin>
+		<!--			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>${maven.license.plugin.version}</version>
@@ -218,11 +213,11 @@
 					<strictCheck>true</strictCheck>
 					<includes>
 						<include>**/*.java</include>
-						<include>**/*.xml</include>
+						<include>**/*.xml</include>-->
 					<!-- 	When add an header to a xml schema the jaxb cannot parses it
 					<include>**/*.xsd</include> 		
 					-->					
-					</includes>
+		<!--		</includes>
 					 <excludes>
 						<exclude>**/README</exclude>
 						<exclude>src/test/resources/**</exclude>
@@ -246,12 +241,12 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>${maven.clean.plugin.version}</version>
-				<configuration>
+<!--				<configuration>
 					<filesets>
 						<fileset>
 							<directory>${project.basedir}</directory>
@@ -268,7 +263,7 @@
 						</fileset>
 					</filesets>
 					<verbose>true</verbose>
-				</configuration>
+				</configuration> -->
 			</plugin>
 		</plugins>
 	</build>

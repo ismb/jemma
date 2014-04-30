@@ -36,6 +36,8 @@ import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.device.DriverLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HacCommandProvider implements CommandProvider {
 	private IHacService hacService = null;
@@ -43,6 +45,8 @@ public class HacCommandProvider implements CommandProvider {
 	private HacDriverLocator hacLocator = null;
 
 	private IAppliancesProxy appliancesProxy;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(HacCommandProvider.class);
 
 	private static String invokeClusterMethod(IAppliancesProxy proxy, String appliancePid, Integer endPointId, String clusterName,
 			String methodName, String[] params) {
@@ -52,7 +56,7 @@ public class HacCommandProvider implements CommandProvider {
 			return TextConverter.getTextRepresentation(proxy.invokeClusterMethod(appliancePid, endPointId, clusterName, methodName,
 					objectParams));
 		} catch (Throwable t) {
-			t.printStackTrace();
+			LOG.warn(t.getMessage());
 			return TextConverter.getTextRepresentation(new Exception(t));
 		}
 	}

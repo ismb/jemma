@@ -313,6 +313,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			log.info("getHourlyProducedEnergyForecastWithHapCache returned null or empty list, trying to use previous day data");
 			items = getHourlyProducedEnergyForecast(containerId);
 		}
+		log.info("getHourlyProducedEnergyForecastWithHapCache returned: " + items);
 		return toFloatValueList(items);	
 	}
 		

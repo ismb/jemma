@@ -25,8 +25,13 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PeerServiceClusterProxy implements InvocationHandler  {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PeerServiceClusterProxy.class);
+	
 	private IServiceCluster serviceCluster = null;
 	private ServiceCluster serviceClusterImpl = null;
 	private boolean isPeerServiceCluster = false;
@@ -72,7 +77,7 @@ public class PeerServiceClusterProxy implements InvocationHandler  {
 				if (t != null && t instanceof Exception)
 					throw t;
 			}
-			e.printStackTrace();
+			LOG.debug(e.getMessage(), e);
 			throw new ServiceClusterException("Unknown error while executing service cluster request");
 		}
 	}	

@@ -79,10 +79,17 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 
 	};
 
+	//TODO: check merge, different values in 3.3.0
+	//private static final long SMART_INFO_POLLING_MIN_INTERVAL_MILLISEC = 10 * 1000;//30 * 1000
+	//private static final long SMART_INFO_POLLING_NORMAL_INTERVAL_MILLISEC = 10 * 1000;// 60 * 3 *1000;
 	private static final long SMART_INFO_POLLING_MIN_INTERVAL_MILLISEC = 30 * 1000;
 	private static final long SMART_INFO_POLLING_NORMAL_INTERVAL_MILLISEC = 60 * 3 * 1000;
 	
 	public static final long SMART_INFO_SUMMATION_MIN_INTERVAL = 2;
+
+	//TODO: check merge, different values in 3.3.0
+	//public static final long SMART_INFO_SUMMATION_MAX_INTERVAL = 15;	//120; MaximumReportingInterval
+	//public static final double SMART_INFO_SUMMATION_DELTA_VALUE = 5;	//1
 	public static final long SMART_INFO_SUMMATION_MAX_INTERVAL = 120;
 	public static final double SMART_INFO_SUMMATION_DELTA_VALUE = 1;
 
@@ -266,6 +273,8 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						// check if last notifications are still valid, if not renew subscriptions
 						// peakProducedPower > 0 means there is a solar panel
 						if ((appliance == smartInfoExchange || appliance == smartInfoProduction) && peakProducedPower > 0) {
+							//TODO: check merge, different values in 3.3.0
+							//if (System.currentTimeMillis() - ((SmartMeterInfo)appliance).getProducedEnergyTime() > 1500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - ((SmartMeterInfo)appliance).getProducedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 								log.error(String.format("Periodic task - invalid current summation received subscription for appliance %s", appliance.getApplianceId()));
 								refreshCurrentSummationReceivedSubscription(appliance);
@@ -273,11 +282,15 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						}
 							
 						if (smartInfoProduction != appliance) {
+							//TODO: check merge, different values in 3.3.0
+							//if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 1500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 								log.error(String.format("Periodic task - invalid current summation delivered subscription for appliance %s", appliance.getApplianceId()));
 								refreshCurrentSummationDeliveredSubscription(appliance);
 							}
 
+							//TODO: check merge, different values in 3.3.0
+							//if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 1500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 2500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
 								log.error(String.format("Periodic task - invalid instantaneous demand subscription for appliance %s", appliance.getApplianceId()));
 								refreshInstantaneousDemandSubscription(appliance);
@@ -457,7 +470,8 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 
 		log.info(String.format("Current summation delivered %f, from %s, at %s", totalEnergy, applianceId,
 				CalendarUtil.toSecondString(time)));
-		
+		//TODO: check merge, if condition was different
+		//if (totalEnergy != IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
 		EnergyCostInfo eci = appliance.updateEnergyCost(time, totalEnergy);
 		if (eci != null && eci.isValid()) {
 			try {
@@ -465,6 +479,10 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			} catch (Exception e) {
 				log.error("Error while storing delivered energy on HAP platform", e);
 			}
+		//TODO: check merge, 3 lines below were not in 3.3.0
+		//}
+		//EnergyCostInfo eci = appliance.updateEnergyCost(time, totalEnergy);
+		//if (eci != null && eci.isValid()) {
 			MinMaxPowerInfo powerInfo = appliance.getMinMaxPowerInfo();
 			try {
 				cloudProxy.storeDeliveredEnergyCostPowerInfo(applianceId, eci, powerInfo);
@@ -476,6 +494,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 
 	// this method is only called by a smartInfo, either production or exchange
 	public void notifyCurrentSummationReceived(String applianceId, long time, double totalEnergy) {
+		//TODO: check merge, this 4 lines (if block) was in 3.3.0
 		if (peakProducedPower <= 0) {
 			log.error("Received CurrentSummationReceived value with invalid configuration (peak produced power <= 0)");
 			return;

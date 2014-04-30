@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 	<properties>
 		<main.dir>${project.parent.basedir}</main.dir>
@@ -55,7 +55,7 @@
 						<Service-Component>OSGI-INF/buttons.xml, OSGI-INF/cedacio.xml, OSGI-INF/cedacioconsole.xml</Service-Component>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.ApplianceValidationException;
 import org.energy_home.jemma.ah.hac.HacException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.ICategory;
@@ -241,4 +242,83 @@ public interface GreenAtHomeApplianceService {
 	public long currentTimeMillis();
 
 	public Long getInitialConfigurationTime();
+	
+	
+	//TODO: check merge, methods below not in 3.3.0
+	/*
+	 * 
+	 * 
+	 * METODI AGGIUNTI INTECS
+	 * 
+	 * 
+	 */
+	
+	public Hashtable getDeviceClusters(String appliancePid);
+	
+	public ArrayList getCategoriesWithPid() throws ApplianceValidationException;
+	
+	public Hashtable getInfoNew(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException;
+	
+//	public Vector getInfos();
+	
+	
+	/**
+	 * Methods for the LevelControl cluster
+	 * 
+	 */
+	public short levelControlGetCurrentValue(String appliancePid);
+	
+	public boolean levelControlExecMoveToLevelWithOnOff(String appliancePid, short Level, int TransitionTime);
+	
+	public boolean levelControlExecMoveToLevel(String appliancePid, short Level, int TransitionTime);
+	
+	public boolean levelControlExecStopWithOnOff(String appliancePid);
+	
+	/**
+	 * Methods for the ColorControl cluster
+	 * 
+	 */
+	public boolean colorControlMoveToColorHSL(String appliancePid, short hue, short saturation, short level, int transitionTime);
+	
+	public boolean colorControlMoveToColorHS(String appliancePid, short hue, short saturation, int transitionTime);
+	
+	public Hashtable colorControlGetColorHSL(String appliancePid);
+	
+	public Hashtable colorControlGetColorHS(String appliancePid);
+	
+	public boolean colorControlMoveToColorXYL(String appliancePid, int X,int Y,short level, int transitionTime);
+	
+	/**
+	 * Methods for the ApplianceControl cluster
+	 * 
+	 */
+	public int applianceControlGetStartTime(String appliancePid);
+	
+	public int applianceControlGetFinishTime(String appliancePid);
+	
+	public int applianceControlGetRemainingTime(String appliancePid);
+	
+//	public boolean applianceControlExecCommandExecution(String appliancePid, short CommandId);
+	
+	public Hashtable applianceControlExecSignalState(String appliancePid);
+	
+	public short applianceControlGetCycleTarget0(String appliancePid);
+	
+	public short applianceControlGetCycleTarget1(String appliancePid);
+	
+	public int applianceControlGetTemperatureTarget0(String appliancePid);
+	
+	public int applianceControlGetTemperatureTarget1(String appliancePid);
+	
+//	public boolean applianceControlExecWriteFunctions(String appliancePid,WriteAttributeRecord[] WriteAttributeRecords);
+	
+	
+	public boolean setDeviceState(String appliancePid, int state);
+	
+	public Hashtable testFunction(String appliancePid, String p1, int p2, int p3);
+	
+	public List getDailyPVForecast();
+	
+	public String getDailyPVForecastDebug();
+	
 }

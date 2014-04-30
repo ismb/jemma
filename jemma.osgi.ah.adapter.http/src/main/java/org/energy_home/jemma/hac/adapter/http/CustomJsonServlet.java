@@ -52,16 +52,7 @@ public class CustomJsonServlet extends HttpServlet {
 		String methodName;
 		
 		HttpSession session = req.getSession(true);
-		//log.debug("Session is " + session.getId());
-
-//		Counter counter;
-//		if (session.isNew()) {
-//			counter = new Counter();
-//			session.setAttribute("counter", counter);
-//		}
-//
-//		counter = ((Counter) session.getAttribute("counter"));
-//		counter.increment();
+		
 
 		objectid = req.getParameter("objectid");
 		if (objectid == null) {

@@ -33,7 +33,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<build>
@@ -75,12 +75,14 @@
 						<Service-Component>OSGI-INF/*.xml</Service-Component>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home Application</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.energy-home</groupId>
@@ -117,6 +119,8 @@
 			<artifactId>jemma.osgi.ah.configurator</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.configurator.version}</version>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
@@ -143,4 +147,6 @@
 			<version>${org.apache.commons.logging.version}</version>
 		</dependency>
 	</dependencies>
+
+
 </project>

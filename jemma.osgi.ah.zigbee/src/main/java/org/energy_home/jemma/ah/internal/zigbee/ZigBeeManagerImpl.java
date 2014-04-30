@@ -70,7 +70,9 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclOccupancySensingClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclRelativeHumidityMeasurementClient;
@@ -549,6 +551,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						try {
 							device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
 						} catch (ZclException e) {
+							//TODO: check merge, following if was commented in 3.3.0
 							// if (!zclFrame.isDefaultResponseDisabled()) {
 							IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
 							this.post(msg, zclResponseFrame);
@@ -1096,6 +1099,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		// this registration starts the driver location process!
 		ServiceRegistration deviceServiceReg = ctxt.getBundleContext().registerService(ZigBeeDevice.class.getName(), device,
 				deviceProps);
+		
 		Vector deviceRegs = null;
 		String nodePid = getNodePid(service.getAddress());
 		synchronized (ieee2sr) {
@@ -1415,8 +1419,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
-					outputClusters.add(new Integer(0x0201));
 					
+					
+					outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
+					outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 					
 					if (enableEnergyAtHomeClusters) {
 						// This is the list of Client side clusters supported by E@H
@@ -1433,8 +1439,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 						outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
 						outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
+						outputClusters.add(new Integer(ZclThermostatClient.CLUSTER_ID));	//Thermostat cluster
+						
 					}
-
+				
 					// This is the list of Server side clusters supported by E@H
 					inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
 					inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
@@ -1452,7 +1460,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 					// subscribe liveness
-					gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS);
+					gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE);
 					// register local callback
 					this.callbackId = gateway.createAPSCallback(localEndpoint, this);
 					if (this.callbackId == -1) {

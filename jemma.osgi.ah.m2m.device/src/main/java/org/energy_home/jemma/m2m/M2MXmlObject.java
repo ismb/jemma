@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.m2m;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 

@@ -59,6 +59,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 		String encKey = null;
 		try {
+			//TODO: check merge, class org.energy_home.jemma.internal.ah.m2m.device.EHSettings not in JEMMA!
 			Class ehSettingsClass = Class.forName("org.energy_home.jemma.internal.ah.m2m.device.EHSettings");
 			Field field = ehSettingsClass.getDeclaredField("key");
 			field.setAccessible(true);

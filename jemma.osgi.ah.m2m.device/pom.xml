@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 	<properties>
 		<main.dir>${project.parent.basedir}</main.dir>
@@ -130,7 +130,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>${maven.clean.plugin.version}</version>
-				<configuration>
+<!--				<configuration>
 					<filesets>
 						<fileset>
 							<directory>${project.basedir}/src/main/java/org/energy_home/jemma/m2m</directory>
@@ -164,7 +164,7 @@
 						</fileset>
 					</filesets>
 					<verbose>true</verbose>
-				</configuration>
+				</configuration>-->
 			</plugin>
 		</plugins>
 	</build>

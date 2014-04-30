@@ -28,6 +28,8 @@ public final class ParticleSwarmScheduler {
 	
 	public static final double OVERLOAD_WEIGHT = 1000 * 1000;
 	public static final double ENERGY_COST_WEIGHT = 1;
+	//TODO: check merge
+//	public static final double TARDINESS_WEIGHT = 1.0 / (100 * 1000);
 	public static final double TARDINESS_WEIGHT = 1.0 / (1000 * 1000);
 
 	public static final double REINIT_WORST_PARTICLE_PROBABILITY = 0.0; 

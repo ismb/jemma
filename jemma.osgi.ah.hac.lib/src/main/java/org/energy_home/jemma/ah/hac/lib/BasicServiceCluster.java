@@ -35,6 +35,8 @@ import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.lib.ext.HacCommon;
 import org.energy_home.jemma.ah.hac.lib.ext.PeerEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of {@link IServiceCluster} interface
@@ -46,6 +48,7 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 	static final String CLUSTER_PACKAGE_NAME_PREFIX = "org.energy_home.jemma.";
 	static final String INVALID_CLUSTER_CLASS_MESSAGE = "Invalid cluster class";	
 	static final ISubscriptionParameters SUBSCRIPTION_PARAMETERS = new SubscriptionParameters();
+	static final Logger LOG = LoggerFactory.getLogger(BasicServiceCluster.class);
 	
 	String name = null;
 	String type = null;
@@ -296,18 +299,18 @@ public abstract class BasicServiceCluster implements IServiceCluster, IServiceCl
 						} catch (ApplianceException e) {
 							// TODO: currently when an appliance is disconnected the
 							// subscription is not deleted
-							e.printStackTrace();
+							LOG.warn(e.getMessage(), e);
 							if (e instanceof InvalidPeerApplianceException)
 								attributeSubscriptions.remove(peerEndPoint);
 						} catch (ServiceClusterException se) {
-							se.printStackTrace();
+							LOG.warn(se.getMessage(), se);
 						} catch (Exception ge) {
-							ge.printStackTrace();
+							LOG.warn(ge.getMessage(), ge);
 						}
 					}
 				}				
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.warn(e.getMessage(), e);
 			}
 		}
 	}

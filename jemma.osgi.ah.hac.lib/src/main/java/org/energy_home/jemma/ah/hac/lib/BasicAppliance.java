@@ -22,14 +22,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.IApplianceManager;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.lib.ext.ConfigServerCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of {@link IAppliance} interface
@@ -37,7 +37,7 @@ import org.energy_home.jemma.ah.hac.lib.ext.ConfigServerCluster;
  */
 public class BasicAppliance implements IAppliance {
 	static final String INVALID_END_POINT_MESSAGE = "Invalid end point";
-	static final Log log = LogFactory.getLog(Appliance.class);
+	static final Logger LOG = LoggerFactory.getLogger(Appliance.class);
 
 	ApplianceFactory factory;
 	boolean isDriver;

@@ -105,6 +105,8 @@ public class ZclApplianceEventsAndAlertsClient extends ZclServiceCluster impleme
 
 	protected IZclFrame parseGetEventsAndAlerts(ApplianceEventsAndAlertsServer o, IZclFrame zclFrame) throws ApplianceException,
 			ServiceClusterException {
+		//TODO: check merge, following line was different in 3.3.0
+		//GetAlertsResponse r = o.execGetAlerts(null);
 		GetAlertsResponse r = o.execGetAlerts(endPoint.getDefaultRequestContext());
 		int size = ZclGetAlertsResponse.zclSize(r);
 		IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);

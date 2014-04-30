@@ -57,7 +57,8 @@ import org.energy_home.jemma.utils.thread.ExecutorService;
 
 public class ESPApplication extends HttpServlet implements IApplicationService, ESPService, IOnOffListener, IOverloadStatusListener {
 	private static final Log log = LogFactory.getLog(ESPApplication.class);
-	
+	//TODO: check merge, different number in 3.3.0
+	//private static final long PERIODIC_TASK_TIMEOUT = 15000;//30000
 	private static final long PERIODIC_TASK_TIMEOUT = 30000;
 	private static final String INVALID_APPLIANCE_PID_ERR_MSG = "Invalid appliance pid";
 	private static final String EMULATED_START_TIME_STR = System.getProperty("org.energy_home.jemma.ah.test.hap.client.startTime");

@@ -17,10 +17,15 @@ package org.energy_home.jemma.ah.internal.hac;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	public void start(BundleContext bc) throws Exception {
+		LOG.info("Bundle jemma.osgi.ah.hac starting");
 		boolean enableUpdateBugPatch = getProperty("org.energy_home.jemma.ah.updatepatch", false);
 		if (enableUpdateBugPatch) {
 			PatchUpdateBug.patchUpdateBugOnHac(bc, "/hac-config.xml");

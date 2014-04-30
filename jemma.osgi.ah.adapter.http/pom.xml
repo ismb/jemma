@@ -31,7 +31,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<build>
@@ -97,7 +97,12 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet</artifactId>
 			<version>${javax.servlet.version}</version>
-		</dependency>	
+		</dependency>
+                <dependency>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>org.apache.commons.logging</artifactId>
+                        <version>${org.apache.commons.logging.version}</version>
+                </dependency>
 	</dependencies>
 
 

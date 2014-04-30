@@ -131,12 +131,12 @@ public class ESPHapServiceCache {
 	private static QueryResult getCachedQueryResult(Map<AHContainerAddress, QueryResult> cacheMap, Calendar calendar, AHContainerAddress containerId)  {
 		QueryResult cache = cacheMap.get(containerId);
 		if (cache != null) {
-			calendar.setTimeInMillis(System.currentTimeMillis());
+			long now = System.currentTimeMillis();
 			int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 			if (cache.getQueryCalendar().get(Calendar.HOUR_OF_DAY) != currentHour) {
 				cache = null;
 				cacheMap.put(containerId, null);
-				log.info("Invalidated cached query " + containerId);
+				log.info("Invalidate cached query " + containerId);
 			}
 		}
 		return cache;
