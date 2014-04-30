@@ -30,7 +30,7 @@ public class ManageMapPanId {
 
 	public ManageMapPanId() {
 		try {
-			filename = System.getProperty("user.home") + File.pathSeparator + "mapPainId.properties";
+			filename = System.getProperty("user.home") + File.separator + "mapPainId.properties";
 			File f = new File(filename);
 			if (!f.exists())
 				f.createNewFile();
