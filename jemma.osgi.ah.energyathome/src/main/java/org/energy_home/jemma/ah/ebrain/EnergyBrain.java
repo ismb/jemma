@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class EnergyBrain implements IBasicApplianceListener {
 
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( EnergyBrain.class );
+	protected static final Logger LOG = LoggerFactory.getLogger( EnergyBrain.class);
 	
 	private static final ICloudServiceProxy dummyHapProxy = new ICloudServiceProxy() {
 		public void storeEvent(String applianceId, long time, int eventType) throws Exception {}
