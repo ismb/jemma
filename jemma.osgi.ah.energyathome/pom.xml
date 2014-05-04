@@ -65,7 +65,7 @@
 							 org.energy_home.jemma.utils.xml.jaxb;version="[1.0.0,1.1.0)",
 							 javax.servlet,
 							 javax.servlet.http,
-							 org.apache.commons.logging,
+							 org.slf4j;version="[1.7,2)",
 							 org.eclipse.osgi.framework.console,
 							 org.osgi.framework;version="1.3.0",
 							 org.osgi.service.cm,
@@ -131,9 +131,9 @@
 			<version>${org.eclipse.equinox.util.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399225431993
+Bnd-LastModified: 1399226921973
 Build-Jdk: 1.7.0_45
 Built-By: bluewind
 Bundle-ManifestVersion: 2

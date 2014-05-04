@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399225417039
+Bnd-LastModified: 1399226907372
 Build-Jdk: 1.7.0_45
 Built-By: bluewind
 Bundle-Activator: org.energy_home.jemma.ah.internal.hac.Activator
