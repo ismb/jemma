@@ -1455,8 +1455,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					if (enableAllClusters) {
 						inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 					}
-					
-					localEndpoint = gateway.configureEndpoint(100, sd);
+					/*Ho cambiato il valore di timeout perch&egrave; 100ms &egrave; troppo poco [Marco Nieddu]*/
+					localEndpoint = gateway.configureEndpoint(2000, sd);
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 					// subscribe liveness
@@ -1506,7 +1506,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			return false;
 		}
 		
-		String testevent = this.ctxt.getBundleContext().getProperty("it.telecomitalia.ah.zigbee.zcl.testevent");
+		String testevent = this.ctxt.getBundleContext().getProperty("org.energy_home.jemma.ah.zigbee.zcl.testevent");
 		
 		try {
 			if (Boolean.parseBoolean(testevent)) {
@@ -1671,10 +1671,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	protected Dictionary getConfiguration() {
 		Dictionary config = new Hashtable();
-		config.put("it.telecomitalia.ah.adapter.zigbee.lqi", cmProps.isLqiEnabled() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.reconnect", cmProps.getReconnectToJGalDelay() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.discovery.delay", cmProps.getDiscoveryDelay() + "");
-		config.put("it.telecomitalia.ah.adapter.zigbee.discovery.initialdelay", cmProps.getInitialDiscoveryDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.lqi", cmProps.isLqiEnabled() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.reconnect", cmProps.getReconnectToJGalDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.discovery.delay", cmProps.getDiscoveryDelay() + "");
+		config.put("org.energy_home.jemma.ah.adapter.zigbee.discovery.initialdelay", cmProps.getInitialDiscoveryDelay() + "");
 		return config;
 	}
 
