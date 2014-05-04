@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.eh.esp.ESPService;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
@@ -36,9 +34,11 @@ import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 import org.energy_home.jemma.m2m.ah.FloatCDV;
 import org.energy_home.jemma.m2m.ah.FloatDV;
 import org.energy_home.jemma.utils.datetime.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ESPContainersDataUtils {
-	private static final Log log = LogFactory.getLog(ESPContainersDataUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ESPContainersDataUtils.class );
 	
 	public static final long FIVE_MINUTES_IN_MILLISEC = 5*60000l; 
 	
@@ -65,11 +65,11 @@ public class ESPContainersDataUtils {
 		if (lastAddedItems < 0 && itemsToBeAdded + lastAddedItems >= 0) {
 			// This hack is necessary to manage some of the hap server approximation on milliseconds
 			itemsToBeAdded = itemsToBeAdded + lastAddedItems;
-			log.warn("getNextItemsToAdd negative value compensated");
+			LOG.warn("getNextItemsToAdd negative value compensated");
 		}
 		int itemsAdded = 0;
 		if (itemsToBeAdded < 0) {
-			log.warn("getNextItemsToAdd returned a negative value: " + itemsToBeAdded);
+			LOG.warn("getNextItemsToAdd returned a negative value: " + itemsToBeAdded);
 			itemsAdded = itemsToBeAdded;
 		} else if (itemsToBeAdded > 0) {
 			if (resolution == ESPService.HOUR_RESOLUTION && endDst > startDst) {
@@ -167,7 +167,7 @@ public class ESPContainersDataUtils {
 			endDst = c.get(Calendar.DST_OFFSET);
 			additionalHours = endDst - startDst;
 			if (additionalHours != 0)
-				log.info("Legal/solar switch error correction: " + additionalHours);
+				LOG.debug("Legal/solar switch error correction: " + additionalHours);
 			result = (int) ((normalizedEndTime - normalizedStartTime + additionalHours) / DateUtils.MILLISEC_IN_ONE_DAY) + 1;
 			break;
 		case ESPService.HOUR_RESOLUTION:
@@ -177,14 +177,14 @@ public class ESPContainersDataUtils {
 			endDst = c.get(Calendar.DST_OFFSET);
 			additionalHours = endDst - startDst;
 			if (additionalHours != 0)
-				log.info("Legal/solar switch error correction: " + additionalHours);
+				LOG.debug("Legal/solar switch error correction: " + additionalHours);
 			result = (int) ((normalizedEndTime - normalizedStartTime + additionalHours) / DateUtils.MILLISEC_IN_ONE_HOUR) + 1;
 			break;
 		}
 		if (result < 0)
 			result = 0;
 		if (result > 50)
-			log.warn(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> getResultListSize return more than 50 results");
+			LOG.warn("getResultListSize return more than 50 results");
 		return result;
 	}
 
@@ -259,7 +259,7 @@ public class ESPContainersDataUtils {
 			ci.setCreationTime(System.currentTimeMillis());
 			ci.setId(id);
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on getDefaultContentInstance", e);
 		} 
 		return ci;
 	}
@@ -396,7 +396,7 @@ public class ESPContainersDataUtils {
 				if (content != null && checkDuration(c, contentInstance.getId().longValue(), content.getDuration(), resolution))
 					resultList.add(contentInstance);
 				else {
-					log.info("getNormalizedItems - Added null item,  invalid duration: value=" + content.getValue() +  
+					LOG.debug("getNormalizedItems - Added null item,  invalid duration: value=" + content.getValue() +  
 							", startTime=" + contentInstance.getId().longValue() + ", duration=" + content.getDuration());
 					resultList.add(null);
 				}

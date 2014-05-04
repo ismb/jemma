@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695293421
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1399225431993
+Build-Jdk: 1.7.0_45
+Built-By: bluewind
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Gui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.gui;singleton:=true
+Bundle-SymbolicName: jemma.osgi.javagal.gui
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
@@ -18,4 +18,3 @@ Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

@@ -16,8 +16,6 @@
 package org.energy_home.jemma.internal.ah.eh.esp;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
 import org.energy_home.jemma.ah.ebrain.IOnOffListener;
@@ -28,9 +26,11 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.IServiceClusterListener;
 import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClient, IServiceClusterListener, IOnOffProxy {
-	private static final Log log = LogFactory.getLog(OnOffClusterProxy.class);
+	private static final Logger LOG = LoggerFactory.getLogger( OnOffClusterProxy.class );
 	private DeviceProxyList proxyList;
 	private IOnOffListener listener;
 	
@@ -81,10 +81,10 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 				Boolean value = (Boolean)peerAttributeValue.getValue();
 				listener.notifyStatus(applianceId, peerAttributeValue.getTimestamp(), value);
 			} else {
-				log.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
+				LOG.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
 			}			
 		} catch (Exception e) {
-			log.error("notifyAttributeValue error", e);
+			LOG.error("notifyAttributeValue error", e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(OnOffServer.ATTR_OnOff_NAME, params, context);
 		} catch (Exception e) {
-			log.error("subscribeStatus error for appliance " + applianceId, e);
+			LOG.error("subscribeStatus error for appliance " + applianceId, e);
 		}
 	}
 }

@@ -17,8 +17,6 @@ package org.energy_home.jemma.internal.ah.eh.esp;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceStatisticsClient;
@@ -47,7 +45,10 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.NotFoundException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+//FIXME by Riccardo lots of String.format in the whole bundle just for log messages: any reason for this ? If not we should clean up
 public class PowerAndControlClusterProxy extends ServiceClusterProxy implements PowerProfileClient, IPowerAndControlProxy {
 	
 	public class ApplianceControlProxy extends ServiceClusterProxy implements ApplianceControlClient {		
@@ -56,7 +57,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		public void execSignalStateNotification(short ApplianceStatus, short RemoteEnableFlags, int ApplianceStatus2, IEndPointRequestContext context) throws ApplianceException,
 				ServiceClusterException {
 			String applianceId = getApplianceId(context);
-			log.debug(String.format("ApplianceControlClient[%s].execSignalStateNotification(ApplianceStatus=%s, RemoteEnableFlags=%s, ApplianceStatus2=%s)", 
+			LOG.debug(String.format("ApplianceControlClient[%s].execSignalStateNotification(ApplianceStatus=%s, RemoteEnableFlags=%s, ApplianceStatus2=%s)", 
 					applianceId, ApplianceStatus, RemoteEnableFlags, ApplianceStatus2));
 			listener.notifyApplianceState(applianceId, ApplianceStatus, RemoteEnableFlags, ApplianceStatus2);
 		}
@@ -72,7 +73,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 			ApplianceLog applianceLog = new ApplianceLog();
 			applianceLog.setLogId(logID);
 			applianceLog.setLogPayload(logPayload);
-			log.debug(String.format("ApplianceStatisticsClient[%s].execLogNotification(Timestamp=%s, LogID=%s, LogLenght=%s, LogPayload=%s)", 
+			LOG.debug(String.format("ApplianceStatisticsClient[%s].execLogNotification(Timestamp=%s, LogID=%s, LogLenght=%s, LogPayload=%s)", 
 					applianceId, timestamp, logID, logLength, Utils.asHex(logPayload)));	
 			
 			listener.notifyApplianceStatistics(applianceId, convertTimestampFromZigBee(timestamp), applianceLog);	
@@ -81,12 +82,12 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 		public void execStatisticsAvailable(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 			// TODO To be implemented
 			String applianceId = getApplianceId(context);
-			log.debug(String.format("ApplianceStatisticsClient[%s].execStatisticsAvailable()", applianceId));		
+			LOG.debug(String.format("ApplianceStatisticsClient[%s].execStatisticsAvailable()", applianceId));		
 		}
 
 	}
 	
-	private static final Log log = LogFactory.getLog(PowerAndControlClusterProxy.class);
+	private static final Logger LOG = LoggerFactory.getLogger( PowerAndControlClusterProxy.class );
 
 	private static final long ZIGBEE_UTC_DELTA_SECONDS = 946684800;
 	
@@ -162,21 +163,21 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public GetPowerProfilePriceResponse execGetPowerProfilePrice(short powerProfileID, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePrice(PowerProfileID=%s)", applianceId, powerProfileID));				
+		LOG.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePrice(PowerProfileID=%s)", applianceId, powerProfileID));				
 		float cost = listener.calculatePowerProfilePrice(applianceId, powerProfileID, 0); //zero delay
 		GetPowerProfilePriceResponse response =  convertGetPowerProfilePriceResponse(powerProfileID, cost);
-		log.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePrice() returned %s", applianceId, response));
+		LOG.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePrice() returned %s", applianceId, response));
 		return response;
 	}
 	
 	public GetPowerProfilePriceExtendedResponse execGetPowerProfilePriceExtended(short options, short powerProfileID, int powerProfileStartTime,
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePriceExtended(Options=%s, PowerProfileID=%s, PowerProfileStartTime=%s)", 
+		LOG.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePriceExtended(Options=%s, PowerProfileID=%s, PowerProfileStartTime=%s)", 
 				applianceId, options, powerProfileID, powerProfileStartTime));		
 		float cost = listener.calculatePowerProfilePrice(applianceId, powerProfileID, powerProfileStartTime);
 		GetPowerProfilePriceExtendedResponse response = convertGetPowerProfilePriceExtendedResponse(powerProfileID, cost);
-		log.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePriceExtended() returned %s", applianceId, response));
+		LOG.debug(String.format("PowerProfileClient[%s].execGetPowerProfilePriceExtended() returned %s", applianceId, response));
 		return response;
 	}
 
@@ -184,7 +185,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 			PowerProfileTransferredPhase[] powerProfileTransferredPhases, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execPowerProfileNotification(TotalProfileNum=%s, PowerProfileID=%s, PowerProfileTransferredPhases=%s)",
+		LOG.debug(String.format("PowerProfileClient[%s].execPowerProfileNotification(TotalProfileNum=%s, PowerProfileID=%s, PowerProfileTransferredPhases=%s)",
 				applianceId, totalProfileNum, powerProfileID, Arrays.toString(powerProfileTransferredPhases)));
 		PowerProfileInfo ppi = convertPowerProfileInfo(totalProfileNum, powerProfileID, powerProfileTransferredPhases);
 		listener.notifyPowerProfile(applianceId, ppi);
@@ -193,17 +194,17 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public EnergyPhasesScheduleResponse execEnergyPhasesScheduleRequest(short powerProfileID, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleRequest(powerProfileID=%s)", applianceId, powerProfileID));
+		LOG.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleRequest(powerProfileID=%s)", applianceId, powerProfileID));
 		EnergyPhaseScheduleTime[] epst = listener.calculateEnergyPhasesSchedule(applianceId, powerProfileID);
 		EnergyPhasesScheduleResponse response = convertEnergyPhasesScheduleResponse(powerProfileID, epst);
-		log.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleRequest() returned EnergyPhaseScheduleTimes=%s", applianceId, response));
+		LOG.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleRequest() returned EnergyPhaseScheduleTimes=%s", applianceId, response));
 		return response;
 	}
 	
 	public void execEnergyPhasesScheduleStateNotification(short powerProfileID, ScheduledPhase[] scheduledPhases,
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleStateNotification(powerProfileID=%s, scheduledPhases=%s)", 
+		LOG.debug(String.format("PowerProfileClient[%s].execEnergyPhasesScheduleStateNotification(powerProfileID=%s, scheduledPhases=%s)", 
 				applianceId, powerProfileID, Arrays.toString(scheduledPhases)));		
 		EnergyPhaseScheduleTime[] epst = convertEnergyPhaseScheduleTime(scheduledPhases);
 		listener.notifyEnergyPhasesScheduleTime(applianceId, powerProfileID, epst);
@@ -212,7 +213,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public GetOverallSchedulePriceResponse execGetOverallSchedulePrice(IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execGetOverallSchedulePrice()", applianceId));
+		LOG.debug(String.format("PowerProfileClient[%s].execGetOverallSchedulePrice()", applianceId));
 		// TODO To be implemented
 		throw new NotFoundException();
 	}
@@ -220,7 +221,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void execPowerProfileScheduleConstraintsNotification(short powerProfileID, int startAfter, int stopBefore,
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execPowerProfileScheduleConstraintsNotification: PowerProfileID=%s, StartAfter=%s, StopBefore=%s",
+		LOG.debug(String.format("PowerProfileClient[%s].execPowerProfileScheduleConstraintsNotification: PowerProfileID=%s, StartAfter=%s, StopBefore=%s",
 				applianceId, powerProfileID, startAfter, stopBefore));
 		PowerProfileTimeConstraints pptc = convertPowerProfileTimeConstraints(powerProfileID, startAfter, stopBefore);
 		listener.notifyPowerProfileScheduleConstraints(applianceId, pptc);
@@ -230,7 +231,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		// TODO To be implemented (not yet tested with a device)
 		String applianceId = getApplianceId(context);
-		log.debug(String.format("PowerProfileClient[%s].execPowerProfilesStateNotification(PowerProfiles=%s)", applianceId, Arrays.toString(powerProfiles)));
+		LOG.debug(String.format("PowerProfileClient[%s].execPowerProfilesStateNotification(PowerProfiles=%s)", applianceId, Arrays.toString(powerProfiles)));
 		PowerProfileState[] pps = convertPowerProfileState(powerProfiles);
 		listener.notifyAllPowerProfilesState(applianceId, pps);
 	}
@@ -246,12 +247,12 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public short getTotalProfileNum(String applianceId) {
 		short num = -1;
 		try {
-			log.debug(String.format("PowerProfileServer[%s].getTotalProfileNum()", applianceId));
+			LOG.debug(String.format("PowerProfileServer[%s].getTotalProfileNum()", applianceId));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			num = pps.getTotalProfileNum(context);
-			log.debug(String.format("PowerProfileServer[%s].getTotalProfileNum() returned %s", applianceId, num));
+			LOG.debug(String.format("PowerProfileServer[%s].getTotalProfileNum() returned %s", applianceId, num));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -268,12 +269,12 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public float getEnergyFormatting(String applianceId) {
 		float decimalFormatting = -1;
 		try {
-			log.debug(String.format("PowerProfileServer[%s].getEnergyFormatting()", applianceId));
+			LOG.debug(String.format("PowerProfileServer[%s].getEnergyFormatting()", applianceId));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			short zigbeeFormating = pps.getEnergyFormatting(context);
-			log.debug(String.format("PowerProfileServer[%s].getEnergyFormatting() returned %s", applianceId, zigbeeFormating));
+			LOG.debug(String.format("PowerProfileServer[%s].getEnergyFormatting() returned %s", applianceId, zigbeeFormating));
 			decimalFormatting = interpretFormatting(zigbeeFormating);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -303,7 +304,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public void notifyProposedEnergyPhasesSchedule(String applianceId, short powerProfileID, EnergyPhaseScheduleTime[] epst) {
 		ScheduledPhase[] sp = convertScheduledPhases(epst);
 		try {
-			log.debug(String.format("PowerProfileServer[%s].execEnergyPhasesScheduleNotification(powerProfileID=%s, SchedulePhase=%s)", 
+			LOG.debug(String.format("PowerProfileServer[%s].execEnergyPhasesScheduleNotification(powerProfileID=%s, SchedulePhase=%s)", 
 					applianceId, powerProfileID, Arrays.toString(sp)));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
@@ -319,12 +320,12 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public PowerProfileInfo retrievePowerProfile(String applianceId, short powerProfileID) {
 		PowerProfileResponse ppr = null;
 		try {
-			log.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest(PowerProfileID=%s)", applianceId, powerProfileID));
+			LOG.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest(PowerProfileID=%s)", applianceId, powerProfileID));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			ppr = pps.execPowerProfileRequest(powerProfileID, context);
-			log.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest returned PowerProfileResponse=%s", applianceId, ppr));
+			LOG.debug(String.format("PowerProfileServer[%s].execPowerProfileRequest returned PowerProfileResponse=%s", applianceId, ppr));
 			return convertPowerProfileInfo(ppr);	
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -348,12 +349,12 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	public PowerProfileState[] retrieveAllPowerProfilesState(String applianceId) {
 		PowerProfileStateResponse ppsr = null;
 		try {
-			log.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest()", applianceId));
+			LOG.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest()", applianceId));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			PowerProfileServer pps = getRemotePowerProfileCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, false);
 			ppsr = pps.execPowerProfileStateRequest(context);
-			log.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest() returned PowerProfileStateResponse=%s", applianceId, ppsr));
+			LOG.debug(String.format("PowerProfileServer[%s].execPowerProfileStateRequest() returned PowerProfileStateResponse=%s", applianceId, ppsr));
 			return convertPowerProfileState(ppsr);
 			
 		} catch (Exception e) {
@@ -387,7 +388,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	
 	public void executeCommand(String applianceId, short command) {
 		try {
-			log.debug(String.format("ApplianceControlServer[%s].execCommandExecution(%s)", applianceId, command));
+			LOG.debug(String.format("ApplianceControlServer[%s].execCommandExecution(%s)", applianceId, command));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
@@ -399,7 +400,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 
 	public void overloadPause(String applianceId) {
 		try {
-			log.debug(String.format("ApplianceControlServer[%s].execOverloadPause()", applianceId));
+			LOG.debug(String.format("ApplianceControlServer[%s].execOverloadPause()", applianceId));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
@@ -411,7 +412,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 	
 	public void overloadResume(String applianceId) {
 		try {
-			log.debug(String.format("ApplianceControlServer[%s].execOverloadPauseResume()", applianceId));
+			LOG.debug(String.format("ApplianceControlServer[%s].execOverloadPauseResume()", applianceId));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
@@ -423,7 +424,7 @@ public class PowerAndControlClusterProxy extends ServiceClusterProxy implements 
 
 	public void notifyOverloadWarning(String applianceId, short event) {
 		try {
-			log.debug(String.format("ApplianceControlServer[%s].execOverloadWarning(%s)", applianceId, event));
+			LOG.debug(String.format("ApplianceControlServer[%s].execOverloadWarning(%s)", applianceId, event));
 			DeviceProxy deviceProxy = proxy.getDeviceProxy(applianceId);
 			ApplianceControlServer acs = getRemoteApplianceControlCluster(deviceProxy);
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);

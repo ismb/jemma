@@ -17,13 +17,14 @@ package org.energy_home.jemma.osgi.ah.eh.esp;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ESPEventsDispatcher implements IESPEventsDispatcher {
-	private static final Log log = LogFactory.getLog(ESPEventsDispatcher.class);
+	//private static final Log log = LogFactory.getLog(ESPEventsDispatcher.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ESPEventsDispatcher.class );
 	
 	private Object eventAdminSync = new Object();
 	private EventAdmin eventAdmin;
@@ -45,10 +46,10 @@ public class ESPEventsDispatcher implements IESPEventsDispatcher {
 		synchronized (eventAdminSync) {
 			if (this.eventAdmin != null) {
 				try {
-					log.debug("ESP posted event " + topic);
+					LOG.debug("ESP posted event " + topic);
 					this.eventAdmin.postEvent(new Event(topic, props));
 				} catch (Exception e) {
-					log.error(e);
+					LOG.error("Excpetion on postEvent",e);
 				}
 			}
 		}

@@ -32,7 +32,7 @@ import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
  * of a remote appliance and is the object passed to the various logic and algorithms to perform calculations
  * and decide actions.
  */
-
+@Deprecated //FIXME by Riccardo seems like an old version: can we remove it ?
 public class ApplianceInfoOld {
 
 	private class PowerProfileInfo {

@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695277433
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1399225407630
+Build-Jdk: 1.7.0_45
+Built-By: bluewind
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Home Automation Core Service libs
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.hac.lib;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.hac.lib
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 3.1.4
 Created-By: Apache Maven Bundle Plugin
@@ -44,7 +44,6 @@ Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  sgi.framework;version="1.5.0",org.osgi.service.cm;version="1.2.0",org.o
  sgi.service.component;version="1.1.0",org.osgi.service.device;version="
  [1.1,2)",org.osgi.service.event;version="1.2.0",org.osgi.util.tracker;v
- ersion="[1.4,2)",org.slf4j;version="[1.6,2)"
+ ersion="[1.4,2)",org.slf4j;version="[1.7,2)"
 Service-Component: OSGI-INF/application_proxy.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .
