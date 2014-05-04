@@ -56,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ESPApplication extends HttpServlet implements IApplicationService, ESPService, IOnOffListener, IOverloadStatusListener {
-	private static final Logger LOG = LoggerFactory.getLogger( ESPApplication.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPApplication.class );
 	//TODO: check merge, different number in 3.3.0
 	//private static final long PERIODIC_TASK_TIMEOUT = 15000;//30000
 	private static final long PERIODIC_TASK_TIMEOUT = 30000;
@@ -91,7 +91,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 //	}
 
 	private static void mapESPException(String msg, Exception e) throws ESPException {
-		LOG.error("Exception trapped: msg=" +msg,e);
+		//BANANA LOG.error("Exception trapped: msg=" +msg,e);
 		throw new ESPException(msg);
 	}
 	
@@ -166,39 +166,39 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 	
 	public ESPApplication() throws ApplianceException {
-		LOG.trace("ESP constructor called");
+		//BANANA LOG.trace("ESP constructor called");
 	}
 
 	// *** Methods used by component service
 	
 	public void setESPEventsDispatcher(IESPEventsDispatcher espEventsDispatcher) {
 		eventsDispatcherService = espEventsDispatcher;
-		LOG.debug("ESP Events Dispatcher registered");
+		//BANANA LOG.debug("ESP Events Dispatcher registered");
 	}
 	
 	public void unsetESPEventsDispatcher(IESPEventsDispatcher espEventsDispatcher) {
 		eventsDispatcherService = null;
-		LOG.debug("ESP Events Dispatcher registered");
+		//BANANA LOG.debug("ESP Events Dispatcher registered");
 	}
 	
 	public void setHapService(IM2MHapService hapService) {
 		hapObject = new ESPHapServiceObject(hapService);
-		LOG.debug("Hap Service registered");
+		//BANANA LOG.debug("Hap Service registered");
 	}
 
 	public void unsetHapService(IM2MHapService hapService) {
 		hapObject = null;
-		LOG.debug("Hap Service unregistered");
+		//BANANA LOG.debug("Hap Service unregistered");
 	}
 
 	public void setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
-		LOG.debug("Executor Service registered");
+		//BANANA LOG.debug("Executor Service registered");
 	}
 
 	public void unsetExecutorService(ExecutorService executorService) {
 		this.executorService = null;
-		LOG.debug("Executor Service unregistered");
+		//BANANA LOG.debug("Executor Service unregistered");
 	}
 
 	private Boolean started = false;
@@ -206,18 +206,18 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	protected void periodicTask() {
 		try {
 			long startTime = System.currentTimeMillis();
-			LOG.debug(String.format("Periodic task execution -> START %s", startTime));		
+			//BANANA LOG.debug(String.format("Periodic task execution -> START %s", startTime));		
 			energyBrain.periodicTask();
 			notifyOverloadStatusUpdate(currentOverloadStatus);
-			LOG.debug(String.format("Periodic task execution -> END %s", System.currentTimeMillis()));
+			//BANANA LOG.debug(String.format("Periodic task execution -> END %s", System.currentTimeMillis()));
 		} catch (Exception e) {
-			LOG.error("Error during periodic task execution", e);
+			//BANANA LOG.error("Error during periodic task execution", e);
 		}
 	}
 	
 	protected void start() {
 		synchronized (started) {
-			LOG.debug("ESP startup method invoked");
+			//BANANA LOG.debug("ESP startup method invoked");
 			try {
 				// Configuration initialization
 				ESPConfiguration.loadProperties();
@@ -232,9 +232,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				try {
 					energyBrain.setDailyTariff(TwoTierDailyTariff.class);
 				} catch (InstantiationException e) {
-					LOG.error("An instantiation error occurred while initializing energy brain daily tariff", e);
+					//BANANA LOG.error("An instantiation error occurred while initializing energy brain daily tariff", e);
 				} catch (IllegalAccessException e) {
-					LOG.error("An illegal access error occurred while initializing energy brain daily tariff", e);
+					//BANANA LOG.error("An illegal access error occurred while initializing energy brain daily tariff", e);
 				}
 				if (configParameters != null) {
 					energyBrain.setPowerThresholds(new PowerThresholds(configParameters.getContractualPowerThreshold()));			
@@ -254,7 +254,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				try {
 					whiteGoodProxy = new PowerAndControlClusterProxy(deviceProxyList, energyBrain);
 				} catch (Exception e) {
-					LOG.error("Some probelm occurred while creating power and control cluster proxy", e);
+					//BANANA LOG.error("Some probelm occurred while creating power and control cluster proxy", e);
 				}
 				energyBrain.setPowerProfileProxy(whiteGoodProxy);
 				meteringProxy = new MeteringClusterProxy(deviceProxyList, energyBrain);
@@ -288,14 +288,14 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 						try {
 							periodicTask();	
 						} catch (Exception e) {
-							LOG.error("ESP periodic task error", e);
+							//BANANA LOG.error("ESP periodic task error", e);
 						}
 					}
 				}, PERIODIC_TASK_TIMEOUT, PERIODIC_TASK_TIMEOUT);
 			} catch (Exception e) {
-				LOG.error("Some problem occurred during startup", e);
+				//BANANA LOG.error("Some problem occurred during startup", e);
 			}
-			LOG.debug("ESP startup method exited");
+			//BANANA LOG.debug("ESP startup method exited");
 			started = true;
 		}
 	}
@@ -305,7 +305,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			started = false;
 			deviceProxyList.clear();
 			energyBrain.setCloudServiceProxy(null);
-			LOG.debug("ESP shutdown method invoked");
+			//BANANA LOG.debug("ESP shutdown method invoked");
 		}
 	}
 	
@@ -320,7 +320,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WHITE_GOODS))
 			deviceType = DeviceType.WhiteGood;
 		else {
-			LOG.warn("ESP unmanaged appliance type " + epType);
+			//BANANA LOG.warn("ESP unmanaged appliance type " + epType);
 			return null;
 		}
 		return deviceType;
@@ -350,7 +350,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				break;
 			}
 		} catch (Exception e) {
-			LOG.error("notifyStatusUpdate exception", e);
+			//BANANA LOG.error("notifyStatusUpdate exception", e);
 		}
 	}
 	
@@ -365,11 +365,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			if (appliance.isSingleton())
 				return;
 			String appliancePid = appliance.getPid();
-			LOG.debug("notifyApplianceAdded " + appliancePid);
+			//BANANA LOG.debug("notifyApplianceAdded " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			IEndPoint ep = null;
 			if (eps.length <= 1) {
-				LOG.warn("notifyApplianceAdded error: invalid end point list");
+				//BANANA LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
 			for (int i = 1; i < eps.length; i++) {
@@ -401,7 +401,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				}
 			}
 		} catch (Exception e) {
-			LOG.error("notifyApplianceAdded error", e);
+			//BANANA LOG.error("notifyApplianceAdded error", e);
 		}	
 	}
 
@@ -410,10 +410,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			if (appliance.isSingleton())
 				return;
 			String appliancePid = appliance.getPid();
-			LOG.debug("notifyApplianceRemoved " + appliancePid);
+			//BANANA LOG.debug("notifyApplianceRemoved " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			if (eps.length <= 1) {
-				LOG.warn("notifyApplianceAdded error: invalid end point list");
+				//BANANA LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
 			for (int i = 1; i < eps.length; i++) {
@@ -426,12 +426,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 					energyBrain.notifyDeviceRemoved(applianceProxy.getDeviceInfo());
 					hapObject.applianceDisconnected(applianceId);				
 				} catch (Exception e) {
-					LOG.error("Exception on notifyApplianceRemoved", e);
+					//BANANA LOG.error("Exception on notifyApplianceRemoved", e);
 				}
 				deviceProxyList.removeDeviceProxy(applianceId);
 			}
 		} catch (Exception e) {
-			LOG.error("notifyApplianceRemoved error", e);
+			//BANANA LOG.error("notifyApplianceRemoved error", e);
 		}
 	}
 
@@ -440,10 +440,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			if (appliance.isSingleton())
 				return;
 			String appliancePid = appliance.getPid();
-			LOG.debug("notifyApplianceAvailabilityUpdated " + appliancePid);
+			//BANANA LOG.debug("notifyApplianceAvailabilityUpdated " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			if (eps.length <= 1) {
-				LOG.warn("notifyApplianceAdded error: invalid end point list");
+				//BANANA LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
 			for (int i = 1; i < eps.length; i++) {
@@ -459,28 +459,28 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				hapObject.applianceAvailabilityUpdated(applianceId, ep.isAvailable());	
 			}
 		} catch (Exception e) {
-			LOG.error("notifyApplianceAvailabilityUpdated error", e);
+			//BANANA LOG.error("notifyApplianceAvailabilityUpdated error", e);
 		}
 	}
 
 	// *** ESP service interface
 
 	public Long getInitialConfigurationTime() {
-		LOG.debug("ESPService - getInitialConfigurationTime()");
+		//BANANA LOG.debug("ESPService - getInitialConfigurationTime()");
 		Long initialTime = ESPConfiguration.getInitialConfigurationTime();
-		LOG.debug("ESPService - getCurrentConfiguration returned " + initialTime);
+		//BANANA LOG.debug("ESPService - getCurrentConfiguration returned " + initialTime);
 		return initialTime;
 	}
 
 	public ESPConfigParameters getCurrentConfiguration() {
-		LOG.debug("ESPService - getCurrentConfiguration()");
+		//BANANA LOG.debug("ESPService - getCurrentConfiguration()");
 		ESPConfigParameters config = ESPConfiguration.getConfigParameters();
-		LOG.debug("ESPService - getCurrentConfiguration returned " + config);
+		//BANANA LOG.debug("ESPService - getCurrentConfiguration returned " + config);
 		return config;
 	}
 
 	public void setConfiguration(ESPConfigParameters config) throws ESPException {
-		LOG.debug("ESPService - setConfiguration (config=" + config + ")");
+		//BANANA LOG.debug("ESPService - setConfiguration (config=" + config + ")");
 		ESPConfiguration.setConfigParameters(config);
 		if (config != null) {
 			energyBrain.setPowerThresholds(new PowerThresholds(config.getContractualPowerThreshold()));
@@ -489,15 +489,15 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			energyBrain.setPowerThresholds(new PowerThresholds(ESPConfigParameters.DEFAULT_CONTRACTUAL_POWER_THRESHOLD));
 			energyBrain.setPeakProducedPower(ESPConfigParameters.DEFAULT_PEAK_PRODUCED_POWER);
 		}
-		LOG.debug("ESPService - setConfiguration returned");
+		//BANANA LOG.debug("ESPService - setConfiguration returned");
 	}
 
 	public void sendGuiLog(String msg) throws ESPException {
 		try {
 			long timestamp = System.currentTimeMillis();
-			LOG.debug("ESPService - sendGuiLog (msg=" + msg + ", timestamp=" + timestamp + ")");
+			//BANANA LOG.debug("ESPService - sendGuiLog (msg=" + msg + ", timestamp=" + timestamp + ")");
 			hapObject.storeGuiLog(timestamp, msg);
-			LOG.debug("ESPService - sendGuiLog returned");
+			//BANANA LOG.debug("ESPService - sendGuiLog returned");
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while storing log message", e);
 		}
@@ -505,37 +505,37 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	public float getTotalInstantaneousPowerFloatValue() throws ESPException {
 		// Calculates Max(last smart info value, sum of last smart plugs values)
-		// log.info("ESPService - getTotalInstantaneousPowerFloatValue()");
+		// //BANANA LOG.info("ESPService - getTotalInstantaneousPowerFloatValue()");
 		float result = energyBrain.getTotalIstantaneousDemandPower();
-		// log.info("ESPService - getTotalInstantaneousPowerFloatValue returned: "
+		// //BANANA LOG.info("ESPService - getTotalInstantaneousPowerFloatValue returned: "
 		// + result);
 		return result;
 	}
 
 	public float getInstantaneousProducedPowerFloatValue() throws ESPException {
-		// log.info("ESPService - getInstantaneousProducedPowerFloatValue();
+		// //BANANA LOG.info("ESPService - getInstantaneousProducedPowerFloatValue();
 		float result = energyBrain.getIstantaneousProducedPower();
-		// log.info("ESPService - getInstantaneousProducedPowerFloatValue() returned: "
+		// //BANANA LOG.info("ESPService - getInstantaneousProducedPowerFloatValue() returned: "
 		// + result);
 		return result;	
 	}
 
 	public float getInstantaneousSoldPowerFloatValue() throws ESPException {
-		// log.info("ESPService - getInstantaneousSoldPowerFloatValue()");
+		// //BANANA LOG.info("ESPService - getInstantaneousSoldPowerFloatValue()");
 		float result = energyBrain.getIstantaneousSoldPower();
-		// log.info("ESPService - getInstantaneousSoldPowerFloatValue() returned: "
+		// //BANANA LOG.info("ESPService - getInstantaneousSoldPowerFloatValue() returned: "
 		// + result);
 		return result;
 	}
 
 	public float getInstantaneousPowerFloatValue(String applianceId) throws ESPException {
 		try {
-			// log.info("ESPService - getInstantaneousPowerFloatValue(pid=" +
+			// //BANANA LOG.info("ESPService - getInstantaneousPowerFloatValue(pid=" +
 			// applianceId + ")");
 			float result;
 			String safeApplianceId = getSafeApplianceId(applianceId);
 			result = energyBrain.getIstantaneousDemandPower(safeApplianceId);
-			// log.info("ESPService - getInstantaneousPowerFloatValue returned: "
+			// //BANANA LOG.info("ESPService - getInstantaneousPowerFloatValue returned: "
 			// + result);
 			return result;
 		} catch (Exception e) {
@@ -545,12 +545,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 	
 	public List<Float> getEnergyConsumption(String applianceId, long startTime, long endTime, int resolution) throws ESPException {
-		LOG.debug("ESPService - getEnergyConsumption(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime
-				+ ", resolution=" + resolution + ")");
+		//BANANA LOG.debug("ESPService - getEnergyConsumption(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime				+ ", resolution=" + resolution + ")");
 		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
 			List<Float> result = hapObject.getEnergyConsumption(safeApplianceId, startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyConsumption returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - getEnergyConsumption failed while getting data from hap service", e);
@@ -559,16 +558,15 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 	
 	public List<Float> getProducedEnergy(long startTime, long endTime, int resolution) throws ESPException {
-		LOG.debug("ESPService - getGeneratedEnergy(startTime=" + startTime + ", endTime=" + endTime
-				+ ", resolution=" + resolution + ")");
+		//BANANA LOG.debug("ESPService - getGeneratedEnergy(startTime=" + startTime + ", endTime=" + endTime				+ ", resolution=" + resolution + ")");
 		String applianceId = energyBrain.getSmartInfoProductionId();
 		if (applianceId == null) {
-			LOG.warn("ESPService - getEnergyConsumption called with no production smart info configured");
+			//BANANA LOG.warn("ESPService - getEnergyConsumption called with no production smart info configured");
 			return null;
 		}
 		try {
 			List<Float> result = hapObject.getReceivedEnergy(applianceId, startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyConsumption returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - getGeneratedEnergy failed while getting data from hap service", e);
@@ -577,16 +575,15 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 
 	public List<Float> getSoldEnergy(long startTime, long endTime, int resolution) throws ESPException {
-		LOG.debug("ESPService - getSoldEnergy(startTime=" + startTime + ", endTime=" + endTime
-				+ ", resolution=" + resolution + ")");
+		//BANANA LOG.debug("ESPService - getSoldEnergy(startTime=" + startTime + ", endTime=" + endTime				+ ", resolution=" + resolution + ")");
 		String applianceId = energyBrain.getSmartInfoExchangeId();
 		if (applianceId == null) {
-			LOG.warn("ESPService - getEnergyConsumption called with no exchange smart info configured");
+			//BANANA LOG.warn("ESPService - getEnergyConsumption called with no exchange smart info configured");
 			return null;
 		}
 		try {
 			List<Float> result = hapObject.getReceivedEnergy(applianceId, startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyConsumption returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - getGeneratedEnergy failed while getting data from hap service", e);
@@ -596,10 +593,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	public Map<String, List<Float>> getEnergyConsumption(long startTime, long endTime, int resolution) throws ESPException {
 		try {
-			LOG.debug("ESPService - getEnergyConsumption(startTime=" + startTime + ", endTime=" + endTime + ", resolution="
-					+ resolution + ")");
+			//BANANA LOG.debug("ESPService - getEnergyConsumption(startTime=" + startTime + ", endTime=" + endTime + ", resolution="					+ resolution + ")");
 			Map<String, List<Float>> result = hapObject.getEnergyConsumption(startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyConsumption returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyConsumption returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -608,12 +604,11 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	}
 
 	public List<Float> getEnergyCost(String applianceId, long startTime, long endTime, int resolution) throws ESPException {
-		LOG.debug("ESPService - getEnergyCost(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime
-				+ ", resolution=" + resolution + ")");
+		//BANANA LOG.debug("ESPService - getEnergyCost(pid=" + applianceId + ", startTime=" + startTime + ", endTime=" + endTime				+ ", resolution=" + resolution + ")");
 		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
 			List<Float> result = hapObject.getEnergyCost(safeApplianceId, startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyCost hap service returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyCost hap service returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - getEnergyCost failed while getting data from hap service", e);
@@ -623,10 +618,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	public Map<String, List<Float>> getEnergyCost(long startTime, long endTime, int resolution) throws ESPException {
 		try {
-			LOG.debug("ESPService - getEnergyCost(startTime=" + startTime + ", endTime=" + endTime + ", resolution=" + resolution
-					+ ")");
+			//BANANA LOG.debug("ESPService - getEnergyCost(startTime=" + startTime + ", endTime=" + endTime + ", resolution=" + resolution					+ ")");
 			Map<String, List<Float>> result = hapObject.getEnergyCost(startTime, endTime, resolution);
-			LOG.debug("ESPService - getEnergyCost returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyCost returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -637,9 +631,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public Float getEnergyConsumptionForecast(String applianceId, int resolution) throws ESPException {
 		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			LOG.debug("ESPService - getEnergyConsumptionForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
+			//BANANA LOG.debug("ESPService - getEnergyConsumptionForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
 			Float result = hapObject.getEnergyConsumptionForecast(safeApplianceId, resolution);
-			LOG.debug("ESPService - getEnergyConsumptionForecast returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyConsumptionForecast returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -650,9 +644,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public Float getEnergyCostForecast(String applianceId, int resolution) throws ESPException {
 		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			LOG.debug("ESPService - getEnergyCostForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
+			//BANANA LOG.debug("ESPService - getEnergyCostForecast(pid=" + applianceId + ", resolution=" + resolution + ")");
 			Float result = hapObject.getEnergyCostForecast(safeApplianceId, resolution);
-			LOG.debug("ESPService - getEnergyCostForecast returned: " + result);
+			//BANANA LOG.debug("ESPService - getEnergyCostForecast returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -663,9 +657,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public List<Float> getWeekDayEnergyConsumpionAverage(String applianceApplianceId, int weekDay) throws ESPException {
 		String safeApplianceId = getSafeApplianceId(applianceApplianceId);
 		try {
-			LOG.debug("ESPService - getWeekDayEnergyConsumpionAverage(pid=" + applianceApplianceId + ", weekDay=" + weekDay + ")");
+			//BANANA LOG.debug("ESPService - getWeekDayEnergyConsumpionAverage(pid=" + applianceApplianceId + ", weekDay=" + weekDay + ")");
 			List<Float> result = hapObject.getWeekDayEnergyConsumpionAverage(safeApplianceId, weekDay);
-			LOG.debug("ESPService - getWeekDayEnergyConsumpionAverage returned: " + result);
+			//BANANA LOG.debug("ESPService - getWeekDayEnergyConsumpionAverage returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -676,9 +670,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	public List<Float> getWeekDayEnergyCostAverage(String applianceId, int weekDay) throws ESPException {
 		String safeApplianceId = getSafeApplianceId(applianceId);
 		try {
-			LOG.debug("ESPService - getWeekDayEnergyCostAverage(pid=" + applianceId + ", weekDay=" + weekDay + ")");
+			//BANANA LOG.debug("ESPService - getWeekDayEnergyCostAverage(pid=" + applianceId + ", weekDay=" + weekDay + ")");
 			List<Float> result = hapObject.getWeekDayEnergyCostAverage(safeApplianceId, weekDay);
-			LOG.debug("ESPService - getWeekDayEnergyCostAverage returned: " + result);
+			//BANANA LOG.debug("ESPService - getWeekDayEnergyCostAverage returned: " + result);
 			return result;
 		} catch (Exception e) {
 			mapESPException("ESPService - Problem while getting energy consumption data from hap service", e);
@@ -689,10 +683,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	
 	public void notifyStatus(String applianceId, long time, Boolean status) {
 		try {
-			LOG.debug("Received onoff status " + status + " from " + applianceId);
+			//BANANA LOG.debug("Received onoff status " + status + " from " + applianceId);
 //			hapObject.storeOnOffStatus(applianceId, time, status.booleanValue());
 		} catch (Exception e) {
-			LOG.error("Error while storing onoff status on HAP platform", e);
+			//BANANA LOG.error("Error while storing onoff status on HAP platform", e);
 		}		
 	}
 

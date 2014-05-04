@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SwarmStatistics {
-	private static final Logger LOG = LoggerFactory.getLogger( SwarmStatistics.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( SwarmStatistics.class );
 	
 	List<float[]> overloads = new ArrayList<float[]>();
 	List<float[]> costs = new ArrayList<float[]>();
@@ -89,7 +89,7 @@ public class SwarmStatistics {
 			if (overs[i] < leastOverload) {
 				leastOverload = overs[i];
 				lastImprovingOverload = overloads.size();
-				LOG.debug(String.format("(%d) overload: %12.9f", lastImprovingOverload, leastOverload));
+				//BANANA LOG.debug(String.format("(%d) overload: %12.9f", lastImprovingOverload, leastOverload));
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public class SwarmStatistics {
 			if (cos[i] < leastEnergyCost) {
 				leastEnergyCost = cos[i];
 				lastImprovingCost = costs.size();
-				LOG.debug(String.format("(%d) cost: %12.9f", lastImprovingCost, leastEnergyCost));
+				//BANANA LOG.debug(String.format("(%d) cost: %12.9f", lastImprovingCost, leastEnergyCost));
 			}
 		}
 	}
@@ -111,7 +111,7 @@ public class SwarmStatistics {
 			if (tars[i] < leastTardiness) {
 				leastTardiness = tars[i];
 				lastImprovedTardiness = tardiness.size();
-				LOG.debug(String.format("(%d) tardiness: %12.9f", lastImprovedTardiness, leastTardiness));
+				//BANANA LOG.debug(String.format("(%d) tardiness: %12.9f", lastImprovedTardiness, leastTardiness));
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class SwarmStatistics {
 			if (pens[i] < leastPenalty) {
 				leastPenalty = pens[i];
 				lastImprovedPenalty = penalties.size();
-				LOG.debug(String.format("(%d) penalty: %16.12f", lastImprovedPenalty, leastPenalty));
+				//BANANA LOG.debug(String.format("(%d) penalty: %16.12f", lastImprovedPenalty, leastPenalty));
 			}
 		}
 	}

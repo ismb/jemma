@@ -50,7 +50,7 @@ public class EnergyBrainOld {
 		return Math.round(value * Math.pow(10, decimals));
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger( EnergyBrainOld.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( EnergyBrainOld.class );
 
 	private static EnergyBrainOld instance;
 	static {instance = new EnergyBrainOld();}
@@ -137,7 +137,7 @@ public class EnergyBrainOld {
 		Calendar scheduledTime = Calendar.getInstance();
 		if (delay > 0) scheduledTime.add(Calendar.MINUTE, delay);
 		
-		LOG.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
+		//BANANA LOG.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
 		
 		int maxPeakPower = 0;
 		float cost = 0;
@@ -146,12 +146,12 @@ public class EnergyBrainOld {
 			// TODO check correct position of the decimal in energy to cast from long to double
 			long millisecs = phases[i].ExpectedDuration * 60 * 1000;
 			EnergyCostInfo eci = dailyTariff.computeMinMaxCosts(scheduledTime, millisecs, (double)phases[i].Energy);
-			//log.debug(eci);
+			////BANANA LOG.debug(eci);
 			cost += eci.getCost();
 			scheduledTime.add(Calendar.MINUTE, phases[i].ExpectedDuration);
 		}
 		
-		LOG.debug("cost " + cost);
+		//BANANA LOG.debug("cost " + cost);
 
 		long price = Math.round(cost * Math.pow(10, tariffTrailingDigits));
 		

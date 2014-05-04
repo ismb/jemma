@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClient, IServiceClusterListener, IOnOffProxy {
-	private static final Logger LOG = LoggerFactory.getLogger( OnOffClusterProxy.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( OnOffClusterProxy.class );
 	private DeviceProxyList proxyList;
 	private IOnOffListener listener;
 	
@@ -81,10 +81,10 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 				Boolean value = (Boolean)peerAttributeValue.getValue();
 				listener.notifyStatus(applianceId, peerAttributeValue.getTimestamp(), value);
 			} else {
-				LOG.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
+				//BANANA LOG.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
 			}			
 		} catch (Exception e) {
-			LOG.error("notifyAttributeValue error", e);
+			//BANANA LOG.error("notifyAttributeValue error", e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(OnOffServer.ATTR_OnOff_NAME, params, context);
 		} catch (Exception e) {
-			LOG.error("subscribeStatus error for appliance " + applianceId, e);
+			//BANANA LOG.error("subscribeStatus error for appliance " + applianceId, e);
 		}
 	}
 }

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class ApplianceInfo {
-	private static final Logger LOG = LoggerFactory.getLogger( ApplianceInfo.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ApplianceInfo.class );
 
 	public static final int MILLISECONDS_IN_MINUTE = 60 * 1000;
 	public static final int MILLISECONDS_IN_HOUR = MILLISECONDS_IN_MINUTE * 60;
@@ -229,15 +229,15 @@ public class ApplianceInfo {
 		EnergyCostInfo eci = null;
 		if (newTime < lastNotificationTime) {
 			//FIXME by Riccardo: do we have any special reason for all these String.format calls inside debug messages in this class ?? if not, we should use normal logging messages to avoid function calls - leaving as it is right now
-			//LOG.error(String.format("updateEnergyCost %s: received new time value %d before last valid time value %d, returning null", applianceId, newTime, lastNotificationTime));
-			LOG.warn("updateEnergyCost "+applianceId+": received new time value "+newTime+" before last valid time value "+lastNotificationTime+", returning null");
+			////BANANA LOG.error(String.format("updateEnergyCost %s: received new time value %d before last valid time value %d, returning null", applianceId, newTime, lastNotificationTime));
+			//BANANA LOG.warn("updateEnergyCost "+applianceId+": received new time value "+newTime+" before last valid time value "+lastNotificationTime+", returning null");
 			return eci;
 		}
 		
 		lastNotificationTime = newTime;
 		
 		if (newEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			LOG.debug(String.format("updateEnergyCost %s: received INVALID_ENERGY_VALUE, returning null", applianceId));
+			//BANANA LOG.debug(String.format("updateEnergyCost %s: received INVALID_ENERGY_VALUE, returning null", applianceId));
 			return eci;
 		}
 		
@@ -245,7 +245,7 @@ public class ApplianceInfo {
 			long elapsedTime = newTime - lastValidEnergyTime;
 			if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
 				if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-					LOG.debug(String.format("updateEnergyCost %s: elapsed time < 1 minute, returning null", applianceId));
+					//BANANA LOG.debug(String.format("updateEnergyCost %s: elapsed time < 1 minute, returning null", applianceId));
 					return eci;
 				}			
 				
@@ -255,10 +255,10 @@ public class ApplianceInfo {
 					calendar.setTimeInMillis(lastValidEnergyTime);
 					DailyTariff dt = DailyTariff.getInstance();
 					eci = dt.computeMinMaxCosts(calendar, elapsedTime, energyDelta);
-					LOG.debug(String.format("updateEnergyCost %s: energy cost computed", applianceId));
+					//BANANA LOG.debug(String.format("updateEnergyCost %s: energy cost computed", applianceId));
 				} else {
 					if (energyDelta < 0) {
-						LOG.warn(String.format("updateEnergyCost %s: invalid energy delta: %s", applianceId, energyDelta));
+						//BANANA LOG.warn(String.format("updateEnergyCost %s: invalid energy delta: %s", applianceId, energyDelta));
 						}
 					energyDelta = 0; // safety net in case it's negative
 					eci = new EnergyCostInfo();
@@ -268,12 +268,12 @@ public class ApplianceInfo {
 				accumulatedEnergyCost.addValues(eci);
 			
 			} else {
-				LOG.warn(String.format("updateEnergyCost %s: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", applianceId, newTime, elapsedTime));
+				//BANANA LOG.warn(String.format("updateEnergyCost %s: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", applianceId, newTime, elapsedTime));
 				accumulatedEnergyCost.reset(newTime);
 			}
 			
 		} catch (Exception e) {
-			LOG.error(String.format("updateEnergyCost for appliance %s exception", applianceId), e);
+			//BANANA LOG.error(String.format("updateEnergyCost for appliance %s exception", applianceId), e);
 		}
 
 		lastTotalEnergy = newEnergy;

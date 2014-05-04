@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleMeteringClient, IServiceClusterListener, IMeteringProxy {
-	private static final Logger LOG = LoggerFactory.getLogger( MeteringClusterProxy.class );
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( MeteringClusterProxy.class );
 
 	// general zigbee rules to convert fixed decimals in floating decimals
 	// NOTE: also converts from KW/H to W/H
@@ -68,10 +68,10 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 				double value = ((Long)attributeValue.getValue()).doubleValue();
 				listener.notifyCurrentSummationReceived(applianceId, attributeValue.getTimestamp(), value);
 			} else {
-				LOG.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
+				//BANANA LOG.warn("notifyAttributeValue - Received value for unmanaged attribute (" + attributeName + ") - " + applianceId);
 			}			
 		} catch (Exception e) {
-			LOG.error("notifyAttributeValue error", e);
+			//BANANA LOG.error("notifyAttributeValue error", e);
 		}
 	}
 	
@@ -178,7 +178,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, params, context);
 		} catch (Exception e) {
-			LOG.error("subscribeIstantaneousDemand error for appliance " + applianceId, e);
+			//BANANA LOG.error("subscribeIstantaneousDemand error for appliance " + applianceId, e);
 		}
 	}
 	
@@ -191,7 +191,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationDelivered_NAME, params, context);
 		} catch (Exception e) {
-			LOG.error("subscribeCurrentSummationDelivered error for appliance " + applianceId, e);
+			//BANANA LOG.error("subscribeCurrentSummationDelivered error for appliance " + applianceId, e);
 		}
 	}	
 	
@@ -204,7 +204,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			serviceCluster.setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME, params, context);
 		} catch (Exception e) {
-			LOG.error("subscribeCurrentSummationReceived error for appliance " + applianceId, e);
+			//BANANA LOG.error("subscribeCurrentSummationReceived error for appliance " + applianceId, e);
 		}
 	}
 
