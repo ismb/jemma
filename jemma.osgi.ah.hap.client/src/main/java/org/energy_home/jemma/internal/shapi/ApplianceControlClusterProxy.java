@@ -179,7 +179,7 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 					return new Long(time);
 				}
 			} catch (Exception e) {
-				log.error("Error while notifying time attribute for appliance " + appliancePid + ", endPoint " + endPointId, e);
+				LOG.error("Error while notifying time attribute for appliance " + appliancePid + ", endPoint " + endPointId, e);
 			}
 		} 
 		return value;
@@ -221,7 +221,7 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 								isRemoteControlEnabled(stateResponse.RemoteEnableFlags), true);
 					}
 				} catch (Exception e) {
-					log.error("Error while reading last notified appliance control attribute values for appliance " + appliance.getPid());
+					LOG.error("Error while reading last notified appliance control attribute values for appliance " + appliance.getPid(),e);
 				}				
 			}
 		}	
@@ -246,7 +246,7 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 								isRemoteControlEnabled(stateResponse.RemoteEnableFlags), true);
 					}
 				} catch (Exception e) {
-					log.error("Error while retrieving appliance status for appliance" + appliance.getPid());
+					LOG.error("Error while retrieving appliance status for appliance" + appliance.getPid(),e);
 				}
 		}
 	}
@@ -369,7 +369,7 @@ public class ApplianceControlClusterProxy extends ServiceClusterProxy implements
 			sendAttributeValue(appliancePid, endPointId, AHContainers.attrId_ah_cluster_applctrl_remoteControlEnabled, System.currentTimeMillis(), 
 					isRemoteControlEnabled(RemoteEnableFlags), true);
 		} catch (Exception e) {
-			log.error("Error while receiving signal state notification appliance status for appliance " + appliancePid + ", endPoint " + endPointId, e);
+			LOG.error("Error while receiving signal state notification appliance status for appliance " + appliancePid + ", endPoint " + endPointId, e);
 		}	
 	}
 

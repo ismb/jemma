@@ -6,7 +6,7 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Hac Http Service Manager
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Bundle-SymbolicName: jemma.osgi.ah.adapter.http
+Bundle-SymbolicName: jemma.osgi.ah.adapter.http;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.0.2
 Created-By: Apache Maven Bundle Plugin
@@ -29,3 +29,4 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  org.osgi.service.http;version="[1.2,2)",org.osgi.service.useradmin;vers
  ion="1.1.0",org.slf4j;version="[1.7,2)"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

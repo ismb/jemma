@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399226920645
+Bnd-LastModified: 1399233410403
 Build-Jdk: 1.7.0_45
 Built-By: bluewind
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.rest
+Bundle-SymbolicName: jemma.osgi.javagal.rest;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
@@ -32,3 +32,6 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  on,org.restlet.resource,org.restlet.routing,org.restlet.util,org.slf4j;
  version="[1.7,2)"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ org.osgi.core-4.0.0.jar,
+ JAXBNamespacePrefixMapper-2.2.4.jar

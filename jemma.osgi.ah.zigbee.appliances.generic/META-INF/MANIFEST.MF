@@ -8,7 +8,7 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: ZigBee Generic Appliances
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.zigbee.appliances.generic
+Bundle-SymbolicName: jemma.osgi.ah.zigbee.appliances.generic;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.2
 Created-By: Apache Maven Bundle Plugin
@@ -22,3 +22,5 @@ Import-Package: org.apache.commons.logging;version="1.0.4",org.energy_ho
  1.1.0"
 Require-Bundle: jemma.osgi.ah.hac.lib
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ easymock-2.4.jar

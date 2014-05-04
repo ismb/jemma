@@ -21,8 +21,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
@@ -41,9 +39,12 @@ import org.energy_home.jemma.utils.xml.jaxb.DateTimeConverter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HapCoreService extends M2MHapServiceObject implements BundleActivator, CommandProvider, IHapCoreService, M2MHapServiceListener {
-	private static final Log log = LogFactory.getLog(HapCoreService.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( HapCoreService.class );
 	
 	private static long REAL_START_TIME = System.currentTimeMillis();
 	private static long EMULATED_START_TIME = 0;
@@ -201,7 +202,7 @@ public class HapCoreService extends M2MHapServiceObject implements BundleActivat
 	}
 	
 	public synchronized void serviceReset() {
-		log.info("Hap service reset");
+		LOG.debug("Hap service reset");
 		if (hapBasicServiceRegistration != null) {
 			hapBasicServiceRegistration.unregister();
 		}
@@ -209,11 +210,11 @@ public class HapCoreService extends M2MHapServiceObject implements BundleActivat
 	}
 
 	public void hagConnected() {
-		log.info("Hag connected");
+		LOG.debug("Hag connected");
 	}
 
 	public void hagDisconnected() {
-		log.info("Hag disconnected");
+		LOG.debug("Hag disconnected");
 	}	
 	
 	public void _hap(CommandInterpreter ci) {
