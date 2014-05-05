@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399038942112
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1399302203359
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.ah.zigbee.appliances.Activator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: ZigBee Appliances
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.zigbee.appliances;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.zigbee.appliances
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.2
 Created-By: Apache Maven Bundle Plugin
@@ -29,5 +29,3 @@ Import-Package: org.apache.commons.logging;version="1.0.4",org.energy_ho
  j;version="[1.6,2)"
 Require-Bundle: jemma.osgi.ah.hac.lib
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- easymock-2.4.jar
