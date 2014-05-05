@@ -16,6 +16,8 @@
 package org.energy_home.jemma.zgd;
 
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
 
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;

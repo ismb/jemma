@@ -29,6 +29,7 @@ import java.util.TooManyListenersException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
@@ -43,6 +44,7 @@ import org.energy_home.jemma.zgd.jaxb.Status;
  * 
  */
 public class SerialCommRxTx implements IConnector {
+	private boolean skypMessage = false;
 	private boolean connected = false;
 	private SerialPort serialPort;
 	private final static Log logger = LogFactory.getLog(SerialCommRxTx.class);
@@ -96,39 +98,26 @@ public class SerialCommRxTx implements IConnector {
 
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
-					/*Freescale code*/
+					/* Freescale code */
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.setRTS(true);
 					serialPort.setDTR(true);
-					serialPort.enableReceiveTimeout(1000);
+					serialPort.enableReceiveTimeout(9000);
 					in = serialPort.getInputStream();
 					serialReader = new SerialReader(in, this);
+					serialPort.notifyOnDataAvailable(true);
 					try {
 						serialPort.addEventListener(serialReader);
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							logger.info("Added SerialPort event listener");
 					} catch (TooManyListenersException e) {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
 					}
-					serialPort.notifyOnDataAvailable(true);
+
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						logger.info("Connection on " + portName + " established");
-					
-					/*
-					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-					in = serialPort.getInputStream();
-					serialReader = new SerialReader(in, this);
-					try {
-						serialPort.addEventListener(serialReader);
-					} catch (TooManyListenersException e) {
-						disconnect();
-						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
-					}
-					serialPort.notifyOnDataAvailable(true);
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						logger.info("Connection on " + portName + " established");
-					*/
 					return true;
 				} else {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
@@ -223,6 +212,7 @@ public class SerialCommRxTx implements IConnector {
 
 		@Override
 		public void serialEvent(SerialPortEvent event) {
+
 			try {
 				switch (event.getEventType()) {
 				case SerialPortEvent.BI:
@@ -243,8 +233,10 @@ public class SerialCommRxTx implements IConnector {
 							data = in.read();
 							buffer[pos++] = (byte) data;
 						}
-						ByteArrayObject frame = new ByteArrayObject(buffer, pos);
-						_caller.getDataLayer().notifyFrame(frame);
+						if (!skypMessage) {
+							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
+							_caller.getDataLayer().notifyFrame(frame);
+						}
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
 							logger.error("Error on data received:" + e.getMessage());
@@ -264,30 +256,46 @@ public class SerialCommRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
-		synchronized (this) {
-			connected = true;
-		}
+		
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Starting inizialize procedure for: PortName=" + commport + "Speed=" + boudrate);
+			logger.info("Starting inizialize procedure for: PortName=" + commport + "Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
-		DataLayer.cpuReset();
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Waiting 2,5 seconds after command CPUReset...");
-		Thread.sleep(2500);
-		synchronized (this) {
-			connected = true;
+		else
+		{
+			synchronized (this) {
+				connected = true;
+			}
 		}
+		synchronized (this) {
+			skypMessage = true;
+		}
+		
+		
+		DataLayer.cpuReset();
+		
+		if (DataLayer.getPropertiesManager().getDebugEnabled())
+			logger.info("Waiting 3,5 seconds after command CPUReset...");
+
+		Thread.sleep(3500);
+
+		if (DataLayer.getPropertiesManager().getDebugEnabled())
+			logger.info("Clear bufer after CPUReset...");
+
+		DataLayer.clearBuffer();
+		synchronized (this) {
+			skypMessage = false;
+		}
+		
+
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
 		else {
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.info("Connected: PortName=" + commport + "Speed=" + boudrate);
-			synchronized (this) {
-				connected = true;
-			}
+			
 		}
 	}
 

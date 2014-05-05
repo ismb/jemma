@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695287382
+Bnd-LastModified: 1399038925771
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Activator: org.energy_home.jemma.ah.upnp.energyathome.Activator

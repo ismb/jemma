@@ -117,7 +117,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	public URL getResource(String name) {
-		URL u = this.bc.getBundle().getResource(name);
+		URL u = null;
+		if (name.equals("webapp/"))
+			u = this.bc.getBundle().getResource(name+"home.html");
+		else
+		u = this.bc.getBundle().getResource(name);
 		return u;
 	}
 

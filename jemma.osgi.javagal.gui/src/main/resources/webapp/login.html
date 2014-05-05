@@ -1,21 +1,112 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<title>javaGalGui Login</title>
-	<meta name="description" content="Login Form for javaGalGui">
-</head>
-<body>
-<div>
-<form action="">
-	<label>Utente:</label><input type="text" name="username" />
-	<label>Password:</label><input type="password" name="password" />
-	<input type="submit" value="Login" name="submit" class="submit" />
-</form>
-</div>
-</center>
-</body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>javaGalGui Login</title>
+		<meta name="description" content="Login Form for javaGalGui">
+		<style type="text/css">
+			* {
+				margin:0;
+				padding:0;
+			}
+			body {
+				background:#fff;
+				font-family: 'trebuchet ms', verdana, arial, helvetica, sans-serif;
+				color: #000;
+				padding: 2em 0 ;
+			}
+			#container {
+				width:750px;
+				margin: 0 auto;
+				padding:10px;
+				border: 1px solid #900;
+			}
+			#container h1{
+				font-size: 160%;
+				color:#900;
+				margin-bottom: 20px;
+			}
+			form p{
+				margin: .6em 0 ;
+				padding:3px 0 5px 0;
+			}
+			fieldset {
+				border:1px dashed #ddd;
+				padding:10px;
+				margin: 0 0 20px 0;
+			}
+			legend {
+				font-size: 90%;
+				font-weight: bold;
+				color:#fff;
+				background: #666;
+				padding: 3px 6px;
+			}
+			label {
+				width:140px;
+				height:35px;
+				line-height: 35px;
+				margin-right: 5px;
+				padding-left:6px;
+				background:#e7e7e7;
+				float:left;
+				display:block;
+				font-size: 105%;
+				color:#333;
+			}
+			input.user {
+				background-repeat: no-repeat;
+				background-position:left;
+				background-color:#fff;
+				width:290px;
+				color: #666;
+				padding:3px 5px 3px 19px;
+				font-size: 1em;
+				font-family: 'trebuchet ms', verdana, arial, helvetica, sans-serif;
+				border: 1px solid #ccc;
+				height: 27px;
+			}
+			input.passw{
+				background-repeat: no-repeat;
+				background-position:left;
+				background-color:#fff;
+				width:290px;
+				color: #666;
+				padding:5px 5px 3px 19px;
+				font-size: 1em;
+				border: 1px solid #ccc;
+				height: 25px;
+				line-height: 25px;
+				font-size: 1em;
+			}
+			.button {
+				background: #e6e6dc;
+				font-size:12px;
+				color: #900;
+				padding: 6px 14px;
+				border-width: 2px;
+				border-style: solid;
+				border-color: #fff #d8d8d0 #d8d8d0 #fff;
+				text-decoration: none;
+				text-transform:uppercase;
+				font-weight:bold;
+				margin-left: 148px;
+			} 
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<h1>Secure access for </h1>
+			<form id="frm1" action="">
+				<fieldset>
+					<legend>JAVAGAL GUI Login</legend>
+					<p><label for="username">Username</label>   
+						<input type="text" value="" id="username" class="user" name="username"></p> 
+					<p><label for="password">Password</label>
+						<input type="password" value="" id="password" class="passw" name="password"></p>
+					<p><input type="submit" class="button" value="login" name="submit"></p>
+				</fieldset>
+			</form>
+		</div>
+	</body>
 </html>

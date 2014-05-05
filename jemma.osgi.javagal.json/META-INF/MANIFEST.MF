@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695294475
+Bnd-LastModified: 1399038933152
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Activator: org.energy_home.jemma.javagal.json.Activator
@@ -15,8 +15,8 @@ Export-Package: org.energy_home.jemma.javagal.json;uses:="org.energy_hom
  ttp,org.apache.commons.logging,javax.servlet,org.energy_home.jemma.java
  gal.json.constants,javax.servlet.http,org.energy_home.jemma.javagal.jso
  n.servlet";version="1.0",org.energy_home.jemma.javagal.json.constants;v
- ersion="1.0",org.energy_home.jemma.javagal.json.servlet;uses:="javax.se
- rvlet,org.energy_home.jemma.zgd.jaxb,org.energy_home.jemma.zgd,com.goog
+ ersion="1.0",org.energy_home.jemma.javagal.json.servlet;uses:="org.ener
+ gy_home.jemma.zgd.jaxb,javax.servlet,org.energy_home.jemma.zgd,com.goog
  le.gson,javax.servlet.http,org.energy_home.jemma.javagal.json.util";ver
  sion="1.0",org.energy_home.jemma.javagal.json.util;uses:="org.apache.co
  mmons.logging";version="1.0"

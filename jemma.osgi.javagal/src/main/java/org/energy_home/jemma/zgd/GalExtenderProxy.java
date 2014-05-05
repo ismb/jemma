@@ -107,6 +107,7 @@ public class GalExtenderProxy implements IGalExtender {
 		switch (attrId) {
 		case 0xA1:
 		case 0x80:
+		case 0x9A:
 			return gal.NMLE_GetSync(attrId);
 
 		case 0xC3:

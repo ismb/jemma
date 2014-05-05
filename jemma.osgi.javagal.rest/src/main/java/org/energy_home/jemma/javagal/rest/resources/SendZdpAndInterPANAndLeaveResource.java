@@ -27,6 +27,8 @@ import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayInterface;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageResult;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
@@ -45,7 +47,7 @@ import org.restlet.resource.ServerResource;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
-public class SendZdpAndLeaveResource extends ServerResource {
+public class SendZdpAndInterPANAndLeaveResource extends ServerResource {
 
 	private GatewayInterface proxyGalInterface;
 
@@ -75,14 +77,10 @@ public class SendZdpAndLeaveResource extends ServerResource {
 		// Uri parameters check
 		String timeoutString = null;
 		String urilistener = null;
-		String aoiString = null; // Note aoiString is correct even if we read
-									// the addr parameter and we call it aoi
-
+		String aoiString = null; // Note aoiString is correct even if we read the addr parameter and we call it aoi
 		Long timeout = -1l;
-
 		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_TIMEOUT);
 		if (timeoutParam == null) {
-
 			Info info = new Info();
 			Status _st = new Status();
 			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -92,7 +90,6 @@ public class SendZdpAndLeaveResource extends ServerResource {
 			info.setDetail(detail);
 			getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 			return;
-
 		} else {
 			timeoutString = timeoutParam.getValue().trim();
 			try {
@@ -155,55 +152,122 @@ public class SendZdpAndLeaveResource extends ServerResource {
 
 		Parameter urilistenerParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_URILISTENER);
 
-		ZDPCommand zdpCommand;
+		ZDPCommand zdpCommand = null;
+
+		InterPANMessage interPANMessage = null;
 
 		try {
 			zdpCommand = Util.unmarshal(body, ZDPCommand.class);
+		} catch (Exception je) {
 
-			if (urilistenerParam == null) {
-				// Sync call because urilistener not present.
-				// Not implemented. Only asynch is admitted.
+		}
+
+		try {
+			interPANMessage = Util.unmarshal(body, InterPANMessage.class);
+		} catch (Exception je) {
+
+		}
+
+		if (interPANMessage != null) {
+
+			// It's a Send InterPan message invocation
+			try {
+				if (urilistenerParam == null) {
+					Info info = new Info();
+					Status _st = new Status();
+					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+					_st.setMessage("Sync call because urilistener not present. Not implemented. Only asynch is admitted");
+					info.setStatus(_st);
+					Info.Detail detail = new Info.Detail();
+					info.setDetail(detail);
+					getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
+					return;
+				} else {
+					urilistener = urilistenerParam.getValue();
+					ClientResources rcmal = getRestManager().getClientObjectKey(Util.getPortFromUriListener(urilistener), getClientInfo().getAddress());
+					proxyGalInterface = rcmal.getGatewayInterface();
+					if (rcmal.getClientEventListener() != null)
+						rcmal.getClientEventListener().setInterPANCommandDestination(urilistener);
+					proxyGalInterface.sendInterPANMessage(timeout, interPANMessage);
+					Info.Detail detail = new Info.Detail();
+					Info infoToReturn = new Info();
+					Status status = new Status();
+					status.setCode((short) GatewayConstants.SUCCESS);
+					infoToReturn.setStatus(status);
+					infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
+					infoToReturn.setDetail(detail);
+					getResponse().setEntity(Util.marshal(infoToReturn), MediaType.TEXT_XML);
+					return;
+				}
+			} catch (Exception e1) {
 				Info info = new Info();
 				Status _st = new Status();
 				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Sync call because urilistener not present. Not implemented. Only asynch is admitted");
+				_st.setMessage(e1.getMessage());
 				info.setStatus(_st);
 				Info.Detail detail = new Info.Detail();
 				info.setDetail(detail);
 				getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 				return;
-			} else {
-				// Async call. We know here that urilistenerParam is not null...
-				urilistener = urilistenerParam.getValue();
-				// Process async. If urilistener equals "", don't send the
-				// result but wait that the IPHA polls for it using the request
-				// identifier.
-				ClientResources rcmal = getRestManager().getClientObjectKey(Util.getPortFromUriListener(urilistener), getClientInfo().getAddress());
-				proxyGalInterface = rcmal.getGatewayInterface();
+			}
 
-				rcmal.getClientEventListener().setZdpCommandDestination(urilistener);
-				proxyGalInterface.sendZDPCommand(timeout, zdpCommand);
+		}
+
+		else if (zdpCommand != null) {
+
+			// It's a Send Zdp Message message invocation
+			try {
+				if (urilistenerParam == null) {
+					Info info = new Info();
+					Status _st = new Status();
+					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+					_st.setMessage("Sync call because urilistener not present. Not implemented. Only asynch is admitted");
+					info.setStatus(_st);
+					Info.Detail detail = new Info.Detail();
+					info.setDetail(detail);
+					getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
+					return;
+				} else {
+					urilistener = urilistenerParam.getValue();
+					ClientResources rcmal = getRestManager().getClientObjectKey(Util.getPortFromUriListener(urilistener), getClientInfo().getAddress());
+					proxyGalInterface = rcmal.getGatewayInterface();
+					if (rcmal.getClientEventListener() != null)
+						rcmal.getClientEventListener().setZdpCommandDestination(urilistener);
+					proxyGalInterface.sendZDPCommand(timeout, zdpCommand);
+					Info.Detail detail = new Info.Detail();
+					Info infoToReturn = new Info();
+					Status status = new Status();
+					status.setCode((short) GatewayConstants.SUCCESS);
+					infoToReturn.setStatus(status);
+					infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
+					infoToReturn.setDetail(detail);
+					getResponse().setEntity(Util.marshal(infoToReturn), MediaType.TEXT_XML);
+					return;
+				}
+			} catch (Exception e1) {
+				Info info = new Info();
+				Status _st = new Status();
+				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+				_st.setMessage(e1.getMessage());
+				info.setStatus(_st);
 				Info.Detail detail = new Info.Detail();
-				Info infoToReturn = new Info();
-				Status status = new Status();
-				status.setCode((short) GatewayConstants.SUCCESS);
-				infoToReturn.setStatus(status);
-				infoToReturn.setRequestIdentifier(Util.getRequestIdentifier());
-				infoToReturn.setDetail(detail);
-				getResponse().setEntity(Util.marshal(infoToReturn), MediaType.TEXT_XML);
+				info.setDetail(detail);
+				getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 				return;
 			}
-		} catch (Exception e1) {
+
+		} else {
 			Info info = new Info();
 			Status _st = new Status();
 			_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-			_st.setMessage(e1.getMessage());
+			_st.setMessage("Wrong xml");
 			info.setStatus(_st);
 			Info.Detail detail = new Info.Detail();
 			info.setDetail(detail);
 			getResponse().setEntity(Util.marshal(info), MediaType.APPLICATION_XML);
 			return;
 		}
+
 	}
 
 	@Delete

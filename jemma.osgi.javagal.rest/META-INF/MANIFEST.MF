@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695292439
+Bnd-LastModified: 1399038931160
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
@@ -11,8 +11,8 @@ Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.javagal.rest;uses:="org.apache.com
- mons.logging,org.energy_home.jemma.zgd,org.osgi.util.tracker,org.energy
- _home.jemma.javagal.rest.util,org.osgi.framework,org.restlet.routing,or
+ mons.logging,org.energy_home.jemma.zgd,org.osgi.util.tracker,org.osgi.f
+ ramework,org.energy_home.jemma.javagal.rest.util,org.restlet.routing,or
  g.energy_home.jemma.javagal.rest.resources,org.restlet,org.energy_home.
  jemma.zgd.jaxb,org.restlet.data,org.restlet.resource,org.restlet.repres
  entation,org.restlet.util";version="1.0",org.energy_home.jemma.javagal.
