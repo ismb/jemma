@@ -241,7 +241,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error, Data received not completed 1°");
+				logger.debug("Error, Data received not completed 1");
 			return null;
 
 		}
@@ -251,7 +251,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error, Data received not completed 2°");
+				logger.debug("Error, Data received not completed 2");
 			return null;
 		}
 
@@ -291,7 +291,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (serialDataError == 1) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error on Data received 3°");
+				logger.debug("Error on Data received 3");
 			if (!copyList.isEmpty()) {
 				Short extracted;
 				for (int z = 0; z < toremove; z++) {
@@ -313,7 +313,7 @@ public class DataFreescale implements IDataLayer {
 
 		} else if (serialDataError == 2) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error on Data received 4°");
+				logger.debug("Error on Data received 4");
 			Short extracted;
 			for (int z = 0; z < toremove; z++) {
 				synchronized (receivedDataQueue) {
