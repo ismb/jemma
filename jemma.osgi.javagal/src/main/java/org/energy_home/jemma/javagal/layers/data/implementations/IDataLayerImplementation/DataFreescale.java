@@ -295,20 +295,21 @@ public class DataFreescale implements IDataLayer {
 			if (!copyList.isEmpty()) {
 				Short extracted;
 				for (int z = 0; z < toremove; z++) {
-					synchronized (receivedDataQueue) {
-						extracted = receivedDataQueue.remove(0);
+					if (receivedDataQueue.size() > 0) {
+						synchronized (receivedDataQueue) {
+							extracted = receivedDataQueue.remove(0);
+						}
+
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.debug("Removed Byte: " + String.format("%02X", extracted));
 					}
-
-					if (gal.getPropertiesManager().getDebugEnabled())
-						logger.debug("Removed Byte: " + String.format("%02X", extracted));
-
 				}
 				synchronized (serialDataError) {
 					serialDataError = 0;
 				}
 
 			}
-			
+
 			return null;
 
 		} else if (serialDataError == 2) {
@@ -316,12 +317,14 @@ public class DataFreescale implements IDataLayer {
 				logger.debug("Error on Data received 4");
 			Short extracted;
 			for (int z = 0; z < toremove; z++) {
-				synchronized (receivedDataQueue) {
-					extracted = receivedDataQueue.remove(0);
-				}
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.debug("Removed Byte: " + String.format("%02X", extracted));
+				if (receivedDataQueue.size() > 0) {
+					synchronized (receivedDataQueue) {
+						extracted = receivedDataQueue.remove(0);
+					}
 
+					if (gal.getPropertiesManager().getDebugEnabled())
+						logger.debug("Removed Byte: " + String.format("%02X", extracted));
+				}
 			}
 			synchronized (serialDataError) {
 				serialDataError = 0;
@@ -338,7 +341,7 @@ public class DataFreescale implements IDataLayer {
 		}
 
 	}
-	
+
 	public void processMessages() throws Exception {
 		// Look on received messages
 		int _size = 0;
