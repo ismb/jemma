@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399038935614
+Bnd-LastModified: 1399365045275
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Category: Web UI libs

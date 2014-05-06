@@ -75,11 +75,10 @@
  org.restlet.routing,
 org.restlet.util
 						</Import-Package>
-<!--						<Require-Bundle>
-							jemma.osgi.javagal;bundle-version="1.0.0",
-							org.restlet;bundle-version="2.1.6"
+						<Require-Bundle>
+							jemma.osgi.javagal;bundle-version="1.0.0"
 						</Require-Bundle>
-                                                <Embed-Dependency>org.restlet:org.restlet:2.1.6</Embed-Dependency>-->
+                        <Embed-Dependency>org.restlet:org.restlet:2.1.6</Embed-Dependency>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -99,7 +98,7 @@ org.restlet.util
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.javagal</artifactId>
-			<version>${org.energy-home.jemma.osgi.javagal.version}</version>
+			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.restlet.osgi</groupId>
