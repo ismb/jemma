@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399365017957
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1399370408571
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
  vator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal;singleton:=true
+Bundle-SymbolicName: jemma.osgi.javagal
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.0.1
 Created-By: Apache Maven Bundle Plugin
@@ -21,4 +21,3 @@ Import-Package: gnu.io;version="1.0.0",javax.xml.bind,javax.xml.bind.ann
  jemma.zgd.jaxb;version="[1.0,2)",org.osgi.framework;version="[1.5,2)",o
  rg.osgi.util.tracker;version="1.4.2"
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

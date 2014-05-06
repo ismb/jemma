@@ -1197,7 +1197,6 @@
 							
 
 							var fchangeStatuGal = function(buttonInHeaderPressed) {
-
 								$.jStorage.set("ChannelRadioValue", null);
 								//event.preventDefault();
 								var timeout, startMode, url, type, errorMsg = '';
@@ -1327,10 +1326,7 @@
 							$('#btnRestartGal1').click(function(event) {
 								var result = window.confirm('Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?','Total reset',function(result) {if (result) {fchangeStatuGal('btnRestartGal1');}});
 							});
-							
-							
-							$('#btnStartGal').click(function(event) {fchangeStatuGal('btnRestartGal1');});
-											
+							$('#btnStartGal').click(function(event) {fchangeStatuGal('btnStartGal');});
 							$('#btnRestartGal2').click(function(event) {fchangeStatuGal('btnRestartGal2');});
 							
 										 

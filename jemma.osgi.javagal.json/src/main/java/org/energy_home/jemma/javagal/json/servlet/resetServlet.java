@@ -140,6 +140,10 @@ public class resetServlet extends HttpServlet {
 			try {
 
 				Status result = gatewayInterface.resetDongleSync(timeout, startModeValue);
+				
+				
+				
+				
 				Info info = new Info();
 				info.setStatus(result);
 				response.getOutputStream().print(gson.toJson(info));
