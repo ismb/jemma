@@ -240,7 +240,8 @@ public class DataFreescale implements IDataLayer {
 			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-			
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error, Data received not completed 1°");
 			return null;
 
 		}
@@ -249,9 +250,9 @@ public class DataFreescale implements IDataLayer {
 		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-			
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error, Data received not completed 2°");
 			return null;
-
 		}
 
 		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
@@ -289,6 +290,8 @@ public class DataFreescale implements IDataLayer {
 		toremove += (4 + payloadLenght + 1);
 
 		if (serialDataError == 1) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error on Data received 3°");
 			if (!copyList.isEmpty()) {
 				Short extracted;
 				for (int z = 0; z < toremove; z++) {
@@ -305,9 +308,12 @@ public class DataFreescale implements IDataLayer {
 				}
 
 			}
+			
 			return null;
 
 		} else if (serialDataError == 2) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error on Data received 4°");
 			Short extracted;
 			for (int z = 0; z < toremove; z++) {
 				synchronized (receivedDataQueue) {
@@ -332,7 +338,7 @@ public class DataFreescale implements IDataLayer {
 		}
 
 	}
-
+	
 	public void processMessages() throws Exception {
 		// Look on received messages
 		int _size = 0;

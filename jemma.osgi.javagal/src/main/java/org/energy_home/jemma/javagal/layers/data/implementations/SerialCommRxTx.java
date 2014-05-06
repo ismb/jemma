@@ -258,7 +258,7 @@ public class SerialCommRxTx implements IConnector {
 	public void initialize() throws Exception {
 		
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Starting inizialize procedure for: PortName=" + commport + "Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+			logger.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
@@ -281,7 +281,7 @@ public class SerialCommRxTx implements IConnector {
 		Thread.sleep(3500);
 
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Clear bufer after CPUReset...");
+			logger.info("Clear buffer after CPUReset...");
 
 		DataLayer.clearBuffer();
 		synchronized (this) {
