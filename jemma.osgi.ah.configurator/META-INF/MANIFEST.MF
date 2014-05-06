@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399038922678
+Bnd-LastModified: 1399365005573
 Build-Jdk: 1.7.0_51
 Built-By: einann
 Bundle-Category: Automation@Home Configurator
