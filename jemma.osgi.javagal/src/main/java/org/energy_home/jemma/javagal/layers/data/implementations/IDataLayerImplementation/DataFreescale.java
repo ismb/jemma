@@ -77,7 +77,6 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
-	Integer serialDataError = 0;
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
@@ -180,24 +179,38 @@ public class DataFreescale implements IDataLayer {
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
+				short[] tempArray = null;
 				while (true) {
-					try {
-						if (!receivedDataQueue.isEmpty()) {
-							short[] tempArray = createMessageFromRowData();
-							if (tempArray != null) {
-								synchronized (messages) {
-									messages.add(tempArray);
-									processMessages();
-								}
+					if (!receivedDataQueue.isEmpty()) {
+						try {
+							tempArray = createMessageFromRowData();
+						} catch (Exception e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error on createMessageFromRowData: " + e.toString());
+
+						}
+
+						if (tempArray != null) {
+							synchronized (messages) {
+								messages.add(tempArray);
+							}
+
+							try {
+								processMessages();
+							} catch (Exception e) {
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.error("Error on processMessages: " + e.toString());
 
 							}
-						}
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on Message Analizer: " + e.toString());
 
+						} else
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 					}
-
 				}
 			}
 
@@ -219,11 +232,10 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
+		boolean serialDataError = false;
+
 		int toremove = 0;
-
-		int first_element = 0;
-
-		while ((!receivedDataQueue.isEmpty()) && (first_element = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+		while ((!receivedDataQueue.isEmpty()) && (receivedDataQueue.get(0) != DataManipulation.SEQUENCE_START)) {
 			Short _toremove = 0;
 			synchronized (receivedDataQueue) {
 				_toremove = receivedDataQueue.remove(0);
@@ -240,7 +252,8 @@ public class DataFreescale implements IDataLayer {
 			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-			
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error, Data received not completed, waiting new raw data...");
 			return null;
 
 		}
@@ -249,9 +262,9 @@ public class DataFreescale implements IDataLayer {
 		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
 
 		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-			
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error, Data received not completed, waiting new raw data...");
 			return null;
-
 		}
 
 		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
@@ -267,10 +280,7 @@ public class DataFreescale implements IDataLayer {
 		if (currCscControl != messageCfc) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
-			synchronized (serialDataError) {
-				serialDataError++;
-			}
-
+			serialDataError = true;
 		}
 
 		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
@@ -288,46 +298,25 @@ public class DataFreescale implements IDataLayer {
 
 		toremove += (4 + payloadLenght + 1);
 
-		if (serialDataError == 1) {
-			if (!copyList.isEmpty()) {
-				Short extracted;
-				for (int z = 0; z < toremove; z++) {
+		if (serialDataError) {
+			Short extracted;
+			for (int z = 0; z < toremove; z++) {
+				if (receivedDataQueue.size() > 0) {
 					synchronized (receivedDataQueue) {
 						extracted = receivedDataQueue.remove(0);
 					}
 
 					if (gal.getPropertiesManager().getDebugEnabled())
 						logger.debug("Removed Byte: " + String.format("%02X", extracted));
-
 				}
-				synchronized (serialDataError) {
-					serialDataError = 0;
-				}
-
 			}
-			return null;
 
-		} else if (serialDataError == 2) {
-			Short extracted;
-			for (int z = 0; z < toremove; z++) {
-				synchronized (receivedDataQueue) {
-					extracted = receivedDataQueue.remove(0);
-				}
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.debug("Removed Byte: " + String.format("%02X", extracted));
-
-			}
-			synchronized (serialDataError) {
-				serialDataError = 0;
-			}
 			return null;
 
 		} else {
 			for (int z = 0; z < toremove; z++)
 				receivedDataQueue.remove(0);
-			synchronized (serialDataError) {
-				serialDataError = 0;
-			}
+
 			return toReturn;
 		}
 
