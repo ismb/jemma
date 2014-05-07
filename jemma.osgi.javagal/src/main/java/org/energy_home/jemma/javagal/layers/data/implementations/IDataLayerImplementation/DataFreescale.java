@@ -179,24 +179,38 @@ public class DataFreescale implements IDataLayer {
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
+				short[] tempArray = null;
 				while (true) {
-					try {
-						if (!receivedDataQueue.isEmpty()) {
-							short[] tempArray = createMessageFromRowData();
-							if (tempArray != null) {
-								synchronized (messages) {
-									messages.add(tempArray);
-									processMessages();
-								}
+					if (!receivedDataQueue.isEmpty()) {
+						try {
+							tempArray = createMessageFromRowData();
+						} catch (Exception e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error on createMessageFromRowData: " + e.toString());
+
+						}
+
+						if (tempArray != null) {
+							synchronized (messages) {
+								messages.add(tempArray);
+							}
+
+							try {
+								processMessages();
+							} catch (Exception e) {
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.error("Error on processMessages: " + e.toString());
 
 							}
-						}
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on Message Analizer: " + e.toString());
 
+						} else
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 					}
-
 				}
 			}
 
@@ -266,9 +280,7 @@ public class DataFreescale implements IDataLayer {
 		if (currCscControl != messageCfc) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
-
 			serialDataError = true;
-
 		}
 
 		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
@@ -299,14 +311,12 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
-			
 			return null;
 
 		} else {
 			for (int z = 0; z < toremove; z++)
 				receivedDataQueue.remove(0);
 
-			
 			return toReturn;
 		}
 
