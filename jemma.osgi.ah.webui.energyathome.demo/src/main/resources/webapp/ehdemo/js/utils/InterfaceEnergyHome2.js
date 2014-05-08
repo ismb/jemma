@@ -28,7 +28,7 @@ var InterfaceEnergyHome2 = {
 	errMessage: null,
 	errCode: 0,
 	status: 0,
-	serviceName : "it.telecomitalia.ah.greenathome.GreenAtHomeApplianceService",
+	serviceName : "org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService",
 	objService : null,
 	// costanti per parametri chiamate
 	MINUTE : 0,
@@ -43,7 +43,7 @@ var InterfaceEnergyHome2 = {
 	AVG : 4,
 	DELTA : 5,
 	PID_TOTALE : null,
-	SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
+	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering",
 	POTENZA_TOTALE : "TotalPower",
 	CONSUMO : "ah.eh.esp.Energy",
 	COSTO : "ah.eh.esp.EnergyCost",
