@@ -77,6 +77,7 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
+	boolean destroy = false;
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
@@ -102,6 +103,7 @@ public class DataFreescale implements IDataLayer {
 	 *             if an error occurs.
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
+		final int timeoutLock = 100;
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
@@ -110,11 +112,10 @@ public class DataFreescale implements IDataLayer {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommand;
-				while (true) {
+				while (!destroy) {
 					try {
 						synchronized (listOfCommandToSend) {
-
-							listOfCommandToSend.wait();
+							listOfCommandToSend.wait(timeoutLock);
 							_currentCommand = listOfCommandToSend.poll();
 							if (_currentCommand != null) {
 								if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -124,8 +125,7 @@ public class DataFreescale implements IDataLayer {
 							}
 						}
 					} catch (InterruptedException e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on lock data to Send: " + e.toString());
+
 					} catch (Exception e) {
 						if (gal.getPropertiesManager().getDebugEnabled())
 							logger.error("Error Sending command: " + e.toString());
@@ -133,54 +133,54 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 		};
-		thrSender.setName("RS232-Sender");
+		thrSender.setName("TH-RS232-Sender");
 		thrSender.start();
 
 		Thread thrReceiver = new Thread() {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommandReived = null;
-				while (true) {
+				while (!destroy) {
 					try {
 						synchronized (tmpDataQueue) {
-							tmpDataQueue.wait(100);
+							tmpDataQueue.wait(timeoutLock);
 							_currentCommandReived = tmpDataQueue.poll();
 						}
-					} catch (InterruptedException e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on lock data Received: " + e.toString());
 
-					}
+						if (_currentCommandReived != null) {
 
-					if (_currentCommandReived != null) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
+							byte[] msg = _currentCommandReived.getByteArray();
+							int size = _currentCommandReived.getByteCount(true);
+							short[] messageShort = new short[size];
+							for (int i = 0; i < size; i++)
+								messageShort[i] = (short) (msg[i] & 0xff);
 
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
-						byte[] msg = _currentCommandReived.getByteArray();
-						int size = _currentCommandReived.getByteCount(true);
-						short[] messageShort = new short[size];
-						for (int i = 0; i < size; i++)
-							messageShort[i] = (short) (msg[i] & 0xff);
+							synchronized (receivedDataQueue) {
+								for (int z = 0; z < size; z++)
+									receivedDataQueue.add(messageShort[z]);
+							}
 
-						synchronized (receivedDataQueue) {
-							for (int z = 0; z < size; z++)
-								receivedDataQueue.add(messageShort[z]);
 						}
 
+					} catch (InterruptedException e) {
+
 					}
+
 				}
 
 			}
 
 		};
-		thrReceiver.setName("RS232-Receiver");
+		thrReceiver.setName("TH-RS232-Receiver");
 		thrReceiver.start();
 
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
 				short[] tempArray = null;
-				while (true) {
+				while (!destroy) {
 					if (!receivedDataQueue.isEmpty()) {
 						try {
 							tempArray = createMessageFromRowData();
@@ -205,17 +205,16 @@ public class DataFreescale implements IDataLayer {
 
 						} else
 							try {
-								Thread.sleep(100);
+								Thread.sleep(timeoutLock);
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+
 							}
 					}
 				}
 			}
 
 		};
-		thrAnalizer.setName("MessagesAnalizer");
+		thrAnalizer.setName("TH-MessagesAnalizer");
 		thrAnalizer.start();
 
 	}
@@ -4051,6 +4050,13 @@ public class DataFreescale implements IDataLayer {
 			}
 			return status;
 		}
+	}
+
+	@Override
+	public void destroy() {
+			destroy = true;
+		
+
 	}
 }
 
