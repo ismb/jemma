@@ -154,9 +154,19 @@ public class SerialCommRxTx implements IConnector {
 		if (isConnected()) {
 			synchronized (serialPort.getOutputStream()) {
 
-				if (serialPort.getOutputStream() != null) {
+				/*
+				 if (serialPort.getOutputStream() != null) {
 					serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
 					serialPort.getOutputStream().flush();
+				} else
+					throw new Exception("Error on serial write - out == null");
+					 */
+				if (serialPort.getOutputStream() != null) {
+					int size = buff.getByteCount(true);
+					for (int i = 0; i < size; i++) {
+						serialPort.getOutputStream().write(buff.getByteArray()[i]);
+						serialPort.getOutputStream().flush();
+					}
 				} else
 					throw new Exception("Error on serial write - out == null");
 
@@ -256,14 +266,12 @@ public class SerialCommRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
-		
+
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
-		}
-		else
-		{
+		} else {
 			synchronized (this) {
 				connected = true;
 			}
@@ -271,10 +279,9 @@ public class SerialCommRxTx implements IConnector {
 		synchronized (this) {
 			skypMessage = true;
 		}
-		
-		
+
 		DataLayer.cpuReset();
-		
+
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Waiting 3,5 seconds after command CPUReset...");
 
@@ -287,7 +294,6 @@ public class SerialCommRxTx implements IConnector {
 		synchronized (this) {
 			skypMessage = false;
 		}
-		
 
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
@@ -295,7 +301,7 @@ public class SerialCommRxTx implements IConnector {
 		else {
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.info("Connected: PortName=" + commport + "Speed=" + boudrate);
-			
+
 		}
 	}
 
