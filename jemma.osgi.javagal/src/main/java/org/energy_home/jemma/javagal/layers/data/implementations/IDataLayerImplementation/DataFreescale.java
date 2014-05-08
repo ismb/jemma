@@ -438,11 +438,6 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												// System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
-												// +
-												// messageEvent.getSourceAddress().getNetworkAddress()
-												// + "\n\r");
-
 												logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}
 											try {
@@ -458,8 +453,7 @@ public class DataFreescale implements IDataLayer {
 												_newNode.setAddress(_address);
 												o.set_node(_newNode);
 												gal.getNetworkcache().add(o);
-
-												Thread.sleep(500);
+												Thread.sleep(1000);
 												/*
 												 * Reading the IEEEAddress of
 												 * the new node
@@ -467,19 +461,10 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-												// System.out.println("Sending IeeeReq to:"
-												// +
-												// _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													// System.out.println("Readed Ieee of the new node:"
-													// +
-													// _address.getNetworkAddress()
-													// + " Ieee: " +
-													// ieee.toString());
-
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
@@ -488,9 +473,6 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													// System.out.println("Readed NodeDescriptor of the new node:"
-													// +
-													// _address.getNetworkAddress());
 
 												}
 
@@ -4054,8 +4036,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void destroy() {
-			destroy = true;
-		
+		destroy = true;
 
 	}
 }
