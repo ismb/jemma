@@ -64,8 +64,8 @@ var InterfaceEnergyHome = {
 	PRODUZIONE : "ah.eh.esp.ProducedEnergy",
 	SOLD : "ah.eh.esp.SoldEnergy",
 	LIMITI : "InstantaneousPowerLimit",
-	AG_APP_EXCEPTION : "it.telecomitalia.ah.hac.ApplianceException",
-	SERVER_EXCEPTION : "it.telecomitalia.ah.eh.esp.ESPException",
+	AG_APP_EXCEPTION : "org.energy_home.jemma.ah.hac.ApplianceException",
+	SERVER_EXCEPTION : "org.energy_home.jemma.ah.eh.esp.ESPException",
 
 	// costanti per nome attributi
 	ATTR_APP_NAME : "ah.app.name",
