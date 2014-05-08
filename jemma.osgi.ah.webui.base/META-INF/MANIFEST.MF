@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399553180017
+Bnd-LastModified: 1399554382147
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Category: Web UI libs

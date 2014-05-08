@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399553156160
+Bnd-LastModified: 1399554359495
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Category: Automation@Home
