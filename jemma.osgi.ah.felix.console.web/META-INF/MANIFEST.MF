@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399243182410
-Build-Jdk: 1.7.0_45
-Built-By: bluewind
+Bnd-LastModified: 1399553172803
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-ActivationPolicy: lazy
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2

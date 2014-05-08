@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399243155258
-Build-Jdk: 1.7.0_45
-Built-By: bluewind
+Bnd-LastModified: 1399553157352
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-Category: Automation@Home Configurator
 Bundle-ManifestVersion: 2
 Bundle-Name: A@H configurator

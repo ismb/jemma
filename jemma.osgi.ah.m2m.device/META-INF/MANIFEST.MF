@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399243159977
-Build-Jdk: 1.7.0_45
-Built-By: bluewind
+Bnd-LastModified: 1399553159838
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.osgi.ah.m2m.device.M2MDeviceActi
  vator
 Bundle-Category: Automation@Home

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399243177053
-Build-Jdk: 1.7.0_45
-Built-By: bluewind
+Bnd-LastModified: 1399553170133
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Rest

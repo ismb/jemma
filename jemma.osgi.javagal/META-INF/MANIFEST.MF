@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399243173281
-Build-Jdk: 1.7.0_45
-Built-By: bluewind
+Bnd-LastModified: 1399553167610
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
  vator
 Bundle-ManifestVersion: 2
