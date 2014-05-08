@@ -2483,8 +2483,8 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 	}
 
 
-	/*
-	public synchronized Vector getInfos() {
+	//added for demo support
+	public synchronized Vector getInfosDemo() {
 
 		Vector infos = new Vector();
 
@@ -2511,7 +2511,7 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 
 		return infos;
 	}
-	*/
+	
 	public Hashtable getInfoNew(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException {
 
 		int availability = 0;
@@ -2697,6 +2697,17 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 //				}
 //			}
 			
+
+			if (thermostatServer != null) {
+				
+				float localTemperature = (float) (thermostatServer.getLocalTemperature(getterContext) / 100.0);
+				props.put("temperature", localTemperature);
+				if (humidityServer != null) {
+					float humidity = (float) (humidityServer.getMeasuredValue(getterContext) / 100.0);
+					props.put("humidity", humidity);
+				}
+			}
+			
 			if(simpleMeteringServer!=null){
 				
 				props.put("device_value_2", simpleMeteringServer.getIstantaneousDemand(getterContext));
@@ -2704,6 +2715,9 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 			}else{
 				props.put("device_value_2","na");
 			}
+			
+				
+			
 			props.put("device_value", value);
 
 		//}

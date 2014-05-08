@@ -66,7 +66,7 @@ ifIndesitOven.init=function(_clusters){
         if( ifIndesitOven.clusters!=null){               
                 
                 
-                if(ifIndesitOven.clusters["it.telecomitalia.ah.cluster.zigbee.eh.ApplianceControlServer"]==true){
+                if(ifIndesitOven.clusters["org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer"]==true){
                         
                        
                 }
@@ -152,7 +152,7 @@ ifIndesitOven.update= function(now){
         }
         
         
-        if(ifIndesitOven.clusters["it.telecomitalia.ah.cluster.zigbee.eh.ApplianceControlServer"]==true /*&& ifIndesitOven.stato!=-1*/){
+        if(ifIndesitOven.clusters["org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer"]==true /*&& ifIndesitOven.stato!=-1*/){
                 
                 //Elettrodomestici.addSpinner("#Interfaccia", "#0a0a0a");
 		

@@ -128,7 +128,7 @@ Elettrodomestici.getCategoryIndex=function(name){
 	return -1;
 }
 
-//Funzione che legge la lista di dispositivi presenti e il loro stato
+//Funzione che legge la lista di dispositivi presenti e il loro stato. NON USATO QUI
 Elettrodomestici.GetDevices=function(callBack){
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
@@ -248,7 +248,7 @@ Elettrodomestici.GetDevices=function(callBack){
 Elettrodomestici.GetDevicesInfos=function(callBack){
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getInfos(function(result, err, req) {
+			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getInfosDemo(function(result, err, req) {
 				if (Elettrodomestici.requestCB == result.id){
 					Elettrodomestici.requestCB = null;
 					hideSpinnerElettro();
@@ -342,10 +342,15 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									if (elemento["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
 										Elettrodom["type"] = 'whitegood';
 									}
-									else if (elemento["type"]=="it.telecomitalia.ah.zigbee.thermostat") {
+									else if (elemento["type"]=="org.energy_home.jemma.ah.zigbee.thermostat") {
 										Elettrodom["type"]="thermostat";
 										if(Elettrodom["connessione"]==2)
+										{
 											Elettrodom["stato"]=1;
+											Elettrodom["temperature"]=elemento["temperature"]
+											Elettrodom["humidity"]=elemento["humidity"]
+										}
+										
 										
 									}
 									else {
@@ -781,7 +786,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 	} else if (statoElettr) {
 		if (nomeElettr == 'Altri consumi'){
 			if (consumoElettr > 0) {
-				//Se c'è consumo visualizzo l'icona verde
+				//Se c'ï¿½ consumo visualizzo l'icona verde
 				estensioneIcona = "_acceso.png";
 
 			} else {
@@ -790,7 +795,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 
 			}
 		} else if (consumoElettr > 0) {
-			//Se c'è consumo visualizzo l'icona verde
+			//Se c'ï¿½ consumo visualizzo l'icona verde
 			estensioneIcona = "_acceso.png";
 
 		} else {
@@ -800,7 +805,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 		}
 	} else {
 		if (typeElettr == 'whitegood'){
-			//Se il dispositivo è una lavatrice ed è in standby
+			//Se il dispositivo ï¿½ una lavatrice ed ï¿½ in standby
 			if (consumoElettr <= 0){
 				//Il device whitegood consuma 0W, quindi spento
 				estensioneIcona = "_spento.png";
@@ -810,7 +815,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 				estensioneIcona = "_spento.png";
 
 			} else if ((consumoElettr >= 1) && (consumoElettr <= 5)){
-				//Il device consuma più di un 1W, ma meno di 5km, quindi standby
+				//Il device consuma piï¿½ di un 1W, ma meno di 5km, quindi standby
 				//al momento lo mettiamo ON.
 				estensioneIcona = "_acceso.png";
 
