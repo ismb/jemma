@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399554366448
+Bnd-LastModified: 1399555813685
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.osgi.ah.hap.client.HapCoreServic

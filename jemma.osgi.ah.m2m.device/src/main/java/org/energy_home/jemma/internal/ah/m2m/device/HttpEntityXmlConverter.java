@@ -23,16 +23,16 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 import org.energy_home.jemma.m2m.M2MXmlConverter;
 import org.energy_home.jemma.m2m.ObjectFactory;
 import org.energy_home.jemma.utils.xml.jaxb.XmlConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpEntityXmlConverter extends XmlConverter {
-	private static final Log log = LogFactory.getLog(HttpEntityXmlConverter.class);
+	private static final Logger LOG = LoggerFactory.getLogger( HttpEntityXmlConverter.class );
 
 	private static HttpEntityXmlConverter connectionInstance;
 	private static HttpEntityXmlConverter coreInstance;
@@ -66,15 +66,16 @@ public class HttpEntityXmlConverter extends XmlConverter {
 
 	public Object getObject(HttpEntity entity) throws JAXBException, IllegalStateException, IOException {
 		Object o = readObject(entity.getContent());
-		if (log.isDebugEnabled())
-			log.debug("toObject:\n" + getPrintableString(o));
+		//FIXME LOG.isDebugEnabled ... shall we avoid this ?
+		if (LOG.isDebugEnabled())
+			LOG.debug("toObject:\n" + getPrintableString(o));
 		return o;
 	}
 
 	public HttpEntity getEntity(Object object) throws JAXBException, UnsupportedEncodingException {
 		ByteArrayOutputStream b = getConverter().getByteArrayOutputStream(object);
-		if (log.isDebugEnabled())
-			log.debug("toEntity:\n" + getPrintableString(b.toString()));
+		if (LOG.isDebugEnabled())
+			LOG.debug("toEntity:\n" + getPrintableString(b.toString()));
 		ByteArrayEntity entity = new ByteArrayEntity(b.toByteArray());
 		entity.setContentType(HTTP_ENTITY_CONTENT_TYPE);
 
