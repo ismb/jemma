@@ -55,7 +55,7 @@ public class channelServlet extends HttpServlet {
 			Short channel = 0;
 
 			try {
-				channel =gatewayInterface.getChannelSync(5000);
+				channel =gatewayInterface.getChannelSync(7000);
 			} catch (GatewayException e1) {
 				Info info = new Info();
 				Status status = new Status();

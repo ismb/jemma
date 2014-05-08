@@ -77,6 +77,7 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
+	boolean destroy = false;
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
@@ -102,6 +103,7 @@ public class DataFreescale implements IDataLayer {
 	 *             if an error occurs.
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
+		final int timeoutLock = 100;
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
@@ -110,11 +112,10 @@ public class DataFreescale implements IDataLayer {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommand;
-				while (true) {
+				while (!destroy) {
 					try {
 						synchronized (listOfCommandToSend) {
-
-							listOfCommandToSend.wait();
+							listOfCommandToSend.wait(timeoutLock);
 							_currentCommand = listOfCommandToSend.poll();
 							if (_currentCommand != null) {
 								if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -124,8 +125,7 @@ public class DataFreescale implements IDataLayer {
 							}
 						}
 					} catch (InterruptedException e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on lock data to Send: " + e.toString());
+
 					} catch (Exception e) {
 						if (gal.getPropertiesManager().getDebugEnabled())
 							logger.error("Error Sending command: " + e.toString());
@@ -133,75 +133,88 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 		};
-		thrSender.setName("RS232-Sender");
+		thrSender.setName("TH-RS232-Sender");
 		thrSender.start();
 
 		Thread thrReceiver = new Thread() {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommandReived = null;
-				while (true) {
+				while (!destroy) {
 					try {
 						synchronized (tmpDataQueue) {
-							tmpDataQueue.wait(100);
+							tmpDataQueue.wait(timeoutLock);
 							_currentCommandReived = tmpDataQueue.poll();
 						}
-					} catch (InterruptedException e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on lock data Received: " + e.toString());
 
-					}
+						if (_currentCommandReived != null) {
 
-					if (_currentCommandReived != null) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
+							byte[] msg = _currentCommandReived.getByteArray();
+							int size = _currentCommandReived.getByteCount(true);
+							short[] messageShort = new short[size];
+							for (int i = 0; i < size; i++)
+								messageShort[i] = (short) (msg[i] & 0xff);
 
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
-						byte[] msg = _currentCommandReived.getByteArray();
-						int size = _currentCommandReived.getByteCount(true);
-						short[] messageShort = new short[size];
-						for (int i = 0; i < size; i++)
-							messageShort[i] = (short) (msg[i] & 0xff);
+							synchronized (receivedDataQueue) {
+								for (int z = 0; z < size; z++)
+									receivedDataQueue.add(messageShort[z]);
+							}
 
-						synchronized (receivedDataQueue) {
-							for (int z = 0; z < size; z++)
-								receivedDataQueue.add(messageShort[z]);
 						}
 
+					} catch (InterruptedException e) {
+
 					}
+
 				}
 
 			}
 
 		};
-		thrReceiver.setName("RS232-Receiver");
+		thrReceiver.setName("TH-RS232-Receiver");
 		thrReceiver.start();
 
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
-				while (true) {
-					try {
-						if (!receivedDataQueue.isEmpty()) {
-							short[] tempArray = createMessageFromRowData();
-							if (tempArray != null) {
-								synchronized (messages) {
-									messages.add(tempArray);
-									processMessages();
-								}
+				short[] tempArray = null;
+				while (!destroy) {
+					if (!receivedDataQueue.isEmpty()) {
+						try {
+							tempArray = createMessageFromRowData();
+						} catch (Exception e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								logger.error("Error on createMessageFromRowData: " + e.toString());
+
+						}
+
+						if (tempArray != null) {
+							synchronized (messages) {
+								messages.add(tempArray);
+							}
+
+							try {
+								processMessages();
+							} catch (Exception e) {
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.error("Error on processMessages: " + e.toString());
 
 							}
-						}
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error on Message Analizer: " + e.toString());
 
+						} else
+							try {
+								Thread.sleep(timeoutLock);
+							} catch (InterruptedException e) {
+
+							}
 					}
-
 				}
 			}
 
 		};
-		thrAnalizer.setName("MessagesAnalizer");
+		thrAnalizer.setName("TH-MessagesAnalizer");
 		thrAnalizer.start();
 
 	}
@@ -266,9 +279,7 @@ public class DataFreescale implements IDataLayer {
 		if (currCscControl != messageCfc) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
-
 			serialDataError = true;
-
 		}
 
 		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
@@ -299,14 +310,12 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
-			
 			return null;
 
 		} else {
 			for (int z = 0; z < toremove; z++)
 				receivedDataQueue.remove(0);
 
-			
 			return toReturn;
 		}
 
@@ -429,11 +438,6 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												// System.out.println("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
-												// +
-												// messageEvent.getSourceAddress().getNetworkAddress()
-												// + "\n\r");
-
 												logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}
 											try {
@@ -449,8 +453,7 @@ public class DataFreescale implements IDataLayer {
 												_newNode.setAddress(_address);
 												o.set_node(_newNode);
 												gal.getNetworkcache().add(o);
-
-												Thread.sleep(500);
+												Thread.sleep(1000);
 												/*
 												 * Reading the IEEEAddress of
 												 * the new node
@@ -458,19 +461,10 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-												// System.out.println("Sending IeeeReq to:"
-												// +
-												// _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													// System.out.println("Readed Ieee of the new node:"
-													// +
-													// _address.getNetworkAddress()
-													// + " Ieee: " +
-													// ieee.toString());
-
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
 													logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
@@ -479,9 +473,6 @@ public class DataFreescale implements IDataLayer {
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
 													logger.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													// System.out.println("Readed NodeDescriptor of the new node:"
-													// +
-													// _address.getNetworkAddress());
 
 												}
 
@@ -4041,6 +4032,12 @@ public class DataFreescale implements IDataLayer {
 			}
 			return status;
 		}
+	}
+
+	@Override
+	public void destroy() {
+		destroy = true;
+
 	}
 }
 

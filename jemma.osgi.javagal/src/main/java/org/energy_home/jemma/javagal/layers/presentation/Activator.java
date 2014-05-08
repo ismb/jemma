@@ -53,11 +53,11 @@ public class Activator implements BundleActivator {
 		log.info("Starting Gal:Osgi...");
 		bc = context;
 		try {
-			String _path = File.separator
-					+ "config.properties";
+			String _path =  "config.properties";
 			
 			
-			
+			log.info("FILE Conf: " + _path);
+
 
 			PropertiesManager PropertiesManager = new PropertiesManager(bc
 					.getBundle().getResource(_path));

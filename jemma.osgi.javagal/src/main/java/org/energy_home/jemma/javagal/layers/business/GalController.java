@@ -143,6 +143,8 @@ public class GalController {
 
 			if (DataLayer.getIKeyInstance().isConnected())
 				DataLayer.getIKeyInstance().disconnect();
+			
+			DataLayer.destroy();
 			DataLayer = null;
 			if (getPropertiesManager().getDebugEnabled())
 				logger.info("Reset done!");

@@ -52,7 +52,7 @@ public class Activator implements BundleActivator {
 	 * Starts the osgi's bundle.
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		String _path = File.separator + "config.properties";
+		String _path = "config.properties";
 
 		PropertiesManager = new PropertiesManager(bundleContext.getBundle().getResource(_path));
 
