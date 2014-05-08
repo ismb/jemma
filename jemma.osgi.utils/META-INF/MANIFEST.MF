@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695280666
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1399555809122
+Build-Jdk: 1.7.0_55
+Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.osgi.utils.Activator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgi Utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.utils;singleton:=true
+Bundle-SymbolicName: jemma.osgi.utils
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.6
 Created-By: Apache Maven Bundle Plugin
@@ -47,7 +47,3 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- stax-api-1.0-2.jar,
- wstx-asl-3.2.3.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar

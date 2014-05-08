@@ -22,13 +22,14 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.ah.hap.client.EHContainers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+//FIXME by Riccardo: is this harmonizable with ConfigurationAdmin ? If so, we should deprecate this and do it ...
 public class HapServiceConfiguration {
-	private static final Log log = LogFactory.getLog(HapServiceConfiguration.class);
+	private static final Logger LOG = LoggerFactory.getLogger( HapServiceConfiguration.class );
 	
 	private static final String OSGI_INSTANCE_AREA = "osgi.instance.area";
 	private static final String OSGI_CONFIGURATION_AREA = "osgi.configuration.area";
@@ -75,7 +76,8 @@ public class HapServiceConfiguration {
 			USE_PERSISTENT_BUFFER = true;
 			BATCH_REQUESTS_DIR_NAME_PREFIX = cacheDirName + "/" + BATCH_REQUESTS_DIR_NAME_PREFIX;
 		}
-		log.info(String.format("BATCH_REQUESTS_DIR_NAME_PREFIX: %s", BATCH_REQUESTS_DIR_NAME_PREFIX));
+		//FIXME by Riccardo why all these String.format just for log messages ?
+		LOG.debug(String.format("BATCH_REQUESTS_DIR_NAME_PREFIX: %s", BATCH_REQUESTS_DIR_NAME_PREFIX));
 
 		String cachedAttributeIdFilterStr = configProperties.getProperty(CACHED_ATTRIBUTE_ID_FILTER_PROPERY_NAME);
 		if (Utils.isNullOrEmpty(cachedAttributeIdFilterStr))		
@@ -86,7 +88,7 @@ public class HapServiceConfiguration {
 				cachedAttributeIdFilterStr = EHContainers.attrId_ah_eh_esp_deliveredEnergySum;
 			CACHED_ATTRIBUTE_ID_FILTER = propertyValueToStringArray(cachedAttributeIdFilterStr);
 		}	
-		log.info(String.format("CACHED_ATTRIBUTE_ID_FILTER: %s", cachedAttributeIdFilterStr));
+		LOG.debug(String.format("CACHED_ATTRIBUTE_ID_FILTER: %s", cachedAttributeIdFilterStr));
 		
 		String localOnlyAttributeIdFilterStr = configProperties.getProperty(LOCAL_ONLY_ATTRIBUTE_ID_FILTER_PROPERY_NAME);
 		if (Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr))		
@@ -103,7 +105,7 @@ public class HapServiceConfiguration {
 		if (!Utils.isNullOrEmpty(localOnlyAttributeIdFilterStr)) {
 			LOCAL_ONLY_ATTRIBUTE_ID_FILTER = propertyValueToStringArray(localOnlyAttributeIdFilterStr);
 		}	
-		log.info(String.format("LOCAL_ONLY_ATTRIBUTE_ID_FILTER: %s", localOnlyAttributeIdFilterStr));
+		LOG.debug(String.format("LOCAL_ONLY_ATTRIBUTE_ID_FILTER: %s", localOnlyAttributeIdFilterStr));
 
 		String batchRequestTimeout = configProperties.getProperty(BATCH_REQUEST_TIMEOUT_PROPERY_NAME);
 		if (Utils.isNullOrEmpty(batchRequestTimeout))
@@ -112,10 +114,10 @@ public class HapServiceConfiguration {
 			try {
 				BATCH_REQUEST_TIMEOUT = Integer.parseInt(batchRequestTimeout); 				
 			} catch (Exception e) {
-				log.error("Error while parsing batch request timeout", e);
+				LOG.error("Error while parsing batch request timeout", e);
 			}
 		}
-		log.info(String.format("BATCH_REQUEST_TIMEOUT: %s", BATCH_REQUEST_TIMEOUT));
+		LOG.debug(String.format("BATCH_REQUEST_TIMEOUT: %s", BATCH_REQUEST_TIMEOUT));
 			
 		String sendEmptyBatchRequest = configProperties.getProperty(SEND_EMPTY_BATCH_REQUEST_PROPERY_NAME);
 		if (!Utils.isNullOrEmpty(sendEmptyBatchRequest))
@@ -124,10 +126,10 @@ public class HapServiceConfiguration {
 			try {
 				SEND_EMPTY_BATCH_REQUEST = Boolean.parseBoolean(sendEmptyBatchRequest); 				
 			} catch (Exception e) {
-				log.error("Error while parsing send empty batch request property", e);
+				LOG.error("Error while parsing send empty batch request property", e);
 			}
 		}
-		log.info(String.format("SEND_EMPTY_BATCH_REQUEST: %s", SEND_EMPTY_BATCH_REQUEST));
+		LOG.debug(String.format("SEND_EMPTY_BATCH_REQUEST: %s", SEND_EMPTY_BATCH_REQUEST));
 	}
 	
 	public static synchronized void loadProperties() {
@@ -138,7 +140,7 @@ public class HapServiceConfiguration {
 		if (instanceArea == null) {
 			instanceArea = System.getProperty(OSGI_CONFIGURATION_AREA);
 			if (instanceArea == null) {
-				log.error("Unable to get an area where to store preferences");
+				LOG.error("Unable to get an area where to store preferences");
 				return;
 			}
 		}
@@ -150,7 +152,7 @@ public class HapServiceConfiguration {
 				configProperties.load(new FileInputStream(f));
 			}
 		} catch (Exception e) {
-			log.error("Problems while loading HAP configuration parameters", e);
+			LOG.error("Problems while loading HAP configuration parameters", e);
 		}		
 	}
 }

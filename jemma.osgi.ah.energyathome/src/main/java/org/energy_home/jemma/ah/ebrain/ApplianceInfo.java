@@ -18,12 +18,12 @@ package org.energy_home.jemma.ah.ebrain;
 
 import java.util.Calendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 import org.energy_home.jemma.shal.DeviceInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * This class is the hub of all information, data, state of a remote appliance. It contains a working status 
@@ -32,7 +32,7 @@ import org.energy_home.jemma.shal.DeviceInfo;
  */
 
 public class ApplianceInfo {
-	protected static final Log log = LogFactory.getLog(ApplianceInfo.class.getSimpleName());
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ApplianceInfo.class );
 
 	public static final int MILLISECONDS_IN_MINUTE = 60 * 1000;
 	public static final int MILLISECONDS_IN_HOUR = MILLISECONDS_IN_MINUTE * 60;
@@ -228,14 +228,16 @@ public class ApplianceInfo {
 	public EnergyCostInfo updateEnergyCost(long newTime, double newEnergy) {
 		EnergyCostInfo eci = null;
 		if (newTime < lastNotificationTime) {
-			log.error(String.format("updateEnergyCost %s: received new time value %d before last valid time value %d, returning null", applianceId, newTime, lastNotificationTime));
+			//FIXME by Riccardo: do we have any special reason for all these String.format calls inside debug messages in this class ?? if not, we should use normal logging messages to avoid function calls - leaving as it is right now
+			////BANANA LOG.error(String.format("updateEnergyCost %s: received new time value %d before last valid time value %d, returning null", applianceId, newTime, lastNotificationTime));
+			//BANANA LOG.warn("updateEnergyCost "+applianceId+": received new time value "+newTime+" before last valid time value "+lastNotificationTime+", returning null");
 			return eci;
 		}
 		
 		lastNotificationTime = newTime;
 		
 		if (newEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			log.debug(String.format("updateEnergyCost %s: received INVALID_ENERGY_VALUE, returning null", applianceId));
+			//BANANA LOG.debug(String.format("updateEnergyCost %s: received INVALID_ENERGY_VALUE, returning null", applianceId));
 			return eci;
 		}
 		
@@ -243,7 +245,7 @@ public class ApplianceInfo {
 			long elapsedTime = newTime - lastValidEnergyTime;
 			if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
 				if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-					log.debug(String.format("updateEnergyCost %s: elapsed time < 1 minute, returning null", applianceId));
+					//BANANA LOG.debug(String.format("updateEnergyCost %s: elapsed time < 1 minute, returning null", applianceId));
 					return eci;
 				}			
 				
@@ -253,9 +255,11 @@ public class ApplianceInfo {
 					calendar.setTimeInMillis(lastValidEnergyTime);
 					DailyTariff dt = DailyTariff.getInstance();
 					eci = dt.computeMinMaxCosts(calendar, elapsedTime, energyDelta);
-					log.debug(String.format("updateEnergyCost %s: energy cost computed", applianceId));
+					//BANANA LOG.debug(String.format("updateEnergyCost %s: energy cost computed", applianceId));
 				} else {
-					if (energyDelta < 0) log.warn(String.format("updateEnergyCost %s: invalid energy delta: %s", applianceId, energyDelta));
+					if (energyDelta < 0) {
+						//BANANA LOG.warn(String.format("updateEnergyCost %s: invalid energy delta: %s", applianceId, energyDelta));
+						}
 					energyDelta = 0; // safety net in case it's negative
 					eci = new EnergyCostInfo();
 				}
@@ -264,12 +268,12 @@ public class ApplianceInfo {
 				accumulatedEnergyCost.addValues(eci);
 			
 			} else {
-				log.warn(String.format("updateEnergyCost %s: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", applianceId, newTime, elapsedTime));
+				//BANANA LOG.warn(String.format("updateEnergyCost %s: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", applianceId, newTime, elapsedTime));
 				accumulatedEnergyCost.reset(newTime);
 			}
 			
 		} catch (Exception e) {
-			log.error(String.format("updateEnergyCost for appliance %s error", applianceId), e);
+			//BANANA LOG.error(String.format("updateEnergyCost for appliance %s exception", applianceId), e);
 		}
 
 		lastTotalEnergy = newEnergy;

@@ -25,19 +25,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.energy_home.jemma.ah.eh.esp.ESPService;
 import org.energy_home.jemma.utils.rest.RestClient;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ESPServlet extends HttpServlet {	
 	private static final long serialVersionUID = -615518450441731123L;
 
-	private static final Log log = LogFactory.getLog(ESPServlet.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPServlet.class );
 	
 	private static final String servletUri = "/esp";	
 	private static final String userRegistrationUri = "/esp/registerUser";
@@ -61,7 +61,7 @@ public class ESPServlet extends HttpServlet {
 			if (response != null)
 				restClient.consume(response);
 		} catch (Exception e) {
-			log.error("releaseRequestResources: error while consuming rest client response", e);
+			//BANANA LOG.error("releaseRequestResources: error while consuming rest client response", e);
 		}
 	}
 	
@@ -70,7 +70,7 @@ public class ESPServlet extends HttpServlet {
 
 		if (queryString.startsWith(userRegistrationUri)) {
 			if (servletRequest.getRemoteHost().equals(remoteHostAddr)) {
-				log.warn("service: registration uri is not accessible through vpn proxy");
+				//BANANA LOG.warn("service: registration uri is not accessible through vpn proxy");
 				servletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
 			} else {
 				HttpResponse response = null;
@@ -79,7 +79,7 @@ public class ESPServlet extends HttpServlet {
 					String responseUri = EntityUtils.toString(response.getEntity());
 					servletResponse.sendRedirect(responseUri);
 				} catch (Exception e) {
-					log.error("service: error while connecting to userRegistrationGetUri", e);
+					//BANANA LOG.error("service: error while connecting to userRegistrationGetUri", e);
 					servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				} finally {
 					releaseRequestResources(response);
@@ -94,7 +94,7 @@ public class ESPServlet extends HttpServlet {
 				pw = servletResponse.getWriter();
 				pw.println(token);
 			} catch (Exception e) {
-				log.error("service: error while connecting to remoteAuthTokenUri", e);
+				//BANANA LOG.error("service: error while connecting to remoteAuthTokenUri", e);
 				servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			} finally {
 				releaseRequestResources(response);
@@ -102,7 +102,7 @@ public class ESPServlet extends HttpServlet {
 					try {
 						pw.close();
 					} catch (Exception e2) {
-						log.error("service: error while releasing printwriter used for connection to remoteAuthTokenUri", e2);
+						//BANANA LOG.error("service: error while releasing printwriter used for connection to remoteAuthTokenUri", e2);
 					}
 			}				
 		} else{
@@ -117,7 +117,7 @@ public class ESPServlet extends HttpServlet {
 			userRegistrationGetUri = new URI("http", null, remoteHostAddr, remoteHostPort, remoteGetRegistrationUri, null, null);
 			remoteAuthTokenUri = new URI("http", null, remoteHostAddr, remoteHostPort, remoteAuthTokenUriStr, null, null);
 		} catch (Exception e) {
-			log.error("start: error while initializing ESPServlet", e);
+			//BANANA LOG.error("start: error while initializing ESPServlet", e);
 		}
 		restClient = RestClient.get();
 	}

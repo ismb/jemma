@@ -20,8 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.ah.ebrain.ApplianceInfo;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.ICloudServiceProxy;
 import org.energy_home.jemma.ah.eh.esp.ESPException;
@@ -41,7 +42,7 @@ import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
 import org.energy_home.jemma.utils.datetime.DateUtils;
 
 public class ESPHapServiceObject extends ESPContainersDataUtils implements ICloudServiceProxy {
-	private static final Log log = LogFactory.getLog(ESPHapServiceObject.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPHapServiceObject.class );
 
 	private static final String ONLY_MONTH_RESOLUTION_SUPPORTED = "Only month resolution is supported";
 	private static final String INVALID_APPLIANCE_PID_OR_RESOLUTION = "Invalid appliance pid or resolution";
@@ -196,9 +197,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 						}
 					}
 				}
-				log.info("getFloatValueMonthlyForecast - current month daily consumption returned: monthTotal="
-						+ currentMonthEstimation + ", monthTotalDuration=" + totalDuration + ", lastValue=" + lastValue
-						+ ", lastTime=" + lastTime + ", lastDuration=" + lastDuration);
+				//BANANA LOG.debug("getFloatValueMonthlyForecast - current month daily consumption returned: monthTotal="						+ currentMonthEstimation + ", monthTotalDuration=" + totalDuration + ", lastValue=" + lastValue						+ ", lastTime=" + lastTime + ", lastDuration=" + lastDuration);
 			}
 		} else {
 			return null;
@@ -239,15 +238,15 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		ContentInstanceItems weekDayItems = getNormalizedWeekDayItems(wdHourlyAvgContainerId, getHourlyDayOfWeekStartIndex(Calendar.SUNDAY),
 				getHourlyDayOfWeekEndIndex(Calendar.SATURDAY));
 		if (weekDayItems == null) {
-			log.warn("getFloatValueMonthlyForecast - week day average consumption returned null items\n");
+			//BANANA LOG.warn("getFloatValueMonthlyForecast - week day average consumption returned null items\n");
 			return null;
 		}
 		List<ContentInstance> weekDayItemList = weekDayItems.getContentInstances();
 		if (weekDayItemList == null || weekDayItemList.size() == 0) {
-			log.warn("getFloatValueMonthlyForecast - week day average consumption returned null or 0 sized item list\n");
+			//BANANA LOG.warn("getFloatValueMonthlyForecast - week day average consumption returned null or 0 sized item list\n");
 			return null;
 		}
-		log.info("getFloatValueMonthlyForecast - week day average consumption returned\n" + weekDayItems);			
+		//BANANA LOG.debug("getFloatValueMonthlyForecast - week day average consumption returned\n" + weekDayItems);			
 		
 		int weekDayIndex = 1;
 		int hourlyIndex = 0;
@@ -271,10 +270,10 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			}
 		}
 		if (nrOfMissingAvgValues * DateUtils.MILLISEC_IN_ONE_HOUR >= DateUtils.MILLISEC_IN_ONE_DAY) {
-			log.info("getFloatValueMonthlyForecast: too many average missing values - " + nrOfMissingAvgValues);
+			//BANANA LOG.debug("getFloatValueMonthlyForecast: too many average missing values - " + nrOfMissingAvgValues);
 			return null;
 		} else if (nrOfMissingAvgValues > 0) {
-			log.info("getFloatValueMonthlyForecast: found some missing values - " + nrOfMissingAvgValues);
+			//BANANA LOG.debug("getFloatValueMonthlyForecast: found some missing values - " + nrOfMissingAvgValues);
 		}
 
 		// The following update to lastTime value is necessary to manage legal
@@ -310,10 +309,10 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		if (espHapCache != null)
 			items = espHapCache.getHourlyProducedEnergyForecastCachedItems(containerId);
 		if (items == null || items.getContentInstances().size() == 0) {
-			log.info("getHourlyProducedEnergyForecastWithHapCache returned null or empty list, trying to use previous day data");
+			//BANANA LOG.debug("getHourlyProducedEnergyForecastWithHapCache returned null or empty list, trying to use previous day data");
 			items = getHourlyProducedEnergyForecast(containerId);
 		}
-		log.info("getHourlyProducedEnergyForecastWithHapCache returned: " + items);
+		//BANANA LOG.debug("getHourlyProducedEnergyForecastWithHapCache returned: " + items);
 		return toFloatValueList(items);	
 	}
 		
@@ -324,9 +323,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergyForecast);
 			result = getHourlyProducedEnergyForecastWithHapCache(containerId);
 		} catch (Exception e) {
-			log.error("retrieveHourlyProducedEnergyForecast exception while retrieving forecast data for produced energy", e);
+			//BANANA LOG.error("retrieveHourlyProducedEnergyForecast exception while retrieving forecast data for produced energy", e);
 		}
-		log.info("retrieveHourlyProducedEnergyForecast returned " + result);
+		//BANANA LOG.debug("retrieveHourlyProducedEnergyForecast returned " + result);
 		if (result != null)
 			return result;
 		// Backup solution if no result are returned by previous query (uses produced energy data collected in the previous 24 hours)
@@ -334,9 +333,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			AHContainerAddress containerId = getReceivedEnergyApplianceContainerId(ESPService.HOUR_RESOLUTION, applianceId);
 			result = getHourlyProducedEnergyForecastWithHapCache(containerId);
 		} catch (Exception e) {
-			log.error("retrieveHourlyProducedEnergyForecast exception while retrieving previous day data for produced energy", e);
+			//BANANA LOG.error("retrieveHourlyProducedEnergyForecast exception while retrieving previous day data for produced energy", e);
 		}
-		log.info("retrieveHourlyProducedEnergyForecast returned " + result);
+		//BANANA LOG.debug("retrieveHourlyProducedEnergyForecast returned " + result);
 		return result;
 	}
 	
@@ -347,7 +346,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
 			result = hapService.getCachedLatestContentInstance(containerId);
 		} catch (Exception e) {
-			log.error("retrieveEnergySummation", e);
+			//BANANA LOG.error("retrieveEnergySummation", e);
 		}
 		return result;
 	}	
@@ -387,7 +386,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 				if (pi != null && pi.isValid()) {
 					ecpi.setPowerInfo(new MinMaxPowerInfo(pi));
 				} else {
-					log.warn("storeEnergyCostPowerInfo - invalid or null power info");
+					//BANANA LOG.warn("storeEnergyCostPowerInfo - invalid or null power info");
 				}
 			} finally {
 				pi.reset();
@@ -403,7 +402,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
 			AHContainerAddress  containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEcpi);
 			ContentInstance ci = hapService.createContentInstanceBatch(containerId, eci.getStartTime(), ecpi);
-			log.debug("EnergyCostPowerInfo:\n" + ci.toXmlFormattedString());
+			//BANANA LOG.debug("EnergyCostPowerInfo:\n" + ci.toXmlFormattedString());
 		} else 
 			storeEvent(applianceId, eci.getStartTime(), EHContainers.EVENT_INVALID_DELTA_ENERGY);
 	}
@@ -438,8 +437,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	}
 
 	public ContentInstanceItems getItems(Calendar c, AHContainerAddress containerId, long startInstanceId, long endInstanceId) throws M2MHapException {
-		log.info("getItems(containerId=" + containerId + ", startInstanceId=" + startInstanceId + ", endInstanceId="
-				+ endInstanceId + ")");
+		//BANANA LOG.debug("getItems(containerId=" + containerId + ", startInstanceId=" + startInstanceId + ", endInstanceId="				+ endInstanceId + ")");
 		String attributeId = containerId.getContainerName();
 		String applianceId = ESPApplication.getApplianceId(containerId);
 		ContentInstanceItems result = null;
@@ -456,7 +454,7 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 				cacheResult = espGwTodayCache.getHourlyEnergyCostResult(applianceId, startInstanceId, endInstanceId);
 			}
 			if (cacheResult != null && cacheResult.isComplete()) {
-				log.info("getItems resolved on local gw cache");
+				//BANANA LOG.debug("getItems resolved on local gw cache");
 				result = new ContentInstanceItems();
 				result.setAddressedId(containerId.getContentInstancesUrl());
 			} else {
@@ -472,17 +470,20 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 				else if (attributeId == EHContainers.attrId_ah_eh_esp_monthlyEnergy
 						|| attributeId == EHContainers.attrId_ah_eh_esp_monthlyEnergyCost)
 					espGwTodayCache.merge(applianceId, result.getContentInstances(), cacheResult, ESPService.MONTH_RESOLUTION);
-				log.info("getItems result merged with local gw cache");
+				//BANANA LOG.debug("getItems result merged with local gw cache");
 			}
 		} else {
 			result = hapService.getContentInstanceItems(containerId, startInstanceId, endInstanceId);
 		}
-		if (result != null && result.getContentInstances() != null)
-			log.info("getItems returned: contentInstances size=" + result.getContentInstances().size());
-		else if (result == null)
-			log.error("getItems returned: contentInstanceItems=null");
-		else
-			log.error("getItems returned: contentInstances=null");
+		if (result != null && result.getContentInstances() != null) {
+			//BANANA LOG.debug("getItems returned: contentInstances size=" + result.getContentInstances().size());
+		}
+		else if (result == null) {
+			//BANANA LOG.warn("getItems returned: contentInstanceItems=null");
+		}
+		else {
+			//BANANA LOG.warn("getItems returned: contentInstances=null");
+		}
 		return result;
 	}
 	public ContentInstanceItems getItemsWithHapCache(Calendar c, AHContainerAddress containerId, long startInstanceId, long endInstanceId, int resolution) throws M2MHapException{
@@ -527,12 +528,15 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	public ContentInstanceItemsList getItemsList(Calendar c, AHContainerAddress containerIdFilter, long startInstanceId, long endInstanceId) throws M2MHapException {
 		// TODO: gw cache is not used for queries that include more than an appliance (Map result)
 		ContentInstanceItemsList itemsList = hapService.getContentInstanceItemsList(containerIdFilter, startInstanceId, endInstanceId);
-		if (itemsList != null && itemsList.getContentInstanceItems() != null)
-			log.info("getItemsList returned: contentInstances size=" + itemsList.getContentInstanceItems().size());
-		else if (itemsList == null)
-			log.warn("getItemsList returned: contentInstanceItemsList=null");
-		else
-			log.warn("getItemsList returned: contentInstanceItems=null");
+		if (itemsList != null && itemsList.getContentInstanceItems() != null) {
+			//BANANA LOG.debug("getItemsList returned: contentInstances size=" + itemsList.getContentInstanceItems().size());
+		}
+		else if (itemsList == null) {
+			//BANANA LOG.warn("getItemsList returned: contentInstanceItemsList=null");
+		}
+		else {
+			//BANANA LOG.warn("getItemsList returned: contentInstanceItems=null");
+		}
 		return itemsList;
 	}
 	public ContentInstanceItemsList getItemsListWithHapCache(Calendar c, AHContainerAddress containerId, long startInstanceId, long endInstanceId, int resolution) throws M2MHapException {
@@ -566,12 +570,15 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 
 	public ContentInstanceItems getWeekDayItems(AHContainerAddress containerId, long startInstanceId, long endInstanceId) throws M2MHapException{
 		ContentInstanceItems result =  hapService.getContentInstanceItems(containerId, startInstanceId, endInstanceId);
-		if (result != null && result.getContentInstances() != null)
-			log.info("getWeekDayItems returned: contentInstances size=" + result.getContentInstances().size());
-		else if (result == null)
-			log.warn("getWeekDayItems returned: contentInstanceItems=null");
-		else
-			log.warn("getWeekDayItems returned: contentInstances=null");
+		if (result != null && result.getContentInstances() != null) {
+			//BANANA LOG.debug("getWeekDayItems returned: contentInstances size=" + result.getContentInstances().size());
+		}
+		else if (result == null) {
+			//BANANA LOG.warn("getWeekDayItems returned: contentInstanceItems=null");
+		}
+		else {
+			//BANANA LOG.warn("getWeekDayItems returned: contentInstances=null");
+		}
 		return result;
 	}		
 	public ContentInstanceItems getWeekDayItemsWithHapCache(AHContainerAddress containerId, long startInstanceId, long endInstanceId) throws M2MHapException {

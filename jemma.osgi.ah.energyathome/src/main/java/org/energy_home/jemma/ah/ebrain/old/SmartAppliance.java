@@ -17,13 +17,13 @@ package org.energy_home.jemma.ah.ebrain.old;
 
 import java.util.Calendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.ebrain.EnergyCostInfo;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -32,7 +32,7 @@ import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
  * of the latest received profile (to evolve into a set of profiles).
  */
 public class SmartAppliance {
-	private static final Log log = LogFactory.getLog(SmartAppliance.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( SmartAppliance.class );
 	
 	public static final short STATE_UNKNOWN = 0;
 	public static final short STATE_OFF = 1; // switched off by the user.
@@ -112,7 +112,7 @@ public class SmartAppliance {
 		lastNotificationTime = newTime;
 		EnergyCostInfo eci = null;
 		if (newEnergy == INVALID_ENERGY_VALUE) {
-			log.debug("received INVALID_ENERGY_VALUE, returning null");
+			//BANANA LOG.debug("received INVALID_ENERGY_VALUE, returning null");
 			return eci;
 		}
 		
@@ -120,7 +120,7 @@ public class SmartAppliance {
 			long elapsedTime = newTime - lastValidEnergyTime;
 			if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
 				if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-					log.debug("elapsed time < 1 minute, returning null");
+					//BANANA LOG.debug("elapsed time < 1 minute, returning null");
 					return eci;
 				}			
 				
@@ -131,7 +131,9 @@ public class SmartAppliance {
 					DailyTariff dt = DailyTariff.getInstance();
 					eci = dt.computeMinMaxCosts(calendar, elapsedTime, energyDelta);
 				} else {
-					if (energyDelta < 0) log.warn("invalid energy delta: " + energyDelta);
+					if (energyDelta < 0) {
+						//BANANA LOG.warn("invalid energy delta: " + energyDelta);
+						}
 					energyDelta = 0; // safety net in case it's negative
 					eci = new EnergyCostInfo();
 				}
@@ -140,13 +142,12 @@ public class SmartAppliance {
 				accumulatedEnergyCost.addValues(eci);
 			
 			} else {
-				log.warn("elapsed time > MAX_VALID_EPOC_THRESHOLD, resetting start time");
+				//BANANA LOG.warn("elapsed time > MAX_VALID_EPOC_THRESHOLD, resetting start time");
 				accumulatedEnergyCost.reset(newTime);
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.debug(e);
+			//BANANA LOG.error("Exception on updateEnergyCost",e);
 		}
 		//maxPowerConsumption = 0;
 		//minPowerConsumption = Float.POSITIVE_INFINITY;

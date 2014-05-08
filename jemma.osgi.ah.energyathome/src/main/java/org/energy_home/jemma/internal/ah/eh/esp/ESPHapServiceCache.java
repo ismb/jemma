@@ -21,8 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.ah.ebrain.ApplianceInfo;
 import org.energy_home.jemma.ah.eh.esp.ESPService;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
@@ -32,7 +33,7 @@ import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 
 // TODO: code needs to be reviewed (only week day cache is currently used)
 public class ESPHapServiceCache {
-	private static final Log log = LogFactory.getLog(ESPHapServiceCache.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPHapServiceCache.class );
 	
 	private static final long THIRTY_MINUTES_IN_MILLISEC = 30*60000L;
 	private static final int ONE_WEEK_IN_HOUR = 168;
@@ -83,7 +84,7 @@ public class ESPHapServiceCache {
 		
 		long now = System.currentTimeMillis();
 		calendar.setTimeInMillis(now);
-		log.debug("useCache method - start query interval check");
+		//BANANA LOG.debug("useCache method - start query interval check");
 
 		switch (resolution) {
 		case ESPService.HOUR_RESOLUTION:
@@ -124,7 +125,7 @@ public class ESPHapServiceCache {
 			break;
 		}
 		
-		log.debug("useCache method - end query interval check - millisec elapsed: " + (System.currentTimeMillis()- now));
+		//BANANA LOG.debug("useCache method - end query interval check - millisec elapsed: " + (System.currentTimeMillis()- now));
 		return cacheLimitResolution;
 	}
 	
@@ -136,7 +137,7 @@ public class ESPHapServiceCache {
 			if (cache.getQueryCalendar().get(Calendar.HOUR_OF_DAY) != currentHour) {
 				cache = null;
 				cacheMap.put(containerId, null);
-				log.info("Invalidate cached query " + containerId);
+				//BANANA LOG.debug("Invalidate cached query " + containerId);
 			}
 		}
 		return cache;
@@ -193,7 +194,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
+				//BANANA LOG.debug("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)
@@ -216,7 +217,7 @@ public class ESPHapServiceCache {
 			if (itemsList != null) {
 				cache = new QueryResult<ContentInstanceItemsList>(itemsList, System.currentTimeMillis());
 				cacheItemsListMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + itemsList.toXmlPrintableString());
+				//BANANA LOG.debug("Created local cache for container " + containerId + "\n:" + itemsList.toXmlPrintableString());
 			} 
 		}
 		if (cache == null || startTime < cacheStartTime || endTime > cacheEndTime)
@@ -231,7 +232,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheWeekDayItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
+				//BANANA LOG.debug("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)
@@ -246,7 +247,7 @@ public class ESPHapServiceCache {
 			if (items != null) {
 				cache = new QueryResult<ContentInstanceItems>(items, System.currentTimeMillis());
 				cacheHourlyProducedEnergyForecastItemsMap.put(containerId, cache);
-				log.info("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
+				//BANANA LOG.debug("Created local cache for container " + containerId + "\n:" + items.toXmlPrintableString());
 			} 
 		}
 		if (cache == null)

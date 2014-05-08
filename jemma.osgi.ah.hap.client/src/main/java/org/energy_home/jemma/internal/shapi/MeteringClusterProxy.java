@@ -68,7 +68,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 						Double energy = interpretFormatting(summationFormatting)*((Long)value).doubleValue(); 
 						return energy;
 					} catch (Exception e) {
-						log.error("Error while reading summation formatting for appliance " + applianceProxy.getAppliance().getPid() + ", endPoint " + endPointId, e);
+						LOG.error("Error while reading summation formatting for appliance " + applianceProxy.getAppliance().getPid() + ", endPoint " + endPointId, e);
 					}
 				} else if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME) 
 						&& (deviceCategory == null || deviceCategory != DeviceCategory.ProductionMeter)){
@@ -77,7 +77,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 						Float power = interpretFormatting(demandFormatting)*((Integer)value).floatValue(); 
 						return power;
 					} catch (Exception e) {
-						log.error("Error while reading demand formatting for appliance " + applianceProxy.getAppliance().getPid()  + ", endPoint " + endPointId, e);
+						LOG.error("Error while reading demand formatting for appliance " + applianceProxy.getAppliance().getPid()  + ", endPoint " + endPointId, e);
 					}
 				}
 			}
@@ -118,7 +118,7 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 								SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 				} catch (Exception e) {
-					log.error("Error while reading last notified simple metering attribute values for appliance " + appliance.getPid());
+					LOG.error("Error while reading last notified simple metering attribute values for appliance " + appliance.getPid(),e);
 				}
 			}
 		}

@@ -23,8 +23,6 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfig;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfigurator;
@@ -34,9 +32,11 @@ import org.energy_home.jemma.m2m.M2MConstants;
 import org.energy_home.jemma.m2m.connection.ConnectionParameters;
 import org.energy_home.jemma.m2m.connection.DeviceConnectionParameters;
 import org.energy_home.jemma.utils.rest.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class M2MDeviceManager implements M2MDeviceConfigurator {
-	private static final Log log = LogFactory.getLog(M2MDeviceManager.class);	
+	private static final Logger LOG = LoggerFactory.getLogger( M2MDeviceManager.class );
 	
 	private static M2MDeviceManager instance = new M2MDeviceManager();
 	private static int referenceCounter = 0;
@@ -149,7 +149,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				notifyConnectionStatusToListeners();
 			} catch (Exception e) {
 				deviceStatus.setConnected(false);
-				M2MUtils.mapDeviceException(log, e, "Error while setting up connection");
+				M2MUtils.mapDeviceException(LOG, e, "Error while setting up connection");
 			} finally {
 				restClient.consume(response);
 			}
@@ -165,7 +165,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				deviceStatus.setConnected(false);
 				notifyConnectionStatusToListeners();
 			} catch (Exception e) {
-				log.error("", e);
+				LOG.error("Exception on disconnect", e);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				}
 				return false;
 			} catch (Exception e) {
-				M2MUtils.mapDeviceException(log, e, "Error while sending connection keepalive");
+				M2MUtils.mapDeviceException(LOG, e, "Error while sending connection keepalive");
 				return false;
 			} finally {
 				restClient.consume(response);
@@ -267,10 +267,10 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 					else
 						timer.schedule(connectTask, delay);
 				} catch (Exception e) {
-					log.error("", e);
+					LOG.error("Exception on scheduleConnectTask", e);
 				}
 				deviceStatus.setConnectTaskScheduled(true);
-				log.info("Connection setup task scheduled: delay=" + delay + ", period=" + period);
+				LOG.debug("Connection setup task scheduled: delay=" + delay + ", period=" + period);
 			}
 		}
 	}
@@ -298,10 +298,10 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				try {
 					timer.schedule(keepAliveTask, delay, period);
 				} catch (Exception e) {
-					log.error("", e);
+					LOG.error("Exception on scheduleKeepAliveTask", e);
 				}
 				deviceStatus.setKeepAliveTaskScheduled(true);
-				log.info("Periodic keep alive task scheduled: delay=" + delay + ", period=" + period);
+				LOG.debug("Periodic keep alive task scheduled: delay=" + delay + ", period=" + period);
 			}
 		}
 	}
@@ -330,22 +330,22 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 
 	private void connectTask(boolean isStartup) {
 		try {
-			log.info("M2M Connection setup task: isValid=" + deviceStatus.isValid() + ", isConnected=" + deviceStatus.isConnected());
+			LOG.debug("M2M Connection setup task: isValid=" + deviceStatus.isValid() + ", isConnected=" + deviceStatus.isConnected());
 			connect();
 			cancelConnectTask();
 			long keepAliveTimeout = connectionParams.getKeepAliveTimeout();
-			log.info("M2M Device connection has been established");
+			LOG.debug("M2M Device connection has been established");
 			if (keepAliveTimeout > 0) {
-				log.info("Periodic keep alive started " + keepAliveTimeout);
+				LOG.debug("Periodic keep alive started " + keepAliveTimeout);
 				restClient.setCredential(refreshNetworkConnectionUri.getHost(), refreshNetworkConnectionUri.getPort(),
 						connectionParams.getId(), connectionParams.getToken());
 				scheduleKeepAliveTask(keepAliveTimeout, keepAliveTimeout);
 			} else {
-				log.info("No keep alive requested " + keepAliveTimeout);
+				LOG.debug("No keep alive requested " + keepAliveTimeout);
 				cancelTimer();
 			}
 		} catch (Exception e) {
-			log.error("M2M Device connection setup task failed with exception", e);
+			LOG.error("M2M Device connection setup task failed with exception", e);
 			cancelKeepAliveTask();
 			long retryTimeout = deviceConfig.getConnectionRetryTimeout();
 			scheduleConnectTask(retryTimeout, retryTimeout);
@@ -363,23 +363,23 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 		synchronized (deviceStatus) {
 			if (deviceStatus.isKeepAliveTaskScheduled()) {
 				try {
-					log.info("M2M Connection keep alive task: isValid=" + deviceStatus.isValid() + ", isConnected="
+					LOG.debug("M2M Connection keep alive task: isValid=" + deviceStatus.isValid() + ", isConnected="
 							+ deviceStatus.isConnected());
 					boolean timeoutChanged = sendKeepAlive();
-					log.info("M2M Device connection keepalive sent");
+					LOG.debug("M2M Device connection keepalive sent");
 					if (timeoutChanged) {
 						cancelKeepAliveTask();
-						log.info("Timeout changed, cancelled scheduled keep alive task");
+						LOG.debug("Timeout changed, cancelled scheduled keep alive task");
 						long timeout = connectionParams.getKeepAliveTimeout();
 						if (timeout > 0) {
-							log.info("New periodic keep alive task scheduled  " + timeout);
+							LOG.debug("New periodic keep alive task scheduled  " + timeout);
 							scheduleKeepAliveTask(timeout, timeout);
 						} else {
 							cancelTimer();
 						}
 					}
 				} catch (Exception e) {
-					log.error("M2M Device connection keep alive failed with exception", e);
+					LOG.error("M2M Device connection keep alive failed with exception", e);
 					// All error are currently managed by restarting the connection; a more restrictive test could be performed
 					// e.g. (e instanceof M2MUnauthorizedException)
 					cancelKeepAliveTask();
@@ -394,14 +394,14 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 
 	private void startup() throws M2MServiceException {
 		synchronized (deviceStatus) {
-			log.info("M2M Device startup requested: " + deviceConfig.getProperties());
+			LOG.debug("M2M Device startup requested: " + deviceConfig.getProperties());
 			
 			if (!deviceConfig.isLocalOnly()) {		
 				if (!deviceConfig.isValid())
 					throw new M2MConfigException("Startup method failed: incomplete configuration");
 	
 				if (deviceStatus.isValid()) {
-					log.info("M2M Device already started");
+					LOG.debug("M2M Device already started");
 					return;
 				}
 				jaxbConverterFactory = HttpEntityXmlConverter.getConnectionConverter();
@@ -409,7 +409,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 					restClient = RestClient.get();
 					networkConnectionUri = new URI(deviceConfig.getConnectionBaseUri());
 				} catch (URISyntaxException e) {
-					M2MUtils.mapDeviceException(log, e, "Invalid base uri configuration");
+					M2MUtils.mapDeviceException(LOG, e, "Invalid base uri configuration");
 				}
 				restClient.setCredential(networkConnectionUri.getHost(), networkConnectionUri.getPort(),
 						deviceConfig.getConnectionId(), deviceConfig.getConnectionToken());
@@ -418,17 +418,20 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 			// First connection is scheduled so that OSGi framework startup is
 			// not blocked by timeout on network connection
 			notifyStartedStatusToListeners();
-			if (!deviceConfig.isLocalOnly())
+			if (!deviceConfig.isLocalOnly()) {
 				scheduleConnectTask(100, deviceConfig.getConnectionRetryTimeout());
-			else
-				log.info("M2M Device local only configuration");
-			log.info("M2M Device startup completed");
+				}
+			else {
+				LOG.debug("M2M Device local only configuration");
+			}
+			
+			LOG.debug("M2M Device startup completed");
 		}
 	}
 
 	private void shutdown() {
 		synchronized (deviceStatus) {
-			log.info("M2M Device shutdown requested");
+			LOG.debug("M2M Device shutdown requested");
 
 			cancelTimer();
 			if (deviceStatus.isConnected())
@@ -442,7 +445,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 			refreshNetworkConnectionUri = null;
 			deviceStatus.setValid(false);
 			notifyStartedStatusToListeners();
-			log.info("M2M Device shutdown completed");
+			LOG.debug("M2M Device shutdown completed");
 		}
 	}
 
@@ -452,7 +455,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				try {
 					deviceStatus.wait();
 				} catch (InterruptedException e) {
-					log.error("", e);
+					LOG.error("InterruptedException on waitForAllNetworkSclRequestsCompletion", e);
 				}
 		}
 	}
@@ -526,11 +529,11 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 			try {
 				startup();
 			} catch (M2MConfigException e) {
-				log.info("No valid configuration has been found");
+				LOG.warn("No valid configuration has been found");
 			} catch (Exception e) {
-				log.error("An error occcured while starting M2MDevice", e);
+				LOG.error("An error occcured while starting M2MDevice", e);
 			}
-		log.info("Added reference " + referenceCounter);
+		LOG.debug("Added reference " + referenceCounter);
 	}
 
 	public void removeReference() {
@@ -542,7 +545,7 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 		}
 		if (shutdownRequired)
 			shutdown();
-		log.info("Removed reference " + referenceCounter);
+		LOG.debug("Removed reference " + referenceCounter);
 	}
 
 	// M2MDevice interface implementation
