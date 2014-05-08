@@ -44,6 +44,9 @@ public interface GreenAtHomeApplianceService {
 	public IAppliance[] getDevices();
 
 	public Vector getInfos();
+	
+	//added for demo
+	public Vector getInfosDemo();
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
 
