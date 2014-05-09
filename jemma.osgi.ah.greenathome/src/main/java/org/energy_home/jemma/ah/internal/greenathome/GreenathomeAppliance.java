@@ -2709,8 +2709,35 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 			}
 			
 			if(simpleMeteringServer!=null){
-				
-				props.put("device_value_2", simpleMeteringServer.getIstantaneousDemand(getterContext));
+				//FIXME: I should consider divisor and multiplier to get the real instantaneousdeman value
+				/*
+				int divisor=1000;
+				try{
+					divisor=simpleMeteringServer.getDivisor(getterContext);
+				}catch(Exception e){
+					log.error("Error getting divisor for appliance",e);
+				}
+				int multiplier=1000;
+				try{
+					multiplier=simpleMeteringServer.getMultiplier(getterContext);
+				}catch(Exception e){
+					log.error("Error getting multiplier for appliance",e);
+				}
+				int realInstantaneousValue=(simpleMeteringServer.getIstantaneousDemand(getterContext)/divisor)*multiplier;				*/
+				//int realInstantaneousValue=simpleMeteringServer.getIstantaneousDemand(getterContext);
+				double realInstantaneousValue;
+				AttributeValueExtended attributeValue=null;
+				try {
+					realInstantaneousValue = this.readPower(peerAppliance);
+					if (realInstantaneousValue != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						 attributeValue= new AttributeValueExtended("IstantaneousDemands", new AttributeValue(attributeValue));
+
+				} catch (Exception e) {
+					realInstantaneousValue= 0.0;
+				}
+
+				log.debug("Calculated realInstantaneousDemand: "+realInstantaneousValue);
+				props.put("device_value_2", realInstantaneousValue);
 				
 			}else{
 				props.put("device_value_2","na");
