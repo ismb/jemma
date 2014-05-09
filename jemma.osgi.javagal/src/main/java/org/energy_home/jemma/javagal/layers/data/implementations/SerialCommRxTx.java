@@ -151,13 +151,12 @@ public class SerialCommRxTx implements IConnector {
 	 */
 	public void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
-			synchronized (serialPort.getOutputStream()) {
 				 if (serialPort.getOutputStream() != null) {
 					serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
 					serialPort.getOutputStream().flush();
 				} else
 					throw new Exception("Error on serial write - out == null");
-			}
+			
 		}
 	}
 
@@ -281,6 +280,7 @@ public class SerialCommRxTx implements IConnector {
 			skypMessage = false;
 		}
 
+		
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
