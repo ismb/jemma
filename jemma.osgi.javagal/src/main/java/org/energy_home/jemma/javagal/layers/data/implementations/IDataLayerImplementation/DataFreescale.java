@@ -200,7 +200,7 @@ public class DataFreescale implements IDataLayer {
 							} catch (Exception e) {
 								if (gal.getPropertiesManager().getDebugEnabled())
 									logger.error("Error on processMessages: " + e.toString());
-
+									e.printStackTrace();
 							}
 
 						} else
