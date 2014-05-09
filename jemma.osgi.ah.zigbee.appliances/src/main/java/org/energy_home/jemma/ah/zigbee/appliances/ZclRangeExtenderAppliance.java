@@ -15,25 +15,18 @@
  */
 package org.energy_home.jemma.ah.zigbee.appliances;
 
-import org.energy_home.jemma.ah.hac.ApplianceException;
-import org.energy_home.jemma.ah.hac.IEndPointTypes;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
-import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
-
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclRangeExtenderAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
-	private static final Log log = LogFactory.getLog(ZclRangeExtenderAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclRangeExtenderAppliance.class );
 
 	/*
 	 * try { IAppliance[] appliances =
@@ -47,11 +40,11 @@ public class ZclRangeExtenderAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
+		LOG.debug("ZclRangeExtenderAppliance attached");
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZclRangeExtenderAppliance detached");
 	}
 
 }

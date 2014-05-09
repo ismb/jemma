@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399621740730
+Bnd-LastModified: 1399623515434
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator

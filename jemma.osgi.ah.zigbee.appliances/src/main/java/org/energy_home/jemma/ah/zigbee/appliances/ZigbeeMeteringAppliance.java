@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.ah.zigbee.appliances;
 
+import java.util.Dictionary;
+
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationServer;
@@ -25,16 +27,13 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
-
-import java.util.Dictionary;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZigbeeMeteringAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
-	private static final Log log = LogFactory.getLog(ZigbeeMeteringAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZigbeeMeteringAppliance.class );
 
 	public ZigbeeMeteringAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
@@ -53,10 +52,10 @@ public class ZigbeeMeteringAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
+		LOG.debug("ZigbeeMeteringAppliance attached");
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZigbeeMeteringAppliance detached");
 	}
 }

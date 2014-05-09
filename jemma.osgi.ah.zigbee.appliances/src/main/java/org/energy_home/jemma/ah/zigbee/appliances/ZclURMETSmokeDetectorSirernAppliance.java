@@ -17,8 +17,6 @@ package org.energy_home.jemma.ah.zigbee.appliances;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
@@ -29,13 +27,15 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfiguration
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
 	private ZclIASZoneServer iasZoneServer;
 
-	private static final Log log = LogFactory.getLog(ZclURMETSmokeDetectorSirernAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclURMETSmokeDetectorSirernAppliance.class );
 
 	public ZclURMETSmokeDetectorSirernAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
@@ -49,14 +49,14 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 	}
 
 	protected synchronized void attached() {
-		log.debug("appliance attached");
+		LOG.debug("appliance attached");
 
 		Thread t = new Thread("setActualDriverJob") {
 			public void run() {
 				try {
 					setActualDriver();
 				} catch (ServiceClusterException e) {
-					log.error("exception", e);
+					LOG.error("exception on attached of ZclURMETSmokeDetectorSirernAppliance", e);
 				}
 			}
 		};
@@ -71,24 +71,24 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 				int zoneType = iasZoneServer.getZoneType(null);
 				switch (zoneType) {
 				case 0x0015:
-					log.debug("This is a Contact Switch IASZone Device");
+					LOG.debug("This is a Contact Switch IASZone Device");
 					break;
 					
 				case 0x002a:
-					log.debug("This is a Water Sensor IASZone Device");
+					LOG.debug("This is a Water Sensor IASZone Device");
 					break;
 					
 				default:
-					log.error("unknown Zone Type: " + zoneType);
+					LOG.error("unknown Zone Type: " + zoneType);
 					break;
 				}
 			} catch (ApplianceException e) {
-				log.error("exception while reading ZoneType attribute. " + e.getMessage());
+				LOG.error("exception while reading ZoneType attribute. " + e.getMessage(),e);
 			}
 		}
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZclURMETSmokeDetectorSirernAppliance detached");
 	}
 }
