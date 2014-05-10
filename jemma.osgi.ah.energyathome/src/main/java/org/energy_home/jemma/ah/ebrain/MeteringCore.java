@@ -34,7 +34,7 @@ import org.energy_home.jemma.shal.DeviceListener;
 import org.energy_home.jemma.shal.DeviceService;
 
 public class MeteringCore implements IMeteringListener, DeviceListener {
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( MeteringCore.class );
+	private static final Logger LOG = LoggerFactory.getLogger( MeteringCore.class );
 
 	private static final IOverloadStatusListener dummyOverloadListener = new IOverloadStatusListener() {
 		
@@ -174,7 +174,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				double summation = meteringProxy.getCurrentSummationDelivered(applianceId);
 				notifyCurrentSummationDelivered(applianceId, System.currentTimeMillis(), summation);
 				// TODO: complete/review logging
-				//BANANA LOG.debug("refreshCurrentSummationDeliveredSubscription - read power and summation for appliance " + applianceId		+ ": summation=" + summation);
+				LOG.debug("refreshCurrentSummationDeliveredSubscription - read power and summation for appliance " + applianceId		+ ": summation=" + summation);
 
 			}
 		}
@@ -190,7 +190,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				double summation = meteringProxy.getCurrentSummationReceived(applianceId);
 				notifyCurrentSummationReceived(applianceId, System.currentTimeMillis(), summation);
 				// TODO: complete/review logging
-				//BANANA LOG.debug("refreshCurrentSummationReceivedSubscription - read power and summation for appliance " + applianceId					+ ": received=" + summation);
+				LOG.debug("refreshCurrentSummationReceivedSubscription - read power and summation for appliance " + applianceId					+ ": received=" + summation);
 			}
 		}
 	}
@@ -218,7 +218,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				float power = meteringProxy.getIstantaneousDemand(applianceId);
 				notifyIstantaneousDemandPower(applianceId, System.currentTimeMillis(), power);
 				// TODO: complete/review logging
-				//BANANA LOG.debug("refreshInstantaneousDemandSubscription - read power and summation for appliance " + applianceId						+ ": power=" + power);
+				LOG.debug("refreshInstantaneousDemandSubscription - read power and summation for appliance " + applianceId						+ ": power=" + power);
 			}
 		}
 	}
@@ -257,12 +257,12 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				overloadStatusListener.notifyOverloadStatusUpdate(currentOverloadStatus);
 			}
 		} catch (Exception e) {
-			//BANANA LOG.debug("checkSmartInfosData error while checking wanrings", e);
+			LOG.debug("checkSmartInfosData error while checking wanrings", e);
 		}
 	}
 
 	public void periodicTask() {
-		//BANANA LOG.debug(String.format("Periodic task: %s", appliances));
+		LOG.debug(String.format("Periodic task: %s", appliances));
 		if (checkMeteringSubscriptions) {
 			for (ApplianceInfo appliance : appliances.values()) {
 				if (appliance.isAvailable()) {
@@ -273,7 +273,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 							//TODO: check merge, different values in 3.3.0
 							//if (System.currentTimeMillis() - ((SmartMeterInfo)appliance).getProducedEnergyTime() > 1500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - ((SmartMeterInfo)appliance).getProducedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
-								//BANANA LOG.warn(String.format("Periodic task - invalid current summation received subscription for appliance %s", appliance.getApplianceId()));
+								LOG.warn(String.format("Periodic task - invalid current summation received subscription for appliance %s", appliance.getApplianceId()));
 								refreshCurrentSummationReceivedSubscription(appliance);
 							}
 						}
@@ -282,20 +282,20 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 							//TODO: check merge, different values in 3.3.0
 							//if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 1500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
-								//BANANA LOG.warn(String.format("Periodic task - invalid current summation delivered subscription for appliance %s", appliance.getApplianceId()));
+								LOG.warn(String.format("Periodic task - invalid current summation delivered subscription for appliance %s", appliance.getApplianceId()));
 								refreshCurrentSummationDeliveredSubscription(appliance);
 							}
 
 							//TODO: check merge, different values in 3.3.0
 							//if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 1500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 2500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
-								//BANANA LOG.warn(String.format("Periodic task - invalid instantaneous demand subscription for appliance %s", appliance.getApplianceId()));
+								LOG.warn(String.format("Periodic task - invalid instantaneous demand subscription for appliance %s", appliance.getApplianceId()));
 								refreshInstantaneousDemandSubscription(appliance);
 							}
 						}
 						
 					} catch (Exception e) {
-						//BANANA LOG.warn(String.format("Periodic task error while initializing subscriptions for appliance %s",										appliance.getApplianceId()), e);
+						LOG.warn(String.format("Periodic task error while initializing subscriptions for appliance %s",										appliance.getApplianceId()), e);
 					}
 				}
 			}
@@ -317,7 +317,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				lastSmartInfoPollingTime = System.currentTimeMillis();	
 			}
 		} catch (Exception e) {
-			//BANANA LOG.error("periodicTask error while reading smart info instantaneous demand", e);
+			LOG.error("periodicTask error while reading smart info instantaneous demand", e);
 		}
 		// Always update forecast data for hourly produced energy (data are cached by cloudProxy locally)
 		if (smartInfoProduction != null)
@@ -418,11 +418,11 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 		
 		if (power == IMeteringProxy.INVALID_INSTANTANEOUS_POWER_VALUE ||
 				power == IMeteringProxy.INVALID_INSTANTANEOUS_POWER_STANDARD_VALUE) {
-			//BANANA LOG.warn(String.format("Invalid Instantaneous Demand %f, from %s, at %s", power, applianceId,					CalendarUtil.toSecondString(time)));
+			LOG.warn(String.format("Invalid Instantaneous Demand %f, from %s, at %s", power, applianceId,					CalendarUtil.toSecondString(time)));
 			try {
 				cloudProxy.storeEvent(applianceId, time, ICloudServiceProxy.EVENT_INVALID_INST_DEMAND_VALUE);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing event on HAP platform", e);
+				LOG.error("Error while storing event on HAP platform", e);
 			}
 		} else {
 			float formatting = getOrRetrieveDemandFormatting(appliance);
@@ -447,12 +447,12 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			return;	
 		
 		if (totalEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			//BANANA LOG.warn(String.format("Invalid Current Summation %f, from %s, at %s", totalEnergy, applianceId,					CalendarUtil.toSecondString(time)));
+			LOG.warn(String.format("Invalid Current Summation %f, from %s, at %s", totalEnergy, applianceId,					CalendarUtil.toSecondString(time)));
 			try {
 				cloudProxy.storeEvent(applianceId, time,
 						ICloudServiceProxy.EVENT_INVALID_CURRENT_SUMMATION_DELIVERED_VALUE);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing event on HAP platform", e);
+				LOG.error("Error while storing event on HAP platform", e);
 			}
 		} else {
 			float formatting = getOrRetrieveSummationFormatting(appliance);
@@ -462,7 +462,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				totalEnergy = IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE;
 		}
 
-		//BANANA LOG.debug(String.format("Current summation delivered %f, from %s, at %s", totalEnergy, applianceId,				CalendarUtil.toSecondString(time)));
+		LOG.debug(String.format("Current summation delivered %f, from %s, at %s", totalEnergy, applianceId,				CalendarUtil.toSecondString(time)));
 		//TODO: check merge, if condition was different
 		//if (totalEnergy != IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
 		EnergyCostInfo eci = appliance.updateEnergyCost(time, totalEnergy);
@@ -470,7 +470,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			try {
 				cloudProxy.storeDeliveredEnergy(applianceId, time, totalEnergy);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing delivered energy on HAP platform", e);
+				LOG.error("Error while storing delivered energy on HAP platform", e);
 			}
 		//TODO: check merge, 3 lines below were not in 3.3.0
 		//}
@@ -480,7 +480,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			try {
 				cloudProxy.storeDeliveredEnergyCostPowerInfo(applianceId, eci, powerInfo);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing energy cost power info on HAP platform", e);
+				LOG.error("Error while storing energy cost power info on HAP platform", e);
 			}
 		}
 	}
@@ -489,19 +489,19 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 	public void notifyCurrentSummationReceived(String applianceId, long time, double totalEnergy) {
 		//TODO: check merge, this 4 lines (if block) was in 3.3.0
 		if (peakProducedPower <= 0) {
-			//BANANA LOG.warn("Received CurrentSummationReceived value with invalid configuration (peak produced power <= 0)");
+			LOG.warn("Received CurrentSummationReceived value with invalid configuration (peak produced power <= 0)");
 			return;
 		}
 			
 		SmartMeterInfo appliance = (SmartMeterInfo)getApplianceInfo(applianceId);
 		
 		if (totalEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			//BANANA LOG.warn(String.format("Invalid Current Summation %f, from %s, at %s", totalEnergy, applianceId,					CalendarUtil.toSecondString(time)));
+			LOG.warn(String.format("Invalid Current Summation %f, from %s, at %s", totalEnergy, applianceId,					CalendarUtil.toSecondString(time)));
 			try {
 				cloudProxy.storeEvent(applianceId, time,
 						ICloudServiceProxy.EVENT_INVALID_CURRENT_SUMMATION_RECEIVED_VALUE);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing event on HAP platform", e);
+				LOG.error("Error while storing event on HAP platform", e);
 			}
 		} else {
 			float formatting = getOrRetrieveSummationFormatting(appliance);
@@ -511,13 +511,13 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 				totalEnergy = IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE;
 		}
 
-		//BANANA LOG.debug(String.format("Current summation received %f, from %s, at %s", totalEnergy, applianceId,				CalendarUtil.toSecondString(time)));
+		LOG.debug(String.format("Current summation received %f, from %s, at %s", totalEnergy, applianceId,				CalendarUtil.toSecondString(time)));
 		
 		if (totalEnergy != IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
 			try {
 				cloudProxy.storeReceivedEnergy(applianceId, time, totalEnergy);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing received energy on HAP platform", e);
+				LOG.error("Error while storing received energy on HAP platform", e);
 			}
 		}
 		
@@ -527,7 +527,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			try {
 				cloudProxy.storeReceivedEnergyCostPowerInfo(applianceId, eci, powerInfo);
 			} catch (Exception e) {
-				//BANANA LOG.error("Error while storing energy cost power info on HAP platform", e);
+				LOG.error("Error while storing energy cost power info on HAP platform", e);
 			}
 		}
 		
@@ -585,7 +585,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			return 0;
 		float producedPower = smartInfoProduction.getMeanProducedPower();
 		if (producedPower > peakProducedPower) {
-			//BANANA LOG.error("Produced power greater than configured peak power");
+			LOG.error("Produced power greater than configured peak power");
 			producedPower = peakProducedPower;
 		}
 		return producedPower;
@@ -596,7 +596,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			return 0;
 		float soldPower = smartInfoExchange.getMeanProducedPower();
 		if (soldPower > peakProducedPower) {
-			//BANANA LOG.error("Sold power greater than configured peak power");
+			LOG.error("Sold power greater than configured peak power");
 			soldPower = peakProducedPower;
 		}
 		

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ESPGwTodayCache extends ESPContainersDataUtils {	
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPGwTodayCache.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ESPGwTodayCache.class );
 	
 	private static final int ENERGY_DATA_TYPE = 0;
 	private static final int COST_DATA_TYPE = 1;
@@ -59,7 +59,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 		CacheQueryResult getCachedData(long startId, long endId, int dataType) {
 			if (startTime == null) {
-				//BANANA LOG.warn("getCachedData called with null startTime/endTime for CachedData class, appliance " + applianceId);
+				LOG.warn("getCachedData called with null startTime/endTime for CachedData class, appliance " + applianceId);
 				return null;
 			}
 			boolean isComplete = (startId >= startTime.getTimeInMillis()) && (endId <= endTime.getTimeInMillis());		
@@ -96,7 +96,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 		
 		void mergeData(List<ContentInstance> resultList, CacheQueryResult cachedResult, int resolution) {
 			if (startTime == null) {
-				//BANANA LOG.warn("mergeData called with null startTime/endTime for CachedData class, appliance " + applianceId);
+				LOG.warn("mergeData called with null startTime/endTime for CachedData class, appliance " + applianceId);
 				return;
 			}
 			long startId = 0;
@@ -181,13 +181,13 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 			boolean logCachedData = false;
 			synchronized (aeci) {
 				if (aeci == null || !aeci.isValid()) {
-					//BANANA LOG.warn("Cache update called with an invalid or null energy cost info for appliance " + applianceId);
+					LOG.warn("Cache update called with an invalid or null energy cost info for appliance " + applianceId);
 					return;
 				}
 				long aeciStartTime, aeciEndTime;
 				int aeciStartHourOfDay, aeciStartDayOfYear, aeciStartYear;	
 				int aeciEndHourOfDay, aeciEndDayOfYear, aeciEndYear;
-				//BANANA LOG.debug("Starting cache update for appliance " + applianceId);
+				LOG.debug("Starting cache update for appliance " + applianceId);
 				aeciStartTime = aeci.getStartTime();
 				calendar.setTimeInMillis(aeciStartTime);
 				aeciStartHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
@@ -199,7 +199,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 				aeciEndDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 				aeciEndYear = calendar.get(Calendar.YEAR);
 				
-				//BANANA LOG.debug("Cache update for appliance " + applianceId + " - finished date/time initialization - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
+				LOG.debug("Cache update for appliance " + applianceId + " - finished date/time initialization - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
 				execTimeMillis = System.currentTimeMillis();			
 	
 				if (startTime == null) {
@@ -216,7 +216,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 					hourlyCachedData.clear();
 					aeci.copyAndReset();
 					hourlyCachedData.add(aeci);
-					//BANANA LOG.info("New day - energy and cost cache reset " + applianceId);
+					LOG.info("New day - energy and cost cache reset " + applianceId);
 					return;
 				} 
 	
@@ -228,13 +228,13 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 						hourlyCachedData.set(hourlyCachedData.size()-1, lastEci);	
 					hourlyCachedData.add(aeci);
 					logCachedData = true;
-					//BANANA LOG.info("New hour - energy and cost cache update " + applianceId);
+					LOG.info("New hour - energy and cost cache update " + applianceId);
 				} 
 			}
 
-			//BANANA LOG.debug("Cache update for appliance " + applianceId + " - energy and cost cache update finished - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
+			LOG.debug("Cache update for appliance " + applianceId + " - energy and cost cache update finished - elapsed time in millisec: " + (System.currentTimeMillis()-execTimeMillis));
 			if (logCachedData) {
-				//BANANA LOG.debug(getPrintableCacheData());
+				LOG.debug(getPrintableCacheData());
 			}	
 		}
 	}
@@ -247,18 +247,18 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 	
 	public void add(String applianceId, EnergyCostInfo aeci) {
 		cacheMap.put(applianceId, new CachedData(applianceId, aeci));
-		//BANANA LOG.debug("Added gw cache for appliance " + applianceId);
+		LOG.debug("Added gw cache for appliance " + applianceId);
 	}
 	
 	public void remove(String applianceId) {
 		cacheMap.remove(applianceId);
-		//BANANA LOG.debug("Removed gw cache for appliance " + applianceId);
+		LOG.debug("Removed gw cache for appliance " + applianceId);
 	}
 	
 	public void update(String applianceId) {
 		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			//BANANA LOG.warn("Update on gw cache called with an invalid appliance pid " + applianceId);
+			LOG.warn("Update on gw cache called with an invalid appliance pid " + applianceId);
 			return;
 		}
 		cache.update();
@@ -267,7 +267,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 	public CacheQueryResult getHourlyEnergyConsumptionResult(String applianceId, long startInstanceId, long endInstanceId) {	
 		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			//BANANA LOG.warn("getHourlyEnergyConsumptionResult called with an invalid appliance pid " + applianceId);
+			LOG.warn("getHourlyEnergyConsumptionResult called with an invalid appliance pid " + applianceId);
 			return null;
 		}
 		if (endInstanceId < startInstanceId)
@@ -279,7 +279,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 	public CacheQueryResult getHourlyEnergyCostResult(String applianceId, long startInstanceId, long endInstanceId) {
 		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			//BANANA LOG.warn("getHourlyEnergyCostResult called with an invalid appliance pid " + applianceId);
+			LOG.warn("getHourlyEnergyCostResult called with an invalid appliance pid " + applianceId);
 			return null;
 		}
 		if (endInstanceId < startInstanceId)
@@ -293,7 +293,7 @@ public class ESPGwTodayCache extends ESPContainersDataUtils {
 			return;
 		CachedData cache = cacheMap.get(applianceId);
 		if (cache == null) {
-			//BANANA LOG.warn("merge called with an invalid appliance pid " + applianceId);
+			LOG.warn("merge called with an invalid appliance pid " + applianceId);
 			return;
 		}
 		cache.mergeData(resultList, cachedResult, resolution);

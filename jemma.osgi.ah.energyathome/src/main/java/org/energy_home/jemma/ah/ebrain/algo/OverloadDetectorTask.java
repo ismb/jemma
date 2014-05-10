@@ -40,7 +40,7 @@ public class OverloadDetectorTask extends TimerTask {
     public static final float REACTIVATION_PRIORITY_WEIGHT = SUSPENSION_PRIORITY_WEIGHT / 100;
 	public static final int ELAPSED_TIME_WINDOW = 60 * 1000;
 	
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( OverloadDetectorTask.class );
+	private static final Logger LOG = LoggerFactory.getLogger( OverloadDetectorTask.class );
 	
 	private Timer timer = new Timer(true);
 	private OverloadDetectorListener listener;
@@ -83,18 +83,18 @@ public class OverloadDetectorTask extends TimerTask {
 	public void run() {
 		try {
 			float power = computeTotalPowerUsage();
-			//BANANA LOG.debug("TotalPowerUsage: " + power);
+			LOG.debug("TotalPowerUsage: " + power);
 			currentTime = System.currentTimeMillis();
 
 			// check suspendable appliance and report the 1st appliance to switch based on priority
 			if (power > upperPowerThreshold) { 
-				//BANANA LOG.debug("upperPowerThreshold exceeded by: " + (power - upperPowerThreshold));
+				LOG.debug("upperPowerThreshold exceeded by: " + (power - upperPowerThreshold));
 				if (canNotifyEvent(OVERLOAD_OVER_EVENT)) {
 					checkOverload();
 				}
 			// check resumable appliance and report the 1st appliance to switch based on priority
 			} else if (power < lowerPowerThreshold) {
-				//BANANA LOG.debug("lowerPowerThreshold exceeded by: " + (lowerPowerThreshold - power));
+				LOG.debug("lowerPowerThreshold exceeded by: " + (lowerPowerThreshold - power));
 				if (canNotifyEvent(OVERLOAD_UNDER_EVENT)) {
 					checkUnderload();
 				}
@@ -102,12 +102,12 @@ public class OverloadDetectorTask extends TimerTask {
 				if (canNotifyEvent(SAFE_THRESHOLD_EVENT)) {
 					lastNotifiedEvent = SAFE_THRESHOLD_EVENT;
 					lastNotifiedTimeTime = currentTime;
-					//BANANA LOG.debug("notify overload re-entered.");
+					LOG.debug("notify overload re-entered.");
 					listener.notifySafeLoad();
 				}
 			}
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on run", e);
+			LOG.error("Exception on run", e);
 		}
 
 	}
@@ -122,7 +122,7 @@ public class OverloadDetectorTask extends TimerTask {
 		for (SmartAppliance a : appliances) {
 			if (a.getState() == SmartAppliance.STATE_SUSPENDED) {
 				float weighedPriority = weighedActivationPriority(a);
-				//BANANA LOG.debug("weighed Activation Priority " + a.getApplianceId() + " = " + weighedPriority);
+				LOG.debug("weighed Activation Priority " + a.getApplianceId() + " = " + weighedPriority);
 				
 				if (weighedPriority > weighedCandidate) {
 					weighedCandidate = weighedPriority;
@@ -134,7 +134,7 @@ public class OverloadDetectorTask extends TimerTask {
 			candidate.setState(SmartAppliance.STATE_PENDING_ACTIVATION);
 			lastNotifiedEvent = OVERLOAD_UNDER_EVENT;
 			lastNotifiedTimeTime = currentTime;
-			//BANANA LOG.debug("notify underload for appliance: " + candidate.getApplianceId());
+			LOG.debug("notify underload for appliance: " + candidate.getApplianceId());
 			listener.notifyUnderload(candidate);
 		}
 	}
@@ -146,7 +146,7 @@ public class OverloadDetectorTask extends TimerTask {
 		for (SmartAppliance a : appliances) {
 			if (a.getState() == SmartAppliance.STATE_ACTIVE) {
 				float weighedPriority = weighedSustensionPriority(a);
-				//BANANA LOG.debug("weighed Suspension Priority " + a.getApplianceId() + " = " + weighedPriority);
+				LOG.debug("weighed Suspension Priority " + a.getApplianceId() + " = " + weighedPriority);
 				
 				if (weighedPriority > weighedCandidate) {
 					weighedCandidate = weighedPriority;
@@ -158,7 +158,7 @@ public class OverloadDetectorTask extends TimerTask {
 			candidate.setState(SmartAppliance.STATE_PENDING_SUSPENSION);
 			lastNotifiedEvent = OVERLOAD_OVER_EVENT;
 			lastNotifiedTimeTime = currentTime;
-			//BANANA LOG.debug("notify overload for appliance: " + candidate.getApplianceId());
+			LOG.debug("notify overload for appliance: " + candidate.getApplianceId());
 			listener.notifyOverload(candidate);
 		}
 	}
@@ -168,7 +168,7 @@ public class OverloadDetectorTask extends TimerTask {
 		float weighedPower = POWER_USAGE_WEIGHT * a.getIstantaneousPower();
 		float weighedTime = ELAPSED_TIME_SWITCH_WEIGHT * Math.min(currentTime - a.getLastStateChange(), ELAPSED_TIME_WINDOW);
 		float weighedPriority = SUSPENSION_PRIORITY_WEIGHT / (1 + a.getPriority());
-		//BANANA LOG.debug(String.format("weighed suspension: Pow[%.2f] Time[%.2f] Pry[%.2f]", weighedPower, weighedTime, weighedPriority));
+		LOG.debug(String.format("weighed suspension: Pow[%.2f] Time[%.2f] Pry[%.2f]", weighedPower, weighedTime, weighedPriority));
 		return weighedPower + weighedTime + weighedPriority;
 	}
 	
@@ -177,7 +177,7 @@ public class OverloadDetectorTask extends TimerTask {
 		float weighedPower = POWER_USAGE_WEIGHT * (upperPowerThreshold - a.getIstantaneousPower()); // a lower consumption is preferred
 		float weighedTime = ELAPSED_TIME_SWITCH_WEIGHT * Math.min(currentTime - a.getLastStateChange(), ELAPSED_TIME_WINDOW);
 		float weighedPriority = REACTIVATION_PRIORITY_WEIGHT * a.getPriority();
-		//BANANA LOG.debug(String.format("weighed reactivation: Pow[%.2f] Time[%.2f] Pry[%.2f]", weighedPower, weighedTime, weighedPriority));
+		LOG.debug(String.format("weighed reactivation: Pow[%.2f] Time[%.2f] Pry[%.2f]", weighedPower, weighedTime, weighedPriority));
 		return weighedPower + weighedTime + weighedPriority;		
 	}
 	

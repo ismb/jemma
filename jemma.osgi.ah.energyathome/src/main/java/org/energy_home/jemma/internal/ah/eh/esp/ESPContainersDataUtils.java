@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ESPContainersDataUtils {
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPContainersDataUtils.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ESPContainersDataUtils.class );
 	
 	public static final long FIVE_MINUTES_IN_MILLISEC = 5*60000l; 
 	
@@ -56,7 +56,7 @@ public class ESPContainersDataUtils {
 //		if (normalizedEndTime-nextTime <= 1000) {
 //			// This hack is necessary to manage some of the hap server approximation errors
 //			normalizedEndTime = getNormalizedEndTime(c, nextTime+1000, resolution);
-//			//BANANA LOG.warn("Hap millisecond approximation error");
+//			LOG.warn("Hap millisecond approximation error");
 //		}
 		int endDst = c.get(Calendar.DST_OFFSET);
 		
@@ -65,11 +65,11 @@ public class ESPContainersDataUtils {
 		if (lastAddedItems < 0 && itemsToBeAdded + lastAddedItems >= 0) {
 			// This hack is necessary to manage some of the hap server approximation on milliseconds
 			itemsToBeAdded = itemsToBeAdded + lastAddedItems;
-			//BANANA LOG.warn("getNextItemsToAdd negative value compensated");
+			LOG.warn("getNextItemsToAdd negative value compensated");
 		}
 		int itemsAdded = 0;
 		if (itemsToBeAdded < 0) {
-			//BANANA LOG.warn("getNextItemsToAdd returned a negative value: " + itemsToBeAdded);
+			LOG.warn("getNextItemsToAdd returned a negative value: " + itemsToBeAdded);
 			itemsAdded = itemsToBeAdded;
 		} else if (itemsToBeAdded > 0) {
 			if (resolution == ESPService.HOUR_RESOLUTION && endDst > startDst) {
@@ -167,7 +167,7 @@ public class ESPContainersDataUtils {
 			endDst = c.get(Calendar.DST_OFFSET);
 			additionalHours = endDst - startDst;
 			if (additionalHours != 0)
-				//BANANA LOG.debug("Legal/solar switch error correction: " + additionalHours);
+				LOG.debug("Legal/solar switch error correction: " + additionalHours);
 			result = (int) ((normalizedEndTime - normalizedStartTime + additionalHours) / DateUtils.MILLISEC_IN_ONE_DAY) + 1;
 			break;
 		case ESPService.HOUR_RESOLUTION:
@@ -177,7 +177,7 @@ public class ESPContainersDataUtils {
 			endDst = c.get(Calendar.DST_OFFSET);
 			additionalHours = endDst - startDst;
 			if (additionalHours != 0)
-				//BANANA LOG.debug("Legal/solar switch error correction: " + additionalHours);
+				LOG.debug("Legal/solar switch error correction: " + additionalHours);
 			result = (int) ((normalizedEndTime - normalizedStartTime + additionalHours) / DateUtils.MILLISEC_IN_ONE_HOUR) + 1;
 			break;
 		}
@@ -186,7 +186,7 @@ public class ESPContainersDataUtils {
 		}
 		
 		if (result > 50) {
-			//BANANA LOG.warn("getResultListSize return more than 50 results");
+			LOG.warn("getResultListSize return more than 50 results");
 		}
 		return result;
 	}
@@ -262,7 +262,7 @@ public class ESPContainersDataUtils {
 			ci.setCreationTime(System.currentTimeMillis());
 			ci.setId(id);
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on getDefaultContentInstance", e);
+			LOG.error("Exception on getDefaultContentInstance", e);
 		} 
 		return ci;
 	}
@@ -399,7 +399,7 @@ public class ESPContainersDataUtils {
 				if (content != null && checkDuration(c, contentInstance.getId().longValue(), content.getDuration(), resolution))
 					resultList.add(contentInstance);
 				else {
-					//BANANA LOG.debug("getNormalizedItems - Added null item,  invalid duration: value=" + content.getValue() +  							", startTime=" + contentInstance.getId().longValue() + ", duration=" + content.getDuration());
+					LOG.debug("getNormalizedItems - Added null item,  invalid duration: value=" + content.getValue() +  							", startTime=" + contentInstance.getId().longValue() + ", duration=" + content.getDuration());
 					resultList.add(null);
 				}
 

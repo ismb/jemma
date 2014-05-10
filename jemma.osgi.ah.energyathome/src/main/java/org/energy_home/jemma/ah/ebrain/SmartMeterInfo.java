@@ -22,8 +22,7 @@ import org.energy_home.jemma.shal.DeviceInfo;
 public class SmartMeterInfo extends ApplianceInfo {
 	//TODO: check merge, line below not in 3.3.0
 	//public static final int PRODUCED_ENERGY_MIN_INTERVAL = 10000;//MILLISECONDS_IN_MINUTE;
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( SmartMeterInfo.class );
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( SmartMeterInfo.class );
+	private static final Logger LOG = LoggerFactory.getLogger( SmartMeterInfo.class );
 	
 	public SmartMeterInfo(DeviceInfo info) {
 		super(info);
@@ -48,7 +47,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 	
 	public EnergyCostInfo updateEnergyCost(long newTime, double newEnergy) {
 		if (nextTotalEnergyValidValues == 0) {
-			//BANANA LOG.debug("updateEnergyCost discarded value");
+			LOG.debug("updateEnergyCost discarded value");
 			return null;
 		}
 		if (nextTotalEnergyValidValues > 0)
@@ -58,7 +57,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 	
 	public EnergyCostInfo updateProducedEnergy(long newTime, double newEnergy) {
 		if (nextProducedEnergyValidValues == 0) {
-			//BANANA LOG.debug("updateProducedEnergy discarded value");
+			LOG.debug("updateProducedEnergy discarded value");
 			return null;
 		}
 		if (nextProducedEnergyValidValues > 0)
@@ -66,14 +65,14 @@ public class SmartMeterInfo extends ApplianceInfo {
 		
 		EnergyCostInfo eci = null;
 		if (newTime < lastValidProducedEnergyTime) {
-			//BANANA LOG.warn(String.format("updateProducedEnergy: received new time value %d before last valid time value %d, returning null", newTime, lastValidProducedEnergyTime));
+			LOG.warn(String.format("updateProducedEnergy: received new time value %d before last valid time value %d, returning null", newTime, lastValidProducedEnergyTime));
 			return eci;
 		}
 		
 		lastProducedEnergyNotificationTime = newTime;
 		
 		if (newEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			//BANANA LOG.debug("updateProducedEnergy: received INVALID_ENERGY_VALUE, returning null");
+			LOG.debug("updateProducedEnergy: received INVALID_ENERGY_VALUE, returning null");
 			return eci;
 		}
 		
@@ -82,7 +81,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 			//TODO: check merge, if condition was different in 3.3.0
 			//if (elapsedTime < PRODUCED_ENERGY_MIN_INTERVAL) {
 			if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-				//BANANA LOG.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
+				LOG.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
 				return eci;
 			}	
 			
@@ -95,7 +94,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 			meanPower = (float)(MILLISECONDS_IN_HOUR * energyDelta / elapsedTime);
 		
 		} else {
-			//BANANA LOG.warn(String.format("updateProducedEnergy: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", newTime, elapsedTime));
+			LOG.warn(String.format("updateProducedEnergy: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", newTime, elapsedTime));
 			accumulatedProducedEnergy.reset(newTime);
 			meanPower = 0;
 		}
