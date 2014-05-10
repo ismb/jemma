@@ -36,7 +36,7 @@ import org.energy_home.jemma.shal.DeviceInfo;
 
 //public class EnergyBrainCore extends MeteringCore implements IPowerAndControlListener {
 public class EnergyBrainCore extends MeteringCore implements IPowerAndControlListener {
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( EnergyBrainCore.class );
+	private static final Logger LOG = LoggerFactory.getLogger( EnergyBrainCore.class );
 	
 	public static final long SCHEDULER_RUNNING_TIME = 3000;
 	public static final int SCHEDULER_SWARM_SIZE = 10;
@@ -135,8 +135,8 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		// check to see if this calculation refers to the latest scheduling notification 
 		long applianceScheduleTime = ppi.getApplianceScheduleTime();
 		boolean isSchedulePrice = Math.abs(priceRequestTime - applianceScheduleTime) < TIME_TOLERANCE_EQUALITY;
-		//BANANA LOG.debug("is price referring to latest schedule: " + isSchedulePrice);
-		//BANANA LOG.debug("start appliance time = " + CalendarUtil.toMinuteString(c));
+		LOG.debug("is price referring to latest schedule: " + isSchedulePrice);
+		LOG.debug("start appliance time = " + CalendarUtil.toMinuteString(c));
 		
 		EnergyPhaseInfo[] phases = ppi.getEnergyPhases();
 		float maxPeakPower = 0;
@@ -165,7 +165,7 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		}
 		cost = dailyTariff.computeCost(c, energyAllocation);
 
-		//BANANA LOG.debug("cost " + cost);
+		LOG.debug("cost " + cost);
 		
 		// check potential overload
 		float available = getCurrentAvailablePower();
@@ -257,19 +257,19 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 			SwarmStatistics ss = null;//new SwarmStatistics();
     		int iterations = swarm.run(SCHEDULER_RUNNING_TIME, ss);
 
-    		//BANANA LOG.debug(String.format("Running time %d milliseconds, particles %d\n", SCHEDULER_RUNNING_TIME, SCHEDULER_SWARM_SIZE));
-    		//BANANA LOG.debug(ss + "total iterations: " + iterations);
-    		//BANANA LOG.debug("leader overload " + swarm.getLeastOverload());
-    		//BANANA LOG.debug("leader cost " + swarm.getLeastCost());
-    		//BANANA LOG.debug("leader tardiness " + swarm.getLeastTardiness());
-    		//BANANA LOG.debug("leader penalty " + swarm.getLeastPenalty());
+    		LOG.debug(String.format("Running time %d milliseconds, particles %d\n", SCHEDULER_RUNNING_TIME, SCHEDULER_SWARM_SIZE));
+    		LOG.debug(ss + "total iterations: " + iterations);
+    		LOG.debug("leader overload " + swarm.getLeastOverload());
+    		LOG.debug("leader cost " + swarm.getLeastCost());
+    		LOG.debug("leader tardiness " + swarm.getLeastTardiness());
+    		LOG.debug("leader penalty " + swarm.getLeastPenalty());
 
-    		//BANANA LOG.debug(ppi.toString());
+    		LOG.debug(ppi.toString());
     		
     		return ppi.getProposedScheduledEnergyPhases();
 		
 		} catch (Exception e) {
-			//BANANA LOG.error("Excepion on runSchedule",e);
+			LOG.error("Excepion on runSchedule",e);
 		}
 		return null;
 	}
@@ -293,7 +293,7 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		try {
 			getCloudServiceProxy().storeApplianceStatistics(applianceId, timestamp, applianceLog);
 		} catch (Exception e) {
-			//BANANA LOG.error("Error while storing appliance statistics on HAP platform", e);
+			LOG.error("Error while storing appliance statistics on HAP platform", e);
 		}
 	}
 	

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399555809122
+Bnd-LastModified: 1399714862442
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.osgi.utils.Activator
@@ -28,22 +28,23 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  l,javax.crypto,javax.crypto.spec,javax.xml.bind,javax.xml.bind.annotati
  on,javax.xml.bind.annotation.adapters,javax.xml.bind.helpers,javax.xml.
  datatype;resolution:=optional,javax.xml.namespace,org.apache.commons.co
- dec;version="[1.3,2)",org.apache.commons.logging;version="[1.1,2)",org.
- apache.http;resolution:=optional;version="[4.1,5)",org.apache.http.auth
- ;resolution:=optional;version="[4.1,5)",org.apache.http.client;resoluti
- on:=optional;version="[4.1,5)",org.apache.http.client.methods;resolutio
- n:=optional;version="[4.1,5)",org.apache.http.conn;resolution:=optional
- ;version="[4.1,5)",org.apache.http.conn.scheme;resolution:=optional;ver
- sion="[4.1,5)",org.apache.http.conn.ssl;resolution:=optional;version="[
- 4.1,5)",org.apache.http.impl.auth;resolution:=optional;version="[4.1,5)
- ",org.apache.http.impl.client;resolution:=optional;version="[4.1,5)",or
- g.apache.http.impl.conn.tsccm;resolution:=optional;version="[4.1,5)",or
- g.apache.http.params;resolution:=optional;version="[4.1,5)",org.apache.
- http.protocol;resolution:=optional;version="[4.1,5)",org.apache.http.ut
- il;resolution:=optional;version="[4.1,5)",org.eclipse.osgi.framework.co
- nsole;version="1.0.0",org.energy_home.jemma.utils.datetime;resolution:=
- optional;version="[1.0,2)",org.energy_home.jemma.utils.thread;resolutio
- n:=optional;version="[1.0,2)",org.osgi.framework;version="1.3.0"
+ dec;version="[1.3,2)",org.apache.commons.logging;resolution:=optional;v
+ ersion="[1.1,2)",org.apache.http;resolution:=optional;version="[4.1,5)"
+ ,org.apache.http.auth;resolution:=optional;version="[4.1,5)",org.apache
+ .http.client;resolution:=optional;version="[4.1,5)",org.apache.http.cli
+ ent.methods;resolution:=optional;version="[4.1,5)",org.apache.http.conn
+ ;resolution:=optional;version="[4.1,5)",org.apache.http.conn.scheme;res
+ olution:=optional;version="[4.1,5)",org.apache.http.conn.ssl;resolution
+ :=optional;version="[4.1,5)",org.apache.http.impl.auth;resolution:=opti
+ onal;version="[4.1,5)",org.apache.http.impl.client;resolution:=optional
+ ;version="[4.1,5)",org.apache.http.impl.conn.tsccm;resolution:=optional
+ ;version="[4.1,5)",org.apache.http.params;resolution:=optional;version=
+ "[4.1,5)",org.apache.http.protocol;resolution:=optional;version="[4.1,5
+ )",org.apache.http.util;resolution:=optional;version="[4.1,5)",org.ecli
+ pse.osgi.framework.console;version="1.0.0",org.energy_home.jemma.utils.
+ datetime;resolution:=optional;version="[1.0,2)",org.energy_home.jemma.u
+ tils.thread;resolution:=optional;version="[1.0,2)",org.osgi.framework;v
+ ersion="1.3.0",org.slf4j;version="[1.7,2)"
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0

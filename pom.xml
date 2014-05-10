@@ -96,7 +96,7 @@
 		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.12</org.energy-home.jemma.osgi.ah.webui.base.version>
 		<org.energy-home.jemma.osgi.javagal.version>2.0.1</org.energy-home.jemma.osgi.javagal.version>
 		<org.ops4j.pax.logging.version>1.7.2</org.ops4j.pax.logging.version>
-		<org.slf4j.version>1.7.6</org.slf4j.version>
+		<org.slf4j.version>1.7.7</org.slf4j.version>
 	</properties>
 
 	<modules>
@@ -336,6 +336,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${org.slf4j.version}</version>
+			<!-- http://www.captaindebug.com/2012/01/slf4j-dependencies-and.html#.U24JJnWSzqc-->
+			 <exclusions>
+				 <exclusion>
+				     <groupId>log4j</groupId>
+				     <artifactId>log4j</artifactId>
+				 </exclusion>
+			  </exclusions>			
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.confman</groupId>

@@ -31,7 +31,7 @@ import org.energy_home.jemma.utils.datetime.DateUtils;
 
 //FIXME is this related to Configuration aspects ? if so we should harmonize with ConfigAdmin
 public class ESPConfiguration {
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( ESPConfiguration.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ESPConfiguration.class );
 	
 	private static final String OSGI_INSTANCE_AREA = "osgi.instance.area";
 	private static final String OSGI_CONFIGURATION_AREA = "osgi.configuration.area";
@@ -71,7 +71,7 @@ public class ESPConfiguration {
 				configProperties.load(new FileInputStream(f));
 			}
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on loadProperties", e);
+			LOG.error("Exception on loadProperties", e);
 			throw new ESPException("Problems while loading ESP configuration parameters");
 		}		
 	}
@@ -84,7 +84,7 @@ public class ESPConfiguration {
 				f.createNewFile();
 				configProperties.setProperty(INITIAL_TIME_PROPERTY_NAME, Long.toString(System.currentTimeMillis()));
 			} catch (Exception e) {
-				//BANANA LOG.error("Exception on saveProperties", e);
+				LOG.error("Exception on saveProperties", e);
 				configProperties.setProperty(INITIAL_TIME_PROPERTY_NAME, null);
 				throw new ESPException("Config file creation failed: " + f.getAbsolutePath());
 			}
@@ -101,7 +101,7 @@ public class ESPConfiguration {
 				if (fos != null)
 					fos.close();
 			} catch (IOException e) {
-				//BANANA LOG.error("Exception on saveProperties", e);
+				LOG.error("Exception on saveProperties", e);
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class ESPConfiguration {
 			if (strResult != null)
 				result = Long.valueOf(strResult);
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on getInitialConfigurationTime", e);
+			LOG.error("Exception on getInitialConfigurationTime", e);
 		}
 		return result;
 	}
@@ -125,7 +125,7 @@ public class ESPConfiguration {
 			if (strResult != null)
 				result = Boolean.parseBoolean(strResult);
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on getUseLocalCache", e);
+			LOG.error("Exception on getUseLocalCache", e);
 		}
 		return result;
 	}
@@ -194,7 +194,7 @@ public class ESPConfiguration {
 						0 : Float.parseFloat(peakProducedPowerProperty);;
 				configParameters = new ESPConfigParameters(contractualPowerThreashold, peakProducedPower);
 			} catch (Exception e) {
-				//BANANA LOG.error("Exception on ESPConfigParameters", e);
+				LOG.error("Exception on ESPConfigParameters", e);
 			}
 		}
 		return configParameters;

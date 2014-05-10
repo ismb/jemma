@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * of the latest received profile (to evolve into a set of profiles).
  */
 public class SmartAppliance {
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( SmartAppliance.class );
+	private static final Logger LOG = LoggerFactory.getLogger( SmartAppliance.class );
 	
 	public static final short STATE_UNKNOWN = 0;
 	public static final short STATE_OFF = 1; // switched off by the user.
@@ -112,7 +112,7 @@ public class SmartAppliance {
 		lastNotificationTime = newTime;
 		EnergyCostInfo eci = null;
 		if (newEnergy == INVALID_ENERGY_VALUE) {
-			//BANANA LOG.debug("received INVALID_ENERGY_VALUE, returning null");
+			LOG.debug("received INVALID_ENERGY_VALUE, returning null");
 			return eci;
 		}
 		
@@ -120,7 +120,7 @@ public class SmartAppliance {
 			long elapsedTime = newTime - lastValidEnergyTime;
 			if (elapsedTime > 0 && elapsedTime < MAX_VALID_EPOC_THRESHOLD) {
 				if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-					//BANANA LOG.debug("elapsed time < 1 minute, returning null");
+					LOG.debug("elapsed time < 1 minute, returning null");
 					return eci;
 				}			
 				
@@ -132,7 +132,7 @@ public class SmartAppliance {
 					eci = dt.computeMinMaxCosts(calendar, elapsedTime, energyDelta);
 				} else {
 					if (energyDelta < 0) {
-						//BANANA LOG.warn("invalid energy delta: " + energyDelta);
+						LOG.warn("invalid energy delta: " + energyDelta);
 						}
 					energyDelta = 0; // safety net in case it's negative
 					eci = new EnergyCostInfo();
@@ -142,12 +142,12 @@ public class SmartAppliance {
 				accumulatedEnergyCost.addValues(eci);
 			
 			} else {
-				//BANANA LOG.warn("elapsed time > MAX_VALID_EPOC_THRESHOLD, resetting start time");
+				LOG.warn("elapsed time > MAX_VALID_EPOC_THRESHOLD, resetting start time");
 				accumulatedEnergyCost.reset(newTime);
 			}
 			
 		} catch (Exception e) {
-			//BANANA LOG.error("Exception on updateEnergyCost",e);
+			LOG.error("Exception on updateEnergyCost",e);
 		}
 		//maxPowerConsumption = 0;
 		//minPowerConsumption = Float.POSITIVE_INFINITY;

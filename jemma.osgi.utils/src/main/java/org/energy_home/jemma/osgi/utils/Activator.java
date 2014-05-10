@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.osgi.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.internal.utils.datetime.DateTimeObject;
 import org.energy_home.jemma.internal.utils.thread.ExecutorObject;
 import org.energy_home.jemma.utils.datetime.DateTimeService;
@@ -27,9 +25,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator, ServiceFactory {
-	private static final Log log = LogFactory.getLog(Activator.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	
 	private BundleContext bc;
 	private ExecutorObject executorObject;
@@ -44,7 +45,7 @@ public class Activator implements BundleActivator, ServiceFactory {
 		dateTimeRegistration = bc.registerService(DateTimeService.class.getName(), dateTimeObject, null);
 		// A periodic date time check is scheduled if initial dateTime is invalid 
 		if (!dateTimeObject.isDateTimeOk()) { 
-			log.warn("Osgi utils activator started with date time check ko");
+			LOG.warn("Osgi utils activator started with date time check ko");
 			executorObject = new ExecutorObject(bc.getBundle().getSymbolicName());
 			executorObject.scheduleTask(new Runnable() {			
 				public void run() {
@@ -53,10 +54,10 @@ public class Activator implements BundleActivator, ServiceFactory {
 							dateTimeRegistration.unregister();
 						dateTimeObject = new DateTimeObject();
 						dateTimeRegistration = bc.registerService(DateTimeService.class.getName(), dateTimeObject, null);
-						log.info("Osgi utils activator periodic date time check ok... restarting DateTimeService");
+						LOG.debug("Osgi utils activator periodic date time check ok... restarting DateTimeService");
 						executorObject.release();
 					} else {
-						log.warn("Osgi utils activator periodic date time check ko");
+						LOG.warn("Osgi utils activator periodic date time check ko");
 					}
 				}
 			}, DateUtils.MILLISEC_IN_ONE_MINUTE, DateUtils.MILLISEC_IN_ONE_MINUTE);
@@ -72,19 +73,19 @@ public class Activator implements BundleActivator, ServiceFactory {
 			if (executorObject != null)
 				executorObject.release();
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on stop", e);
 		}
 	}
 
 	public Object getService(Bundle bundle, ServiceRegistration registration) {
 		String bundleName = bundle.getSymbolicName();
-		log.info("Created Executor Service for bundle " + bundleName);
+		LOG.debug("Created Executor Service for bundle " + bundleName);
 		return new ExecutorObject(bundle.getSymbolicName());
 	}
 
 	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
 		((ExecutorObject) service).release();
-		log.info("Released Executor Service for bundle " + bundle.getSymbolicName());
+		LOG.debug("Released Executor Service for bundle " + bundle.getSymbolicName());
 	}
 
 }

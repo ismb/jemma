@@ -59,7 +59,7 @@
 							 org.osgi.service.http,
 							 org.osgi.service.useradmin;version="1.1.0",
 							 org.osgi.util.tracker,
-							 org.slf4j;version="1.6.1",
+							 org.slf4j;version="[1.7.7,2)",
 							 org.energy_home.jemma.hac.adapter.http,*
 						</Import-Package>
 						<Export-Package>!*
@@ -103,11 +103,6 @@
 			<version>${org.eclipse.osgi.services.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>org.json</artifactId>
 			<version>${org.json.version}</version>
@@ -123,21 +118,10 @@
 			<version>${javax.servlet.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j.version}</version>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${org.slf4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-nop</artifactId>
-			<version>${org.slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${org.slf4j.version}</version>
-		</dependency>
-
 	</dependencies>
 
 
