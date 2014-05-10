@@ -56,7 +56,7 @@ public class Activator implements BundleActivator {
 			String _path =  "config.properties";
 			
 			
-			log.info("FILE Conf: " + _path);
+			LOG.info("FILE Conf: " + _path);
 
 
 			PropertiesManager PropertiesManager = new PropertiesManager(bc

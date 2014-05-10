@@ -1536,7 +1536,7 @@ public class GalController {
 			if (nodeDescriptor.getManufacturerCode() == 4107) {
 
 				if (PropertiesManager.getDebugEnabled())
-					logger.info("####Executing leave for Philips Light");
+					LOG.info("####Executing leave for Philips Light");
 
 				Address broadcast = new Address();
 				broadcast.setNetworkAddress(0xffff);
@@ -1572,7 +1572,7 @@ public class GalController {
 				sendInterPANMessage(timeout, _requestIdentifier, resetCommand);
 
 				if (PropertiesManager.getDebugEnabled())
-					logger.info("####End leave for Philips Light");
+					LOG.info("####End leave for Philips Light");
 
 			}
 
@@ -1893,7 +1893,7 @@ public class GalController {
 						networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
 					} catch (Exception e) {
 						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the PanID of the Network!");
+							LOG.error("Error retrieving the PanID of the Network!");
 						}
 						return;
 					}

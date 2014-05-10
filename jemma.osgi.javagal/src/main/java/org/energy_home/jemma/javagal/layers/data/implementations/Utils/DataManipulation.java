@@ -375,7 +375,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.debug(caption + ":" + sb.toString());
+		LOG.debug(caption + ":" + sb.toString());
 	}
 
 	/**

@@ -110,18 +110,18 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						serialPort.addEventListener(serialReader);
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							logger.info("Added SerialPort event listener");
+							LOG.info("Added SerialPort event listener");
 					} catch (TooManyListenersException e) {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
 					}
 
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						logger.info("Connection on " + portName + " established");
+						LOG.info("Connection on " + portName + " established");
 					return true;
 				} else {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						logger.error("Error on serial port connection:" + portName);
+						LOG.error("Error on serial port connection:" + portName);
 					disconnect();
 					return false;
 				}
@@ -277,12 +277,12 @@ public class SerialCommRxTx implements IConnector {
 		DataLayer.cpuReset();
 		
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Waiting 3,5 seconds after command CPUReset...");
+			LOG.info("Waiting 3,5 seconds after command CPUReset...");
 
 		Thread.sleep(3500);
 
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Clear buffer after CPUReset...");
+			LOG.info("Clear buffer after CPUReset...");
 
 		DataLayer.clearBuffer();
 		synchronized (this) {
