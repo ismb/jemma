@@ -61,7 +61,7 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.layers.presentation.Activator</Bundle-Activator>
 						<Import-Package> gnu.io;version="1.0.0",
-							org.slf4j;version="[1.7,2)",
+							org.slf4j;version="[1.7.7,2)",
 							org.osgi.framework,
 							org.osgi.util.tracker;version="1.4.2",*
 						</Import-Package>

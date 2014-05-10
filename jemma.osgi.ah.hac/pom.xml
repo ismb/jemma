@@ -45,7 +45,7 @@
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Import-Package>org.energy_home.jemma.ah.cluster.ah;version="3.0.1",
-							 org.slf4j,
+							 org.slf4j;version="[1.7.7,2)",
 							 org.energy_home.jemma.ah.hac;version="3.0.2",
 							 org.energy_home.jemma.ah.hac.lib;version="3.0.1",
 							 org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0",
