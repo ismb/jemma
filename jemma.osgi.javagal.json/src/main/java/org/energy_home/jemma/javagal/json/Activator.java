@@ -16,8 +16,6 @@ package org.energy_home.jemma.javagal.json;
  *
  */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.osgi.framework.BundleActivator;
@@ -25,9 +23,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
-	Log log = LogFactory.getLog(Activator.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	private static BundleContext context;
 	GalExtenderProxyFactory gatewayFactory;
 	ServletContainer container;
@@ -48,7 +48,7 @@ public class Activator implements BundleActivator {
 		context = bundleContext;
 		serviceTracker = new GatewayInterfaceFactoryTracker(context);
 		serviceTracker.open();
-		log.info("Starting javagal.Json");
+		LOG.debug("Starting javagal.Json");
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 		serviceTracker.close();
 		serviceTracker = null;
-		log.info("Stopping javagal.Json");
+		LOG.debug("Stopping javagal.Json");
 	}
 
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
