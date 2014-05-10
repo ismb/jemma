@@ -36,7 +36,7 @@ public class Configurator implements Driver, ServiceTrackerCustomizer {
 
 	private HashMap trackedDevices = new HashMap();
 
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( Configurator.class );
+	private static final Logger LOG = LoggerFactory.getLogger( Configurator.class );
 
 	public void activate(BundleContext bc, Map props) {
 		this.bc = bc;
@@ -58,7 +58,7 @@ public class Configurator implements Driver, ServiceTrackerCustomizer {
 	}
 
 	public void modifiedService(ServiceReference sr, Object arg1) {
-		//BANANA LOG.debug("service modified");
+		LOG.debug("service modified");
 
 		Dictionary props = this.getServiceProperties(sr);
 	}
@@ -74,7 +74,7 @@ public class Configurator implements Driver, ServiceTrackerCustomizer {
 	}
 
 	public void removedService(ServiceReference sr, Object arg1) {
-		//BANANA LOG.debug("Service has been removed");
+		LOG.debug("Service has been removed");
 		trackedDevices.remove(sr);
 	}
 

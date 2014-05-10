@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 public class HomeMeterAppliance extends Appliance implements IPeerAppliancesListener {
 	
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( HomeMeterAppliance.class );
+	private static final Logger LOG = LoggerFactory.getLogger( HomeMeterAppliance.class );
 
 	protected static final String TYPE = "org.energy_home.jemma.ah.appliance.greeenathome";
 	protected static final String FRIENDLY_NAME = "Homemeter";
@@ -364,10 +364,10 @@ public class HomeMeterAppliance extends Appliance implements IPeerAppliancesList
 	}
 
 	public void startup() {
-		//BANANA LOG.debug("Home Meter started");
+		LOG.debug("Home Meter started");
 	}
 
 	public void shutdown() {
-		//BANANA LOG.debug("Home Meter stopped");
+		LOG.debug("Home Meter stopped");
 	}
 }

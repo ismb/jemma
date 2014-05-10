@@ -121,7 +121,7 @@ import org.w3c.dom.NodeList;
 public class GreenathomeAppliance extends Appliance implements HttpImplementor, IServiceClustersListener, IPeerAppliancesListener,
 		IManagedAppliance, GreenAtHomeApplianceService, IASZoneClient, ApplianceControlClient, IlluminanceMeasurementClient {
 
-	//BANANA private static final Logger LOG = LoggerFactory.getLogger( GreenathomeAppliance.class );
+	private static final Logger LOG = LoggerFactory.getLogger( GreenathomeAppliance.class );
 
 	private static final boolean logEnabled = false; //FIXME this variable should be removed: log has already some behaviour
 
@@ -278,7 +278,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		try {
 			ahHttpAdapter = new AhHttpAdapter(this, this.applicationWebAlias);
 		} catch (Throwable e) {
-			//BANANA LOG.error("Exception on GreenathomeAppliance Constructor",e);
+			LOG.error("Exception on GreenathomeAppliance Constructor",e);
 		}
 		
 		/////
@@ -1028,7 +1028,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					onOffServer.execOn(ConfirmationNotRequiredRequestContext);
 				} catch (Exception e) {
 					if (logEnabled)
-						//BANANA LOG.debug("setDeviceState returned exception '" + e.getMessage());
+						LOG.debug("setDeviceState returned exception '" + e.getMessage(),e);
 					return false;
 				}
 			} else if (state == Off) {
@@ -1037,7 +1037,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					// work!!!
 					onOffServer.execOff(ConfirmationNotRequiredRequestContext);
 				} catch (Exception e) {
-					//BANANA LOG.debug("setDeviceState returned exception '" + e.getMessage());
+					LOG.debug("setDeviceState returned exception '" + e.getMessage(),e);
 					return false;
 				}
 			}
@@ -1054,7 +1054,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 				applianceControlServer.execCommandExecution(commandId, null);
 			} catch (Exception e) {
-				//BANANA LOG.error("execCommandExecution exception " + e.getMessage(),e);
+				LOG.error("execCommandExecution exception " + e.getMessage(),e);
 				return false;
 			}
 		} else
@@ -1162,7 +1162,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 									short df = simpleMeteringServer.getDemandFormatting(context);
 									demandFormatting = new Short(df);
 									if (logEnabled) {
-										//BANANA LOG.debug("read demand formatting for appliance " + peerAppliance.getPid() + " with value "												+ df);
+										LOG.debug("read demand formatting for appliance " + peerAppliance.getPid() + " with value "+ df);
 									}
 									demandFormattings.put(peerAppliance.getPid(), new Short(df));
 								}
@@ -1174,7 +1174,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 								}
 							}
 						} else {
-							//BANANA LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
+							LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						// if (applianceControlServer != null) {
@@ -1211,7 +1211,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 							}
 
 						} else {
-							//BANANA LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
+							LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						if (occupancySensingServer != null) {
@@ -1220,7 +1220,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 										OccupancySensingServer.ATTR_Occupancy_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 							}
 						} else {
-							//BANANA LOG.debug("OccupancySensing Server Cluster missing on appliance " + peerAppliancePid);
+							LOG.debug("OccupancySensing Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint
@@ -1233,7 +1233,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 										null);
 							}
 						} else {
-							//BANANA LOG.debug("Temperature Measurement Server Cluster missing on appliance " + peerAppliancePid);
+							LOG.debug("Temperature Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						IlluminanceMeasurementServer illuminanceMeasurementServer = (IlluminanceMeasurementServer) greenathomeEndPoint
@@ -1245,15 +1245,15 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 										null);
 							}
 						} else {
-							//BANANA LOG.debug("Illuminance Measurement Server Cluster missing on appliance " + peerAppliancePid);
+							LOG.debug("Illuminance Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
 					} catch (ServiceClusterException e) {
-						//BANANA LOG.error("Exception on initEndPoint", e);
+						LOG.error("Exception on initEndPoint", e);
 					} catch (ApplianceException e) {
-						//BANANA LOG.error("Exception on initEndPoint", e);
+						LOG.error("Exception on initEndPoint", e);
 					}
 				} else {
-					//BANANA LOG.debug("appliance " + peerAppliancePid + " in a not valid state");
+					LOG.debug("appliance " + peerAppliancePid + " in a not valid state");
 				}
 			}
 		}
@@ -1295,7 +1295,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 							short df = simpleMeteringServer.getDemandFormatting(context);
 							demandFormatting = new Short(df);
 							if (logEnabled) {
-								//BANANA LOG.debug("read demand formatting with value " + df);
+								LOG.debug("read demand formatting with value " + df);
 							}
 							demandFormattings.put(peerAppliance.getPid(), new Short(df));
 						}
@@ -1304,7 +1304,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						double power = decodeFormatting(istantaneousDemand, demandFormatting.shortValue());
 						return power;
 					} catch (Exception e) {
-						//BANANA LOG.error("Error while calling while trying to invoke getIstantaneousDemand command", e);
+						LOG.error("Error while calling while trying to invoke getIstantaneousDemand command", e);
 					}
 				}
 			}
@@ -1333,7 +1333,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
 		synchronized (lockGatH) {
 			if (logEnabled) {
-				//BANANA LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
+				LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
 			}
 
 			if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME)) {
@@ -1341,13 +1341,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 				Short demandFormatting = (Short) demandFormattings.get(peerAppliance.getPid());
 				if (demandFormatting == null) {
-					//BANANA LOG.error("demand formatting not available for appliance " + peerAppliance.getPid());
+					LOG.error("demand formatting not available for appliance " + peerAppliance.getPid());
 					return;
 				}
 
 				double power = decodeFormatting(((Number) attributeValue.getValue()).longValue(), demandFormatting.shortValue());
 				this.istantaneousDemands.put(peerAppliance.getPid(), new Double(power));
-				//BANANA LOG.debug("calculated on appliance " + peerAppliance.getPid() + " power " + power);
+				LOG.debug("calculated on appliance " + peerAppliance.getPid() + " power " + power);
 			} else if (attributeName.equals(SimpleMetering4NoksServer.ATTR_Power_NAME)) {
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
 
@@ -1357,14 +1357,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
 
 				if (logEnabled){
-					//BANANA LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
+					LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
 				}
 
 				this.occupancySensing.put(peerAppliance.getPid(), attributeValue);
 			} else if (attributeName.equals(TemperatureMeasurementServer.ATTR_MeasuredValue_NAME)) {
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
 				if (logEnabled){
-					//BANANA LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
+					LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
 				}
 
 				this.measuredValues.put(peerAppliance.getPid(), attributeValue);
@@ -1451,7 +1451,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						
 						inquredDevices.add(config);
 					} catch (Exception e) {
-						//BANANA LOG.error("Unable to get Inquired Appliance " + appliancePids[i], e);
+						LOG.error("Unable to get Inquired Appliance " + appliancePids[i], e);
 					}
 				}
 			}
@@ -1519,7 +1519,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, c.get(IAppliance.APPLIANCE_TYPE_PROPERTY));
 				this.hacService.installAppliance(appliancePid, props);
 			} catch (HacException e) {
-				//BANANA LOG.error("Hackexception on installAppliance",e);
+				LOG.error("Hackexception on installAppliance",e);
 				throw new ApplianceException(e.getMessage());
 			}
 		}
@@ -1533,7 +1533,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			try {
 				this.hacService.enableAppliance(appliancePid);
 			} catch (HacException e) {
-				//BANANA LOG.error("enableAppliance Exception",e);
+				LOG.error("enableAppliance Exception",e);
 				throw new ApplianceException(e.getMessage());
 			}
 		}
@@ -1798,7 +1798,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					AHContainerAddress containerAddress = hapService.getHagContainerAddress(appliancePid, endPointId, AHContainers.attrId_ah_cluster_iascontact_open);
 					ci = hapService.getCachedLatestContentInstance(containerAddress);				
 				} catch (Exception e) {
-					//BANANA LOG.error("Error while reading isopen container", e);
+					LOG.error("Error while reading isopen container", e);
 				}
 
 				if (ci == null)  {
@@ -2023,7 +2023,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	public void updateAppliance(Dictionary props) throws ApplianceException {
 
-		//BANANA LOG.debug("updateAppliance");
+		LOG.debug("updateAppliance");
 		String appliancePid = (String) props.get("appliance.pid");
 		if (appliancePid == null)
 			throw new ApplianceException("appliance.pid is null");
@@ -2106,7 +2106,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	public void execSignalStateNotification(short ApplianceStatus, short RemoteEnableFlags, int ApplianceStatus2,
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
-		//BANANA LOG.debug("appliance Status");
+		LOG.debug("appliance Status");
 
 		IEndPoint aa = context.getPeerEndPoint();
 		aa.getAppliance();
@@ -2122,7 +2122,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			applianceStatus = ApplianceStatus;
 
 			if (logEnabled) {
-				//BANANA LOG.debug("applianceStatus is " + applianceStatus);
+				LOG.debug("applianceStatus is " + applianceStatus);
 			}
 
 			if (applianceStatus < 0x03) {
@@ -2169,7 +2169,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	// HA 1.1
 	public void execZoneStatusChangeNotification(int ZoneStatus, short ExtendedStatus, IEndPointRequestContext context)
 			throws ApplianceException, ServiceClusterException {
-		//BANANA LOG.debug(context.getPeerEndPoint().getAppliance().getPid() + ": ZoneStatus=" + ZoneStatus + ", ExtendedStatus="+ ExtendedStatus);
+		LOG.debug(context.getPeerEndPoint().getAppliance().getPid() + ": ZoneStatus=" + ZoneStatus + ", ExtendedStatus="+ ExtendedStatus);
 		IAppliance peerAppliance = context.getPeerEndPoint().getAppliance();
 		Integer zoneValue = new Integer(ZoneStatus);
 		this.zoneStatusTable.put(peerAppliance.getPid(), zoneValue);
@@ -2178,7 +2178,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	// HA 1.2
 	public void execZoneStatusChangeNotification(int ZoneStatus, short ExtendedStatus, short ZoneID, int Delay,
 			IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
-		//BANANA LOG.debug(context.getPeerEndPoint().getAppliance().getPid() + ": ZoneStatus=" + ZoneStatus + ", ExtendedStatus="+ ExtendedStatus);
+		LOG.debug(context.getPeerEndPoint().getAppliance().getPid() + ": ZoneStatus=" + ZoneStatus + ", ExtendedStatus="+ ExtendedStatus);
 		IAppliance peerAppliance = context.getPeerEndPoint().getAppliance();
 		Integer zoneValue = new Integer(ZoneStatus);
 		this.zoneStatusTable.put(peerAppliance.getPid(), zoneValue);
@@ -2231,7 +2231,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				
 			}catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("levelControlGetCurrentValue returned exception '" + e.getMessage());
+					LOG.debug("levelControlGetCurrentValue returned exception '" + e.getMessage());
 				}
 				
 				return -2;
@@ -2261,7 +2261,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				
 			}catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("levelControlExecMoveToLevelWithOnOff returned exception '" + e.getMessage());
+					LOG.debug("levelControlExecMoveToLevelWithOnOff returned exception '" + e.getMessage());
 				}
 				return false;
 				
@@ -2291,7 +2291,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				
 			}catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("levelControlExecMoveToLevel returned exception '" + e.getMessage());
+					LOG.debug("levelControlExecMoveToLevel returned exception '" + e.getMessage());
 				}
 				
 				return false;
@@ -2319,7 +2319,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				
 			}catch(Exception e){
 				if (logEnabled){
-					//BANANA LOG.debug("levelControlExecStopWithOnOff returned exception '" + e.getMessage());
+					LOG.debug("levelControlExecStopWithOnOff returned exception '" + e.getMessage());
 				}
 				
 				return false;
@@ -2347,7 +2347,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			}
 			catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("colorControlMoveToColorHSL returned exception '" + e.getMessage());
+					LOG.debug("colorControlMoveToColorHSL returned exception '" + e.getMessage());
 				}
 				
 				return false;
@@ -2375,7 +2375,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			}
 			catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("colorControlMoveToColorHSL returned exception '" + e.getMessage());
+					LOG.debug("colorControlMoveToColorHSL returned exception '" + e.getMessage());
 				}
 				
 				return false;
@@ -2408,7 +2408,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				props.put("pid", appliancePid);
 				}catch(Exception e){
 					if (logEnabled) {
-						//BANANA LOG.debug("colorControlGetColorHSL returned exception '" + e.getMessage());
+						LOG.debug("colorControlGetColorHSL returned exception '" + e.getMessage());
 					}
 					props.put("Errore", e.getMessage());
 					
@@ -2442,7 +2442,7 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 				props.put("pid", appliancePid);
 				}catch(Exception e){
 					if (logEnabled) {
-						//BANANA LOG.debug("colorControlGetColorHSL returned exception '" + e.getMessage());
+						LOG.debug("colorControlGetColorHSL returned exception '" + e.getMessage());
 					}
 					props.put("Errore", e.getMessage());
 					
@@ -2470,7 +2470,7 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 			}
 			catch(Exception e){
 				if (logEnabled) {
-					//BANANA LOG.debug("colorControlMoveToColorXYL returned exception '" + e.getMessage());
+					LOG.debug("colorControlMoveToColorXYL returned exception '" + e.getMessage());
 				}
 			
 				return false;
@@ -2614,7 +2614,7 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 					  applianceStatus =  applianceControlServer.execSignalState(getterContext).ApplianceStatus;
 				  
 					  if (logEnabled)  {
-						  //BANANA  LOG.debug("applianceStatus is " +   applianceStatus);
+						   LOG.debug("applianceStatus is " +   applianceStatus);
 					  }
 				  
 					  if (applianceStatus < 0x03) { state = Off; } 
