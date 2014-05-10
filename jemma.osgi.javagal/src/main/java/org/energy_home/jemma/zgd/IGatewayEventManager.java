@@ -16,9 +16,9 @@
 package org.energy_home.jemma.zgd;
 
 import org.energy_home.jemma.javagal.layers.business.GalController;
-
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
@@ -316,6 +316,17 @@ public interface IGatewayEventManager {
 	 */
 	public void notifyZDPCommand(ZDPMessage message);
 
+	
+	/**
+	 * Called to notify the received ZDPCommand to all relevant registered
+	 * listeners.
+	 * 
+	 * @param message
+	 *            the ZDP message command to notify to the listeners.
+	 */
+	public void notifyInterPANMessageEvent(InterPANMessageEvent message);
+	
+	
 	/**
 	 * Called to notify the received ZCLCommand to all relevant registered
 	 * listeners.

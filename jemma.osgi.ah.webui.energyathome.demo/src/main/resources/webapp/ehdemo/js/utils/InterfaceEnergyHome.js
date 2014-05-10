@@ -43,7 +43,7 @@ var InterfaceEnergyHome = {
 	AVG : 4,
 	DELTA : 5,
 	PID_TOTALE : null,
-	SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
+	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering",
 	POTENZA_TOTALE : "TotalPower",
 	CONSUMO : "ah.eh.esp.Energy",
 	COSTO : "ah.eh.esp.EnergyCost",

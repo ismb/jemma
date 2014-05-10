@@ -17,8 +17,8 @@ package org.energy_home.jemma.javagal.layers.object;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
 import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 
@@ -39,8 +39,19 @@ public class WrapperWSNNode {
 	private short _numberOfAttempt;
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
+	private NodeDescriptor _nodeDescriptor;
+
+	public NodeDescriptor getNodeDescriptor() {
+		return _nodeDescriptor;
+	}
+
+	public void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
+		this._nodeDescriptor = nodeDescriptor;
+	}
+
 	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
 	private long lastDiscovered;
+
 	public long getLastDiscovered() {
 		return lastDiscovered;
 	}
@@ -121,7 +132,7 @@ public class WrapperWSNNode {
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
 			_timerFreshness.purge();
-			//LOG.debug("Stopping timer Freshness ("+_timerFreshness.hashCode()+")");
+			//System.out.println("Stopping timer Freshness ("+_timerFreshness.hashCode()+")");
 		}
 
 		if (seconds >= 0) {
@@ -197,7 +208,7 @@ public class WrapperWSNNode {
 
 		}
 		
-		//LOG.debug("\n\rAbort all timers of node:" + this.get_node().getAddress().getNetworkAddress() + "\n\r");
+		//System.out.println("\n\rAbort all timers of node:" + this.get_node().getAddress().getNetworkAddress() + "\n\r");
 		
 
 	}
@@ -287,7 +298,8 @@ public class WrapperWSNNode {
 
 		@Override
 		public void run() {
-			//LOG.debug("\n\rTimer Elapsed:" + _name+"("+_timerFreshness.hashCode()+") "+new Date());
+			// System.out.println("\n\rTimer Elapsed:" +
+			// _name+"("+_timerFreshness.hashCode()+") "+new Date());
 			_timerFreshness.cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
 			

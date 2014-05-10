@@ -169,6 +169,11 @@ public class ZdoManager /* implements APSMessageListener */{
 							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 						}
 					}
+					/* Saving the Panid in order to leave the Philips light */
+					gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
+					/**/
+
+					
 				} else/* if exist */{
 					gal.getNetworkcache().get(_index).abortTimers();
 					gal.getNetworkcache().remove(_index);

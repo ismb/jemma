@@ -21,6 +21,8 @@ import org.energy_home.jemma.zgd.GatewayEventListenerExtended;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.BindingList;
 import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
+import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
@@ -56,6 +58,7 @@ public class RestClientManagerAndListener implements
 	private String unbindingDestination;
 	private String zclCommandDestination;
 	private String zdpCommandDestination;
+	private String interPANCommandDestination;
 	private String frequencyAgilityResultDestination;
 	private final Context context;
 	private static final Logger LOG = LoggerFactory.getLogger( RestClientManagerAndListener.class );
@@ -695,6 +698,47 @@ public class RestClientManagerAndListener implements
 		}
 
 	}
+	
+	
+	
+	
+	public void notifyInterPANCommand(final InterPANMessageEvent message) {
+
+		if ((interPANCommandDestination  != null)
+				&& !interPANCommandDestination.equals("")) {
+
+			Thread thr = new Thread() {
+				@Override
+				public void run() {
+					try {
+						if (_PropertiesManager.getDebugEnabled())
+							LOG.info("Connecting to:"  + interPANCommandDestination);
+	
+						ClientResource resource = new ClientResource(context,
+								interPANCommandDestination);
+						Info.Detail detail = new Info.Detail();
+						detail.setInterPANMessageEvent(message);
+						String _xml = Util.marshal(detail);
+						if (_PropertiesManager.getDebugEnabled())
+							LOG.info(_xml);
+						resource.post(_xml, MediaType.TEXT_XML);
+						resource.release();
+						resource = null;
+						clientResource.resetCounter();
+					} catch (Exception e) {
+						if (_PropertiesManager.getDebugEnabled())
+							LOG.error(e.getMessage(),e);
+	
+						clientResource.addToCounterException();
+					}
+				}
+			};
+			thr.start();
+
+		}
+
+	}
+	
 
 	public void notifyZCLCommand(final ZCLMessage message) {
 
@@ -871,9 +915,18 @@ public class RestClientManagerAndListener implements
 	public String getZdpCommandDestination() {
 		return zdpCommandDestination;
 	}
+	
+	
+	public String getinterPANCommandDestination() {
+		return interPANCommandDestination;
+	}
 
 	public void setZdpCommandDestination(String zdpCommandDestination) {
 		this.zdpCommandDestination = zdpCommandDestination;
+	}
+	
+	public void setInterPANCommandDestination(String interPANCommandDestination) {
+		this.interPANCommandDestination = interPANCommandDestination;
 	}
 
 	public String getBindingDestination() {

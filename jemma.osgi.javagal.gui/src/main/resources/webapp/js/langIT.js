@@ -1,40 +1,36 @@
-/**
- * 
- */
-
 var LANG = {
 	NA : "ND",
-	menu : {btnCanaleRadio : "Gestione Canale Radio",
-		    btnVersionJGal : "Versione JavaGal",
-		    btnViewDevice : "Visualizzazione device",
-		    btnViewGraphNodes : "Visualizzazione grafo dei nodi",
-		    btnInsertDevice : "Inserimento nuovi device",
-		    btnManageNetwork : "Gestione Rete ZigBee"
+	menu : {btnChannelNetwork : "Manage Network Channel",
+		    btnVersionJGal : "JavaGal Version",
+		    btnViewDevice : "Info Devices",
+		    btnViewGraphNodes : "Devices Graphic View",
+		    btnManageNetwork : "Manage ZigBee Network"
 	},
-	centerPane: {btnAutomaticScan : "Selezione automatica",
-	             btnManualScan : "Sposta la rete nel canale selezionato",
+	centerPane: {btnAutomaticScan : "Automatic",
+	             btnManualScan : "Change",
 	             lblVersionId: "Version Identifier",
-	             lblVersionFId: "feature Set Identifier",
-	             lblVersionRpcP: "rpc Protocol",
-	             lblDeviceNetAdd: "network Address",
-	             lblDeviceIeeAdd: "ieee Address",
+	             lblVersionFId: "Feature Set Identifier",
+	             lblVersionRpcP: "Rpc Protocol",
+	             lblDeviceNetAdd: "Network Address",
+	             lblDeviceIeeAdd: "Ieee Address",
 	             lblDeviceSIndex: "start Index",
-	             lblDeviceAssDev: "associated Devices",
-	             lblDeviceAltPan: "alternate Pan Coordinator",
-	             lblDeviceDevFFD: "device Is FFD",
-	             lblDeviceMainPo: "mains Powered",
-	             lblDeviceRecOWI: "receiver On When Idle",
-	             lblDeviceSecSup: "security Supported",
-	             lblDeviceAllAdd: "allocate Address",
-	             lblDeviceAddress: "address",
-	             lblDeviceCInfo: "capability Information",
+	             lblDeviceAssDev: "Associated Devices",
+	             lblDeviceAltPan: "Alternate Pan Coordinator",
+	             lblDeviceDevFFD: "Device Is FFD",
+	             lblDeviceMainPo: "Mains Powered",
+	             lblDeviceLogical: "Device Type",
+	             lblDeviceRecOWI: "Receiver On When Idle",
+	             lblDeviceSecSup: "Security Supported",
+	             lblDeviceAllAdd: "Allocate Address",
+	             lblDeviceAddress: "Address",
+	             lblDeviceCInfo: "Capability Information",
 		             lblActions: "Actions"
 	            	 
 	},
 	networkManage: {
-		btnStartGal : "Avvia GAL",
-	    btnRestartGal1 : "Reset GAL Ass",
-	    btnRestartGal2 : "Reset GAL NVM",
+		btnStartGal : "Start",
+	    btnRestartGal1 : "Total reset",
+	    btnRestartGal2 : "Stop",
 	    btnRestartGal3 : "Reset GAL TCR",
 	    lblChannelMask : "Channel",
 	    lblConcentratorDiscoveryTime : "Concentrator Discovery Time",
@@ -67,6 +63,8 @@ var LANG = {
 	    lblEndPointEndPoint: "End Point",
 	    lblProfileEndPoint: "Profile Id",
 	    lblDeviceEndPoint: "Device Id",
-	    lblDeviceVersEndPoint: "Device Version"
+	    lblDeviceVersEndPoint: "Device Version",
+	    lblInputCluster: "Input Cluster",
+	    lblOutputCluster: "Output Cluster"
 	}
 };

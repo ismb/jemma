@@ -197,12 +197,12 @@ ifLampada.init=function(_clusters){
         }).bind('selectstart', function(){ return false; });
         
         if( ifLampada.clusters!=null){
-                if(ifLampada.clusters["it.telecomitalia.ah.cluster.zigbee.general.LevelControlServer"]!=true )
+                if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer"]!=true )
                         $( "#lum" ).slider("disable");
                 
                 
                 
-                if(ifLampada.clusters["it.telecomitalia.ah.cluster.zigbee.zll.ColorControlServer"]==true){
+                if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer"]==true){
                         
                         ifLampada.fb=$.farbtastic('#picker');
                         
@@ -325,7 +325,7 @@ ifLampada.update= function(now){
                         _stato="ON";
                         class_stato="ON";
                         ifLampada.stato=1;
-                        if(ifLampada.clusters["it.telecomitalia.ah.cluster.zigbee.general.dimmablelight"]==true)
+                        if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.general.dimmablelight"]==true)
                                 $( "#lum" ).slider("enable");
                                 
                         ifLampada.colorePercepito=ifLampada.toColorePercepito(ifLampada.coloreReale);
@@ -381,7 +381,7 @@ ifLampada.sync=function(){
                 return;
         }
         
-        if(ifLampada.clusters["it.telecomitalia.ah.cluster.zigbee.zll.ColorControlServer"]==true && ifLampada.stato!=-1){
+        if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer"]==true && ifLampada.stato!=-1){
                 
                 Elettrodomestici.addSpinner("#Interfaccia", "#0a0a0a");
                 

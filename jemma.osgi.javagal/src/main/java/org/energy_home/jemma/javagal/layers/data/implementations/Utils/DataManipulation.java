@@ -359,6 +359,24 @@ public class DataManipulation {
 			toReturn[i] = byteArray[x++];
 		return toReturn;
 	}
+	
+	
+	/**
+	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
+	 * by a leading caption.
+	 * 
+	 * @param caption
+	 *            the leading caption.
+	 * @param arr
+	 *            the array to log.
+	 */
+	public static void debugLogArrayHexRadix(String caption, List<Short> arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s));
+		}
+		logger.debug(caption + ":" + sb.toString());
+	}
 
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded

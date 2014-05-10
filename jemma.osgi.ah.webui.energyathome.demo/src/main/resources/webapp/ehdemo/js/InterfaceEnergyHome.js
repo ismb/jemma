@@ -51,8 +51,10 @@ var InterfaceEnergyHome = {
 	PID_TOTALE : null,
 	//TODO: check merge, do these declarations need to be renamed?
 	WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
-	SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
-	SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
+	//SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
+	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering",
+	//SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
+	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug",
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
 	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cos� si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
@@ -62,8 +64,8 @@ var InterfaceEnergyHome = {
 	PRODUZIONE : "ah.eh.esp.ProducedEnergy",
 	SOLD : "ah.eh.esp.SoldEnergy",
 	LIMITI : "InstantaneousPowerLimit",
-	AG_APP_EXCEPTION : "it.telecomitalia.ah.hac.ApplianceException",
-	SERVER_EXCEPTION : "it.telecomitalia.ah.eh.esp.ESPException",
+	AG_APP_EXCEPTION : "org.energy_home.jemma.ah.hac.ApplianceException",
+	SERVER_EXCEPTION : "org.energy_home.jemma.ah.eh.esp.ESPException",
 
 	// costanti per nome attributi
 	ATTR_APP_NAME : "ah.app.name",

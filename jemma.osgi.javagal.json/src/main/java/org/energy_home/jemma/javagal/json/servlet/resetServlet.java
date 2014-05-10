@@ -70,6 +70,8 @@ public class resetServlet extends HttpServlet {
 
 			} else {
 				timeoutString = timeoutParam.toString();
+				if (!timeoutString.toLowerCase().startsWith("0x"))
+					timeoutString = "0x"+ timeoutString;
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
@@ -138,6 +140,10 @@ public class resetServlet extends HttpServlet {
 			try {
 
 				Status result = gatewayInterface.resetDongleSync(timeout, startModeValue);
+				
+				
+				
+				
 				Info info = new Info();
 				info.setStatus(result);
 				response.getOutputStream().print(gson.toJson(info));

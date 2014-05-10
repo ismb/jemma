@@ -35,7 +35,7 @@ import org.energy_home.jemma.javagal.rest.resources.PermitJoinResource;
 import org.energy_home.jemma.javagal.rest.resources.ReadServiceCacheResource;
 import org.energy_home.jemma.javagal.rest.resources.ResetResource;
 import org.energy_home.jemma.javagal.rest.resources.SendAPSMessageOrZCLCommandResource;
-import org.energy_home.jemma.javagal.rest.resources.SendZdpAndLeaveResource;
+import org.energy_home.jemma.javagal.rest.resources.SendZdpAndInterPANAndLeaveResource;
 import org.energy_home.jemma.javagal.rest.resources.ServicesResource;
 import org.energy_home.jemma.javagal.rest.resources.StartupResource;
 import org.energy_home.jemma.javagal.rest.resources.UnbindingsResource;
@@ -267,7 +267,7 @@ public class GalManagerRestApplication extends Application {
 		 * Defines GenNetworkCache route "/net/default/wsnnodes/{addr}"
 		 */
 		router.attach(Resources.NWT_ROOT_URI + ResourcePathURIs.WSNNODES
-				+ Resources.URI_ADDR, SendZdpAndLeaveResource.class);
+				+ Resources.URI_ADDR, SendZdpAndInterPANAndLeaveResource.class);
 
 		/*
 		 * GetNodeDescriptor route "/net/default/wsnnodes/{addr}/bindings"

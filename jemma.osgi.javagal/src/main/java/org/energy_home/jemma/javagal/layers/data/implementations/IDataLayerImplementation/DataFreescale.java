@@ -41,7 +41,6 @@ import org.energy_home.jemma.javagal.layers.object.MyThread;
 import org.energy_home.jemma.javagal.layers.object.ParserLocker;
 import org.energy_home.jemma.javagal.layers.object.TypeMessage;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayException;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
@@ -78,6 +77,7 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
+	boolean destroy = false;
 	GalController gal = null;
 	private IConnector _key = null;
 	private static final Logger LOG = LoggerFactory.getLogger( DataFreescale.class );
@@ -92,6 +92,8 @@ public class DataFreescale implements IDataLayer {
 
 	public final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
+	private LinkedBlockingQueue<ByteArrayObject> tmpDataQueue = new LinkedBlockingQueue<ByteArrayObject>();
+
 	/**
 	 * Creates a new instance with a reference to the Gal Controller.
 	 * 
@@ -101,34 +103,119 @@ public class DataFreescale implements IDataLayer {
 	 *             if an error occurs.
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
+		final int timeoutLock = 100;
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
-		Thread thr = new Thread() {
+		Thread thrSender = new Thread() {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommand;
-				while (true) {
+				while (!destroy) {
 					try {
-						_currentCommand = listOfCommandToSend.poll();
-						if (_currentCommand != null) {
-							if (gal.getPropertiesManager().getDebugEnabled()) {
-								LOG.trace(">>> Sending: " + _currentCommand.ToHexString());
+						synchronized (listOfCommandToSend) {
+							listOfCommandToSend.wait(timeoutLock);
+							_currentCommand = listOfCommandToSend.poll();
+							if (_currentCommand != null) {
+								if (gal.getPropertiesManager().getDebugEnabled()) {
+									LOG.info(">>> Sending: " + _currentCommand.ToHexString());
+								}
+								_key.write(_currentCommand);
 							}
-							_key.write(_currentCommand);
+						}
+					} catch (InterruptedException e) {
+
+					} catch (Exception e) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+							LOG.error("Error Sending command: " + e.toString(),e);
+					}
+				}
+			}
+		};
+		thrSender.setName("TH-RS232-Sender");
+		thrSender.start();
+
+		Thread thrReceiver = new Thread() {
+			@Override
+			public void run() {
+				ByteArrayObject _currentCommandReived = null;
+				while (!destroy) {
+					try {
+						synchronized (tmpDataQueue) {
+							tmpDataQueue.wait(timeoutLock);
+							_currentCommandReived = tmpDataQueue.poll();
 						}
 
-						Thread.sleep(30);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						if (_currentCommandReived != null) {
+
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.info("<<< Received data:" + _currentCommandReived.ToHexString());
+							byte[] msg = _currentCommandReived.getByteArray();
+							int size = _currentCommandReived.getByteCount(true);
+							short[] messageShort = new short[size];
+							for (int i = 0; i < size; i++)
+								messageShort[i] = (short) (msg[i] & 0xff);
+
+							synchronized (receivedDataQueue) {
+								for (int z = 0; z < size; z++)
+									receivedDataQueue.add(messageShort[z]);
+							}
+
+						}
+
+					} catch (InterruptedException e) {
+
 					}
+
 				}
 
 			}
+
 		};
-		thr.start();
+		thrReceiver.setName("TH-RS232-Receiver");
+		thrReceiver.start();
+
+		Thread thrAnalizer = new Thread() {
+			@Override
+			public void run() {
+				short[] tempArray = null;
+				while (!destroy) {
+					if (!receivedDataQueue.isEmpty()) {
+						try {
+							tempArray = createMessageFromRowData();
+						} catch (Exception e) {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.error("Error on createMessageFromRowData: " + e.toString());
+
+						}
+
+						if (tempArray != null) {
+							synchronized (messages) {
+								messages.add(tempArray);
+							}
+
+							try {
+								processMessages();
+							} catch (Exception e) {
+								if (gal.getPropertiesManager().getDebugEnabled())
+									LOG.error("Error on processMessages: " + e.toString());
+
+							}
+
+						} else
+							try {
+								Thread.sleep(timeoutLock);
+							} catch (InterruptedException e) {
+
+							}
+					}
+				}
+			}
+
+		};
+		thrAnalizer.setName("TH-MessagesAnalizer");
+		thrAnalizer.start();
 
 	}
 
@@ -144,90 +231,106 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
-		boolean error = false;
-		synchronized (this) {
-			if (receivedDataQueue.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-				return null;
+		boolean serialDataError = false;
+
+		int toremove = 0;
+		while ((!receivedDataQueue.isEmpty()) && (receivedDataQueue.get(0) != DataManipulation.SEQUENCE_START)) {
+			Short _toremove = 0;
+			synchronized (receivedDataQueue) {
+				_toremove = receivedDataQueue.remove(0);
 			}
 
-			Integer _HexLegth = receivedDataQueue.get(3).intValue();
-			int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
+			if (gal.getPropertiesManager().getDebugEnabled())
+				LOG.debug("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove));
 
-			if (receivedDataQueue.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-				return null;
-			}
-
-			int messageCfc = receivedDataQueue.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
-
-			csc.resetLastCalculated();
-			int currCscControl = 0x00;
-			csc.getCumulativeXor(receivedDataQueue.get(1));
-			csc.getCumulativeXor(receivedDataQueue.get(2));
-			csc.getCumulativeXor(receivedDataQueue.get(3));
-			for (int i = 0; i < payloadLenght; i++) {
-				currCscControl = csc.getCumulativeXor(receivedDataQueue.get(DataManipulation.START_PAYLOAD_INDEX + i));
-			}
-
-			if (currCscControl != messageCfc) {
-				LOG.error("Error CscControl: " + Integer.toHexString(currCscControl) + " != " + Integer.toHexString(messageCfc));
-
-				error = true;
-			}
-
-			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-			short[] toReturn = new short[messageLenght];
-
-			receivedDataQueue.remove(0);
-
-			toReturn[0] = receivedDataQueue.remove(0);
-			toReturn[1] = receivedDataQueue.remove(0);
-			toReturn[2] = receivedDataQueue.remove(0);
-
-			for (int i = 0; i < payloadLenght; i++)
-				toReturn[i + 3] = receivedDataQueue.remove(0);
-			receivedDataQueue.remove(0);
-			if (error)
-				return null;
-			else
-				return toReturn;
 		}
-	}
 
-	public void addToReceivedDataQueue(int size, short[] buff) {
+		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
 
-		synchronized (this) {
-			for (int i = 0; i < size; i++)
-				receivedDataQueue.add(buff[i]);
+		if (gal.getPropertiesManager().getDebugEnabled())
+			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
-			while (!receivedDataQueue.isEmpty()) {
-				int first_element = receivedDataQueue.get(0);
+		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				LOG.debug("Error, Data received not completed, waiting new raw data...");
+			return null;
 
-				if (first_element != DataManipulation.SEQUENCE_START) {
-					receivedDataQueue.remove(0);
-					continue;
+		}
+
+		Integer _HexLegth = copyList.get(3).intValue();
+		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
+
+		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				LOG.debug("Error, Data received not completed, waiting new raw data...");
+			return null;
+		}
+
+		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
+
+		csc.resetLastCalculated();
+		int currCscControl = 0x00;
+		csc.getCumulativeXor(copyList.get(1));
+		csc.getCumulativeXor(copyList.get(2));
+		csc.getCumulativeXor(copyList.get(3));
+		for (int i = 0; i < payloadLenght; i++)
+			currCscControl = csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+		if (currCscControl != messageCfc) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				LOG.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
+			serialDataError = true;
+		}
+
+		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+		short[] toReturn = new short[messageLenght];
+
+		copyList.remove(0);
+
+		toReturn[0] = copyList.remove(0);
+		toReturn[1] = copyList.remove(0);
+		toReturn[2] = copyList.remove(0);
+
+		for (int i = 0; i < payloadLenght; i++)
+			toReturn[i + 3] = copyList.remove(0);
+		copyList.remove(0);
+
+		toremove += (4 + payloadLenght + 1);
+
+		if (serialDataError) {
+			Short extracted;
+			for (int z = 0; z < toremove; z++) {
+				if (receivedDataQueue.size() > 0) {
+					synchronized (receivedDataQueue) {
+						extracted = receivedDataQueue.remove(0);
+					}
+
+					if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.debug("Removed Byte: " + String.format("%02X", extracted));
 				}
-
-				short[] tempArray = createMessageFromRowData();
-				if (tempArray != null) {
-					messages.add(tempArray);
-
-				} else
-					break;
-
 			}
+
+			return null;
+
+		} else {
+			for (int z = 0; z < toremove; z++)
+				receivedDataQueue.remove(0);
+
+			return toReturn;
 		}
+
 	}
 
 	public void processMessages() throws Exception {
 		// Look on received messages
 		int _size = 0;
-		synchronized (this) {
+		synchronized (messages) {
 			_size = messages.size();
 		}
 
 		while (_size > 0) {
 			short[] message = null;
-			synchronized (this) {
+			synchronized (messages) {
 				message = messages.remove(0);
 			}
 
@@ -335,12 +438,7 @@ public class DataFreescale implements IDataLayer {
 										if (_indexOnCache == -1) {
 
 											if (gal.getPropertiesManager().getDebugEnabled()) {
-												// LOG.debug("\n\rAutoDiscoveryUnknownNodes procedure of Node:"
-												// +
-												// messageEvent.getSourceAddress().getNetworkAddress()
-												// + "\n\r");
-
-												LOG.debug("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
+												LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
 											}
 											try {
 
@@ -355,31 +453,26 @@ public class DataFreescale implements IDataLayer {
 												_newNode.setAddress(_address);
 												o.set_node(_newNode);
 												gal.getNetworkcache().add(o);
-
-												Thread.sleep(500);
+												Thread.sleep(1000);
 												/*
 												 * Reading the IEEEAddress of
 												 * the new node
 												 */
 
 												if (gal.getPropertiesManager().getDebugEnabled())
-													LOG.trace("Sending IeeeReq to:" + _address.getNetworkAddress());
-												LOG.debug("Sending IeeeReq to:" + _address.getNetworkAddress());
+													LOG.info("Sending IeeeReq to:" + _address.getNetworkAddress());
 												ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
 												_address.setIeeeAddress(ieee);
 												if (gal.getPropertiesManager().getDebugEnabled()) {
-													LOG.trace("Read Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-													LOG.debug("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
-
+													LOG.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
 												}
 												if (gal.getPropertiesManager().getDebugEnabled())
-													LOG.trace("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
+													LOG.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
 												NodeDescriptor _ndesc = getNodeDescriptorSync(INTERNAL_TIMEOUT, _address);
 												_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
 
 												if (gal.getPropertiesManager().getDebugEnabled()) {
-													LOG.trace("Read NodeDescriptor of the new node:" + _address.getNetworkAddress());
-													LOG.debug("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
+													LOG.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
 
 												}
 
@@ -408,11 +501,17 @@ public class DataFreescale implements IDataLayer {
 												Status _st = new Status();
 												_st.setCode((short) GatewayConstants.SUCCESS);
 												gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+												/*
+												 * Saving the Panid in order to
+												 * leave the Philips light
+												 */
+												gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
+												/**/
 
 											} catch (GatewayException e) {
-												LOG.warn("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
-												LOG.debug("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												System.out.println("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
@@ -421,8 +520,7 @@ public class DataFreescale implements IDataLayer {
 												}
 
 											} catch (Exception e) {
-												LOG.warn("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
-												LOG.debug("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+												LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
 												_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 												if (_indexOnCache > -1) {
 													gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -643,6 +741,7 @@ public class DataFreescale implements IDataLayer {
 
 				/* Gestione callback */
 				gal.getMessageManager().InterPANMessageIndication(messageEvent);
+				gal.get_gatewayEventManager().notifyInterPANMessageEvent(messageEvent);
 
 			}
 			/* APSDE-DATA.Confirm */
@@ -662,7 +761,7 @@ public class DataFreescale implements IDataLayer {
 						/* DestAddress + DestEndPoint + SourceEndPoint */
 						/*
 						 * if (gal.getPropertiesManager().getDebugEnabled())
-						 * logger.info("APSDE-DATA.Confirm KEY SEND: " +
+						 * LOG.info("APSDE-DATA.Confirm KEY SENT: " +
 						 * pl.get_Key() + " -- KEY Received: " + Key);
 						 */
 						if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
@@ -805,10 +904,9 @@ public class DataFreescale implements IDataLayer {
 			/* ZDP-SimpleDescriptor.Response */
 			else if (_command == FreescaleConstants.ZDPSimpleDescriptorResponse) {
 				if (gal.getPropertiesManager().getDebugEnabled())
-					DataManipulation.logArrayHexRadix("Extracted ZDP-ExtendedSimpleDescriptor.Response", message);
+					DataManipulation.logArrayHexRadix("Extracted ZDP-SimpleDescriptor.Response", message);
 				/* Address + EndPoint */
 				Address _add = new Address();
-
 				_add.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
 				byte EndPoint = (byte) message[7];
 				String Key = String.format("%04X", _add.getNetworkAddress()) + String.format("%02X", EndPoint);
@@ -816,6 +914,9 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						/* Address + EndPoint */
+						if (gal.getPropertiesManager().getDebugEnabled())
+							LOG.debug("ZDP-SimpleDescriptor.Response Sent Key: " + pl.get_Key() + " - Received Key: " + Key);
+
 						if ((pl.getType() == TypeMessage.GET_SIMPLE_DESCRIPTOR) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 							synchronized (pl) {
@@ -1849,7 +1950,7 @@ public class DataFreescale implements IDataLayer {
 					DataManipulation.logArrayHexRadix("Extracted a Message not in Message Management", message);
 			}
 
-			synchronized (this) {
+			synchronized (messages) {
 				_size = messages.size();
 			}
 		}
@@ -1865,8 +1966,13 @@ public class DataFreescale implements IDataLayer {
 
 	private final ChecksumControl csc = new ChecksumControl();
 
-	public synchronized void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
-		listOfCommandToSend.put(toAdd);
+	public void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
+
+		synchronized (listOfCommandToSend) {
+			listOfCommandToSend.put(toAdd);
+			listOfCommandToSend.notify();
+		}
+
 	}
 
 	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
@@ -2154,12 +2260,8 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-		String _key = String.format("%016X", _DSTAdd) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
+		String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 		lock.set_Key(_key);
-
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			LOG.debug("Sending Aps message to: " + String.format("%016X", _DSTAdd));
-		}
 
 		Status status = null;
 		try {
@@ -2419,6 +2521,7 @@ public class DataFreescale implements IDataLayer {
 		_res.addByte((byte) 0x02);/* AFDE */
 		_res.addByte((byte) 0x02);/* APSME */
 		_res.addByte((byte) 0x02);/* ZDP */
+		_res.addByte((byte) 0x02);/* HealthCare */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCModeSelectRequest);/*
 																						 * StartSequence
 																						 * +
@@ -3262,11 +3365,14 @@ public class DataFreescale implements IDataLayer {
 																							 * Control
 																							 */
 		String Key = String.format("%04X", addrOfInterest.getNetworkAddress()) + String.format("%02X", endpoint);
-
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			LOG.info("ZDP-SimpleDescriptor.Request command:" + _res.ToHexString());
+		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_SIMPLE_DESCRIPTOR);
 		lock.set_Key(Key);
 		Status status = null;
+
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3307,6 +3413,18 @@ public class DataFreescale implements IDataLayer {
 				return _tores;
 			}
 		}
+	}
+
+	@Override
+	public void clearBuffer() {
+		synchronized (receivedDataQueue) {
+			receivedDataQueue.clear();
+		}
+
+		synchronized (tmpDataQueue) {
+			tmpDataQueue.clear();
+		}
+
 	}
 
 	@Override
@@ -3622,35 +3740,10 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void notifyFrame(final ByteArrayObject frame) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				try {
-
-					byte[] msg = frame.getByteArray();
-					int size = frame.getByteCount(true);
-
-					short[] messageShort = new short[size];
-					for (int i = 0; i < size; i++)
-						messageShort[i] = (short) (msg[i] & 0xff);
-
-					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayHexRadixDataReceived("<<< Received data: ", messageShort);
-					addToReceivedDataQueue(size, messageShort);
-					try {
-						processMessages();
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							LOG.warn("Error on notifyFrame:" + e.getMessage());
-					}
-				} catch (Exception e) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.warn("Error on notifyFrame: " + e.getMessage());
-				}
-			}
-		};
-		thr.setName("Thread notifyFrame");
-		thr.start();
+		synchronized (tmpDataQueue) {
+			tmpDataQueue.add(frame);
+			tmpDataQueue.notify();
+		}
 	}
 
 	@Override
@@ -3902,10 +3995,6 @@ public class DataFreescale implements IDataLayer {
 		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
-		if (gal.getPropertiesManager().getDebugEnabled()) {
-			LOG.debug("Sending InterPANMessage to: " + String.format("%016X", _DSTAdd));
-		}
-
 		Status status = null;
 		try {
 			synchronized (listLocker) {
@@ -3942,11 +4031,17 @@ public class DataFreescale implements IDataLayer {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Returned Status: " + status.getCode());
 				}
-				throw new GatewayException("Error on  NTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+				throw new GatewayException("Error on  INTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 
 			}
 			return status;
 		}
+	}
+
+	@Override
+	public void destroy() {
+		destroy = true;
+
 	}
 }
 

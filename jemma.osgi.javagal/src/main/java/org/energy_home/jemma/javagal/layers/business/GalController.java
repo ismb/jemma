@@ -17,6 +17,8 @@ package org.energy_home.jemma.javagal.layers.business;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,6 +33,7 @@ import org.energy_home.jemma.javagal.layers.business.implementations.GatewayEven
 import org.energy_home.jemma.javagal.layers.business.implementations.MessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ZdoManager;
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
@@ -104,6 +107,20 @@ public class GalController {
 	private IDataLayer DataLayer = null;
 	private Discovery_Freshness_ForcePing _discoveryManager = null;
 	PropertiesManager PropertiesManager = null;
+	private ManageMapPanId manageMapPanId;
+	private String networkPanID = null;
+
+	public String getNetworkPanID() {
+		return networkPanID;
+	}
+
+	public void setNetworkPanID(String panID) {
+		networkPanID = panID;
+	}
+
+	public ManageMapPanId getManageMapPanId() {
+		return manageMapPanId;
+	}
 
 	/**
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
@@ -127,6 +144,8 @@ public class GalController {
 
 			if (DataLayer.getIKeyInstance().isConnected())
 				DataLayer.getIKeyInstance().disconnect();
+			
+			DataLayer.destroy();
 			DataLayer = null;
 			if (getPropertiesManager().getDebugEnabled())
 				LOG.debug("Reset done!");
@@ -193,7 +212,7 @@ public class GalController {
 		apsManager = new ApsMessageManager(this);
 		messageManager = new MessageManager(this);
 		_gatewayEventManager = new GatewayEventManager(this);
-
+		manageMapPanId = new ManageMapPanId();
 		_lockerStartDevice = new ParserLocker();
 		_discoveryManager = new Discovery_Freshness_ForcePing(this);
 
@@ -588,13 +607,21 @@ public class GalController {
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
 
-							NodeDescriptor _node = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
+							NodeDescriptor nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
+							Integer shortAddress = null;
+							if (addrOfInterest.getNetworkAddress() == null)
+								shortAddress = getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress());
+							else
+								shortAddress = addrOfInterest.getNetworkAddress();
+							int _index = -1;
+							if ((_index = existIntoNetworkCache(shortAddress)) > -1) {
+								getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
+							}
 
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
-
-							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, _node);
-							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, _node, addrOfInterest);
+							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
+							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 
 						} catch (IOException e) {
 							Status _s = new Status();
@@ -632,10 +659,19 @@ public class GalController {
 			return null;
 
 		} else {
-			if (getGatewayStatus() == GatewayStatus.GW_RUNNING)
-
-				return DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
-			else
+			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
+				NodeDescriptor nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
+				Integer shortAddress = null;
+				if (addrOfInterest.getNetworkAddress() == null)
+					shortAddress = getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress());
+				else
+					shortAddress = addrOfInterest.getNetworkAddress();
+				int _index = -1;
+				if ((_index = existIntoNetworkCache(shortAddress)) > -1) {
+					getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
+				}
+				return nodeDescriptor;
+			} else
 				throw new GatewayException("Gal is not in running state!");
 		}
 	}
@@ -985,7 +1021,12 @@ public class GalController {
 	}
 
 	public String NMLE_GetSync(short ilb) throws IOException, Exception, GatewayException {
-		return DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb);
+		String _value = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb);
+		/* Refresh value of the PanId */
+		if (ilb == 80)
+			setNetworkPanID(_value);
+
+		return _value;
 
 	}
 
@@ -1024,11 +1065,10 @@ public class GalController {
 		}
 		return id;
 	}
-	
-	
+
 	/**
-	 * Creates a callback to receive APS/ZDP/ZCL/InterPAN messages using a class of
-	 * filters.
+	 * Creates a callback to receive APS/ZDP/ZCL/InterPAN messages using a class
+	 * of filters.
 	 * 
 	 * @param proxyIdentifier
 	 *            the proxy identifier for the callback
@@ -1278,8 +1318,7 @@ public class GalController {
 		} else
 			throw new GatewayException("Gal is not in running state!");
 	}
-	
-	
+
 	/**
 	 * Sends an InterPAN message.
 	 * 
@@ -1329,6 +1368,7 @@ public class GalController {
 	 *             if a ZGD error occurs.
 	 */
 	public Status leave(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final int mask, final boolean Async) throws IOException, Exception, GatewayException {
+
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -1337,6 +1377,10 @@ public class GalController {
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						if (!addrOfInterest.getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress())) {
 							try {
+								if (!(addrOfInterest.getNetworkAddress() == 0xFFFF) && !(addrOfInterest.getNetworkAddress() == 0xFFFC)) {
+
+									leavePhilips(timeout, _requestIdentifier, addrOfInterest);
+								}
 								_s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 								if (_s.getCode() == GatewayConstants.SUCCESS) {
 									/* Broadcast address */
@@ -1344,6 +1388,7 @@ public class GalController {
 										/* Clear the Network Cache */
 										List<WrapperWSNNode> _list = getNetworkcache();
 										for (WrapperWSNNode x : _list) {
+
 											x.abortTimers();
 											if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress()))
 												get_gatewayEventManager().nodeRemoved(_s, x.get_node());
@@ -1420,7 +1465,9 @@ public class GalController {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
 				if (!addrOfInterest.getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress())) {
-
+					if (!(addrOfInterest.getNetworkAddress() == 0xFFFF) && !(addrOfInterest.getNetworkAddress() == 0xFFFC)) {
+						leavePhilips(timeout, _requestIdentifier, addrOfInterest);
+					}
 					Status _s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 					if (_s.getCode() == GatewayConstants.SUCCESS) {
 						/* Broadcast Address */
@@ -1428,6 +1475,7 @@ public class GalController {
 							/* Clear the Network Cache */
 							List<WrapperWSNNode> _list = getNetworkcache();
 							for (WrapperWSNNode x : _list) {
+								// Philips leave TODO
 								x.abortTimers();
 								if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress()))
 									get_gatewayEventManager().nodeRemoved(_s, x.get_node());
@@ -1437,7 +1485,7 @@ public class GalController {
 							getNetworkcache().get(0).setTimerForcePing(getPropertiesManager().getForcePingTimeout());
 							getNetworkcache().get(0).setTimerFreshness(getPropertiesManager().getKeepAliveThreshold());
 
-						} else /* Broadcast Address */
+						} else /* Unicast Address */
 						{
 							/* get the node from cache */
 							int index = existIntoNetworkCache(addrOfInterest.getNetworkAddress());
@@ -1458,6 +1506,76 @@ public class GalController {
 					throw new GatewayException("Is not possible Leave the GAL!");
 			} else
 				throw new GatewayException("Gal is not in running state!");
+		}
+
+	}
+
+	private void leavePhilips(final long timeout, final int _requestIdentifier, final Address addrOfInterest) throws IOException, Exception, GatewayException {
+		WrapperWSNNode node = null;
+		/* Check if the device is the Philips light */
+		Integer shortAddress = null;
+		if (addrOfInterest.getNetworkAddress() == null)
+			shortAddress = getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress());
+		else
+			shortAddress = addrOfInterest.getNetworkAddress();
+		int _index = -1;
+		if ((_index = existIntoNetworkCache(shortAddress)) > -1) {
+			node = getNetworkcache().get(_index);
+		}
+
+		if (node != null) {
+
+			NodeDescriptor nodeDescriptor = null;
+			if (node.getNodeDescriptor() == null)
+				nodeDescriptor = getNodeDescriptor(timeout, _requestIdentifier, addrOfInterest, false);
+
+			else
+				nodeDescriptor = node.getNodeDescriptor();
+
+			/* Philips Device Led */
+			if (nodeDescriptor.getManufacturerCode() == 4107) {
+
+				if (PropertiesManager.getDebugEnabled())
+					logger.info("####Executing leave for Philips Light");
+
+				Address broadcast = new Address();
+				broadcast.setNetworkAddress(0xffff);
+
+				/* ScanRequest */
+				InterPANMessage scanReqCommand = new InterPANMessage();
+				scanReqCommand.setSrcAddressMode(3);
+				scanReqCommand.setSrcAddress(GalNode.get_node().getAddress());
+				scanReqCommand.setSrcPANID(Integer.parseInt(getNetworkPanID(), 16));
+				scanReqCommand.setDstAddressMode(2);
+				scanReqCommand.setDestinationAddress(broadcast);
+				scanReqCommand.setDestPANID(getManageMapPanId().getPanid(node.get_node().getAddress().getIeeeAddress()));
+				scanReqCommand.setProfileID(49246);
+				scanReqCommand.setClusterID(4096);
+				scanReqCommand.setASDULength(9);
+				scanReqCommand.setASDU(new byte[] { 0x11, 0x01, 0x00, (byte) 0xCA, (byte) 0xFE, (byte) 0xCA, (byte) 0xFE, 0x02, 0x33 });
+				sendInterPANMessage(timeout, _requestIdentifier, scanReqCommand);
+
+				Thread.sleep(1000);
+
+				/* ScanRequest */
+				InterPANMessage resetCommand = new InterPANMessage();
+				resetCommand.setSrcAddressMode(3);
+				resetCommand.setSrcAddress(GalNode.get_node().getAddress());
+				resetCommand.setSrcPANID(Integer.parseInt(getNetworkPanID(), 16));
+				resetCommand.setDstAddressMode(2);
+				resetCommand.setDestinationAddress(broadcast);
+				resetCommand.setDestPANID(getManageMapPanId().getPanid(node.get_node().getAddress().getIeeeAddress()));
+				resetCommand.setProfileID(49246);
+				resetCommand.setClusterID(4096);
+				resetCommand.setASDULength(7);
+				resetCommand.setASDU(new byte[] { 0x11, 0x03, 0x07, (byte) 0xCA, (byte) 0xFE, (byte) 0xCA, (byte) 0xFE });
+				sendInterPANMessage(timeout, _requestIdentifier, resetCommand);
+
+				if (PropertiesManager.getDebugEnabled())
+					logger.info("####End leave for Philips Light");
+
+			}
+
 		}
 
 	}
@@ -1769,6 +1887,17 @@ public class GalController {
 				public void run() {
 					String _NetworkAdd = null;
 					BigInteger _IeeeAdd = null;
+
+					/* Read the PanID of the Network */
+					try {
+						networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
+					} catch (Exception e) {
+						if (PropertiesManager.getDebugEnabled()) {
+							logger.error("Error retrieving the PanID of the Network!");
+						}
+						return;
+					}
+
 					/* Read the ShortAddress of the GAL */
 					try {
 						_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
@@ -1811,6 +1940,7 @@ public class GalController {
 							galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
 							galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
 							galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
+
 							galNodeWrapper.reset_numberOfAttempt();
 							galNodeWrapper.set_discoveryCompleted(true);
 							int _index = -1;
@@ -1885,6 +2015,9 @@ public class GalController {
 							LOG.error("Error calling nodeDiscovered for the GAL node!");
 						}
 					}
+					/* Saving the Panid in order to leave the Philips light */
+					getManageMapPanId().setPanid(galNodeWrapper.get_node().getAddress().getIeeeAddress(), getNetworkPanID());
+					/**/
 
 					synchronized (_lockerStartDevice) {
 						_lockerStartDevice.setId(1);

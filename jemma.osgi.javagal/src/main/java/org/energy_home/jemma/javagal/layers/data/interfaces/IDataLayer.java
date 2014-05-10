@@ -528,6 +528,9 @@ public interface IDataLayer extends IFrameCallback {
 	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest,
 			short startIndex) throws IOException, Exception,
 			GatewayException;
+
+	void clearBuffer();
 	
+	void destroy();
 	
 }

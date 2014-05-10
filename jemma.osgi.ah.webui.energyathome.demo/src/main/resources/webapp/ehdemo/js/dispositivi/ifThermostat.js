@@ -69,7 +69,8 @@ ifThermostat.update= function(now){
         if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
                 
                 ifThermostat.stato=1;
-                _value=Elettrodomestici.listaElettrodomestici[i].consumo_value;
+                //_value=Elettrodomestici.listaElettrodomestici[i].consumo_value;
+                _value=Elettrodomestici.listaElettrodomestici[i].temperature+" °";
                 
         }else{
                 _value="n.a.";
