@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399623533441
+Bnd-LastModified: 1399708254548
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-Activator: org.energy_home.jemma.ah.zigbee.appliances.Activator
@@ -25,7 +25,6 @@ Import-Package: org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",or
  energy_home.jemma.ah.zigbee.zcl.cluster.zll;version="[1.0,2)",org.energ
  y_home.jemma.ah.zigbee.zcl.lib;version="[3.0,4)",org.osgi.framework;ver
  sion="1.3.0",org.osgi.service.cm;version="[1.2,2)",org.osgi.service.dev
- ice;version="1.1.0",org.slf4j;version="[1.7,2)",org.slf4j;version="[1.6
- ,2)"
+ ice;version="1.1.0",org.slf4j;version="[1.7,2)"
 Require-Bundle: jemma.osgi.ah.hac.lib
 Tool: Bnd-1.50.0

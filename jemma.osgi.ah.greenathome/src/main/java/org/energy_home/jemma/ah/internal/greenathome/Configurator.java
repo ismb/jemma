@@ -21,21 +21,22 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.device.Driver;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+//XXX Is this related to Configuration ? Shall it be harmonized with COnfigAdmin ?
 public class Configurator implements Driver, ServiceTrackerCustomizer {
 
 	private BundleContext bc;
 
 	private HashMap trackedDevices = new HashMap();
 
-	private static final Log log = LogFactory.getLog(Configurator.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( Configurator.class );
 
 	public void activate(BundleContext bc, Map props) {
 		this.bc = bc;
@@ -57,7 +58,7 @@ public class Configurator implements Driver, ServiceTrackerCustomizer {
 	}
 
 	public void modifiedService(ServiceReference sr, Object arg1) {
-		log.debug("service modified");
+		//BANANA LOG.debug("service modified");
 
 		Dictionary props = this.getServiceProperties(sr);
 	}
@@ -73,7 +74,7 @@ public class Configurator implements Driver, ServiceTrackerCustomizer {
 	}
 
 	public void removedService(ServiceReference sr, Object arg1) {
-		log.debug("Service has been removed");
+		//BANANA LOG.debug("Service has been removed");
 		trackedDevices.remove(sr);
 	}
 

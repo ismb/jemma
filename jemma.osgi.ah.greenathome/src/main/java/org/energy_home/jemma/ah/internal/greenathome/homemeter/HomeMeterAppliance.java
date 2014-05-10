@@ -22,8 +22,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.ah.ConfigClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.BasicClient;
@@ -39,6 +37,8 @@ import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Implements the Overload Control Application
  * 
@@ -48,7 +48,7 @@ import org.energy_home.jemma.ah.hac.lib.EndPoint;
 
 public class HomeMeterAppliance extends Appliance implements IPeerAppliancesListener {
 	
-	private static final Log log = LogFactory.getLog(HomeMeterAppliance.class);
+	//BANANA private static final Logger LOG = LoggerFactory.getLogger( HomeMeterAppliance.class );
 
 	protected static final String TYPE = "org.energy_home.jemma.ah.appliance.greeenathome";
 	protected static final String FRIENDLY_NAME = "Homemeter";
@@ -364,10 +364,10 @@ public class HomeMeterAppliance extends Appliance implements IPeerAppliancesList
 	}
 
 	public void startup() {
-		log.debug("Home Meter started");
+		//BANANA LOG.debug("Home Meter started");
 	}
 
 	public void shutdown() {
-		log.debug("Home Meter stopped");
+		//BANANA LOG.debug("Home Meter stopped");
 	}
 }

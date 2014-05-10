@@ -18,22 +18,24 @@ package org.energy_home.jemma.ah.webui.energyathome;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jabsorb.JSONRPCBridge;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sun.rmi.runtime.Log;
 
 public class ServiceRegistryProxy {
 
 	private StaticJSONServiceTracker jSONServiceTracker;
-	private static final Log log = LogFactory.getLog(EnergyAtHome.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ServiceRegistryProxy.class );
 
 	public ServiceRegistryProxy(BundleContext bc, JSONRPCBridge jsonRpcBridge) {
 		try {
 			jSONServiceTracker = (StaticJSONServiceTracker) StaticJSONServiceTracker.createJSONServiceTracker(bc);
 			jSONServiceTracker.open();
 		} catch (Exception e) {
-			log.debug(e);
+			LOG.error("Exception on ServiceRegistryProxy",e);
 		}
 	}
 

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399623518090
+Bnd-LastModified: 1399714877292
 Build-Jdk: 1.7.0_55
 Built-By: tomasi
 Bundle-ActivationPolicy: lazy

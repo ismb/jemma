@@ -17,21 +17,23 @@ package org.energy_home.jemma.ah.webui.energyathome;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Enumeration;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.hac.adapter.http.Base64;
+import org.energy_home.jemma.hac.adapter.http.CustomJsonServlet;
+import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
+import org.energy_home.jemma.hac.adapter.http.JsonRPC;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCServlet;
 import org.osgi.framework.BundleContext;
@@ -41,10 +43,8 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.useradmin.Authorization;
 import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
-import org.energy_home.jemma.hac.adapter.http.Base64;
-import org.energy_home.jemma.hac.adapter.http.CustomJsonServlet;
-import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
-import org.energy_home.jemma.hac.adapter.http.JsonRPC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Register the url related to the Green@Home web application
@@ -88,7 +88,7 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 	private String realm = "Energy@Home Login";
 	private ComponentContext ctxt;
 
-	private static final Log log = LogFactory.getLog(EnergyAtHome.class);
+	private static final Logger LOG = LoggerFactory.getLogger( EnergyAtHome.class );
 	private static final String PROP_ENABLE_AUTH = "it.telecomitalia.ah.energyathome.auth";
 	private static final String PROP_ENABLE_HTTPS = "it.telecomitalia.ah.energyathome.https";
 	private static final boolean DEFAULT_ENABLE_AUTH = true;
@@ -114,12 +114,12 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 			registryProxy = new ServiceRegistryProxy(this.bc, jsonRpcBridge);
 			jsonRpcBridge.registerObject("OSGi", registryProxy);
 		} catch (Throwable e) {
-			log.debug(e);
+			LOG.error("Exception on activate",e);
 		}
 	}
 
 	protected void deactivate(ComponentContext ctxt) {
-		log.debug("deactivated");
+		LOG.debug("deactivated");
 
 		if (this.registryProxy != null) {
 			jsonRpcBridge.unregisterObject("OSGi");
