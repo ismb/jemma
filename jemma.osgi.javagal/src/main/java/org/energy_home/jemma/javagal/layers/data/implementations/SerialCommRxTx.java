@@ -29,7 +29,6 @@ import java.util.TooManyListenersException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
@@ -103,9 +102,9 @@ public class SerialCommRxTx implements IConnector {
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.setRTS(true);
 					serialPort.setDTR(true);
-					serialPort.enableReceiveTimeout(9000);
+					serialPort.enableReceiveTimeout(1000);
 					in = serialPort.getInputStream();
-					serialReader = new SerialReader(in, this);
+					serialReader = new SerialReader(this);
 					serialPort.notifyOnDataAvailable(true);
 					try {
 						serialPort.addEventListener(serialReader);
@@ -149,14 +148,14 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ByteArrayObject buff) throws Exception {
+	public synchronized void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
-				 if (serialPort.getOutputStream() != null) {
-					serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
-					serialPort.getOutputStream().flush();
-				} else
-					throw new Exception("Error on serial write - out == null");
-			
+			if (serialPort.getOutputStream() != null) {
+				serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
+				serialPort.getOutputStream().flush();
+			} else
+				throw new Exception("Error on serial write - out == null");
+
 		}
 	}
 
@@ -196,47 +195,42 @@ public class SerialCommRxTx implements IConnector {
 	}
 
 	class SerialReader implements SerialPortEventListener {
-		InputStream in;
-		private byte[] buffer = new byte[1024];
+
+		private byte[] buffer = new byte[2048];
 		IConnector _caller = null;
 
-		public SerialReader(InputStream in, IConnector _parent) {
-			this.in = in;
+		public SerialReader(IConnector _parent) {
+
 			_caller = _parent;
 		}
 
 		@Override
-		public void serialEvent(SerialPortEvent event) {
-
+		public synchronized void serialEvent(SerialPortEvent event) {
 			try {
-				switch (event.getEventType()) {
-				case SerialPortEvent.BI:
-				case SerialPortEvent.OE:
-				case SerialPortEvent.FE:
-				case SerialPortEvent.PE:
-				case SerialPortEvent.CD:
-				case SerialPortEvent.CTS:
-				case SerialPortEvent.DSR:
-				case SerialPortEvent.RI:
-				case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-					break;
-				case SerialPortEvent.DATA_AVAILABLE: {
+				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
-						int data = 0;
+						Integer data = 0;
 						while (in.available() > 0) {
-							data = in.read();
-							buffer[pos++] = (byte) data;
+							try {
+								data = in.read();
+								buffer[pos] = data.byteValue();
+								pos = pos + 1;
+								// System.out.println(String.format("%02X",data));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 						if (!skypMessage) {
 							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
+
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
 							logger.error("Error on data received:" + e.getMessage());
 					}
-				}
+
 				}
 			} catch (Exception e) {
 				if (DataLayer.getPropertiesManager().getDebugEnabled())
@@ -276,11 +270,11 @@ public class SerialCommRxTx implements IConnector {
 			logger.info("Clear buffer after CPUReset...");
 
 		DataLayer.clearBuffer();
+
 		synchronized (this) {
 			skypMessage = false;
 		}
 
-		
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
