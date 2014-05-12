@@ -2709,8 +2709,8 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 			}
 			
 			if(simpleMeteringServer!=null){
-				
 				//FIXME: I should consider divisor and multiplier to get the real instantaneousdeman value
+
 				/*
 				int divisor=1000;
 				try{
@@ -2733,11 +2733,11 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 					realInstantaneousValue = this.readPower(peerAppliance);
 					if (realInstantaneousValue != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
 						 attributeValue= new AttributeValueExtended("IstantaneousDemands", new AttributeValue(attributeValue));
-				
+
 				} catch (Exception e) {
 					realInstantaneousValue= 0.0;
 				}
-				
+
 				log.debug("Calculated realInstantaneousDemand: "+realInstantaneousValue);
 				props.put("device_value_2", realInstantaneousValue);
 				

@@ -268,9 +268,6 @@
 		</plugins>
 	</build>
 	<repositories>
-		
-		
-  
 		<repository>
 			<id>localRepository</id>
 			<name>Local repository</name>
