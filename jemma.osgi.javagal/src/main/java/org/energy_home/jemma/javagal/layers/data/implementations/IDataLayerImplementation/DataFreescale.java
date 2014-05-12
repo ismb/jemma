@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.business.Utils;
-import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
+import org.energy_home.jemma.javagal.layers.data.implementations.JavaComm;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
@@ -106,7 +106,7 @@ public class DataFreescale implements IDataLayer {
 		final int timeoutLock = 100;
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+		_key = new JavaComm(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
 
 		Thread thrAnalizer = new Thread() {
