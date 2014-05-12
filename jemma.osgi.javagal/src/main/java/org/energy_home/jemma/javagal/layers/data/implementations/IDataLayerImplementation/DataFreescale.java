@@ -94,6 +94,17 @@ public class DataFreescale implements IDataLayer {
 
 	private LinkedBlockingQueue<ByteArrayObject> tmpDataQueue = new LinkedBlockingQueue<ByteArrayObject>();
 
+	private List<short[]> messages = Collections.synchronizedList(new LinkedList<short[]>());
+
+	/**
+	 * Gets the list of current available messages.
+	 * 
+	 * @return the list of current available message.
+	 */
+	public List<short[]> getMessages() {
+		return messages;
+	}
+
 	/**
 	 * Creates a new instance with a reference to the Gal Controller.
 	 * 
@@ -108,6 +119,62 @@ public class DataFreescale implements IDataLayer {
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
+
+		Thread thrAnalizer = new Thread() {
+			@Override
+			public void run() {
+				short[] tempArray = null;
+				while (!destroy) {
+					tempArray = null;
+					try {
+						synchronized (receivedDataQueue) {
+							receivedDataQueue.wait();
+							while (receivedDataQueue.size() > 0) {
+								tempArray = createMessageFromRowData();
+
+								if (tempArray != null) {
+									try {
+										synchronized (messages) {
+											messages.add(tempArray);
+										}
+										Thread thrRuner = new Thread() {
+											@Override
+											public void run() {
+
+												try {
+													processMessages();
+												} catch (Exception e) {
+													// TODO Auto-generated catch
+													// block
+													e.printStackTrace();
+												}
+											}
+										};
+										thrRuner.setName("THR-Runner");
+										thrRuner.start();
+									} catch (Exception e) {
+										if (gal.getPropertiesManager().getDebugEnabled())
+											logger.error("Error on processMessages: " + e.toString());
+										e.printStackTrace();
+									}
+
+								} else
+									break;
+							}
+
+						}
+
+					} catch (InterruptedException e) {
+
+					}
+
+				}
+			}
+
+		};
+		thrAnalizer.setName("TH-MessagesAnalizer");
+		thrAnalizer.start();
+
 		Thread thrSender = new Thread() {
 			@Override
 			public void run() {
@@ -160,6 +227,7 @@ public class DataFreescale implements IDataLayer {
 							synchronized (receivedDataQueue) {
 								for (int z = 0; z < size; z++)
 									receivedDataQueue.add(messageShort[z]);
+								receivedDataQueue.notify();
 							}
 
 						}
@@ -176,58 +244,6 @@ public class DataFreescale implements IDataLayer {
 		thrReceiver.setName("TH-RS232-Receiver");
 		thrReceiver.start();
 
-		Thread thrAnalizer = new Thread() {
-			@Override
-			public void run() {
-				short[] tempArray = null;
-				while (!destroy) {
-					if (!receivedDataQueue.isEmpty()) {
-						try {
-							tempArray = createMessageFromRowData();
-						} catch (Exception e) {
-							if (gal.getPropertiesManager().getDebugEnabled())
-								logger.error("Error on createMessageFromRowData: " + e.toString());
-
-						}
-
-						if (tempArray != null) {
-							synchronized (messages) {
-								messages.add(tempArray);
-							}
-
-							try {
-								processMessages();
-							} catch (Exception e) {
-								if (gal.getPropertiesManager().getDebugEnabled())
-									logger.error("Error on processMessages: " + e.toString());
-									e.printStackTrace();
-							}
-
-						} else
-							try {
-								Thread.sleep(timeoutLock);
-							} catch (InterruptedException e) {
-
-							}
-					}
-				}
-			}
-
-		};
-		thrAnalizer.setName("TH-MessagesAnalizer");
-		thrAnalizer.start();
-
-	}
-
-	private List<short[]> messages = Collections.synchronizedList(new LinkedList<short[]>());
-
-	/**
-	 * Gets the list of current available messages.
-	 * 
-	 * @return the list of current available message.
-	 */
-	public List<short[]> getMessages() {
-		return messages;
 	}
 
 	private short[] createMessageFromRowData() {
@@ -235,11 +251,7 @@ public class DataFreescale implements IDataLayer {
 
 		int toremove = 0;
 		while ((!receivedDataQueue.isEmpty()) && (receivedDataQueue.get(0) != DataManipulation.SEQUENCE_START)) {
-			Short _toremove = 0;
-			synchronized (receivedDataQueue) {
-				_toremove = receivedDataQueue.remove(0);
-			}
-
+			Short _toremove = receivedDataQueue.remove(0);
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove));
 
@@ -256,6 +268,9 @@ public class DataFreescale implements IDataLayer {
 			return null;
 
 		}
+
+		int optCode = copyList.get(1).intValue();
+		int optGroup = copyList.get(2).intValue();
 
 		Integer _HexLegth = copyList.get(3).intValue();
 		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
@@ -280,6 +295,7 @@ public class DataFreescale implements IDataLayer {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
 			serialDataError = true;
+
 		}
 
 		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
@@ -298,20 +314,27 @@ public class DataFreescale implements IDataLayer {
 		toremove += (4 + payloadLenght + 1);
 
 		if (serialDataError) {
-			Short extracted;
-			for (int z = 0; z < toremove; z++) {
-				if (receivedDataQueue.size() > 0) {
-					synchronized (receivedDataQueue) {
+			/* BugFix */
+			if ((messageCfc == DataManipulation.SEQUENCE_START) && (optCode == 0xA3) && (optGroup == 0x23)) {
+				for (int z = 0; z < toremove - 1; z++)
+					receivedDataQueue.remove(0);
+				receivedDataQueue.remove(1);/*Rimuovo il CSC errato e in posizione errata*/
+				return toReturn;
+			} else {
+				Short extracted;
+				for (int z = 0; z < toremove; z++) {
+					if (receivedDataQueue.size() > 0) {
+
 						extracted = receivedDataQueue.remove(0);
+
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.debug("Removed Byte: " + String.format("%02X", extracted));
+
 					}
-
-					if (gal.getPropertiesManager().getDebugEnabled())
-						logger.debug("Removed Byte: " + String.format("%02X", extracted));
 				}
+
+				return null;
 			}
-
-			return null;
-
 		} else {
 			for (int z = 0; z < toremove; z++)
 				receivedDataQueue.remove(0);
@@ -2515,7 +2538,7 @@ public class DataFreescale implements IDataLayer {
 		_res.addByte((byte) 0x02);/* AFDE */
 		_res.addByte((byte) 0x02);/* APSME */
 		_res.addByte((byte) 0x02);/* ZDP */
-		_res.addByte((byte) 0x02);/* HealthCare */
+		_res.addByte((byte) 0x00);/* HealthCare */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCModeSelectRequest);/*
 																						 * StartSequence
 																						 * +
