@@ -152,25 +152,17 @@ public class SerialCommRxTx implements IConnector {
 	public void write(ByteArrayObject buff) throws Exception {
 
 		if (isConnected()) {
-			synchronized (serialPort.getOutputStream()) {
+			
 
-				/*
+				
 				 if (serialPort.getOutputStream() != null) {
 					serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
 					serialPort.getOutputStream().flush();
 				} else
 					throw new Exception("Error on serial write - out == null");
-					 */
-				if (serialPort.getOutputStream() != null) {
-					int size = buff.getByteCount(true);
-					for (int i = 0; i < size; i++) {
-						serialPort.getOutputStream().write(buff.getByteArray()[i]);
-						serialPort.getOutputStream().flush();
-					}
-				} else
-					throw new Exception("Error on serial write - out == null");
-
-			}
+					 
+				
+			
 		}
 
 	}

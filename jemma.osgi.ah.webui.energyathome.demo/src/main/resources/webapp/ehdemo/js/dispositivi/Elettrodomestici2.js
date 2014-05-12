@@ -329,8 +329,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										Elettrodom["consumo"]="n.a.";
 										Elettrodom["consumo_value"]=pot;
 									}else{
-									//console.log("pot: "+pot);
-										Elettrodom["consumo"] = parseFloat(pot)/10;
+										Elettrodom["consumo"] = parseFloat(pot);
 										Elettrodom["consumo_value"]=Elettrodom["consumo"];
 										Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 									}
@@ -542,7 +541,7 @@ Elettrodomestici.update=function(){
 	Elettrodomestici.ReadCurrentPower(function(){
 		Elettrodomestici.ReadCurrentProduction(function(){
 		
-			Elettrodomestici.GetDevicesInfos(function(){
+				Elettrodomestici.GetDevicesInfos(function(){
 		//Elettrodomestici.ReadCurrentPower(function(){
 			//Elettrodomestici.InizializzaPagina();
 				Elettrodomestici.removeSpinner("#RigaElettrodomestici");
