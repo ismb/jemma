@@ -148,7 +148,7 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ByteArrayObject buff) throws Exception {
+	public synchronized void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (serialPort.getOutputStream() != null) {
 				serialPort.getOutputStream().write(buff.getByteArray(), 0, buff.getByteCount(true));
@@ -205,22 +205,20 @@ public class SerialCommRxTx implements IConnector {
 		}
 
 		@Override
-		public void serialEvent(SerialPortEvent event) {
+		public synchronized void serialEvent(SerialPortEvent event) {
 			try {
-
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
 						Integer data = 0;
-
 						while (in.available() > 0) {
 							try {
 								data = in.read();
 								buffer[pos] = data.byteValue();
 								pos = pos + 1;
+								// System.out.println(String.format("%02X",data));
 							} catch (Exception e) {
 								e.printStackTrace();
-								// System.out.println(String.format("%02X",data));
 							}
 						}
 						if (!skypMessage) {
