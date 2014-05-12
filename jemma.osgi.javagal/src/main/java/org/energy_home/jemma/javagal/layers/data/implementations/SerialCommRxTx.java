@@ -172,7 +172,7 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ByteArrayObject buff) throws Exception {
+	public synchronized void  write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
