@@ -47,6 +47,7 @@ import org.energy_home.jemma.zgd.jaxb.Status;
  */
 public class SerialCommRxTx implements IConnector {
 	private Boolean connected = false;
+	private Boolean ignoreMessage = false;
 	private SerialPort serialPort;
 	private final static Log logger = LogFactory.getLog(SerialCommRxTx.class);
 	CommPortIdentifier portIdentifier;
@@ -244,9 +245,10 @@ public class SerialCommRxTx implements IConnector {
 								e.printStackTrace();
 							}
 						}
-						ByteArrayObject frame = new ByteArrayObject(buffer, pos);
-						_caller.getDataLayer().notifyFrame(frame);
-
+						if (!ignoreMessage) {
+							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
+							_caller.getDataLayer().notifyFrame(frame);
+						}
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
 							logger.error("Error on data received:" + e.getMessage());
@@ -271,11 +273,19 @@ public class SerialCommRxTx implements IConnector {
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
+
+		synchronized (ignoreMessage) {
+			ignoreMessage = true;
+		}
 		DataLayer.cpuReset();
-		disconnect();
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Waiting 5 seconds after command CPUReset...");
-		Thread.sleep(5000);
+			logger.info("Waiting 3,5 seconds after command CPUReset...");
+		Thread.sleep(3500);
+
+		disconnect();
+		synchronized (ignoreMessage) {
+			ignoreMessage = false;
+		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Clear buffer after CPUReset...");
 		DataLayer.clearBuffer();
