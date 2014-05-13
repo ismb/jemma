@@ -117,7 +117,8 @@ public class DataFreescale implements IDataLayer {
 					tempArray = null;
 					try {
 						synchronized (receivedDataQueue) {
-							receivedDataQueue.wait();
+							receivedDataQueue.wait(timeoutLock);
+							
 							while (receivedDataQueue.size() > 0) {
 								tempArray = createMessageFromRowData();
 								if (tempArray != null) {

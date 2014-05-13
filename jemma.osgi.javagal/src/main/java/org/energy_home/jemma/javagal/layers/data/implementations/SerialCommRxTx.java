@@ -90,8 +90,8 @@ public class SerialCommRxTx implements IConnector {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
-			System.setProperty("gnu.io.SerialPorts", portName);
+			// System.setProperty("gnu.io.rxtx.SerialPorts", portName);
+			// System.setProperty("gnu.io.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				logger.error("Error: Port is currently in use:" + portName);
@@ -140,29 +140,19 @@ public class SerialCommRxTx implements IConnector {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.error("the connection could not be made: NoSuchPortException " + portName + " - \n\rList of ports:");
-			CommPortIdentifier cpi = null;
-			Enumeration ls = CommPortIdentifier.getPortIdentifiers();
-			while (ls.hasMoreElements()) {
-				try {
-					cpi = (CommPortIdentifier) ls.nextElement();
-				} catch (NoSuchElementException n) {
-
-				}
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					logger.error("Port: " + cpi.getName());
-			}
 			e.printStackTrace();
 			return false;
 		} catch (PortInUseException e) {
+			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.error("the connection could not be made: PortInUseException");
-			disconnect();
+
 			e.printStackTrace();
 			return false;
 		} catch (UnsupportedCommOperationException e) {
+			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				logger.error("the connection could not be made: UnsupportedCommOperationException");
-			disconnect();
 			e.printStackTrace();
 			return false;
 		}
@@ -172,7 +162,7 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public synchronized void  write(ByteArrayObject buff) throws Exception {
+	public void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
@@ -225,7 +215,7 @@ public class SerialCommRxTx implements IConnector {
 		}
 
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			logger.info("Disconnected");
+			logger.info("RS232 - Disconnected");
 	}
 
 	class SerialReader implements SerialPortEventListener {
@@ -276,24 +266,24 @@ public class SerialCommRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
-
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
-
 		DataLayer.cpuReset();
-
+		disconnect();
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Waiting 5 seconds after command CPUReset...");
 		Thread.sleep(5000);
-
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Clear buffer after CPUReset...");
-
 		DataLayer.clearBuffer();
-
+		if (DataLayer.getPropertiesManager().getDebugEnabled())
+			logger.info("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+		if (!connect(commport, boudrate)) {
+			throw new Exception("Unable to connect to serial port!");
+		}
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
