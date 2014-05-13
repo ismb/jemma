@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399965392259
+Bnd-LastModified: 1399970911750
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-Category: Web UI libs
