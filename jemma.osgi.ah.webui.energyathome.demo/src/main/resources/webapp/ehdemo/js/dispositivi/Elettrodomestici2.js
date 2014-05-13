@@ -266,7 +266,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 						$.each(result.list,
 								function(indice, elettrodom) {
 									//console.log("--"+indice +": "+$.param(elettrodom)+"-----------"+elettrodom["map"]["name"]);
-									if (elettrodom["map"]["type"] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+									if (elettrodom["map"]["type"] == InterfaceEnergyHome.SMARTINFO_APP_TYPE &&
+											elettrodom["map"]["category"]["name"]=="Meter") {
 										//Analizzo lo SmartInfo
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
