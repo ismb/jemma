@@ -104,6 +104,7 @@
 			<artifactId>org.rxtx</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		
 		<!--<dependency>
 			<groupId>de.fraunhofer.fit</groupId>
 			<artifactId>serialrxtxcomm</artifactId>

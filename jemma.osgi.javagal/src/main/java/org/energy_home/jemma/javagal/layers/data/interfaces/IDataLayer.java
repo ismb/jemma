@@ -533,4 +533,6 @@ public interface IDataLayer extends IFrameCallback {
 	
 	void destroy();
 	
+	boolean getDestroy();
+	
 }
