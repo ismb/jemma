@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399882370164
+Bnd-LastModified: 1399903868679
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.ah.zigbee.appliances.generic.Act
  ivator
 Bundle-Category: Automation@Home

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399882349150
+Bnd-LastModified: 1399903845444
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-Category: Web UI libs
 Bundle-ManifestVersion: 2
 Bundle-Name: Web UI Base

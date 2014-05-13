@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399882339563
+Bnd-LastModified: 1399903835951
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-ActivationPolicy: lazy
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
