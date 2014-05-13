@@ -156,7 +156,7 @@ public class DataFreescale implements IDataLayer {
 
 				}
 				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.error("TH-MessagesAnalizer Stopped!");
+					logger.info("TH-MessagesAnalizer Stopped!");
 			}
 
 		};
@@ -187,7 +187,7 @@ public class DataFreescale implements IDataLayer {
 					}
 				}
 				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.error("TH-RS232-Sender Stopped!");
+					logger.info("TH-RS232-Sender Stopped!");
 			}
 		};
 		thrSender.setName("TH-RS232-Sender");
@@ -228,7 +228,7 @@ public class DataFreescale implements IDataLayer {
 
 				}
 				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.error("TH-RS232-Receiver Stopped!");
+					logger.info("TH-RS232-Receiver Stopped!");
 
 			}
 
