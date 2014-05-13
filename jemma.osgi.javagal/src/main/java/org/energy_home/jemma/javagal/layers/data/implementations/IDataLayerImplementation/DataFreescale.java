@@ -4060,3 +4060,4 @@ class ChecksumControl {
 		return lastCalculated;
 	}
 }
+
