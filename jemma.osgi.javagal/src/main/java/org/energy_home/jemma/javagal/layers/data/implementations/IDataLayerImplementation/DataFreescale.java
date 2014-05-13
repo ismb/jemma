@@ -77,7 +77,7 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
-	boolean destroy = false;
+	Boolean destroy = false;
 	GalController gal = null;
 	private IConnector _key = null;
 	private final static Log logger = LogFactory.getLog(DataFreescale.class);
@@ -155,6 +155,8 @@ public class DataFreescale implements IDataLayer {
 					}
 
 				}
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.error("TH-MessagesAnalizer Stopped!");
 			}
 
 		};
@@ -184,6 +186,8 @@ public class DataFreescale implements IDataLayer {
 							logger.error("Error Sending command: " + e.toString());
 					}
 				}
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.error("TH-RS232-Sender Stopped!");
 			}
 		};
 		thrSender.setName("TH-RS232-Sender");
@@ -223,6 +227,8 @@ public class DataFreescale implements IDataLayer {
 					}
 
 				}
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.error("TH-RS232-Receiver Stopped!");
 
 			}
 
@@ -4037,7 +4043,15 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void destroy() {
-		destroy = true;
+		synchronized (destroy) {
+			destroy = true;
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			
+		}
+		
 
 	}
 }
