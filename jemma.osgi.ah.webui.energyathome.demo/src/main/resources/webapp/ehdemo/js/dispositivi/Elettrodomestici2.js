@@ -266,18 +266,24 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 						$.each(result.list,
 								function(indice, elettrodom) {
 									//console.log("--"+indice +": "+$.param(elettrodom)+"-----------"+elettrodom["map"]["name"]);
-									if (elettrodom["map"]["type"] == InterfaceEnergyHome.SMARTINFO_APP_TYPE &&
-											elettrodom["map"]["category"]["name"]=="Meter") {
+									if (elettrodom["map"]["type"] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
 										//Analizzo lo SmartInfo
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
-											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
-										} else {
-											var val = 50;//parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+										if(elettrodom["map"]["category"]["name"]=="Meter")
+										{
+											//It is the Smart Info
+											if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
+											} else {
+												var val = 50;//parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+											}
+											Elettrodomestici.SmartInfo = elettrodom["map"];
+										}else{
+											//it may be the PV meter... skip it
+											console.log("Skipped PV meter");
 										}
-										Elettrodomestici.SmartInfo = elettrodom["map"];
 									} else if (elettrodom["map"]["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
 										//Analizzo la lavatrice whitegood (per adesso stesso codice di uno smart plug)
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
