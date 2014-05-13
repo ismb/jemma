@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399904395637
+Bnd-LastModified: 1399965378619
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Gui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
