@@ -125,7 +125,7 @@ public class GalController {
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
 	 * also for the Rest Api
 	 */
-	private void initializeGAL() throws Exception {
+	private synchronized void initializeGAL() throws Exception {
 		/* Used for reset GAL */
 		if (DataLayer != null) {
 			if (getPropertiesManager().getDebugEnabled())
@@ -143,9 +143,7 @@ public class GalController {
 
 			if (DataLayer.getIKeyInstance().isConnected())
 				DataLayer.getIKeyInstance().disconnect();
-			
 			DataLayer.destroy();
-			DataLayer = null;
 			if (getPropertiesManager().getDebugEnabled())
 				logger.info("Reset done!");
 		}
