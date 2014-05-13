@@ -118,7 +118,7 @@ public class DataFreescale implements IDataLayer {
 					try {
 						synchronized (receivedDataQueue) {
 							receivedDataQueue.wait(timeoutLock);
-							
+
 							while (receivedDataQueue.size() > 0) {
 								tempArray = createMessageFromRowData();
 								if (tempArray != null) {
@@ -242,11 +242,15 @@ public class DataFreescale implements IDataLayer {
 		boolean serialDataError = false;
 
 		int toremove = 0;
-		while ((!receivedDataQueue.isEmpty()) && (receivedDataQueue.get(0) != DataManipulation.SEQUENCE_START)) {
-			Short _toremove = receivedDataQueue.remove(0);
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove));
-
+		Short _toremove = 0;
+		while (!receivedDataQueue.isEmpty()) {
+			if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+				 receivedDataQueue.remove(0);
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove));
+			}
+			else
+				break;
 		}
 
 		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
@@ -4049,10 +4053,14 @@ public class DataFreescale implements IDataLayer {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			
-		}
-		
 
+		}
+
+	}
+
+	@Override
+	public synchronized boolean getDestroy() {
+		return destroy;
 	}
 }
 
@@ -4075,4 +4083,3 @@ class ChecksumControl {
 		return lastCalculated;
 	}
 }
-
