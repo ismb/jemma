@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399562712628
+Bnd-LastModified: 1399983490857
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Category: Automation@Home Configurator

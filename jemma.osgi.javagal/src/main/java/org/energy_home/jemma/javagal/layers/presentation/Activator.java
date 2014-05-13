@@ -34,8 +34,9 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * Osgi Activator implementation.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class Activator implements BundleActivator {
 	private BundleContext bc;
@@ -53,50 +54,35 @@ public class Activator implements BundleActivator {
 		log.info("Starting Gal:Osgi...");
 		bc = context;
 		try {
-			String _path =  "config.properties";
-			
-			
+			String _path = "config.properties";
+
 			log.info("FILE Conf: " + _path);
 
-
-			PropertiesManager PropertiesManager = new PropertiesManager(bc
-					.getBundle().getResource(_path));
+			PropertiesManager PropertiesManager = new PropertiesManager(bc.getBundle().getResource(_path));
 
 			if (context.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME) != null)
-				PropertiesManager.props
-						.setProperty(
-								GatewayProperties.ZGD_DONGLE_URI_PROP_NAME,
-								context.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME));
-			if (context
-					.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME) != null)
-				PropertiesManager.props
-						.setProperty(
-								GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME,
-								context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
-			if (context
-					.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME) != null)
-				PropertiesManager.props
-						.setProperty(
-								GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME,
-								context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
+				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME));
+			if (context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME) != null)
+				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
+			if (context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME) != null)
+				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
 
 			if (_fac == null)
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
 
 			gatewayInterfaceServiceFactory = new GatewayInterfaceServiceFactory();
-			gatewayInterfaceRegistration = bc.registerService(
-					GatewayInterface.class.getName(),
-					gatewayInterfaceServiceFactory, null);
+			gatewayInterfaceRegistration = bc.registerService(GatewayInterface.class.getName(), gatewayInterfaceServiceFactory, null);
 
 			gatewayFactoryServiceFactory = new GatewayFactoryServiceFactory();
-			gatewayFactoryRegistration = bc.registerService(
-					GalExtenderProxyFactory.class.getName(),
-					gatewayFactoryServiceFactory, null);
+			gatewayFactoryRegistration = bc.registerService(GalExtenderProxyFactory.class.getName(), gatewayFactoryServiceFactory, null);
 
 			log.info("Gal:Osgi Started!");
 		} catch (Exception e) {
-			log.error("Error Creating Gal Osgi: " + e.getMessage());
-			log.info("Error Creating Gal Osgi: " + e.getMessage());
+			if (_fac!= null)
+				_fac.destroyGal();
+			log.error("Error Creating Gal Osgi");
+			
+			e.printStackTrace();
 		}
 	}
 
@@ -129,11 +115,11 @@ public class Activator implements BundleActivator {
 	 */
 	public class GatewayInterfaceServiceFactory implements ServiceFactory {
 		GatewayInterface gatewayInterface = null;
+
 		@Override
 		public Object getService(Bundle bundle, ServiceRegistration reg) {
 			try {
-				 gatewayInterface = _fac
-						.createGatewayInterfaceObject();
+				gatewayInterface = _fac.createGatewayInterfaceObject();
 				log.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
@@ -143,10 +129,9 @@ public class Activator implements BundleActivator {
 		}
 
 		@Override
-		public void ungetService(Bundle bundle, ServiceRegistration reg,
-				Object service) {
+		public void ungetService(Bundle bundle, ServiceRegistration reg, Object service) {
 			try {
-				 ((GalExtenderProxy) gatewayInterface).deleteProxy();
+				((GalExtenderProxy) gatewayInterface).deleteProxy();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -174,9 +159,7 @@ public class Activator implements BundleActivator {
 		}
 
 		@Override
-		public void ungetService(Bundle bundle, ServiceRegistration reg,
-				Object service) {
-			
+		public void ungetService(Bundle bundle, ServiceRegistration reg, Object service) {
 
 		}
 	}
