@@ -69,6 +69,8 @@ import org.energy_home.jemma.zgd.jaxb.TxOptions;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
 
+
+
 /**
  * Freescale implementation of {@link IDataLayer}.
  * 
@@ -238,98 +240,11 @@ public class DataFreescale implements IDataLayer {
 
 	}
 
-	/*
-	 * private short[] createMessageFromRowData() { boolean serialDataError =
-	 * false;
-	 * 
-	 * int toremove = 0; Short _toremove = 0; while
-	 * (!receivedDataQueue.isEmpty()) { if ((_toremove =
-	 * receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
-	 * receivedDataQueue.remove(0); if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error on Message Received, removing wrong byte: " +
-	 * String.format("%02X", _toremove)); } else break; }
-	 * 
-	 * List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
-	 * 
-	 * if (gal.getPropertiesManager().getDebugEnabled())
-	 * DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
-	 * 
-	 * if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) { if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error, Data received not completed, waiting new raw data..."
-	 * ); return null;
-	 * 
-	 * }
-	 * 
-	 * int optCode = copyList.get(1).intValue(); int optGroup =
-	 * copyList.get(2).intValue();
-	 * 
-	 * Integer _HexLegth = copyList.get(3).intValue(); int payloadLenght =
-	 * Integer.parseInt(Integer.toHexString(_HexLegth), 16);
-	 * 
-	 * if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX +
-	 * payloadLenght + 1)) { if (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Data received not completed, waiting new raw data...");
-	 * return null; }
-	 * 
-	 * int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX +
-	 * payloadLenght);
-	 * 
-	 * csc.resetLastCalculated(); int currCscControl = 0x00;
-	 * csc.getCumulativeXor(copyList.get(1));
-	 * csc.getCumulativeXor(copyList.get(2));
-	 * csc.getCumulativeXor(copyList.get(3)); for (int i = 0; i < payloadLenght;
-	 * i++) currCscControl =
-	 * csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX +
-	 * i));
-	 * 
-	 * if (currCscControl != messageCfc) { if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error CscControl: " + String.format("%02X", currCscControl)
-	 * + " != " + String.format("%02X", messageCfc)); serialDataError = true;
-	 * 
-	 * }
-	 * 
-	 * int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX
-	 * - 1; short[] toReturn = new short[messageLenght];
-	 * 
-	 * copyList.remove(0);
-	 * 
-	 * toReturn[0] = copyList.remove(0); toReturn[1] = copyList.remove(0);
-	 * toReturn[2] = copyList.remove(0);
-	 * 
-	 * for (int i = 0; i < payloadLenght; i++) toReturn[i + 3] =
-	 * copyList.remove(0); copyList.remove(0);
-	 * 
-	 * toremove += (4 + payloadLenght + 1);
-	 * 
-	 * if (serialDataError) {
-	 * 
-	 * if ((messageCfc == DataManipulation.SEQUENCE_START) && (optCode == 0xA3)
-	 * && (optGroup == 0x23)) { if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("BugFix Message for A323..."); for (int z = 0; z < toremove
-	 * - 1; z++) receivedDataQueue.remove(0); receivedDataQueue.remove(1);
-	 * return toReturn; } else { Short extracted; for (int z = 0; z < toremove;
-	 * z++) { if (receivedDataQueue.size() > 0) {
-	 * 
-	 * extracted = receivedDataQueue.remove(0);
-	 * 
-	 * if (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Removed Byte: " + String.format("%02X", extracted));
-	 * 
-	 * } }
-	 * 
-	 * return null; } } else { for (int z = 0; z < toremove; z++)
-	 * receivedDataQueue.remove(0);
-	 * 
-	 * return toReturn; }
-	 * 
-	 * }
-	 */
-
 	private short[] createMessageFromRowData() {
+		boolean serialDataError = false;
+		 ChecksumControl csc = new ChecksumControl();
+
+		int toremove = 0;
 		Short _toremove = 0;
 		while (!receivedDataQueue.isEmpty()) {
 			if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
@@ -340,36 +255,127 @@ public class DataFreescale implements IDataLayer {
 				break;
 		}
 
+		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
+
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", receivedDataQueue);
+			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
-		if (receivedDataQueue.size() > 3) {
-			short length = receivedDataQueue.get(3);
-			length = (short) (length + 3);
-			if (receivedDataQueue.size() >= length + 1) {
-				short[] _toreturn = new short[length];
-				receivedDataQueue.remove(0);// Removed SequenceStart
-				for (int i = 0; i < _toreturn.length; i++) {
-					_toreturn[i] = receivedDataQueue.remove(0);
-
-				}
-				if (receivedDataQueue.size() > 0)
-					if (receivedDataQueue.get(0) != DataManipulation.SEQUENCE_START)
-						receivedDataQueue.remove(0);// Removed CSCControl
-
-				return _toreturn;
-			} else {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.debug("Error, Data received not completed, waiting new raw data...");
-				return null;
-			}
-		} else {
+		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				logger.debug("Error, Data received not completed, waiting new raw data...");
 			return null;
+
 		}
+
+		int optCode = copyList.get(1).intValue();
+		int optGroup = copyList.get(2).intValue();
+
+		Integer _HexLegth = copyList.get(3).intValue();
+		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
+
+		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Data received not completed, waiting new raw data...");
+			return null;
+		}
+
+		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
+
+		csc.resetLastCalculated();
+		int currCscControl = 0x00;
+		csc.getCumulativeXor(copyList.get(1));
+		csc.getCumulativeXor(copyList.get(2));
+		csc.getCumulativeXor(copyList.get(3));
+		for (int i = 0; i < payloadLenght; i++)
+			currCscControl = csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+		if (currCscControl != messageCfc) {
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
+			serialDataError = true;
+
+		}
+
+		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+		short[] toReturn = new short[messageLenght];
+
+		copyList.remove(0);
+
+		toReturn[0] = copyList.remove(0);
+		toReturn[1] = copyList.remove(0);
+		toReturn[2] = copyList.remove(0);
+
+		for (int i = 0; i < payloadLenght; i++)
+			toReturn[i + 3] = copyList.remove(0);
+		copyList.remove(0);
+
+		toremove += (4 + payloadLenght + 1);
+
+		if (serialDataError) {
+
+			if ((messageCfc == DataManipulation.SEQUENCE_START) && (optCode == 0xA3) && (optGroup == 0x23)) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("BugFix Message for A323...");
+				for (int z = 0; z < toremove - 1; z++)
+					receivedDataQueue.remove(0);
+				receivedDataQueue.remove(1);
+				return toReturn;
+			} else {
+				Short extracted;
+				for (int z = 0; z < toremove; z++) {
+					if (receivedDataQueue.size() > 0) {
+
+						extracted = receivedDataQueue.remove(0);
+
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.debug("Removed Byte: " + String.format("%02X", extracted));
+
+					}
+				}
+
+				return null;
+			}
+		} else {
+			for (int z = 0; z < toremove; z++)
+				receivedDataQueue.remove(0);
+
+			return toReturn;
+		}
+
 	}
 
+	/*
+	 * private short[] createMessageFromRowData() { Short _toremove = 0; while
+	 * (!receivedDataQueue.isEmpty()) { if ((_toremove =
+	 * receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+	 * receivedDataQueue.remove(0); if
+	 * (gal.getPropertiesManager().getDebugEnabled())
+	 * logger.debug("Error on Message Received, removing wrong byte: " +
+	 * String.format("%02X", _toremove)); } else break; }
+	 * 
+	 * if (gal.getPropertiesManager().getDebugEnabled())
+	 * DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data",
+	 * receivedDataQueue);
+	 * 
+	 * if (receivedDataQueue.size() > 3) { short length =
+	 * receivedDataQueue.get(3); length = (short) (length + 3); if
+	 * (receivedDataQueue.size() >= length + 1) { short[] _toreturn = new
+	 * short[length]; receivedDataQueue.remove(0);// Removed SequenceStart for
+	 * (int i = 0; i < _toreturn.length; i++) { _toreturn[i] =
+	 * receivedDataQueue.remove(0);
+	 * 
+	 * } if (receivedDataQueue.size() > 0) if (receivedDataQueue.get(0) !=
+	 * DataManipulation.SEQUENCE_START) receivedDataQueue.remove(0);// Removed
+	 * CSCControl
+	 * 
+	 * return _toreturn; } else { if
+	 * (gal.getPropertiesManager().getDebugEnabled())
+	 * logger.debug("Error, Data received not completed, waiting new raw data..."
+	 * ); return null; } } else { if
+	 * (gal.getPropertiesManager().getDebugEnabled())
+	 * logger.debug("Error, Data received not completed, waiting new raw data..."
+	 * ); return null; } }
+	 */
 	public void processMessages(short[] message) throws Exception {
 
 		ByteBuffer bb = ByteBuffer.allocate(2);
@@ -1994,8 +2000,7 @@ public class DataFreescale implements IDataLayer {
 		return toReturn;
 	}
 
-	// private final ChecksumControl csc = new ChecksumControl();
-
+	 
 	public void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
 
 		synchronized (listOfCommandToSend) {
@@ -4089,14 +4094,22 @@ public class DataFreescale implements IDataLayer {
 	}
 }
 
-/*
- * class ChecksumControl { int lastCalculated = 0x00;
- * 
- * public int getCumulativeXor(byte b) { return lastCalculated ^= (0xFF & b); }
- * 
- * public int getCumulativeXor(int i) { return lastCalculated ^= i; }
- * 
- * public void resetLastCalculated() { lastCalculated = 0x00; }
- * 
- * public int getLastCalulated() { return lastCalculated; } }
- */
+class ChecksumControl {
+	int lastCalculated = 0x00;
+
+	public int getCumulativeXor(byte b) {
+		return lastCalculated ^= (0xFF & b);
+	}
+
+	public int getCumulativeXor(int i) {
+		return lastCalculated ^= i;
+	}
+
+	public void resetLastCalculated() {
+		lastCalculated = 0x00;
+	}
+
+	public int getLastCalulated() {
+		return lastCalculated;
+	}
+}
