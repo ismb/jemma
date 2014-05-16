@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400071529616
+Bnd-LastModified: 1400250309812
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.ah.upnp.energyathome.Activator
