@@ -15,6 +15,11 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -22,13 +27,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
-import java.util.TooManyListenersException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,8 +89,7 @@ public class SerialCommRxTx implements IConnector {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
-			System.setProperty("gnu.io.SerialPorts", portName);
+
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				logger.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
@@ -166,7 +163,7 @@ public class SerialCommRxTx implements IConnector {
 			if (ou != null) {
 				try {
 					ou.write(buff.getByteArray(), 0, buff.getByteCount(true));
-					//ou.flush();
+					// ou.flush();
 				} catch (Exception e) {
 
 					e.printStackTrace();
@@ -201,7 +198,7 @@ public class SerialCommRxTx implements IConnector {
 				in = null;
 			}
 			if (ou != null) {
-				//ou.flush();
+				// ou.flush();
 				ou.close();
 				ou = null;
 			}
@@ -210,7 +207,7 @@ public class SerialCommRxTx implements IConnector {
 			serialPort = null;
 			serialReader = null;
 			portIdentifier = null;
-			
+
 		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("RS232 - Disconnected");
@@ -226,7 +223,6 @@ public class SerialCommRxTx implements IConnector {
 			_caller = _parent;
 		}
 
-		@Override
 		public synchronized void serialEvent(SerialPortEvent event) {
 			try {
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
