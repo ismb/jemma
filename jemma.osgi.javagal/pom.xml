@@ -61,8 +61,8 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.layers.presentation.Activator</Bundle-Activator>
 						<Import-Package> 
-						<!--gnu.io;version="1.0.0",-->
-							javax.comm,
+							gnu.io;version="1.0.0",
+							<!--javax.comm,-->
 							org.apache.commons.logging,
 							org.osgi.framework,
 							org.osgi.util.tracker;version="1.4.2",*
@@ -101,10 +101,15 @@
 			<artifactId>javax.xml</artifactId>
 			<version>${javax.xml.version}</version>
 		</dependency>
-		<dependency>
+		 <dependency>
+			<groupId>org.rxtx</groupId>
+			<artifactId>org.rxtx</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!--<dependency>
 			<groupId>javax.comm</groupId>
 			<artifactId>comm</artifactId>
 			<version>3.0-u1</version>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 </project>
