@@ -20,6 +20,5 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 
 public interface IZclServiceCluster extends IServiceCluster {
 	public void zclAttach(ZigBeeDevice device);
-
 	public void zclDetach(ZigBeeDevice device);
 }

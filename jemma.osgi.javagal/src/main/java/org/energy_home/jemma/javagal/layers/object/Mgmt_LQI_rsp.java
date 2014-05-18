@@ -52,7 +52,7 @@ public class Mgmt_LQI_rsp {
 		}
 		else
 		{
-			System.out.println("Received a not Success status from the LQI Req:" + String.format("%02X", _Status));
+			System.out.println("\n\rReceived a not Success status from the LQI Req Status value:" + _Status +"\n\r");
 		}
 
 	}
