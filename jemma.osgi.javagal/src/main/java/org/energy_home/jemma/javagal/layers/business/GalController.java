@@ -528,7 +528,7 @@ public class GalController {
 	 */
 	public LQIInformation getAllLQIInformations() throws IOException, Exception, GatewayException {
 		LQIInformation _lqi = new LQIInformation();
-		List<WrapperWSNNode> _list = getNetworkcache();
+		List<WrapperWSNNode> _list = new  LinkedList<WrapperWSNNode>(getNetworkcache());
 		for (WrapperWSNNode x : _list) {
 			if (PropertiesManager.getDebugEnabled())
 				logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + " - DiscoveryCompleted:" + x.is_discoveryCompleted());
@@ -2453,7 +2453,7 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 */
 	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
-		List<WrapperWSNNode> _list = getNetworkcache();
+		List<WrapperWSNNode> _list = new LinkedList<WrapperWSNNode>(getNetworkcache());
 		for (WrapperWSNNode y : _list) {
 			if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
 				return y.get_node().getAddress().getIeeeAddress();
@@ -2470,7 +2470,7 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 */
 	public synchronized Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
-		List<WrapperWSNNode> _list = getNetworkcache();
+		List<WrapperWSNNode> _list = new LinkedList<WrapperWSNNode>(getNetworkcache());
 		for (WrapperWSNNode y : _list) {
 			if (y.get_node().getAddress().getIeeeAddress().equals(IeeeAddress))
 				return y.get_node().getAddress().getNetworkAddress();

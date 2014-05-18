@@ -182,11 +182,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		// check if the message contains requires a default answer
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
-
+		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
 		messagesLock.lock();
-		pendingReplies.put(new Long(hash), sq);
+		pendingReplies.put(key, sq);
 		messagesLock.unlock();
 
 		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
@@ -195,8 +195,12 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		synchronized (lock) {
 			// TODO: do we need to synchronize here?
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
-			if (!res)
+			if (!res) {
+				messagesLock.lock();
+				pendingReplies.remove(key);
+				messagesLock.unlock();
 				throw new ZigBeeException("error sending message to ZigBee device");
+			}
 		}
 		try {
 			// here it should block till the matching response is received
@@ -218,9 +222,13 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
+				log.debug("Aspetto Lock...");
 				messagesLock.lock();
+				log.debug("Dentro Lock...");
 				pendingReplies.remove(new Long(hash));
+				log.debug("Entry rimossa...");
 				messagesLock.unlock();
+				log.debug("Lock rilasciato...");
 				throw new ZigBeeException("timeout");
 			}
 
@@ -299,7 +307,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			notifyListeners(clusterId, zclFrame);
 		} else {
 			try {
+				
+				log.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
 				sq.put(zclFrame);
+				log.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
+				
 			} catch (InterruptedException e) {
 				if (log.isErrorEnabled())
 					log.error("exception", e);

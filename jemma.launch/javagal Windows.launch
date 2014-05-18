@@ -2,7 +2,7 @@
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="automaticAdd" value="false"/>
-<booleanAttribute key="automaticValidate" value="false"/>
+<booleanAttribute key="automaticValidate" value="true"/>
 <stringAttribute key="bootstrap" value=""/>
 <stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="false"/>
@@ -22,5 +22,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="jemma.osgi.ah.adapter.http@default:default,jemma.osgi.ah.app@default:default,jemma.osgi.ah.configurator@default:default,jemma.osgi.ah.energyathome@default:default,jemma.osgi.ah.felix.console.web@default:default,jemma.osgi.ah.greenathome@default:default,jemma.osgi.ah.hac.lib@default:default,jemma.osgi.ah.hac@default:default,jemma.osgi.ah.hap.client@default:default,jemma.osgi.ah.io@default:default,jemma.osgi.ah.m2m.device@default:default,jemma.osgi.ah.upnp.energyathome@default:default,jemma.osgi.ah.web.energyathome.demo@default:default,jemma.osgi.ah.webui.base@default:default,jemma.osgi.ah.zigbee.appliances.generic@default:default,jemma.osgi.ah.zigbee.appliances@default:default,jemma.osgi.ah.zigbee@default:default,jemma.osgi.javagal.gui@default:default,jemma.osgi.javagal.json@default:default,jemma.osgi.javagal.rest@default:default,jemma.osgi.javagal@default:default,jemma.osgi.utils@default:default"/>
+<stringAttribute key="workspace_bundles" value="jemma.osgi.ah.hac.lib@default:default,jemma.osgi.ah.zigbee@default:default,jemma.osgi.javagal.gui@default:default,jemma.osgi.javagal.json@default:default,jemma.osgi.javagal.rest@default:default,jemma.osgi.javagal@default:default"/>
 </launchConfiguration>
