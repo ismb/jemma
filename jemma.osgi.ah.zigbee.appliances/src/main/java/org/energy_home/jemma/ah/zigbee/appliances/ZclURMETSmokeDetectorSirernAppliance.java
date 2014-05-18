@@ -27,6 +27,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclURMETIASWDServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 
@@ -43,24 +44,14 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_IAS_ZONE);
 		endPoint.addServiceCluster(new ZclBasicServer());
 		endPoint.addServiceCluster(new ZclIdentifyServer());
-		endPoint.addServiceCluster(new ZclPowerConfigurationServer());
-		endPoint.addServiceCluster(new ZclAlarmsServer());
+		
+//		endPoint.addServiceCluster(new ZclURMETIASWDServer());
 		iasZoneServer = (ZclIASZoneServer) endPoint.addServiceCluster(new ZclIASZoneServer());
 	}
 
 	protected synchronized void attached() {
 		log.debug("appliance attached");
 
-		Thread t = new Thread("setActualDriverJob") {
-			public void run() {
-				try {
-					setActualDriver();
-				} catch (ServiceClusterException e) {
-					log.error("exception", e);
-				}
-			}
-		};
-		t.start();
 	}
 
 	protected void setActualDriver() throws ServiceClusterException {

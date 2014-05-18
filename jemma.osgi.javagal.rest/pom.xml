@@ -102,7 +102,12 @@ org.restlet.util
 		</dependency>
 		<dependency>
 			<groupId>org.restlet.osgi</groupId>
-			<artifactId>org.restlet</artifactId>
+			<artifactId>org.restlet</artifactId> 
+			<version>${org.restlet.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet.ext.xml</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
                 <dependency>
