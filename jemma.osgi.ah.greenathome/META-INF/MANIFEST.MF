@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399983531670
+Bnd-LastModified: 1399987817866
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-Category: Automation@Home Application
 Bundle-ManifestVersion: 2
 Bundle-Name: Greenathome Appliance

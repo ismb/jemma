@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1399983501327
+Bnd-LastModified: 1399987786568
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.ah.internal.hac.Activator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
