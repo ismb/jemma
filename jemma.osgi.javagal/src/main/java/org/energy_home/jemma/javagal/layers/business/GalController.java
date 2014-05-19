@@ -372,11 +372,13 @@ public class GalController {
 		if (GalNode != null && GalNode.get_node().getAddress() != null)
 			result.setAddress(GalNode.get_node().getAddress());
 		List<WrapperWSNNode> _list = getNetworkcache();
-		for (WrapperWSNNode o : _list) {
-			if (o.get_node().getAddress().getNetworkAddress() == get_GalNode().get_node().getAddress().getNetworkAddress()) {
-				o.set_nodeServices(result);
-				result = o.get_nodeServices();
-				break;
+		synchronized (_list) {
+			for (WrapperWSNNode o : _list) {
+				if (o.get_node().getAddress().getNetworkAddress() == get_GalNode().get_node().getAddress().getNetworkAddress()) {
+					o.set_nodeServices(result);
+					result = o.get_nodeServices();
+					break;
+				}
 			}
 		}
 		return result;
@@ -396,9 +398,12 @@ public class GalController {
 	public NodeServicesList readServicesCache() throws IOException, Exception, GatewayException {
 		NodeServicesList list = new NodeServicesList();
 		List<WrapperWSNNode> _list = getNetworkcache();
-		for (WrapperWSNNode o : _list) {
-			if (o.get_nodeServices() != null)
-				list.getNodeServices().add(o.get_nodeServices());
+		synchronized (_list) {
+
+			for (WrapperWSNNode o : _list) {
+				if (o.get_nodeServices() != null)
+					list.getNodeServices().add(o.get_nodeServices());
+			}
 		}
 		return list;
 	}
@@ -432,12 +437,13 @@ public class GalController {
 	public synchronized WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
 		List<WrapperWSNNode> _list0 = getNetworkcache();
+		synchronized (_list0) {
 
-		for (WrapperWSNNode x : _list0) {
-			if (x.is_discoveryCompleted())
-				_list.getWSNNode().add(x.get_node());
+			for (WrapperWSNNode x : _list0) {
+				if (x.is_discoveryCompleted())
+					_list.getWSNNode().add(x.get_node());
+			}
 		}
-
 		return _list;
 	}
 
@@ -452,12 +458,15 @@ public class GalController {
 
 		long counter = 0;
 		List<WrapperWSNNode> _list1 = getNetworkcache();
-		for (WrapperWSNNode x : _list1) {
-			if (x.is_discoveryCompleted()) {
-				if (x.get_node().getAddress().getIeeeAddress() == null)
-					x.get_node().getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(x.get_node().getAddress().getNetworkAddress()));
-				_list.getAlias().add(x.get_node().getAddress());
-				counter++;
+		synchronized (_list1) {
+
+			for (WrapperWSNNode x : _list1) {
+				if (x.is_discoveryCompleted()) {
+					if (x.get_node().getAddress().getIeeeAddress() == null)
+						x.get_node().getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(x.get_node().getAddress().getNetworkAddress()));
+					_list.getAlias().add(x.get_node().getAddress());
+					counter++;
+				}
 			}
 		}
 		_list.setNumberOfAlias(counter);
@@ -528,42 +537,45 @@ public class GalController {
 	 */
 	public LQIInformation getAllLQIInformations() throws IOException, Exception, GatewayException {
 		LQIInformation _lqi = new LQIInformation();
-		List<WrapperWSNNode> _list = new  LinkedList<WrapperWSNNode>(getNetworkcache());
-		for (WrapperWSNNode x : _list) {
-			if (PropertiesManager.getDebugEnabled())
-				logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + " - DiscoveryCompleted:" + x.is_discoveryCompleted());
-			if (x.is_discoveryCompleted()) {
-				LQINode _lqinode = new LQINode();
-				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
-				_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
+		List<WrapperWSNNode> _list = getNetworkcache();
+		synchronized (_list) {
 
-				if (_rsp != null && _rsp.NeighborTableList != null) {
+			for (WrapperWSNNode x : _list) {
+				if (PropertiesManager.getDebugEnabled())
+					logger.info("Node:" + x.get_node().getAddress().getNetworkAddress() + " - DiscoveryCompleted:" + x.is_discoveryCompleted());
+				if (x.is_discoveryCompleted()) {
+					LQINode _lqinode = new LQINode();
+					Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
+					_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
 
-					NeighborList _list0 = new NeighborList();
-					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-						Neighbor e = new Neighbor();
-						e.setDepth((short) _n1._Depth);
-						e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-						Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
-						if (_shortAddress != null)
-							e.setShortAddress(_shortAddress);
-						else {
+					if (_rsp != null && _rsp.NeighborTableList != null) {
 
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+						NeighborList _list0 = new NeighborList();
+						for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
+							Neighbor e = new Neighbor();
+							e.setDepth((short) _n1._Depth);
+							e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
+							Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
+							if (_shortAddress != null)
+								e.setShortAddress(_shortAddress);
+							else {
+
+								if (PropertiesManager.getDebugEnabled()) {
+									logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+								}
+
+								continue;
 							}
-
-							continue;
+							e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
+							e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+							e.setPermitJoining((short) _n1._Permitting_Joining);
+							e.setLQI((short) _n1._LQI);
+							_list0.getNeighbor().add(e);
+							_lqinode.setNeighborList(_list0);
 						}
-						e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
-						e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
-						e.setPermitJoining((short) _n1._Permitting_Joining);
-						e.setLQI((short) _n1._LQI);
-						_list0.getNeighbor().add(e);
-						_lqinode.setNeighborList(_list0);
 					}
+					_lqi.getLQINode().add(_lqinode);
 				}
-				_lqi.getLQINode().add(_lqinode);
 			}
 		}
 		return _lqi;
@@ -1465,11 +1477,14 @@ public class GalController {
 						if ((addrOfInterest.getNetworkAddress() == 0xFFFF) || (addrOfInterest.getNetworkAddress() == 0xFFFC)) {
 							/* Clear the Network Cache */
 							List<WrapperWSNNode> _list = getNetworkcache();
-							for (WrapperWSNNode x : _list) {
-								// Philips leave TODO
-								x.abortTimers();
-								if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress()))
-									get_gatewayEventManager().nodeRemoved(_s, x.get_node());
+							synchronized (_list) {
+
+								for (WrapperWSNNode x : _list) {
+									// Philips leave TODO
+									x.abortTimers();
+									if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress()))
+										get_gatewayEventManager().nodeRemoved(_s, x.get_node());
+								}
 							}
 							getNetworkcache().clear();
 							getNetworkcache().add(GalNode);
@@ -1764,8 +1779,11 @@ public class GalController {
 
 				/* Clear the Network Cache */
 				List<WrapperWSNNode> _list = getNetworkcache();
-				for (WrapperWSNNode x : _list) {
-					x.abortTimers();
+				synchronized (_list) {
+
+					for (WrapperWSNNode x : _list) {
+						x.abortTimers();
+					}
 				}
 				getNetworkcache().clear();
 				getNetworkcache().add(GalNode);
@@ -2041,7 +2059,7 @@ public class GalController {
 	 * @return the aps callback identifier.
 	 */
 	public long getCallbackIdentifier() {
-		synchronized (this) {
+		synchronized (CallbackIdentifier) {
 			if (CallbackIdentifier == Long.MAX_VALUE) {
 				CallbackIdentifier = (long) 1;
 			}
@@ -2130,11 +2148,11 @@ public class GalController {
 					ServiceDescriptor _toRes;
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
-
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
 
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
+						
 							_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
 							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 						} catch (GatewayException e) {
@@ -2435,11 +2453,13 @@ public class GalController {
 	public synchronized short existIntoNetworkCache(Integer shortAddress) {
 		short __indexOnCache = -1;
 		List<WrapperWSNNode> _list = getNetworkcache();
-		for (WrapperWSNNode y : _list) {
-			__indexOnCache++;
-			if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
-				return __indexOnCache;
+		synchronized (_list) {
+			for (WrapperWSNNode y : _list) {
+				__indexOnCache++;
+				if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
+					return __indexOnCache;
 
+			}
 		}
 		return -1;
 	}
@@ -2453,10 +2473,25 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 */
 	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
-		List<WrapperWSNNode> _list = new LinkedList<WrapperWSNNode>(getNetworkcache());
-		for (WrapperWSNNode y : _list) {
-			if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
-				return y.get_node().getAddress().getIeeeAddress();
+		List<WrapperWSNNode> _list = getNetworkcache();
+		synchronized (_list) {
+			for (WrapperWSNNode y : _list) {
+				if (y != null) {
+					WSNNode node = y.get_node();
+					if (node != null) {
+						Address add = node.getAddress();
+						if (add != null) {
+							Integer shortadd = add.getNetworkAddress();
+							if (shortadd != null) {
+								if (shortadd.equals(shortAddress))
+									return y.get_node().getAddress().getIeeeAddress();
+							}
+						}
+					}
+
+				} 
+			}
+
 		}
 		return null;
 	}
@@ -2470,10 +2505,26 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 */
 	public synchronized Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
-		List<WrapperWSNNode> _list = new LinkedList<WrapperWSNNode>(getNetworkcache());
-		for (WrapperWSNNode y : _list) {
-			if (y.get_node().getAddress().getIeeeAddress().equals(IeeeAddress))
-				return y.get_node().getAddress().getNetworkAddress();
+		List<WrapperWSNNode> _list = getNetworkcache();
+		synchronized (_list) {
+			for (WrapperWSNNode y : _list) {
+				if (y != null) {
+					WSNNode node = y.get_node();
+					if (node != null) {
+						Address add = node.getAddress();
+						if (add != null) {
+							BigInteger iee = add.getIeeeAddress();
+							if (iee != null) {
+								if (iee.equals(IeeeAddress))
+									return y.get_node().getAddress().getNetworkAddress();
+							}
+
+						}
+					}
+
+				}
+			}
+
 		}
 		return null;
 	}
@@ -2489,7 +2540,9 @@ public class GalController {
 	 */
 	public synchronized short existIntolistGatewayEventListener(long requestIdentifier) {
 		short __indexOnList = -1;
-		for (GatewayDeviceEventEntry y : listGatewayEventListener) {
+		List<GatewayDeviceEventEntry> list = getListGatewayEventListener();
+		for (GatewayDeviceEventEntry y : list) {
+
 			__indexOnList++;
 			if (y.getProxyIdentifier() == requestIdentifier)
 				return __indexOnList;
