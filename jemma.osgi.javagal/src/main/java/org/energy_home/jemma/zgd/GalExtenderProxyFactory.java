@@ -22,15 +22,15 @@ import java.net.URL;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 
-
 /**
- * Factory class for {@link GalExtenderProxy} objects. Every 
- * object created by this factory is a separate and independent
- * proxy to the unique {@link GalController} instance and is
- * identified by its own proxy identifier id.
+ * Factory class for {@link GalExtenderProxy} objects. Every object created by
+ * this factory is a separate and independent proxy to the unique
+ * {@link GalController} instance and is identified by its own proxy identifier
+ * id.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class GalExtenderProxyFactory {
 
@@ -38,7 +38,7 @@ public class GalExtenderProxyFactory {
 	 * Gal Controller reference.
 	 */
 	GalController gal = null;
-	
+
 	/**
 	 * Uniquely identifies the gal proxy instance.
 	 */
@@ -51,7 +51,8 @@ public class GalExtenderProxyFactory {
 	 *            the properties manager whose properties are to be used by this
 	 *            instance
 	 * @throws Exception
-	 *             if the {@link GalController} contructor fails due to some internal error.
+	 *             if the {@link GalController} contructor fails due to some
+	 *             internal error.
 	 */
 	public GalExtenderProxyFactory(PropertiesManager _prop) throws Exception {
 		proxyIdentifierSequence = 0;
@@ -61,12 +62,13 @@ public class GalExtenderProxyFactory {
 
 	/**
 	 * Creates a gateway interface with its own proxy identifier.
-	 *  
+	 * 
 	 * @return a newly created gateway interface
-	 * @throws Exception if the {@link GalExtenderProxy} constructor fails due to some internal error.
+	 * @throws Exception
+	 *             if the {@link GalExtenderProxy} constructor fails due to some
+	 *             internal error.
 	 */
-	public synchronized GatewayInterface createGatewayInterfaceObject()
-			throws Exception {
+	public synchronized GatewayInterface createGatewayInterfaceObject() throws Exception {
 		proxyIdentifierSequence++;
 		return new GalExtenderProxy(proxyIdentifierSequence, gal);
 
@@ -75,24 +77,24 @@ public class GalExtenderProxyFactory {
 	/**
 	 * Destroys the Gal controller instance.
 	 * 
-	 * @throws Exception if the gal controller fails to disconnect the dongle.
+	 * @throws Exception
+	 *             if the gal controller fails to disconnect the dongle.
 	 */
 	public synchronized void destroyGal() throws Exception {
-		if (gal != null)
+		if (gal != null) {
+			gal.getDataLayer().destroy();
 			gal.getDataLayer().getIKeyInstance().disconnect();
-		gal = null;
-
+			gal = null;
+		}
 	}
-	
-	
+
 	/**
 	 * Get the ExtendedPanId of the Gal.
 	 * 
 	 * @throws Exception.
 	 */
-	public BigInteger getExtendedPanId(){
-			return gal.getPropertiesManager().getExtendedPanId();
+	public BigInteger getExtendedPanId() {
+		return gal.getPropertiesManager().getExtendedPanId();
 	}
-	
 
 }

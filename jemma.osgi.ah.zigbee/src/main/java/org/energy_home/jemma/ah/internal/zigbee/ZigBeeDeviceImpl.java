@@ -95,8 +95,8 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	private Hashtable listenersListClientSide = new Hashtable();
 	private Hashtable listenersListServerSide = new Hashtable();
 
-	//private Lock messagesLock = new ReentrantLock();
-	//private Object lock = new Object();
+	private Lock messagesLock = new ReentrantLock();
+	private Object lock = new Object();
 
 	protected Log log = LogFactory.getLog(this.getClass());
 	private ZigBeeDeviceListener driver;
@@ -126,22 +126,22 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	 */
 
 	public void attach(ServiceReference driverRef) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			this.driver = zigbeeManager.getService(driverRef);
 			zigbeeManager.attach(this);
-		//}
+		}
 	}
 
 	public void detach() {
-		//synchronized (lock) {
+		synchronized (lock) {
 			driver = null;
-		//}
+		}
 	}
 
 	public void noDriverFound() {
-		//synchronized (lock) {
+		synchronized (lock) {
 			zigbeeManager.noDriverFound(this);
-		//}
+		}
 	}
 
 	String padding[] = { "0000000000000000", "000000000000000", "00000000000000", "0000000000000", "000000000000", "00000000000",
@@ -182,22 +182,26 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		// check if the message contains requires a default answer
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
-
+		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
-		//messagesLock.lock();
-		pendingReplies.put(new Long(hash), sq);
-		//messagesLock.unlock();
+		messagesLock.lock();
+		pendingReplies.put(key, sq);
+		messagesLock.unlock();
 
 		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, hash, profileId, clusterId, zclFrame);
 
-		//synchronized (lock) {
+		synchronized (lock) {
 			// TODO: do we need to synchronize here?
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
-			if (!res)
+			if (!res) {
+				messagesLock.lock();
+				pendingReplies.remove(key);
+				messagesLock.unlock();
 				throw new ZigBeeException("error sending message to ZigBee device");
-		//}
+			}
+		}
 		try {
 			// here it should block till the matching response is received
 			// or a timeout has occurred.
@@ -214,13 +218,17 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				this.logZclMessage(false, hash, profileId, clusterId, null);
 
 				if (trackNode) {
-					//synchronized (lock) {
+					synchronized (lock) {
 						this.transmissionFailed();
-					//}
+					}
 				}
-				//messagesLock.lock();
+				log.debug("Aspetto Lock...");
+				messagesLock.lock();
+				log.debug("Dentro Lock...");
 				pendingReplies.remove(new Long(hash));
-				//messagesLock.unlock();
+				log.debug("Entry rimossa...");
+				messagesLock.unlock();
+				log.debug("Lock rilasciato...");
 				throw new ZigBeeException("timeout");
 			}
 
@@ -288,9 +296,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			}
 		}
 
-		//messagesLock.lock();
+		messagesLock.lock();
 		SynchronousQueue sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
-		//messagesLock.unlock();
+		messagesLock.unlock();
 
 		if (sq == null) {
 			// simply sends the message to the upper layer. If any exception
@@ -299,7 +307,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			notifyListeners(clusterId, zclFrame);
 		} else {
 			try {
+				
+				log.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
 				sq.put(zclFrame);
+				log.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
+				
 			} catch (InterruptedException e) {
 				if (log.isErrorEnabled())
 					log.error("exception", e);
@@ -416,15 +428,15 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, -1, profileId, clusterId, zclFrame);
 
-		//synchronized (lock) {
+		synchronized (lock) {
 			return zigbeeManager.post(this, profileId, clusterId, zclFrame);
-		//}
+		}
 	}
 
 	public boolean isConnected() {
-		//synchronized (lock) {
+		synchronized (lock) {
 			return (availState == Connected);
-		//}
+		}
 	}
 
 	private void deviceAlive() {
@@ -452,9 +464,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			break;
 
 		case PingTimeoutTimer:
-			//synchronized (lock) {
+			synchronized (lock) {
 				this.transmissionFailed();
-			//}
+			}
 			break;
 		}
 	}
@@ -481,15 +493,15 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	}
 
 	protected void announce() {
-		//synchronized (lock) {
+		synchronized (lock) {
 			deviceAlive();
 			log.debug("received an announcement on device " + getIeeeAddress());
 			this.notifyListeners(ZigBeeDeviceListener.ANNOUNCEMENT);
-		//}
+		}
 	}
 
 	public boolean setListener(short clusterId, int side, ZigBeeDeviceListener listener) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			Hashtable listenersList = null;
 			if (side == ZclServiceCluster.CLIENT_SIDE) {
 				listenersList = listenersListClientSide;
@@ -507,18 +519,18 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 			listeners.add(listener);
 			return true;
-		//}
+		}
 	}
 
 	protected Vector getListeners(short clusterId) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			Vector listeners = (Vector) listenersListClientSide.get(new Short(clusterId));
 			return listeners;
-		//}
+		}
 	}
 
 	public boolean removeListener(short clusterId, int side, ZigBeeDeviceListener listener) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			Hashtable listenersList = null;
 			if (side == ZclServiceCluster.CLIENT_SIDE) {
 				listenersList = listenersListClientSide;
@@ -533,21 +545,21 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				return listeners.remove(listener);
 			}
 			return false;
-		//}
+		}
 	}
 
 	public boolean setListener(ZigBeeDeviceListener listener) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			if (this.listener != null)
 				log.fatal("error. Another listener already set!");
 
 			this.listener = listener;
 			return true;
-		//}
+		}
 	}
 
 	public boolean removeListener(ZigBeeDeviceListener listener) {
-		//synchronized (lock) {
+		synchronized (lock) {
 			if (this.listener == listener) {
 				this.listener = null;
 				return true;
@@ -556,17 +568,17 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			}
 
 			return false;
-		//}
+		}
 	}
 
 	public void remove() {
-		//synchronized (lock) {
+		synchronized (lock) {
 			try {
 				this.zigbeeManager.remove(this);
 			} catch (Exception e) {
 				log.error("", e);
 			}
-		//}
+		}
 	}
 
 	ZclPartitionServerImpl partitionServerImpl = null;

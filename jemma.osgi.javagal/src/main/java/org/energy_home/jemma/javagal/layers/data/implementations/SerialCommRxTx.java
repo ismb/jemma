@@ -15,6 +15,11 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -22,13 +27,6 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
-import java.util.TooManyListenersException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,47 +89,47 @@ public class SerialCommRxTx implements IConnector {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
-			System.setProperty("gnu.io.SerialPorts", portName);
+
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				logger.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
 				disconnect();
-
-			}
-
-			serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
-			if (serialPort instanceof SerialPort) {
-				/* Freescale code */
-				serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-				serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-				serialPort.enableReceiveTimeout(1000);
-				in = serialPort.getInputStream();
-				ou = serialPort.getOutputStream();
-				serialReader = new SerialReader(this);
-				serialPort.notifyOnDataAvailable(true);
-				try {
-					serialPort.addEventListener(serialReader);
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						logger.info("Added SerialPort event listener");
-				} catch (TooManyListenersException e) {
-					disconnect();
-					throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
-				}
-
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					logger.info("Connection on " + portName + " established");
-
-				synchronized (connected) {
-					connected = true;
-				}
-
-				return true;
-			} else {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					logger.error("Error on serial port connection:" + portName);
-				disconnect();
 				return false;
+
+			} else {
+				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
+				if (serialPort instanceof SerialPort) {
+					/* Freescale code */
+					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					serialPort.enableReceiveTimeout(1000);
+					in = serialPort.getInputStream();
+					ou = serialPort.getOutputStream();
+					serialReader = new SerialReader(this);
+					serialPort.notifyOnDataAvailable(true);
+					try {
+						serialPort.addEventListener(serialReader);
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							logger.info("Added SerialPort event listener");
+					} catch (TooManyListenersException e) {
+						disconnect();
+						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
+					}
+
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						logger.info("Connection on " + portName + " established");
+
+					synchronized (connected) {
+						connected = true;
+					}
+
+					return true;
+				} else {
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						logger.error("Error on serial port connection:" + portName);
+					disconnect();
+					return false;
+				}
 			}
 
 		} catch (NoSuchPortException e) {
@@ -165,7 +163,7 @@ public class SerialCommRxTx implements IConnector {
 			if (ou != null) {
 				try {
 					ou.write(buff.getByteArray(), 0, buff.getByteCount(true));
-					ou.flush();
+					// ou.flush();
 				} catch (Exception e) {
 
 					e.printStackTrace();
@@ -200,15 +198,16 @@ public class SerialCommRxTx implements IConnector {
 				in = null;
 			}
 			if (ou != null) {
-				ou.flush();
+				// ou.flush();
 				ou.close();
+				ou = null;
 			}
 			serialPort.removeEventListener();
 			serialPort.close();
 			serialPort = null;
 			serialReader = null;
-			
 			portIdentifier = null;
+
 		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("RS232 - Disconnected");
@@ -224,7 +223,6 @@ public class SerialCommRxTx implements IConnector {
 			_caller = _parent;
 		}
 
-		@Override
 		public synchronized void serialEvent(SerialPortEvent event) {
 			try {
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
