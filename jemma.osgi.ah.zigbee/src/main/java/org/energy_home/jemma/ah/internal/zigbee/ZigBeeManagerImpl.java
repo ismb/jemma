@@ -584,7 +584,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			}
 		} finally {
 			if (enableLockingLogs) {
-				log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and read lock count is: "
+				log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and read lock count is: " + rwLock.getReadLockCount());
 			}
 			rwLock.readLock().unlock();
 		}
