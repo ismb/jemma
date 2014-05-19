@@ -1223,11 +1223,17 @@ public class DataFreescale implements IDataLayer {
 		else if (_command == FreescaleConstants.ZDPIeeeAddrResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				DataManipulation.logArrayHexRadix("Extracted ZDP-IEEE_addr.response", message);
+			
 			long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
+			Integer shortAddress = DataManipulation.toIntFromShort((byte) message[13], (byte) message[12]);
+		
+			
+			String Key = String.format("%04X", shortAddress);
+			
 			BigInteger _bi = BigInteger.valueOf(longAddress);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
-					if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS)) {
+					if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS) && pl.get_Key().equalsIgnoreCase(Key)) {
 						synchronized (pl) {
 							pl.set_objectOfResponse(_bi);
 							pl.getStatus().setCode(message[3]);
@@ -2999,8 +3005,7 @@ public class DataFreescale implements IDataLayer {
 	public BigInteger readExtAddressGal(long timeout) throws GatewayException, Exception {
 		ByteArrayObject _res = new ByteArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCReadExtAddrRequest);// StartSequence
-		// +
-		// Control
+		
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("ZTC-ReadExtAddr.Request:" + _res.ToHexString());
 		}
@@ -3066,7 +3071,12 @@ public class DataFreescale implements IDataLayer {
 			logger.info("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
 
 		ParserLocker lock = new ParserLocker();
+		String Key = String.format("%04X", shortAddress);
+		lock.set_Key(Key);
 		lock.setType(TypeMessage.READ_IEEE_ADDRESS);
+		
+			
+
 		Status status = null;
 		try {
 			synchronized (listLocker) {

@@ -548,9 +548,7 @@ public class GalController {
 					Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
 					if (x.get_node().getAddress().getIeeeAddress() != null) {
 						_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
-
 						if (_rsp != null && _rsp.NeighborTableList != null) {
-
 							NeighborList _list0 = new NeighborList();
 							for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
 								Neighbor e = new Neighbor();
@@ -562,7 +560,7 @@ public class GalController {
 								else {
 
 									if (PropertiesManager.getDebugEnabled()) {
-										logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+										logger.error("Not found ShortAddress of node with the IEEE:" + String.format("%016X", _n1._Extended_Address) + " - Informations founds into Node: " + String.format("%04X",x.get_node().getAddress().getNetworkAddress() ));
 									}
 
 									continue;
@@ -2453,7 +2451,7 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public synchronized short existIntoNetworkCache(Integer shortAddress) {
+	public short existIntoNetworkCache(Integer shortAddress) {
 		short __indexOnCache = -1;
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
@@ -2475,7 +2473,7 @@ public class GalController {
 	 * @return null if the address does not exist in network cache or a positive
 	 *         number indicating the index of the desired object
 	 */
-	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
+	public BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
 			for (WrapperWSNNode y : _list) {
@@ -2507,7 +2505,7 @@ public class GalController {
 	 * @return null if the address does not exist in network cache or a positive
 	 *         number indicating the index of the desired object
 	 */
-	public synchronized Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
+	public Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
 			for (WrapperWSNNode y : _list) {
@@ -2541,15 +2539,18 @@ public class GalController {
 	 *         Listener's list or a positive number indicating its index onto
 	 *         the list otherwise
 	 */
-	public synchronized short existIntolistGatewayEventListener(long requestIdentifier) {
+	public short existIntolistGatewayEventListener(long requestIdentifier) {
 		short __indexOnList = -1;
 		List<GatewayDeviceEventEntry> list = getListGatewayEventListener();
-		for (GatewayDeviceEventEntry y : list) {
+		synchronized (list) {
 
-			__indexOnList++;
-			if (y.getProxyIdentifier() == requestIdentifier)
-				return __indexOnList;
+			for (GatewayDeviceEventEntry y : list) {
 
+				__indexOnList++;
+				if (y.getProxyIdentifier() == requestIdentifier)
+					return __indexOnList;
+
+			}
 		}
 		return -1;
 	}
