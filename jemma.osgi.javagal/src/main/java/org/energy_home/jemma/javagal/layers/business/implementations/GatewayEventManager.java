@@ -70,7 +70,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 */
 	public GatewayEventManager(GalController _gal) {
 		gal = _gal;
-
 	}
 
 	/**
@@ -86,7 +85,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 
 			}
 		});
-
+		
 	}
 
 	/**
