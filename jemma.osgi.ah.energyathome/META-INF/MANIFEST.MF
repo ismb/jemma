@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400507431398
+Bnd-LastModified: 1400506869497
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Energyathome
