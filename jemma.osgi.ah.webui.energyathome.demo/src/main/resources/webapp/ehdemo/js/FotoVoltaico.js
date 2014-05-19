@@ -516,7 +516,7 @@ CostiConsumi.DatiProduzioneAttuale = function(result, err) {
 							err);
 		InterfaceEnergyHome.GestErrorEH("DatiProduzioneAttuale", err);
 	} else if (result != null) {
-		CostiConsumi.produzioneAttuale.value = result.value * 100; //aggiungo un moltiplicatore 10 per la demo
+		CostiConsumi.produzioneAttuale.value = result.value * 10; //aggiungo un moltiplicatore 10 per la demo
 	} else {
 		CostiConsumi.produzioneAttuale.value = null;
 	}
