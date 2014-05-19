@@ -546,35 +546,38 @@ public class GalController {
 				if (x.is_discoveryCompleted()) {
 					LQINode _lqinode = new LQINode();
 					Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
-					_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
+					if (x.get_node().getAddress().getIeeeAddress() != null) {
+						_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
 
-					if (_rsp != null && _rsp.NeighborTableList != null) {
+						if (_rsp != null && _rsp.NeighborTableList != null) {
 
-						NeighborList _list0 = new NeighborList();
-						for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-							Neighbor e = new Neighbor();
-							e.setDepth((short) _n1._Depth);
-							e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-							Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
-							if (_shortAddress != null)
-								e.setShortAddress(_shortAddress);
-							else {
+							NeighborList _list0 = new NeighborList();
+							for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
+								Neighbor e = new Neighbor();
+								e.setDepth((short) _n1._Depth);
+								e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
+								Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
+								if (_shortAddress != null)
+									e.setShortAddress(_shortAddress);
+								else {
 
-								if (PropertiesManager.getDebugEnabled()) {
-									logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+									if (PropertiesManager.getDebugEnabled()) {
+										logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+									}
+
+									continue;
 								}
-
-								continue;
+								e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
+								e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+								e.setPermitJoining((short) _n1._Permitting_Joining);
+								e.setLQI((short) _n1._LQI);
+								_list0.getNeighbor().add(e);
+								_lqinode.setNeighborList(_list0);
 							}
-							e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
-							e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
-							e.setPermitJoining((short) _n1._Permitting_Joining);
-							e.setLQI((short) _n1._LQI);
-							_list0.getNeighbor().add(e);
-							_lqinode.setNeighborList(_list0);
 						}
+						_lqi.getLQINode().add(_lqinode);
 					}
-					_lqi.getLQINode().add(_lqinode);
+
 				}
 			}
 		}
@@ -2152,7 +2155,7 @@ public class GalController {
 							_s.setCode((short) GatewayConstants.SUCCESS);
 
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-						
+
 							_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
 							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 						} catch (GatewayException e) {
@@ -2489,7 +2492,7 @@ public class GalController {
 						}
 					}
 
-				} 
+				}
 			}
 
 		}
