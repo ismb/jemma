@@ -2145,7 +2145,12 @@ public class GalController {
 							_s.setCode((short) GatewayConstants.SUCCESS);
 
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-							_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
+							BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+							if (ieee != null)
+								_toRes.getAddress().setIeeeAddress(ieee);
+							else
+								logger.error("No Ieee found for Node: " + String.format("%04X", _toRes.getAddress().getNetworkAddress()));
+
 							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 						} catch (GatewayException e) {
 							Status _s = new Status();
@@ -2172,8 +2177,11 @@ public class GalController {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				ServiceDescriptor _toRes;
 				_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-				if (_toRes.getAddress().getIeeeAddress() == null)
-					_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
+				BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+				if (ieee != null)
+					_toRes.getAddress().setIeeeAddress(ieee);
+				else
+					logger.error("No Ieee found for Node: " + String.format("%04X", _toRes.getAddress().getNetworkAddress()));
 				return _toRes;
 			} else
 				throw new GatewayException("Gal is not in running state!");
