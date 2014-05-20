@@ -610,6 +610,9 @@ public class GalController {
 	public NodeDescriptor getNodeDescriptor(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final boolean Async) throws IOException, Exception, GatewayException {
 		if (addrOfInterest.getNetworkAddress() == null)
 			addrOfInterest.setNetworkAddress(getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
+		else if (addrOfInterest.getIeeeAddress() == null)
+			addrOfInterest.setIeeeAddress(getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress()));
+
 		if (Async) {
 
 			Thread thr = new Thread() {
@@ -1173,6 +1176,10 @@ public class GalController {
 	public NodeServices startServiceDiscovery(final long timeout, final int _requestIdentifier, final Address aoi, boolean Async) throws IOException, Exception, GatewayException {
 		if (aoi.getNetworkAddress() == null)
 			aoi.setNetworkAddress(getShortAddress_FromNetworkCache(aoi.getIeeeAddress()));
+		else if (aoi.getIeeeAddress() == null)
+			aoi.setIeeeAddress(getIeeeAddress_FromNetworkCache(aoi.getNetworkAddress()));
+		
+		
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -1395,6 +1402,9 @@ public class GalController {
 	public Status leave(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final int mask, final boolean Async) throws IOException, Exception, GatewayException {
 		if (addrOfInterest.getNetworkAddress() == null)
 			addrOfInterest.setNetworkAddress(getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
+		else if (addrOfInterest.getIeeeAddress() == null)
+			addrOfInterest.setIeeeAddress(getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress()));
+
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -1644,6 +1654,9 @@ public class GalController {
 	public Status permitJoin(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final short duration, final boolean Async) throws IOException, GatewayException, Exception {
 		if (addrOfInterest.getNetworkAddress() == null)
 			addrOfInterest.setNetworkAddress(getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
+		else if (addrOfInterest.getIeeeAddress() == null)
+			addrOfInterest.setIeeeAddress(getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress()));
+
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -2173,6 +2186,9 @@ public class GalController {
 	public ServiceDescriptor getServiceDescriptor(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final short endpoint, boolean Async) throws IOException, Exception, GatewayException {
 		if (addrOfInterest.getNetworkAddress() == null)
 			addrOfInterest.setNetworkAddress(getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
+		else if (addrOfInterest.getIeeeAddress() == null)
+			addrOfInterest.setIeeeAddress(getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress()));
+
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -2244,6 +2260,9 @@ public class GalController {
 	public BindingList getNodeBindingsSync(final long timeout, final int _requestIdentifier, final Address aoi, final short index, boolean Async) throws IOException, Exception, GatewayException {
 		if (aoi.getNetworkAddress() == null)
 			aoi.setNetworkAddress(getShortAddress_FromNetworkCache(aoi.getIeeeAddress()));
+		else if (aoi.getIeeeAddress() == null)
+			aoi.setIeeeAddress(getIeeeAddress_FromNetworkCache(aoi.getNetworkAddress()));
+		
 		if (Async) {
 			Thread thr = new Thread() {
 				@Override
@@ -2573,7 +2592,7 @@ public class GalController {
 	public synchronized short existIntolistGatewayEventListener(long requestIdentifier) {
 		synchronized (this) {
 			short __indexOnList = -1;
-			List<GatewayDeviceEvenn	tEntry> list = getListGatewayEventListener();
+			List<GatewayDeviceEventEntry> list = getListGatewayEventListener();
 			for (GatewayDeviceEventEntry y : list) {
 				__indexOnList++;
 				if (y.getProxyIdentifier() == requestIdentifier)

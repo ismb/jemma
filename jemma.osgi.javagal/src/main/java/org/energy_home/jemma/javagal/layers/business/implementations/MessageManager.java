@@ -78,8 +78,9 @@ public class MessageManager {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Aps Message Indication in process...");
 				}
+				synchronized (gal) {
 				List<CallbackEntry> list = gal.getCallbacks();
-				synchronized (list) {
+				
 
 					for (CallbackEntry ce : list) {
 
@@ -280,8 +281,9 @@ public class MessageManager {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Aps Message Indication in process...");
 				}
+				synchronized (gal) {
 				List<CallbackEntry> list = gal.getCallbacks();
-				synchronized (list) {
+				
 					for (CallbackEntry ce : list) {
 
 						Callback callback = ce.getCallback();
