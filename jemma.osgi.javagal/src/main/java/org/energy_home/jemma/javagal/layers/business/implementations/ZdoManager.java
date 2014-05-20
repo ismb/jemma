@@ -205,6 +205,7 @@ public class ZdoManager /* implements APSMessageListener */{
 
 		}
 
+		
 		gal.getApsManager().APSMessageIndication(message);
 		gal.getMessageManager().APSMessageIndication(message);
 		
