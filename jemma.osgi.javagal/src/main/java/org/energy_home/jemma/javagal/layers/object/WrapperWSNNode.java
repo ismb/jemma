@@ -29,7 +29,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNode;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
-public class WrapperWSNNode {
+public  class  WrapperWSNNode {
 	int _timerID = 0;
 	private WSNNode _node;
 	private Timer _timerDiscovery;
@@ -40,22 +40,22 @@ public class WrapperWSNNode {
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
 
-	public NodeDescriptor getNodeDescriptor() {
+	public synchronized NodeDescriptor getNodeDescriptor() {
 		return _nodeDescriptor;
 	}
 
-	public void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
+	public synchronized void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
 		this._nodeDescriptor = nodeDescriptor;
 	}
 
 	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
 	private long lastDiscovered;
 
-	public long getLastDiscovered() {
+	public synchronized long getLastDiscovered() {
 		return lastDiscovered;
 	}
 
-	public void setLastDiscovered(long lastDiscovered) {
+	public synchronized void setLastDiscovered(long lastDiscovered) {
 		this.lastDiscovered = lastDiscovered;
 	}
 
@@ -74,7 +74,7 @@ public class WrapperWSNNode {
 	/**
 	 * Check if the Node is a sleepy device
 	 */
-	public boolean isSleepy() {
+	public synchronized boolean isSleepy() {
 		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
 			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
 				return false;

@@ -427,8 +427,9 @@ public class DataFreescale implements IDataLayer {
 				if (_indexOnCache != -1) {
 					/* The node is already into the DB */
 					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-						WrapperWSNNode node = gal.getNetworkcache().get(_indexOnCache);
-						synchronized (node) {
+						synchronized (gal) {
+							WrapperWSNNode node = gal.getNetworkcache().get(_indexOnCache);
+
 							if (!node.isSleepy()) {
 								node.reset_numberOfAttempt();
 								node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
@@ -629,7 +630,7 @@ public class DataFreescale implements IDataLayer {
 
 				if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
 					WrapperWSNNode node = null;
-					synchronized (gal.getNetworkcache()) {
+					synchronized (gal) {
 						int index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
 						if (index > -1) {
 							node = gal.getNetworkcache().get(index);
@@ -643,7 +644,7 @@ public class DataFreescale implements IDataLayer {
 
 				} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
 					WrapperWSNNode node = null;
-					synchronized (gal.getNetworkcache()) {
+					synchronized (gal) {
 						Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
 						if ((index != null) && (index > -1)) {
 							node = gal.getNetworkcache().get(index);
@@ -704,7 +705,7 @@ public class DataFreescale implements IDataLayer {
 				if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
 					int index = -1;
 					WrapperWSNNode node = null;
-					synchronized (gal.getNetworkcache()) {
+					synchronized (gal) {
 						index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
 						if (index > -1)
 							node = gal.getNetworkcache().get(index);
@@ -718,7 +719,7 @@ public class DataFreescale implements IDataLayer {
 
 				} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
 					WrapperWSNNode node = null;
-					synchronized (gal.getNetworkcache()) {
+					synchronized (gal) {
 						Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
 						if ((index != null) && (index > -1))
 							node = gal.getNetworkcache().get(index);
