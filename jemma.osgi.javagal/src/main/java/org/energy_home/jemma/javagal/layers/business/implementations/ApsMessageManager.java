@@ -15,6 +15,10 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -33,11 +37,12 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
  * Manages received APS messages. When an APS indication is received it is
  * passed to this class' {@code APSMessageIndication} method.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class ApsMessageManager {
-
+	ExecutorService executor = null;
 	private final static Log logger = LogFactory.getLog(ApsMessageManager.class);
 
 	/**
@@ -53,7 +58,18 @@ public class ApsMessageManager {
 	 */
 	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
+	
+		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+			
+			@Override
+			public Thread newThread(Runnable r) {
+				
+				return new Thread(r, "THPool-APSMessageIndication");
+			}
+		});
 
+		
+		
 	}
 
 	/**
@@ -69,210 +85,196 @@ public class ApsMessageManager {
 	 */
 	@Deprecated
 	public void APSMessageIndication(final APSMessageEvent message) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Aps Message Indication in process...");
 				}
 
-					for (CallbackEntry ce : gal.getCallbacks()) {
-						
-						Callback callback = ce.getCallback();
-						Filter filter = callback.getFilter();
-						if (filter.getLevelSpecification().getLevel().get(0)
-								.equals(Level.APS_LEVEL)) {
-							if (filter.getMessageSpecification().size() > 0) {
-								boolean messageSpecificationFound = false;
-								for (MessageSpecification ms : filter
-										.getMessageSpecification()) {
+				for (CallbackEntry ce : gal.getCallbacks()) {
 
-									if (ms.getAPSClusterIdentifier() == null) {
-										messageSpecificationFound = true;
-										// If match we can stop the search loop.
-										break;
+					Callback callback = ce.getCallback();
+					Filter filter = callback.getFilter();
+					if (filter.getLevelSpecification().getLevel().get(0).equals(Level.APS_LEVEL)) {
+						if (filter.getMessageSpecification().size() > 0) {
+							boolean messageSpecificationFound = false;
+							for (MessageSpecification ms : filter.getMessageSpecification()) {
 
-									} else if (ms.getAPSClusterIdentifier() == message
-											.getClusterID()) {
-										messageSpecificationFound = true;
-										// If match we can stop the search loop.
-										break;
-									}
-								}
-								if (!messageSpecificationFound) {
-									// If no Messaging Specification was found,
-									// then this callback doesn't match and we
-									// can jump to check the next one.
-									continue;
-								}
-							}
+								if (ms.getAPSClusterIdentifier() == null) {
+									messageSpecificationFound = true;
+									// If match we can stop the search loop.
+									break;
 
-							// Address Specification check. If there are at
-							// least one address specification in the filter,
-							// then we proceed to find a match, else if no
-							// address specification is present we assume that
-							// the check pass.
-							if (filter.getAddressSpecification().size() > 0) {
-								boolean addressingSpecificationFound = false;
-								for (AddressSpecification as : filter
-										.getAddressSpecification()) {
-									// Source Address (Address Specification)
-									Address assa = as.getNWKSourceAddress();
-									int asnsa = 0xFFFF;
-									// If null, then we assume that all address
-									// match for this filter, and so we leave
-									// the initial value of 0xFFFF.
-									if (assa != null) {
-										asnsa = assa.getNetworkAddress();
-									}
-									short assep = -1;
-
-									if (as.getAPSSourceEndpoint() != null)
-										assep = as.getAPSSourceEndpoint();
-									// Pass if the callback has a broadcast
-									// Source Address
-									if (asnsa != 0xFFFF) {
-										// Source Address
-										long msam = message
-												.getSourceAddressMode()
-												.longValue();
-										Address msa = message
-												.getSourceAddress();
-										if (msam == 0x01) {
-											// Network address, NO source end
-											// point
-											int msna0x01 = msa
-													.getNetworkAddress();
-											// Pass if the message has a
-											// broadcast Source Address
-											if (msna0x01 != 0xFFFF) {
-												// Don't pass if they differs,
-												// so we go ahead on the next
-												// iteration in the for cycle
-												if (asnsa != msna0x01) {
-													continue;
-												}
-											}
-										} else if (msam == 0x02) {
-											// Network address, AND source end
-											// point present.
-											int msna0x02 = msa
-													.getNetworkAddress();
-											short msep = message
-													.getSourceEndpoint();
-											// Pass if the message has a
-											// broadcast Source Address.
-											if (msna0x02 != 0xFFFF) {
-												// Don't pass if they differs,
-												// so we go ahead on the
-												// next iteration in for cycle.
-												if (asnsa != msna0x02) {
-													// Don't pass if they
-													// differs, so we go ahead
-													// on the next iteration in
-													// the for cycle.
-													continue;
-												} else if (msep != 0xFF) {
-													if (msep != assep) {
-														// Don't pass if they
-														// differs, so we go
-														// ahead on the next
-														// iteration in the for
-														// cycle.
-														continue;
-													}
-												}
-											}
-										} else if (msam == 0x03) {
-											logger.info("AIA");
-
-											// ASK No ieee address defined in
-											// the AddressSpecification
-											// object. We do nothing since we
-											// can't compare the values.
-										}
-									}
-
-									// If reached this point, then a matching
-									// Source Address is found for the current
-									// AddressSpecification. So we can proceed
-									// to check the Destination End Point.
-
-									// Destination End Point (Address
-									// Specification)
-									if (as.getAPSDestinationEndpoint() == null) {
-										addressingSpecificationFound = true;
-										break;
-									} else {
-										short asdep = as
-												.getAPSDestinationEndpoint();
-										// Pass if the callback has a broadcast
-										// Destination End Point
-										if (asdep != 0xFF) {
-											long dam = message
-													.getDestinationAddressMode();
-											// 0x00 and 0x01 Destination End
-											// Point
-											// not present
-											if (dam > 0x01) {
-												short mdep = message
-														.getDestinationEndpoint();
-												// Pass if the message has a
-												// broadcast Destination End
-												// Point
-												if (mdep != 0xFF) {
-													// Don't pass if they
-													// differs,
-													// so we go ahead on the
-													// next
-													// iteration in the for
-													// cycle
-													if (asdep != mdep) {
-														continue;
-													}
-												}
-											}
-										}
-									}
-									// If reached this point, then a matching
-									// Destination End Point is also found for
-									// the current AddressSpecification. This
-									// means that a matching Addressing
-									// Specification is found. We can stop here
-									// the loop since one match it's enough.
-									addressingSpecificationFound = true;
+								} else if (ms.getAPSClusterIdentifier() == message.getClusterID()) {
+									messageSpecificationFound = true;
+									// If match we can stop the search loop.
 									break;
 								}
+							}
+							if (!messageSpecificationFound) {
+								// If no Messaging Specification was found,
+								// then this callback doesn't match and we
+								// can jump to check the next one.
+								continue;
+							}
+						}
 
-								if (!addressingSpecificationFound) {
-									// If no Addressing Specification was found,
-									// then this callback doesn't match and we
-									// can jump to check the next one.
-									continue;
+						// Address Specification check. If there are at
+						// least one address specification in the filter,
+						// then we proceed to find a match, else if no
+						// address specification is present we assume that
+						// the check pass.
+						if (filter.getAddressSpecification().size() > 0) {
+							boolean addressingSpecificationFound = false;
+							for (AddressSpecification as : filter.getAddressSpecification()) {
+								// Source Address (Address Specification)
+								Address assa = as.getNWKSourceAddress();
+								int asnsa = 0xFFFF;
+								// If null, then we assume that all address
+								// match for this filter, and so we leave
+								// the initial value of 0xFFFF.
+								if (assa != null) {
+									asnsa = assa.getNetworkAddress();
 								}
+								short assep = -1;
+
+								if (as.getAPSSourceEndpoint() != null)
+									assep = as.getAPSSourceEndpoint();
+								// Pass if the callback has a broadcast
+								// Source Address
+								if (asnsa != 0xFFFF) {
+									// Source Address
+									long msam = message.getSourceAddressMode().longValue();
+									Address msa = message.getSourceAddress();
+									if (msam == 0x01) {
+										// Network address, NO source end
+										// point
+										int msna0x01 = msa.getNetworkAddress();
+										// Pass if the message has a
+										// broadcast Source Address
+										if (msna0x01 != 0xFFFF) {
+											// Don't pass if they differs,
+											// so we go ahead on the next
+											// iteration in the for cycle
+											if (asnsa != msna0x01) {
+												continue;
+											}
+										}
+									} else if (msam == 0x02) {
+										// Network address, AND source end
+										// point present.
+										int msna0x02 = msa.getNetworkAddress();
+										short msep = message.getSourceEndpoint();
+										// Pass if the message has a
+										// broadcast Source Address.
+										if (msna0x02 != 0xFFFF) {
+											// Don't pass if they differs,
+											// so we go ahead on the
+											// next iteration in for cycle.
+											if (asnsa != msna0x02) {
+												// Don't pass if they
+												// differs, so we go ahead
+												// on the next iteration in
+												// the for cycle.
+												continue;
+											} else if (msep != 0xFF) {
+												if (msep != assep) {
+													// Don't pass if they
+													// differs, so we go
+													// ahead on the next
+													// iteration in the for
+													// cycle.
+													continue;
+												}
+											}
+										}
+									} else if (msam == 0x03) {
+										logger.info("AIA");
+
+										// ASK No ieee address defined in
+										// the AddressSpecification
+										// object. We do nothing since we
+										// can't compare the values.
+									}
+								}
+
+								// If reached this point, then a matching
+								// Source Address is found for the current
+								// AddressSpecification. So we can proceed
+								// to check the Destination End Point.
+
+								// Destination End Point (Address
+								// Specification)
+								if (as.getAPSDestinationEndpoint() == null) {
+									addressingSpecificationFound = true;
+									break;
+								} else {
+									short asdep = as.getAPSDestinationEndpoint();
+									// Pass if the callback has a broadcast
+									// Destination End Point
+									if (asdep != 0xFF) {
+										long dam = message.getDestinationAddressMode();
+										// 0x00 and 0x01 Destination End
+										// Point
+										// not present
+										if (dam > 0x01) {
+											short mdep = message.getDestinationEndpoint();
+											// Pass if the message has a
+											// broadcast Destination End
+											// Point
+											if (mdep != 0xFF) {
+												// Don't pass if they
+												// differs,
+												// so we go ahead on the
+												// next
+												// iteration in the for
+												// cycle
+												if (asdep != mdep) {
+													continue;
+												}
+											}
+										}
+									}
+								}
+								// If reached this point, then a matching
+								// Destination End Point is also found for
+								// the current AddressSpecification. This
+								// means that a matching Addressing
+								// Specification is found. We can stop here
+								// the loop since one match it's enough.
+								addressingSpecificationFound = true;
+								break;
 							}
 
-							// If this point is reached, then a matching
-							// callback is found. Notify the message to its
-							// destination.
-							
-							APSMessageListener apml = ce.getDestination();
-							if (apml != null)
-							apml.notifyAPSMessage(message);
-							
-							MessageListener napml = ce.getGenericDestination();
-							if (napml != null)
-								napml.notifyAPSMessage(message);
-							
-							// Add it to the list of already notified
-							// destinations.
-
+							if (!addressingSpecificationFound) {
+								// If no Addressing Specification was found,
+								// then this callback doesn't match and we
+								// can jump to check the next one.
+								continue;
+							}
 						}
+
+						// If this point is reached, then a matching
+						// callback is found. Notify the message to its
+						// destination.
+
+						APSMessageListener apml = ce.getDestination();
+						if (apml != null)
+							apml.notifyAPSMessage(message);
+
+						MessageListener napml = ce.getGenericDestination();
+						if (napml != null)
+							napml.notifyAPSMessage(message);
+
+						// Add it to the list of already notified
+						// destinations.
+
 					}
-				
+				}
 			}
-		};
-		thr.setName("Thread APSMessageIndication(final APSMessageEvent message)");
-		thr.start();
+		});
+		
+		
+
 	}
 }

@@ -20,3 +20,7 @@ The full JEMMA source code, unless specified otherwise in specific files, have b
 Willing to contribute ? Check our [project tracker](https://github.com/ismb/jemma/issues).
 Information on how to contribute can be found [here](https://github.com/ismb/jemma/wiki/Contribute)
 
+## Linked projects
+
+
+[ZCL cluster generator](https://github.com/nport/jemma.ah.zigbee.zcl.compiler/) - A code generator which creates jemma zcl proxy classes from xml descriptions.
