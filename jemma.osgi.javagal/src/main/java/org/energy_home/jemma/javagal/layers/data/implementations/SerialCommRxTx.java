@@ -163,7 +163,7 @@ public class SerialCommRxTx implements IConnector {
 			if (ou != null) {
 				try {
 					ou.write(buff.getByteArray(), 0, buff.getByteCount(true));
-					// ou.flush();
+					ou.flush();
 				} catch (Exception e) {
 
 					e.printStackTrace();

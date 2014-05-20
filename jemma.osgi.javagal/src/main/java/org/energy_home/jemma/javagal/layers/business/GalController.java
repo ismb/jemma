@@ -235,7 +235,7 @@ public class GalController {
 	 * @see GatewayDeviceEventEntry
 	 */
 
-	public synchronized List<GatewayDeviceEventEntry> getListGatewayEventListener() {
+	public List<GatewayDeviceEventEntry> getListGatewayEventListener() {
 		return listGatewayEventListener;
 	}
 
@@ -434,7 +434,7 @@ public class GalController {
 	 * 
 	 * @return the list of active nodes connected.
 	 */
-	public synchronized WSNNodeList readNodeCache() {
+	public WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
 		List<WrapperWSNNode> _list0 = getNetworkcache();
 		synchronized (_list0) {
@@ -489,9 +489,14 @@ public class GalController {
 	 */
 	public LQIInformation getLQIInformation(Address aoi) throws IOException, Exception, GatewayException {
 		LQIInformation _lqi = new LQIInformation();
-		int _index = -1;
-		if ((_index = existIntoNetworkCache(aoi.getNetworkAddress())) > -1) {
-			WrapperWSNNode x = getNetworkcache().get(_index);
+		WrapperWSNNode x = null;
+		synchronized (getNetworkcache()) {
+			int _index = -1;
+			_index = existIntoNetworkCache(aoi.getNetworkAddress());
+			if (_index > -1)
+				x = getNetworkcache().get(_index);
+		}
+		if (x != null) {
 			if (x.is_discoveryCompleted()) {
 				LQINode _lqinode = new LQINode();
 				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
@@ -546,35 +551,36 @@ public class GalController {
 				if (x.is_discoveryCompleted()) {
 					LQINode _lqinode = new LQINode();
 					Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
-					_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
+					if (x.get_node().getAddress().getIeeeAddress() != null) {
+						_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
+						if (_rsp != null && _rsp.NeighborTableList != null) {
+							NeighborList _list0 = new NeighborList();
+							for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
+								Neighbor e = new Neighbor();
+								e.setDepth((short) _n1._Depth);
+								e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
+								Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
+								if (_shortAddress != null)
+									e.setShortAddress(_shortAddress);
+								else {
 
-					if (_rsp != null && _rsp.NeighborTableList != null) {
+									if (PropertiesManager.getDebugEnabled()) {
+										logger.error("Not found ShortAddress of node with the IEEE:" + String.format("%016X", _n1._Extended_Address) + " - Informations founds into Node: " + String.format("%04X", x.get_node().getAddress().getNetworkAddress()));
+									}
 
-						NeighborList _list0 = new NeighborList();
-						for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
-							Neighbor e = new Neighbor();
-							e.setDepth((short) _n1._Depth);
-							e.setDeviceTypeRxOnWhenIdleRelationship(_n1._Device_Type_RxOnWhenIdle_Relationship);
-							Integer _shortAddress = getShortAddress_FromNetworkCache(BigInteger.valueOf(_n1._Extended_Address));
-							if (_shortAddress != null)
-								e.setShortAddress(_shortAddress);
-							else {
-
-								if (PropertiesManager.getDebugEnabled()) {
-									logger.error("Not found node with the IEEE:" + _n1._Extended_Address);
+									continue;
 								}
-
-								continue;
+								e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
+								e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
+								e.setPermitJoining((short) _n1._Permitting_Joining);
+								e.setLQI((short) _n1._LQI);
+								_list0.getNeighbor().add(e);
+								_lqinode.setNeighborList(_list0);
 							}
-							e.setIeeeAddress(BigInteger.valueOf(_n1._Extended_Address));
-							e.setExtendedPANId(BigInteger.valueOf(_n1._Extended_PAN_Id));
-							e.setPermitJoining((short) _n1._Permitting_Joining);
-							e.setLQI((short) _n1._LQI);
-							_list0.getNeighbor().add(e);
-							_lqinode.setNeighborList(_list0);
 						}
+						_lqi.getLQINode().add(_lqinode);
 					}
-					_lqi.getLQINode().add(_lqinode);
+
 				}
 			}
 		}
@@ -670,8 +676,14 @@ public class GalController {
 				else
 					shortAddress = addrOfInterest.getNetworkAddress();
 				int _index = -1;
-				if ((_index = existIntoNetworkCache(shortAddress)) > -1) {
-					getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
+				WrapperWSNNode node = null;
+				synchronized (getNetworkcache()) {
+					_index = existIntoNetworkCache(shortAddress);
+					if (_index > -1)
+						node = getNetworkcache().get(_index);
+				}
+				if (node != null) {
+					node.setNodeDescriptor(nodeDescriptor);
 				}
 				return nodeDescriptor;
 			} else
@@ -1232,8 +1244,15 @@ public class GalController {
 					_newNodeService.getActiveEndpoints().add(_n);
 				}
 				int _index = -1;
-				if ((_index = existIntoNetworkCache(aoi.getNetworkAddress())) > -1) {
-					getNetworkcache().get(_index).set_nodeServices(_newNodeService);
+				WrapperWSNNode node = null;
+				synchronized (getNetworkcache()) {
+					_index = existIntoNetworkCache(aoi.getNetworkAddress());
+					if (_index > -1)
+						node = getNetworkcache().get(_index);
+
+				}
+				if (node != null) {
+					node.set_nodeServices(_newNodeService);
 				}
 
 				return _newNodeService;
@@ -1525,10 +1544,12 @@ public class GalController {
 		else
 			shortAddress = addrOfInterest.getNetworkAddress();
 		int _index = -1;
-		if ((_index = existIntoNetworkCache(shortAddress)) > -1) {
-			node = getNetworkcache().get(_index);
+		synchronized (getNetworkcache()) {
+			_index = existIntoNetworkCache(shortAddress);
+			if (_index > -1) {
+				node = getNetworkcache().get(_index);
+			}
 		}
-
 		if (node != null) {
 
 			NodeDescriptor nodeDescriptor = null;
@@ -2111,7 +2132,7 @@ public class GalController {
 	 * 
 	 * @return the list of cached nodes.
 	 */
-	public synchronized List<WrapperWSNNode> getNetworkcache() {
+	public List<WrapperWSNNode> getNetworkcache() {
 		return NetworkCache;
 	}
 
@@ -2150,11 +2171,24 @@ public class GalController {
 						try {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
-
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-						
-							_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
-							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+							if (_toRes.getAddress().getIeeeAddress() == null) {
+								BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+								if (ieee != null) {
+									_toRes.getAddress().setIeeeAddress(ieee);
+									get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+								} else {
+									Status _s1 = new Status();
+									_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
+									_s1.setMessage("No Ieee found");
+									get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s1, null);
+
+								}
+							} else {
+								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+
+							}
+
 						} catch (GatewayException e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -2180,9 +2214,18 @@ public class GalController {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				ServiceDescriptor _toRes;
 				_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-				if (_toRes.getAddress().getIeeeAddress() == null)
-					_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
-				return _toRes;
+				if (_toRes.getAddress().getIeeeAddress() == null) {
+
+					BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+					if (ieee != null) {
+						_toRes.getAddress().setIeeeAddress(ieee);
+						return _toRes;
+					} else {
+						throw new GatewayException("No Ieee found!");
+					}
+
+				} else
+					return _toRes;
 			} else
 				throw new GatewayException("Gal is not in running state!");
 
@@ -2450,7 +2493,7 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public synchronized short existIntoNetworkCache(Integer shortAddress) {
+	public short existIntoNetworkCache(Integer shortAddress) {
 		short __indexOnCache = -1;
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
@@ -2472,7 +2515,7 @@ public class GalController {
 	 * @return null if the address does not exist in network cache or a positive
 	 *         number indicating the index of the desired object
 	 */
-	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
+	public BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
 			for (WrapperWSNNode y : _list) {
@@ -2489,7 +2532,7 @@ public class GalController {
 						}
 					}
 
-				} 
+				}
 			}
 
 		}
@@ -2504,7 +2547,7 @@ public class GalController {
 	 * @return null if the address does not exist in network cache or a positive
 	 *         number indicating the index of the desired object
 	 */
-	public synchronized Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
+	public Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		synchronized (_list) {
 			for (WrapperWSNNode y : _list) {
@@ -2538,15 +2581,18 @@ public class GalController {
 	 *         Listener's list or a positive number indicating its index onto
 	 *         the list otherwise
 	 */
-	public synchronized short existIntolistGatewayEventListener(long requestIdentifier) {
+	public short existIntolistGatewayEventListener(long requestIdentifier) {
 		short __indexOnList = -1;
 		List<GatewayDeviceEventEntry> list = getListGatewayEventListener();
-		for (GatewayDeviceEventEntry y : list) {
+		synchronized (list) {
 
-			__indexOnList++;
-			if (y.getProxyIdentifier() == requestIdentifier)
-				return __indexOnList;
+			for (GatewayDeviceEventEntry y : list) {
 
+				__indexOnList++;
+				if (y.getProxyIdentifier() == requestIdentifier)
+					return __indexOnList;
+
+			}
 		}
 		return -1;
 	}
