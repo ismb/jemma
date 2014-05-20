@@ -87,13 +87,12 @@ public class Discovery_Freshness_ForcePing {
 
 			WrapperWSNNode __currentNodeWrapper = null;
 			int _indexParent = -1;
-			synchronized (gal) {
-				_indexParent = gal.existIntoNetworkCache(node.getNetworkAddress());
-				if (_indexParent > -1) {
-					__currentNodeWrapper = gal.getNetworkcache().get(_indexParent);
-				} else
-					return;
-			}
+			_indexParent = gal.existIntoNetworkCache(node.getNetworkAddress());
+			if (_indexParent != -1) {
+				__currentNodeWrapper = gal.getNetworkcache().get(_indexParent);
+			} else
+				return;
+
 			if (function == TypeFunction.FORCEPING) {
 				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
 					__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());

@@ -15,9 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -42,7 +39,7 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 public class ApsMessageManager {
 
 	private final static Log logger = LogFactory.getLog(ApsMessageManager.class);
-	ExecutorService threadpool = Executors.newFixedThreadPool(25);
+
 	/**
 	 * The local {@link GalController} reference.
 	 */
@@ -72,7 +69,8 @@ public class ApsMessageManager {
 	 */
 	@Deprecated
 	public void APSMessageIndication(final APSMessageEvent message) {
-		threadpool.execute(new Runnable() {
+		Thread thr = new Thread() {
+			@Override
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					logger.info("Aps Message Indication in process...");
@@ -273,6 +271,8 @@ public class ApsMessageManager {
 					}
 				
 			}
-		});
+		};
+		thr.setName("Thread APSMessageIndication(final APSMessageEvent message)");
+		thr.start();
 	}
 }
