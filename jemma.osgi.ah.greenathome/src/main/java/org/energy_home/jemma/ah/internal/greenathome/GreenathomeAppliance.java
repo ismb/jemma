@@ -2708,25 +2708,21 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 				}
 			}
 			
+			AttributeValueExtended attributeValue=null;
+			
+			TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint
+					.getPeerServiceCluster(peerAppliance.getPid(), TemperatureMeasurementServer.class.getName());
+
+			if (temperatureMeasurementServer != null) {
+				int measuredValue= temperatureMeasurementServer.getMeasuredValue(getterContext);
+				double localTemperature = ((double)measuredValue) / 100;
+				props.put("temperature", localTemperature);
+			}
+			
 			if(simpleMeteringServer!=null){
-				//FIXME: I should consider divisor and multiplier to get the real instantaneousdeman value
-				/*
-				int divisor=1000;
-				try{
-					divisor=simpleMeteringServer.getDivisor(getterContext);
-				}catch(Exception e){
-					log.error("Error getting divisor for appliance",e);
-				}
-				int multiplier=1000;
-				try{
-					multiplier=simpleMeteringServer.getMultiplier(getterContext);
-				}catch(Exception e){
-					log.error("Error getting multiplier for appliance",e);
-				}
-				int realInstantaneousValue=(simpleMeteringServer.getIstantaneousDemand(getterContext)/divisor)*multiplier;				*/
-				//int realInstantaneousValue=simpleMeteringServer.getIstantaneousDemand(getterContext);
+				
 				double realInstantaneousValue;
-				AttributeValueExtended attributeValue=null;
+				
 				try {
 					realInstantaneousValue = this.readPower(peerAppliance);
 					if (realInstantaneousValue != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)

@@ -40,7 +40,7 @@
 	<parent>
 		<groupId>org.energy-home</groupId>
 		<artifactId>jemma</artifactId>
-		<version>0.1.1</version>
+		<version>0.2</version>
 	</parent>
 	<properties>
 		<main.dir>${project.parent.basedir}</main.dir>
@@ -102,7 +102,12 @@ org.restlet.util
 		</dependency>
 		<dependency>
 			<groupId>org.restlet.osgi</groupId>
-			<artifactId>org.restlet</artifactId>
+			<artifactId>org.restlet</artifactId> 
+			<version>${org.restlet.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet.ext.xml</artifactId>
 			<version>${org.restlet.version}</version>
 		</dependency>
                 <dependency>
