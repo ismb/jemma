@@ -235,7 +235,7 @@ public class GalController {
 	 * @see GatewayDeviceEventEntry
 	 */
 
-	public synchronized List<GatewayDeviceEventEntry> getListGatewayEventListener() {
+	public List<GatewayDeviceEventEntry> getListGatewayEventListener() {
 		return listGatewayEventListener;
 	}
 
@@ -2171,11 +2171,24 @@ public class GalController {
 						try {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
-
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
+							if (_toRes.getAddress().getIeeeAddress() == null) {
+								BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+								if (ieee != null) {
+									_toRes.getAddress().setIeeeAddress(ieee);
+									get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+								} else {
+									Status _s1 = new Status();
+									_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
+									_s1.setMessage("No Ieee found");
+									get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s1, null);
 
-							_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
-							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+								}
+							} else {
+								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+
+							}
+
 						} catch (GatewayException e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -2201,9 +2214,18 @@ public class GalController {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				ServiceDescriptor _toRes;
 				_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
-				if (_toRes.getAddress().getIeeeAddress() == null)
-					_toRes.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress()));
-				return _toRes;
+				if (_toRes.getAddress().getIeeeAddress() == null) {
+
+					BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
+					if (ieee != null) {
+						_toRes.getAddress().setIeeeAddress(ieee);
+						return _toRes;
+					} else {
+						throw new GatewayException("No Ieee found!");
+					}
+
+				} else
+					return _toRes;
 			} else
 				throw new GatewayException("Gal is not in running state!");
 
