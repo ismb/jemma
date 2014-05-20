@@ -855,10 +855,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		
 		try {
 			this.timerCancel(galCommandTimer);
-			
 			Address a = service.getAddress();
 			String ieeeAddress = getIeeeAddressHex(a);
-
 			InstallationStatus installingDevice = this.getInstallingDevice(a);
 			if (installingDevice == null) {
 				Exception st = new Exception();
