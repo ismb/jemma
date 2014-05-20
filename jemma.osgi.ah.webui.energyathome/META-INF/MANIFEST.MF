@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506882341
+Bnd-LastModified: 1400509776968
 Build-Jdk: 1.6.0_45
-Built-By: csto625
+Built-By: Administrator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Energy@Home Trial Web Application
