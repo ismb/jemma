@@ -65,14 +65,21 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		
+
 	}
 
 	protected void installUsers() {
 		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
 		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
-		User adminUser = (User) createRole(userAdmin, username, Role.USER);
-		setUserCredentials(adminUser, password);
+		if (userAdmin != null) {
+			User adminUser = (User) createRole(userAdmin, username, Role.USER);
+			setUserCredentials(adminUser, password);
+		}
+		else
+		{
+			log.error("UserAdmin Null");
+			
+		}
 	}
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
@@ -81,12 +88,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
+
 		Role role = ua.createRole(name, roleType);
 		if (role == null) {
 			role = ua.getRole(name);
 		}
 
 		return role;
+
 	}
 
 	protected synchronized void setHttpService(HttpService s) {
@@ -119,9 +128,9 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	public URL getResource(String name) {
 		URL u = null;
 		if (name.equals("webapp/"))
-			u = this.bc.getBundle().getResource(name+"home.html");
+			u = this.bc.getBundle().getResource(name + "home.html");
 		else
-		u = this.bc.getBundle().getResource(name);
+			u = this.bc.getBundle().getResource(name);
 		return u;
 	}
 
@@ -247,13 +256,12 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private void setUserCredentials(User user, String password) {
 		Object currentProperties = user.getProperties().get("org.energy_home.jemma.javagal.username");
 		Object currentCredential = user.getCredentials().get("org.energy_home.jemma.javagal.username");
-		
+
 		if (currentProperties == null)
 			user.getProperties().put("org.energy_home.jemma.javagal.username", user.getName().toLowerCase());
-		
-		if (currentCredential == null) 
+
+		if (currentCredential == null)
 			user.getCredentials().put("org.energy_home.jemma.javagal.password", password);
-		
 
 	}
 

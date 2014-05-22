@@ -69,12 +69,10 @@ import org.energy_home.jemma.zgd.jaxb.TxOptions;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
 
-
-
 /**
  * Freescale implementation of {@link IDataLayer}.
  * 
- * @author 
+ * @author
  * 
  */
 public class DataFreescale implements IDataLayer {
@@ -240,16 +238,17 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
-		boolean serialDataError = false;
-		 ChecksumControl csc = new ChecksumControl();
+
+		ChecksumControl csc = new ChecksumControl();
 
 		int toremove = 0;
 		Short _toremove = 0;
 		while (!receivedDataQueue.isEmpty()) {
 			if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
 				receivedDataQueue.remove(0);
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.debug("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove));
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					DataManipulation.errorLogListHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:", receivedDataQueue);
+				}
 			} else
 				break;
 		}
@@ -290,8 +289,9 @@ public class DataFreescale implements IDataLayer {
 
 		if (currCscControl != messageCfc) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error CscControl: " + String.format("%02X", currCscControl) + " != " + String.format("%02X", messageCfc));
-			serialDataError = true;
+				DataManipulation.errorLogListHexRadix("Error CSC Control: " + currCscControl + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0)) + " from:", receivedDataQueue);
+			receivedDataQueue.remove(0);
+			return null;
 
 		}
 
@@ -310,71 +310,13 @@ public class DataFreescale implements IDataLayer {
 
 		toremove += (4 + payloadLenght + 1);
 
-		if (serialDataError) {
+		for (int z = 0; z < toremove; z++)
+			receivedDataQueue.remove(0);
 
-			if ((messageCfc == DataManipulation.SEQUENCE_START) && (optCode == 0xA3) && (optGroup == 0x23)) {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.debug("BugFix Message for A323...");
-				for (int z = 0; z < toremove - 1; z++)
-					receivedDataQueue.remove(0);
-				receivedDataQueue.remove(1);
-				return toReturn;
-			} else {
-				Short extracted;
-				for (int z = 0; z < toremove; z++) {
-					if (receivedDataQueue.size() > 0) {
-
-						extracted = receivedDataQueue.remove(0);
-
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.debug("Removed Byte: " + String.format("%02X", extracted));
-
-					}
-				}
-
-				return null;
-			}
-		} else {
-			for (int z = 0; z < toremove; z++)
-				receivedDataQueue.remove(0);
-
-			return toReturn;
-		}
+		return toReturn;
 
 	}
 
-	/*
-	 * private short[] createMessageFromRowData() { Short _toremove = 0; while
-	 * (!receivedDataQueue.isEmpty()) { if ((_toremove =
-	 * receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
-	 * receivedDataQueue.remove(0); if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error on Message Received, removing wrong byte: " +
-	 * String.format("%02X", _toremove)); } else break; }
-	 * 
-	 * if (gal.getPropertiesManager().getDebugEnabled())
-	 * DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data",
-	 * receivedDataQueue);
-	 * 
-	 * if (receivedDataQueue.size() > 3) { short length =
-	 * receivedDataQueue.get(3); length = (short) (length + 3); if
-	 * (receivedDataQueue.size() >= length + 1) { short[] _toreturn = new
-	 * short[length]; receivedDataQueue.remove(0);// Removed SequenceStart for
-	 * (int i = 0; i < _toreturn.length; i++) { _toreturn[i] =
-	 * receivedDataQueue.remove(0);
-	 * 
-	 * } if (receivedDataQueue.size() > 0) if (receivedDataQueue.get(0) !=
-	 * DataManipulation.SEQUENCE_START) receivedDataQueue.remove(0);// Removed
-	 * CSCControl
-	 * 
-	 * return _toreturn; } else { if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error, Data received not completed, waiting new raw data..."
-	 * ); return null; } } else { if
-	 * (gal.getPropertiesManager().getDebugEnabled())
-	 * logger.debug("Error, Data received not completed, waiting new raw data..."
-	 * ); return null; } }
-	 */
 	public void processMessages(short[] message) throws Exception {
 
 		ByteBuffer bb = ByteBuffer.allocate(2);
@@ -647,7 +589,35 @@ public class DataFreescale implements IDataLayer {
 					}
 				}
 				// profileid == 0
-				gal.getZdoManager().ZDOMessageIndication(messageEvent);
+				if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
+					if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
+						WrapperWSNNode node = null;
+						synchronized (gal) {
+							int index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
+							if (index > -1) {
+								node = gal.getNetworkcache().get(index);
+							}
+
+						}
+
+						if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
+							gal.getZdoManager().ZDOMessageIndication(messageEvent);
+						}
+
+					} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
+						WrapperWSNNode node = null;
+						synchronized (gal) {
+							Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
+							if ((index != null) && (index > -1)) {
+								node = gal.getNetworkcache().get(index);
+							}
+
+						}
+						if (node != null && (node.is_discoveryCompleted())) {
+							gal.getZdoManager().ZDOMessageIndication(messageEvent);
+						}
+					}
+				}
 			} else {
 				// profileid > 0
 				ZCLMessage _zm = new ZCLMessage();
@@ -689,9 +659,38 @@ public class DataFreescale implements IDataLayer {
 
 				_zm.setZCLHeader(_header.getRealByteArray());
 				_zm.setZCLPayload(_payload.getRealByteArray());
-				gal.get_gatewayEventManager().notifyZCLCommand(_zm);
-				gal.getApsManager().APSMessageIndication(messageEvent);
-				gal.getMessageManager().APSMessageIndication(messageEvent);
+				if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
+					if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
+						int index = -1;
+						WrapperWSNNode node = null;
+						synchronized (gal) {
+							index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
+							if (index > -1)
+								node = gal.getNetworkcache().get(index);
+						}
+						if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
+							gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+							gal.getApsManager().APSMessageIndication(messageEvent);
+							gal.getMessageManager().APSMessageIndication(messageEvent);
+
+						}
+
+					} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
+						WrapperWSNNode node = null;
+						synchronized (gal) {
+							Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
+							if ((index != null) && (index > -1))
+								node = gal.getNetworkcache().get(index);
+						}
+						if ((node != null) && (node.is_discoveryCompleted())) {
+							gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+							gal.getApsManager().APSMessageIndication(messageEvent);
+							gal.getMessageManager().APSMessageIndication(messageEvent);
+
+						}
+
+					}
+				}
 			}
 		}
 
@@ -1199,11 +1198,16 @@ public class DataFreescale implements IDataLayer {
 		else if (_command == FreescaleConstants.ZDPIeeeAddrResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				DataManipulation.logArrayHexRadix("Extracted ZDP-IEEE_addr.response", message);
+
 			long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
+			Integer shortAddress = DataManipulation.toIntFromShort((byte) message[13], (byte) message[12]);
+
+			String Key = String.format("%04X", shortAddress);
+
 			BigInteger _bi = BigInteger.valueOf(longAddress);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
-					if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS)) {
+					if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS) && pl.get_Key().equalsIgnoreCase(Key)) {
 						synchronized (pl) {
 							pl.set_objectOfResponse(_bi);
 							pl.getStatus().setCode(message[3]);
@@ -1999,7 +2003,6 @@ public class DataFreescale implements IDataLayer {
 		return toReturn;
 	}
 
-	 
 	public void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
 
 		synchronized (listOfCommandToSend) {
@@ -3047,6 +3050,8 @@ public class DataFreescale implements IDataLayer {
 		}
 
 		ParserLocker lock = new ParserLocker();
+		String Key = String.format("%04X", shortAddress);
+		lock.set_Key(Key);
 		lock.setType(TypeMessage.READ_IEEE_ADDRESS);
 		Status status = null;
 		try {

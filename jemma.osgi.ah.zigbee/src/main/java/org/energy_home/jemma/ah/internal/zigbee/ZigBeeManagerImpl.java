@@ -554,6 +554,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							this.post(msg, zclResponseFrame);
 							log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
 							// }
+							
 						}
 
 						if (enableNotifyFrameLogs) {
@@ -854,10 +855,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		
 		try {
 			this.timerCancel(galCommandTimer);
-			
 			Address a = service.getAddress();
 			String ieeeAddress = getIeeeAddressHex(a);
-
 			InstallationStatus installingDevice = this.getInstallingDevice(a);
 			if (installingDevice == null) {
 				Exception st = new Exception();
