@@ -1,5 +1,38 @@
 <div id="tplViewDevice">
 	<script type="text/javascript" lang="javascript">
+	$("#dialog-form-device-details").dialog({
+		autoOpen : false,
+		height : 500,
+		width : 500,
+		modal : true,
+		buttons : {
+			Cancel : function() {
+				$(this).dialog("close");
+			}
+		},
+		close : function() {
+			$(this).dialog("close");
+		}
+	});
+
+	
+	$("#dialog-form-open-network").dialog({
+		autoOpen : false,
+		height : 220,
+		width : 500,
+		modal : true,
+		buttons : {
+			Cancel : function() {
+				btnCloseNetw();
+			}
+		},
+		close : function() {
+			btnCloseNetw();
+		}
+	});
+	
+	
+
 		function leaveDevice(shortAddress) {
 			var result = window.confirm(
 					'Are you sure you want to leave the selected device: 0x'
@@ -240,6 +273,7 @@
 								var mydataViewDevice = [];
 
 								if (dataBig.status.code == 0) {
+									var vLogical = "";
 									var nodesObj = dataBig.detail.wsnNodes;
 									var nodeObj = nodesObj.wsnNode;
 									if (typeof (nodeObj) != 'undefined') {
@@ -271,16 +305,20 @@
 											var strIeeeAddress = padLeft(16,
 													nObj.address.ieeeAddress
 															.toString(16));
+											
 											if (strNetworkAddress == 0)
 												vLogical = "Coordinator";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == false)
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false 
+													&& nObj.capabilityInformation.deviceIsFFD == false)
 												vLogical = "Sleepy EndDevice";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == true
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
 													&& nObj.capabilityInformation.deviceIsFFD == true)
 												vLogical = "End Device";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == true
-													&& nObj.capabilityInformation.deviceIsFFD == false)
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true)
 												vLogical = "Router";
+											else
+												vLogical = "RxOnIdle=" + nObj.capabilityInformation.receiverOnWhenIdle + "/IsFFD=" + nObj.capabilityInformation.deviceIsFFD;
+											
 
 											mydataViewDevice
 													.push({
@@ -315,25 +353,34 @@
 										$("#container").height());
 							});
 		}
-
-		$("#dialog-form-device-details").dialog({
-			autoOpen : false,
-			height : 500,
-			width : 500,
-			modal : true,
-			buttons : {
-				Cancel : function() {
-					$(this).dialog("close");
-				}
-			},
-			close : function() {
-				$(this).dialog("close");
-			}
-		});
-
+		var count = -1;
+		var counter = -1;
+		
+		
+		
+		function timer()
+		{
+		  count=count-1;
+		  if (count <= 0)
+		  {
+		     clearInterval(counter);
+		     $("#dialog-form-open-network").dialog(
+				"close");
+		     return;
+		  }
+		  else
+			  {
+			  
+			  $('#permit-join-counter').text(count);
+			 
+			  }
+		}
+		
+		$("#btnOpenNetw").button();
 		$("#btnOpenNetw")
 				.click(
 						function() {
+							
 							var JoiningInfo = {
 								permitDuration : 60,
 								tcSignificance : true
@@ -352,15 +399,23 @@
 											function(data) {
 												var dataBig = json_parse(data);
 												if (dataBig.status.code == 0) {
-													alert("Now is permit to join for 60 seconds...");
+													count = 60;
+													$('#permit-join-counter').text(count);
+													$("#dialog-form-open-network").dialog(
+													"open");
+													counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+													
+													
 												} else {
 													alert("Error on PermitJoin command: "
 															+ dataBig.status.message);
 												}
 											});
 						});
-		$("#btnCloseNetw").click(
-				function() {
+		
+		
+		
+				var btnCloseNetw = function() {
 					var JoiningInfo = {
 						'permitDuration' : 0,
 						'tcSignificance' : true
@@ -374,15 +429,18 @@
 							function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									alert("Now is not permit to join!");
+									clearInterval(counter);
+									$("#dialog-form-open-network").dialog(
+									"close");
 								} else {
 									alert("Error on PermitJoin command: "
 											+ dataBig.status.message);
 								}
 							});
 
-				});
+				};
 
+		$("#detail_button_simple_descriptor").button();
 		$("#detail_button_simple_descriptor")
 				.click(
 
@@ -587,8 +645,8 @@
 		<!-- </tr -->
 		<!-- <tr -->
 		<!-- <td align="center"><br / -->
-		<input id="btnOpenNetw" type="button" value="Open Network" /> <input
-			id="btnCloseNetw" type="button" value="Close Network" />
+		<input id="btnOpenNetw" type="button" value="Open Network" /> 
+		
 		</td>
 		<!-- </tr -->
 		<!-- </table -->
@@ -613,7 +671,7 @@
 						<td valign="top"><select name="detail_active_endpoints"
 							id="detail_active_endpoints"></select> <input
 							id="detail_button_simple_descriptor" type="button"
-							value="Simple Descriptor" /></td>
+							value="Details" /></td>
 					</tr>
 					<tr>
 						<td valign="top" style="width: 150px"><label
@@ -636,10 +694,7 @@
 							id="detail_is_sleepy"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
-				</table>
-			</fieldset>
-			<fieldset>
-				<table width="100%" border="0">
+				
 					<tr>
 						<td valign="top" style="width: 150px"><label
 							for="detail_profile">Profile</label></td>
@@ -694,4 +749,21 @@
 			</fieldset>
 		</form>
 	</div>
+	
+	
+	
+	<div id="dialog-form-open-network" title="Open Network">
+		<form>
+			<fieldset>
+				<table style="width: 100%" border="0">
+					<tr>
+						<td valign="top" align="center" style="width: 150px">
+						<span>Remaning </span><span id="permit-join-counter"></span><span> seconds to join devices into the network..</span></td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+	</div>
+	
+	
 </div>

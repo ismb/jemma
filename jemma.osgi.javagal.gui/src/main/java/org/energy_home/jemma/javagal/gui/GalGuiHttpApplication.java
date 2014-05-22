@@ -74,11 +74,9 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		if (userAdmin != null) {
 			User adminUser = (User) createRole(userAdmin, username, Role.USER);
 			setUserCredentials(adminUser, password);
-		}
-		else
-		{
+		} else {
 			log.error("UserAdmin Null");
-			
+
 		}
 	}
 
@@ -105,6 +103,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		registerResource("/", "webapp");
 		setHttpContext(this);
 		super.bindHttpService(s);
+		
 		log.info("JavaGalGui Started...");
 	}
 
@@ -204,9 +203,10 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 							session.putValue("logon.isDone", username);
 							try {
 								String target = (String) session.getValue("login.target");
-								if (target != null)
+								if (target != null) {
+									
 									response.sendRedirect(target);
-								else {
+								} else {
 									response.sendRedirect(applicationWebAlias + "/home.html");
 								}
 							} catch (Exception ignored) {

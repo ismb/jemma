@@ -291,7 +291,12 @@
 					        	  //permitJoinString,permitJoinColor,relationshipString,rxOnWhenIdleString,rxOnWhenIdleColor,deviceTypeString,deviceTypeColor,shortAddress
 					        	gfx.oval(pt.x-w1/2, pt.y-w1/2, w1, w1, {fill:node.data.color, alpha:node.data.alpha});
 					        	gfx.rect(pt.x-w/2, pt.y-8, w, 20, 4, {fill:node.data.deviceTypeColor, alpha:node.data.alpha});
-					          	gfx.text(node.name + "-" + node.data.shortAddress , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
+					          	var nodeName = "";
+					        	if (node.data.shortAddress == null)
+					        		nodeName = "Acquiring address..."
+					        	else
+					        		nodeName = "0x" + node.data.shortAddress;
+					        	gfx.text(nodeName , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
 					            //Label
 					            //gfx.text(node.data.label, pt.x, pt.y+ 37, {color:"Black", align:"center", font:"Arial", size:12});
 					            //DeviceType
@@ -543,9 +548,7 @@
 		<tr>
 		<th>Device Type</th>
 		<th>Manufacturer</th>
-		<th>Link Status</th>
-		
-		
+		<th>Link Quality</th>
 		</tr>
 			<tr>
 				<td valign="top" width="300">
