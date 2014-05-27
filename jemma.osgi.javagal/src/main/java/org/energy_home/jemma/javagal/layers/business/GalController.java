@@ -164,7 +164,7 @@ public class GalController {
 				throw new Exception("No Platform found!");
 			} catch (Exception e) {
 				if (getPropertiesManager().getDebugEnabled()) //FIXME Silent exception if debug not enabled ???
-					LOG.error("Caught No Platform found",e);
+					logger.error("Caught No Platform found",e);
 			}
 
 		/*

@@ -124,7 +124,7 @@ public class Activator implements BundleActivator {
 				log.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}
@@ -154,7 +154,7 @@ public class Activator implements BundleActivator {
 			try {
 				return _fac;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}

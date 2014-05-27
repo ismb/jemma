@@ -392,7 +392,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
 
 	/**
@@ -418,7 +418,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
 	
 	
