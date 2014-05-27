@@ -41,8 +41,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
@@ -884,7 +884,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 								timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
 								return;
 							} else {
-								log.fatal(getIeeeAddressHex(a) + ": wrong ep index stored into InstallationStatus. Abort installation of this node");
+								log.error(getIeeeAddressHex(a) + ": wrong ep index stored into InstallationStatus. Abort installation of this node");
 							}
 						} catch (Exception e) {
 							log.error(getIeeeAddressHex(a) + ": exception in startServiceDiscovery(). Abort installation of this node", e);
@@ -1063,7 +1063,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		}
 
 		if (node == null) {
-			log.fatal("here node should not be null");
+			log.error("here node should not be null");
 		}
 
 		if (enableDiscoveryLogs)
@@ -1270,7 +1270,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 			try {
 				if (this.inProcessNode.size() == 0) {
-					log.fatal("galCommandTimer expired but no nodes are in the inProcessNode queue");
+					log.error("galCommandTimer expired but no nodes are in the inProcessNode queue");
 					// TESTME: we start the discovery process on a new node.
 					this.handleNextDiscoveredNode();
 					break;
@@ -1457,7 +1457,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					// register local callback
 					this.callbackId = gateway.createAPSCallback(localEndpoint, this);
 					if (this.callbackId == -1) {
-						log.fatal("createAPSCallback returned -1");
+						log.error("createAPSCallback returned -1");
 					}
 
 					// start gateway device
@@ -1568,7 +1568,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				gateway.deleteCallback(this.callbackId);
 			callbackId = -1;
 		} catch (Exception e) {
-			log.error(e);
+			log.error("Exception",e);
 		}
 
 		unregisterAllDevices();
@@ -1628,7 +1628,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
 						return;
 					} catch (Exception e) {
-						log.error(e);
+						log.error("Exception",e);
 					}
 				}
 
@@ -1755,15 +1755,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		}
 
 		if (inProcessNode.size() > 0) {
-			log.fatal("inProcessNode is not empty!");
+			log.error("inProcessNode is not empty!");
 		}
 
 		if (discoveredNodesQueue.size() > 0) {
-			log.fatal("discoveredNodesQueue is not empty!");
+			log.error("discoveredNodesQueue is not empty!");
 		}
 
 		if (devicesUnderInstallation.size() > 0) {
-			log.fatal("devicesUnderInstallation is not empty!");
+			log.error("devicesUnderInstallation is not empty!");
 		}
 
 		this.inProcessNode.clear();
@@ -1805,7 +1805,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				log.debug("in terminateDeviceDiscovery() sending leave to node " + getIeeeAddressHex(installationStatus.getAddress()));
 				gateway.leave(100, installationStatus.getAddress());
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 			}
 		}
 		this.devicesUnderInstallation.remove(nodePid);
@@ -1881,7 +1881,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				zclResponseFrame.setCommandId(0);
 				ZclIdentifyQueryResponse.zclSerialize(zclResponseFrame, r);
 			} catch (ZclValidationException e) {
-				log.error(e);
+				log.error("Exception",e);
 			}
 
 			break;
@@ -2110,7 +2110,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			try {
 				this.setUseNVM(false);
 			} catch (Exception e1) {
-				log.fatal("unable to write back the property file: " + e1.getMessage());
+				log.error("unable to write back the property file: " + e1.getMessage());
 			}
 		}
 	}
@@ -2187,7 +2187,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			try {
 				this.eventAdmin.postEvent(new Event(topic, props));
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 			}
 		}
 	}

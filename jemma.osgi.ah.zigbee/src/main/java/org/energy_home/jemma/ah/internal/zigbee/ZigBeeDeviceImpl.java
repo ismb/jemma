@@ -222,13 +222,13 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
-				log.debug("Aspetto Lock...");
+				LOG.debug("Aspetto Lock...");
 				messagesLock.lock();
-				log.debug("Dentro Lock...");
+				LOG.debug("Dentro Lock...");
 				pendingReplies.remove(new Long(hash));
-				log.debug("Entry rimossa...");
+				LOG.debug("Entry rimossa...");
 				messagesLock.unlock();
-				log.debug("Lock rilasciato...");
+				LOG.debug("Lock rilasciato...");
 				throw new ZigBeeException("timeout");
 			}
 
@@ -308,9 +308,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		} else {
 			try {
 				
-				log.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
+				LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
 				sq.put(zclFrame);
-				log.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
+				LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
 				
 			} catch (InterruptedException e) {
 				LOG.error("exception", e);

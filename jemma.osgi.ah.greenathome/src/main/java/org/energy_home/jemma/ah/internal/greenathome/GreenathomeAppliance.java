@@ -2748,7 +2748,7 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 					realInstantaneousValue= 0.0;
 				}
 
-				log.debug("Calculated realInstantaneousDemand: "+realInstantaneousValue);
+				LOG.debug("Calculated realInstantaneousDemand: "+realInstantaneousValue);
 				props.put("device_value_2", realInstantaneousValue);
 				
 			}else{
