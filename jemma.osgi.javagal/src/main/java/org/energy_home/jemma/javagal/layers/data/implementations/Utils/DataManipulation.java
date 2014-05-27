@@ -377,6 +377,23 @@ public class DataManipulation {
 		}
 		LOG.debug(caption + ":" + sb.toString());
 	}
+	
+	/**
+	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
+	 * by a leading caption.
+	 * 
+	 * @param caption
+	 *            the leading caption.
+	 * @param arr
+	 *            the array to log.
+	 */
+	public static void errorLogListHexRadix(String caption, List<Short> arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s));
+		}
+		logger.error(caption + ":" + sb.toString());
+	}
 
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
@@ -394,6 +411,16 @@ public class DataManipulation {
 		}
 		LOG.trace(caption + ":" + sb.toString());
 	}
+	
+	
+	public static void errorArrayHexRadix(String caption, short[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s));
+		}
+		logger.error(caption + ":" + sb.toString());
+	}
+	
 	
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded

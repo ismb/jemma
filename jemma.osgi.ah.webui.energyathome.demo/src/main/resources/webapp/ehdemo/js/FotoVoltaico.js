@@ -797,14 +797,14 @@ CostiConsumi.VisGrafico = function() {
 
 	if (dataConsumi && dataIAC) {
 		var tmp, tmpAcquistata;
-		//faccio tutto in un unico each perchè dataConsumi e dataIAC hanno la stessa length
+		//faccio tutto in un unico each perchï¿½ dataConsumi e dataIAC hanno la stessa length
 		$.each(dataConsumi, function(index, dato) {
 			if (dato == null || dataIAC[index] == null) {
 				dataConsumi[index] = 0;
 				dataIAC[index] = 0;
 			} else {
-				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perchè il gateway torna la somma, non il consumo
-				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perchè qui si aggiunge il *10 che se fatto prima
+				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perchï¿½ il gateway torna la somma, non il consumo
+				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perchï¿½ qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
 				dataIAC[index] = (dataIAC[index] / 1000) * 10; //inserisco un fattore di moltiplicazione 10 per la demo
 			}

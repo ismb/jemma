@@ -2724,9 +2724,32 @@ public Hashtable colorControlGetColorHS(String appliancePid){
 				}
 			}
 			
+			AttributeValueExtended attributeValue=null;
+			
+			TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint
+					.getPeerServiceCluster(peerAppliance.getPid(), TemperatureMeasurementServer.class.getName());
+
+			if (temperatureMeasurementServer != null) {
+				int measuredValue= temperatureMeasurementServer.getMeasuredValue(getterContext);
+				double localTemperature = ((double)measuredValue) / 100;
+				props.put("temperature", localTemperature);
+			}
+			
 			if(simpleMeteringServer!=null){
 				
-				props.put("device_value_2", simpleMeteringServer.getIstantaneousDemand(getterContext));
+				double realInstantaneousValue;
+				
+				try {
+					realInstantaneousValue = this.readPower(peerAppliance);
+					if (realInstantaneousValue != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						 attributeValue= new AttributeValueExtended("IstantaneousDemands", new AttributeValue(attributeValue));
+
+				} catch (Exception e) {
+					realInstantaneousValue= 0.0;
+				}
+
+				log.debug("Calculated realInstantaneousDemand: "+realInstantaneousValue);
+				props.put("device_value_2", realInstantaneousValue);
 				
 			}else{
 				props.put("device_value_2","na");

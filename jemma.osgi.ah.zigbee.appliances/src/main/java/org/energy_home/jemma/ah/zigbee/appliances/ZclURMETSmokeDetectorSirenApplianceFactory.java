@@ -25,8 +25,8 @@ import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
 import org.osgi.service.device.Driver;
 
 public class ZclURMETSmokeDetectorSirenApplianceFactory extends DriverApplianceFactory implements Driver {
-	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.URMET.Temperature&Humidity";
-	public static final String APPLIANCE_FRIENDLY_NAME = "Termostat";
+	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.urmet.smoke_detector_siren";
+	public static final String APPLIANCE_FRIENDLY_NAME = "Smoke detector and siren";
 	public static final String DEVICE_TYPE = "ZigBee";
 
 	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
@@ -37,11 +37,11 @@ public class ZclURMETSmokeDetectorSirenApplianceFactory extends DriverApplianceF
 	}
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
-		return new ZclURMETTemperatureHumidityAppliance(pid, config);
+		return new ZclURMETSmokeDetectorSirernAppliance(pid, config);
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(DEVICE_SERIAL=5149012990629360)(zigbee.device.device.id=1026)(zigbee.device.profile.id=260)(zigbee.device.manufacturer.id=0))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(DEVICE_SERIAL=5149012990629360))";
 		
 		/*{zigbee.device.eps.number=1, 
 		zigbee.device.device.id=1026,

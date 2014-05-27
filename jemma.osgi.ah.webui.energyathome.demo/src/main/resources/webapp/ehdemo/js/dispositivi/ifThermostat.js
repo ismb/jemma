@@ -64,21 +64,24 @@ ifThermostat.update= function(now){
         ifThermostat.timeout_timer=t;
         
         var class_stato="NP"
-        var _value="";
+        var t_value="";
+        var h_value="";
         
         if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
                 
                 ifThermostat.stato=1;
                 //_value=Elettrodomestici.listaElettrodomestici[i].consumo_value;
-                _value=Elettrodomestici.listaElettrodomestici[i].temperature+" °";
+                t_value=Elettrodomestici.listaElettrodomestici[i].temperature+" °";
+                h_value=Elettrodomestici.listaElettrodomestici[i].humidity+" %"
                 
         }else{
-                _value="n.a.";
+                t_value="n.a.";
+                h_value="n.a.";
                 ifThermostat.stato=-1;
         }
         
-        $("#Interfaccia #Temperatura #temperatura_value").text(_value);
-
+        $("#Interfaccia #Temperatura #temperatura_value").text(t_value);
+        $("#Interfaccia #Humidity #humidity_value").text(h_value);
         
         ifThermostat.updateIcon(ifThermostat.stato);
 

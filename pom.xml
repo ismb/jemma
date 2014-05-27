@@ -22,7 +22,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.1</version>
+	<version>0.2</version>
 	<name>JEMMA</name>
 
 	<properties>
@@ -124,6 +124,7 @@
 		<module>jemma.osgi.ah.zigbee</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>jemma.osgi.ah.zigbee.appliances</module>
+		<!--<module>jemma.osgi.zgd</module>-->
 		<module>Distribution</module>
 	</modules>
 
@@ -270,9 +271,6 @@
 		</plugins>
 	</build>
 	<repositories>
-		
-		
-  
 		<repository>
 			<id>localRepository</id>
 			<name>Local repository</name>

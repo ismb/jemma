@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1398695286779
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1400506845313
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.hap.client.HapCoreServic
  e
 Bundle-Category: Automation@Home

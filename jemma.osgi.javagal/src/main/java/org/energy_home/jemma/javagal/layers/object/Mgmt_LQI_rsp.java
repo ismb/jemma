@@ -14,15 +14,18 @@
  *
  */
 package org.energy_home.jemma.javagal.layers.object;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class used to populate the Lqi Response received
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
- *
- *
+ * 
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
+ * 
+ * 
  */
 public class Mgmt_LQI_rsp {
 	public short _Status;
@@ -34,17 +37,23 @@ public class Mgmt_LQI_rsp {
 	public Mgmt_LQI_rsp(byte[] data) {
 		/* 02 00 01 00 01 */
 		_Status = data[1];
-		_NeighborTableEntries = data[2];
-		_StartIndex = data[3];
-		_NeighborTableListCount = data[4];
-		if (_NeighborTableListCount > 0) {
-			NeighborTableList = new ArrayList<NeighborTableLis_Record>();
-			byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
-			for (int i = 0; i < _NeighborTableListCount; i++) {
-				byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i),
-						22 * (i + 1));
-				NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
+		if (_Status == 0) {
+			_NeighborTableEntries = data[2];
+			_StartIndex = data[3];
+			_NeighborTableListCount = data[4];
+			if (_NeighborTableListCount > 0) {
+				NeighborTableList = new ArrayList<NeighborTableLis_Record>();
+				byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
+				for (int i = 0; i < _NeighborTableListCount; i++) {
+					byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i), 22 * (i + 1));
+					NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
+				}
 			}
 		}
+		else
+		{
+			System.out.println("\n\rReceived a not Success status from the LQI Req Status value:" + _Status +"\n\r");
+		}
+
 	}
 }

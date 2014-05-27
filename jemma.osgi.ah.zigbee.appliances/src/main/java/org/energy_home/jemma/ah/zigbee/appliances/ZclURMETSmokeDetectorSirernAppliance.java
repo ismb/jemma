@@ -25,6 +25,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclURMETIASWDServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 import org.slf4j.Logger;
@@ -35,7 +36,8 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 
 	private ZclIASZoneServer iasZoneServer;
 
-	private static final Logger LOG = LoggerFactory.getLogger( ZclURMETSmokeDetectorSirernAppliance.class );
+	//FIXME mass-rename log to LOG for consistancy
+	private static final Logger log = LoggerFactory.getLogger( ZclURMETSmokeDetectorSirernAppliance.class );
 
 	public ZclURMETSmokeDetectorSirernAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
@@ -43,24 +45,14 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_IAS_ZONE);
 		endPoint.addServiceCluster(new ZclBasicServer());
 		endPoint.addServiceCluster(new ZclIdentifyServer());
-		endPoint.addServiceCluster(new ZclPowerConfigurationServer());
-		endPoint.addServiceCluster(new ZclAlarmsServer());
+		
+//		endPoint.addServiceCluster(new ZclURMETIASWDServer());
 		iasZoneServer = (ZclIASZoneServer) endPoint.addServiceCluster(new ZclIASZoneServer());
 	}
 
 	protected synchronized void attached() {
-		LOG.debug("appliance attached");
+		log.debug("appliance attached");
 
-		Thread t = new Thread("setActualDriverJob") {
-			public void run() {
-				try {
-					setActualDriver();
-				} catch (ServiceClusterException e) {
-					LOG.error("exception on attached of ZclURMETSmokeDetectorSirernAppliance", e);
-				}
-			}
-		};
-		t.start();
 	}
 
 	protected void setActualDriver() throws ServiceClusterException {
@@ -71,24 +63,24 @@ public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 				int zoneType = iasZoneServer.getZoneType(null);
 				switch (zoneType) {
 				case 0x0015:
-					LOG.debug("This is a Contact Switch IASZone Device");
+					log.debug("This is a Contact Switch IASZone Device");
 					break;
 					
 				case 0x002a:
-					LOG.debug("This is a Water Sensor IASZone Device");
+					log.debug("This is a Water Sensor IASZone Device");
 					break;
 					
 				default:
-					LOG.error("unknown Zone Type: " + zoneType);
+					log.error("unknown Zone Type: " + zoneType);
 					break;
 				}
 			} catch (ApplianceException e) {
-				LOG.error("exception while reading ZoneType attribute. " + e.getMessage(),e);
+				log.error("exception while reading ZoneType attribute. " + e.getMessage());
 			}
 		}
 	}
 
 	protected void detached() {
-		LOG.debug("ZclURMETSmokeDetectorSirernAppliance detached");
+		log.debug("detached");
 	}
 }
