@@ -18,6 +18,9 @@ package org.energy_home.jemma.javagal.layers.data.implementations;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.TooManyListenersException;
 
 import gnu.io.CommPortIdentifier;
@@ -162,7 +165,8 @@ public class SerialCommRxTx implements IConnector {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
-					ou.write(buff.getByteArray(), 0, buff.getByteCount(true));
+					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(),0, buff.getCount(true));
+					ou.write(tosend);
 					ou.flush();
 				} catch (Exception e) {
 
@@ -215,7 +219,6 @@ public class SerialCommRxTx implements IConnector {
 
 	class SerialReader implements SerialPortEventListener {
 
-		private byte[] buffer = new byte[2048];
 		IConnector _caller = null;
 
 		public SerialReader(IConnector _parent) {
@@ -229,10 +232,12 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						int pos = 0;
 						Integer data = 0;
+						short[] buffer = new short[2048];
+						
 						while (in.available() > 0) {
 							try {
 								data = in.read();
-								buffer[pos] = data.byteValue();
+								buffer[pos] = data.shortValue();
 								pos = pos + 1;
 							} catch (Exception e) {
 								e.printStackTrace();

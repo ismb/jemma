@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -204,21 +205,15 @@ public class DataFreescale implements IDataLayer {
 						}
 
 						if (_currentCommandReived != null) {
-
-							if (gal.getPropertiesManager().getDebugEnabled())
-								logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
-							byte[] msg = _currentCommandReived.getByteArray();
-							int size = _currentCommandReived.getByteCount(true);
-							short[] messageShort = new short[size];
-							for (int i = 0; i < size; i++)
-								messageShort[i] = (short) (msg[i] & 0xff);
-
 							synchronized (receivedDataQueue) {
-								for (int z = 0; z < size; z++)
-									receivedDataQueue.add(messageShort[z]);
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
+								byte[] msg = Arrays.copyOfRange(_currentCommandReived.getByteArray(), 0, _currentCommandReived.getCount(true));
+
+								for (int z = 0; z < msg.length; z++)
+									receivedDataQueue.add( (short) (msg[z] & 0xFFFF));
 								receivedDataQueue.notify();
 							}
-
 						}
 
 					} catch (InterruptedException e) {
@@ -238,83 +233,80 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
+		synchronized (receivedDataQueue) {
+			short toremove = 0;
+			short _toremove = 0;
+			while (!receivedDataQueue.isEmpty()) {
+				if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+					receivedDataQueue.remove(0);
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						DataManipulation.errorLogListHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from", receivedDataQueue);
+					}
+				} else
+					break;
+			}
 
-		ChecksumControl csc = new ChecksumControl();
+			List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
+			if (gal.getPropertiesManager().getDebugEnabled())
+				DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
 
-		int toremove = 0;
-		Short _toremove = 0;
-		while (!receivedDataQueue.isEmpty()) {
-			if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("Error, Data received not completed, waiting new raw data...");
+				return null;
+
+			}
+
+			short optCode = copyList.get(1);
+			short optGroup = copyList.get(2) ;
+
+			//byte _HexLegth = copyList.get(3).intValue();
+			int payloadLenght = (copyList.get(3).byteValue() & 0xFFFF);//Integer.parseInt(Integer.toHexString(_HexLegth), 16);
+
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Length: " + payloadLenght);
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("Data received not completed, waiting new raw data...");
+				return null;
+			}
+
+			int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
+			ChecksumControl csc = new ChecksumControl();
+			csc.getCumulativeXor(copyList.get(1));
+			csc.getCumulativeXor(copyList.get(2));
+			csc.getCumulativeXor(copyList.get(3));
+			for (int i = 0; i < payloadLenght; i++)
+				csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+			if (csc.getLastCalulated() != messageCfc) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					DataManipulation.errorLogListHexRadix("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from", receivedDataQueue);
 				receivedDataQueue.remove(0);
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					DataManipulation.errorLogListHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:", receivedDataQueue);
-				}
-			} else
-				break;
+				return null;
+
+			}
+
+			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+			short[] toReturn = new short[messageLenght];
+
+			copyList.remove(0);
+
+			toReturn[0] = copyList.remove(0);
+			toReturn[1] = copyList.remove(0) ;
+			toReturn[2] = copyList.remove(0);
+
+			for (int i = 0; i < payloadLenght; i++)
+				toReturn[i + 3] = copyList.remove(0);
+			copyList.remove(0);
+
+			toremove += (4 + payloadLenght + 1);
+
+			for (int z = 0; z < toremove; z++)
+				receivedDataQueue.remove(0);
+
+			return toReturn;
 		}
-
-		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
-
-		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
-
-		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error, Data received not completed, waiting new raw data...");
-			return null;
-
-		}
-
-		int optCode = copyList.get(1).intValue();
-		int optGroup = copyList.get(2).intValue();
-
-		Integer _HexLegth = copyList.get(3).intValue();
-		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
-
-		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Data received not completed, waiting new raw data...");
-			return null;
-		}
-
-		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
-
-		csc.resetLastCalculated();
-		int currCscControl = 0x00;
-		csc.getCumulativeXor(copyList.get(1));
-		csc.getCumulativeXor(copyList.get(2));
-		csc.getCumulativeXor(copyList.get(3));
-		for (int i = 0; i < payloadLenght; i++)
-			currCscControl = csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
-
-		if (currCscControl != messageCfc) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.errorLogListHexRadix("Error CSC Control: " + currCscControl + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0)) + " from:", receivedDataQueue);
-			receivedDataQueue.remove(0);
-			return null;
-
-		}
-
-		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-		short[] toReturn = new short[messageLenght];
-
-		copyList.remove(0);
-
-		toReturn[0] = copyList.remove(0);
-		toReturn[1] = copyList.remove(0);
-		toReturn[2] = copyList.remove(0);
-
-		for (int i = 0; i < payloadLenght; i++)
-			toReturn[i + 3] = copyList.remove(0);
-		copyList.remove(0);
-
-		toremove += (4 + payloadLenght + 1);
-
-		for (int z = 0; z < toremove; z++)
-			receivedDataQueue.remove(0);
-
-		return toReturn;
-
 	}
 
 	public void processMessages(short[] message) throws Exception {
@@ -1316,11 +1308,15 @@ public class DataFreescale implements IDataLayer {
 		else if (_command == FreescaleConstants.NLMEGetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				DataManipulation.logArrayHexRadix("Extracted NLME-GET.Confirm", message);
-			String _Key = String.format("%02X", message[4]);
+			String _Key = String.format("%02X", (byte)message[4]);
 			// Found APSDE-DATA.Confirm. Remove the lock
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
+					if (gal.getPropertiesManager().getDebugEnabled())
+						logger.debug("NLME-GET.Confirm KEY:" + _Key + "----" + pl.get_Key());
 					if (pl.getType() == TypeMessage.NMLE_GET && pl.get_Key().equalsIgnoreCase(_Key)) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+							logger.debug("NLME-GET.Confirm KEY FOUND");
 						short _Length = (short) DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]);
 						byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
 						if (_Length >= 2)
@@ -1340,7 +1336,7 @@ public class DataFreescale implements IDataLayer {
 		else if (_command == FreescaleConstants.APSMEGetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				DataManipulation.logArrayHexRadix("Extracted APSME_GET.Confirm", message);
-			String _Key = String.format("%02X", message[4]);
+			String _Key = String.format("%02X", (byte)message[4]);
 			// Found APSME_GET-DATA.Confirm. Remove the lock
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -2013,14 +2009,14 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
-		byte size = (byte) x.getByteCount(false);
+		byte size = (byte) x.getCount(false);
 		byte opgroup = (byte) ((commandCode >> 8) & 0xff);
 		byte opcode = (byte) (commandCode & 0xff);
 		x.addOPGroup(opgroup);
 		x.addOPCode(opcode);
 		x.addLength(size);
 		byte FSC = 0;
-		for (Byte b : x.getByteArray())
+		for (short b : x.getByteArray())
 			FSC ^= b;
 		x.addStartSequance((byte) 0x02);
 		x.addByte(FSC);
@@ -4099,21 +4095,17 @@ public class DataFreescale implements IDataLayer {
 }
 
 class ChecksumControl {
-	int lastCalculated = 0x00;
+	byte lastCalculated = 0x00;
 
-	public int getCumulativeXor(byte b) {
-		return lastCalculated ^= (0xFF & b);
-	}
-
-	public int getCumulativeXor(int i) {
-		return lastCalculated ^= i;
+	public void getCumulativeXor(short i) {
+		lastCalculated ^= i ;
 	}
 
 	public void resetLastCalculated() {
 		lastCalculated = 0x00;
 	}
 
-	public int getLastCalulated() {
-		return lastCalculated;
+	public short getLastCalulated() {
+		return lastCalculated ;
 	}
 }

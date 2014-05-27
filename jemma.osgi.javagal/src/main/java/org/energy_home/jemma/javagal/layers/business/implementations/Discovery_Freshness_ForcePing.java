@@ -353,7 +353,7 @@ public class Discovery_Freshness_ForcePing {
 				// + " - Error message: " + e.getMessage() +
 				// " - NumberOfAttempt:" +
 				// __currentNodeWrapper.get_numberOfAttempt());
-				logger.error("Error on Lqi( " + function + " ) request for node: " + __currentNodeWrapper.get_node().getAddress().getNetworkAddress() + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
+				logger.error("Error on Lqi( " + function + " ) request for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
 			}
 
 			if (__currentNodeWrapper.get_numberOfAttempt() >= gal.getPropertiesManager().getKeepAliveNumberOfAttempt()) {
