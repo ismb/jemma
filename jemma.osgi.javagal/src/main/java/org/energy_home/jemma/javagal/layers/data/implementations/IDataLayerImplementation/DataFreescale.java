@@ -288,16 +288,15 @@ public class DataFreescale implements IDataLayer {
 			}
 
 			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-			short[] toReturn = new short[messageLenght];
-
 			copyList.remove(0);
 
-			toReturn[0] = copyList.remove(0);
-			toReturn[1] = copyList.remove(0) ;
-			toReturn[2] = copyList.remove(0);
-
+			short[] toReturn = new short[messageLenght];
+			toReturn[0] = (short)(copyList.remove(0)& 0xFFFF);
+			toReturn[1] = (short)(copyList.remove(0)& 0xFFFF);
+			toReturn[2] = (short)(copyList.remove(0)& 0xFFFF);
 			for (int i = 0; i < payloadLenght; i++)
-				toReturn[i + 3] = copyList.remove(0);
+				toReturn[i + 3] = (short)(copyList.remove(0) & 0xFFFF);
+
 			copyList.remove(0);
 
 			toremove += (4 + payloadLenght + 1);
@@ -623,6 +622,8 @@ public class DataFreescale implements IDataLayer {
 				_zm.setSourceEndpoint(messageEvent.getSourceEndpoint());
 
 				byte[] data = messageEvent.getData();
+
+				
 				// ZCL Header
 				// Frame control 8bit
 				// Manufacturer code 0/16bits

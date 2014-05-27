@@ -151,7 +151,7 @@ public class ByteArrayObject {
 	public byte[] getByteArray() {
 		byte[] _data = new byte[getShortArray().length];
 		for (int i = 0; i < _data.length; i++)
-			_data[i] = (byte) getShortArray()[i];
+			_data[i] =  (byte)(getShortArray()[i] & 0xFFFF);
 		return _data;
 	}
 
