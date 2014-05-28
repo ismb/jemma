@@ -16,6 +16,8 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Object carrying a {@code byte[]} of fixed length. The aims of this class is
@@ -48,6 +50,7 @@ public class ByteArrayObject {
 	public ByteArrayObject() {
 		_startedFromZero = false;
 		array = new short[MAX_ARRAY_DIMENSION];
+		
 		count = START;
 
 	}
@@ -65,7 +68,8 @@ public class ByteArrayObject {
 	 */
 	public ByteArrayObject(short[] buffer, int size) {
 		_startedFromZero = true;
-		array = buffer;
+		array = new short[buffer.length];
+		System.arraycopy(buffer, 0, array, 0, buffer.length);
 		count = size;
 
 	}
@@ -78,7 +82,7 @@ public class ByteArrayObject {
 	 *            the byte to add at the end.
 	 */
 	public void addByte(byte byteToAdd) {
-		array[count++] = byteToAdd;
+		array[count++] = (short) byteToAdd;
 	}
 
 	/**
@@ -89,7 +93,7 @@ public class ByteArrayObject {
 	 *            the OP Group's byte to add.
 	 */
 	public void addOPGroup(byte byteToAdd) {
-		array[1] = byteToAdd;
+		array[1] = (short) byteToAdd;
 	}
 
 	/**
@@ -100,7 +104,7 @@ public class ByteArrayObject {
 	 *            the OP Code's byte to add.
 	 */
 	public void addOPCode(byte byteToAdd) {
-		array[2] = byteToAdd;
+		array[2] = (short) byteToAdd;
 	}
 
 	/**
@@ -111,7 +115,7 @@ public class ByteArrayObject {
 	 *            the lenght's byte to add.
 	 */
 	public void addLength(byte byteToAdd) {
-		array[3] = byteToAdd;
+		array[3] = (short) byteToAdd;
 	}
 
 	/**
@@ -122,7 +126,7 @@ public class ByteArrayObject {
 	 *            the start sequence's byte to add.
 	 */
 	public void addStartSequance(byte byteToAdd) {
-		array[0] = byteToAdd;
+		array[0] = (short) byteToAdd;
 	}
 
 	/**
@@ -137,7 +141,7 @@ public class ByteArrayObject {
 	 */
 	public void addBytesShort(short valueToAdd, int length) {
 		ByteBuffer buf = ByteBuffer.allocate(length).putShort(valueToAdd);
-		for (byte x : buf.array())
+		for (short x : buf.array())
 			array[count++] = x;
 	}
 
@@ -149,9 +153,10 @@ public class ByteArrayObject {
 	 * @return the byte array.
 	 */
 	public byte[] getByteArray() {
-		byte[] _data = new byte[getShortArray().length];
+		short[] buff = getShortArray();
+		byte[] _data = new byte[buff.length];
 		for (int i = 0; i < _data.length; i++)
-			_data[i] =  (byte)(getShortArray()[i] & 0xFFFF);
+			_data[i] =  ((Short)buff[i]).byteValue();
 		return _data;
 	}
 
@@ -185,10 +190,10 @@ public class ByteArrayObject {
 	 * 
 	 * @return the real byte array.
 	 */
-	public short[] getRealShortArray() {
-		short[] _data = new short[(_startedFromZero) ? count : (count - START)];
+	public Short[] getRealShortArray() {
+		Short[] _data = new Short[(_startedFromZero) ? count : (count - START)];
 		for (int i = 0; i < _data.length; i++)
-			_data[i] = getByteArray()[START + i];
+			_data[i] = getShortArray()[START + i];
 		return _data;
 	}
 
@@ -202,12 +207,12 @@ public class ByteArrayObject {
 	 *            the size of returned sub byte array.
 	 * @return the sub byte array to return.
 	 */
-	public short[] getPartialRealByteArray(int offset, int count) {
-		short[] vect = getRealShortArray();
-		short[] tores = new short[count];
+	public byte[] getPartialRealByteArray(int offset, int count) {
+		Short[] vect = getRealShortArray();
+		byte[] tores = new byte[count];
 		int x = 0;
 		for (int i = offset; i < (offset + count); i++)
-			tores[x++] = vect[i];
+			tores[x++] = vect[i].byteValue();
 		return tores;
 	}
 
@@ -241,7 +246,7 @@ public class ByteArrayObject {
 		StringBuffer _res = new StringBuffer();
 		short[] _vect = getShortArray();
 		for (int i = 0; i < getCount(true); i++)
-			_res.append(String.format("%02X", _vect[i]));
+			_res.append(String.format("%02X", ((Short)_vect[i]).byteValue()));
 		return _res.toString();
 	}
 }

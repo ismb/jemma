@@ -97,14 +97,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	protected synchronized void setHttpService(HttpService s) {
-
 		HttpAdapter = new HttpBinder();
 		setRootUrl(applicationWebAlias);
 		registerResource("/", "webapp");
 		setHttpContext(this);
 		super.bindHttpService(s);
-		
-		log.info("JavaGalGui Started...");
 	}
 
 	protected synchronized void unsetHttpService(HttpService s) {

@@ -135,7 +135,7 @@ public class DataManipulation {
 	
 	
 	/**
-	 * Starts from a {@code short[]} and returns a sub array, converted as
+	 * Starts from a {@code byte[]} and returns a sub array, converted as
 	 * {@code byte[]}.
 	 * 
 	 * @param array
@@ -149,11 +149,19 @@ public class DataManipulation {
 	public static byte[] subByteArray(short[] array, int start, int stop) {
 		byte[] toReturn = new byte[stop - start + 1];
 		for (int i = start; i <= stop; i++) {
-			toReturn[i - start] = (byte) array[i];
+			toReturn[i - start] = (byte)array[i];
 		}
 		return toReturn;
 	}
 
+	
+	public static short[] subShortArray(byte[] array, int start, int stop) {
+		short[] toReturn = new short[stop - start + 1];
+		for (int i = start; i <= stop; i++) {
+			toReturn[i - start] = array[i];
+		}
+		return toReturn;
+	}
 
 	
 
@@ -285,10 +293,10 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void debugLogArrayHexRadix(String caption, List<Short> arr) {
+	public static void debugLogArrayShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
 		for (Short s : arr) {
-			sb.append(String.format("%02X", s.byteValue()));
+			sb.append(String.format("%02X", s));
 		}
 		logger.debug(caption + ":" + sb.toString());
 	}
@@ -302,36 +310,21 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void errorLogListHexRadix(String caption, List<Short> arr) {
+	public static void errorLogListShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
 		for (Short s : arr) {
-			sb.append(String.format("%02X", s.byteValue()));
+			sb.append(String.format("%02X", s));
 		}
 		logger.error(caption + ":" + sb.toString());
 	}
 
-	/**
-	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
-	 * by a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void logArrayHexRadix(String caption, short[] arr) {
-		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
-			sb.append(String.format("%02X", (s &  0xFF)));
-		}
-		logger.info(caption + ":" + sb.toString());
-	}
 	
 	
-	public static void errorArrayHexRadix(String caption, short[] arr) {
+	
+	public static void errorArrayShortHexRadix(String caption, short[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (short s : arr) {
-			sb.append(String.format("%02X", (s &  0xFF)));
+			sb.append(String.format("%02X", s ));
 		}
 		logger.error(caption + ":" + sb.toString());
 	}
@@ -346,10 +339,10 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadixDataReceived(String caption, short[] arr) {
+	public static void logArrayShortToHex(String caption, short[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (short s : arr) {
-			sb.append(String.format("%02X", (s &  0xFF)));
+			sb.append(String.format("%02X", s ));
 		}
 		logger.info(caption + sb.toString());
 	}
@@ -363,13 +356,40 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadix(String caption, byte[] arr) {
+	public static void logArrayBytesHexRadix(String caption, byte[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
-			sb.append(String.format("%02X", (s &  0xFF)));
+			sb.append(String.format("%02X", s ));
 		}
 		logger.info(caption + ":" + sb.toString());
 	}
+	
+	
+	public static String byteArrayToHexStr(byte[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (byte s : arr) {
+			sb.append(String.format("%02X", s ));
+		}
+		return sb.toString();
+	}
+	
+	public static String shortArrayToHexStr(short[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s ));
+		}
+		return sb.toString();
+	}
+	
+	
+	public static void errorArrayBytesHexRadix(String caption, byte[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (byte s : arr) {
+			sb.append(String.format("%02X", s));
+		}
+		logger.error(caption + ":" + sb.toString());
+	}
+	
 
 	/**
 	 * Produces an hexadecimal string representation of a given {@code byte[]}.
@@ -381,7 +401,7 @@ public class DataManipulation {
 	public static String convertBytesToString(byte[] arr) {
 		String sb = new String();
 		for (byte s : arr) {
-			sb += String.format("%02X", (s &  0xFF));
+			sb += String.format("%02X", s );
 		}
 		return sb;
 	}

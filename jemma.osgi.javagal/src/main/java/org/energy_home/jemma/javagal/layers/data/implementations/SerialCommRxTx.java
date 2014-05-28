@@ -33,6 +33,7 @@ import gnu.io.UnsupportedCommOperationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
@@ -165,10 +166,13 @@ public class SerialCommRxTx implements IConnector {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
-					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(),0, buff.getCount(true));
-					
+					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
 					ou.write(tosend);
 					ou.flush();
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
+					//System.out.println(">>> Sent: " + DataManipulation.byteArrayToHexStr(tosend));
+
 				} catch (Exception e) {
 
 					e.printStackTrace();
@@ -233,18 +237,21 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						int pos = 0;
 						Integer data = 0;
-						short[] buffer = new short[2048];
-						
+						short[] buffer = new short[1024];
+
 						while (in.available() > 0) {
 							try {
 								data = in.read();
-								buffer[pos] = data.shortValue();
+								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
 								pos = pos + 1;
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
+						
+						
 						if (!ignoreMessage) {
+							
 							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
