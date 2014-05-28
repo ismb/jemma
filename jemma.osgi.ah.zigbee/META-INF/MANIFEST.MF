@@ -89,3 +89,5 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,edu.emory
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ easymock-2.4.jar

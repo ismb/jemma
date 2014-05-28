@@ -20,8 +20,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
@@ -36,6 +34,8 @@ import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.SonNode;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
@@ -64,8 +64,8 @@ public class Discovery_Freshness_ForcePing {
 		TimeFreshnessNewNodeSeconds = gal.getPropertiesManager().getTimeFreshnessNewNodeSeconds();
 		TimeDiscoveryNewNodeSeconds = gal.getPropertiesManager().getTimeDiscoveryNewNodeSeconds();
 	}
-
-	private final static Log logger = LogFactory.getLog(Discovery_Freshness_ForcePing.class);
+	//FIXME mass-rename to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger( Discovery_Freshness_ForcePing.class );
 
 	/**
 	 * Send the Lqi_Request for the selected address. Then manages the
@@ -103,6 +103,7 @@ public class Discovery_Freshness_ForcePing {
 				}
 
 			}
+			
 
 			try {
 				if (gal.getPropertiesManager().getDebugEnabled()) {

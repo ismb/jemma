@@ -43,8 +43,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.energy_home.jemma.ah.configurator.IConfigurator;
@@ -71,6 +69,8 @@ import org.osgi.service.useradmin.Group;
 import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -78,6 +78,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
+//FIXME:  We should consider refactoring this bundle/class name to something less generic
 public class Configuratore implements FrameworkListener, IConfigurator {
 
 	/**
@@ -107,27 +108,28 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	private Vector categories = new Vector();
 	private Vector locations = new Vector();
 
-	private static final Log log = LogFactory.getLog(Configuratore.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Configuratore.class );
 
 	protected synchronized void activate(ComponentContext ctxt) {
 		this.bc = ctxt.getBundleContext();
 
+		//TODO To check: unique location in the API bundle to centralize all properties and location codes, with documentation ?
 		String defaultConfigProp = this.bc.getProperty("org.energy_home.jemma.ah.configuration.file");
 
 		if (defaultConfigProp != null) {
 			try {
 				loadConfiguration(defaultConfigProp, false);
 			} catch (Exception e) {
-				log.error(e);
+				LOG.error("exception on activate",e);
 			}
 		}
 
 		this.bc.addFrameworkListener(this);
-		log.debug("activated");
+		LOG.info("Configuratore activated");
 	}
 
 	protected synchronized void deactivate(ComponentContext ctxt) {
-		log.debug("deactivated");
+		LOG.info("Configuratore deactivated");
 	}
 
 	public void modified(ComponentContext ctxt, Map props) {
@@ -258,7 +260,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	}
 
 	public void update(Map props) {
-		log.debug("received configuration");
+		LOG.debug("Configuratore received configuration");
 	}
 
 	/**
@@ -291,7 +293,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	 * @return true if the configuration has been read and applied correctly. In
 	 *         case of errors returns false
 	 */
-
+	//FIXME general comment by Riccerdo: I'm not sure if it covers 100% of what we do here - but probably a lot of this behaviour is already standardized in the ConfigAdmin service. We should consider refactoring to use that.
 	public boolean loadConfiguration(String configName, boolean storageArea) {
 		File configFile;
 		InputStream stream = null;
@@ -301,13 +303,13 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 			storageArea = true;
 		}
 
-		log.debug("try to load configuration '" + configName + "'");
+		LOG.debug("trying to load configuration '" + configName + "'");
 
 		try {
 			if (storageArea) {
 				String configFilename = SCENARIOS_PATH + configName + ".xml";
 				configFile = bc.getDataFile(configFilename);
-				log.debug("storage area is " + configFile);
+				LOG.debug("storage area is " + configFile);
 				stream = new FileInputStream(configFile);
 			} else {
 				File f = new File(configName);
@@ -318,33 +320,34 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					//URL url = bc.getBundle().getEntry(configFilename);
 					URL url = this.getClass().getResource(configFilename);
 					if (url == null) {
-						log.error("unable to open file " + configFilename);
+						LOG.error("unable to open file " + configFilename);
 						return false;
 					}
 					stream = url.openStream();
 				}
 			}
 		} catch (FileNotFoundException e) {
-			log.error("unable to open file " + configName);
+			LOG.error("unable to open file " + configName,e);
 			return false;
 		} catch (IOException e) {
-			log.error("unable to open file " + configName);
+			LOG.error("unable to open file " + configName,e);
 			return false;
 		}
 
 		try {
 			importConfiguration(stream);
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error("Exception on importConfiguration", e);
 			return false;
 		}
 
-		log.info("configuration '" + configName + "' loaded successfully");
+		LOG.debug("configuration '" + configName + "' loaded successfully");
 		return true;
 	}
 
 	public void updated(Dictionary props) throws ConfigurationException {
-		log.debug("received props");
+		LOG.debug("received props");
+		//FIXME Note by Riccardo: why is this empty ?????
 	}
 
 	public String doc2xmlString(Document doc) {
@@ -380,7 +383,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 			strWriter.close();
 
 		} catch (IOException ioEx) {
-			log.error("exception: " + ioEx);
+			LOG.error("exception on doc2xmlString ", ioEx);
 			return null;
 		}
 		return xmlStr;
@@ -428,7 +431,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					String rule = attrs.getNamedItem("filter").getNodeValue();
 					rules.add(rule);
 				} catch (Exception e) {
-					log.error(e);
+					LOG.error("Excpetion on trasversecConfigurationTree",e);
 				}
 			} else if (tag == "connect") {
 				try {
@@ -436,7 +439,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					String pid2 = attrs.getNamedItem("pid2").getNodeValue();
 					this.connAdmin.createConnection(pid1, pid2);
 				} catch (Exception e) {
-					log.error(e);
+					LOG.error("Excpetion on trasversecConfigurationTree",e);
 				}
 			} else if ((tag == "appliance") && (loadAppliances)) {
 				props = new Hashtable();
@@ -447,7 +450,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 				String name = attrs.getNamedItem("name").getNodeValue();
 				Object propValue = traversePropertyNode(lastNode);
 				if (propValue == null) {
-					log.error("null property " + name);
+					LOG.error("null property " + name);
 				} else {
 					props.put(name, propValue);
 				}
@@ -478,10 +481,10 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 							createAppliance(appliancePid, props);
 							// }
 						} else {
-							log.error("during reading configuration: unable to retrieve driver pid");
+							LOG.error("during reading configuration: unable to retrieve driver pid");
 						}
 					} catch (Exception e) {
-						log.debug(e.getMessage());
+						LOG.error("Excpetion on trasversecConfigurationTree",e);
 					}
 				} else if (tag.equals("configuration")) {
 					// we traversed all appliances children, its time to
@@ -490,7 +493,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					try {
 						configurationsVector.add(props);
 					} catch (Exception e) {
-						log.debug(e.getMessage());
+						LOG.error("Excpetion on trasversecConfigurationTree",e);
 					}
 				}
 			}
@@ -501,6 +504,9 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 	}
 
+	//Note by Riccardo: Is this some old/unused implementation ? It seems so: commenting out - stage for future removal
+	
+	/*
 	public void traverseConfigurationTreeOld(Node node) {
 		lastNode = node;
 		int nodeType = node.getNodeType();
@@ -602,6 +608,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		}
 	}
 
+	*/
+	
 	boolean isArray = false;
 	String arrayType = null;
 
@@ -773,7 +781,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 
 						if (res != null) {
 							container.add(res);
-							log.debug("added to vector/array " + res.toString());
+							LOG.trace("added to vector/array " + res.toString());
 						}
 					}
 
@@ -787,7 +795,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 						Object res = traverseItemNode(children.item(i));
 						if (res != null) {
 							container.add(res);
-							log.debug("added to vector/array " + res.toString());
+							LOG.trace("added to vector/array " + res.toString());
 						}
 					}
 
@@ -849,7 +857,8 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 	public void frameworkEvent(FrameworkEvent fe) {
 		if (fe.getType() == FrameworkEvent.STARTED) {
 		}
-		log.debug(fe.toString() + " type " + fe.getType());
+		//FIXME why is this function here ? Just to log Framework event messages ?
+		LOG.debug("FrameworkEvent:"+fe.toString() + " type " + fe.getType());
 	}
 
 	private static String removeExtension(String s) {
@@ -912,12 +921,12 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 			try {
 
 				File configFilesDirectory = bc.getDataFile(SCENARIOS_PATH);
-				log.debug("deleting directory " + configFilesDirectory.getPath());
+				LOG.debug("deleting directory " + configFilesDirectory.getPath());
 				if (configFilesDirectory.isDirectory()) {
 					return deleteDirectory(configFilesDirectory);
 				}
 			} catch (Exception e) {
-				log.error("during reset exception contains '" + e.getMessage() + "'");
+				LOG.error("during reset exception contains '" + e.getMessage() + "'",e);
 				return false;
 			}
 			this.hacService.clean();
@@ -925,7 +934,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		} else if (level == 1) {
 			try {
 				int time = 4;
-				log.info("shutdown in " + (time * 60) + " seconds");
+				LOG.info("shutdown in " + (time * 60) + " seconds");
 				String osName = System.getProperty("os.name");
 				String shutdownCommand = null;
 				if (osName.equals("Linux")) {
@@ -939,7 +948,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 					return false;
 				}
 			} catch (IOException e) {
-				log.error("exception during shutdown " + e.getMessage());
+				LOG.error("exception during shutdown " + e.getMessage(),e);
 			}
 		} else if (level == 2) {
 			this.hacService.clean();
@@ -968,7 +977,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 		try {
 			docBuilder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			log.error(e);
+			LOG.error("Exception on createDoc",e);
 			return null;
 		}
 
@@ -1063,7 +1072,7 @@ public class Configuratore implements FrameworkListener, IConfigurator {
 							.listConfigurations("(appliance.pid=" + appliancePid + ")");
 
 					if ((applianceConfigs != null) && (applianceConfigs.length > 1)) {
-						log.warn("appliance.pid " + appliancePid + " has been found more than once in the configuation admin");
+						LOG.warn("appliance.pid " + appliancePid + " has been found more than once in the configuation admin");
 					}
 
 					if (applianceConfigs == null) {

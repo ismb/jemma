@@ -29,3 +29,5 @@ Import-Package: org.apache.commons.logging;version="1.0.4",org.energy_ho
  j;version="[1.6,2)"
 Require-Bundle: jemma.osgi.ah.hac.lib
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ easymock-2.4.jar

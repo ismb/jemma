@@ -31,15 +31,15 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclIASZoneAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
 	private ZclIASZoneServer iasZoneServer;
 
-	private static final Log log = LogFactory.getLog(ZclIASZoneAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclIASZoneAppliance.class );
 
 	public ZclIASZoneAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
@@ -53,14 +53,14 @@ public class ZclIASZoneAppliance extends ZclAppliance {
 	}
 
 	protected synchronized void attached() {
-		log.debug("appliance attached");
+		LOG.debug("appliance attached");
 
 		Thread t = new Thread("setActualDriverJob") {
 			public void run() {
 				try {
 					setActualDriver();
 				} catch (ServiceClusterException e) {
-					log.error("exception", e);
+					LOG.error("exception on attached for ZclASZoneAppliance", e);
 				}
 			}
 		};
@@ -73,26 +73,25 @@ public class ZclIASZoneAppliance extends ZclAppliance {
 				// TODO attention the following call may block the attached()
 				// method. Therefore it should be asynchronous.
 				int zoneType = iasZoneServer.getZoneType(null);
-				switch (zoneType) {
+				switch (zoneType) { //FIXME magic numbers ?
 				case 0x0015:
-					log.debug("This is a Contact Switch IASZone Device");
+					LOG.debug("This is a Contact Switch IASZone Device");
 					break;
 					
 				case 0x002a:
-					log.debug("This is a Water Sensor IASZone Device");
+					LOG.debug("This is a Water Sensor IASZone Device");
 					break;
-					
 				default:
-					log.error("unknown Zone Type: " + zoneType);
+					LOG.error("unknown Zone Type: " + zoneType);
 					break;
 				}
 			} catch (ApplianceException e) {
-				log.error("exception while reading ZoneType attribute. " + e.getMessage());
+				LOG.error("exception while reading ZoneType attribute. " + e.getMessage(),e);
 			}
 		}
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZclASZoneAppliance detached");
 	}
 }

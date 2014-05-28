@@ -27,13 +27,13 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclZinAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
-	private static final Log log = LogFactory.getLog(ZclZinAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclZinAppliance.class );
 
 	/*
 	 * try { IAppliance[] appliances =
@@ -58,10 +58,10 @@ public class ZclZinAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
+		LOG.debug("ZclZinAppliance attached");
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZclZinAppliance detached");
 	}
 }

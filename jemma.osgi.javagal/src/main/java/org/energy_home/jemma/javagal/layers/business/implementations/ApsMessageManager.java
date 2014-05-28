@@ -28,8 +28,8 @@ import org.energy_home.jemma.zgd.jaxb.Filter;
 import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
 import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
 import org.energy_home.jemma.zgd.jaxb.Level;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 
@@ -43,7 +43,8 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
  */
 public class ApsMessageManager {
 	ExecutorService executor = null;
-	private final static Log logger = LogFactory.getLog(ApsMessageManager.class);
+	//FIXME mass-rename to LOG when available
+	private static final Logger logger = LoggerFactory.getLogger( ApsMessageManager.class );
 
 	/**
 	 * The local {@link GalController} reference.

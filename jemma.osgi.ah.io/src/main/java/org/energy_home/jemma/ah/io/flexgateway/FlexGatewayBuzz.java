@@ -18,16 +18,15 @@ package org.energy_home.jemma.ah.io.flexgateway;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.ah.io.Color;
 import org.energy_home.jemma.ah.io.PlatformsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+//XXX Many Files in this project are Flexgateway-only - we sould re-design to separate generic features from platform-specific e.g. fragments ?
 public class FlexGatewayBuzz {
 
-	protected static final Log log = LogFactory.getLog(FlexGatewayBuzz.class);
+	private static final Logger LOG = LoggerFactory.getLogger( FlexGatewayBuzz.class );
 	protected static String target = "cedac";
 	protected static String cedacBuzzFolder = "/sys/devices/platform/flex_hmi.0";
 	protected static int RED_COLOR = 0;
@@ -51,7 +50,7 @@ public class FlexGatewayBuzz {
 
 			if (cmdBuzzFile.exists() && cmdBuzzFile.isFile()) {
 			} else {
-				log.debug("The buzz file doesn't exist");
+				LOG.warn("The buzz file doesn't exist");
 				return false;
 			}
 
@@ -62,7 +61,7 @@ public class FlexGatewayBuzz {
 				return true;
 
 			} catch (Exception e) {
-				log.error("setting buzz " + e.getMessage());
+				LOG.error("Exception setting buzz ",e);
 			}
 		}
 		return false;

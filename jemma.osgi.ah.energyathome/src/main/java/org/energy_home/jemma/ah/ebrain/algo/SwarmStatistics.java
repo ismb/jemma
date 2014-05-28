@@ -18,11 +18,12 @@ package org.energy_home.jemma.ah.ebrain.algo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.ebrain.ApplianceInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SwarmStatistics {
-	private final Log log = LogFactory.getLog(SwarmStatistics.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger( SwarmStatistics.class );
 	
 	List<float[]> overloads = new ArrayList<float[]>();
 	List<float[]> costs = new ArrayList<float[]>();
@@ -88,7 +89,7 @@ public class SwarmStatistics {
 			if (overs[i] < leastOverload) {
 				leastOverload = overs[i];
 				lastImprovingOverload = overloads.size();
-				log.debug(String.format("(%d) overload: %12.9f", lastImprovingOverload, leastOverload));
+				LOG.debug(String.format("(%d) overload: %12.9f", lastImprovingOverload, leastOverload));
 			}
 		}
 	}
@@ -99,7 +100,7 @@ public class SwarmStatistics {
 			if (cos[i] < leastEnergyCost) {
 				leastEnergyCost = cos[i];
 				lastImprovingCost = costs.size();
-				log.debug(String.format("(%d) cost: %12.9f", lastImprovingCost, leastEnergyCost));
+				LOG.debug(String.format("(%d) cost: %12.9f", lastImprovingCost, leastEnergyCost));
 			}
 		}
 	}
@@ -110,7 +111,7 @@ public class SwarmStatistics {
 			if (tars[i] < leastTardiness) {
 				leastTardiness = tars[i];
 				lastImprovedTardiness = tardiness.size();
-				log.debug(String.format("(%d) tardiness: %12.9f", lastImprovedTardiness, leastTardiness));
+				LOG.debug(String.format("(%d) tardiness: %12.9f", lastImprovedTardiness, leastTardiness));
 			}
 		}
 	}
@@ -121,7 +122,7 @@ public class SwarmStatistics {
 			if (pens[i] < leastPenalty) {
 				leastPenalty = pens[i];
 				lastImprovedPenalty = penalties.size();
-				log.debug(String.format("(%d) penalty: %16.12f", lastImprovedPenalty, leastPenalty));
+				LOG.debug(String.format("(%d) penalty: %16.12f", lastImprovedPenalty, leastPenalty));
 			}
 		}
 	}

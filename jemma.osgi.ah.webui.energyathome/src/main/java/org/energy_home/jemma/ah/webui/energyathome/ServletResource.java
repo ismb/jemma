@@ -13,15 +13,24 @@
  * GNU Lesser General Public License (LGPL) for more details.
  *
  */
-package org.energy_home.jemma.ah.webui.energyathome.ekitchen;
+package org.energy_home.jemma.ah.webui.energyathome;
 
-public class ServiceProps {
+import javax.servlet.Servlet;
 
-	private Long serviceId;
-	private String clazz;
+public class ServletResource {
+	private String alias;
+	private Servlet servlet;
 
-	public ServiceProps(Long serviceId, String clazz) {
-		this.serviceId = serviceId;
-		this.clazz = clazz;
+	public ServletResource(String alias, Servlet servlet) {
+		this.servlet = servlet;
+		this.alias = alias;
+	}
+
+	String getAlias() {
+		return alias;
+	}
+
+	Servlet getServlet() {
+		return servlet;
 	}
 }

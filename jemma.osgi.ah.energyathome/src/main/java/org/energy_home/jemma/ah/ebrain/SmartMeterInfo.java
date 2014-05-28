@@ -15,14 +15,14 @@
  */
 package org.energy_home.jemma.ah.ebrain;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.shal.DeviceInfo;
 
 public class SmartMeterInfo extends ApplianceInfo {
 	//TODO: check merge, line below not in 3.3.0
 	//public static final int PRODUCED_ENERGY_MIN_INTERVAL = 10000;//MILLISECONDS_IN_MINUTE;
-	protected static final Log log = LogFactory.getLog(SmartMeterInfo.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger( SmartMeterInfo.class );
 	
 	public SmartMeterInfo(DeviceInfo info) {
 		super(info);
@@ -47,7 +47,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 	
 	public EnergyCostInfo updateEnergyCost(long newTime, double newEnergy) {
 		if (nextTotalEnergyValidValues == 0) {
-			log.debug("updateEnergyCost discarded value");
+			LOG.debug("updateEnergyCost discarded value");
 			return null;
 		}
 		if (nextTotalEnergyValidValues > 0)
@@ -57,7 +57,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 	
 	public EnergyCostInfo updateProducedEnergy(long newTime, double newEnergy) {
 		if (nextProducedEnergyValidValues == 0) {
-			log.debug("updateProducedEnergy discarded value");
+			LOG.debug("updateProducedEnergy discarded value");
 			return null;
 		}
 		if (nextProducedEnergyValidValues > 0)
@@ -65,14 +65,14 @@ public class SmartMeterInfo extends ApplianceInfo {
 		
 		EnergyCostInfo eci = null;
 		if (newTime < lastValidProducedEnergyTime) {
-			log.error(String.format("updateProducedEnergy: received new time value %d before last valid time value %d, returning null", newTime, lastValidProducedEnergyTime));
+			LOG.warn(String.format("updateProducedEnergy: received new time value %d before last valid time value %d, returning null", newTime, lastValidProducedEnergyTime));
 			return eci;
 		}
 		
 		lastProducedEnergyNotificationTime = newTime;
 		
 		if (newEnergy == IMeteringProxy.INVALID_ENERGY_CONSUMPTION_VALUE) {
-			log.debug("updateProducedEnergy: received INVALID_ENERGY_VALUE, returning null");
+			LOG.debug("updateProducedEnergy: received INVALID_ENERGY_VALUE, returning null");
 			return eci;
 		}
 		
@@ -81,7 +81,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 			//TODO: check merge, if condition was different in 3.3.0
 			//if (elapsedTime < PRODUCED_ENERGY_MIN_INTERVAL) {
 			if (elapsedTime < MILLISECS_IN_ONE_MINUTE) {
-				log.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
+				LOG.debug(String.format("updateProducedEnergy %s: elapsed time < 1 minute, returning null", applianceId));
 				return eci;
 			}	
 			
@@ -94,7 +94,7 @@ public class SmartMeterInfo extends ApplianceInfo {
 			meanPower = (float)(MILLISECONDS_IN_HOUR * energyDelta / elapsedTime);
 		
 		} else {
-			log.warn(String.format("updateProducedEnergy: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", newTime, elapsedTime));
+			LOG.warn(String.format("updateProducedEnergy: received new time value %d , elapsed time %d > MAX_VALID_EPOC_THRESHOLD, resetting start time", newTime, elapsedTime));
 			accumulatedProducedEnergy.reset(newTime);
 			meanPower = 0;
 		}

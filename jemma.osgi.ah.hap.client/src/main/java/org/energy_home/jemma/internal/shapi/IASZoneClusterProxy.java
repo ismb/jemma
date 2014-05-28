@@ -53,7 +53,7 @@ public class IASZoneClusterProxy extends ServiceClusterProxy implements IASZoneC
 		IAppliance peerAppliance = peerEndPoint.getAppliance();
 		String appliancePid = peerEndPoint.getAppliance().getPid();
 		int endPointId = peerEndPoint.getId();
-		log.info("execZoneStatusChangeNotification: " + zoneStatus + " from appliance " + appliancePid 
+		LOG.debug("execZoneStatusChangeNotification: " + zoneStatus + " from appliance " + appliancePid 
 				+ " (" + peerAppliance.getDescriptor().getType() +  "), end point id " + endPointId
 				+ " (" + peerEndPoint.getType() + ")");	
 		Object objectValue = decodeAttributeValue(appliancePid, endPointId, IASZoneServer.ATTR_ZoneStatus_NAME, zoneStatus);
@@ -61,7 +61,7 @@ public class IASZoneClusterProxy extends ServiceClusterProxy implements IASZoneC
 			sendAttributeValue(appliancePid, endPointId, AHContainers.attrId_ah_cluster_iascontact_open, System.currentTimeMillis(), objectValue, 
 					true);
 		} catch (Exception e) {
-			log.error("Error while managing execZoneStatusChangeNotification", e);
+			LOG.error("Error while managing execZoneStatusChangeNotification", e);
 		}	
 	}
 	
@@ -77,7 +77,7 @@ public class IASZoneClusterProxy extends ServiceClusterProxy implements IASZoneC
 		IAppliance peerAppliance = peerEndPoint.getAppliance();
 		String appliancePid = peerEndPoint.getAppliance().getPid();
 		int endPointId = peerEndPoint.getId();
-		log.info("execZoneEnrollRequest: zoneType=" + ZoneType + ", manufacturerCode=" + ManufacturerCode + " from appliance " + appliancePid 
+		LOG.debug("execZoneEnrollRequest: zoneType=" + ZoneType + ", manufacturerCode=" + ManufacturerCode + " from appliance " + appliancePid 
 				+ " (" + peerAppliance.getDescriptor().getType() +  "), end point id " + endPointId
 				+ " (" + peerEndPoint.getType() + ")");	
 		ZoneEnrollResponse response = new ZoneEnrollResponse();

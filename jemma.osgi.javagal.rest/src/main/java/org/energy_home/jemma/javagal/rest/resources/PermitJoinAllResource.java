@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.javagal.rest.resources;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
@@ -39,8 +37,7 @@ import org.restlet.resource.ServerResource;
  *
  */
 public class PermitJoinAllResource extends ServerResource {
-	private Log log = LogFactory.getLog(PermitJoinAllResource.class);
-
+	
 	private GatewayInterface proxyGalInterface;
 
 	@Post

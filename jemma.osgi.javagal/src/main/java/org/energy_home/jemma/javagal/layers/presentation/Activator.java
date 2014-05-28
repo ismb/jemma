@@ -21,8 +21,8 @@ import org.energy_home.jemma.zgd.GatewayInterface;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
@@ -41,7 +41,8 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
 	private BundleContext bc;
 	private GalExtenderProxyFactory _fac = null;
-	private final static Log log = LogFactory.getLog(Activator.class);
+	//FIXME mass-rename to LOG when ready
+	private static final Logger log = LoggerFactory.getLogger( Activator.class );
 	private ServiceRegistration gatewayInterfaceRegistration;
 	private ServiceRegistration gatewayFactoryRegistration;
 
@@ -123,7 +124,7 @@ public class Activator implements BundleActivator {
 				log.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}
@@ -153,7 +154,7 @@ public class Activator implements BundleActivator {
 			try {
 				return _fac;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}

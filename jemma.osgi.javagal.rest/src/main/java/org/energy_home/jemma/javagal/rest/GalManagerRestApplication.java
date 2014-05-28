@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.resources.BindingsResource;
 import org.energy_home.jemma.javagal.rest.resources.CallbackResource;
 import org.energy_home.jemma.javagal.rest.resources.CallbacksResource;
@@ -65,7 +63,7 @@ import org.restlet.routing.Router;
  */
 public class GalManagerRestApplication extends Application {
 	private RestManager restManager;
-	private Log log = LogFactory.getLog(GalManagerRestApplication.class);
+	
 
 	/**
 	 * Creates a new instance with a given rest manager.

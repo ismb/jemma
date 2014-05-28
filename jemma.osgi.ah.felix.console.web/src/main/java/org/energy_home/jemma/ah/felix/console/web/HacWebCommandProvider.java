@@ -32,8 +32,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.ICategory;
@@ -46,11 +44,13 @@ import org.energy_home.jemma.ah.hac.lib.ext.IApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.IAppliancesProxy;
 import org.energy_home.jemma.ah.hac.lib.ext.INetworkManager;
 import org.energy_home.jemma.ah.hac.lib.ext.TextConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractWebConsolePlugin {
 	private static final long serialVersionUID = -7727225969825874601L;
 
-	private static final Log log = LogFactory.getLog(HacWebCommandProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger( HacWebCommandProvider.class );
 	
 	private static final int RESULT_MAX_LINE_LENGHT = 100;
 	
@@ -87,7 +87,7 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 			zbNetworkManager.openNetwork();
 			return true;
 		} catch (Exception e) {
-			log.error("Error while opening zigbee network", e);
+			LOG.error("Error while opening zigbee network", e);
 			return false;
 		}
 	}
@@ -99,7 +99,7 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 			zbNetworkManager.closeNetwork();
 			return true;
 		} catch (Exception e) {
-			log.error("Error while closing zigbee network", e);
+			LOG.error("Error while closing zigbee network", e);
 			return false;
 		}
 	}
@@ -124,8 +124,9 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 	
 	public void addNetworkManager(INetworkManager s, Map properties) {
 		String key = (String) properties.get("network.type");
-		if (key == null)
-			log.error("addNetworkManager: received invalid network type property");
+		if (key == null) {
+			LOG.warn("addNetworkManager: received invalid network type property");
+		}
 		else if (key.equals("ZigBee")){
 			zbNetworkManager = s;
 		}
@@ -133,8 +134,9 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 
 	public void removeNetworkManager(INetworkManager s, Map properties) {
 		String key = (String) properties.get("network.type");
-		if (key == null)
-			log.error("removeNetworkManager: received invalid network type property");
+		if (key == null) {
+			LOG.warn("removeNetworkManager: received invalid network type property");
+		}
 		else if (key.equals("ZigBee")){
 			zbNetworkManager = s;
 		}

@@ -64,7 +64,7 @@
 							 javax.servlet.http,
 							 javax.servlet.resources,
 							 org.apache.commons.codec.binary,
-							 org.apache.commons.logging,
+							 org.slf4j;version="[1.7.7,2)",
 							 org.apache.http;version="4.1.0",
 							 org.apache.http.util;version="4.1.0",
 							 org.apache.http.entity;version="4.1.0",
@@ -126,9 +126,9 @@
 			<version>${org.eclipse.equinox.util.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

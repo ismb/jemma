@@ -47,3 +47,4 @@ Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  ersion="[1.4,2)",org.slf4j;version="[1.6,2)"
 Service-Component: OSGI-INF/application_proxy.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

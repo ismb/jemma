@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.IEndPoint;
@@ -56,6 +54,8 @@ import org.energy_home.jemma.ah.zigbee.zcl.ZclWriteAttributeRecord;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclAbstractDataType;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO consider also the differences between general and cluster specific commands
 
@@ -69,7 +69,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 	protected ZigBeeDevice device;
 
 	protected int sequence = 30; // Zcl Frame sequence number
-	private final static Log log = LogFactory.getLog(ZclServiceCluster.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclServiceCluster.class );
 
 	private boolean checkDirection = false;
 
@@ -482,7 +482,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 						// this is an error, since the direction of the outgoing
 						// frame cannot be identical to dir of the received
 						// frame.
-						log.error(BAD_DIRECTION_MESSAGE);
+						LOG.warn(BAD_DIRECTION_MESSAGE);
 						throw new ServiceClusterException("bad direction field in incoming packet");
 					}
 				} catch (ZclValidationException e) {
@@ -580,8 +580,8 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					endPointRequestContext);
 			result = sps[0];
 		} catch (Exception e) {
-			log.error("Error while subscribing attribute " + attributeName + " for driver appliance "
-					+ this.getEndPoint().getAppliance().getPid() + ". Maybe this is a sleeping end device!");
+			LOG.warn("Error while subscribing attribute " + attributeName + " for driver appliance "
+					+ this.getEndPoint().getAppliance().getPid() + ". Maybe this is a sleeping end device!",e);
 			sps = new ISubscriptionParameters[] { parameters };
 		}
 		updateAllSubscriptionMap(attributeName, sps[0], endPointRequestContext);
@@ -680,7 +680,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					ZclDataTypeUI16.zclSerialize(zclResponseFrame, attrIds[i]);
 				} catch (Exception e1) {
 					// FIXME: what I have to do here?
-					log.fatal(e1);
+					LOG.error("Exception iterating through attributeIDSNumbers",e1);
 					return;
 				}
 
@@ -695,7 +695,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					try {
 						ZclDataTypeUI8.zclSerialize(zclResponseFrame, (byte) statusCode);
 					} catch (ZclValidationException e1) {
-						log.fatal("Opps... unable to serialize ZclReadAttrs Response ", e1);
+						LOG.error("Opps... unable to serialize ZclReadAttrs Response ", e1);
 						return;
 					}
 				}
@@ -706,7 +706,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				zclResponseFrame.shrink();
 				devicePost(clusterId, zclResponseFrame);
 			} catch (ApplianceException e) {
-				log.error("exception", e);
+				LOG.error("exception", e);
 			}
 			break;
 		}
@@ -837,7 +837,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				zclResponseFrame.shrink();
 				devicePost(clusterId, zclResponseFrame);
 			} catch (ApplianceException e) {
-				log.error("exception", e);
+				LOG.error("exception", e);
 			}
 
 			break;
@@ -862,7 +862,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				}
 
 			} catch (ServiceClusterException e) {
-				log.error("Exception ", e);
+				LOG.error("Exception ", e);
 			}
 
 			if (peerCluster == null) {
@@ -917,7 +917,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					ZclDataTypeUI8.zclSerialize(zclResponseFrame, (short) 1);
 				}
 			} catch (ZclValidationException e) {
-				log.fatal("Unable to marshall the discovery attr response");
+				LOG.error("Unable to marshall the discovery attr response",e);
 				throw new ZclException(ZCL.FAILURE);
 			}
 
@@ -940,7 +940,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 								ZclDataTypeUI8
 										.zclSerialize(zclResponseFrame, attributeDescriptor.zclGetDataType().zclGetDataType());
 							} catch (ZclValidationException e) {
-								log.fatal("Unable to marshall the discovery attr response");
+								LOG.error("Unable to marshall the discovery attr response",e);
 								throw new ZclException(ZCL.FAILURE);
 							}
 						}
@@ -956,7 +956,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				zclResponseFrame.shrink();
 				devicePost(clusterId, zclResponseFrame);
 			} catch (ApplianceException e) {
-				log.error("exception", e);
+				LOG.error("ApplianceException on handleGeneralCommand", e);
 			}
 			break;
 		}
@@ -981,7 +981,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		case ZCL.ZclWriteAttrsStructuredRsp:
 			// FIXME: probably here we should send back a different error for
 			// the Rsp commands, like failure ...
-			log.error("Unsupported incoming general command: " + commandId);
+			LOG.error("Unsupported incoming general command: " + commandId);
 			throw new ZclException(ZCL.UNSUP_GENERAL_COMMAND);
 
 		default:

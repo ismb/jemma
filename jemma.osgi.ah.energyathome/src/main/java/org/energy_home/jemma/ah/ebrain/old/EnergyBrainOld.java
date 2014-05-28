@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfile;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
@@ -33,7 +31,12 @@ import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
 import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorListener;
 import org.energy_home.jemma.ah.ebrain.algo.OverloadDetectorTask;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+//FIXME by Riccardo seems like an "old" outdated implementation: can we remove it
+@Deprecated
 public class EnergyBrainOld {
 	public static final int ISO4217_CURRENCY_CODE = 978; // euro currency
 	public static final short TRAILING_DIGIT_CENTS = 2; // trailing digits: cents of euros
@@ -47,7 +50,7 @@ public class EnergyBrainOld {
 		return Math.round(value * Math.pow(10, decimals));
 	}
 
-	private static final Log log = LogFactory.getLog(EnergyBrainOld.class);
+	private static final Logger LOG = LoggerFactory.getLogger( EnergyBrainOld.class );
 
 	private static EnergyBrainOld instance;
 	static {instance = new EnergyBrainOld();}
@@ -134,7 +137,7 @@ public class EnergyBrainOld {
 		Calendar scheduledTime = Calendar.getInstance();
 		if (delay > 0) scheduledTime.add(Calendar.MINUTE, delay);
 		
-		log.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
+		LOG.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
 		
 		int maxPeakPower = 0;
 		float cost = 0;
@@ -143,12 +146,12 @@ public class EnergyBrainOld {
 			// TODO check correct position of the decimal in energy to cast from long to double
 			long millisecs = phases[i].ExpectedDuration * 60 * 1000;
 			EnergyCostInfo eci = dailyTariff.computeMinMaxCosts(scheduledTime, millisecs, (double)phases[i].Energy);
-			//log.debug(eci);
+			//LOG.debug(eci);
 			cost += eci.getCost();
 			scheduledTime.add(Calendar.MINUTE, phases[i].ExpectedDuration);
 		}
 		
-		log.debug("cost " + cost);
+		LOG.debug("cost " + cost);
 
 		long price = Math.round(cost * Math.pow(10, tariffTrailingDigits));
 		

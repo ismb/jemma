@@ -15,8 +15,8 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.MessageListener;
@@ -42,7 +42,7 @@ import org.restlet.resource.ClientResource;
  */
 public class RestMessageListener implements MessageListener {
 
-	private Log log = LogFactory.getLog(RestMessageListener.class);
+	private static final Logger LOG = LoggerFactory.getLogger( RestMessageListener.class );
 	private Long CalbackIdentifier = -1L;
 	private Callback callback;
 	private String urilistener;
@@ -97,7 +97,7 @@ public class RestMessageListener implements MessageListener {
 						info.setEventCallbackIdentifier(CalbackIdentifier);
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
-							log.info(xml);
+							LOG.debug("Unmarshaled" + xml);
 						
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
@@ -160,7 +160,7 @@ public class RestMessageListener implements MessageListener {
 						info.setEventCallbackIdentifier(CalbackIdentifier);
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
-							log.info(xml);
+							LOG.debug("Unmarshaled" + xml);
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
 						resource = null;

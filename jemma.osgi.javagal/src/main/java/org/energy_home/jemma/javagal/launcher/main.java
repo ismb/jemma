@@ -23,10 +23,11 @@ import java.io.IOException;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
 /**
  * Starter class for the Javagal project.
@@ -36,7 +37,8 @@ import org.energy_home.jemma.javagal.layers.business.GalController;
  */
 public class main {
 
-	public final static Log logger = LogFactory.getLog(main.class);
+	//public final static Log logger = LogFactory.getLog(main.class);
+	private static final Logger LOG = LoggerFactory.getLogger( main.class );
 
 	static String _help = "Usage:  Gal  [options...] -d <device url>\n"
 			+ "Options:\n"
@@ -54,7 +56,7 @@ public class main {
 	 * @param args startup arguments.
 	 */
 	public static void main(String[] args) {
-		logger.info("Starting Gal:Java!");
+		LOG.debug("Starting Gal:Java!");
 		PropertiesManager PropertiesManager = null;
 		
 		for (int i = 0; i < args.length; i++) {
@@ -62,7 +64,7 @@ public class main {
 			case '-':
 				switch (args[i].charAt(1)) {
 				case 'h':
-					logger.info(_help);
+					LOG.debug(_help);
 					break;
 				case 'c':
 					String _path = File.separator + "resources"
@@ -121,7 +123,7 @@ public class main {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					logger.info(Short.toString(vers));
+					LOG.debug(Short.toString(vers));
 					break;
 
 				}
@@ -133,10 +135,10 @@ public class main {
 					.createGatewayInterfaceObject();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.fatal("Error starting GAL: " + e.getMessage());
+			LOG.error("Error starting GAL: " + e.getMessage());
 			return;
 		}
-		logger.info("Waiting Osgi connections...");
+		LOG.debug("Waiting Osgi connections...");
 
 	}
 

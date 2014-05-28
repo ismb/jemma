@@ -18,8 +18,6 @@ package org.energy_home.jemma.ah.zigbee.zcl.lib;
 import java.util.Dictionary;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IHacDevice;
@@ -32,9 +30,12 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.zcl.IZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.IZclServiceCluster;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ZclAppliance extends DriverAppliance implements IZclAppliance, ZigBeeDeviceListener {
-	private static final Log log = LogFactory.getLog(ZclAppliance.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( ZclAppliance.class );
 
 	private String nodeMacAddress = null;
 	private int attachedDevices = 0;
@@ -73,7 +74,7 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 			e1.printStackTrace();
 		}
 		if (serviceEndPoint == null) {
-			log.error("attaching device but no valid end point found");
+			LOG.error("attaching device but no valid end point found");
 			return;
 		}
 		serviceEndPoint.zclSetZigBeeDevice(zclDevice);
@@ -85,7 +86,7 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 				if (serviceCluster instanceof IZclServiceCluster)
 					((IZclServiceCluster) serviceCluster).zclAttach(zclDevice);
 			} catch (Exception e) {
-				log.error("attaching clusterEndPoint to device in ZclAppliance ");
+				LOG.error("attaching clusterEndPoint to device in ZclAppliance ",e);
 				continue;
 			}
 		}
@@ -122,7 +123,7 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 							if (serviceCluster instanceof IZclServiceCluster)
 								((IZclServiceCluster) serviceCluster).zclDetach(zclDevice);
 						} catch (Exception e) {
-							log.error("detaching clusterEndPoint to device in ZclAppliance ");
+							LOG.error("detaching clusterEndPoint to device in ZclAppliance ",e);
 							continue;
 						}
 					}
@@ -180,11 +181,11 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 	
 	
 	protected void attached() {
-		log.debug("attached");
+		LOG.debug("attached");
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("detached");
 	}
 
 	protected ZclEndPoint zclGetEndPoint(int epsNumber, int profile_id, int device_id, int end_point_id, int manufacturer_code, final List clientClusterIds, final List serverClusterIds) throws ApplianceException {
@@ -196,7 +197,7 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 
 	public void notifyEvent(int event) {
 		if (event == ZigBeeDeviceListener.ANNOUNCEMENT) {
-			log.debug("ZclAppliance " + this.getPid() + " received an announcement");
+			LOG.debug("ZclAppliance " + this.getPid() + " received an announcement");
 			// if the availability is already true don't update it!
 			if (this.isAvailable()) {
 				return;
@@ -204,7 +205,7 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 
 			this.setAvailability(true);
 		} else if (event == ZigBeeDeviceListener.LEAVE) {
-			log.debug("ZclAppliance " + this.getPid() + " left the network");
+			LOG.debug("ZclAppliance " + this.getPid() + " left the network");
 			// if the availability is already false don't update it!
 			if (!this.isAvailable()) {
 				return;

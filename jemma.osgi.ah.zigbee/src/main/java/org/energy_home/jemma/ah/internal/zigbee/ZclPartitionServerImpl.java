@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.general.PartitionServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.ReadHandshakeParamResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.TransferPartitionedFrameCommand;
@@ -46,6 +44,8 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeClusterID;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class PartitionedFrame {
 	private boolean _ack = false;
@@ -168,7 +168,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 			try {
 				handleEvent(eventType, state.clusterId, state);
 			} catch (Exception e) {
-				log.error("Exception returned by handleEvent", e);
+				LOG.error("Exception returned by handleEvent", e);
 			}
 		}
 	}
@@ -262,7 +262,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 		try {
 			res = device.post((short) getClusterId(), zclFrame);
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error("Exception on execMultipleNACK",e);
 		}
 		if (!res) {
 			throw new ApplianceException(POST_FAILED_MESSAGE);
@@ -299,11 +299,11 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 		short ACKOptions = 0x00;
 
 		try {
-			log.debug("Sending MultipleACK for set = " + FirstFrameID);
+			LOG.debug("Sending MultipleACK for set = " + FirstFrameID);
 			execMultipleNACK(state, ACKOptions, FirstFrameID, nackList);
-			log.debug("MultipleACK sent");
+			LOG.debug("MultipleACK sent");
 		} catch (Exception e) {
-			log.error("Exception returned by execMultipleACK", e);
+			LOG.error("Exception returned by execMultipleACK", e);
 		}
 	}
 
@@ -314,13 +314,13 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 			switch (eventType) {
 
 			case NACK_TIMEOUT:
-				log.error("NACK Timeout");
+				LOG.warn("NACK Timeout");
 				state = (State) data;
 				sendMultipleNACK(state);
 				break;
 
 			case RECEIVER_TIMEOUT:
-				log.error("Receiver Timeout");
+				LOG.warn("Receiver Timeout");
 				state = (State) data;
 				this.deleteState(state);
 				break;
@@ -333,7 +333,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 		return false;
 	}
 
-	private Log log = LogFactory.getLog(ZclPartitionServer.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclPartitionServer.class );
 
 	private Object lock = new Object();
 	private Map peerAttributeDescriptorsMap;
@@ -351,19 +351,19 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 			try {
 				zclTPFCommand = ZclTransferPartitionedFrameCommand.zclParse(zclFrame);
 			} catch (Exception e) {
-				log.error("Error parsing TransferPartitionedFrame", e);
+				LOG.error("Error parsing TransferPartitionedFrame", e);
 				return null;
 			}
 
-			log.debug("PARTITION CLUSTER FRAME RECEIVED");
-			log.debug("PartitionIndicator: " + zclTPFCommand.PartitionIndicator);
+			LOG.debug("PARTITION CLUSTER FRAME RECEIVED");
+			LOG.debug("PartitionIndicator: " + zclTPFCommand.PartitionIndicator);
 
 			// log.debug("ClusterID: " + rcvrState.clusterId +
 			// ", FragmentationOptions: " + zclTPFCommand.FragmentationOptions
 			// + " PartitionIndicator: " + zclTPFCommand.PartitionIndicator);
 
 			if (zclTPFCommand.isFirstBlock()) {
-				log.debug("isFirstBlock");
+				LOG.debug("isFirstBlock");
 
 				// we are waiting for the first frame && this is the first
 				// frame!
@@ -386,14 +386,14 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 				// (anziche' il numero di frame totali)
 				zclTPFCommand.PartitionIndicator = 0;
 
-				log.debug("firstPartitionedFrameInSet: " + rcvrState.firstPartitionedFrameInSet);
+				LOG.debug("firstPartitionedFrameInSet: " + rcvrState.firstPartitionedFrameInSet);
 				// log.debug("remainingPartitionedFramesToReceiveInSet = " +
 				// rcvrState.remainingPartitionedFramesToReceiveInSet);
 				// log.debug("remainingPartitionedFramesToReceive = " +
 				// rcvrState.remainingPartitionedFramesToReceive);
 
 			} else if (rcvrState.currentState != State.RECEIVING) {
-				log.debug("Frame discarded because state != RECEIVING");
+				LOG.debug("Frame discarded because state != RECEIVING");
 				return null;
 			}
 
@@ -401,17 +401,17 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 
 			if ((zclTPFCommand.PartitionIndicator >= rcvrState.partitionedFrames.length)
 					|| (zclTPFCommand.PartitionIndicator > (rcvrState.firstPartitionedFrameInSet + rcvrState.NumberOfACKFrame))) {
-				log.debug("Frame discarded because out of set");
+				LOG.debug("Frame discarded because out of set");
 				return null;
 			}
 
 			if (rcvrState.partitionedFrames == null) {
-				log.debug("Frame discarded because partitionedFrames is null");
+				LOG.debug("Frame discarded because partitionedFrames is null");
 				return null;
 			}
 
 			if (rcvrState.partitionedFrames[zclTPFCommand.PartitionIndicator] != null) {
-				log.debug("Frame discarded because already received");
+				LOG.debug("Frame discarded because already received");
 				return null;
 			}
 
@@ -427,9 +427,9 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 			rcvrState.remainingPartitionedFramesToReceiveInSet--;
 			rcvrState.remainingPartitionedFramesToReceive--;
 
-			log.debug("Frame accepted");
-			log.debug("Now remainingPartitionedFramesToReceiveInSet = " + rcvrState.remainingPartitionedFramesToReceiveInSet);
-			log.debug("Now remainingPartitionedFramesToReceive = " + rcvrState.remainingPartitionedFramesToReceive);
+			LOG.debug("Frame accepted");
+			LOG.debug("Now remainingPartitionedFramesToReceiveInSet = " + rcvrState.remainingPartitionedFramesToReceiveInSet);
+			LOG.debug("Now remainingPartitionedFramesToReceive = " + rcvrState.remainingPartitionedFramesToReceive);
 
 			if ((rcvrState.remainingPartitionedFramesToReceiveInSet == 0) || (rcvrState.remainingPartitionedFramesToReceive == 0)) {
 				// TODO: ottimizzare. Qui si manda sempre un MultipleNACK
@@ -440,11 +440,11 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 				rcvrState.remainingPartitionedFramesToReceiveInSet = rcvrState.NumberOfACKFrame;
 
 				if (rcvrState.remainingPartitionedFramesToReceive == 0) {
-					log.debug("ALL THE FRAMES WERE RECEIVED");
+					LOG.debug("ALL THE FRAMES WERE RECEIVED");
 					stopReceiverTimeoutTimer(rcvrState);
 
 					IZclFrame assembledZclFrame = createAssembledZclFrame(rcvrState);
-					log.debug("THE MESSAGE IS: " + assembledZclFrame.toString());
+					LOG.debug("THE MESSAGE IS: " + assembledZclFrame.toString());
 					this.device.injectZclFrame((short) rcvrState.clusterId, assembledZclFrame);
 
 					// Soluzione bug
@@ -524,13 +524,13 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 			rcvState = createState(ClusterID, zclFrame);
 		}
 
-		log.debug("WRITE HANDASHAKE PARAMETERS RECEIVED");
+		LOG.debug("WRITE HANDASHAKE PARAMETERS RECEIVED");
 		while (true) {
 			int attrId;
 			try {
 				attrId = ZclDataTypeUI16.zclParse(zclFrame);
 			} catch (Throwable e) {
-				log.debug("No more attributes");
+				LOG.debug("No more attributes",e); //FIXME this seems not critical - why catching this with an exception ?
 				break;
 			}
 
@@ -541,73 +541,73 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 					switch (attrId) {
 					case 0x0000:
 						rcvState.MaximumIncomingTransferSize = ZclDataTypeUI16.zclParse(zclFrame);
-						log.debug("MaximumIncomingTransferSize = " + rcvState.MaximumIncomingTransferSize);
+						LOG.debug("MaximumIncomingTransferSize = " + rcvState.MaximumIncomingTransferSize);
 						break;
 
 					case 0x0001:
 						rcvState.MaximumOutgoingTransferSize = ZclDataTypeUI16.zclParse(zclFrame);
-						log.debug("MaximumOutgoingTransferSize = " + rcvState.MaximumOutgoingTransferSize);
+						LOG.debug("MaximumOutgoingTransferSize = " + rcvState.MaximumOutgoingTransferSize);
 						break;
 
 					case 0x0002:
 						rcvState.PartitionedFrameSize = ZclDataTypeUI8.zclParse(zclFrame);
-						log.debug("PartitionedFrameSize = " + rcvState.PartitionedFrameSize);
+						LOG.debug("PartitionedFrameSize = " + rcvState.PartitionedFrameSize);
 						break;
 
 					case 0x0003:
 						rcvState.LargeFrameSize = ZclDataTypeUI16.zclParse(zclFrame);
-						log.debug("LargeFrameSize = " + rcvState.LargeFrameSize);
+						LOG.debug("LargeFrameSize = " + rcvState.LargeFrameSize);
 						break;
 
 					case 0x0004:
 						rcvState.NumberOfACKFrame = ZclDataTypeUI8.zclParse(zclFrame);
-						log.debug("NumberOfACKFrame = " + rcvState.NumberOfACKFrame);
+						LOG.debug("NumberOfACKFrame = " + rcvState.NumberOfACKFrame);
 						break;
 
 					case 0x0005:
 						rcvState.NACKTimeout = ZclDataTypeUI16.zclParse(zclFrame);
-						log.warn("WriteHanshakeParameter requested to change the dependent attribute NACKTimeout to "
+						LOG.warn("WriteHanshakeParameter requested to change the dependent attribute NACKTimeout to "
 								+ rcvState.NACKTimeout);
 						break;
 
 					case 0x0006:
 						rcvState.InterframeDelay = ZclDataTypeUI8.zclParse(zclFrame);
-						log.warn("WriteHanshakeParameter requested to change the dependent attribute InterframeDelay to "
+						LOG.warn("WriteHanshakeParameter requested to change the dependent attribute InterframeDelay to "
 								+ rcvState.InterframeDelay);
 						break;
 
 					case 0x0007:
 						rcvState.NumberOfSendRetries = ZclDataTypeUI8.zclParse(zclFrame);
-						log.warn("WriteHanshakeParameter requested to change the dependent attribute NumberOfSendRetries to "
+						LOG.warn("WriteHanshakeParameter requested to change the dependent attribute NumberOfSendRetries to "
 								+ rcvState.NumberOfSendRetries);
 						break;
 
 					case 0x0008:
 						rcvState.SenderTimeout = ZclDataTypeUI16.zclParse(zclFrame);
-						log.warn("WriteHanshakeParameter requested to change the dependent attribute SenderTimeout to "
+						LOG.warn("WriteHanshakeParameter requested to change the dependent attribute SenderTimeout to "
 								+ rcvState.SenderTimeout);
 						break;
 
 					case 0x0009:
 						rcvState.ReceiverTimeout = ZclDataTypeUI16.zclParse(zclFrame);
-						log.warn("WriteHanshakeParameter requested to change the dependent attribute ReceiverTimeout to "
+						LOG.warn("WriteHanshakeParameter requested to change the dependent attribute ReceiverTimeout to "
 								+ rcvState.ReceiverTimeout);
 						break;
 
 					default:
-						log.error("Unknown attribute ID " + attrId);
+						LOG.error("Unknown attribute ID " + attrId);
 						break;
 					}
 				}
 			} catch (ZclValidationException e) {
 				continue;
 			} catch (Throwable e) {
-				log.error("Error parsing WriteHanshakeParameters", e);
+				LOG.error("Error parsing WriteHanshakeParameters", e);
 				return null;
 			}
 		}
 
-		log.error("ReceiverTimeout: " + rcvState.ReceiverTimeout + ", NACKTimeout: " + rcvState.NACKTimeout);
+		LOG.error("ReceiverTimeout: " + rcvState.ReceiverTimeout + ", NACKTimeout: " + rcvState.NACKTimeout);
 
 		// recalculate dependent attributes because they might have changed.
 		rcvState.calculateDependentAttributes();
@@ -619,7 +619,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 	}
 
 	private void startReceiverTimeoutTimer(State state) {
-		log.debug("Starting Receiver Timeout Timer of " + state.ReceiverTimeout + " ms");
+		LOG.debug("Starting Receiver Timeout Timer of " + state.ReceiverTimeout + " ms");
 		stopReceiverTimeoutTimer(state);
 		if (state._timeoutTimerReceiverTask == null) {
 			state._timeoutTimerReceiverTask = new PartitionTimerTask(RECEIVER_TIMEOUT, state);
@@ -628,7 +628,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 	}
 
 	private void stopReceiverTimeoutTimer(State state) {
-		log.debug("Stopping Receiver Timeout Timer");
+		LOG.debug("Stopping Receiver Timeout Timer");
 		synchronized (state) {
 			if (state._timeoutTimerReceiverTask != null) {
 				state._timeoutTimerReceiverTask.cancel();
@@ -639,7 +639,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 	}
 
 	private void startReceiverNACKTimer(State state) {
-		log.debug("Starting Receiver NACK Timer of " + state.NACKTimeout + " ms");
+		LOG.debug("Starting Receiver NACK Timer of " + state.NACKTimeout + " ms");
 		stopReceiverNACKTimer(state);
 		if (state._timeoutTimerNACKTask == null) {
 			state._timeoutTimerNACKTask = new PartitionTimerTask(NACK_TIMEOUT, state);
@@ -649,7 +649,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 
 	private void stopReceiverNACKTimer(State state) {
 		synchronized (state) {
-			log.debug("Stopping Receiver NACK Timer");
+			LOG.debug("Stopping Receiver NACK Timer");
 			if (state._timeoutTimerNACKTask != null) {
 				state._timeoutTimerNACKTask.cancel();
 				state._receiverTimerThread.purge();

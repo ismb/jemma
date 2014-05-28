@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -82,9 +80,11 @@ import org.energy_home.jemma.utils.rest.RestClient;
 import org.energy_home.jemma.utils.thread.ExecutorService;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class M2MLocalService extends HttpServlet implements IApplicationService, ISubscriptionManager, IM2MLocalService {
-	private static final Log log = LogFactory.getLog(M2MLocalService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( M2MLocalService.class );
 
 	private static final long PERIODIC_TASK_TIMEOUT = 117000;
 	
@@ -145,7 +145,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				if (response != null)
 					restClient.consume(response);
 			} catch (Exception e) {
-				log.error("releaseRequestResources: error while consuming rest client response", e);
+				LOG.error("releaseRequestResources: error while consuming rest client response", e);
 			}
 		}
 		
@@ -156,7 +156,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				entity = new ByteArrayEntity(b);
 				entity.setContentType(HTTP_ENTITY_CONTENT_TYPE);
 			} catch (Exception e) {
-				log.error("Error while creating http entity from "+ cisItems.toXmlString());
+				LOG.error("Error while creating http entity from "+ cisItems.toXmlString(),e);
 				return null;
 			}
 			return entity;
@@ -185,12 +185,12 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 									HapServiceManager.checkItemsOnContainerIdFilter(cisItems, subscriptionInfo.containerAddressFilter.getM2MContainerAdress())) {
 								response = restClient.post(subscriptionInfo.uri, entity);
 								if (!RestClient.isOkOrCreatedStatus(response)) {
-									log.warn("Removing subscriber: error " + response.getStatusLine().getStatusCode() + " while contacting " + subscriptionInfo.subscription.getContact());
+									LOG.warn("Removing subscriber: error " + response.getStatusLine().getStatusCode() + " while contacting " + subscriptionInfo.subscription.getContact());
 									iterator.remove();
 								}								
 							}
 						} catch (Exception e) {
-							log.error("Error while sending request to subscriber " + subscriptionInfo.subscription.getContact(), e);	
+							LOG.error("Error while sending request to subscriber " + subscriptionInfo.subscription.getContact(), e);	
 							iterator.remove();
 						} finally {
 							releaseRequestResources(response);
@@ -362,7 +362,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				ci.setContent(new Integer(0));
 			return ci;
 		} catch (Exception e) {
-			log.error("Error while opening zigbee network", e);
+			LOG.error("Error while opening zigbee network", e);
 			return null;
 		}
 	}	
@@ -373,7 +373,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 		try {
 			zbNetworkManager.openNetwork();
 		} catch (Exception e) {
-			log.error("Error while opening zigbee network", e);
+			LOG.error("Error while opening zigbee network", e);
 		}
 		return getZigBeeNetworkContentInstance();
 	}
@@ -384,7 +384,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 		try {
 			zbNetworkManager.closeNetwork();
 		} catch (Exception e) {
-			log.error("Error while closing zigbee network", e);
+			LOG.error("Error while closing zigbee network", e);
 		}
 		return getZigBeeNetworkContentInstance();
 	}
@@ -408,7 +408,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 	private void periodicTask() {
 		try {
 			long startTime = System.currentTimeMillis();
-			log.info(String.format("Periodic task execution -> START %s", startTime));
+			LOG.debug(String.format("Periodic task execution -> START %s", startTime));
 			ApplianceProxy[] applianceProxyArray = applianceProxyList.getApplianceProxyArray();
 			for (int i = 0; i < applianceProxyArray.length; i++) {
 				ApplianceProxy applianceProxy = applianceProxyArray[i];
@@ -416,18 +416,18 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				checkServiceClusters(applianceProxy);
 			}
 		} catch (Exception e) {
-			log.error("Error during periodic task execution", e);
+			LOG.error("Error during periodic task execution", e);
 		}
 	}
 	
 	public M2MLocalService(){
-		log.info("HapProxy constructor");
+		LOG.debug("HapProxy constructor");
 	}
 	
 	public void addNetworkManager(INetworkManager s, Map properties) {
 		String key = (String) properties.get("network.type");
 		if (key == null)
-			log.error("addNetworkManager: eceived invalid network type property");
+			LOG.error("addNetworkManager: eceived invalid network type property");
 		else if (key.equals("ZigBee")){
 			zbNetworkManager = s;
 		}
@@ -436,37 +436,37 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 	public void removeNetworkManager(INetworkManager s, Map properties) {
 		String key = (String) properties.get("network.type");
 		if (key == null)
-			log.error("removeNetworkManager: eceived invalid network type property");
+			LOG.warn("removeNetworkManager: received invalid network type property");
 		else if (key.equals("ZigBee")){
 			zbNetworkManager = s;
 		}
 	}
 	
 	public void setHttpService(HttpService httpService) {
-		log.debug("setHttpService");
+		LOG.debug("setHttpService");
 		try {
 			httpService.registerServlet(servletUri, this, null, null);
 		} catch (ServletException e) {
-			log.error("setHttpService", e);
+			LOG.error("setHttpService", e);
 		} catch (NamespaceException e) {
-			log.error("setHttpService", e);
+			LOG.error("setHttpService", e);
 		}
 
 	}
 
 	public void unsetHttpService(HttpService httpService) {
-		log.debug("unsetHttpService");
+		LOG.debug("unsetHttpService");
 		httpService.unregister(servletUri);
 	}
 	
 	public void setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
-		log.info("Executor Service registered");
+		LOG.debug("Executor Service registered");
 	}
 
 	public void unsetExecutorService(ExecutorService executorService) {
 		this.executorService = null;
-		log.info("Executor Service unregistered");
+		LOG.debug("Executor Service unregistered");
 	}
 	
 	private void initResources(String sclId) {
@@ -582,7 +582,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 	}
 	
 	public void setM2MHapService(IM2MHapService hapService) {
-		log.debug("setM2MHapService");
+		LOG.debug("setM2MHapService");
 		this.hapService = new AHM2MHapService(hapService);
 		try {	
 			onOffClusterProxy = new OnOffClusterProxy(applianceProxyList, this.hapService, this);
@@ -597,13 +597,13 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					iasClusterProxy, relativeHumidityMeasurementClusterProxy, illuminanceMeasurementClusterProxy, 
 					applianceControlClusterProxy, applianceEventsAndAlertsClusterProxy};
 		} catch (Exception e) {
-			log.error("Error while creating appliance cluster proxies", e);
+			LOG.error("Error while creating appliance cluster proxies", e);
 		}
 		initResources(hapService.getLocalHagId());
 	}
 
 	public void unsetM2MHapService(IM2MHapService hapService) {
-		log.debug("unsetM2MHapService");
+		LOG.debug("unsetM2MHapService");
 		onOffClusterProxy = null;
 		meteringClusterProxy = null;
 		iasClusterProxy = null;
@@ -636,27 +636,27 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 	}
 	
 	public void setAppliancesProxy(IAppliancesProxy appProxy) {
-		log.debug("setAppliancesProxy");
+		LOG.debug("setAppliancesProxy");
 		this.appliancesProxy = appProxy;
 	}
 
 	public void unsetAppliancesProxy(IAppliancesProxy appProxy) {
-		log.debug("unsetAppliancesProxy");
+		LOG.debug("unsetAppliancesProxy");
 		this.appliancesProxy = null;
 	}
 
 	public void setM2MNetworkScl(M2MNetworkScl networkScl) {
-		log.debug("setM2MNetworkScl");
+		LOG.debug("setM2MNetworkScl");
 		this.networkScl = networkScl;
 	}
 
 	public void unsetM2MNetworkScl(M2MNetworkScl httpService) {
-		log.debug("unsetM2MNetworkScl");
+		LOG.debug("unsetM2MNetworkScl");
 		this.networkScl = null;
 	}
 
 	public void start() {
-		log.debug("start");
+		LOG.debug("start");
 		xmlConverter = M2MXmlConverter.getCoreConverter();
 		restClient = RestClient.get();
 		executorService.scheduleTask(new Runnable() {
@@ -664,7 +664,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				try {
 					periodicTask();	
 				} catch (Exception e) {
-					log.error("ESP periodic task error", e);
+					LOG.error("ESP periodic task error", e);
 				}
 			}
 		}, PERIODIC_TASK_TIMEOUT, PERIODIC_TASK_TIMEOUT);
@@ -672,7 +672,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 	}
 
 	public void stop() {
-		log.debug("stop");
+		LOG.debug("stop");
 		restClient.release();
 		applianceProxyList.clear();
 		xmlConverter = null;
@@ -696,7 +696,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			try {
 				endPointId = new Integer(endPointIdStr);
 			} catch (Exception e) {
-				log.error("Error while parsing endPointId");
+				LOG.error("Error while parsing endPointId",e);
 				return null;
 			}
 			if (containerName.equals(AHContainers.attrId_ah_cluster_ah_ConfigServer_Name) ||
@@ -707,7 +707,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					if (!config.updateName(endPointId, name))
 						ci = null;
 				} catch (Exception e) {
-					log.error("Error while trying to modify appliance name", e);
+					LOG.error("Error while trying to modify appliance name", e);
 					ci = null;
 				}
 			} else if (containerName.equals(AHContainers.attrId_ah_cluster_ah_ConfigServer_CategoryPid) ||
@@ -718,7 +718,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					if (!config.updateCategoryPid(endPointId, categoryPid.toString()))
 						ci = null;
 				} catch (Exception e) {
-					log.error("Error while trying to modify appliance category", e);
+					LOG.error("Error while trying to modify appliance category", e);
 					ci = null;
 				}
 			} else if (containerName.equals(AHContainers.attrId_ah_cluster_ah_ConfigServer_LocationPid) ||
@@ -729,7 +729,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					if (!config.updateLocationPid(endPointId, locationPid.toString()))
 						ci = null;
 				} catch (Exception e) {
-					log.error("Error while trying to modify appliance location", e);
+					LOG.error("Error while trying to modify appliance location", e);
 					ci = null;
 				}
 			} else 	{
@@ -772,7 +772,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 							itemStatus.setBatchStatus(HttpServletResponse.SC_OK);
 					}
 				} catch (Exception e) {
-					log.error("", e);
+					LOG.error("Exception on postBatchRequest", e);
 					itemStatus.setBatchStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				}				
 			}
@@ -828,7 +828,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					servletResponse.sendError(statusCode);
 				}
 			} catch (Exception e) {
-				log.error("service: error while sending request to hap service", e);
+				LOG.error("service: error while sending request to hap service", e);
 				servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			} 
 		} else if (requestUri.startsWith(M2MConstants.URL_HAG_SCL_BASE)) {
@@ -874,7 +874,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 						try {
 							startInstanceId = Long.parseLong(startInstanceIdStr);							
 						} catch (Exception e) {
-							log.error("Error while parsing stratInstanceId parameter");
+							LOG.error("Error while parsing stratInstanceId parameter",e);
 						}
 					}
 					long endInstanceId = M2MNetworkScl.CONTENT_INSTANCE_LATEST_ID;
@@ -883,7 +883,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 						try {
 							endInstanceId = Long.parseLong(endInstanceIdStr);							
 						} catch (Exception e) {
-							log.error("Error while parsing stratInstanceId parameter");
+							LOG.error("Error while parsing stratInstanceId parameter",e);
 						}
 					}
 					String contentInstanceId = null; 
@@ -940,7 +940,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					servletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
 			} catch (Exception e) {
-				log.error("service: error while parsing local request", e);
+				LOG.error("service: error while parsing local request", e);
 				servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			} 
 		} else {
@@ -999,14 +999,14 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 							servletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
 						}
 					} catch (Exception e) {
-						log.error("", e);
+						LOG.error("Exception on doPost", e);
 						servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 					}	
 				}
 				commitApplianceConfigurationUpdates();
 			}
 			catch (Exception e) {
-				log.error("service: error while parsing local request", e);
+				LOG.error("service: error while parsing local request", e);
 				servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			} 
 		} else {
@@ -1066,7 +1066,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					writeXmlObject(servletResponse, ci);
 				}
 			} catch (Exception e) {
-				log.error("service: error while parsing local request", e);
+				LOG.error("service: error while parsing local request", e);
 				servletResponse.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			}
 		} else {
@@ -1084,7 +1084,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			try {
 				hapService.storeAttributeValue(appliancePid, null, null, timestamp, applianceType, true);
 			} catch (HacException e) {
-				log.error("applianceAndEndPointTypesUpdated: exception while storing appliance type", e);
+				LOG.error("applianceAndEndPointTypesUpdated: exception while storing appliance type", e);
 			}
 			IEndPoint[] endPoints = appliance.getEndPoints();
 			IEndPoint endPoint = null;
@@ -1093,11 +1093,11 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 					 endPoint = endPoints[i];
 					 hapService.storeAttributeValue(appliancePid, new Integer(endPoint.getId()), null, timestamp, endPoint.getType(), true);
 				} catch (HacException e) {
-					log.error("applianceAndEndPointTypesUpdated: exception while storing appliance type", e);
+					LOG.error("applianceAndEndPointTypesUpdated: exception while storing appliance type", e);
 				}
 			}
 		} catch (Exception e) {
-			log.error("applianceAndEndPointTypesUpdated", e);
+			LOG.error("applianceAndEndPointTypesUpdated", e);
 		}
 	}
 	
@@ -1107,7 +1107,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			String appliancePid = appliance.getPid();
 			hapService.storeAttributeValue(appliancePid, IEndPoint.COMMON_END_POINT_ID, AHContainers.attrId_ah_core_appliance_events, timestamp, new Integer(appStatus), false);
 		} catch (Exception e) {
-			log.error("applianceStatusUpdated", e);
+			LOG.error("applianceStatusUpdated", e);
 		}
 	}	
 	
@@ -1127,7 +1127,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			hapService.storeAttributeValue(appliancePid, new Integer(endPoint.getId()), AHContainers.attrId_ah_core_config_category, timestamp, categoryPid != null ? new Integer(categoryPid) : null, true);	
 
 		} catch (Exception e) {
-			log.error("endPointConfigurationUpdated", e);
+			LOG.error("endPointConfigurationUpdated", e);
 		}
 	}
 
@@ -1140,7 +1140,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				endPointConfigurationUpdated(applianceProxy, endPoints[i], timestamp);
 			}
 		} catch (Exception e) {
-			log.error("configurationUpdated", e);
+			LOG.error("configurationUpdated", e);
 		}	
 	}	
 	
@@ -1153,7 +1153,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 		try {
 			String appliancePid = appliance.getPid();
 			if (appliance.isSingleton()) {
-				log.info("applianceConnected - singleton appliance " + appliancePid);
+				LOG.debug("applianceConnected - singleton appliance " + appliancePid);
 				return;				
 			}
 			ApplianceProxy applianceProxy = new ApplianceProxy(endPoint, appliance);
@@ -1172,7 +1172,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			configurationUpdated(applianceProxy, timestamp);
 
 		} catch (Exception e) {
-			log.error("notifyApplianceAdded error", e);
+			LOG.error("notifyApplianceAdded error", e);
 		}	
 	}
 
@@ -1185,7 +1185,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 			applianceStatusUpdated(applianceProxy, AHContainers.APPLIANCE_EVENT_STOPPED, System.currentTimeMillis());	
 			applianceProxyList.removeApplianceProxy(appliance.getPid());	
 		} catch (Exception e) {
-			log.error("notifyApplianceRemoved error", e);
+			LOG.error("notifyApplianceRemoved error", e);
 		}		
 	}
 	
@@ -1204,7 +1204,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 				applianceStatusUpdated(applianceProxy, AHContainers.APPLIANCE_EVENT_UNAVAILABLE, timestamp);
 			}
 		} catch (Exception e) {
-			log.error("notifyApplianceAvailabilityUpdated error", e);
+			LOG.error("notifyApplianceAvailabilityUpdated error", e);
 		}		
 	}
 	
@@ -1273,7 +1273,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 		try {
 			return postContentInstance(containerAddress, contentInstance);
 		} catch (Exception e) {
-			log.error("Exception in createContentInstance method", e);
+			LOG.error("Exception in createContentInstance method", e);
 			throw new M2MHapException(e.getMessage());
 		} 
 	}
@@ -1283,7 +1283,7 @@ public class M2MLocalService extends HttpServlet implements IApplicationService,
 		try {
 			return postBatchRequest(contentInstancesBatchRequest);
 		} catch (Exception e) {
-			log.error("Exception in sendContentInstanceBatchRequest method", e);
+			LOG.error("Exception in sendContentInstanceBatchRequest method", e);
 			throw new M2MHapException(e.getMessage());
 		} 
 	}

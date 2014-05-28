@@ -23,17 +23,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPointFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclGenericAppliance extends ZclAppliance {
-	private static final Log log = LogFactory.getLog(ZclGenericAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclGenericAppliance.class );
 
 	private static final String ZIGBEE_CONFIG_PROPERTY_NAME = IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF+"config";
 	
@@ -196,13 +196,13 @@ public class ZclGenericAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
-		// Here can be added with a timer critical initialization code (e.g. sleeping end device reporting configuration, reading zone status type,...)
+		LOG.debug("attached");
+		//XXX Here can be added with a timer critical initialization code (e.g. sleeping end device reporting configuration, reading zone status type,...)
 		// Also additional custom appliance configuration can be updated (e.g. device subtype like ias contact, ias leak, ...)  
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("detached");
 	}
 
 	protected synchronized ZclEndPoint zclGetEndPoint(int epsNumber, int profile_id, int device_id, int end_point_id, int manufacturer_code,
