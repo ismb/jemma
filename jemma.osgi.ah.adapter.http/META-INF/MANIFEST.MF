@@ -1,32 +1,32 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506871058
-Build-Jdk: 1.6.0_45
-Built-By: csto625
+Bnd-LastModified: 1401291000133
+Build-Jdk: 1.7.0_51
+Built-By: einann
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Hac Http Service Manager
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Bundle-SymbolicName: jemma.osgi.ah.adapter.http
+Bundle-SymbolicName: jemma.osgi.ah.adapter.http;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.0.2
 Created-By: Apache Maven Bundle Plugin
-Export-Package: org.energy_home.jemma.hac.adapter.http;uses:="org.apache
- .commons.logging,org.energy_home.jemma.ah.hac,org.json,org.osgi.service
- .useradmin,org.osgi.service.component,edu.emory.mathcs.backport.java.ut
- il.concurrent,javax.servlet,org.energy_home.jemma.hac.adapter.http.cont
- exts,org.osgi.service.event,org.osgi.framework,org.osgi.service.http,ja
- vax.servlet.http";version="2.0.2",org.energy_home.jemma.hac.adapter.htt
- p.contexts;uses:="javax.security.auth.login,org.energy_home.jemma.hac.a
- dapter.http,org.osgi.service.useradmin,org.osgi.service.http,javax.serv
- let.http";version="2.0.2"
+Export-Package: org.energy_home.jemma.hac.adapter.http;uses:="org.energy
+ _home.jemma.ah.hac,org.json,org.osgi.service.useradmin,org.osgi.service
+ .component,org.slf4j,edu.emory.mathcs.backport.java.util.concurrent,jav
+ ax.servlet,org.energy_home.jemma.hac.adapter.http.contexts,org.osgi.ser
+ vice.event,org.osgi.framework,org.osgi.service.http,javax.servlet.http"
+ ;version="2.0.2",org.energy_home.jemma.hac.adapter.http.contexts;uses:=
+ "javax.security.auth.login,org.energy_home.jemma.hac.adapter.http,org.o
+ sgi.service.useradmin,org.osgi.service.http,javax.servlet.http";version
+ ="2.0.2"
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  urity.auth,javax.security.auth.callback,javax.security.auth.login,javax
  .security.auth.spi,javax.servlet;version="[2.5,3)",javax.servlet.http;v
- ersion="[2.5,3)",org.apache.commons.logging;version="[1.1,2)",org.energ
- y_home.jemma.ah.hac;version="[3.0,4)",org.energy_home.jemma.ah.hac.lib;
- version="[3.0,4)",org.energy_home.jemma.hac.adapter.http,org.json,org.o
- sgi.framework;version="1.3.0",org.osgi.service.component;version="[1.1,
- 2)",org.osgi.service.event;version="[1.2,2)",org.osgi.service.http;vers
- ion="[1.2,2)",org.osgi.service.useradmin;version="1.1.0"
+ ersion="[2.5,3)",org.energy_home.jemma.ah.hac;version="[3.0,4)",org.ene
+ rgy_home.jemma.ah.hac.lib;version="[3.0,4)",org.energy_home.jemma.hac.a
+ dapter.http,org.json,org.osgi.framework;version="1.3.0",org.osgi.servic
+ e.component;version="[1.1,2)",org.osgi.service.event;version="[1.2,2)",
+ org.osgi.service.http;version="[1.2,2)",org.osgi.service.useradmin;vers
+ ion="1.1.0",org.slf4j;version="[1.7.7,2)"
 Tool: Bnd-1.50.0
 Bundle-ClassPath: .

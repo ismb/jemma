@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506860765
-Build-Jdk: 1.6.0_45
-Built-By: csto625
+Bnd-LastModified: 1401290994428
+Build-Jdk: 1.7.0_51
+Built-By: einann
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Gui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.gui
+Bundle-SymbolicName: jemma.osgi.javagal.gui;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
