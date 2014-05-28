@@ -35,3 +35,6 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  g.restlet.routing,org.restlet.util
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ org.osgi.core-4.0.0.jar,
+ JAXBNamespacePrefixMapper-2.2.4.jar

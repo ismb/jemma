@@ -25,8 +25,6 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
@@ -42,9 +40,12 @@ import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 import org.energy_home.jemma.m2m.ContentInstancesBatchRequest;
 import org.energy_home.jemma.m2m.M2MConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HapServiceManager implements Runnable, M2MDeviceListener {
-	private static final Log log = LogFactory.getLog(HapServiceManager.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( HapServiceManager.class );
 	
 	public static final String BATCH_REQUESTS_FILE_NAME_PREFIX = "batch.request.";
 	public static final String CACHE_LATEST_FILE_NAME_PREFIX = "cache.latest.";
@@ -76,7 +77,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 				fastForwardFactor = Integer.parseInt(fff);
 			}
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on getFastForwardFactor", e);
 			fastForwardFactor = 1;
 		}
 		return fastForwardFactor;
@@ -95,7 +96,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		try {
 			itemsContainerAddress = new M2MContainerAddress(items.getAddressedId());
 		} catch (IllegalArgumentException e) {
-			log.error("Invalid items addressed id " + items.getAddressedId(), e);
+			LOG.error("Invalid items addressed id " + items.getAddressedId(), e);
 			return false;
 		}
 		return M2MContainerAddress.match(itemsContainerAddress, containerAddressFilter);
@@ -149,7 +150,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	private Map<AHContainerAddress, HapContentInstancesQueue> contentInstancesQueuesMap = new ConcurrentHashMap<AHContainerAddress, HapContentInstancesQueue>();
 
 	private void storeQueuedContentInstances(boolean sync) {
-		log.info("storeQueuedContentInstances call with isSync " + sync);
+		LOG.debug("storeQueuedContentInstances call with isSync " + sync);
 		if (m2mDevice.isConnected()) {
 			HapContentInstancesQueue ciQueue = null;
 			ContentInstance instance = null;
@@ -165,9 +166,9 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 								instance = getContentInstance(null, containerId, M2MNetworkScl.CONTENT_INSTANCE_LATEST_ID);
 								ciQueue.setLastCreatedContentInstance(instance);
 								if (instance == null)
-									log.info("storeQueuedContentInstances: retrieved latest content instance for container" + containerId + ": null\n");
+									LOG.debug("storeQueuedContentInstances: retrieved latest content instance for container" + containerId + ": null\n");
 								else
-									log.info("storeQueuedContentInstances: retrieved latest content instance for container" + containerId + ":\n"
+									LOG.debug("storeQueuedContentInstances: retrieved latest content instance for container" + containerId + ":\n"
 											+ instance.toXmlFormattedString());
 							}
 							while (ciQueue.getQueueSize() > 0) {
@@ -175,19 +176,19 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 								instance = createContentInstance(null, containerId, instance, false);
 								ciQueue.removeFirstContentInstance();
 								ciQueue.setLastCreatedContentInstance(instance);
-								log.info("storeQueuedContentInstances: created content instance for container " + containerId + ":\n"
+								LOG.debug("storeQueuedContentInstances: created content instance for container " + containerId + ":\n"
 										+ instance.toXmlFormattedString());
 							}
 						}
 					} catch (Exception e) {
-						log.error("storeQueuedContentInstances: error while reading or writing content instances for container " + ciQueue.getContainerId(), e);
+						LOG.error("storeQueuedContentInstances: error while reading or writing content instances for container " + ciQueue.getContainerId(), e);
 					}
 				}
 			} catch (Exception e) {
-				log.error("storeQueuedContentInstances: generic error while sending content instances", e);
+				LOG.error("storeQueuedContentInstances: generic error while sending content instances", e);
 			}
 		} else {
-			log.info("storeQueuedContentInstances: M2M Device disconnected");
+			LOG.debug("storeQueuedContentInstances: M2M Device disconnected");
 		}
 	}	
 	
@@ -199,7 +200,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			pairs = iterator.next();
 			ciis = (ContentInstanceItems) pairs.getValue();
 			cibReq.getContentInstanceItems().add(ciis);
-			log.info("Batch item processed: " + ciis.getAddressedId() + " (" + ciis.getContentInstances().size() + " items)");
+			LOG.debug("Batch item processed: " + ciis.getAddressedId() + " (" + ciis.getContentInstances().size() + " items)");
 		}
 		return cibReq;
 	}
@@ -257,18 +258,18 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	private void initPersistentBuffers(String cid) {
 		if (cid == null) {
-			log.info("Invalid cid: empty buffers initialized");
+			LOG.debug("Invalid cid: empty buffers initialized");
 			batchCisItemsBuffer = new XmlIndexedCircularBuffer(0);
 			latestCisItemsBuffer = new XmlIndexedCircularBuffer(0);			
 		} else if (!HapServiceConfiguration.USE_PERSISTENT_BUFFER) {
-			log.info("Persistent buffers not used");
+			LOG.debug("Persistent buffers not used");
 			batchCisItemsBuffer = new XmlIndexedCircularBuffer(MAX_BUFFERED_BATCH_REQUESTS);
 			latestCisItemsBuffer = new XmlIndexedCircularBuffer(MAX_BUFFERED_LAST_CIS_ITEMS);
 		} else {
-			log.info("Persistent buffers used");
+			LOG.debug("Persistent buffers used");
 			batchCisItemsBuffer = new XmlIndexedCircularBuffer(MAX_BUFFERED_BATCH_REQUESTS, HapServiceConfiguration.BATCH_REQUESTS_DIR_NAME_PREFIX + cid,
 					BATCH_REQUESTS_FILE_NAME_PREFIX);
-			log.info("BATCH CIS ITEMS REQUESTS BUFFER LOADED - SIZE:" + batchCisItemsBuffer.getSize());
+			LOG.debug("BATCH CIS ITEMS REQUESTS BUFFER LOADED - SIZE:" + batchCisItemsBuffer.getSize());
 
 			latestCisItemsBuffer = new XmlIndexedCircularBuffer(MAX_BUFFERED_LAST_CIS_ITEMS, HapServiceConfiguration.BATCH_REQUESTS_DIR_NAME_PREFIX + cid,
 					CACHE_LATEST_FILE_NAME_PREFIX);
@@ -282,7 +283,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 							latestCisItems.put(ciis.getAddressedId(), ciis);
 					}
 			}
-			log.info("LATEST CIS ITEMS BUFFER LOADED - SIZE:" + latestCisItemsBuffer.getSize());
+			LOG.debug("LATEST CIS ITEMS BUFFER LOADED - SIZE:" + latestCisItemsBuffer.getSize());
 		}
 	}
 	
@@ -302,7 +303,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 		long now = System.currentTimeMillis();
 		boolean itemsToSend = true;
 		if (!HapServiceConfiguration.SEND_EMPTY_BATCH_REQUEST && cisItems.isEmpty()) {
-			log.info("Empty batch request not sent");
+			LOG.debug("Empty batch request not sent");
 			itemsToSend = false;
 		} 
 		if (itemsToSend) {
@@ -315,10 +316,11 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 				if (deviceId == null) {
 					String errorMsg = "M2M Device invalid device id - " + contentInstanceItemListSize
 							+ " content instance items discarded, buffer size = " + batchBufferSize;
+					//FIXME Weird: logging depending on a variable ????
 					if (contentInstanceItemListSize > 0) {
-						log.error(errorMsg);
+						LOG.error(errorMsg);
 					} else {
-						log.warn(errorMsg);
+						LOG.warn(errorMsg);
 					}
 					return batchBufferSize;
 				} 
@@ -344,27 +346,27 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 				lastBatchRequestOKTimestamp = new Long(now);
 				if (usingBuffer) {
 					batchCisItemsBuffer.removeFirstItem();
-					log.info("USING BUFFER - batch request sent");
+					LOG.debug("USING BUFFER - batch request sent");
 				} else {
 					latestCisItemsBuffer.addItem(currentLatestCisItems);
-					log.info("Batch request sent");
+					LOG.debug("Batch request sent");
 				}
 				batchRequestCounter++;
 				currentCisItems = (ContentInstancesBatchRequest) batchCisItemsBuffer.getFirstItem();
 			}
 		} catch (M2MServiceException e1) {
-			log.warn("M2MException while sending batch request", e1);
+			LOG.error("M2MException while sending batch request", e1);
 			if (!usingBuffer && itemsToSend) {
 				batchCisItemsBuffer.addItem(currentCisItems);
 				latestCisItemsBuffer.addItem(currentLatestCisItems);
 			}
 		} catch (Exception e2) {
 			// TODO add error management (e.g. remove from buffer if using it)
-			log.error("Generic exception while sending batch request", e2);
+			LOG.error("Generic exception while sending batch request", e2);
 		}
 		batchBufferSize = batchCisItemsBuffer == null ? 0 : batchCisItemsBuffer.getSize();
 		if (batchBufferSize > 0)
-			log.info("BUFFER SIZE: " + batchBufferSize);
+			LOG.debug("BUFFER SIZE: " + batchBufferSize);
 		return batchBufferSize;
 	}
 
@@ -396,11 +398,11 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 	}
 	
 	public void startup() {
-		log.info("Hap Service starting...");
+		LOG.debug("Hap Service starting...");
 		HapServiceConfiguration.init();
 		synchronized (serviceStatus) {
 			if (serviceStatus.isStarted()) {
-				log.info("Hap Service already started");
+				LOG.debug("Hap Service already started");
 				return;
 			}
 			m2mDevice = new M2MDeviceObject();
@@ -411,11 +413,11 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			serviceStatus.setExited(false);
 			t.start();
 		}
-		log.info("Hap Service started");
+		LOG.debug("Hap Service started");
 	}
 
 	public void shutdown() {
-		log.info("Hap Service shutdown initiated...");
+		LOG.debug("Hap Service shutdown initiated...");
 		synchronized (serviceStatus) {
 			if (serviceStatus.isStarted()) {
 				serviceStatus.setStarted(false);
@@ -430,7 +432,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			//batchCisItemsBuffer = null;
 			//latestCisItemsBuffer = null;
 		}
-		log.info("Hap Service shutdown completed");
+		LOG.debug("Hap Service shutdown completed");
 	}
 
 	public void run() {
@@ -454,7 +456,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 				if (System.currentTimeMillis() - batch_request_time_check + DELAY_PRECISION > current_batch_request_timeout) {
 					batch_request_time_check = System.currentTimeMillis();
 					sendContentInstanceBatchRequest();
-					log.info("Measured time for batch request " + (System.currentTimeMillis() - batch_request_time_check));
+					LOG.debug("Measured time for batch request " + (System.currentTimeMillis() - batch_request_time_check));
 					batch_request_time_check = System.currentTimeMillis();
 				}
 				// TODO:!!! Add here notification based on service exposed by local scl
@@ -468,7 +470,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			} catch (InterruptedException e) {
 				// Sometimes interrupted exception is generated even if not
 				// stopping the OSGi service
-				log.info("Interrupted exception in Hap Service Loop");
+				LOG.debug("Interrupted exception in Hap Service Loop");
 				sendContentInstanceBatchRequest();;
 			}
 		}
@@ -483,7 +485,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			referenceCounter++;
 			if (referenceCounter == 1)
 				startup();
-			log.info("Added reference " + referenceCounter);
+			LOG.debug("Added reference " + referenceCounter);
 		}
 	}
 
@@ -492,7 +494,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			referenceCounter--;
 			if (referenceCounter == 0)
 				shutdown();
-			log.info("Removed reference " + referenceCounter);
+			LOG.debug("Removed reference " + referenceCounter);
 		}
 	}
 
@@ -826,7 +828,7 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 			if (config.isValid())
 				newDeviceId = config.getDeviceId();
 			else
-				log.warn ("M2M Device invalid configuration detected");
+				LOG.warn ("M2M Device invalid configuration detected");
 			if (deviceId == null && newDeviceId != null ||
 					deviceId != null && newDeviceId == null ||
 					deviceId != null && !deviceId.equals(newDeviceId)) {
@@ -841,16 +843,16 @@ public class HapServiceManager implements Runnable, M2MDeviceListener {
 
 	
 	public void deviceStarted() {
-		log.info("M2M Device started");
+		LOG.debug("M2M Device started");
 		checkDeviceIdUpdate();
 	}
 
 	public void deviceStopped() {
-		log.info("M2M Device stopped");
+		LOG.debug("M2M Device stopped");
 	}
 	
 	public void deviceConfigUpdated() {
-		log.info("M2M Device device config updated");
+		LOG.debug("M2M Device device config updated");
 // Device configuration updated is managed throgh stop and start forced on M2MDevice
 //		checkDeviceIdUpdate();
 	}

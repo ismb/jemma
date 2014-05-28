@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ApsMessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
@@ -93,7 +93,8 @@ public class GalController {
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
 	private List<CallbackEntry> listCallback = Collections.synchronizedList(new LinkedList<CallbackEntry>());
 	private List<GatewayDeviceEventEntry> listGatewayEventListener = Collections.synchronizedList(new LinkedList<GatewayDeviceEventEntry>());
-	private final static Log logger = LogFactory.getLog(GalController.class);
+	//FIXME mass-rename logger to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger( GalController.class );
 	private ApsMessageManager apsManager = null;
 
 	private MessageManager messageManager = null;
@@ -159,10 +160,11 @@ public class GalController {
 			}
 		} else
 			try {
+				//FIXME why trow and catch directly in the same place ?
 				throw new Exception("No Platform found!");
 			} catch (Exception e) {
-				if (getPropertiesManager().getDebugEnabled())
-					logger.error(e.getMessage());
+				if (getPropertiesManager().getDebugEnabled()) //FIXME Silent exception if debug not enabled ???
+					logger.error("Caught No Platform found",e);
 			}
 
 		/*
@@ -176,7 +178,7 @@ public class GalController {
 					executeAutoStart();
 				} catch (Exception e) {
 
-					logger.error("Error on autostart!");
+					logger.error("Error on autostart!",e);
 				}
 			} else {
 				short _EndPoint = 0;

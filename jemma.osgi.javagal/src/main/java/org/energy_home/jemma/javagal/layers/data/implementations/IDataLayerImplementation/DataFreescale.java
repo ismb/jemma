@@ -25,8 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.business.Utils;
@@ -79,7 +79,8 @@ public class DataFreescale implements IDataLayer {
 	Boolean destroy = false;
 	GalController gal = null;
 	private IConnector _key = null;
-	private final static Log logger = LogFactory.getLog(DataFreescale.class);
+	//FIXME mass-rename logger to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger( DataFreescale.class );
 	private LinkedBlockingQueue<ByteArrayObject> listOfCommandToSend = new LinkedBlockingQueue<ByteArrayObject>();
 	private final List<ParserLocker> listLocker;
 	/**

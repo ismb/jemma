@@ -35,3 +35,8 @@ Import-Package: javax.xml.soap,org.apache.commons.logging;version="[1.1,
  n="[3.0,4)"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ stax-api-1.0-2.jar,
+ wstx-asl-3.2.3.jar,
+ JAXBNamespacePrefixMapper-2.2.4.jar,
+ easymock-2.4.jar

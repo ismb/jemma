@@ -25,8 +25,6 @@ import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 
 import java.math.BigInteger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.Resources;
@@ -43,7 +41,6 @@ import org.restlet.resource.ServerResource;
  *
  */
 public class lqiInformationClass extends ServerResource {
-	private Log log = LogFactory.getLog(lqiInformationClass.class);
 
 	private GatewayInterface proxyGalInterface;
 

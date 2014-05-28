@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.useradmin.Authorization;
@@ -36,9 +36,10 @@ public class CustomJsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 7495225913754933111L;
 	private HttpServletBinder httpAdapter = null;
 	// int offset;
+	@Deprecated //FIXME we should leave the log configuration to the log configuration file!
 	private boolean logEnabled = false;
 
-	protected final static Log log = LogFactory.getLog(CustomJsonServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger( CustomJsonServlet.class );
 
 	public CustomJsonServlet(HttpServletBinder httpAdapter, String prefix) {
 		this.httpAdapter = httpAdapter;
@@ -73,7 +74,7 @@ public class CustomJsonServlet extends HttpServlet {
 		Object targetObject = null;
 
 		if (logEnabled)
-			log.debug(req.getQueryString());
+			LOG.debug("req querystring:" + req.getQueryString());
 
 		// retrieve the object
 		targetObject = httpAdapter.getObjectByPid(objectid);
@@ -102,7 +103,7 @@ public class CustomJsonServlet extends HttpServlet {
 		try {
 			Object result = httpAdapter.invokeMethod(targetObject, methodName, paramValues);
 			if (logEnabled)
-				log.debug(result);
+				LOG.debug("result" + result);
 			sendHttpError(res, HttpServletResponse.SC_OK, (String) result);
 		} catch (Exception e) {
 			sendHttpError(res, 100, e.getMessage());

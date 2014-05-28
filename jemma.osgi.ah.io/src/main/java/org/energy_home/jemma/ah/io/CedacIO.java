@@ -20,8 +20,6 @@ import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.io.flexgateway.FlexGatewayBuzz;
 import org.energy_home.jemma.ah.io.flexgateway.FlexGatewayLed2;
 import org.osgi.framework.Bundle;
@@ -30,10 +28,12 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CedacIO implements EventHandler {
 
-	private static final Log log = LogFactory.getLog(CedacIO.class);
+	private static final Logger LOG = LoggerFactory.getLogger( CedacIO.class );
 
 	private static final int BOOTING = 0;
 	private static final int ADDING_NODE = 1;
@@ -108,7 +108,7 @@ public class CedacIO implements EventHandler {
 	}
 
 	protected void deactivate() {
-		log.debug("deactivating");
+		LOG.debug("deactivating");
 		changeState(IDLE);
 	}
 
@@ -143,7 +143,7 @@ public class CedacIO implements EventHandler {
 	}
 
 	public void handleEvent(Event event) {
-		log.info("CEDAC IO: " + event + " trapped in HandleEvent");
+		LOG.trace("CEDAC IO: " + event + " trapped in HandleEvent");
 
 		no_overload = false;
 		

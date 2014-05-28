@@ -59,7 +59,7 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 						sendAttributeValue(appliancePid, eps[j].getId(), OnOffServer.class.getName(), OnOffServer.ATTR_OnOff_NAME, av.getTimestamp(), av.getValue(), true);
 					}
 				} catch (Exception e) {
-					log.error("Error while reading last notified onoff attribute value for appliance " + appliancePid);
+					LOG.error("Error while reading last notified onoff attribute value for appliance " + appliancePid,e);
 				}
 		}
 	}
@@ -85,7 +85,7 @@ public class OnOffClusterProxy extends ServiceClusterProxy implements OnOffClien
 			}
 			return ci;
 		} catch (Exception e) {
-			log.error("Error shile managing onoff command for appliance " + appliancePid + ", end point " + endPointId  + ", container " + containerName, e);
+			LOG.error("Error shile managing onoff command for appliance " + appliancePid + ", end point " + endPointId  + ", container " + containerName, e);
 			return null;
 		}
 	}

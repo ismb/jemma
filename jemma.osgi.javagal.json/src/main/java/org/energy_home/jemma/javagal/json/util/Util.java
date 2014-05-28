@@ -17,8 +17,9 @@
 package org.energy_home.jemma.javagal.json.util;
 
 import java.util.Random;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Util {
 
@@ -35,7 +36,8 @@ public class Util {
 	 */
 	public static final String UTF8_CHAR_ENCODING = "UTF-8";
 	private static Random r;
-	private static Log logger = LogFactory.getLog(Util.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( Util.class );
 
 	static {
 		unsigned8MaxValue = Long.decode("0xff");

@@ -17,16 +17,19 @@ package org.energy_home.jemma.internal.ah.m2m.device;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.apache.http.HttpResponse;
 import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.utils.rest.RestClient;
 
+//
 class M2MUtils {
-	static void mapDeviceException(Log log, Exception e, String msg) throws M2MServiceException {
+	
+	//FIXME this pattern to be checked carefully and documented: it seems legit - but it's risky - Why am I passing logger to this function ?
+	static void mapDeviceException(Logger log, Exception e, String msg) throws M2MServiceException {
 		log.error("M2MServiceException: " + msg + " - " + e.getClass().getName());
 		if (log.isDebugEnabled())
-			log.error("", e);
+			log.error("Mapped Exception", e);
 		if (e instanceof M2MServiceException)
 			throw (M2MServiceException) e;
 		else

@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.PowerProfileTransferredPhase;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
@@ -33,11 +31,13 @@ import org.energy_home.jemma.ah.ebrain.old.SmartAppliance;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
 import org.energy_home.jemma.m2m.ah.MinMaxPowerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EnergyBrain implements IBasicApplianceListener {
-	private static final Log log = LogFactory.getLog(EnergyBrain.class);
+		protected static final Logger LOG = LoggerFactory.getLogger( EnergyBrain.class);
 	
-	private static final ICloudServiceProxy dummyHapProxy = new ICloudServiceProxy() {
+		private static final ICloudServiceProxy dummyHapProxy = new ICloudServiceProxy() {
 		public void storeEvent(String applianceId, long time, int eventType) throws Exception {}
 		public void storeApplianceStatistics(String applianceId, long time, ApplianceLog applianceLog) throws Exception {}
 		public ContentInstance retrieveDeliveredEnergySummation(String applianceId) {
@@ -169,7 +169,7 @@ public class EnergyBrain implements IBasicApplianceListener {
 		Calendar scheduledTime = Calendar.getInstance();
 		if (delay > 0) scheduledTime.add(Calendar.MINUTE, delay);
 		
-		log.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
+		LOG.debug("start appliance time = " + scheduledTime.get(Calendar.HOUR_OF_DAY) + ':' + scheduledTime.get(Calendar.MINUTE));
 		
 		int maxPeakPower = 0;
 		float cost = 0;
@@ -178,12 +178,12 @@ public class EnergyBrain implements IBasicApplianceListener {
 			// TODO check correct position of the decimal in energy to cast from long to double
 			long millisecs = phases[i].ExpectedDuration * 60 * 1000;
 			EnergyCostInfo eci = dailyTariff.computeMinMaxCosts(scheduledTime, millisecs, (double)phases[i].Energy);
-			//log.debug(eci);
+			//LOG.debug(eci);
 			cost += eci.getCost();
 			scheduledTime.add(Calendar.MINUTE, phases[i].ExpectedDuration);
 		}
 		
-		log.debug("cost " + cost);
+		LOG.debug("cost " + cost);
 
 		long price = Math.round(cost * Math.pow(10, tariffTrailingDigits));
 		

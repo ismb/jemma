@@ -18,8 +18,6 @@ package org.energy_home.jemma.internal.ah.m2m.device;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.energy_home.jemma.ah.m2m.device.M2MContainerAddress;
 import org.energy_home.jemma.ah.m2m.device.M2MNetworkScl;
@@ -33,9 +31,12 @@ import org.energy_home.jemma.m2m.M2MConstants;
 import org.energy_home.jemma.m2m.Scl;
 import org.energy_home.jemma.m2m.SclStatusEnumeration;
 import org.energy_home.jemma.utils.rest.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class M2MNetworkSclManager {
-	private static final Log log = LogFactory.getLog(M2MNetworkSclManager.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( M2MNetworkSclManager.class );
 
 	private static String buildUri(String nwkSclHostAddress, M2MContainerAddress containerId, String startInstanceId, String endInstanceId) {
 		// Additional parameters: startResultIndex, maxResultNumber
@@ -87,7 +88,7 @@ public class M2MNetworkSclManager {
 			if (response != null)
 				restClient.consume(response);
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on releaseRequestResources", e);
 		}
 		deviceManager.signalNetworkSclRequestCompletion(reconnect);
 	}
@@ -104,7 +105,7 @@ public class M2MNetworkSclManager {
 			M2MUtils.checkHttpResponseStatus(response);
 			jaxbConverterFactory.getObject(response.getEntity());
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while updating scl online status: " + scl.getOnLineStatus());
+			M2MUtils.mapDeviceException(LOG, e, "Error while updating scl online status: " + scl.getOnLineStatus());
 		} finally {
 			restClient.consume(response);
 		}
@@ -127,7 +128,7 @@ public class M2MNetworkSclManager {
 			sclCisBatchRequestUri = new URI(nwkSclBaseUri + M2MConstants.URL_CIS_BATCH_REQUEST);
 			nwkSclHagUri = nwkSclBaseUri + M2MConstants.URL_SCLS + M2MConstants.URL_SLASH + scl.getId();
 		} catch (URISyntaxException e) {
-			log.error("", e);
+			LOG.error("URISyntaxException on setDeviceConfig", e);
 		}
 	}
 
@@ -159,9 +160,9 @@ public class M2MNetworkSclManager {
 			// scl.setId(null);
 			restClient.release();
 		} catch (M2MServiceException e) {
-			log.warn("Error while setting offline status", e);
+			LOG.warn("M2MServiceException while setting offline status", e);
 		} catch (Exception e) {
-			log.error("Generic exception in shutdown method", e);
+			LOG.error("Generic exception in shutdown method", e);
 		}
 		restClient = null;
 		jaxbConverterFactory = null;
@@ -189,7 +190,7 @@ public class M2MNetworkSclManager {
 			M2MUtils.checkHttpResponseStatus(response);
 			return (ContentInstance) jaxbConverterFactory.getObject(response.getEntity());
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while getting latest scl content instance " + strInstanceId
+			M2MUtils.mapDeviceException(LOG, e, "Error while getting latest scl content instance " + strInstanceId
 					+ " for container " + containerId.getUrl());
 			return null;
 		} finally {
@@ -213,7 +214,7 @@ public class M2MNetworkSclManager {
 			M2MUtils.checkHttpResponseStatus(response);
 			return (ContentInstanceItemsList) jaxbConverterFactory.getObject(response.getEntity());
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while getting latest scl content instance " + strInstanceId
+			M2MUtils.mapDeviceException(LOG, e, "Error while getting latest scl content instance " + strInstanceId
 					+ " for container " + containerFilterId.getUrl());
 			return null;
 		} finally {
@@ -238,7 +239,7 @@ public class M2MNetworkSclManager {
 			M2MUtils.checkHttpResponseStatus(response);
 			return (ContentInstanceItems) jaxbConverterFactory.getObject(response.getEntity());
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e,
+			M2MUtils.mapDeviceException(LOG, e,
 					"Error while getting content instance items for container " + containerId.getUrl() + " - "
 							+ strStartInstanceId + ", " + strEndInstanceId);
 			return null;
@@ -264,7 +265,7 @@ public class M2MNetworkSclManager {
 			M2MUtils.checkHttpResponseStatus(response);
 			return (ContentInstanceItemsList) jaxbConverterFactory.getObject(response.getEntity());
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while getting content instance items list for container "
+			M2MUtils.mapDeviceException(LOG, e, "Error while getting content instance items list for container "
 					+ containerFilterId.getUrl() + " - " + strStartInstanceId + ", " + strEndInstanceId);
 			return null;
 		} finally {
@@ -284,7 +285,7 @@ public class M2MNetworkSclManager {
 			ContentInstance ciResponse = (ContentInstance) jaxbConverterFactory.getObject(response.getEntity());
 			return ciResponse;
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while creating content instance");
+			M2MUtils.mapDeviceException(LOG, e, "Error while creating content instance");
 			return null;
 		} finally {
 			releaseRequestResources(response);
@@ -302,7 +303,7 @@ public class M2MNetworkSclManager {
 					.getEntity());
 			return cibResponse;
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while sending content instance batch request");
+			M2MUtils.mapDeviceException(LOG, e, "Error while sending content instance batch request");
 			return null;
 		} finally {
 			releaseRequestResources(response);
@@ -317,7 +318,7 @@ public class M2MNetworkSclManager {
 			//response = restClient.get(new URI(nwkSclHagUri+relativeUri));
 			return response;
 		} catch (Exception e) {
-			M2MUtils.mapDeviceException(log, e, "Error while sending a get http request");
+			M2MUtils.mapDeviceException(LOG, e, "Error while sending a get http request");
 			return null;
 		} finally {
 			releaseRequestResources(null);

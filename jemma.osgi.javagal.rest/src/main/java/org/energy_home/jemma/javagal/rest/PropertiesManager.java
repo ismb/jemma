@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Properties manager class.
@@ -34,12 +34,13 @@ import org.apache.commons.logging.LogFactory;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
+@Deprecated //FIXME to be removed: see same class in javagal bundle
 public class PropertiesManager {
-	private final Log logger = LogFactory.getLog(PropertiesManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( PropertiesManager.class );
 	public Properties props;
 
 	public PropertiesManager(URL _url) {
-		logger.info("PropertiesManager - Costructor - Loading configuration file...");
+		LOG.debug("PropertiesManager - Costructor - Loading configuration file...");
 		InputStream in = null;
 		try {
 			in = _url.openStream();
@@ -57,7 +58,7 @@ public class PropertiesManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("PropertiesManager - Costructor - Configuration file loaded!");
+		LOG.debug("PropertiesManager - Costructor - Configuration file loaded!");
 
 	}
 

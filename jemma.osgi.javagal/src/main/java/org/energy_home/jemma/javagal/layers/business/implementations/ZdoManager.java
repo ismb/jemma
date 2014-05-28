@@ -24,11 +24,12 @@ import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
 
 import java.math.BigInteger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
+import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
 /**
  * Manages received ZDO messages. When an ZDO indication is received it is
@@ -38,7 +39,7 @@ import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class ZdoManager /* implements APSMessageListener */{
-	private static Log logger = LogFactory.getLog(ZdoManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZdoManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -70,8 +71,7 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Extracted APS With a MGMT_LQI_Response");
-			
+				LOG.debug("Extracted APS With a MGMT_LQI_Response");
 			}
 			
 			
@@ -82,25 +82,25 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Extracted APS With a MGMT_LQI_Request");
+				LOG.debug("Extracted APS With a MGMT_LQI_Request");
 			}
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Extracted APS With a Node_Desc_req");
+				LOG.debug("Extracted APS With a Node_Desc_req");
 			}
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Extracted APS With a Node_Desc_rsp");
+				LOG.debug("Extracted APS With a Node_Desc_rsp");
 			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.info("**************************Extracted APS With a Leave_rsp");
+				LOG.debug("Extracted APS With a Leave_rsp");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
@@ -198,7 +198,7 @@ public class ZdoManager /* implements APSMessageListener */{
 			}
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				{
-					logger.info("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+					LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 
 				}
 			}

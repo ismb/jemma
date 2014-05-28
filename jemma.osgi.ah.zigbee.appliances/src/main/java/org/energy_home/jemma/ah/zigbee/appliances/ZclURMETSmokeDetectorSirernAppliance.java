@@ -17,8 +17,6 @@ package org.energy_home.jemma.ah.zigbee.appliances;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
@@ -30,13 +28,16 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclURMETIASWDServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclURMETSmokeDetectorSirernAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
 	private ZclIASZoneServer iasZoneServer;
 
-	private static final Log log = LogFactory.getLog(ZclURMETSmokeDetectorSirernAppliance.class);
+	//FIXME mass-rename log to LOG for consistancy
+	private static final Logger log = LoggerFactory.getLogger( ZclURMETSmokeDetectorSirernAppliance.class );
 
 	public ZclURMETSmokeDetectorSirernAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);

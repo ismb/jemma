@@ -16,15 +16,12 @@
 package org.energy_home.jemma.ah.ebrain.algo;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo;
 
 /* The dimension of the problem, i.e number of variables, is the sum of all phases of all power profiles,
  * i.e. sum_i(sum_j(profile[i].phase[j]))
  */
 public final class ParticleSwarmScheduler {
-	private static final Log log = LogFactory.getLog(ParticleSwarmScheduler.class.getSimpleName());
 	
 	public static final double OVERLOAD_WEIGHT = 1000 * 1000;
 	public static final double ENERGY_COST_WEIGHT = 1;

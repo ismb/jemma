@@ -29,8 +29,6 @@ import java.util.Vector;
 
 import javax.servlet.ServletException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.ICategory;
@@ -50,6 +48,8 @@ import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.useradmin.UserAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
@@ -76,7 +76,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 
 	private UserAdmin userAdmin;
 
-	protected final static Log log = LogFactory.getLog(AhHttpAdapter.class);
+	private static final Logger LOG = LoggerFactory.getLogger( AhHttpAdapter.class );
 
 	private CustomJsonServlet customJSONServlet;
 
@@ -126,11 +126,11 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			c.setUserAdmin(userAdmin);
 		}
 
-		log.debug("activated");
+		LOG.info("AhHttpAdapter activated");
 	}
 
 	protected void deactivate(ComponentContext ctxt) {
-		log.debug("deactivated");
+		LOG.info("AhHttpAdapter deactivated");
 	}
 
 	public synchronized void setUserAdmin(UserAdmin s) {
@@ -165,7 +165,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 		} catch (NamespaceException e) {
 			e.printStackTrace();
 		}
-		log.debug("registered http resources");
+		LOG.debug("registered http resources");
 	}
 
 	public synchronized void unsetHttpService(HttpService s) {
@@ -183,7 +183,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			httpService = null;
 		}
 
-		log.debug("unregistered http resources");
+		LOG.debug("unregistered http resources");
 	}
 
 	public Object invokeMethod(Object targetObject, String methodName, ArrayList paramValues) throws IllegalArgumentException,
@@ -263,7 +263,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 								break;
 							}
 						} else {
-							log.warn("unsupported type '" + typename + "'in target signature");
+							LOG.warn("unsupported type '" + typename + "'in target signature");
 							signatureMach = false;
 							break;
 
@@ -275,7 +275,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 						result = method.invoke(targetObject, arglist);
 						return this.resultToJSON(result);
 					} else {
-						log.error("signature not found for method " + methodName);
+						LOG.error("signature not found for method " + methodName);
 					}
 				}
 			}
@@ -418,6 +418,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 	}
 
 	public void handleEvent(Event event) {
+		//TODO Hardcoded event topic: we should cross-check across the project where these are stored. Is it worth centralizing event topics somewhere ? e.g. in the API ?
 		if (event.getTopic() == "org/telecomitalia/HacEvent/NEW_APPLIANCE") {
 			try {
 				queue.put(event);
@@ -425,7 +426,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 				e.printStackTrace();
 			}
 		} else {
-			log.debug("arrived event " + event.getTopic());
+			LOG.trace("received event: " + event.getTopic());
 		}
 	}
 

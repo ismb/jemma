@@ -11,5 +11,5 @@ The logic can detect and handle:
 
 This bundle registers a fake software appliance appliance puramente software attached to the ESP.
 
-
+(Note: this bundle include EnergyBrain features)
 

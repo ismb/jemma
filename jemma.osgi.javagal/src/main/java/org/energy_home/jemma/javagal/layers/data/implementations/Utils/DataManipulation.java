@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.presentation.Activator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class with a number of data's manipulation methods. 
@@ -44,7 +45,7 @@ public class DataManipulation {
 
 	// Defining array of bytes to pass later to the key
 
-	private static Log logger = LogFactory.getLog(DataManipulation.class);
+	private static final Logger LOG = LoggerFactory.getLogger( DataManipulation.class );
 
 	/**
 	 * Converts a string to an array of bytes.
@@ -374,7 +375,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.debug(caption + ":" + sb.toString());
+		LOG.debug(caption + ":" + sb.toString());
 	}
 	
 	/**
@@ -391,7 +392,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
 
 	/**
@@ -408,7 +409,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info(caption + ":" + sb.toString());
+		LOG.trace(caption + ":" + sb.toString());
 	}
 	
 	
@@ -417,7 +418,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
 	
 	
@@ -435,7 +436,7 @@ public class DataManipulation {
 		for (short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info(caption + sb.toString());
+		LOG.trace(caption + sb.toString());
 	}
 
 	/**
@@ -452,7 +453,7 @@ public class DataManipulation {
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info(caption + ":" + sb.toString());
+		LOG.trace(caption + ":" + sb.toString());
 	}
 
 	/**

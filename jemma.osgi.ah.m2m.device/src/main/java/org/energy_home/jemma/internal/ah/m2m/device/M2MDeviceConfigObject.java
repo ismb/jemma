@@ -26,14 +26,15 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfig;
 import org.energy_home.jemma.m2m.M2MConstants;
 import org.energy_home.jemma.utils.encrypt.TripleDESEnc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+//XXX TO check: seems config-related: shall we consider harmoninzing with ConfigAdmin ?
 public class M2MDeviceConfigObject implements M2MDeviceConfig {
-	private static final Log log = LogFactory.getLog(M2MDeviceConfigObject.class);
+	private static final Logger LOG = LoggerFactory.getLogger( M2MDeviceConfigObject.class );
 	private static final String SP_SYSTEM_PROPERTY_PREFIX = "org.energy_home.jemma.m2m.device.";
 	private static final String SP_CONNECTION_CONFIG_DIR = SP_SYSTEM_PROPERTY_PREFIX + "configDir";
 	private static final String CONFIG_FILE_NAME = SP_SYSTEM_PROPERTY_PREFIX + "config.properties";
@@ -69,7 +70,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 			if (!isNullOrEmpty(encKey))
 				enc = TripleDESEnc.getInstance(encKey);
 		} catch (Exception e) {
-			log.error("Problem while initializing encryption", e);
+			LOG.error("Problem while initializing encryption", e);
 		}
 		
 		String configDir = System.getProperty(SP_CONNECTION_CONFIG_DIR);
@@ -112,14 +113,14 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 				in = new FileInputStream(configFilePath);
 				configProperties.load(in);
 			} catch (Exception e) {
-				log.warn("Configuration file does not exists - " + configFilePath, e);
+				LOG.warn("Configuration file does not exists - " + configFilePath, e);
 				initConfigProperty(DEVICE_TOKEN_PROPERTY_KEY);
 			} finally {
 				if (in != null)
 					try {
 						in.close();
 					} catch (IOException e) {
-						log.error("", e);
+						LOG.error("IOException on loadConfigProperties", e);
 					}
 			}
 		} else {
@@ -141,7 +142,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 					f.delete();
 				}
 			} catch (Exception e) {
-				log.error("", e);
+				LOG.error("Error on deleteFileAndResetConfigProperties", e);
 				result = false;
 			}
 		} else {
@@ -165,12 +166,12 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 					out = new FileOutputStream(configFilePath);
 					configProperties.store(out, "M2M Device configuration paramaters");
 				} catch (Exception e) {
-					log.error("", e);
-					if (out != null)
+					LOG.error("Excp on updateConfigProperties", e);
+					if (out != null) //FIXME Why a nested try catch ?
 						try {
 							out.close();
 						} catch (IOException e1) {
-							log.error("", e1);
+							LOG.error("updateConfigProperties Exception", e1);
 						}
 				}
 			}
@@ -238,7 +239,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 		try {
 			return enc.hexEncrypt(cid);
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on getConnectionToken", e);
 			return null;
 		}		
 	}

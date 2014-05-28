@@ -28,13 +28,13 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RxTx implementation of the {@link IConnector}.
@@ -47,7 +47,8 @@ public class SerialCommRxTx implements IConnector {
 	private Boolean connected = false;
 	private Boolean ignoreMessage = false;
 	private SerialPort serialPort;
-	private final static Log logger = LogFactory.getLog(SerialCommRxTx.class);
+	//FIXME rename to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger( SerialCommRxTx.class );
 	CommPortIdentifier portIdentifier;
 	InputStream in = null;
 	OutputStream ou = null;
@@ -135,7 +136,7 @@ public class SerialCommRxTx implements IConnector {
 		} catch (NoSuchPortException e) {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
-				logger.error("the connection could not be made: NoSuchPortException " + portName);
+				logger.error("the connection could not be made: NoSuchPortException " + portName,e);
 			e.printStackTrace();
 			return false;
 		} catch (PortInUseException e) {
@@ -148,7 +149,7 @@ public class SerialCommRxTx implements IConnector {
 		} catch (UnsupportedCommOperationException e) {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
-				logger.error("the connection could not be made: UnsupportedCommOperationException");
+				logger.error("the connection could not be made: UnsupportedCommOperationException",e);
 			e.printStackTrace();
 			return false;
 		}
@@ -167,6 +168,7 @@ public class SerialCommRxTx implements IConnector {
 				} catch (Exception e) {
 
 					e.printStackTrace();
+					logger.error("exception",e);
 					throw e;
 
 				}
@@ -174,6 +176,7 @@ public class SerialCommRxTx implements IConnector {
 				throw new Exception("Error on serial write - out == null");
 
 		}
+
 	}
 
 	/**
@@ -261,6 +264,7 @@ public class SerialCommRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
+		
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
@@ -281,12 +285,15 @@ public class SerialCommRxTx implements IConnector {
 		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Clear buffer after CPUReset...");
+
 		DataLayer.clearBuffer();
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
+		
+
 		Status _status = DataLayer.SetModeSelectSync(DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());

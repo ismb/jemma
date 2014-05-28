@@ -18,3 +18,4 @@ Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

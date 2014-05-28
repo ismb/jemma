@@ -20,14 +20,14 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientKey;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.data.Protocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Rest manager for javagal Rest package. This class creates and stops the Rest
@@ -46,7 +46,7 @@ public class RestManager {
 	private final ConcurrentHashMap<ClientKey, ClientResources> clientsMap = new ConcurrentHashMap<ClientKey, ClientResources>();
 	private boolean proxyActive = false;
 	private GalExtenderProxyFactory factory;
-	private Log logger = LogFactory.getLog(RestManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( RestManager.class );
 	private Component component;
 	private PropertiesManager _PropertiesManager = null;
 
@@ -90,7 +90,7 @@ public class RestManager {
 		try {
 			component.start();
 		} catch (Exception e) {
-			logger.error("Error starting Rest: " +e.getMessage());
+			LOG.error("Error starting Rest: ",e);
 		}
 	}
 
@@ -130,8 +130,7 @@ public class RestManager {
 			component.stop();
 		} catch (Exception e) {
 			if (_PropertiesManager.getDebugEnabled())
-				logger.error("Error stopping rest server component:"
-						+ e.getMessage());
+				LOG.error("Error stopping rest server component:",e);
 		}
 
 	}
@@ -202,9 +201,7 @@ public class RestManager {
 			if (clientKey.getPort() > -1)
 				myClientToReturn.setGatewayEventListener();
 			if (getPropertiesManager().getDebugEnabled()) {
-				logger.info("***************Get proxy client:");
-				logger.info("Port: " + clientKey.getPort());
-				logger.info("Address: " + clientKey.getAddress());
+				LOG.debug("Get proxy client: Port: " + clientKey.getPort()+" Address: " + clientKey.getAddress());
 			}
 
 		} else {
@@ -218,9 +215,7 @@ public class RestManager {
 			}
 
 			if (getPropertiesManager().getDebugEnabled()) {
-				logger.info("***************New Gal proxy client created.");
-				logger.info("Port: " + clientKey.getPort());
-				logger.info("Address: " + clientKey.getAddress());
+				LOG.debug("New Gal proxy client created. Port: " + clientKey.getPort() + "Address: " + clientKey.getAddress());
 			}
 
 		}
