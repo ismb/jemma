@@ -98,6 +98,7 @@ public class RestMessageListener implements MessageListener {
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
 							LOG.debug("Unmarshaled" + xml);
+						
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
 						resource = null;

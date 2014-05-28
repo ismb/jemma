@@ -136,7 +136,7 @@ public class DataManipulation {
 	
 	
 	/**
-	 * Starts from a {@code short[]} and returns a sub array, converted as
+	 * Starts from a {@code byte[]} and returns a sub array, converted as
 	 * {@code byte[]}.
 	 * 
 	 * @param array
@@ -150,99 +150,23 @@ public class DataManipulation {
 	public static byte[] subByteArray(short[] array, int start, int stop) {
 		byte[] toReturn = new byte[stop - start + 1];
 		for (int i = start; i <= stop; i++) {
-			toReturn[i - start] = (byte) array[i];
+			toReturn[i - start] = (byte)array[i];
 		}
 		return toReturn;
 	}
 
-
-	/**
-	 * Converts a {@code long} to a {@code List<Byte>}. A long is composed of
-	 * eight bytes. Numbering them from 1 (the most important) to 8 (the least
-	 * important), the resulting list will have all them placed in the same
-	 * order. The pad parameter indicate the minimum size of the resulting list.
-	 * In case its size is less then the one indicated in the pad parameter, a
-	 * number of leading zeros will be inserted.
-	 * 
-	 * @param toConvert
-	 *            the long to convert.
-	 * @param pad
-	 *            the minimum size of the returned {@code Byte}'s list.
-	 * @return the converted list.
-	 */
-	public static List<Byte> toByteList(Long toConvert, int pad) {
-		List<Byte> toReturn = new ArrayList<Byte>();
-
-		String inString = Long.toHexString(toConvert);
-
-		int length = inString.length();
-
-		// Characters must be even in number
-		if (length % 2 != 0) {
-			// System.out
-			// .print("Odd number of chars in conversion from Long to byte[] ");
-			inString = "0" + inString;
-			length = inString.length();
+	
+	public static short[] subShortArray(byte[] array, int start, int stop) {
+		short[] toReturn = new short[stop - start + 1];
+		for (int i = start; i <= stop; i++) {
+			toReturn[i - start] = array[i];
 		}
-
-		for (int start = 0; start < length; start += 2) {
-			toReturn.add((byte) Short.parseShort(
-					inString.substring(start, Math.min(length, start + 2)), 16));
-		}
-
-		if (toReturn.size() < pad) {
-			int diff = pad - toReturn.size();
-			for (int i = 0; i < diff; i++) {
-				toReturn.add(0, (byte) 0);
-			}
-		}
-
 		return toReturn;
 	}
 
-	/**
-	 * Converts a {@code Short} to a {@code List<Byte>}. A short is composed of
-	 * two bytes. Numbering them from 1 (the most important) to 2 (the least
-	 * important), the resulting list will have all them placed in the same
-	 * order. The pad parameter indicate the minimum size of the resulting list.
-	 * In case its size is less then the one indicated in the pad parameter, a
-	 * number of leading zeros will be inserted.
-	 * 
-	 * @param toConvert
-	 *            the short to convert.
-	 * @param pad
-	 *            the minimum size of the returned {@code Byte}'s list.
-	 * @return the converted list.
-	 */
-	public static List<Byte> toByteList(Short toConvert, int pad) {
-		List<Byte> toReturn = new ArrayList<Byte>();
+	
 
-		String inString = Integer.toHexString(toConvert);
-
-		int length = inString.length();
-
-		// Characters must be even in number
-		if (length % 2 != 0) {
-			// System.out
-			// .print("Odd number of chars in conversion from Long to byte[] ");
-			inString = "0" + inString;
-			length = inString.length();
-		}
-
-		for (int start = 0; start < length; start += 2) {
-			toReturn.add((byte) Short.parseShort(
-					inString.substring(start, Math.min(length, start + 2)), 16));
-		}
-
-		if (toReturn.size() < pad) {
-			int diff = pad - toReturn.size();
-			for (int i = 0; i < diff; i++) {
-				toReturn.add(0, (byte) 0);
-			}
-		}
-
-		return toReturn;
-	}
+	
 
 	/**
 	 * Converts a {@code long} to a {@code byte[]}. A long is composed of eight
@@ -370,9 +294,9 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void debugLogArrayHexRadix(String caption, List<Short> arr) {
+	public static void debugLogArrayShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
+		for (Short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
 		LOG.debug(caption + ":" + sb.toString());
@@ -387,13 +311,14 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void errorLogListHexRadix(String caption, List<Short> arr) {
+	public static void errorLogListShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
+		for (Short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
 		LOG.error(caption + ":" + sb.toString());
 	}
+
 
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
@@ -411,12 +336,14 @@ public class DataManipulation {
 		}
 		LOG.trace(caption + ":" + sb.toString());
 	}
+
 	
 	
-	public static void errorArrayHexRadix(String caption, short[] arr) {
+	
+	public static void errorArrayShortHexRadix(String caption, short[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (short s : arr) {
-			sb.append(String.format("%02X", s));
+			sb.append(String.format("%02X", s ));
 		}
 		LOG.error(caption + ":" + sb.toString());
 	}
@@ -431,10 +358,10 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadixDataReceived(String caption, short[] arr) {
+	public static void logArrayShortToHex(String caption, short[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (short s : arr) {
-			sb.append(String.format("%02X", s));
+			sb.append(String.format("%02X", s ));
 		}
 		LOG.trace(caption + sb.toString());
 	}
@@ -448,13 +375,40 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadix(String caption, byte[] arr) {
+	public static void logArrayBytesHexRadix(String caption, byte[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (byte s : arr) {
+			sb.append(String.format("%02X", s ));
+		}
+		LOG.trace(caption + ":" + sb.toString());
+	}
+	
+	
+	public static String byteArrayToHexStr(byte[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (byte s : arr) {
+			sb.append(String.format("%02X", s ));
+		}
+		return sb.toString();
+	}
+	
+	public static String shortArrayToHexStr(short[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (short s : arr) {
+			sb.append(String.format("%02X", s ));
+		}
+		return sb.toString();
+	}
+	
+	
+	public static void errorArrayBytesHexRadix(String caption, byte[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		LOG.trace(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
+	
 
 	/**
 	 * Produces an hexadecimal string representation of a given {@code byte[]}.
@@ -466,7 +420,7 @@ public class DataManipulation {
 	public static String convertBytesToString(byte[] arr) {
 		String sb = new String();
 		for (byte s : arr) {
-			sb += String.format("%02X", s);
+			sb += String.format("%02X", s );
 		}
 		return sb;
 	}
