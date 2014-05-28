@@ -319,8 +319,7 @@ public class DataManipulation {
 		LOG.error(caption + ":" + sb.toString());
 	}
 
-<<<<<<< HEAD
-=======
+
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
 	 * by a leading caption.
@@ -337,7 +336,7 @@ public class DataManipulation {
 		}
 		LOG.trace(caption + ":" + sb.toString());
 	}
->>>>>>> 3ac194050a2c8a2d22677fae575692078906438e
+
 	
 	
 	
@@ -407,7 +406,7 @@ public class DataManipulation {
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
 	}
 	
 

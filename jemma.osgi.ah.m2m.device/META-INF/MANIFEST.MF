@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506839191
+Bnd-LastModified: 1401284410649
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.m2m.device.M2MDeviceActi
@@ -24,17 +24,17 @@ Export-Package: org.energy_home.jemma.ah.m2m.device;uses:="org.energy_ho
  ="1.2.2"
 Import-Package: javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.
  annotation.adapters,javax.xml.bind.helpers,javax.xml.namespace,org.apac
- he.commons.codec;version="[1.3,2)",org.apache.commons.logging;version="
- [1.1,2)",org.apache.http;resolution:=optional;version="[4.1,5)",org.apa
- che.http.entity;resolution:=optional;version="[4.1,5)",org.eclipse.osgi
- .framework.console;version="1.0.0",org.energy_home.jemma.ah.m2m.device;
- resolution:=optional;version="[1.3,2)",org.energy_home.jemma.m2m;resolu
- tion:=optional;version="[1.3,2)",org.energy_home.jemma.m2m.connection;r
- esolution:=optional;version="[1.2,2)",org.energy_home.jemma.utils.datet
- ime;version="1.0.1",org.energy_home.jemma.utils.encrypt;version="[1.0.0
- ,1.1.0)",org.energy_home.jemma.utils.rest;version="[1.0.0,1.1.0)",org.e
- nergy_home.jemma.utils.xml.jaxb;version="[1.0.0,1.1.0)",org.osgi.framew
- ork;version="[1.5,2)"
+ he.commons.codec;version="[1.3,2)",org.apache.http;resolution:=optional
+ ;version="[4.1,5)",org.apache.http.entity;resolution:=optional;version=
+ "[4.1,5)",org.eclipse.osgi.framework.console;version="1.0.0",org.energy
+ _home.jemma.ah.m2m.device;resolution:=optional;version="[1.3,2)",org.en
+ ergy_home.jemma.m2m;resolution:=optional;version="[1.3,2)",org.energy_h
+ ome.jemma.m2m.connection;resolution:=optional;version="[1.2,2)",org.ene
+ rgy_home.jemma.utils.datetime;version="1.0.1",org.energy_home.jemma.uti
+ ls.encrypt;version="[1.0.0,1.1.0)",org.energy_home.jemma.utils.rest;ver
+ sion="[1.0.0,1.1.0)",org.energy_home.jemma.utils.xml.jaxb;version="[1.0
+ .0,1.1.0)",org.osgi.framework;version="[1.5,2)",org.slf4j;version="[1.7
+ .7,2)"
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0

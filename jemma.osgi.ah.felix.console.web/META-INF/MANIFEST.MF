@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506864890
+Bnd-LastModified: 1401284435073
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-ActivationPolicy: lazy
@@ -12,12 +12,12 @@ Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.9
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.management,javax.servlet;version="[2.5,3)",javax.s
- ervlet.http;version="[2.5,3)",org.apache.commons.logging;version="[1.1,
- 2)",org.apache.felix.webconsole;version="[3.1,4)",org.energy_home.jemma
- .ah.cluster.ah;version="[3.0,4)",org.energy_home.jemma.ah.hac;version="
- [3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)"
- ,org.energy_home.jemma.ah.hac.lib.ext;version="[3.4.0,3.5.0)",org.osgi.
- framework;version="[1.5,2)"
+ ervlet.http;version="[2.5,3)",org.apache.felix.webconsole;version="[3.1
+ ,4)",org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",org.energy_h
+ ome.jemma.ah.hac;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.l
+ ib;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.lib.ext;version
+ ="[3.4.0,3.5.0)",org.osgi.framework;version="[1.5,2)",org.slf4j;version
+ ="[1.7.7,2)"
 Require-Bundle: jemma.osgi.ah.hac.lib;bundle-version="[3.1.0,3.2.0)"
 Service-Component: OSGI-INF/HacWebCommandProvider.xml
 Tool: Bnd-1.50.0
