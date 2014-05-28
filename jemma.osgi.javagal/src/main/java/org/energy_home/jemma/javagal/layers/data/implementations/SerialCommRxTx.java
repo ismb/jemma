@@ -207,7 +207,6 @@ public class SerialCommRxTx implements IConnector {
 				in = null;
 			}
 			if (ou != null) {
-				// ou.flush();
 				ou.close();
 				ou = null;
 			}
