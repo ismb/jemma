@@ -19,5 +19,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" enabled="true" name="org.energy_home.jemma.javagal.gui.GalGuiHttpApplication">
    <implementation class="org.energy_home.jemma.javagal.gui.GalGuiHttpApplication"/>
    <reference name="HTTP" interface="org.osgi.service.http.HttpService" bind="setHttpService" unbind="unsetHttpService" cardinality="1..1"	policy="dynamic" />
-   <reference name="UserAdmin" interface="org.osgi.service.useradmin.UserAdmin" bind="setUserAdmin" unbind="unsetUserAdmin" cardinality="0..1"	policy="dynamic" /> 
+   <reference name="UserAdmin" interface="org.osgi.service.useradmin.UserAdmin" bind="setUserAdmin" unbind="unsetUserAdmin" cardinality="0..1"	policy="dynamic" />
+   <!--<property name="cacheControl" type="String" value="o-store,no-cache,must-revalidate"/>-->
 </scr:component>

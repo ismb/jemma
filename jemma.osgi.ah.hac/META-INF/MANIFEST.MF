@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400506841579
+Bnd-LastModified: 1401290914188
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.ah.internal.hac.Activator
@@ -23,7 +23,7 @@ Import-Package: javax.xml.parsers,org.apache.commons.codec;version="1.3.
  ="1.2.0",org.osgi.service.component;version="[1.1,2)",org.osgi.service.
  device;version="[1.1,2)",org.osgi.service.event;version="[1.2,2)",org.o
  sgi.service.useradmin;version="[1.1,2)",org.osgi.util.tracker;version="
- [1.4,2)",org.slf4j;version="[1.6,2)",org.w3c.dom,org.xml.sax
+ [1.4,2)",org.slf4j;version="[1.7.7,2)",org.w3c.dom,org.xml.sax
 Service-Component: OSGI-INF/connection_admin.xml,OSGI-INF/hac.xml,OSGI-I
  NF/haclocator.xml,OSGI-INF/hacconsole.xml,OSGI-INF/cmacommands.xml
 Tool: Bnd-1.50.0

@@ -748,6 +748,7 @@ public class GalController {
 								if (_lockerStartDevice.getId() > 0) {
 									if (PropertiesManager.getDebugEnabled())
 										logger.info("Gateway Started now!");
+									System.out.println("Gateway Started now!");
 
 								} else {
 									setGatewayStatus(GatewayStatus.GW_READY_TO_START);
