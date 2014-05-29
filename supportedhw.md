@@ -3,7 +3,7 @@ Verified Hardware
 <!-- Please use h3 headers (###) inside these files -->
 
 This pages provides a non-comprehensive list of devices verified with the JEMMA platform.
-More technical details are available in the (JEMMA Wiki](https://github.com/ismb/jemma/wiki/Verified-Hardware).
+More technical details are available in the [JEMMA Wiki](https://github.com/ismb/jemma/wiki/Verified-Hardware).
 
 ### ZigBee Dongles
 
