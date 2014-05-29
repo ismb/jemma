@@ -1,4 +1,4 @@
-Auto-generated site: 201405291833
+Auto-generated site: 201405291837
 
 ##########################
 Git status
@@ -12,7 +12,6 @@ Changes not staged for commit:
   (use "git checkout -- <file>..." to discard changes in working directory)
 
 	modified:   site-generation.log
-	modified:   stylesheets/EnergyAtHome2.css
 	modified:   supportedhw.md
 
 Untracked files:
@@ -50,6 +49,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit 63d898f0f44bd6882d9b5468b74e2f325fe8ae80
+Author: riccardo <tomasi@ismb.it>
+Date:   Thu May 29 18:33:15 2014 +0200
+
+    another test
+
 commit 3d8ed8afe1590e060c4a9d92c45a488066c553b9
 Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:30:55 2014 +0200
@@ -71,12 +76,6 @@ Date:   Thu May 29 18:28:07 2014 +0200
 commit ae6468b13f5b3500e789148082a61305c2d7a9e1
 Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:22:27 2014 +0200
-
-    minor test
-
-commit dd6a3b76e5e2fcc26a3a75d12ddbfa8c7ec22c37
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:10:32 2014 +0200
 
     minor test
 
