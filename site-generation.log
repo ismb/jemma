@@ -1,23 +1,60 @@
-Auto-generated site: 201404131647
+Auto-generated site: 201405291800
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
-# Changes not staged for commit:
-#   (use "git add <file>..." to update what will be committed)
-#   (use "git checkout -- <file>..." to discard changes in working directory)
-#
-#	modified:   getrel.md
-#	modified:   index.md
-#	modified:   site-generation.log
-#
+On branch gh-pages
+Your branch is up-to-date with 'origin/gh-pages'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   site-generation.log
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	Distribution/
+	jemma.launch/
+	jemma.osgi.ah.adapter.http/
+	jemma.osgi.ah.app/
+	jemma.osgi.ah.configurator/
+	jemma.osgi.ah.energyathome/
+	jemma.osgi.ah.felix.console.web/
+	jemma.osgi.ah.greenathome/
+	jemma.osgi.ah.hac.lib/
+	jemma.osgi.ah.hac/
+	jemma.osgi.ah.hap.client/
+	jemma.osgi.ah.io/
+	jemma.osgi.ah.m2m.device/
+	jemma.osgi.ah.upnp.energyathome/
+	jemma.osgi.ah.webui.base/
+	jemma.osgi.ah.webui.energyathome.demo/
+	jemma.osgi.ah.webui.energyathome/
+	jemma.osgi.ah.zigbee.appliances.generic/
+	jemma.osgi.ah.zigbee.appliances/
+	jemma.osgi.ah.zigbee/
+	jemma.osgi.javagal.gui/
+	jemma.osgi.javagal.json/
+	jemma.osgi.javagal.rest/
+	jemma.osgi.javagal/
+	jemma.osgi.utils/
+	supportedhw.html
+	supportedhw.md
+
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 99e16a1ac130ff38ed22029200ad62135835c645
+Author: riccardo <tomasi@ismb.it>
+Date:   Sun Apr 13 16:47:41 2014 +0200
+
+    generalized download links
 
 commit 5120542cc9cf6d9f1ac114c9be51e7162f21f4de
 Author: riccardo <riccardo.to@gmail.com>
@@ -42,10 +79,4 @@ Date:   Mon Feb 3 17:34:32 2014 +0100
     updated version number
 
 commit 3adbc4761e99ef3d9ab40b5a12a20d7e70aa57b3
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Wed Dec 18 19:28:09 2013 +0100
-
-    re-generated page
-
-commit c6426f7c521a1966bba745a9d37403815b78b53b
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
