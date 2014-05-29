@@ -1,4 +1,4 @@
-Auto-generated site: 201405291830
+Auto-generated site: 201405291833
 
 ##########################
 Git status
@@ -50,6 +50,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit 3d8ed8afe1590e060c4a9d92c45a488066c553b9
+Author: riccardo <tomasi@ismb.it>
+Date:   Thu May 29 18:30:55 2014 +0200
+
+    another test
+
 commit eeace749862753c1a817a3b10283edb76153050b
 Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:28:31 2014 +0200
@@ -73,10 +79,4 @@ Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:10:32 2014 +0200
 
     minor test
-
-commit acd6f742e273bede8a0d25a2f59b69def9532960
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:06:19 2014 +0200
-
-    minor mod
 

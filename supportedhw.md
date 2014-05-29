@@ -18,25 +18,13 @@ More technical details are available in the (JEMMA Wiki](https://github.com/ismb
 </thead>
 <tbody>
 	<tr>
-		<td >Name</td>
-		<td>Vendor</td>
-		<td>Description</td>
-		<td>Link</td>
-	</tr>
-	<tr>
-		<td >Name</td>
-		<td>Vendor</td>
-		<td>Description</td>
-		<td>Link</td>
+		<td >Flexkey</td>
+		<td>[FlexGrid](http://www.flexgrid.it/home_eng.html)</td>
+		<td>FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.</td>
+		<td>[Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html)</td>
 	</tr>
 </tbody>
 </table>
-
-
-
-| Name | Vendor | Description | Link |
-| :---:|:------:|:------------|:----:|
-| Flexkey | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.  | [Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html) |
 
 ### Gateways
 | Name | Vendor | Description | Link |
