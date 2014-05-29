@@ -211,13 +211,6 @@ h3 {
 
 }
 
-table, th, td {
-	border: 1px solid black;
-	background-color:red;
+table.hwtable td {
+	border: 2px solid black;
 }
-
-table, tr, td {
-	border: 1px solid black;
-	background-color:red;
-}
-
