@@ -56,7 +56,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	protected void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		installUsers();
+		
 	}
 
 	public void deactivate() {
@@ -65,7 +65,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-
+		installUsers();
 	}
 
 	protected void installUsers() {
