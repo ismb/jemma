@@ -8,7 +8,7 @@ More technical details are available in the (JEMMA Wiki](https://github.com/ismb
 ### ZigBee Dongles
 
 <table class="hwtable">
-<thead>
+<thead class="hwtable">
 	<tr>
 		<td >Name</td>
 		<td>Vendor</td>
