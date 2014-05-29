@@ -22,6 +22,8 @@ var LANG = {
 	             lblDeviceRecOWI: "Receiver On When Idle",
 	             lblDeviceSecSup: "Security Supported",
 	             lblDeviceAllAdd: "Allocate Address",
+	             lblDeviceDiscovered: "Discovered Time",
+	             
 	             lblDeviceAddress: "Address",
 	             lblDeviceCInfo: "Capability Information",
 		             lblActions: "Actions"
