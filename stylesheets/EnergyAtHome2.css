@@ -14,7 +14,7 @@ a > img { border: none; }
 .s4-titlelogo { padding: 0; }
 .s4-title { background-color: transparent; background-image: none; min-height: 0; padding-left: 0; margin-bottom: 10px; }
 .s4-title-inner { min-height: 0; }
-.s4-title h1 { display: none; }
+.s4-title h1 { display: none; }td
 .s4-title h2 { font-family: Helvetica Neue,Arial; font-size: 18px; font-weight: bold; color: #3f3d3f; }
 #onetidPageTitleSeparator { display: none; }
 .s4-title .s4-pagedescription { display: none; }
@@ -209,4 +209,8 @@ h3 {
 	font-size: 13px;
 	font-style: italic;
 
+}
+
+table, th, td {
+	border: 1px solid black;
 }
