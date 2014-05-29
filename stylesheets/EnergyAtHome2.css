@@ -213,4 +213,11 @@ h3 {
 
 table, th, td {
 	border: 1px solid black;
+	background-color:red;
 }
+
+table, tr, td {
+	border: 1px solid black;
+	background-color:red;
+}
+
