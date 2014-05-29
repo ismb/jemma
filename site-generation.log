@@ -1,4 +1,4 @@
-Auto-generated site: 201405291800
+Auto-generated site: 201405291806
 
 ##########################
 Git status
@@ -12,6 +12,7 @@ Changes not staged for commit:
   (use "git checkout -- <file>..." to discard changes in working directory)
 
 	modified:   site-generation.log
+	modified:   supportedhw.md
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
@@ -41,14 +42,18 @@ Untracked files:
 	jemma.osgi.javagal.rest/
 	jemma.osgi.javagal/
 	jemma.osgi.utils/
-	supportedhw.html
-	supportedhw.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit b03faefac0caa3ec8ce16c74b7390158f7d3ab59
+Author: riccardo <tomasi@ismb.it>
+Date:   Thu May 29 18:01:59 2014 +0200
+
+    test
 
 commit 99e16a1ac130ff38ed22029200ad62135835c645
 Author: riccardo <tomasi@ismb.it>
@@ -74,9 +79,3 @@ Date:   Mon Feb 3 08:40:02 2014 -0800
 commit 978aa1d98a61972b87a475834c0ec24c00ddc119
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 3 17:34:32 2014 +0100
-
-    added link to github on navigation bar
-    updated version number
-
-commit 3adbc4761e99ef3d9ab40b5a12a20d7e70aa57b3
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
