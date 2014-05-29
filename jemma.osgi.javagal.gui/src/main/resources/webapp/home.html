@@ -147,8 +147,6 @@
 		        	myMenu.newButton('btnViewDevice', myGestCPane.templateActivator, 'tplViewDevice');
 		        	myMenu.newButton('btnViewGraphNodes', myGestCPane.templateActivator, 'tplViewGraphNodes');
 		        	myMenu.newButton('btnManageNetwork', myGestCPane.templateActivator, 'tplManageNetwork');
-		    
-		    
 		        	$("#btnViewDevice").click();
 		    	
 		    
@@ -162,7 +160,7 @@
 		    <table>
 		        <tr>
 		            <td valign="middle" align="left" id="westTD">
-		            	Actual Channel Network: <span id="spChannelRadioHP"></span><br />
+		            	Network channel: <span id="spChannelRadioHP"></span><br />
 		            	Status of the Network: <span id="spZigBeeState"></span><br />
 		            </td>
 		            <td valign="middle" align="center"  style="background-color: red"><label class="title">Java GAL - Admin Console</label></td>
@@ -171,11 +169,11 @@
 		    </table>
 		    </div>
 		<div id="west" class="ui-layout-west">
-			<button id="btnVersionJGal"></button>
 			<button id="btnViewDevice"></button>
 			<button id="btnViewGraphNodes"></button>
-			<button id="btnManageNetwork"></button>
 			<button id="btnChannelNetwork"></button>
+			<button id="btnManageNetwork"></button>
+			<button id="btnVersionJGal"></button>
 		</div>
 		<div id="center" class="ui-layout-center">
 		</div>

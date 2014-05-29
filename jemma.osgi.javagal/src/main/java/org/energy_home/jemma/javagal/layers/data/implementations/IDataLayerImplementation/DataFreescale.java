@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -173,9 +174,7 @@ public class DataFreescale implements IDataLayer {
 							listOfCommandToSend.wait(timeoutLock);
 							_currentCommand = listOfCommandToSend.poll();
 							if (_currentCommand != null) {
-								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.info(">>> Sending: " + _currentCommand.ToHexString());
-								}
+
 								_key.write(_currentCommand);
 							}
 						}
@@ -205,21 +204,16 @@ public class DataFreescale implements IDataLayer {
 						}
 
 						if (_currentCommandReived != null) {
-
-							if (gal.getPropertiesManager().getDebugEnabled())
-								logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
-							byte[] msg = _currentCommandReived.getByteArray();
-							int size = _currentCommandReived.getByteCount(true);
-							short[] messageShort = new short[size];
-							for (int i = 0; i < size; i++)
-								messageShort[i] = (short) (msg[i] & 0xff);
-
 							synchronized (receivedDataQueue) {
-								for (int z = 0; z < size; z++)
-									receivedDataQueue.add(messageShort[z]);
+								if (gal.getPropertiesManager().getDebugEnabled())
+									logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
+								//System.out.println("<<<  Received data: " + _currentCommandReived.ToHexString());
+
+								short[] msg = Arrays.copyOfRange(_currentCommandReived.getShortArray(), 0, _currentCommandReived.getCount(true));
+								for (int z = 0; z < msg.length; z++)
+									receivedDataQueue.add(msg[z]);
 								receivedDataQueue.notify();
 							}
-
 						}
 
 					} catch (InterruptedException e) {
@@ -239,83 +233,78 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
+		synchronized (receivedDataQueue) {
+			short toremove = 0;
+			short _toremove = 0;
+			while (!receivedDataQueue.isEmpty()) {
+				if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+					receivedDataQueue.remove(0);
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						DataManipulation.errorLogListShortHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from", receivedDataQueue);
+					}
+				} else
+					break;
+			}
 
-		ChecksumControl csc = new ChecksumControl();
+			List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
+			if (gal.getPropertiesManager().getDebugEnabled())
+				DataManipulation.debugLogArrayShortHexRadix("Analyzing Raw Data", copyList);
 
-		int toremove = 0;
-		Short _toremove = 0;
-		while (!receivedDataQueue.isEmpty()) {
-			if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("Error, Data received not completed, waiting new raw data...");
+				return null;
+
+			}
+
+			short optCode = copyList.get(1);
+			short optGroup = copyList.get(2);
+
+			int payloadLenght = (copyList.get(3).intValue());
+
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.debug("Length: " + payloadLenght);
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.debug("Data received not completed, waiting new raw data...");
+				return null;
+			}
+
+			int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
+			ChecksumControl csc = new ChecksumControl();
+			csc.getCumulativeXor(copyList.get(1));
+			csc.getCumulativeXor(copyList.get(2));
+			csc.getCumulativeXor(copyList.get(3));
+			for (int i = 0; i < payloadLenght; i++)
+				csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+			if (csc.getLastCalulated() != messageCfc) {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					DataManipulation.errorLogListShortHexRadix("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from", receivedDataQueue);
 				receivedDataQueue.remove(0);
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					DataManipulation.errorLogListHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:", receivedDataQueue);
-				}
-			} else
-				break;
+				return null;
+
+			}
+
+			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+			copyList.remove(0);
+
+			short[] toReturn = new short[messageLenght];
+			toReturn[0] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[1] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[2] = (short) (copyList.remove(0) & 0xFF);
+			for (int i = 0; i < payloadLenght; i++)
+				toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
+
+			copyList.remove(0);
+
+			toremove += (4 + payloadLenght + 1);
+
+			for (int z = 0; z < toremove; z++)
+				receivedDataQueue.remove(0);
+
+			return toReturn;
 		}
-
-		List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
-
-		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.debugLogArrayHexRadix("Analyzing Raw Data", copyList);
-
-		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Error, Data received not completed, waiting new raw data...");
-			return null;
-
-		}
-
-		int optCode = copyList.get(1).intValue();
-		int optGroup = copyList.get(2).intValue();
-
-		Integer _HexLegth = copyList.get(3).intValue();
-		int payloadLenght = Integer.parseInt(Integer.toHexString(_HexLegth), 16);
-
-		if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Data received not completed, waiting new raw data...");
-			return null;
-		}
-
-		int messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght);
-
-		csc.resetLastCalculated();
-		int currCscControl = 0x00;
-		csc.getCumulativeXor(copyList.get(1));
-		csc.getCumulativeXor(copyList.get(2));
-		csc.getCumulativeXor(copyList.get(3));
-		for (int i = 0; i < payloadLenght; i++)
-			currCscControl = csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
-
-		if (currCscControl != messageCfc) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.errorLogListHexRadix("Error CSC Control: " + currCscControl + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0)) + " from:", receivedDataQueue);
-			receivedDataQueue.remove(0);
-			return null;
-
-		}
-
-		int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-		short[] toReturn = new short[messageLenght];
-
-		copyList.remove(0);
-
-		toReturn[0] = copyList.remove(0);
-		toReturn[1] = copyList.remove(0);
-		toReturn[2] = copyList.remove(0);
-
-		for (int i = 0; i < payloadLenght; i++)
-			toReturn[i + 3] = copyList.remove(0);
-		copyList.remove(0);
-
-		toremove += (4 + payloadLenght + 1);
-
-		for (int z = 0; z < toremove; z++)
-			receivedDataQueue.remove(0);
-
-		return toReturn;
-
 	}
 
 	public void processMessages(short[] message) throws Exception {
@@ -556,7 +545,7 @@ public class DataFreescale implements IDataLayer {
 			// ASK: jumped iMsgType, pNext, iDataSize, pData,
 			// iBufferNumber
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APSDE-DATA.Indication", message);
+				DataManipulation.logArrayShortToHex("Extracted APSDE-DATA.Indication", message);
 			if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null))
 				messageEvent.getDestinationAddress().setIeeeAddress(gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress()));
 
@@ -632,6 +621,7 @@ public class DataFreescale implements IDataLayer {
 				_zm.setSourceEndpoint(messageEvent.getSourceEndpoint());
 
 				byte[] data = messageEvent.getData();
+
 				// ZCL Header
 				// Frame control 8bit
 				// Manufacturer code 0/16bits
@@ -781,7 +771,7 @@ public class DataFreescale implements IDataLayer {
 			int asduLength = message[23];
 			messageEvent.setASDULength(asduLength);
 			messageEvent.setASDU(DataManipulation.subByteArray(message, 27, asduLength + 27));
-			messageEvent.setLinkQuality(message[asduLength + 28]);
+			messageEvent.setLinkQuality((short) message[asduLength + 28]);
 
 			/* Gestione callback */
 			gal.getMessageManager().InterPANMessageIndication(messageEvent);
@@ -791,7 +781,7 @@ public class DataFreescale implements IDataLayer {
 		/* APSDE-DATA.Confirm */
 		else if (_command == FreescaleConstants.APSDEDataConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APSDE-DATA.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APSDE-DATA.Confirm", message);
 
 			/* DestAddress + DestEndPoint + SourceEndPoint */
 			long destAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
@@ -823,7 +813,7 @@ public class DataFreescale implements IDataLayer {
 		/* INTERPAN-Data.Confirm */
 		else if (_command == FreescaleConstants.InterPANDataConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted INTERPAN-Data.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted INTERPAN-Data.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 
@@ -893,14 +883,14 @@ public class DataFreescale implements IDataLayer {
 			}
 			String logMessage = "Extracted ZTC-ERROR.Event Status:" + MessageStatus;
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix(logMessage, message);
+				DataManipulation.logArrayShortToHex(logMessage, message);
 		}
 
 		/* ZDP-Mgmt_Nwk_Update.Notify */
 
 		else if (_command == FreescaleConstants.ZDPMgmt_Nwk_UpdateNotify) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Nwk_Update.Notify", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Nwk_Update.Notify", message);
 
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -948,7 +938,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-SimpleDescriptor.Response */
 		else if (_command == FreescaleConstants.ZDPSimpleDescriptorResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-SimpleDescriptor.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-SimpleDescriptor.Response", message);
 			/* Address + EndPoint */
 			Address _add = new Address();
 			_add.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
@@ -970,7 +960,7 @@ public class DataFreescale implements IDataLayer {
 								SimpleDescriptor _sp = new SimpleDescriptor();
 								_sp.setApplicationProfileIdentifier(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
 								_sp.setApplicationDeviceIdentifier(DataManipulation.toIntFromShort((byte) message[11], (byte) message[10]));
-								_sp.setApplicationDeviceVersion(message[12]);
+								_sp.setApplicationDeviceVersion((short) message[12]);
 								int _index = 14;
 								short _numInpCluster = message[13];
 								for (int i = 0; i < _numInpCluster; i++) {
@@ -1002,7 +992,7 @@ public class DataFreescale implements IDataLayer {
 		/* APS-GetEndPointIdList.Confirm */
 		else if (_command == FreescaleConstants.APSGetEndPointIdListConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APS-GetEndPointIdList.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APS-GetEndPointIdList.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if ((pl.getType() == TypeMessage.GET_END_POINT_LIST)) {
@@ -1029,7 +1019,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-BIND.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtBindResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-BIND.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-BIND.Response", message);
 
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1063,7 +1053,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-UNBIND.Response */
 		else if (_command == FreescaleConstants.ZDPUnbindResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-UNBIND.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-UNBIND.Response", message);
 
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1096,7 +1086,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-Mgmt_Bind.Response */
 		else if (_command == FreescaleConstants.ZDPMgmt_BindResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Bind.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Bind.Response", message);
 
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1153,7 +1143,7 @@ public class DataFreescale implements IDataLayer {
 		/* APS-DeregisterEndPoint.Confirm */
 		else if (_command == FreescaleConstants.APSDeRegisterEndPointConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APS-DeregisterEndPoint.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APS-DeregisterEndPoint.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT)) {
@@ -1171,13 +1161,13 @@ public class DataFreescale implements IDataLayer {
 		/* APS-ZDP-Mgmt_Lqi.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtLqiResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO", message);
 
 		}
 		/* ZTC-ReadExtAddr.Confirm */
 		else if (_command == FreescaleConstants.ZTCReadExtAddrConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZTC-ReadExtAddr.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZTC-ReadExtAddr.Confirm", message);
 			long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
 			BigInteger _bi = BigInteger.valueOf(longAddress);
 			synchronized (listLocker) {
@@ -1198,7 +1188,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-IEEE_addr.response */
 		else if (_command == FreescaleConstants.ZDPIeeeAddrResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-IEEE_addr.response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-IEEE_addr.response", message);
 
 			long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
 			Integer shortAddress = DataManipulation.toIntFromShort((byte) message[13], (byte) message[12]);
@@ -1223,13 +1213,13 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-Mgmt_Leave.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtLeaveResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Leave.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Leave.Response", message);
 
 		}
 		/* ZDP-Active_EP_rsp.response */
 		else if (_command == FreescaleConstants.ZDPActiveEpResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Active_EP_rsp.response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Active_EP_rsp.response", message);
 			short Status = message[3];
 			Address _add = new Address();
 
@@ -1246,7 +1236,7 @@ public class DataFreescale implements IDataLayer {
 				int _EPCount = message[6];
 
 				for (int i = 0; i < _EPCount; i++) {
-					_toRes.add(message[7 + i]);
+					_toRes.add((short) message[7 + i]);
 					ActiveEndpoints _aep = new ActiveEndpoints();
 					_aep.setEndPoint(message[7 + i]);
 					_node.getActiveEndpoints().add(_aep);
@@ -1293,7 +1283,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-StopNwkEx.Confirm */
 		else if (_command == FreescaleConstants.ZTCStopNwkExConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-StopNwkEx.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-StopNwkEx.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if (pl.getType() == TypeMessage.STOP_NETWORK) {
@@ -1316,11 +1306,13 @@ public class DataFreescale implements IDataLayer {
 		/* NLME-GET.Confirm */
 		else if (_command == FreescaleConstants.NLMEGetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-GET.Confirm", message);
-			String _Key = String.format("%02X", message[4]);
+				DataManipulation.logArrayShortToHex("Extracted NLME-GET.Confirm", message);
+			String _Key = String.format("%02X", (byte) message[4]);
 			// Found APSDE-DATA.Confirm. Remove the lock
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
+					if (gal.getPropertiesManager().getDebugEnabled())
+						logger.debug("NLME-GET.Confirm KEY:" + _Key + "----" + pl.get_Key());
 					if (pl.getType() == TypeMessage.NMLE_GET && pl.get_Key().equalsIgnoreCase(_Key)) {
 						short _Length = (short) DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]);
 						byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
@@ -1340,7 +1332,7 @@ public class DataFreescale implements IDataLayer {
 		/* APSME_GET.Confirm */
 		else if (_command == FreescaleConstants.APSMEGetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APSME_GET.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APSME_GET.Confirm", message);
 			String _Key = String.format("%02X", message[4]);
 			// Found APSME_GET-DATA.Confirm. Remove the lock
 			synchronized (listLocker) {
@@ -1364,7 +1356,7 @@ public class DataFreescale implements IDataLayer {
 		// ZDP-StartNwkEx.Confirm
 		else if (_command == FreescaleConstants.ZTCStartNwkExConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-StartNwkEx.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-StartNwkEx.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if (pl.getType() == TypeMessage.START_NETWORK) {
@@ -1384,7 +1376,7 @@ public class DataFreescale implements IDataLayer {
 		/* APS-RegisterEndPoint.Confirm */
 		else if (_command == FreescaleConstants.APSRegisterEndPointConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APS-RegisterEndPoint.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APS-RegisterEndPoint.Confirm", message);
 			// Found APS-RegisterEndPoint.Confirm. Remove the lock
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1401,7 +1393,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZTC-ModeSelect.Confirm */
 		else if (_command == FreescaleConstants.ZTCModeSelectConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZTC-ModeSelect.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZTC-ModeSelect.Confirm", message);
 			short status = message[3];
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1418,58 +1410,58 @@ public class DataFreescale implements IDataLayer {
 		/* MacGetPIBAttribute.Confirm */
 		else if (_command == FreescaleConstants.MacGetPIBAttributeConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacGetPIBAttribute.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted MacGetPIBAttribute.Confirm", message);
 		}
 		/* MacBeaconNotify.Indication */
 		else if (_command == FreescaleConstants.MacBeaconNotifyIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacBeaconNotify.Indication", message);
+				DataManipulation.logArrayShortToHex("Extracted MacBeaconNotify.Indication", message);
 		}
 		/* MacBeaconStart.Indication */
 		else if (_command == FreescaleConstants.MacPollNotifyIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacBeaconStart.Indication", message);
+				DataManipulation.logArrayShortToHex("Extracted MacBeaconStart.Indication", message);
 		}
 		/* NLME-NETWORK-FORMATION.Confirmn */
 		else if (_command == FreescaleConstants.NLMENETWORKFORMATIONConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-NETWORK-FORMATION.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Confirm", message);
 		}
 		/* NLME-START-ROUTER.Request */
 		else if (_command == FreescaleConstants.NLMESTARTROUTERRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-NETWORK-FORMATION.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Confirm", message);
 		}
 		/* MacStart.Request */
 		else if (_command == FreescaleConstants.MacStartRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacStart.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted MacStart.Request", message);
 		}
 		/* MacStart.Confirm */
 		else if (_command == FreescaleConstants.MacStartConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacStart.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted MacStart.Confirm", message);
 		}
 		/* NLME-START-ROUTER.Confirm */
 		else if (_command == FreescaleConstants.NLMESTARTROUTERConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-START-ROUTER.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-START-ROUTER.Confirm", message);
 		}
 		/* NWK-ProcessSecureFrame.Report */
 		else if (_command == FreescaleConstants.NWKProcessSecureFrameReport) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NWK-ProcessSecureFrame.Report", message);
+				DataManipulation.logArrayShortToHex("Extracted NWK-ProcessSecureFrame.Report", message);
 		}
 		/* ZDP-Nwk-ProcessSecureFrame.Confirm */
 		else if (_command == FreescaleConstants.ZDPNwkProcessSecureFrameConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Nwk-ProcessSecureFrame.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Nwk-ProcessSecureFrame.Confirm", message);
 		}
 
 		/* BlackBox.WriteSAS.Confirm */
 		else if (_command == FreescaleConstants.BlackBoxWriteSASConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted BlackBox.WriteSAS.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted BlackBox.WriteSAS.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if (pl.getType() == TypeMessage.WRITE_SAS) {
@@ -1485,13 +1477,13 @@ public class DataFreescale implements IDataLayer {
 		/* ZTC-GetChannel.Confirm */
 		else if (_command == FreescaleConstants.ZTCGetChannelConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZTC-GetChannel.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted ZTC-GetChannel.Confirm", message);
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
 					if (pl.getType() == TypeMessage.CHANNEL_REQUEST) {
 						synchronized (pl) {
 							pl.getStatus().setCode(message[3]);
-							pl.set_objectOfResponse(message[4]);
+							pl.set_objectOfResponse((short) message[4]);
 							pl.notify();
 						}
 						break;
@@ -1503,7 +1495,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-NodeDescriptor.Response */
 		else if (_command == FreescaleConstants.ZDPNodeDescriptorResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-NodeDescriptor.Response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-NodeDescriptor.Response", message);
 			int _NWKAddressOfInterest = DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]);
 			Address _addressOfInterst = new Address();
 			_addressOfInterst.setNetworkAddress(_NWKAddressOfInterest);
@@ -1629,7 +1621,7 @@ public class DataFreescale implements IDataLayer {
 		/* NMLE-SET.Confirm */
 		else if (_command == FreescaleConstants.NMLESETConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NMLE-SET.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NMLE-SET.Confirm", message);
 			short status = message[3];
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1647,7 +1639,7 @@ public class DataFreescale implements IDataLayer {
 		/* APSME-SET.Confirm */
 		else if (_command == FreescaleConstants.APSMESetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted APSME-SET.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted APSME-SET.Confirm", message);
 			short status = message[3];
 			synchronized (listLocker) {
 				for (ParserLocker pl : listLocker) {
@@ -1666,7 +1658,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-Mgmt_Permit_Join.response */
 		else if (_command == FreescaleConstants.ZDPMgmt_Permit_JoinResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted ZDP-Mgmt_Permit_Join.response", message);
+				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Permit_Join.response", message);
 			short status = message[3];
 			String mess = "";
 
@@ -1709,7 +1701,7 @@ public class DataFreescale implements IDataLayer {
 		/* APS-ClearDeviceKeyPairSet.Confirm */
 		else if (_command == FreescaleConstants.APSClearDeviceKeyPairSetConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("APS-ClearDeviceKeyPairSet.Confirm", message);
+				DataManipulation.logArrayShortToHex("APS-ClearDeviceKeyPairSet.Confirm", message);
 			short status = message[3];
 			String mess = "";
 			switch (status) {
@@ -1736,7 +1728,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZTC-ClearNeighborTableEntry.Confirm */
 		else if (_command == FreescaleConstants.ZTCClearNeighborTableEntryConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("ZTC-ClearNeighborTableEntry.Confirm", message);
+				DataManipulation.logArrayShortToHex("ZTC-ClearNeighborTableEntry.Confirm", message);
 			short status = message[3];
 			String mess = "";
 			switch (status) {
@@ -1833,7 +1825,7 @@ public class DataFreescale implements IDataLayer {
 				throw new Exception("Extracted NLME-JOIN.Confirm: Invalid Status - " + _status);
 			}
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("NLME-JOIN.Confirm", message);
+				DataManipulation.logArrayShortToHex("NLME-JOIN.Confirm", message);
 		}
 
 		/* ZDO-NetworkState.Event */
@@ -1934,65 +1926,65 @@ public class DataFreescale implements IDataLayer {
 		/* MacSetPIBAttribute.Confirm */
 		else if (_command == FreescaleConstants.MacSetPIBAttributeConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacSetPIBAttribute.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted MacSetPIBAttribute.Confirm", message);
 		}
 		/* NLME-ENERGY-SCAN.Request */
 		else if (_command == FreescaleConstants.NLMEENERGYSCANRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-ENERGY-SCAN.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-ENERGY-SCAN.Request", message);
 		}
 		/* MacScan.Request */
 		else if (_command == FreescaleConstants.MacScanRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacScan.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted MacScan.Request", message);
 		}
 		/* MacScan.Confirm */
 		else if (_command == FreescaleConstants.MacScanConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacScan.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted MacScan.Confirm", message);
 		}
 		/* NLME-ENERGY-SCAN.confirm */
 		else if (_command == FreescaleConstants.NLMEENERGYSCANconfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-ENERGY-SCAN.confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-ENERGY-SCAN.confirm", message);
 		}
 		/* NLME-NETWORK-DISCOVERY.Request */
 		else if (_command == FreescaleConstants.NLMENETWORKDISCOVERYRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-NETWORK-DISCOVERY.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-DISCOVERY.Request", message);
 		}
 		/* MacScan.Request */
 		else if (_command == FreescaleConstants.MacScanRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted MacScan.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted MacScan.Request", message);
 		}
 		/* NLME-NETWORK-DISCOVERY.Confirm */
 		else if (_command == FreescaleConstants.NLMENetworkDiscoveryConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-NETWORK-DISCOVERY.Confirm", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-DISCOVERY.Confirm", message);
 		}
 		/* NLME-NETWORK-FORMATION.Request */
 		else if (_command == FreescaleConstants.NLMENETWORKFORMATIONRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-NETWORK-FORMATION.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Request", message);
 		}
 		/* NLME-SET.Request */
 		else if (_command == FreescaleConstants.NLMESetRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted NLME-SET.Request", message);
+				DataManipulation.logArrayShortToHex("Extracted NLME-SET.Request", message);
 		}
 		/* NLME-NWK-STATUS.Indication */
 		else if (_command == FreescaleConstants.NLMENwkStatusIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("NLME-NWK-STATUS.Indication", message);
+				DataManipulation.logArrayShortToHex("NLME-NWK-STATUS.Indication", message);
 		}
 		/* NLME-ROUTE-DISCOVERY.confirm */
 		else if (_command == FreescaleConstants.NLMENWKSTATUSIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("NLME-ROUTE-DISCOVERY.confirm", message);
+				DataManipulation.logArrayShortToHex("NLME-ROUTE-DISCOVERY.confirm", message);
 		} else {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayHexRadix("Extracted a Message not in Message Management", message);
+				DataManipulation.logArrayShortToHex("Extracted a Message not in Message Management", message);
 		}
 
 	}
@@ -2014,14 +2006,14 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
-		byte size = (byte) x.getByteCount(false);
+		byte size = (byte) x.getCount(false);
 		byte opgroup = (byte) ((commandCode >> 8) & 0xff);
 		byte opcode = (byte) (commandCode & 0xff);
 		x.addOPGroup(opgroup);
 		x.addOPCode(opcode);
 		x.addLength(size);
 		byte FSC = 0;
-		for (Byte b : x.getByteArray())
+		for (byte b : x.getByteArray())
 			FSC ^= b;
 		x.addStartSequance((byte) 0x02);
 		x.addByte(FSC);
@@ -2731,7 +2723,7 @@ public class DataFreescale implements IDataLayer {
 			logger.info("Channel readed from PropertiesManager:" + sai.getChannelMask());
 
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayHexRadix("Channel after conversion", _channel);
+			DataManipulation.logArrayBytesHexRadix("Channel after conversion", _channel);
 
 		for (byte x : DataManipulation.reverseBytes(_channel))
 			res.addByte(x);
@@ -4100,21 +4092,17 @@ public class DataFreescale implements IDataLayer {
 }
 
 class ChecksumControl {
-	int lastCalculated = 0x00;
+	byte lastCalculated = 0x00;
 
-	public int getCumulativeXor(byte b) {
-		return lastCalculated ^= (0xFF & b);
-	}
-
-	public int getCumulativeXor(int i) {
-		return lastCalculated ^= i;
+	public void getCumulativeXor(short i) {
+		lastCalculated ^= i;
 	}
 
 	public void resetLastCalculated() {
 		lastCalculated = 0x00;
 	}
 
-	public int getLastCalulated() {
+	public short getLastCalulated() {
 		return lastCalculated;
 	}
 }
