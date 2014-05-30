@@ -160,7 +160,9 @@
 				{
 					rowNum : 10000,
 					datatype : "local",
-					colNames : [ LANG.centerPane.lblDeviceNetAdd,
+					colNames : [ 
+					             LANG.centerPane.lblDeviceDiscovered,
+					             LANG.centerPane.lblDeviceNetAdd,
 							LANG.centerPane.lblDeviceIeeAdd,
 							LANG.centerPane.lblDeviceSIndex,
 							LANG.centerPane.lblDeviceAssDev,
@@ -171,10 +173,14 @@
 							LANG.centerPane.lblDeviceRecOWI,
 							LANG.centerPane.lblDeviceSecSup,
 							LANG.centerPane.lblDeviceAllAdd,
-							LANG.centerPane.lblDeviceDiscovered,
+							
 
 							LANG.centerPane.lblActions ],
-					colModel : [ {
+					colModel : [  {
+						name : 'tDiscovered',
+						width : 160,
+						align : "center"
+					},{
 						name : 'nAdd',
 						width : 165,
 						align : "center"
@@ -228,10 +234,6 @@
 						width : 160,
 						align : "center",
 						hidden : true
-					}, {
-						name : 'tDiscovered',
-						width : 160,
-						align : "center"
 					}, {
 						name : 'aAct',
 						width : 160,
@@ -338,7 +340,7 @@
 												idle : nObj.capabilityInformation.receiverOnWhenIdle,
 												security : nObj.capabilityInformation.securitySupported,
 												aAdd : nObj.capabilityInformation.allocateAddress,
-												tDiscovered : new Date(),
+												tDiscovered : true,
 												aAct : "<div id=\"deviceMenu\"><ul><li><a href=\"javascript:infoDevice('"
 														+ strNetworkAddress
 														+ "');\">Details</a></li><li><a href=\"javascript:leaveDevice('"
@@ -363,7 +365,7 @@
 												.each(
 														nodes,
 														function(key, value) {
-															
+															value.tDiscovered = false;
 															var found = false;
 															$
 																	.each(
@@ -405,7 +407,7 @@
 
 																			});
 															if (!found)
-																nodes.push(key);
+																nodes.push(value);
 
 														});
 									}

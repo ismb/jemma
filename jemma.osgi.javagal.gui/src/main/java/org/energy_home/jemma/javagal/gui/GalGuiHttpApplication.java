@@ -65,7 +65,8 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		installUsers();
+		this.installUsers();
+		
 	}
 
 	protected void installUsers() {
@@ -103,6 +104,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		setHttpContext(this);
 		super.bindHttpService(s);
 		log.info("JavaGalAdminGui started");
+		
 	}
 
 	protected synchronized void unsetHttpService(HttpService s) {
@@ -265,6 +267,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	private boolean allowUser(String username, String password) {
 		if (userAdmin != null) {
+			
 			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
 			if (user == null)
 				return false;
