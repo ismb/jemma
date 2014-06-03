@@ -261,9 +261,6 @@ public class DataFreescale implements IDataLayer {
 			short optGroup = copyList.get(2);
 
 			int payloadLenght = (copyList.get(3).intValue());
-
-			if (gal.getPropertiesManager().getDebugEnabled())
-				logger.debug("Length: " + payloadLenght);
 			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					logger.debug("Data received not completed, waiting new raw data...");
