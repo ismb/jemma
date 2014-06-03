@@ -7,7 +7,7 @@ Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal
+Bundle-SymbolicName: jemma.osgi.javagal;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.0.1
 Created-By: Apache Maven Bundle Plugin
