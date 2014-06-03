@@ -10,18 +10,15 @@
 				Cancel : function() {
 					$(this).dialog("close");
 				}
-			},
-			close : function() {
-				$(this).dialog("close");
 			}
 		});
-		
-		$('#dialog-form-device-details').dialog('option', 'buttons', [
-		                                                  {
-		                                                      text: 'Close',
-		                                                      click: function() { $(this).dialog('close'); }
-		                                                  }]);
-		
+
+		$('#dialog-form-device-details').dialog('option', 'buttons', [ {
+			text : 'Close',
+			click : function() {
+				$(this).dialog('close');
+			}
+		} ]);
 
 		$("#dialog-form-open-network").dialog({
 			autoOpen : false,
@@ -32,12 +29,11 @@
 				Cancel : function() {
 					btnCloseNetw();
 				}
-			},
-			close : function() {
-				btnCloseNetw();
 			}
 		});
 
+		$(".ui-dialog-titlebar-close").hide();
+		
 		function leaveDevice(shortAddress) {
 			var result = window.confirm(
 					'Are you sure you want to leave the selected device: 0x'
@@ -172,7 +168,8 @@
 						{
 							rowNum : 10000,
 							datatype : "local",
-							colNames : [ LANG.centerPane.lblDeviceDiscovered,
+							colNames : [ 
+							        LANG.centerPane.lblDeviceDiscovered,
 									LANG.centerPane.lblDeviceNetAdd,
 									LANG.centerPane.lblDeviceIeeAdd,
 									LANG.centerPane.lblDeviceSIndex,
@@ -184,12 +181,12 @@
 									LANG.centerPane.lblDeviceRecOWI,
 									LANG.centerPane.lblDeviceSecSup,
 									LANG.centerPane.lblDeviceAllAdd,
-									LANG.centerPane.lblActions ],
+									'','' ],
 							colModel : [ {
 								name : 'tDiscovered',
 								width : 160,
-								align : "center",
-								hidden : true
+								align : "center"
+								
 							}, {
 								name : 'nAdd',
 								width : 165,
@@ -245,8 +242,12 @@
 								align : "center",
 								hidden : true
 							}, {
-								name : 'aAct',
-								width : 160,
+								name : 'aActDetails',
+								width : 30,
+								align : "center"
+							},{
+								name : 'aActLeave',
+								width : 30,
 								align : "center"
 							}, ],
 							sortname : 'id',
@@ -255,29 +256,7 @@
 							sortorder : "desc",
 							autowidth : false,
 							subGrid : false,
-							pager : '#pager',
-							gridComplete : function() {
-								var ids = $(this).jqGrid("getDataIDs"), l = ids.length, i, rowid, status;
-								for (i = 0; i < l; i++) {
-									rowid = ids[i];
-									var rowData = $(this).jqGrid("getRowData",
-											rowid);
-									if (rowData.tDiscovered == "true") {
-										$('#' + $.jgrid.jqID(rowid))
-												.removeClass(
-														'ui-widget-content');
-										$('#' + $.jgrid.jqID(rowid)).addClass(
-												'ui-custom-row');
-									} else {
-										$('#' + $.jgrid.jqID(rowid)).addClass(
-												'ui-widget-content');
-										$('#' + $.jgrid.jqID(rowid))
-												.removeClass('ui-custom-row');
-									}
-
-								}
-
-							}
+							pager : '#pager'
 						});
 
 		$("#tblViewDevice").jqGrid('setGroupHeaders', {
@@ -292,6 +271,7 @@
 		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
 
 		var loadData = function() {
+			
 			$
 					.ajax({
 						url : DEFINEPATH.viewDevicePath
@@ -366,17 +346,15 @@
 												idle : nObj.capabilityInformation.receiverOnWhenIdle,
 												security : nObj.capabilityInformation.securitySupported,
 												aAdd : nObj.capabilityInformation.allocateAddress,
-												tDiscovered : true,
-												aAct : "<div id=\"deviceMenu\"><ul><li><a href=\"javascript:infoDevice('"
-														+ strNetworkAddress
-														+ "');\">Details</a></li><li><a href=\"javascript:leaveDevice('"
-														+ strNetworkAddress
-														+ "');\">Remove Device</li></ul></div>"
-
+												tDiscovered : "<img src='./css/images/newDevice.png' class='newDevice' />",
+												aActDetails : "<a href=\"javascript:infoDevice('" + strNetworkAddress + "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
+												aActLeave :   "<a href=\"javascript:leaveDevice('" + strNetworkAddress + "');\"><img src='./css/images/leave.png' class='gridButton' title='Device Leave' /></a>"
 											};
 
 											mydataViewDeviceNew
 													.push(currentNode);
+											
+											
 
 										}
 									}
@@ -390,7 +368,8 @@
 												.each(
 														nodes,
 														function(key, value) {
-															value.tDiscovered = false;
+															value.tDiscovered = "&nbsp;";
+															
 															var found = false;
 															$
 																	.each(
@@ -465,7 +444,7 @@
 			count = count - 1;
 			if (count <= 0) {
 				clearInterval(counter);
-				$("#dialog-form-open-network").dialog("close");
+				btnCloseNetw();
 				return;
 			} else {
 
@@ -529,7 +508,6 @@
 
 		};
 
-		
 		$("#detail_button_simple_descriptor")
 				.click(
 
@@ -775,14 +753,16 @@
 					</tr>
 				</table>
 			</fieldset>
-			<br/>
+			<br />
 			<fieldset>
 				<table style="width: 100%">
 					<tr>
 						<td valign="top" style="width: 150px"><label
 							for="detail_active_endpoints">Active EndPoints:</label></td>
 						<td valign="middle"><select name="detail_active_endpoints"
-							id="detail_active_endpoints"></select><a id="detail_button_simple_descriptor"><img src="./css/images/info.png" class="infoButton"></a></td>
+							id="detail_active_endpoints"></select><a
+							id="detail_button_simple_descriptor"><img
+								src="./css/images/info.png" class="infoButton" title="Simple Descriptor"></a></td>
 					</tr>
 
 
@@ -792,8 +772,8 @@
 						<td valign="top" style="width: 150px"><label
 							for="detail_profile">Profile:</label></td>
 						<td valign="top"><input type="text" name="detail_profile"
-							id="detail_profile" class="text ui-widget-content ui-corner-all" style="width: 250px" />
-						</td>
+							id="detail_profile" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
 
 					</tr>
 
@@ -803,8 +783,8 @@
 						<td valign="top" style="width: 150px"><label
 							for="detail_device">Device Type:</label></td>
 						<td valign="top"><input type="text" name="detail_device"
-							id="detail_device" class="text ui-widget-content ui-corner-all" style="width: 250px" />
-						</td>
+							id="detail_device" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
 
 					</tr>
 
