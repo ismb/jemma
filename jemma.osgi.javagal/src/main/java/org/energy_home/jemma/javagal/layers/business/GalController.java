@@ -17,15 +17,10 @@ package org.energy_home.jemma.javagal.layers.business;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ApsMessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
@@ -33,7 +28,6 @@ import org.energy_home.jemma.javagal.layers.business.implementations.GatewayEven
 import org.energy_home.jemma.javagal.layers.business.implementations.MessageManager;
 import org.energy_home.jemma.javagal.layers.business.implementations.ZdoManager;
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
-import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
@@ -73,6 +67,9 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.Version;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.WSNNodeList;
+import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Actual JavaGal Controller. Only one instance of this object can exists at a
@@ -93,8 +90,8 @@ public class GalController {
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
 	private List<CallbackEntry> listCallback = Collections.synchronizedList(new LinkedList<CallbackEntry>());
 	private List<GatewayDeviceEventEntry> listGatewayEventListener = Collections.synchronizedList(new LinkedList<GatewayDeviceEventEntry>());
-	//FIXME mass-rename logger to LOG when ready
-	private static final Logger logger = LoggerFactory.getLogger( GalController.class );
+	// FIXME mass-rename logger to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger(GalController.class);
 	private ApsMessageManager apsManager = null;
 
 	private MessageManager messageManager = null;
@@ -127,6 +124,10 @@ public class GalController {
 	 * also for the Rest Api
 	 */
 	private synchronized void initializeGAL() throws Exception {
+
+		if (getPropertiesManager().getDebugEnabled())
+			logger.info("Gal Version: " + getVersion().getManufacturerVersion());
+
 		/* Used for reset GAL */
 		if (DataLayer != null) {
 			if (getPropertiesManager().getDebugEnabled())
@@ -160,11 +161,14 @@ public class GalController {
 			}
 		} else
 			try {
-				//FIXME why trow and catch directly in the same place ?
+				// FIXME why trow and catch directly in the same place ?
 				throw new Exception("No Platform found!");
 			} catch (Exception e) {
-				if (getPropertiesManager().getDebugEnabled()) //FIXME Silent exception if debug not enabled ???
-					logger.error("Caught No Platform found",e);
+				if (getPropertiesManager().getDebugEnabled()) // FIXME Silent
+																// exception if
+																// debug not
+																// enabled ???
+					logger.error("Caught No Platform found", e);
 			}
 
 		/*
@@ -178,7 +182,7 @@ public class GalController {
 					executeAutoStart();
 				} catch (Exception e) {
 
-					logger.error("Error on autostart!",e);
+					logger.error("Error on autostart!", e);
 				}
 			} else {
 				short _EndPoint = 0;
@@ -1863,13 +1867,8 @@ public class GalController {
 	 */
 	public static Version getVersion() throws IOException, Exception, GatewayException {
 		Version v = new Version();
-		v.setVersionIdentifier((short) 0x01);
-		v.setFeatureSetIdentifier((short) 0x00);
-		String version = GalController.class.getPackage().getImplementationVersion();
-		if (version != null) {
-			v.setManufacturerVersion(GalController.class.getPackage().getImplementationVersion());
-			v.setVersionIdentifier(Short.parseShort(GalController.class.getPackage().getImplementationVersion()));
-		}
+		org.osgi.framework.Version version = FrameworkUtil.getBundle(GalController.class).getVersion();
+		v.setManufacturerVersion(version.getMajor() + "." + version.getMinor() + "." + version.getMicro());
 		v.getRPCProtocol().add(RPCProtocol.REST);
 		return v;
 	}
