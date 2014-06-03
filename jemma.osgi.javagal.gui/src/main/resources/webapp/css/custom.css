@@ -13,6 +13,18 @@
     margin-right: auto;
 }
 
+.infoButton{
+        width: 20px;
+        height: 20px;
+        cursor:pointer;
+        vertical-align:middle;
+    }​
+    
+    
+.ui-custom-row {
+   background: #66FF33;
+}
+
 #rdRadioChannel{
 	width: 90%;
 	margin:50 auto;
