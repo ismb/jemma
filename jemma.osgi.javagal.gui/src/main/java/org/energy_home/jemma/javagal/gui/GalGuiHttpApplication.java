@@ -48,37 +48,35 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private ComponentContext ctxt;
 	private String realm = "javaGalGui Login";
 	private String applicationWebAlias = "/javaGalWebGui";
-
 	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
 
-	protected void activate(ComponentContext ctxt) {
+	protected synchronized void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		
+		this.installUsers();
+		log.debug("Bundle Active now..");
+
 	}
 
-	public void deactivate() {
+	public synchronized void deactivate() {
+		this.ctxt = null;
+		this.bc = null;
 		log.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		this.installUsers();
-		
+
 	}
 
 	protected void installUsers() {
 		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
 		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
-		if (userAdmin != null) {
-			User adminUser = (User) createRole(userAdmin, username, Role.USER);
-			setUserCredentials(adminUser, password);
-		} else {
-			log.error("UserAdmin Null");
+		User adminUser = (User) createRole(userAdmin, username, Role.USER);
+		setUserCredentials(adminUser, password);
 
-		}
 	}
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
@@ -104,7 +102,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		setHttpContext(this);
 		super.bindHttpService(s);
 		log.info("JavaGalAdminGui started");
-		
+
 	}
 
 	protected synchronized void unsetHttpService(HttpService s) {
@@ -204,7 +202,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 							try {
 								String target = (String) session.getValue("login.target");
 								if (target != null) {
-									
+
 									response.sendRedirect(target);
 								} else {
 									response.sendRedirect(applicationWebAlias + "/home.html");
@@ -267,7 +265,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	private boolean allowUser(String username, String password) {
 		if (userAdmin != null) {
-			
+
 			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
 			if (user == null)
 				return false;
