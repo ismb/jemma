@@ -63,7 +63,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		registerResource("/", "webapp");
 		setHttpContext(this);
 		super.bindHttpService(httpService);
-		log.debug("Bundle Active now..");
+		log.debug("Bundle Active now: rootContext is: "  + applicationWebAlias);
 	}
 
 	public synchronized void deactivate() {
