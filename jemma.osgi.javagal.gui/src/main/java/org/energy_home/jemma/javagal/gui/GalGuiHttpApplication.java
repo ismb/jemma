@@ -46,8 +46,9 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private UserAdmin userAdmin = null;
 	private boolean enableSecurity = true;
 	private ComponentContext ctxt;
+	private HttpService httpService;
 	private String realm = "javaGalGui Login";
-	private String applicationWebAlias = "/javaGalWebGui";
+	private String applicationWebAlias = "";
 	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
@@ -56,8 +57,13 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
 		this.installUsers();
+		applicationWebAlias = "/" + this.ctxt.getProperties().get("rootContext").toString();
+		HttpAdapter = new HttpBinder();
+		setRootUrl(applicationWebAlias);
+		registerResource("/", "webapp");
+		setHttpContext(this);
+		super.bindHttpService(httpService);
 		log.debug("Bundle Active now..");
-
 	}
 
 	public synchronized void deactivate() {
@@ -71,6 +77,13 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	}
 
+	
+
+	protected synchronized void unsetUserAdmin(UserAdmin s) {
+		if (this.userAdmin == s)
+			this.userAdmin = null;
+	}
+
 	protected void installUsers() {
 		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
 		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
@@ -78,12 +91,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		setUserCredentials(adminUser, password);
 
 	}
-
-	protected synchronized void unsetUserAdmin(UserAdmin s) {
-		if (this.userAdmin == s)
-			this.userAdmin = null;
-	}
-
+	
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
 
 		Role role = ua.createRole(name, roleType);
@@ -95,18 +103,15 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	}
 
-	protected synchronized void setHttpService(HttpService s) {
-		HttpAdapter = new HttpBinder();
-		setRootUrl(applicationWebAlias);
-		registerResource("/", "webapp");
-		setHttpContext(this);
-		super.bindHttpService(s);
-		log.info("JavaGalAdminGui started");
+	protected void setHttpService(HttpService s) {
+		httpService = s;
+		
 
 	}
 
-	protected synchronized void unsetHttpService(HttpService s) {
+	protected void unsetHttpService(HttpService s) {
 		this.unbindHttpService(s);
+		httpService = null;
 	}
 
 	public String getMimeType(String page) {
@@ -129,17 +134,6 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		else
 			u = this.bc.getBundle().getResource(name);
 		return u;
-	}
-
-	private boolean getProperty(Map props, String name, boolean value) {
-		if (props == null) {
-			return value;
-		}
-		Object prop = props.get(name);
-		if (prop == null) {
-			return value;
-		}
-		return ((Boolean) prop).booleanValue();
 	}
 
 	@Override
