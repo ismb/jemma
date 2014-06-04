@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1401291010549
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1401875050105
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: ZigBee Network Manager
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.zigbee;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.zigbee
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.1.26
 Created-By: Apache Maven Bundle Plugin
@@ -89,5 +89,3 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,edu.emory
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- easymock-2.4.jar
