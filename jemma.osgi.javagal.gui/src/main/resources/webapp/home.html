@@ -163,7 +163,7 @@
 								var chR = data.detail.value[0];
 								$.jStorage.set("ChannelRadioValue", chR);
 								$('#spChannelRadioHP').text(chR);
-								$('#spZigBeeState').text('ENABLE').css('color',
+								$('#spZigBeeState').text('RUNNING').css('color',
 										'green');
 							} else {
 								//Visualizzo il messaggi odi errore
@@ -171,7 +171,7 @@
 										data.status.message);
 								$('#spChannelRadioHP')
 										.text(data.status.message);
-								$('#spZigBeeState').text('DISABLE').css(
+								$('#spZigBeeState').text('NOT RUNNING').css(
 										'color', 'red');
 							}
 						});
