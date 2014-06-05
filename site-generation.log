@@ -1,4 +1,4 @@
-Auto-generated site: 201405291840
+Auto-generated site: 201406051214
 
 ##########################
 Git status
@@ -14,40 +14,17 @@ Changes not staged for commit:
 	modified:   site-generation.log
 	modified:   supportedhw.md
 
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-	Distribution/
-	jemma.launch/
-	jemma.osgi.ah.adapter.http/
-	jemma.osgi.ah.app/
-	jemma.osgi.ah.configurator/
-	jemma.osgi.ah.energyathome/
-	jemma.osgi.ah.felix.console.web/
-	jemma.osgi.ah.greenathome/
-	jemma.osgi.ah.hac.lib/
-	jemma.osgi.ah.hac/
-	jemma.osgi.ah.hap.client/
-	jemma.osgi.ah.io/
-	jemma.osgi.ah.m2m.device/
-	jemma.osgi.ah.upnp.energyathome/
-	jemma.osgi.ah.webui.base/
-	jemma.osgi.ah.webui.energyathome.demo/
-	jemma.osgi.ah.webui.energyathome/
-	jemma.osgi.ah.zigbee.appliances.generic/
-	jemma.osgi.ah.zigbee.appliances/
-	jemma.osgi.ah.zigbee/
-	jemma.osgi.javagal.gui/
-	jemma.osgi.javagal.json/
-	jemma.osgi.javagal.rest/
-	jemma.osgi.javagal/
-	jemma.osgi.utils/
-
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 488ec21b93c9409072ff0b715cfb50c27b909dbd
+Author: riccardo <tomasi@ismb.it>
+Date:   Thu May 29 18:40:32 2014 +0200
+
+    minor fix
 
 commit 64fe13d932ee2a684a541786f40df8b6316a1e2f
 Author: riccardo <tomasi@ismb.it>
@@ -70,12 +47,6 @@ Date:   Thu May 29 18:30:55 2014 +0200
 commit eeace749862753c1a817a3b10283edb76153050b
 Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:28:31 2014 +0200
-
-    test
-
-commit 047563febdc8d707ac8b82ec090cd35164225b95
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:28:07 2014 +0200
 
     test
 
