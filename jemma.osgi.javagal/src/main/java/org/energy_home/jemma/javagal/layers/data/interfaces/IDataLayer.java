@@ -45,6 +45,8 @@ import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
  */
 public interface IDataLayer extends IFrameCallback {
 	
+	public void initialize();
+	
 	
 	/**
 	 * Gets the properties manager.

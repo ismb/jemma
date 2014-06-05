@@ -62,7 +62,7 @@ import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
  * 
  */
 public class GalExtenderProxy implements IGalExtender {
-	private static final Logger LOG = LoggerFactory.getLogger( GalExtenderProxyFactory.class );
+	private static final Logger LOG = LoggerFactory.getLogger(GalExtenderProxyFactory.class);
 	/**
 	 * The identification number for this proxy instance.
 	 */
@@ -105,20 +105,22 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public String getInfoBaseAttribute(short attrId) throws Exception, Exception, GatewayException {
+		String res = null;
 		switch (attrId) {
 		case 0xA1:
 		case 0x80:
 		case 0x9A:
-			return gal.NMLE_GetSync(attrId);
-
+			res = gal.NMLE_GetSync(attrId);
+			break;
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
-			return gal.APSME_GETSync(attrId);
-
+			res = gal.APSME_GETSync(attrId);
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}
+		return res;
 	}
 
 	@Override
@@ -126,7 +128,7 @@ public class GalExtenderProxy implements IGalExtender {
 	public long createCallback(Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 	}
-	
+
 	@Deprecated
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
@@ -434,12 +436,12 @@ public class GalExtenderProxy implements IGalExtender {
 		case 0xA1:
 		case 0x80:
 			gal.NMLE_SetSync(attrId, value);
-
+			break;
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
 			gal.APSME_SETSync(attrId, value);
-
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}

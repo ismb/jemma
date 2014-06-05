@@ -152,6 +152,7 @@ public class GalController {
 		/* End of reset section */
 		if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
 			DataLayer = new DataFreescale(this);
+			DataLayer.initialize();
 			try {
 
 				DataLayer.getIKeyInstance().initialize();
@@ -379,7 +380,7 @@ public class GalController {
 			result.setAddress(GalNode.get_node().getAddress());
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode o : _list) {
-			if (o.get_node().getAddress().getNetworkAddress() == get_GalNode().get_node().getAddress().getNetworkAddress()) {
+			if (o.get_node().getAddress().getNetworkAddress().equals(get_GalNode().get_node().getAddress().getNetworkAddress())) {
 				o.set_nodeServices(result);
 				result = o.get_nodeServices();
 				break;

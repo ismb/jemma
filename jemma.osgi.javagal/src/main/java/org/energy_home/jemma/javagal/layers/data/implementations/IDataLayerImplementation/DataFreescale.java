@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +78,12 @@ import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
  * 
  */
 public class DataFreescale implements IDataLayer {
-	Boolean destroy = false;
+	Boolean  destroy = false;
+	
 	GalController gal = null;
 	private IConnector _key = null;
-	//FIXME mass-rename logger to LOG when ready
-	private static final Logger logger = LoggerFactory.getLogger( DataFreescale.class );
+	// FIXME mass-rename logger to LOG when ready
+	private static final Logger logger = LoggerFactory.getLogger(DataFreescale.class);
 	private LinkedBlockingQueue<ByteArrayObject> listOfCommandToSend = new LinkedBlockingQueue<ByteArrayObject>();
 	private final List<ParserLocker> listLocker;
 	/**
@@ -104,17 +106,21 @@ public class DataFreescale implements IDataLayer {
 	 *             if an error occurs.
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
-		final int timeoutLock = 100;
 		gal = _gal;
+
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
 
+	}
+
+	public void initialize() {
+		final int timeoutLock = 100;
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
 				short[] tempArray = null;
-				while (!destroy) {
+				while (!getDestroy()) {
 					tempArray = null;
 					try {
 						synchronized (receivedDataQueue) {
@@ -168,7 +174,7 @@ public class DataFreescale implements IDataLayer {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommand;
-				while (!destroy) {
+				while (!getDestroy()) {
 					try {
 						synchronized (listOfCommandToSend) {
 							listOfCommandToSend.wait(timeoutLock);
@@ -196,7 +202,7 @@ public class DataFreescale implements IDataLayer {
 			@Override
 			public void run() {
 				ByteArrayObject _currentCommandReived = null;
-				while (!destroy) {
+				while (!getDestroy()) {
 					try {
 						synchronized (tmpDataQueue) {
 							tmpDataQueue.wait(timeoutLock);
@@ -207,7 +213,8 @@ public class DataFreescale implements IDataLayer {
 							synchronized (receivedDataQueue) {
 								if (gal.getPropertiesManager().getDebugEnabled())
 									logger.info("<<< Received data:" + _currentCommandReived.ToHexString());
-								//System.out.println("<<<  Received data: " + _currentCommandReived.ToHexString());
+								// System.out.println("<<<  Received data: " +
+								// _currentCommandReived.ToHexString());
 
 								short[] msg = Arrays.copyOfRange(_currentCommandReived.getShortArray(), 0, _currentCommandReived.getCount(true));
 								for (int z = 0; z < msg.length; z++)
@@ -257,9 +264,10 @@ public class DataFreescale implements IDataLayer {
 
 			}
 
-			short optCode = copyList.get(1);
-			short optGroup = copyList.get(2);
-
+			/*
+			 * final short optCode = copyList.get(1); final short optGroup =
+			 * copyList.get(2);
+			 */
 			int payloadLenght = (copyList.get(3).intValue());
 			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
 				if (gal.getPropertiesManager().getDebugEnabled())
@@ -959,9 +967,8 @@ public class DataFreescale implements IDataLayer {
 		byte _second = (byte) message[7];
 		/* Aps flags bits 0,1,2 */
 		byte _FrequencyBand = (byte) ((_second & 0xF8) >> 0x03);/*
-																 * bits 3 ,
-																 * 4 , 5 , 6
-																 * , 7
+																 * bits 3 , 4 ,
+																 * 5 , 6 , 7
 																 */
 		switch (_FrequencyBand) {
 		case 0x01:
@@ -1725,8 +1732,8 @@ public class DataFreescale implements IDataLayer {
 				/* DestAddress + DestEndPoint + SourceEndPoint */
 				/*
 				 * if (gal.getPropertiesManager().getDebugEnabled())
-				 * logger.info("APSDE-DATA.Confirm KEY SENT: " +
-				 * pl.get_Key() + " -- KEY Received: " + Key);
+				 * logger.info("APSDE-DATA.Confirm KEY SENT: " + pl.get_Key() +
+				 * " -- KEY Received: " + Key);
 				 */
 				if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 					synchronized (pl) {
@@ -1953,8 +1960,8 @@ public class DataFreescale implements IDataLayer {
 										gal.getNetworkcache().add(o);
 										Thread.sleep(1000);
 										/*
-										 * Reading the IEEEAddress of the
-										 * new node
+										 * Reading the IEEEAddress of the new
+										 * node
 										 */
 
 										if (gal.getPropertiesManager().getDebugEnabled())
@@ -2000,8 +2007,8 @@ public class DataFreescale implements IDataLayer {
 										_st.setCode((short) GatewayConstants.SUCCESS);
 										gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
 										/*
-										 * Saving the Panid in order to
-										 * leave the Philips light
+										 * Saving the Panid in order to leave
+										 * the Philips light
 										 */
 										gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
 										/**/
@@ -2150,7 +2157,7 @@ public class DataFreescale implements IDataLayer {
 			// Command identifier 8 bit
 			ByteArrayObject _header = new ByteArrayObject();
 			ByteArrayObject _payload = new ByteArrayObject();
-			if ((data[0] & 0x04) == 1)/* Check manufacturer code */
+			if ((data[0] & 0x04) == 0x04)/* Check manufacturer code */
 			{
 				_header.addByte(data[0]);// Frame control
 				_header.addByte(data[1]);// Manufacturer Code(1/2)
@@ -2252,7 +2259,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.APSME_SET);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2316,7 +2323,7 @@ public class DataFreescale implements IDataLayer {
 
 		lock.setType(TypeMessage.APSME_GET);
 		lock.set_Key(String.format("%02X", _AttID));
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2378,7 +2385,7 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NMLE_GET);
 		lock.set_Key(String.format("%02X", _AttID));
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2447,7 +2454,7 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.STOP_NETWORK);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2507,49 +2514,54 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-		String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
-		lock.set_Key(_key);
+		if (_DSTAdd != null) {
+			String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
+			lock.set_Key(_key);
 
-		Status status = null;
-		try {
-			synchronized (listLocker) {
-				listLocker.add(lock);
-			}
-			addToSendDataQueue(makeByteArrayFromApsMessage(message));
-			synchronized (lock) {
-				try {
-					lock.wait(timeout);
-				} catch (InterruptedException e) {
-
+			Status status = new Status();
+			try {
+				synchronized (listLocker) {
+					listLocker.add(lock);
 				}
-			}
-			status = lock.getStatus();
-			synchronized (listLocker) {
-				if (listLocker.contains(lock))
-					listLocker.remove(lock);
-			}
-		} catch (Exception e) {
-			synchronized (listLocker) {
-				if (listLocker.contains(lock))
-					listLocker.remove(lock);
-			}
+				addToSendDataQueue(makeByteArrayFromApsMessage(message));
+				synchronized (lock) {
+					try {
+						lock.wait(timeout);
+					} catch (InterruptedException e) {
 
-		}
-		if (status.getCode() == ParserLocker.INVALID_ID) {
+					}
+				}
+				status = lock.getStatus();
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+						listLocker.remove(lock);
+				}
+			} catch (Exception e) {
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+						listLocker.remove(lock);
+				}
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				logger.error("Timeout expired in send aps message");
 			}
-			throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
-		} else {
-			if (status.getCode() != 0) {
+			if (status.getCode() == ParserLocker.INVALID_ID) {
+
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Returned Status: " + status.getCode());
+					logger.error("Timeout expired in send aps message");
 				}
-				throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+				throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
+			} else {
+				if (status.getCode() != 0) {
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info("Returned Status: " + status.getCode());
+					}
+					throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 
+				}
+				return status;
 			}
-			return status;
+		} else {
+			throw new GatewayException("Error on  APSDE-DATA.Request.Request. Destination address is null");
+
 		}
 	}
 
@@ -2585,7 +2597,7 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CONFIGURE_END_POINT);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2779,7 +2791,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.MODE_SELECT);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -2862,7 +2874,7 @@ public class DataFreescale implements IDataLayer {
 			}
 			ParserLocker lock = new ParserLocker();
 			lock.setType(TypeMessage.START_NETWORK);
-			Status status = null;
+			Status status = new Status();
 			try {
 				synchronized (listLocker) {
 					listLocker.add(lock);
@@ -3012,7 +3024,7 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.WRITE_SAS);
-		Status status = null;
+		Status status = new Status();
 		try {
 
 			synchronized (listLocker) {
@@ -3073,7 +3085,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.PERMIT_JOIN);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3145,7 +3157,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CHANNEL_REQUEST);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3196,7 +3208,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.READ_EXT_ADDRESS);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3263,7 +3275,7 @@ public class DataFreescale implements IDataLayer {
 		String Key = String.format("%04X", shortAddress);
 		lock.set_Key(Key);
 		lock.setType(TypeMessage.READ_IEEE_ADDRESS);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3331,7 +3343,7 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.NODE_DESCRIPTOR);
 		String __Key = String.format("%04X", addrOfInterest.getNetworkAddress());
 		lock.set_Key(__Key);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3399,7 +3411,7 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ACTIVE_EP);
 		lock.set_Key(String.format("%04X", aoi.getNetworkAddress()));
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3496,7 +3508,7 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.DEREGISTER_END_POINT);
-		Status status = null;
+		Status status = new Status();
 
 		try {
 			synchronized (listLocker) {
@@ -3549,7 +3561,7 @@ public class DataFreescale implements IDataLayer {
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_END_POINT_LIST);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3622,7 +3634,7 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_SIMPLE_DESCRIPTOR);
 		lock.set_Key(Key);
-		Status status = null;
+		Status status = new Status();
 
 		try {
 			synchronized (listLocker) {
@@ -3709,7 +3721,7 @@ public class DataFreescale implements IDataLayer {
 																					 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_BINDINGS);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3810,7 +3822,7 @@ public class DataFreescale implements IDataLayer {
 																				 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ADD_BINDING);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -3912,7 +3924,7 @@ public class DataFreescale implements IDataLayer {
 																					 */
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.REMOVE_BINDING);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4007,7 +4019,7 @@ public class DataFreescale implements IDataLayer {
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.NLMEClearDeviceKeyPairSet);
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_DEVICE_KEY_PAIR_SET);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4067,7 +4079,7 @@ public class DataFreescale implements IDataLayer {
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.NLMEClearNeighborTableEntry);
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_NEIGHBOR_TABLE_ENTRY);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4133,7 +4145,7 @@ public class DataFreescale implements IDataLayer {
 		}
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NMLE_SET);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4189,7 +4201,7 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.LQI_REQ);
 		lock.set_Key(__Key);
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4246,7 +4258,7 @@ public class DataFreescale implements IDataLayer {
 		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
-		Status status = null;
+		Status status = new Status();
 		try {
 			synchronized (listLocker) {
 				listLocker.add(lock);
@@ -4290,22 +4302,16 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public void destroy() {
-		synchronized (destroy) {
-			destroy = true;
-		}
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-
-		}
-
+	public synchronized void destroy() {
+		destroy = true;
+		
 	}
 
 	@Override
 	public synchronized boolean getDestroy() {
 		return destroy;
 	}
+
 }
 
 class ChecksumControl {

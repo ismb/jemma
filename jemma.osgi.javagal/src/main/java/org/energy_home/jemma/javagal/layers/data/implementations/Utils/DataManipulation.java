@@ -418,11 +418,11 @@ public class DataManipulation {
 	 * @return the produced hexadecimal string representation.
 	 */
 	public static String convertBytesToString(byte[] arr) {
-		String sb = new String();
+		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
-			sb += String.format("%02X", s );
+			sb.append(String.format("%02X", s ));
 		}
-		return sb;
+		return sb.toString();
 	}
 
 	
