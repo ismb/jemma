@@ -45,44 +45,52 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private boolean useBasic = false;
 	private UserAdmin userAdmin = null;
 	private boolean enableSecurity = true;
+	private boolean userCreated = false;
 	private ComponentContext ctxt;
+	private HttpService httpService;
 	private String realm = "javaGalGui Login";
-	private String applicationWebAlias = "/javaGalWebGui";
-
+	private String applicationWebAlias = "";
 	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
 
-	protected void activate(ComponentContext ctxt) {
+	protected synchronized void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		
+		applicationWebAlias = "/" + this.ctxt.getProperties().get("rootContext").toString();
+		HttpAdapter = new HttpBinder();
+		setRootUrl(applicationWebAlias);
+		registerResource("/", "webapp");
+		setHttpContext(this);
+		super.bindHttpService(httpService);
+
+		log.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
 	}
 
-	public void deactivate() {
+	public synchronized void deactivate() {
+		this.ctxt = null;
+		this.bc = null;
+		userCreated = false;
 		log.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		installUsers();
-	}
+		
 
-	protected void installUsers() {
-		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
-		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
-		if (userAdmin != null) {
-			User adminUser = (User) createRole(userAdmin, username, Role.USER);
-			setUserCredentials(adminUser, password);
-		} else {
-			log.error("UserAdmin Null");
-
-		}
 	}
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
 		if (this.userAdmin == s)
 			this.userAdmin = null;
+	}
+
+	protected void installUsers() {
+		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
+		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
+		User adminUser = (User) createRole(userAdmin, username, Role.USER);
+		setUserCredentials(adminUser, password);
+		userCreated = true;
 	}
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
@@ -96,17 +104,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	}
 
-	protected synchronized void setHttpService(HttpService s) {
-		HttpAdapter = new HttpBinder();
-		setRootUrl(applicationWebAlias);
-		registerResource("/", "webapp");
-		setHttpContext(this);
-		super.bindHttpService(s);
-		log.info("JavaGalAdminGui started");
+	protected void setHttpService(HttpService s) {
+		httpService = s;
+
 	}
 
-	protected synchronized void unsetHttpService(HttpService s) {
+	protected void unsetHttpService(HttpService s) {
 		this.unbindHttpService(s);
+		httpService = null;
 	}
 
 	public String getMimeType(String page) {
@@ -129,17 +134,6 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		else
 			u = this.bc.getBundle().getResource(name);
 		return u;
-	}
-
-	private boolean getProperty(Map props, String name, boolean value) {
-		if (props == null) {
-			return value;
-		}
-		Object prop = props.get(name);
-		if (prop == null) {
-			return value;
-		}
-		return ((Boolean) prop).booleanValue();
 	}
 
 	@Override
@@ -202,7 +196,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 							try {
 								String target = (String) session.getValue("login.target");
 								if (target != null) {
-									
+
 									response.sendRedirect(target);
 								} else {
 									response.sendRedirect(applicationWebAlias + "/home.html");
@@ -264,7 +258,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	private boolean allowUser(String username, String password) {
+		
+		
 		if (userAdmin != null) {
+			if (!userCreated)
+				installUsers();
 			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
 			if (user == null)
 				return false;

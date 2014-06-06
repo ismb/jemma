@@ -143,6 +143,10 @@
 								$("#btn_cancel_" + rowId + "_tblManageNetwork6")
 										.hide();
 
+								
+								
+								
+								
 								/*
 								$("#btn_save_" + rowId + "_tblManageNetwork7").hide();
 								$("#btn_cancel_" + rowId + "_tblManageNetwork7").hide();
@@ -754,29 +758,18 @@
 																				}
 																			} ],
 																	viewrecords : true,
-																	caption : 'DEFAULT START-UP ATTRIBUTE SET',
 																	autowidth : true,
+																	caption : null,
 																	subGrid : false,
-																	height : "auto"/*,
-																									          gridComplete: function(){
-																									      	  	var ids = jQuery("#tblManageNetwork1").jqGrid('getDataIDs');
-																									      	  	if (ids.length > 0){
-																										      		for(var i=0;i < ids.length;i++){
-																										      			var rowId = ids[i];
-																										      			ae = "<div style='text-align: center;'>";
-																										      			be = "	<input style='height:22px;width:70px;' type='button' id='btn_edit_" + rowId + "_tblManageNetwork1' value='Edit' onclick=\"editData('tblManageNetwork1', '"+rowId+"');\"  />"; 
-																										    			se = "	<input style='height:22px;width:70px;' type='button' id='btn_save_" + rowId + "_tblManageNetwork1' value='Save' onclick=\"validateData('tblManageNetwork1', '"+rowId+"');\"  />";  
-																										    			ce = "	<input style='height:22px;width:70px;' type='button' id='btn_cancel_" + rowId + "_tblManageNetwork1' value='Cancel' onclick=\"restoreData('tblManageNetwork1', '"+rowId+"');\" />"; 
-																										    			de = "</div>"; 
-																										      			jQuery("#tblManageNetwork1").jqGrid('setRowData', rowId, {act:ae+be+se+ce+de});
-																										      		}	
-																									      	  		}
-																										      	  }*/
+																	height : "auto"
 																});
 
+												
+												
 												$("#tblManageNetwork2")
 														.jqGrid(
 																{
+																
 																	rowNum : 10000,
 																	datatype : "local",
 																	colNames : [ LANG.networkManage.lblNetworkKey ], //'Actions', 
@@ -816,6 +809,7 @@
 												$("#tblManageNetwork3")
 														.jqGrid(
 																{
+																	
 																	rowNum : 10000,
 																	datatype : "local",
 																	colNames : [
@@ -885,6 +879,7 @@
 												$("#tblManageNetwork4")
 														.jqGrid(
 																{
+																	
 																	rowNum : 10000,
 																	datatype : "local",
 																	colNames : [
@@ -937,6 +932,7 @@
 												$("#tblManageNetwork5")
 														.jqGrid(
 																{
+																	
 																	rowNum : 10000,
 																	datatype : "local",
 																	colNames : [
@@ -1290,7 +1286,7 @@
 																				$(
 																						'#spZigBeeState')
 																						.text(
-																								'ATTIVA')
+																								'RUNNING')
 																						.css(
 																								'color',
 																								'green');
@@ -1307,7 +1303,7 @@
 																				$(
 																						'#spZigBeeState')
 																						.text(
-																								'DISATTIVA')
+																								'NOT RUNNING')
 																						.css(
 																								'color',
 																								'red');
@@ -1330,7 +1326,7 @@
 							$('#btnRestartGal2').click(function(event) {fchangeStatuGal('btnRestartGal2');});
 							
 										 
-
+							
 								
 							
 						});

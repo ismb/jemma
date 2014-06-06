@@ -40,6 +40,8 @@ import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 /**
  * RxTx implementation of the {@link IConnector}.
  * 
@@ -48,8 +50,9 @@ import org.energy_home.jemma.zgd.jaxb.Status;
  * 
  */
 public class SerialCommRxTx implements IConnector {
-	private Boolean connected = false;
-	private Boolean ignoreMessage = false;
+	private Boolean connected = Boolean.FALSE;
+
+	private Boolean ignoreMessage = Boolean.FALSE;
 	private SerialPort serialPort;
 	private final static Log logger = LogFactory.getLog(SerialCommRxTx.class);
 	CommPortIdentifier portIdentifier;
@@ -93,7 +96,7 @@ public class SerialCommRxTx implements IConnector {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-
+			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				logger.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
@@ -123,9 +126,7 @@ public class SerialCommRxTx implements IConnector {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						logger.info("Connection on " + portName + " established");
 
-					synchronized (connected) {
-						connected = true;
-					}
+					setConnected(true);
 
 					return true;
 				} else {
@@ -159,6 +160,11 @@ public class SerialCommRxTx implements IConnector {
 
 	}
 
+	private synchronized void setConnected(boolean value) {
+		connected = value;
+
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -171,7 +177,8 @@ public class SerialCommRxTx implements IConnector {
 					ou.flush();
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
-					//System.out.println(">>> Sent: " + DataManipulation.byteArrayToHexStr(tosend));
+					// System.out.println(">>> Sent: " +
+					// DataManipulation.byteArrayToHexStr(tosend));
 
 				} catch (Exception e) {
 
@@ -198,9 +205,7 @@ public class SerialCommRxTx implements IConnector {
 	 */
 	@Override
 	public void disconnect() throws IOException {
-		synchronized (connected) {
-			connected = false;
-		}
+		setConnected(false);
 		if (serialPort != null) {
 			if (in != null) {
 				in.close();
@@ -236,21 +241,21 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						int pos = 0;
 						Integer data = 0;
-						short[] buffer = new short[1024];
+						short[] buffer = new short[5000];
 
-						while (in.available() > 0) {
-							try {
-								data = in.read();
-								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
-								pos = pos + 1;
-							} catch (Exception e) {
-								e.printStackTrace();
+						synchronized (in) {
+							while (in.available() > 0) {
+								try {
+									data = in.read();
+									buffer[pos] = (short) (data.byteValue() & 0xFFFF);
+									pos = pos + 1;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						}
-						
-						
-						if (!ignoreMessage) {
-							
+
+						if (!getIgnoreMessage()) {
 							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
@@ -269,6 +274,16 @@ public class SerialCommRxTx implements IConnector {
 		}
 	}
 
+	private synchronized void setIgnoreMessage(boolean value) {
+		ignoreMessage = value;
+
+	}
+
+	private synchronized boolean getIgnoreMessage() {
+		return ignoreMessage;
+
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -279,18 +294,14 @@ public class SerialCommRxTx implements IConnector {
 			throw new Exception("Unable to connect to serial port!");
 		}
 
-		synchronized (ignoreMessage) {
-			ignoreMessage = true;
-		}
+		setIgnoreMessage(true);
 		DataLayer.cpuReset();
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Waiting 3,5 seconds after command CPUReset...");
 		Thread.sleep(3500);
 
 		disconnect();
-		synchronized (ignoreMessage) {
-			ignoreMessage = false;
-		}
+		setIgnoreMessage(false);
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			logger.info("Clear buffer after CPUReset...");
 		DataLayer.clearBuffer();
