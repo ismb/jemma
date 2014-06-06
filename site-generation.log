@@ -1,4 +1,4 @@
-Auto-generated site: 201406051214
+Auto-generated site: 201406060942
 
 ##########################
 Git status
@@ -19,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 49b4bd1d842c3405e707304da46760d748d022f6
+Author: riccardo <tomasi@ismb.it>
+Date:   Thu Jun 5 12:14:52 2014 +0200
+
+    added inputs from Andrea
 
 commit 488ec21b93c9409072ff0b715cfb50c27b909dbd
 Author: riccardo <tomasi@ismb.it>
@@ -43,10 +49,4 @@ Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:30:55 2014 +0200
 
     another test
-
-commit eeace749862753c1a817a3b10283edb76153050b
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:28:31 2014 +0200
-
-    test
 

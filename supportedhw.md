@@ -126,10 +126,10 @@ More technical details are available in the [JEMMA Wiki](https://github.com/ismb
 		<td>[Official website](http://www.centralite.com/pearl.php)</td>
 	</tr>
 	<tr>
-		<td>Thermostat and Humidity sensor</td>
-		<td>RELOC</td>
-		<td>TODO_AndreaRicci </td>
-		<td>TODO_AndreaRicci</td>
+		<td>RELOC RED4S</td>
+		<td>[RELOC](http://www.reloc.it)</td>
+		<td>RELOC RED4S is a state-of-the-art multiple environmental sensor unit. RED4S device is a Home Automation 1.2 Golden Unit, featuring temperature, humidity, barometric pressure and ambient light sensors. RED4S is battery powered (2x standard 1.5V AA batteries) and provides user with an easy interface based on multicolor LED indicator and single button.</td>
+		<td>RED4S sensor data reporting can be fully configured by means of JEMMA framework, selecting an event-driven basis or monitoring at regular intervals.</td>
 	</tr>
 	<tr>
 		<td>??</td>
