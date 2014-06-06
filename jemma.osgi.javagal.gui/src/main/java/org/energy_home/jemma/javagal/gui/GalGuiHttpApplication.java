@@ -45,6 +45,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private boolean useBasic = false;
 	private UserAdmin userAdmin = null;
 	private boolean enableSecurity = true;
+	private boolean userCreated = false;
 	private ComponentContext ctxt;
 	private HttpService httpService;
 	private String realm = "javaGalGui Login";
@@ -56,28 +57,28 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	protected synchronized void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		this.installUsers();
 		applicationWebAlias = "/" + this.ctxt.getProperties().get("rootContext").toString();
 		HttpAdapter = new HttpBinder();
 		setRootUrl(applicationWebAlias);
 		registerResource("/", "webapp");
 		setHttpContext(this);
 		super.bindHttpService(httpService);
-		log.debug("Bundle Active now: rootContext is: "  + applicationWebAlias);
+
+		log.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
 	}
 
 	public synchronized void deactivate() {
 		this.ctxt = null;
 		this.bc = null;
+		userCreated = false;
 		log.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
+		
 
 	}
-
-	
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
 		if (this.userAdmin == s)
@@ -89,9 +90,9 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
 		User adminUser = (User) createRole(userAdmin, username, Role.USER);
 		setUserCredentials(adminUser, password);
-
+		userCreated = true;
 	}
-	
+
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
 
 		Role role = ua.createRole(name, roleType);
@@ -105,7 +106,6 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	protected void setHttpService(HttpService s) {
 		httpService = s;
-		
 
 	}
 
@@ -258,8 +258,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	private boolean allowUser(String username, String password) {
+		
+		
 		if (userAdmin != null) {
-
+			if (!userCreated)
+				installUsers();
 			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
 			if (user == null)
 				return false;

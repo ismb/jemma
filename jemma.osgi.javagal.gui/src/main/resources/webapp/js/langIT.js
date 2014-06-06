@@ -1,10 +1,10 @@
 var LANG = {
 	NA : "ND",
-	menu : {btnChannelNetwork : "Network Channel",
+	menu : {btnChannelNetwork : "Advanced Controls",
 		    btnVersionJGal : "Java Gal Version",
 		    btnViewDevice : "Network Devices",
 		    btnViewGraphNodes : "Network Topology",
-		    btnManageNetwork : "Network Management"
+		    btnManageNetwork : "ZigBee Network info"
 	},
 	centerPane: {btnAutomaticScan : "Automatic",
 	             btnManualScan : "Change",
