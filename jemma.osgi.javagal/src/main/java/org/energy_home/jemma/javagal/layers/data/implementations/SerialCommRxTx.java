@@ -96,7 +96,7 @@ public class SerialCommRxTx implements IConnector {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-
+			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				logger.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
