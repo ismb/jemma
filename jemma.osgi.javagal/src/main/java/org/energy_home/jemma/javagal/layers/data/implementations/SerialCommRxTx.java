@@ -241,23 +241,24 @@ public class SerialCommRxTx implements IConnector {
 					try {
 						int pos = 0;
 						Integer data = 0;
-						short[] buffer = new short[1024];
+						short[] buffer = new short[5000];
 
-						while (in.available() > 0) {
-							try {
-								data = in.read();
-								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
-								pos = pos + 1;
-							} catch (Exception e) {
-								e.printStackTrace();
+						synchronized (in) {
+							while (in.available() > 0) {
+								try {
+									data = in.read();
+									buffer[pos] = (short) (data.byteValue() & 0xFFFF);
+									pos = pos + 1;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						}
 
-
-							if (!getIgnoreMessage()) {
-								ByteArrayObject frame = new ByteArrayObject(buffer, pos);
-								_caller.getDataLayer().notifyFrame(frame);
-							}
+						if (!getIgnoreMessage()) {
+							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
+							_caller.getDataLayer().notifyFrame(frame);
+						}
 					} catch (Exception e) {
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
 							logger.error("Error on data received:" + e.getMessage());
