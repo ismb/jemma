@@ -28,6 +28,7 @@ More technical details are available in the [JEMMA Wiki](https://github.com/ismb
 		<td>Freescale</td>
 		<td>TODO Andrea</td>
 		<td>TODO Andrea</td>
+		<!-- http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=MC13226V -->
 	</tr>
 	<tr>
 		<td>KW2x</td>
