@@ -177,7 +177,7 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ByteArrayObject buff) throws Exception {
+	public synchronized void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
 				synchronized (ou) {
@@ -185,6 +185,7 @@ public class SerialCommRxTx implements IConnector {
 						byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
 						ou.write(tosend);
 						ou.flush();
+						Thread.sleep(50);
 						if (DataLayer.getPropertiesManager().getDebugEnabled())
 							DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
 

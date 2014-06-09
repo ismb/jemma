@@ -109,7 +109,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a not ZGD error occurs.
 	 */
-	public BigInteger readExtAddress(long timeout, short shortAddress) throws GatewayException,
+	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException,
 			Exception;
 
 	/**

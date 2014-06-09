@@ -83,10 +83,9 @@ public class DataFreescale implements IDataLayer {
 	Boolean destroy = false;
 	ExecutorService executor = null;
 	GalController gal = null;
-	private IConnector _key = null;
+	private IConnector dongleRs232 = null;
 	// FIXME mass-rename logger to LOG when ready
 	private static final Logger logger = LoggerFactory.getLogger(DataFreescale.class);
-	private LinkedBlockingQueue<ByteArrayObject> listOfCommandToSend = new LinkedBlockingQueue<ByteArrayObject>();
 	private final List<ParserLocker> listLocker;
 	/**
 	 * Default timeout's value.
@@ -111,7 +110,7 @@ public class DataFreescale implements IDataLayer {
 		gal = _gal;
 
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-		_key = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+		dongleRs232 = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
 		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
 			@Override
@@ -174,33 +173,7 @@ public class DataFreescale implements IDataLayer {
 		thrAnalizer.setName("TH-MessagesAnalizer");
 		thrAnalizer.start();
 
-		Thread thrSender = new Thread() {
-			@Override
-			public void run() {
-				ByteArrayObject _currentCommand;
-				while (!getDestroy()) {
-					try {
-						synchronized (listOfCommandToSend) {
-							listOfCommandToSend.wait(timeoutLock);
-							_currentCommand = listOfCommandToSend.poll();
-							if (_currentCommand != null) {
-								_key.write(_currentCommand);
-							}
-						}
-					} catch (InterruptedException e) {
-
-					} catch (Exception e) {
-						if (gal.getPropertiesManager().getDebugEnabled())
-							logger.error("Error Sending command: " + e.toString());
-					}
-				}
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.info("TH-RS232-Sender Stopped!");
-			}
-		};
-		thrSender.setName("TH-RS232-Sender");
-		thrSender.start();
-
+		
 		Thread thrReceiver = new Thread() {
 			@Override
 			public void run() {
@@ -1954,7 +1927,7 @@ public class DataFreescale implements IDataLayer {
 								_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 
 								if (gal.getPropertiesManager().getDebugEnabled()) {
-									logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + messageEvent.getSourceAddress().getNetworkAddress());
+									logger.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
 								}
 								try {
 									BigInteger ieee = null;
@@ -1966,19 +1939,20 @@ public class DataFreescale implements IDataLayer {
 									 */
 
 									if (gal.getPropertiesManager().getDebugEnabled())
-										logger.info("Sending IeeeReq to:" + _address.getNetworkAddress());
-									ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress().shortValue());
+										logger.info("Sending IeeeReq to:" + String.format("%04X", _address.getNetworkAddress()));
+
+									ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress());
 									_address.setIeeeAddress(ieee);
 									if (gal.getPropertiesManager().getDebugEnabled()) {
-										logger.info("Readed Ieee of the new node:" + _address.getNetworkAddress() + " Ieee: " + ieee.toString());
+										logger.info("Readed Ieee of the new node:" + String.format("%04X", _address.getNetworkAddress()) + " Ieee: " + ieee.toString());
 									}
 									if (gal.getPropertiesManager().getDebugEnabled())
-										logger.info("Sending NodeDescriptorReq to:" + _address.getNetworkAddress());
+										logger.info("Sending NodeDescriptorReq to:" + String.format("%04X", _address.getNetworkAddress()));
 									NodeDescriptor _ndesc = getNodeDescriptorSync(INTERNAL_TIMEOUT, _address);
 									_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
 
 									if (gal.getPropertiesManager().getDebugEnabled()) {
-										logger.info("Readed NodeDescriptor of the new node:" + _address.getNetworkAddress());
+										logger.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _address.getNetworkAddress()));
 
 									}
 
@@ -2003,7 +1977,6 @@ public class DataFreescale implements IDataLayer {
 									// Updating the node
 									// informations
 									gal.getNetworkcache().add(o);
-									o.set_discoveryCompleted(true);
 									Status _st = new Status();
 									_st.setCode((short) GatewayConstants.SUCCESS);
 									gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
@@ -2015,15 +1988,14 @@ public class DataFreescale implements IDataLayer {
 									/**/
 
 								} catch (GatewayException e) {
-									logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+									logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getStackTrace());
 									_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 									if (_indexOnCache > -1) {
 										gal.getNetworkcache().get(_indexOnCache).abortTimers();
 										gal.getNetworkcache().remove(_indexOnCache);
 									}
-
 								} catch (Exception e) {
-									logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + _address.getNetworkAddress() + " Error:" + e.getMessage());
+									logger.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getStackTrace());
 									_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
 									if (_indexOnCache > -1) {
 										gal.getNetworkcache().get(_indexOnCache).abortTimers();
@@ -2037,7 +2009,7 @@ public class DataFreescale implements IDataLayer {
 						};
 
 						Thread _thr0 = new Thread(thr);
-						_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + address.getNetworkAddress());
+						_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + String.format("%04X", address.getNetworkAddress()));
 						_thr0.start();
 					}
 				}
@@ -2221,11 +2193,9 @@ public class DataFreescale implements IDataLayer {
 		return toReturn;
 	}
 
-	public void addToSendDataQueue(final ByteArrayObject toAdd) throws Exception {
-
-		synchronized (listOfCommandToSend) {
-			listOfCommandToSend.put(toAdd);
-			listOfCommandToSend.notify();
+	public synchronized void SendRs232Data(final ByteArrayObject toAdd) throws Exception {
+		synchronized (dongleRs232) {
+			dongleRs232.write(toAdd);
 		}
 
 	}
@@ -2266,7 +2236,7 @@ public class DataFreescale implements IDataLayer {
 				listLocker.add(lock);
 			}
 
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2329,7 +2299,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2391,7 +2361,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2460,7 +2430,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2524,7 +2494,7 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					listLocker.add(lock);
 				}
-				addToSendDataQueue(makeByteArrayFromApsMessage(message));
+				SendRs232Data(makeByteArrayFromApsMessage(message));
 				synchronized (lock) {
 					try {
 						lock.wait(timeout);
@@ -2603,7 +2573,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2797,7 +2767,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -2880,7 +2850,7 @@ public class DataFreescale implements IDataLayer {
 				synchronized (listLocker) {
 					listLocker.add(lock);
 				}
-				addToSendDataQueue(_res);
+				SendRs232Data(_res);
 				synchronized (lock) {
 					try {
 						lock.wait(timeout);
@@ -3031,7 +3001,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(res);
+			SendRs232Data(res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3091,7 +3061,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3140,7 +3110,7 @@ public class DataFreescale implements IDataLayer {
 			logger.info("Permit Join command:" + _res.ToHexString());
 		}
 
-		addToSendDataQueue(_res);
+		SendRs232Data(_res);
 		Status status = new Status();
 		status.setCode((short) GatewayConstants.SUCCESS);
 
@@ -3163,7 +3133,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3214,7 +3184,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3250,19 +3220,12 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
-	public BigInteger readExtAddress(long timeout, short shortAddress) throws GatewayException, Exception {
+	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException, Exception {
 		ByteArrayObject _res = new ByteArrayObject();
-		_res.addBytesShort(Short.reverseBytes(shortAddress), 2);/*
-																 * Short Network
-																 * Address
-																 */
-		_res.addBytesShort(Short.reverseBytes(shortAddress), 2);/*
-																 * Short Network
-																 * Address
-																 */
+		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
+		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
 		_res.addByte((byte) 0x01);/* Request Type */
 		_res.addByte((byte) 0x00);/* StartIndex */
-
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZDPIeeeAddrRequest);// StartSequence
 		// +
 		// Control
@@ -3281,7 +3244,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3349,7 +3312,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3417,7 +3380,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3479,7 +3442,7 @@ public class DataFreescale implements IDataLayer {
 			logger.info("Leave command:" + _res.ToHexString());
 		}
 
-		addToSendDataQueue(_res);
+		SendRs232Data(_res);
 		if (addrOfInterest.getIeeeAddress() == null) {
 			BigInteger _add = gal.getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress());
 			if (_add != null)
@@ -3515,7 +3478,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(INTERNAL_TIMEOUT);
@@ -3571,7 +3534,7 @@ public class DataFreescale implements IDataLayer {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString());
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(INTERNAL_TIMEOUT);
@@ -3641,7 +3604,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3702,7 +3665,7 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			logger.info("CPUResetCommnad command:" + _res.ToHexString());
 		}
-		addToSendDataQueue(_res);
+		SendRs232Data(_res);
 
 	}
 
@@ -3727,7 +3690,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3828,7 +3791,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3930,7 +3893,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -3985,7 +3948,7 @@ public class DataFreescale implements IDataLayer {
 																									 * Control
 																									 */
 
-		addToSendDataQueue(_bodyCommand);
+		SendRs232Data(_bodyCommand);
 		Status _st = new Status();
 		_st.setCode((short) GatewayConstants.SUCCESS);
 
@@ -3994,7 +3957,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public IConnector getIKeyInstance() {
-		return _key;
+		return dongleRs232;
 	}
 
 	@Override
@@ -4033,7 +3996,7 @@ public class DataFreescale implements IDataLayer {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString());
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(INTERNAL_TIMEOUT);
@@ -4093,7 +4056,7 @@ public class DataFreescale implements IDataLayer {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				logger.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(INTERNAL_TIMEOUT);
@@ -4156,7 +4119,7 @@ public class DataFreescale implements IDataLayer {
 				listLocker.add(lock);
 			}
 
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -4211,7 +4174,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(_res);
+			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
@@ -4268,7 +4231,7 @@ public class DataFreescale implements IDataLayer {
 			synchronized (listLocker) {
 				listLocker.add(lock);
 			}
-			addToSendDataQueue(makeByteArrayFromInterPANMessage(message));
+			SendRs232Data(makeByteArrayFromInterPANMessage(message));
 			synchronized (lock) {
 				try {
 					lock.wait(timeout);
