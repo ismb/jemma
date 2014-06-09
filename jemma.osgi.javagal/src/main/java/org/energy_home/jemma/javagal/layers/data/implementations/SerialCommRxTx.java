@@ -15,14 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.TooManyListenersException;
-
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -31,16 +23,21 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.TooManyListenersException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  * RxTx implementation of the {@link IConnector}.
@@ -54,7 +51,8 @@ public class SerialCommRxTx implements IConnector {
 
 	private Boolean ignoreMessage = Boolean.FALSE;
 	private SerialPort serialPort;
-	private final static Log LOG = LogFactory.getLog(SerialCommRxTx.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DataFreescale.class);
+
 	CommPortIdentifier portIdentifier;
 	InputStream in = null;
 	OutputStream ou = null;
@@ -110,6 +108,16 @@ public class SerialCommRxTx implements IConnector {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.enableReceiveTimeout(2000);
+					serialPort.notifyOnBreakInterrupt(true);
+					serialPort.notifyOnCarrierDetect(true);
+					serialPort.notifyOnCTS(true);
+					serialPort.notifyOnDSR(true);
+					serialPort.notifyOnFramingError(true);
+					serialPort.notifyOnOutputEmpty(true);
+					serialPort.notifyOnOverrunError(true);
+					serialPort.notifyOnParityError(true);
+					serialPort.notifyOnRingIndicator(true);
+
 					serialPort.notifyOnDataAvailable(true);
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
@@ -171,18 +179,20 @@ public class SerialCommRxTx implements IConnector {
 	public void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
-				try {
-					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
-					ou.write(tosend);
-					ou.flush();
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
+				synchronized (ou) {
+					try {
+						byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
+						ou.write(tosend);
+						ou.flush();
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
 
-				} catch (Exception e) {
+					} catch (Exception e) {
 
-					e.printStackTrace();
-					throw e;
+						e.printStackTrace();
+						throw e;
 
+					}
 				}
 			} else
 				throw new Exception("Error on serial write - out == null");
@@ -203,6 +213,7 @@ public class SerialCommRxTx implements IConnector {
 	 */
 	@Override
 	public void disconnect() throws IOException {
+		System.setProperty("gnu.io.rxtx.SerialPorts", "");
 		setConnected(false);
 		if (serialPort != null) {
 			if (in != null) {
@@ -229,28 +240,24 @@ public class SerialCommRxTx implements IConnector {
 	class SerialReader implements SerialPortEventListener {
 
 		IConnector _caller = null;
+		short[] buffer = null;
 
 		public SerialReader(IConnector _parent) {
 
 			_caller = _parent;
 		}
 
-		@Override
 		public void serialEvent(SerialPortEvent event) {
 			try {
-				
 				if (DataLayer.getPropertiesManager().getDebugEnabled())
 					LOG.info("Received:" + event.getEventType());
-
-				
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
 						Integer data = 0;
-						short[] buffer = new short[5000];
-
+						buffer = new short[5000];
 						synchronized (in) {
-							while (in.available() > 0) {
+							while ((in.available()) > 0) {
 								try {
 									data = in.read();
 									buffer[pos] = data.shortValue();
@@ -258,6 +265,7 @@ public class SerialCommRxTx implements IConnector {
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
+
 							}
 						}
 
