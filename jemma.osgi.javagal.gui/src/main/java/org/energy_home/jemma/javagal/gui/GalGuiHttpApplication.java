@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.http.HttpContext;
@@ -50,7 +50,8 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private HttpService httpService;
 	private String realm = "javaGalGui Login";
 	private String applicationWebAlias = "";
-	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GalGuiHttpApplication.class);
+
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
 
@@ -64,14 +65,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		setHttpContext(this);
 		super.bindHttpService(httpService);
 
-		log.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
+		LOG.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
 	}
 
 	public synchronized void deactivate() {
 		this.ctxt = null;
 		this.bc = null;
 		userCreated = false;
-		log.debug("deactivated");
+		LOG.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {

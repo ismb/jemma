@@ -79,7 +79,7 @@
 							javax.servlet.http,
 							org.osgi.service.useradmin,
 							javax.security.auth.login,
-							org.apache.commons.logging;version="[1.1,2)",
+							org.slf4j;version="[1.7.7,2)",
 							org.osgi.framework;version="[1.5,2)",
 							org.osgi.service.component;version="[1.1,2)",
 							org.osgi.service.event;version="[1.2,2)",
@@ -106,9 +106,9 @@
 			<version>${org.eclipse.osgi.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>org.apache.commons.logging</artifactId>
-			<version>${org.apache.commons.logging.version}</version>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
