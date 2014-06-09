@@ -108,16 +108,17 @@ public class SerialCommRxTx implements IConnector {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.enableReceiveTimeout(2000);
-					serialPort.notifyOnBreakInterrupt(true);
-					serialPort.notifyOnCarrierDetect(true);
-					serialPort.notifyOnCTS(true);
-					serialPort.notifyOnDSR(true);
-					serialPort.notifyOnFramingError(true);
-					serialPort.notifyOnOutputEmpty(true);
-					serialPort.notifyOnOverrunError(true);
-					serialPort.notifyOnParityError(true);
-					serialPort.notifyOnRingIndicator(true);
-
+					/*
+					 * serialPort.notifyOnBreakInterrupt(true);
+					 * serialPort.notifyOnCarrierDetect(true);
+					 * serialPort.notifyOnCTS(true);
+					 * serialPort.notifyOnDSR(true);
+					 * serialPort.notifyOnFramingError(true);
+					 * serialPort.notifyOnOutputEmpty(true);
+					 * serialPort.notifyOnOverrunError(true);
+					 * serialPort.notifyOnParityError(true);
+					 * serialPort.notifyOnRingIndicator(true);
+					 */
 					serialPort.notifyOnDataAvailable(true);
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
@@ -250,8 +251,6 @@ public class SerialCommRxTx implements IConnector {
 
 		public void serialEvent(SerialPortEvent event) {
 			try {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.info("Received Rs232 Event:" + event.getEventType());
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
