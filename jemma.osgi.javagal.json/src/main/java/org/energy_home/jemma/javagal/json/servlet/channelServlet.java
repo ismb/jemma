@@ -49,13 +49,13 @@ public class channelServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		Object done = session.getValue("logon.isDone");
 		if (done != null) {
-			
+
 			Detail detail = new Detail();
 
 			Short channel = 0;
 
 			try {
-				channel =gatewayInterface.getChannelSync(7000);
+				channel = gatewayInterface.getChannelSync(7000);
 			} catch (GatewayException e1) {
 				Info info = new Info();
 				Status status = new Status();
@@ -85,7 +85,7 @@ public class channelServlet extends HttpServlet {
 			info.setDetail(detail);
 
 			response.getOutputStream().print(gson.toJson(info));
-
+			return;
 		} else {
 			Detail detail = new Detail();
 			Info info = new Info();
