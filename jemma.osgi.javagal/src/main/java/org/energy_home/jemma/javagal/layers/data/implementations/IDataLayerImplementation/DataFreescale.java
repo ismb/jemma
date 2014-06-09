@@ -1905,25 +1905,31 @@ public class DataFreescale implements IDataLayer {
 
 			int _indexOnCache = -1;
 			_indexOnCache = gal.existIntoNetworkCache(address.getNetworkAddress());
-			if (_indexOnCache != -1) {
-				/* The node is already into the DB */
-				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-					if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
-						gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
-						gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-						if (gal.getPropertiesManager().getDebugEnabled()) {
-							// System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:"
-							// +
-							// gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()
-							// + "\n\r");
-							logger.info("Postponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress());
-						}
-					}
 
+			if (_indexOnCache != -1) {
+
+				if (gal.getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
+
+					/* The node is already into the DB */
+					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+						if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
+							gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
+							gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+							if (gal.getPropertiesManager().getDebugEnabled()) {
+								// System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:"
+								// +
+								// gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()
+								// + "\n\r");
+								logger.info("Postponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress());
+							}
+						}
+
+					}
 				}
 			} else {
 				// 0x8034 is a LeaveAnnouncement, 0x0013 is a
 				// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
+
 				if ((gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001)))) {
 
 					if (address.getNetworkAddress() != gal.get_GalNode().get_node().getAddress().getNetworkAddress()) {
@@ -4002,7 +4008,9 @@ public class DataFreescale implements IDataLayer {
 		synchronized (tmpDataQueue) {
 			tmpDataQueue.add(frame);
 			tmpDataQueue.notify();
-			logger.info("\n\rTmpDataQueue[Blocks of bytes received from RS232] Count:" + tmpDataQueue.size() + "\n\r");
+			if (gal.getPropertiesManager().getDebugEnabled())
+				logger.info("\n\rTmpDataQueue[Blocks of bytes received from RS232] Count:" + tmpDataQueue.size() + "\n\r");
+
 		}
 
 	}
