@@ -149,20 +149,20 @@ public class SerialCommRxTx implements IConnector {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: NoSuchPortException " + portName);
-//			e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		} catch (PortInUseException e) {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: PortInUseException");
 
-	//		e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		} catch (UnsupportedCommOperationException e) {
 			disconnect();
 			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: UnsupportedCommOperationException");
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		}
 
@@ -189,7 +189,8 @@ public class SerialCommRxTx implements IConnector {
 
 					} catch (Exception e) {
 
-						//e.printStackTrace();
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							LOG.error("Error writing Rs232" + e.getMessage());
 						throw e;
 
 					}
@@ -250,7 +251,7 @@ public class SerialCommRxTx implements IConnector {
 		public void serialEvent(SerialPortEvent event) {
 			try {
 				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.info("Received Rs232 Event:" + event.toString());
+					LOG.info("Received Rs232 Event:" + event.getEventType());
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
@@ -265,7 +266,7 @@ public class SerialCommRxTx implements IConnector {
 								} catch (Exception e) {
 									if (DataLayer.getPropertiesManager().getDebugEnabled())
 										LOG.error("Error readind rs232 data:" + e.getMessage());
-									//e.printStackTrace();
+									// e.printStackTrace();
 								}
 
 							}
