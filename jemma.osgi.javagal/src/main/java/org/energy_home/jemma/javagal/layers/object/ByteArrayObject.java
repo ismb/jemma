@@ -69,7 +69,7 @@ public class ByteArrayObject {
 	public ByteArrayObject(short[] buffer, int size) {
 		_startedFromZero = true;
 		array = new short[buffer.length];
-		System.arraycopy(buffer, 0, array, 0, buffer.length);
+		System.arraycopy(buffer, 0, array, 0, array.length);
 		count = size;
 
 	}

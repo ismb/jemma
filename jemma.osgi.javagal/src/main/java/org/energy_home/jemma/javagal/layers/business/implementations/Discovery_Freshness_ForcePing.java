@@ -107,13 +107,8 @@ public class Discovery_Freshness_ForcePing {
 
 			try {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					// System.out.println("\n\r"+ new
-					// Date(System.currentTimeMillis()).toLocaleString() +
-					// "Sending LQI_REQ (" + functionName + ") for node:" +
-					// String.format("%04x",node.getNetworkAddress()) +
-					// " -- StartIndex:" + startIndex + "\n\r");
-
-					logger.info("\n\rSending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex + "\n\r");
+					
+					logger.info("Sending LQI_REQ (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + startIndex );
 				}
 				_Lqi = gal.getDataLayer().Mgmt_Lqi_Request(gal.getPropertiesManager().getCommandTimeoutMS(), node, startIndex);
 
@@ -127,10 +122,6 @@ public class Discovery_Freshness_ForcePing {
 					short _LqiListCount = _Lqi._NeighborTableListCount;
 
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						// System.out.println("\n\rReceived LQI_RSP (" +
-						// functionName + ") for node:" +
-						// node.getNetworkAddress() + " -- StartIndex:" +
-						// _indexLqi + "\n\r");
 						logger.info("Received LQI_RSP (" + functionName + ") for node:" + node.getNetworkAddress() + " -- StartIndex:" + _indexLqi);
 					}
 
@@ -226,7 +217,6 @@ public class Discovery_Freshness_ForcePing {
 							Status _s = new Status();
 							_s.setCode((short) 0x00);
 							_s.setMessage("Successful - " + functionName + " Algorithm");
-
 							if (gal.getPropertiesManager().getDebugEnabled())
 								logger.info("Starting nodeDiscovered from function: " + functionName);
 

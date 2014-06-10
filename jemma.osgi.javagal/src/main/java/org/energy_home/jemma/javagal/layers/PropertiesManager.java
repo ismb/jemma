@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
@@ -93,6 +94,7 @@ public class PropertiesManager {
 	 */
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
+		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
 	}
@@ -400,10 +402,10 @@ public class PropertiesManager {
 		//props.setProperty("StartupSet", String.valueOf(sai.getStartupSet()));
 
 		/* networkKey */
-		props.setProperty("networkKey", sai.getNetworkKey().toString());
+		props.setProperty("networkKey", DataManipulation.convertBytesToString(sai.getNetworkKey()));
 
 		/* PreconfiguredLinkKey */
-		props.setProperty("preconfiguredLinkKey", sai.getPreconfiguredLinkKey().toString());
+		props.setProperty("preconfiguredLinkKey", DataManipulation.convertBytesToString(sai.getPreconfiguredLinkKey()));
 
 	}
 
