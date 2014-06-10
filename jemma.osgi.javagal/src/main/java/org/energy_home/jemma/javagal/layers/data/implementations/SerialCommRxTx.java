@@ -106,19 +106,10 @@ public class SerialCommRxTx implements IConnector {
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+					//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.enableReceiveTimeout(2000);
-					/*
-					 * serialPort.notifyOnBreakInterrupt(true);
-					 * serialPort.notifyOnCarrierDetect(true);
-					 * serialPort.notifyOnCTS(true);
-					 * serialPort.notifyOnDSR(true);
-					 * serialPort.notifyOnFramingError(true);
-					 * serialPort.notifyOnOutputEmpty(true);
-					 * serialPort.notifyOnOverrunError(true);
-					 * serialPort.notifyOnParityError(true);
-					 * serialPort.notifyOnRingIndicator(true);
-					 */
+
 					serialPort.notifyOnDataAvailable(true);
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
@@ -177,26 +168,27 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public synchronized void write(ByteArrayObject buff) throws Exception {
+	public void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
-				synchronized (ou) {
-					try {
-						byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
-						ou.write(tosend);
-						ou.flush();
-						Thread.sleep(50);
-						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
+				try {
+					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
+					
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						DataManipulation.logArrayBytesHexRadix("Starting write procedure on Rs232", tosend);
+					ou.write(tosend);
+					ou.flush();
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
 
-					} catch (Exception e) {
+				} catch (Exception e) {
 
-						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							LOG.error("Error writing Rs232" + e.getMessage());
-						throw e;
+					if (DataLayer.getPropertiesManager().getDebugEnabled())
+						LOG.error("Error writing Rs232" + e.getMessage());
+					throw e;
 
-					}
 				}
+
 			} else
 				throw new Exception("Error on serial write - out == null");
 

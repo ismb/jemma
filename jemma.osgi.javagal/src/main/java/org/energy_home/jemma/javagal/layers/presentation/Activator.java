@@ -67,7 +67,10 @@ public class Activator implements BundleActivator {
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 			if (context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME) != null)
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
+			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG) != null)
+				PropertiesManager.props.setProperty("debugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG));
 
+			
 			if (_fac == null)
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
 

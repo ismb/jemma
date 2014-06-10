@@ -217,7 +217,6 @@ public class Discovery_Freshness_ForcePing {
 							Status _s = new Status();
 							_s.setCode((short) 0x00);
 							_s.setMessage("Successful - " + functionName + " Algorithm");
-
 							if (gal.getPropertiesManager().getDebugEnabled())
 								logger.info("Starting nodeDiscovered from function: " + functionName);
 

@@ -94,6 +94,7 @@ public class PropertiesManager {
 	 */
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
+		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
 	}
