@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1401875012795
+Bnd-LastModified: 1402322018663
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-ManifestVersion: 2
@@ -10,11 +10,12 @@ Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
- ",javax.servlet.http;version="[2.5,3)",org.apache.commons.logging;versi
- on="[1.1,2)",org.osgi.framework;version="[1.5,2)",org.osgi.service.comp
- onent;version="[1.1,2)",org.osgi.service.event;version="[1.2,2)",org.os
- gi.service.http;version="[1.2,2)",org.osgi.service.useradmin;version="[
- 1.1,2)",org.osgi.util.tracker;version="1.4.2"
-Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
+ ",javax.servlet.http;version="[2.5,3)",org.osgi.framework;version="[1.5
+ ,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.service.even
+ t;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)",org.osgi.se
+ rvice.useradmin;version="[1.1,2)",org.osgi.util.tracker;version="1.4.2"
+ ,org.slf4j;version="[1.7.7,2)"
+Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0",org.eclipse.eq
+ uinox.useradmin;bundle-version="1.1.100"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0

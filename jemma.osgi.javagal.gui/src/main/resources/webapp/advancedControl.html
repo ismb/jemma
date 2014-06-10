@@ -3,14 +3,34 @@
 		$(document)
 				.ready(
 						function() {
+							var rtnObjConfig = '';
+							var myNMMenu = new jGGNetworkManageMenu();
+							myNMMenu.newButton('btnStartGal', null, null);
+							myNMMenu.newButton('btnRestartGal1', null, null);
+							myNMMenu.newButton('btnRestartGal2', null, null);
+							var timeout = '00002710';
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.infoForRestartGal
+														+ "timeout="
+														+ timeout
+														+ "&index=00"
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												rtnObjConfig = dataBig.detail.startupAttributeInfo;
+
+											});
+
 							$("#rdRadioChannel").buttonset();
 							$("#btnManualScan")
 									.click(
 											function(event) {
 												var result = window
 														.confirm(
-																'Are you sure you want to change the network channel?'
-																		,
+																'Are you sure you want to change the network channel?',
 																'Change channel',
 																function(result) {
 																	if (result) {
@@ -40,7 +60,7 @@
 																				.done(
 																						function(
 																								data) {
-																							var chR = searchChannel();
+																							chR = searchChannel();
 																						});
 
 																	}
@@ -71,8 +91,13 @@
 																.text('RUNNING')
 																.css('color',
 																		'green');
-														console.log('ok: ',
-																newChannel);
+														
+														var radioCh = $('#radioChannel' + newChannel);
+														radioCh[0].checked = true;
+														radioCh.button("refresh");
+														
+														
+														
 													} else {
 														//Visualizzo il messaggio di errore
 														newChannel = $.jStorage
@@ -85,10 +110,10 @@
 																		'NOT RUNNING')
 																.css('color',
 																		'red');
-														console.log('KO: ',
-																newChannel);
+														
 													}
 													return newChannel;
+													
 												});
 							}
 
@@ -102,10 +127,96 @@
 
 							} else {
 								chR = searchChannel();
+								
 							}
 
 							$("#rdRadioChannel").css("font-size", "12px");
 							$("#btnRadioChannel").css("font-size", "12px");
+
+							var fchangeStatuGal = function(
+									buttonInHeaderPressed) {
+								
+								var chR = $.jStorage.get("ChannelRadioValue");
+								if (chR != null) {
+									var radioCh = $('#radioChannel' + chR);
+									radioCh[0].checked = false;
+									radioCh.button("refresh");
+								}
+								
+								$.jStorage.set("ChannelRadioValue", null);
+								var timeout, startMode, url, type, errorMsg = '';
+
+								var objToSend = {
+									startupAttributeInfo : ''
+								};
+								objToSend.startupAttributeInfo = rtnObjConfig;
+								var data = JSON.stringify(objToSend);
+
+								switch (buttonInHeaderPressed) {
+								case 'btnStartGal':
+									type = 'POST';
+									timeout = '00002710';
+									url = DEFINEPATH.startGalPath + "timeout="
+											+ timeout + "&start=true";
+									errorMsg = 'Error in start mode: ';
+									break;
+								case 'btnRestartGal1':
+									type = 'GET';
+									startMode = '00';
+									timeout = '00002710';
+									url = DEFINEPATH.reStartGalPath
+											+ "timeout=" + timeout
+											+ "&startMode=" + startMode;
+									errorMsg = 'Error in restart in Association mode: ';
+									break;
+								case 'btnRestartGal2':
+									type = 'GET';
+									startMode = '01';
+									timeout = '00002710';
+									url = DEFINEPATH.reStartGalPath
+											+ "timeout=" + timeout
+											+ "&startMode=" + startMode;
+									errorMsg = 'Error in restart in NVM mode: ';
+									break;
+
+								}
+
+								$
+										.ajax(
+												{
+													type : type,
+													data : data,
+													url : url,
+													contentType : "application/json; charset=utf-8"
+												})
+										.done(
+												function(data) {
+													var dataBig = json_parse(data);
+													if (dataBig.status.code == 0) {
+														searchChannel();
+												}});
+
+							}
+
+							$('#btnRestartGal1')
+									.click(
+											function(event) {
+												var result = window
+														.confirm(
+																'Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?',
+																'Total reset',
+																function(result) {
+																	if (result) {
+																		fchangeStatuGal('btnRestartGal1');
+																	}
+																});
+											});
+							$('#btnStartGal').click(function(event) {
+								fchangeStatuGal('btnStartGal');
+							});
+							$('#btnRestartGal2').click(function(event) {
+								fchangeStatuGal('btnRestartGal2');
+							});
 
 						});
 	</script>
@@ -168,6 +279,15 @@
 							probability. This functionality should be used only by expert
 							users.</div>
 					</td>
+				</tr>
+				<tr>
+					<td><br />
+						<div>
+							<b>This functions could be used only by expert users!</b>
+						</div> <input type="button" id="btnStartGal" class="tnHeaderHome2"
+						title="Start" /> <input type="button" id="btnRestartGal1"
+						class="tnHeaderHome2" title="Total reset" /> <input type="button"
+						id="btnRestartGal2" class="tnHeaderHome2" title="Stop" /></td>
 				</tr>
 			</table>
 		</form>
