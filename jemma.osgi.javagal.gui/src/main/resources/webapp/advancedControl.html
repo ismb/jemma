@@ -136,14 +136,8 @@
 							var fchangeStatuGal = function(
 									buttonInHeaderPressed) {
 								
-								var chR = $.jStorage.get("ChannelRadioValue");
-								if (chR != null) {
-									var radioCh = $('#radioChannel' + chR);
-									radioCh[0].checked = false;
-									radioCh.button("refresh");
-								}
 								
-								$.jStorage.set("ChannelRadioValue", null);
+								
 								var timeout, startMode, url, type, errorMsg = '';
 
 								var objToSend = {
@@ -193,6 +187,14 @@
 												function(data) {
 													var dataBig = json_parse(data);
 													if (dataBig.status.code == 0) {
+														var chR = $.jStorage.get("ChannelRadioValue");
+														if (chR != null) {
+															var radioCh = $('#radioChannel' + chR);
+															radioCh[0].checked = false;
+															radioCh.button("refresh");
+														}
+														$.jStorage.set("ChannelRadioValue", null);
+														
 														searchChannel();
 												}});
 
