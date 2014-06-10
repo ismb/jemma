@@ -107,7 +107,8 @@ public class SerialCommRxTx implements IConnector {
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-					//serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN
+					// | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					serialPort.enableReceiveTimeout(2000);
 
 					serialPort.notifyOnDataAvailable(true);
@@ -173,14 +174,10 @@ public class SerialCommRxTx implements IConnector {
 			if (ou != null) {
 				try {
 					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
-					
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayBytesHexRadix("Starting write procedure on Rs232", tosend);
+						DataManipulation.logArrayBytesHexRadix(">>> Sending", tosend);
 					ou.write(tosend);
-					ou.flush();
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayBytesHexRadix(">>> Sent", tosend);
-
+					//ou.flush();//TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 				} catch (Exception e) {
 
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
