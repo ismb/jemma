@@ -176,7 +176,7 @@ public class SerialCommRxTx implements IConnector {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						LOG.debug(">>> Sending", buff.ToHexString());
 					ou.write(buff.getByteArray(), 0, buff.getCount(true));
-					ou.flush();//TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
+					//ou.flush();//TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 				} catch (Exception e) {
 
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
