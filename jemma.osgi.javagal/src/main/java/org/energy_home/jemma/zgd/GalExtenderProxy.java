@@ -107,9 +107,14 @@ public class GalExtenderProxy implements IGalExtender {
 	public String getInfoBaseAttribute(short attrId) throws Exception, Exception, GatewayException {
 		String res = null;
 		switch (attrId) {
-		case 0xA1:
-		case 0x80:
-		case 0x9A:
+		case 0xA0:// nwkSecurityLevel
+		case 0x80:// Short PanId
+		case 0x9A:// Extended Pan ID
+		case 0x96:// NetWorkAddress
+		case 0xDA:// DeviceType
+		case 0xDB:// nwkSoftwareVersion
+		case 0xE6: // SASNwkKey
+
 			res = gal.NMLE_GetSync(attrId);
 			break;
 		case 0xC3:

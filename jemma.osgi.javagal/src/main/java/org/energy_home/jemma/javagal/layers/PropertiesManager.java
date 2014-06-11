@@ -15,11 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers;
 
-import org.energy_home.jemma.zgd.jaxb.KeyType;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,11 +22,14 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
+import org.energy_home.jemma.zgd.jaxb.KeyType;
+import org.energy_home.jemma.zgd.jaxb.LogicalType;
+import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
+import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Properties manager class. Loads/saves from/to a ".properties" file the

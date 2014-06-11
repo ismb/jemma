@@ -2233,7 +2233,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2296,7 +2297,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2358,7 +2360,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2427,7 +2431,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2491,7 +2497,9 @@ public class DataFreescale implements IDataLayer {
 				SendRs232Data(makeByteArrayFromApsMessage(message));
 				synchronized (lock) {
 					try {
-						lock.wait(timeout);
+						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+							lock.wait(timeout);
 					} catch (InterruptedException e) {
 
 					}
@@ -2570,7 +2578,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2764,7 +2774,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -2847,7 +2859,9 @@ public class DataFreescale implements IDataLayer {
 				SendRs232Data(_res);
 				synchronized (lock) {
 					try {
-						lock.wait(timeout);
+						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+							lock.wait(timeout);
 					} catch (InterruptedException e) {
 
 					}
@@ -2998,7 +3012,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3058,7 +3073,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3130,7 +3147,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3181,7 +3200,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3241,7 +3262,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3309,7 +3332,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3377,7 +3402,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3475,7 +3502,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(INTERNAL_TIMEOUT);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(INTERNAL_TIMEOUT);
 				} catch (InterruptedException e) {
 
 				}
@@ -3531,7 +3559,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(INTERNAL_TIMEOUT);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(INTERNAL_TIMEOUT);
 				} catch (InterruptedException e) {
 
 				}
@@ -3601,7 +3631,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3687,7 +3719,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3788,7 +3822,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3890,7 +3925,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -3990,7 +4027,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(INTERNAL_TIMEOUT);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(INTERNAL_TIMEOUT);
 				} catch (InterruptedException e) {
 
 				}
@@ -4050,7 +4088,8 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(INTERNAL_TIMEOUT);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(INTERNAL_TIMEOUT);
 				} catch (InterruptedException e) {
 
 				}
@@ -4113,7 +4152,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -4168,7 +4209,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(_res);
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}
@@ -4225,7 +4268,9 @@ public class DataFreescale implements IDataLayer {
 			SendRs232Data(makeByteArrayFromInterPANMessage(message));
 			synchronized (lock) {
 				try {
-					lock.wait(timeout);
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+
+						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
 				}

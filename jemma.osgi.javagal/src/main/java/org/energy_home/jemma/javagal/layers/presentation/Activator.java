@@ -15,21 +15,18 @@
  */
 package org.energy_home.jemma.javagal.layers.presentation;
 
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
-
-import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Osgi Activator implementation.
