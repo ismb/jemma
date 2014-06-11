@@ -36,7 +36,7 @@ import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.MyThread;
@@ -96,7 +96,7 @@ public class DataFreescale implements IDataLayer {
 
 	public final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
-	private LinkedBlockingQueue<ByteArrayObject> tmpDataQueue = new LinkedBlockingQueue<ByteArrayObject>();
+	private LinkedBlockingQueue<ShortArrayObject> tmpDataQueue = new LinkedBlockingQueue<ShortArrayObject>();
 
 	/**
 	 * Creates a new instance with a reference to the Gal Controller.
@@ -175,7 +175,7 @@ public class DataFreescale implements IDataLayer {
 		Thread thrReceiver = new Thread() {
 			@Override
 			public void run() {
-				ByteArrayObject _currentCommandReived = null;
+				ShortArrayObject _currentCommandReived = null;
 				while (!getDestroy()) {
 					try {
 						synchronized (tmpDataQueue) {
@@ -185,9 +185,10 @@ public class DataFreescale implements IDataLayer {
 								synchronized (receivedDataQueue) {
 									if (gal.getPropertiesManager().getDebugEnabled())
 										LOG.info("<<< Received data:" + _currentCommandReived.ToHexString());
-									short[] msg = Arrays.copyOfRange(_currentCommandReived.getShortArray(), 0, _currentCommandReived.getCount(true));
-									for (int z = 0; z < msg.length; z++)
-										receivedDataQueue.add(msg[z]);
+									short[] shortArray = _currentCommandReived.getShortArray();
+									for (int z = 0; z < _currentCommandReived.getCount(true); z++) {
+										receivedDataQueue.add(shortArray[z]);
+									}
 									receivedDataQueue.notify();
 								}
 							}
@@ -2124,8 +2125,8 @@ public class DataFreescale implements IDataLayer {
 			// Manufacturer code 0/16bits
 			// Transaction sequence number 8bit
 			// Command identifier 8 bit
-			ByteArrayObject _header = new ByteArrayObject();
-			ByteArrayObject _payload = new ByteArrayObject();
+			ShortArrayObject _header = new ShortArrayObject();
+			ShortArrayObject _payload = new ShortArrayObject();
 			if ((data[0] & 0x04) == 0x04)/* Check manufacturer code */
 			{
 				_header.addByte(data[0]);// Frame control
@@ -2189,12 +2190,12 @@ public class DataFreescale implements IDataLayer {
 		return toReturn;
 	}
 
-	public void SendRs232Data(final ByteArrayObject toAdd) throws Exception {
+	public void SendRs232Data(final ShortArrayObject toAdd) throws Exception {
 		getIKeyInstance().write(toAdd);
 
 	}
 
-	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
+	public ShortArrayObject Set_SequenceStart_And_FSC(ShortArrayObject x, short commandCode) {
 		byte size = (byte) x.getCount(false);
 		byte opgroup = (byte) ((commandCode >> 8) & 0xff);
 		byte opcode = (byte) (commandCode & 0xff);
@@ -2202,8 +2203,8 @@ public class DataFreescale implements IDataLayer {
 		x.addOPCode(opcode);
 		x.addLength(size);
 		byte FSC = 0;
-		for (byte b : x.getByteArray())
-			FSC ^= b;
+		for (Short b : x.getShortArray())
+			FSC ^= b.byteValue();
 		x.addStartSequance((byte) 0x02);
 		x.addByte(FSC);
 		return x;
@@ -2211,7 +2212,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status APSME_SETSync(long timeout, short _AttID, String _value) throws GatewayException, Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* _AttId */
 		_res.addByte((byte) 0x00);
 		_res.addByte((byte) 0x00);
@@ -2271,7 +2272,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public String APSME_GETSync(long timeout, short _AttID) throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* iId */
 		_res.addByte((byte) 0x00);/* iIndex */
 		_res.addByte((byte) 0x00);/* iEntries */
@@ -2335,7 +2336,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public String NMLE_GetSync(long timeout, short _AttID) throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* iId */
 		_res.addByte((byte) 0x00);/* iIndex */
 		_res.addByte((byte) 0x00);/* iEntries */
@@ -2399,7 +2400,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status stopNetworkSync(long timeout) throws Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) 0x01);/*
 								 * Stop Mode AnnounceStop (Stops after
 								 * announcing it is leaving the network.)
@@ -2540,7 +2541,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte(desc.getEndPoint().byteValue());/* End Point */
 		_res.addBytesShort(Short.reverseBytes(desc.getApplicationProfileIdentifier().shortValue()), 2);
 		_res.addBytesShort(Short.reverseBytes(desc.getApplicationDeviceIdentifier().shortValue()), 2);
@@ -2614,10 +2615,10 @@ public class DataFreescale implements IDataLayer {
 		return _endPoint;
 	}
 
-	public ByteArrayObject makeByteArrayFromApsMessage(APSMessage apsMessage) throws Exception {
+	public ShortArrayObject makeByteArrayFromApsMessage(APSMessage apsMessage) throws Exception {
 		byte[] data = apsMessage.getData();
 
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		byte dam = apsMessage.getDestinationAddressMode().byteValue();
 		_res.addByte(dam);
 		Address address = apsMessage.getDestinationAddress();
@@ -2687,8 +2688,8 @@ public class DataFreescale implements IDataLayer {
 		return _res;
 	}
 
-	public ByteArrayObject makeByteArrayFromInterPANMessage(InterPANMessage message) throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+	public ShortArrayObject makeByteArrayFromInterPANMessage(InterPANMessage message) throws Exception {
+		ShortArrayObject _res = new ShortArrayObject();
 		byte sam = (byte) message.getSrcAddressMode();
 		_res.addByte(sam);
 
@@ -2744,7 +2745,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status SetModeSelectSync(long timeout) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) 0x01);/* UART Tx Blocking */
 		_res.addByte((byte) 0x02);/* MCPS */
 		_res.addByte((byte) 0x02);/* MLME */
@@ -2810,7 +2811,7 @@ public class DataFreescale implements IDataLayer {
 				LOG.info("Starting Network...");
 			}
 			LogicalType devType = gal.getPropertiesManager().getSturtupAttributeInfo().getDeviceType();
-			ByteArrayObject _res = new ByteArrayObject();
+			ShortArrayObject _res = new ShortArrayObject();
 
 			if (devType == LogicalType.CURRENT) {
 				throw new Exception("LogicalType not Valid!");
@@ -2905,7 +2906,7 @@ public class DataFreescale implements IDataLayer {
 
 		LogicalType devType = sai.getDeviceType();
 
-		ByteArrayObject res = new ByteArrayObject();
+		ShortArrayObject res = new ShortArrayObject();
 		res.addBytesShort(Short.reverseBytes(sai.getShortAddress().shortValue()), 2);
 
 		/* Extended PanID */
@@ -3047,7 +3048,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status permitJoinSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/*
 																									 * Short
 																									 * Network
@@ -3104,7 +3105,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status permitJoinAllSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws IOException, Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/*
 																									 * Short
 																									 * Network
@@ -3130,7 +3131,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public short getChannelSync(long timeout) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCGetChannelRequest);// StartSequence
 		// +
 		// Control
@@ -3183,7 +3184,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public BigInteger readExtAddressGal(long timeout) throws GatewayException, Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCReadExtAddrRequest);// StartSequence
 		// +
 		// Control
@@ -3236,7 +3237,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException, Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
 		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
 		_res.addByte((byte) 0x01);/* Request Type */
@@ -3299,7 +3300,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public NodeDescriptor getNodeDescriptorSync(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException {
 
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/*
 																									 * Short
@@ -3371,7 +3372,7 @@ public class DataFreescale implements IDataLayer {
 	public List<Short> startServiceDiscoverySync(long timeout, Address aoi) throws Exception {
 		if (gal.getPropertiesManager().getDebugEnabled())
 			LOG.info("startServiceDiscoverySync Timeout:" + timeout);
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(aoi.getNetworkAddress().shortValue()), 2);/*
 																						 * Short
 																						 * Network
@@ -3439,7 +3440,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status leaveSync(long timeout, Address addrOfInterest, int mask) throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/*
 																									 * Short
@@ -3483,7 +3484,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status clearEndpointSync(short endpoint) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) endpoint);/* EndPoint */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSDeRegisterEndPointRequest);/*
 																								 * StartSequence
@@ -3538,7 +3539,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public NodeServices getLocalServices() throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSGetEndPointIdListRequest);/*
 																								 * StartSequence
 																								 * +
@@ -3605,7 +3606,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	@Override
 	public ServiceDescriptor getServiceDescriptor(long timeout, Address addrOfInterest, short endpoint) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/* ShortNetworkAddress */
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/* ShortNetworkAddress */
@@ -3682,7 +3683,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void cpuReset() throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZTCCPUResetRequest);/*
 																					 * StartSequence
 																					 * +
@@ -3698,7 +3699,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public BindingList getNodeBindings(long timeout, Address addrOfInterest, short index) throws IOException, Exception, GatewayException {
 
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		if (addrOfInterest.getNetworkAddress() == null)
 			addrOfInterest.setNetworkAddress(gal.getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
 
@@ -3761,7 +3762,7 @@ public class DataFreescale implements IDataLayer {
 	public Status addBinding(long timeout, Binding binding) throws IOException, Exception, GatewayException {
 		byte[] _reversed;
 
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromNetworkCache(binding.getSourceIEEEAddress()).shortValue()), 2);
 
 		byte[] ieeeAddress = DataManipulation.toByteVect(binding.getSourceIEEEAddress(), 8);
@@ -3863,7 +3864,7 @@ public class DataFreescale implements IDataLayer {
 	public Status removeBinding(long timeout, Binding binding) throws IOException, Exception, GatewayException {
 		byte[] _reversed;
 
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 
 		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromNetworkCache(binding.getSourceIEEEAddress()).shortValue()), 2);
 
@@ -3964,7 +3965,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
-		ByteArrayObject _bodyCommand = new ByteArrayObject();
+		ShortArrayObject _bodyCommand = new ShortArrayObject();
 		_bodyCommand.addByte((byte) 0xFD);
 		_bodyCommand.addByte((byte) 0xFF);
 		byte[] _channel = Utils.buildChannelMask(scanChannel);
@@ -3997,7 +3998,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public void notifyFrame(final ByteArrayObject frame) {
+	public void notifyFrame(final ShortArrayObject frame) {
 		synchronized (tmpDataQueue) {
 			tmpDataQueue.add(frame);
 			tmpDataQueue.notify();
@@ -4007,7 +4008,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status ClearDeviceKeyPairSet(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		byte[] ieeeAddress = DataManipulation.toByteVect(addrOfInterest.getIeeeAddress(), 8);
 		byte[] _reversed = DataManipulation.reverseBytes(ieeeAddress);
 		for (byte b : _reversed)
@@ -4065,7 +4066,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status ClearNeighborTableEntry(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) 0xFF);
 		_res.addByte((byte) 0xFF);
 
@@ -4130,7 +4131,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Status NMLE_SETSync(long timeout, short _AttID, String _value) throws Exception {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* _AttId */
 		_res.addByte((byte) 0x00);
 		_res.addByte((byte) 0x00);
@@ -4190,7 +4191,7 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException {
-		ByteArrayObject _res = new ByteArrayObject();
+		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);
 		_res.addByte((byte) startIndex);
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.ZDPMgmtLqiRequest);

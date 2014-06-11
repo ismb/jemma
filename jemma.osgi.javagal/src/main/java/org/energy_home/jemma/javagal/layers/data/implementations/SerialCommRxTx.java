@@ -35,7 +35,7 @@ import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImple
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
@@ -169,14 +169,13 @@ public class SerialCommRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ByteArrayObject buff) throws Exception {
+	public void write(ShortArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
-					byte[] tosend = Arrays.copyOfRange(buff.getByteArray(), 0, buff.getCount(true));
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						DataManipulation.logArrayBytesHexRadix(">>> Sending", tosend);
-					ou.write(tosend);
+						LOG.debug(">>> Sending", buff.ToHexString());
+					ou.write(buff.getByteArray(), 0, buff.getCount(true));
 					//ou.flush();//TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 				} catch (Exception e) {
 
@@ -262,7 +261,7 @@ public class SerialCommRxTx implements IConnector {
 						}
 
 						if (!getIgnoreMessage()) {
-							ByteArrayObject frame = new ByteArrayObject(buffer, pos);
+							ShortArrayObject frame = new ShortArrayObject(buffer, pos);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
 					} catch (Exception e) {
