@@ -1,0 +1,212 @@
+<div id="tplManageNetwork">
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							
+						
+						
+						/*0x96:NetWorkAddress*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x96",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_shortaddress").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_shortaddress").val(dataBig.status.message);
+										}
+									});
+						
+							/*0x80:Short PanId*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x80",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_shortpanid").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_shortpanid").val(dataBig.status.message);
+										}
+									});
+							
+							
+							/*0x9A:Extended PanId*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x9A",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_extendedpanid").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_extendedpanid").val(dataBig.status.message);
+										}
+									});
+						
+							
+						
+							/*0xDA:DeviceType*/
+							
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xDA",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_device_type").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_device_type").val(dataBig.status.message);
+										}
+									});
+							
+						
+						
+					/*0xA0:nwkSecurityLevel*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xA0",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_securitylevel").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_securitylevel").val(dataBig.status.message);
+										}
+									});
+							
+						
+							/*0xDB:nwkSoftwareVersion*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xDB",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_nwkSoftwareVersion").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_nwkSoftwareVersion").val(dataBig.status.message);
+										}
+									});
+						
+						
+							/*0xE6:networkKey*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xE6",
+										type : 'GET'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											$("#detail_networkKey").val("0x" + dataBig.detail.value);
+										} else {
+											$("#detail_networkKey").val(dataBig.status.message);
+										}
+									});
+						
+						
+							
+							
+							
+							
+							});
+	</script>
+
+	<div id="container">
+		
+		<form>
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" style="width: 150px">
+							<label for="detail_shortaddress">GAL Short Address:</label></td>
+						<td><input type="text" name="detail_shortaddress"
+							id="detail_shortaddress" size="35"
+							class="text ui-widget-content ui-corner-all"></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_shortpanid">GAL PanID:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_shortpanid" id="detail_shortpanid"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_extendedpanid">GAL Extended PanID:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_extendedpanid" id="detail_extendedpanid"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_securitylevel">Security Level:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_securitylevel" id="detail_securitylevel"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+
+<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device_type">Device Type:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_device_type" id="detail_device_type"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_nwkSoftwareVersion">Stack Software-Version:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_nwkSoftwareVersion" id="detail_nwkSoftwareVersion"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					
+					
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_networkKey">Network Key:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_networkKey" id="detail_networkKey"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					
+					
+					
+					
+					
+					
+				</table>
+			</fieldset>
+			
+		</form>
+	
+		
+		
+	</div>
+</div>

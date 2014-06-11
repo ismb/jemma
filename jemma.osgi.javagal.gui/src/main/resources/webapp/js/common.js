@@ -568,10 +568,10 @@ var reloadGridFromLocalArray = function(idGrid, arrayData)
 	$("#" + idGrid).jqGrid("clearGridData", true);
 	for(var i=0;i<=arrayData.length;i++)
 		jQuery("#" + idGrid).jqGrid('addRowData',i+1,arrayData[i]);
-	
-	
-	
 }
+
+
+
 
 var sortGridFromLocalArray = function(idGrid, columnName, orderType)
 {

@@ -56,13 +56,13 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-SymbolicName>jemma.osgi.javagal;singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.layers.presentation.Activator</Bundle-Activator>
 						<Import-Package> 
 							gnu.io;version="1.0.0",
-							<!--javax.comm,-->
 							org.slf4j;version="[1.7.7,2)",
 							org.osgi.framework,
 							org.osgi.util.tracker;version="1.4.2",*
@@ -106,10 +106,6 @@
 			<artifactId>org.rxtx</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>javax.comm</groupId>
-			<artifactId>comm</artifactId>
-			<version>3.0-u1</version>
-		</dependency>-->
+		
 	</dependencies>
 </project>
