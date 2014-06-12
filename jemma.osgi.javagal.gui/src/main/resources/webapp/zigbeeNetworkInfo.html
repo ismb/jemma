@@ -1,196 +1,226 @@
 <div id="tplManageNetwork">
 	<script type="text/javascript">
-		$(document).ready(
-				function() {
-
-					//$("#container").form();
-
-					/*0x96:NetWorkAddress*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0x96",
-						type : 'GET'
-					}).done(
-							function(data) {
+		$(document)
+				.ready(
+						function() {
+							var mydataAttributes = [];
+							/*0x96:NetWorkAddress*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x96",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_shortaddress").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.shortAddress,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_shortaddress").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.shortAddress,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0x80:Short PanId*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0x80",
-						type : 'GET'
-					}).done(
-							function(data) {
+							/*0x80:Short PanId*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x80",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_shortpanid").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.shortPanId,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_shortpanid").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.shortPanId,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0x9A:Extended PanId*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0x9A",
-						type : 'GET'
-					}).done(
-							function(data) {
+							/*0x9A:Extended PanId*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0x9A",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_extendedpanid").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.extendedPanId,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_extendedpanid").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.extendedPanId,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0xDA:DeviceType*/
+							/*0xDA:DeviceType*/
 
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0xDA",
-						type : 'GET'
-					}).done(
-							function(data) {
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xDA",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_device_type").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.deviceType,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_device_type").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.deviceType,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0xA0:nwkSecurityLevel*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0xA0",
-						type : 'GET'
-					}).done(
-							function(data) {
+							/*0xA0:nwkSecurityLevel*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xA0",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_securitylevel").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.securityLevel,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_securitylevel").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.securityLevel,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0xDB:nwkSoftwareVersion*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0xDB",
-						type : 'GET'
-					}).done(
-							function(data) {
+							/*0xDB:nwkSoftwareVersion*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xDB",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_nwkSoftwareVersion").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.stackSoftwareVersion,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_nwkSoftwareVersion").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.stackSoftwareVersion,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-					/*0xE6:networkKey*/
-					$.ajax({
-						url : DEFINEPATH.attributeInfoPath + "?id=0xE6",
-						type : 'GET'
-					}).done(
-							function(data) {
+							/*0xE6:networkKey*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xE6",
+										type : 'GET'
+									}).done(function(data) {
 								var dataBig = json_parse(data);
 								if (dataBig.status.code == 0) {
-									$("#detail_networkKey").val(
-											"0x" + dataBig.detail.value);
+
+									var currentAttribute = {
+										lblName : LANG.propertyName.networkKey,
+										lblValue : "0x" + dataBig.detail.value,
+									};
+
 								} else {
-									$("#detail_networkKey").val(
-											dataBig.status.message);
+									var currentAttribute = {
+										lblName : LANG.propertyName.networkKey,
+										lblValue : dataBig.status.message,
+									};
+
 								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
 							});
 
-				});
+							$("#tblAttributes").jqGrid(
+									{
+										rowNum : 1000,
+										datatype : "local",
+										colNames : [ LANG.centerPane.lblName,
+												LANG.centerPane.lblValue, ],
+										colModel : [ {
+											name : 'lblName',
+											width : 200,
+											align : "center"
+
+										}, {
+											name : 'lblValue',
+											width : 300,
+											align : "center"
+										}, ],
+										sortname : 'id',
+										viewrecords : true,
+										caption : LANG.menu.btnManageNetwork,
+										sortorder : "desc",
+										autowidth : false,
+										subGrid : false,
+										pager : '#pager'
+									});
+						});
 	</script>
-
 	<div id="container">
-
-		<form>
-			<fieldset>
-				<table >
-					<tr>
-						<th valign="top" align="left">Key</th>
-						<th valign="top" align="left">Value</th>
-					</tr>
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label
-							for="detail_shortaddress">GAL Short Address:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_shortaddress" id="detail_shortaddress" size="50" readonly/></td>
-					</tr>
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label for="detail_shortpanid">GAL
-								PanID:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_shortpanid" id="detail_shortpanid"
-							 size="50" readonly /></td>
-					</tr>
-
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label
-							for="detail_extendedpanid">GAL Extended PanID:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_extendedpanid" id="detail_extendedpanid"
-							 size="50" readonly /></td>
-					</tr>
-
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label
-							for="detail_securitylevel">Security Level:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_securitylevel" id="detail_securitylevel"
-							 size="50" readonly /></td>
-					</tr>
-
-
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label for="detail_device_type">Device
-								Type:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_device_type" id="detail_device_type"
-							 size="50"  readonly /></td>
-					</tr>
-
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label
-							for="detail_nwkSoftwareVersion">Stack Software-Version:</label></td>
-						<td valign="top" align="left"><input type="text"
-							name="detail_nwkSoftwareVersion" id="detail_nwkSoftwareVersion"
-							 size="50" readonly /></td>
-					</tr>
-
-
-					<tr>
-						<td valign="top" align="left" style="background-color: #FF3333"><label for="detail_networkKey">Network
-								Key:</label></td>
-						<td valign="top" align="left"><input type="text" 
-							name="detail_networkKey" id="detail_networkKey"
-							 size="50" readonly /></td>
-					</tr>
-				</table>
-			</fieldset>
-
-		</form>
-
-
-
+		<table id="tblAttributes" style="width: 100%; height: 100%"></table>
 	</div>
 </div>
