@@ -823,7 +823,7 @@ public class GalController {
 
 					if (_lockerStartDevice.getId() > 0) {
 						if (PropertiesManager.getDebugEnabled())
-							logger.info("Gateway Started now!");
+							logger.info("***Gateway Started now!****");
 					} else {
 						setGatewayStatus(GatewayStatus.GW_READY_TO_START);
 						if (PropertiesManager.getDebugEnabled())
@@ -1888,43 +1888,48 @@ public class GalController {
 
 				@Override
 				public void run() {
-					String _NetworkAdd = null;
-					BigInteger _IeeeAdd = null;
 
 					/* Read the PanID of the Network */
-					try {
-						networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the PanID of the Network!");
+					String _networkPanID = null;
+					while (_networkPanID == null) {
+						try {
+							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
+						} catch (Exception e) {
+							if (PropertiesManager.getDebugEnabled()) {
+								logger.error("Error retrieving the PanID of the Network!");
+							}
+
 						}
-						return;
 					}
+					networkPanID = _networkPanID;
 
 					/* Read the ShortAddress of the GAL */
-					try {
-						_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
-						// System.out.println("Readed Network Addres of Gal: " +
-						// _NetworkAdd);
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the Gal Network Address!");
+					String _NetworkAdd = null;
+					while (_NetworkAdd == null) {
+						try {
+							_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
+							// System.out.println("Readed Network Addres of Gal: "
+							// +
+							// _NetworkAdd);
+						} catch (Exception e) {
+							if (PropertiesManager.getDebugEnabled()) {
+								logger.error("Error retrieving the Gal Network Address!");
+							}
+
 						}
-						return;
 					}
 					/* Read the IEEEAddress of the GAL */
-					try {
-						_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
-						// System.out.println("Readed IEEE Addres of Gal: " +
-						// _IeeeAdd);
+					BigInteger _IeeeAdd = null;
+					while (_IeeeAdd == null) {
+						try {
+							_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
+						} catch (Exception e) {
+							if (PropertiesManager.getDebugEnabled()) {
+								logger.error("Error retrieving the Gal IEEE Address!");
+							}
 
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the Gal IEEE Address!");
 						}
-						return;
 					}
-
 					WrapperWSNNode galNodeWrapper = new WrapperWSNNode(((GalController) this.getParameter()));
 					WSNNode galNode = new WSNNode();
 					Address _add = new Address();
@@ -1934,67 +1939,74 @@ public class GalController {
 					galNodeWrapper.set_node(galNode);
 
 					/* Read the NodeDescriptor of the GAL */
-					try {
-						NodeDescriptor _NodeDescriptor = DataLayer.getNodeDescriptorSync(PropertiesManager.getCommandTimeoutMS(), _add);
-						if (_NodeDescriptor != null) {
-							if (galNodeWrapper.get_node().getCapabilityInformation() == null)
-								galNodeWrapper.get_node().setCapabilityInformation(new MACCapability());
-							galNodeWrapper.get_node().getCapabilityInformation().setReceiverOnWhenIdle(_NodeDescriptor.getMACCapabilityFlag().isReceiverOnWhenIdle());
-							galNodeWrapper.get_node().getCapabilityInformation().setAllocateAddress(_NodeDescriptor.getMACCapabilityFlag().isAllocateAddress());
-							galNodeWrapper.get_node().getCapabilityInformation().setAlternatePanCoordinator(_NodeDescriptor.getMACCapabilityFlag().isAlternatePanCoordinator());
-							galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
-							galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
-							galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
+					NodeDescriptor _NodeDescriptor = null;
+					while (_NodeDescriptor == null) {
+						try {
+							_NodeDescriptor = DataLayer.getNodeDescriptorSync(PropertiesManager.getCommandTimeoutMS(), _add);
+							if (_NodeDescriptor != null) {
+								if (galNodeWrapper.get_node().getCapabilityInformation() == null)
+									galNodeWrapper.get_node().setCapabilityInformation(new MACCapability());
+								galNodeWrapper.get_node().getCapabilityInformation().setReceiverOnWhenIdle(_NodeDescriptor.getMACCapabilityFlag().isReceiverOnWhenIdle());
+								galNodeWrapper.get_node().getCapabilityInformation().setAllocateAddress(_NodeDescriptor.getMACCapabilityFlag().isAllocateAddress());
+								galNodeWrapper.get_node().getCapabilityInformation().setAlternatePanCoordinator(_NodeDescriptor.getMACCapabilityFlag().isAlternatePanCoordinator());
+								galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
+								galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
+								galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
 
-							galNodeWrapper.reset_numberOfAttempt();
-							galNodeWrapper.set_discoveryCompleted(true);
-							int _index = -1;
+								galNodeWrapper.reset_numberOfAttempt();
+								galNodeWrapper.set_discoveryCompleted(true);
+								int _index = -1;
 
-							/* If the Node Not Exists */
-							if ((_index = existIntoNetworkCache(_add.getNetworkAddress())) == -1) {
-								getNetworkcache().add(galNodeWrapper);
+								/* If the Node Not Exists */
+								if ((_index = existIntoNetworkCache(_add.getNetworkAddress())) == -1) {
+									getNetworkcache().add(galNodeWrapper);
+								}
+								/* The GAl node is already present into the DB */
+								else {
+									getNetworkcache().get(_index).abortTimers();
+									getNetworkcache().get(_index).set_node(galNodeWrapper.get_node());
+								}
+
+								// System.out.println("Readed Node Descriptor of Gal.");
+
+							} else {
+								// System.out.println("ERROR on Read Node Descriptor of Gal.");
+								if (PropertiesManager.getDebugEnabled()) {
+									logger.error("ERROR on Read Node Descriptor of Gal.!");
+								}
 							}
-							/* The GAl node is already present into the DB */
-							else {
-								getNetworkcache().get(_index).abortTimers();
-								getNetworkcache().get(_index).set_node(galNodeWrapper.get_node());
-							}
 
-							// System.out.println("Readed Node Descriptor of Gal.");
-
-						} else {
-							// System.out.println("ERROR on Read Node Descriptor of Gal.");
+						} catch (Exception e) {
 							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("ERROR on Read Node Descriptor of Gal.!");
+								logger.error("Error retrieving the Gal Node Descriptor!");
 							}
-						}
 
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the Gal Node Descriptor!");
 						}
-						return;
 					}
-
 					/* Executing the command(PermitJoin==0) to close network */
-					try {
-						Status _permitjoin = DataLayer.permitJoinSync(PropertiesManager.getCommandTimeoutMS(), _add, (short) 0x00, (byte) 0x01);
-						if (_permitjoin.getCode() != GatewayConstants.SUCCESS) {
-							Status _st = new Status();
-							_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-							_st.setMessage("Error on permitJoin(0) for the GAL node on startup!");
+					Status _permitjoin = null;
+					while (_permitjoin == null || ((_permitjoin != null) && (_permitjoin.getCode() != GatewayConstants.SUCCESS))) {
+						try {
+							_permitjoin = DataLayer.permitJoinSync(PropertiesManager.getCommandTimeoutMS(), _add, (short) 0x00, (byte) 0x01);
+							if (_permitjoin.getCode() != GatewayConstants.SUCCESS) {
+								Status _st = new Status();
+								_st.setCode((short) GatewayConstants.GENERAL_ERROR);
+								_st.setMessage("Error on permitJoin(0) for the GAL node on startup!");
 
-							get_gatewayEventManager().notifyGatewayStartResult(_st);
-							// System.out.println("Permit join close GAL executed.");
-							// System.out.println("Sent NetworkStart event");
+								get_gatewayEventManager().notifyGatewayStartResult(_st);
+								// System.out.println("Permit join close GAL executed.");
+								// System.out.println("Sent NetworkStart event");
+
+							}
+						} catch (Exception e) {
+							if (PropertiesManager.getDebugEnabled()) {
+								logger.error("Error retrieving the Gal Node Descriptor!");
+							}
 
 						}
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error retrieving the Gal Node Descriptor!");
-						}
-						return;
+
 					}
+
 					if (!galNodeWrapper.isSleepy()) {
 						/* If the Node is NOT a sleepyEndDevice */
 
@@ -2011,15 +2023,7 @@ public class GalController {
 
 					set_GalNode(galNodeWrapper);
 					/* Notify Gal Node */
-					Status _s = new Status();
-					_s.setCode((short) 0x00);
-					try {
-						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
-					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error calling nodeDiscovered for the GAL node!");
-						}
-					}
+
 					/* Saving the Panid in order to leave the Philips light */
 					getManageMapPanId().setPanid(galNodeWrapper.get_node().getAddress().getIeeeAddress(), getNetworkPanID());
 					/**/
@@ -2029,7 +2033,18 @@ public class GalController {
 						_lockerStartDevice.notify();
 					}
 					_gatewayStatus = gatewayStatus;
+
+					Status _s = new Status();
+					_s.setCode((short) 0x00);
+					try {
+						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
+					} catch (Exception e) {
+						if (PropertiesManager.getDebugEnabled()) {
+							logger.error("Error calling nodeDiscovered for the GAL node!");
+						}
+					}
 				}
+
 			};
 
 			new Thread(thr).start();
@@ -2043,8 +2058,10 @@ public class GalController {
 			/* Remove all nodes from the cache */
 			getNetworkcache().clear();
 			_gatewayStatus = gatewayStatus;
+
 		} else
 			_gatewayStatus = gatewayStatus;
+
 	}
 
 	/**
@@ -2457,7 +2474,7 @@ public class GalController {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode y : _list) {
 			__indexOnCache++;
-			if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
+			if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue())
 				return __indexOnCache;
 
 		}
@@ -2475,8 +2492,10 @@ public class GalController {
 	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode y : _list) {
-			if (y.get_node().getAddress().getNetworkAddress().equals(shortAddress))
-				return y.get_node().getAddress().getIeeeAddress();
+			
+				if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue())
+					return y.get_node().getAddress().getIeeeAddress();
+			
 		}
 		return null;
 	}
@@ -2492,7 +2511,7 @@ public class GalController {
 	public synchronized Integer getShortAddress_FromNetworkCache(BigInteger IeeeAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode y : _list) {
-			if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().equals(IeeeAddress))
+			if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue())
 				return y.get_node().getAddress().getNetworkAddress();
 		}
 		return null;

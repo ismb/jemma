@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
 public class DataFreescale implements IDataLayer {
 	Boolean destroy = false;
 	ExecutorService executor = null;
+
 	GalController gal = null;
 	private IConnector dongleRs232 = null;
 	// FIXME mass-rename logger to LOG when ready
@@ -119,6 +120,7 @@ public class DataFreescale implements IDataLayer {
 				return new Thread(r, "THPool-processMessages");
 			}
 		});
+
 	}
 
 	public void initialize() {
@@ -144,13 +146,14 @@ public class DataFreescale implements IDataLayer {
 												} catch (Exception e) {
 													if (gal.getPropertiesManager().getDebugEnabled())
 														LOG.error("Error on processMessages: " + e.getMessage());
-
+													e.printStackTrace();
 												}
 											}
 										});
 									} catch (Exception e) {
 										if (gal.getPropertiesManager().getDebugEnabled())
 											LOG.error("Error on processMessages: " + e.getMessage());
+										e.printStackTrace();
 									}
 
 								} else
@@ -281,6 +284,9 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public void processMessages(short[] message) throws Exception {
+		if (gal.getPropertiesManager().getDebugEnabled())
+			DataManipulation.logArrayShortToHex("Processing message", message);
+
 		ByteBuffer bb = ByteBuffer.allocate(2);
 		bb.order(ByteOrder.BIG_ENDIAN);
 		bb.put((byte) message[0]);
@@ -579,7 +585,6 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdoNetworkStateEvent(short[] message) throws Exception {
 		short _status = message[3];
-		String mess;
 		switch (_status) {
 		case 0x00:
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -603,20 +608,16 @@ public class DataFreescale implements IDataLayer {
 			gal.setGatewayStatus(GatewayStatus.GW_STARTING);
 			break;
 		case 0x04:
-			mess = "ZDO-NetworkState.Event: DeviceinRouterRunningstate (Device in Router Running state)";
-			gal.get_gatewayEventManager().notifyGatewayStartResult(makeStatusObject(mess, _status));
 			gal.setGatewayStatus(GatewayStatus.GW_RUNNING);
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.info(mess);
+				LOG.info("ZDO-NetworkState.Event: DeviceinRouterRunningstate (Device in Router Running state)");
 			}
 			break;
 		case 0x05:
-			mess = "ZDO-NetworkState.Event: DeviceinEndDeviceRunningstate (Device in End Device Running state)";
-			gal.get_gatewayEventManager().notifyGatewayStartResult(makeStatusObject(mess, _status));
 			gal.setGatewayStatus(GatewayStatus.GW_RUNNING);
 
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.info(mess);
+				LOG.info("ZDO-NetworkState.Event: DeviceinEndDeviceRunningstate (Device in End Device Running state)");
 			}
 			break;
 		case 0x09:
@@ -644,12 +645,10 @@ public class DataFreescale implements IDataLayer {
 			}
 			break;
 		case 0x10:
-			mess = "ZDO-NetworkState.Event: DeviceinCoordinatorRunningstate (Device is Coordinator Running state)";
 
-			gal.get_gatewayEventManager().notifyGatewayStartResult(makeStatusObject(mess, _status));
 			gal.setGatewayStatus(GatewayStatus.GW_RUNNING);
 			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.info(mess);
+				LOG.info("ZDO-NetworkState.Event: DeviceinCoordinatorRunningstate (Device is Coordinator Running state)");
 			}
 			break;
 		case 0x11:
@@ -1735,6 +1734,8 @@ public class DataFreescale implements IDataLayer {
 			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
 			if (_ieee != null)
 				address.setIeeeAddress(_ieee);
+			else
+				return;
 			messageEvent.setSrcAddress(address);
 			break;
 		case 0x02:
@@ -1742,7 +1743,8 @@ public class DataFreescale implements IDataLayer {
 			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
 			if (_ieee != null)
 				address.setIeeeAddress(_ieee);
-
+			else
+				return;
 			messageEvent.setSrcAddress(address);
 
 			break;
@@ -1772,6 +1774,8 @@ public class DataFreescale implements IDataLayer {
 			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
 			if (_ieee != null)
 				address.setIeeeAddress(_ieee);
+			else
+				return;
 			messageEvent.setDstAddress(address);
 			break;
 		case 0x02:
@@ -1779,7 +1783,8 @@ public class DataFreescale implements IDataLayer {
 			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
 			if (_ieee != null)
 				address.setIeeeAddress(_ieee);
-
+			else
+				return;
 			messageEvent.setDstAddress(address);
 
 			break;
@@ -1810,17 +1815,16 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsdeDataIndication(short[] message) {
 		final APSMessageEvent messageEvent = new APSMessageEvent();
-		short destAddressMode = message[3];
-		messageEvent.setDestinationAddressMode((long) destAddressMode);
+
+		messageEvent.setDestinationAddressMode((long) message[3]);
 		BigInteger _ieee = null;
-		Address address = new Address();
-		switch (destAddressMode) {
+		Address destinationAddress = new Address();
+
+		switch (messageEvent.getDestinationAddressMode().shortValue()) {
 		case 0x00:
 			// Reserved (No source address supplied)
 			if (gal.getPropertiesManager().getDebugEnabled())
 				LOG.info("Message Discarded: found reserved 0x00 as Destination Address Mode ");
-			// Error found, we don't proceed and discard the
-			// message
 			return;
 		case 0x01:
 			// Value16bitgroupfordstAddr (DstEndpoint not
@@ -1829,190 +1833,74 @@ public class DataFreescale implements IDataLayer {
 			// present
 			// short
 			// address on 2 bytes
-			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
-
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-
-			messageEvent.setDestinationAddress(address);
+			destinationAddress.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
+			messageEvent.setDestinationAddress(destinationAddress);
 			messageEvent.setDestinationEndpoint((short) 0xff);
 
 			break;
 		case 0x02:
 			// Value16bitAddrandDstEndpoint (16 bit address
 			// supplied)
-			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-
-			messageEvent.setDestinationAddress(address);
+			destinationAddress.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
+			messageEvent.setDestinationAddress(destinationAddress);
 			messageEvent.setDestinationEndpoint(message[6]);
 			break;
 		default:
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				LOG.error("Message Discarded: not valid Destination Address Mode");
 			}
-			// Error found, we don't proceed and discard the
-			// message
 			return;
 		}
+
+		Address sourceAddress = new Address();
 		messageEvent.setSourceAddressMode((long) message[7]);
-		address = new Address();
-		address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
-		_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-		if (_ieee != null)
-			address.setIeeeAddress(_ieee);
-		messageEvent.setSourceAddress(address);
-		messageEvent.setSourceEndpoint(message[10]);
+
+		switch (messageEvent.getSourceAddressMode().shortValue()) {
+		case 0x00:
+			// Reserved (No source address supplied)
+			if (gal.getPropertiesManager().getDebugEnabled())
+				LOG.info("Message Discarded: found reserved 0x00 as Destination Address Mode ");
+			return;
+		case 0x01:
+			// Value16bitgroupfordstAddr (DstEndpoint not
+			// present)
+			// No Source end point (so FF broadcast),
+			// present
+			// short
+			// address on 2 bytes
+
+			sourceAddress.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
+			messageEvent.setSourceAddress(sourceAddress);
+			messageEvent.setSourceEndpoint((short) 0xff);
+
+			break;
+		case 0x02:
+			// Value16bitAddrandDstEndpoint (16 bit address
+			// supplied)
+
+			sourceAddress.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
+			messageEvent.setSourceAddress(sourceAddress);
+			messageEvent.setSourceEndpoint(message[10]);
+
+			break;
+		default:
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				LOG.error("Message Discarded: not valid Source Address Mode");
+			}
+			return;
+		}
+
 		messageEvent.setProfileID(DataManipulation.toIntFromShort((byte) message[12], (byte) message[11]));
 		messageEvent.setClusterID(DataManipulation.toIntFromShort((byte) message[14], (byte) message[13]));
 
-		if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING && gal.get_GalNode() != null) {
-			/* Update The Node Data */
+		if ((gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) && gal.get_GalNode() != null) {
 
-			int _indexOnCache = -1;
-			_indexOnCache = gal.existIntoNetworkCache(address.getNetworkAddress());
+			if (!updateNodeIfExist(messageEvent, messageEvent.getSourceAddress()) || !updateNodeIfExist(messageEvent, messageEvent.getDestinationAddress()))
+				return;
 
-			if (_indexOnCache != -1) {
+		} else
+			return;
 
-				if (gal.getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
-
-					/* The node is already into the DB */
-					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-						if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
-							gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
-							gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-							if (gal.getPropertiesManager().getDebugEnabled()) {
-								// System.out.println("\n\rPostponing  timer Freshness by Aps.Indication for node:"
-								// +
-								// gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()
-								// + "\n\r");
-								LOG.info("Postponing  timer Freshness by Aps.Indication for node:" + gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress());
-							}
-						}
-
-					}
-				}
-			} else {
-				// 0x8034 is a LeaveAnnouncement, 0x0013 is a
-				// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
-
-				if ((gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001)))) {
-
-					if (address.getNetworkAddress() != gal.get_GalNode().get_node().getAddress().getNetworkAddress()) {
-						// Insert the node into
-						// cache,
-						// but with the
-						// discovery_completed flag
-						// a
-						// false
-
-						WrapperWSNNode o = new WrapperWSNNode(gal);
-						WSNNode _newNode = new WSNNode();
-						o.set_discoveryCompleted(false);
-						_newNode.setAddress(address);
-						o.set_node(_newNode);
-						gal.getNetworkcache().add(o);
-
-						Runnable thr = new MyThread(address) {
-							@Override
-							public void run() {
-								Address _address = (Address) this.getParameter();
-								int _indexOnCache = -1;
-								_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
-
-								if (gal.getPropertiesManager().getDebugEnabled()) {
-									LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
-								}
-								try {
-									BigInteger ieee = null;
-									WrapperWSNNode o = new WrapperWSNNode(gal);
-									WSNNode _newNode = new WSNNode();
-
-									/*
-									 * Reading the IEEEAddress of the new node
-									 */
-
-									if (gal.getPropertiesManager().getDebugEnabled())
-										LOG.info("Sending IeeeReq to:" + String.format("%04X", _address.getNetworkAddress()));
-
-									ieee = readExtAddress(INTERNAL_TIMEOUT, _address.getNetworkAddress());
-									_address.setIeeeAddress(ieee);
-									if (gal.getPropertiesManager().getDebugEnabled()) {
-										LOG.info("Readed Ieee of the new node:" + String.format("%04X", _address.getNetworkAddress()) + " Ieee: " + ieee.toString());
-									}
-									if (gal.getPropertiesManager().getDebugEnabled())
-										LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _address.getNetworkAddress()));
-									NodeDescriptor _ndesc = getNodeDescriptorSync(INTERNAL_TIMEOUT, _address);
-									_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
-
-									if (gal.getPropertiesManager().getDebugEnabled()) {
-										LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _address.getNetworkAddress()));
-
-									}
-
-									o.reset_numberOfAttempt();
-									o.set_discoveryCompleted(true);
-									if (!o.isSleepy()) {
-
-										if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-											o.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-										}
-										if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-											o.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-										}
-									}
-
-									_indexOnCache = gal.existIntoNetworkCache(_newNode.getAddress().getNetworkAddress());
-									if (_indexOnCache > -1) {
-										gal.getNetworkcache().remove(_indexOnCache);
-
-									}
-
-									// Updating the node
-									// informations
-									gal.getNetworkcache().add(o);
-									Status _st = new Status();
-									_st.setCode((short) GatewayConstants.SUCCESS);
-									gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
-									/*
-									 * Saving the Panid in order to leave the
-									 * Philips light
-									 */
-									gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
-									/**/
-
-								} catch (GatewayException e) {
-									LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getMessage());
-									_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
-									if (_indexOnCache > -1) {
-										gal.getNetworkcache().get(_indexOnCache).abortTimers();
-										gal.getNetworkcache().remove(_indexOnCache);
-									}
-								} catch (Exception e) {
-									LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getMessage());
-									_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
-									if (_indexOnCache > -1) {
-										gal.getNetworkcache().get(_indexOnCache).abortTimers();
-										gal.getNetworkcache().remove(_indexOnCache);
-
-									}
-
-								}
-
-							}
-						};
-
-						Thread _thr0 = new Thread(thr);
-						_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + String.format("%04X", address.getNetworkAddress()));
-						_thr0.start();
-					}
-				}
-			}
-
-		}
 		int lastAsdu = 16 + message[15] - 1;
 
 		messageEvent.setData(DataManipulation.subByteArray(message, 16, lastAsdu));
@@ -2040,22 +1928,58 @@ public class DataFreescale implements IDataLayer {
 		}
 		messageEvent.setLinkQuality(message[lastAsdu + 4]);
 		messageEvent.setRxTime((long) DataManipulation.toIntFromShort((byte) message[(lastAsdu + 8)], (byte) message[(lastAsdu + 5)]));
-		// ASK: jumped iMsgType, pNext, iDataSize, pData,
-		// iBufferNumber
+
 		if (gal.getPropertiesManager().getDebugEnabled())
 			DataManipulation.logArrayShortToHex("Extracted APSDE-DATA.Indication", message);
-		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null))
-			messageEvent.getDestinationAddress().setIeeeAddress(gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress()));
+		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null)) {
+			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress());
+			if (_iee != null)
+				messageEvent.getDestinationAddress().setIeeeAddress(_iee);
+			else {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.error("Message discarded Ieee destination address not found, related ShortAddress:",String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()));
 
-		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getDestinationAddress().getNetworkAddress() == null))
-			messageEvent.getDestinationAddress().setNetworkAddress(gal.getShortAddress_FromNetworkCache(messageEvent.getDestinationAddress().getIeeeAddress()));
+				return;
+			}
+		}
 
-		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null))
-			messageEvent.getSourceAddress().setIeeeAddress(gal.getIeeeAddress_FromNetworkCache(messageEvent.getSourceAddress().getNetworkAddress()));
+		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getDestinationAddress().getNetworkAddress() == null)) {
 
-		if ((messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getDestinationAddress().getNetworkAddress() == null))
-			messageEvent.getSourceAddress().setNetworkAddress(gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress()));
+			Integer _short = gal.getShortAddress_FromNetworkCache(messageEvent.getDestinationAddress().getIeeeAddress());
+			if (_short != null)
+				messageEvent.getDestinationAddress().setNetworkAddress(_short);
+			else {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()));
 
+				return;
+			}
+
+		}
+		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getSourceAddress().getIeeeAddress() == null)) {
+
+			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
+			if (_iee != null)
+				messageEvent.getSourceAddress().setIeeeAddress(_iee);
+			else {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
+				return;
+			}
+
+		}
+		if ((messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getSourceAddress().getNetworkAddress() == null)) {
+
+			Integer _short = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
+			if (_short != null)
+				messageEvent.getSourceAddress().setNetworkAddress(_short);
+			else {
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.error("Message discarded Short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()));
+				return;
+			}
+
+		}
 		if (messageEvent.getProfileID().equals(0)) {/*
 													 * ZDO Command
 													 */
@@ -2181,6 +2105,174 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param messageEvent
+	 * @param address
+	 */
+	private boolean updateNodeIfExist(final APSMessageEvent messageEvent, Address address) {
+
+		/* Update Source Node Data */
+		int _indexOnCache = -1;
+		_indexOnCache = gal.existIntoNetworkCache(address.getNetworkAddress());
+		if (_indexOnCache != -1) {
+
+			if (gal.getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
+
+				/* The node is already into the DB */
+				if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+					if (!gal.getNetworkcache().get(_indexOnCache).isSleepy()) {
+						gal.getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
+						gal.getNetworkcache().get(_indexOnCache).setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+						if (gal.getPropertiesManager().getDebugEnabled()) {
+							LOG.info("Postponing  timer Freshness for Aps.Indication for node:" + String.format("%04X", gal.getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()));
+						}
+					}
+
+				}
+
+			}
+		} else {
+			// 0x8034 is a LeaveAnnouncement, 0x0013 is a
+			// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
+
+			if ((gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001)))) {
+
+				if (address.getNetworkAddress().intValue() != gal.get_GalNode().get_node().getAddress().getNetworkAddress().intValue()) {
+
+					// Insert the node into
+					// cache,
+					// but with the
+					// discovery_completed flag
+					// a
+					// false
+
+					WrapperWSNNode o = new WrapperWSNNode(gal);
+					WSNNode _newNode = new WSNNode();
+					o.set_discoveryCompleted(false);
+					_newNode.setAddress(address);
+					o.set_node(_newNode);
+					gal.getNetworkcache().add(o);
+
+					Runnable thr = new MyThread(address) {
+						@Override
+						public void run() {
+							Address _address = (Address) this.getParameter();
+							int _indexOnCache = -1;
+							_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+
+							if (gal.getPropertiesManager().getDebugEnabled()) {
+								LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
+							}
+							try {
+
+								WrapperWSNNode _newWrapperNode = new WrapperWSNNode(gal);
+								WSNNode _newNode = new WSNNode();
+								_newWrapperNode.set_node(_newNode);
+								_newNode.setAddress(_address);
+								/*
+								 * Reading the IEEEAddress of the new node
+								 */
+
+								BigInteger ieee = null;
+								while (ieee == null) {
+									try {
+										if (gal.getPropertiesManager().getDebugEnabled())
+											LOG.info("Sending IeeeReq to:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+										ieee = readExtAddress(INTERNAL_TIMEOUT, _newNode.getAddress().getNetworkAddress());
+										_newNode.getAddress().setIeeeAddress(ieee);
+										if (gal.getPropertiesManager().getDebugEnabled()) {
+											LOG.info("Readed Ieee of the new node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()) + " Ieee: " + _newNode.getAddress().getIeeeAddress().toString());
+										}
+									} catch (Exception e) {
+										if (gal.getPropertiesManager().getDebugEnabled())
+											LOG.error("Error reading Ieee of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+									}
+								}
+
+								NodeDescriptor _ndesc = null;
+								while (_ndesc == null) {
+									try {
+										if (gal.getPropertiesManager().getDebugEnabled())
+											LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+										_ndesc = getNodeDescriptorSync(INTERNAL_TIMEOUT, _newNode.getAddress());
+										_newNode.setCapabilityInformation(_ndesc.getMACCapabilityFlag());
+
+										if (gal.getPropertiesManager().getDebugEnabled()) {
+											LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+										}
+									} catch (Exception e) {
+										if (gal.getPropertiesManager().getDebugEnabled())
+											LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+									}
+								}
+
+								_newWrapperNode.reset_numberOfAttempt();
+								_newWrapperNode.set_discoveryCompleted(true);
+								
+
+								_indexOnCache = gal.existIntoNetworkCache(_newNode.getAddress().getNetworkAddress());
+								if (_indexOnCache > -1) {
+									gal.getNetworkcache().remove(_indexOnCache);
+									gal.getNetworkcache().add(_newWrapperNode);
+									if (!_newWrapperNode.isSleepy()) {
+
+										if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+											_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+										}
+										if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+											_newWrapperNode.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+										}
+									}
+								}
+
+								Status _st = new Status();
+								_st.setCode((short) GatewayConstants.SUCCESS);
+								gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
+								/*
+								 * Saving the Panid in order to leave the
+								 * Philips light
+								 */
+								gal.getManageMapPanId().setPanid(_newNode.getAddress().getIeeeAddress(), gal.getNetworkPanID());
+
+							} catch (GatewayException e) {
+								LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getMessage());
+								_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+								if (_indexOnCache > -1) {
+									gal.getNetworkcache().get(_indexOnCache).abortTimers();
+									gal.getNetworkcache().remove(_indexOnCache);
+								}
+								e.printStackTrace();
+							} catch (Exception e) {
+								LOG.error("Error on getAutoDiscoveryUnknownNodes for node:" + String.format("%04X", _address.getNetworkAddress()) + " Error:" + e.getMessage());
+								_indexOnCache = gal.existIntoNetworkCache(_address.getNetworkAddress());
+								if (_indexOnCache > -1) {
+
+									gal.getNetworkcache().get(_indexOnCache).abortTimers();
+									gal.getNetworkcache().remove(_indexOnCache);
+
+								}
+								e.printStackTrace();
+
+							}
+
+						}
+					};
+
+					Thread _thr0 = new Thread(thr);
+					_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + String.format("%04X", address.getNetworkAddress()));
+					_thr0.start();
+					return false;
+				}
+			}
+		}
+		return true;
+
 	}
 
 	private Status makeStatusObject(String message, short code) {
@@ -3264,7 +3356,6 @@ public class DataFreescale implements IDataLayer {
 			synchronized (lock) {
 				try {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
 						lock.wait(timeout);
 				} catch (InterruptedException e) {
 
