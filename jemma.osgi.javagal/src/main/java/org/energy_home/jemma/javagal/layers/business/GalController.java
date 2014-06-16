@@ -2166,11 +2166,20 @@ public class GalController {
 							_toRes = DataLayer.getServiceDescriptor(timeout, addrOfInterest, endpoint);
 							BigInteger ieee = getIeeeAddress_FromNetworkCache(_toRes.getAddress().getNetworkAddress());
 							if (ieee != null)
+							{
 								_toRes.getAddress().setIeeeAddress(ieee);
-							else
-								logger.error("No Ieee found for Node: " + String.format("%04X", _toRes.getAddress().getNetworkAddress()));
+								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 
-							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
+							}
+							else
+							{
+								Status s1 = new Status();
+								s1.setCode((short) GatewayConstants.GENERAL_ERROR);
+								s1.setMessage("Ieee Null");
+								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, s1, null);
+
+								
+							}								
 						} catch (GatewayException e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -2200,7 +2209,7 @@ public class GalController {
 				if (ieee != null)
 					_toRes.getAddress().setIeeeAddress(ieee);
 				else
-					logger.error("No Ieee found for Node: " + String.format("%04X", _toRes.getAddress().getNetworkAddress()));
+					throw new GatewayException("No Ieee found for Node: " + String.format("%04X", _toRes.getAddress().getNetworkAddress()));
 				return _toRes;
 			} else
 				throw new GatewayException("Gal is not in running state!");
@@ -2492,7 +2501,6 @@ public class GalController {
 	public synchronized BigInteger getIeeeAddress_FromNetworkCache(Integer shortAddress) {
 		List<WrapperWSNNode> _list = getNetworkcache();
 		for (WrapperWSNNode y : _list) {
-			
 				if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue())
 					return y.get_node().getAddress().getIeeeAddress();
 			
