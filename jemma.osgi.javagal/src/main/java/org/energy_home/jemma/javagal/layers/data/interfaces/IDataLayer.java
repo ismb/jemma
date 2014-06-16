@@ -45,6 +45,8 @@ import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
  */
 public interface IDataLayer extends IFrameCallback {
 	
+	public void initialize();
+	
 	
 	/**
 	 * Gets the properties manager.
@@ -107,7 +109,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a not ZGD error occurs.
 	 */
-	public BigInteger readExtAddress(long timeout, short shortAddress) throws GatewayException,
+	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException,
 			Exception;
 
 	/**

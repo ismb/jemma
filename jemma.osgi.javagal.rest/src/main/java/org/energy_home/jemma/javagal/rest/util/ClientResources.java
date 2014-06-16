@@ -17,8 +17,9 @@ package org.energy_home.jemma.javagal.rest.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.javagal.rest.Activator;
 import org.energy_home.jemma.javagal.rest.PropertiesManager;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
 import org.energy_home.jemma.javagal.rest.RestMessageListener;
@@ -58,7 +59,7 @@ public class ClientResources {
 		this.clientKey = _clientKey;
 	}
 
-	private Log logger = LogFactory.getLog(ClientResources.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ClientResources.class );
 	private ConcurrentHashMap<Long, RestMessageListener> messageCallbacksEventListeners = new ConcurrentHashMap<Long, RestMessageListener>();
 	private ConcurrentHashMap<Long, RestApsMessageListener> messageApscallbacksEventListeners = new ConcurrentHashMap<Long, RestApsMessageListener>();
 	
@@ -78,7 +79,7 @@ public class ClientResources {
 		if (counterException > restManager.getPropertiesManager()
 				.getnumberOfConnectionFail()) {
 			if (propertiesManager.getDebugEnabled())
-				logger.info("Deleting Client...");
+				LOG.debug("Deleting Client...");
 			try {
 				((GalExtenderProxy) gatewayInterface).deleteProxy();
 				restManager.removeClientObjectKey(clientKey);
@@ -102,10 +103,10 @@ public class ClientResources {
 
 			gatewayInterface.setGatewayEventListener(clientEventListener);
 			if (propertiesManager.getDebugEnabled())
-				logger.info("Gateway Event listener registered!");
+				LOG.debug("Gateway Event listener registered!");
 
 			if (propertiesManager.getDebugEnabled())
-				logger.info("Gateway Event listener registered!");
+				LOG.debug("Gateway Event listener registered!");
 		}
 	}
 

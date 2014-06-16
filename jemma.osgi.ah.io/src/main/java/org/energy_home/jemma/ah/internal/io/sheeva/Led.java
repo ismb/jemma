@@ -18,13 +18,13 @@ package org.energy_home.jemma.ah.internal.io.sheeva;
 import java.io.File;
 import java.io.FileWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.io.PlatformsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Led {
 
-	protected static final Log log = LogFactory.getLog(Led.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Led.class );
 	protected static String target = "cedac";
 	protected static String cedacLedFolder = "/sys/devices/platform/flex_hmi.0";
 	protected static int RED_COLOR = 0;
@@ -53,7 +53,7 @@ public class Led {
 
 			if (ledFile.exists() && ledFile.isFile()) {
 			} else {
-				log.debug("The led file doesn't exist");
+				LOG.warn("The led file doesn't exist");
 				return false;
 			}
 
@@ -71,7 +71,7 @@ public class Led {
 				return true;
 
 			} catch (Exception e) {
-				log.error("setting led " + e.getMessage());
+				LOG.error("Exception setting led " + e.getMessage(),e);
 			}
 		}
 		return false;

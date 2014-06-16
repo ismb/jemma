@@ -17,8 +17,6 @@ package org.energy_home.jemma.osgi.ah.m2m.device;
 
 import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfigurator;
 import org.energy_home.jemma.ah.m2m.device.M2MNetworkScl;
@@ -29,9 +27,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class M2MDeviceActivator implements M2MDeviceListener, BundleActivator, ServiceFactory {
-	private static final Log log = LogFactory.getLog(M2MDeviceActivator.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( M2MDeviceActivator.class );
 
 	private BundleContext bc;
 	private M2MDeviceObject device;
@@ -70,7 +71,7 @@ public class M2MDeviceActivator implements M2MDeviceListener, BundleActivator, S
 			deviceRegistration = null;
 			device.release();
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on stop", e);
 		}
 	}
 
@@ -78,7 +79,7 @@ public class M2MDeviceActivator implements M2MDeviceListener, BundleActivator, S
 		try {
 			networkSclRegistration = bc.registerService(M2MNetworkScl.class.getName(), this, null);
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on networkSclConnected", e);
 		}
 	}
 
@@ -88,34 +89,34 @@ public class M2MDeviceActivator implements M2MDeviceListener, BundleActivator, S
 				networkSclRegistration.unregister();
 			networkSclRegistration = null;
 		} catch (Exception e) {
-			log.error("", e);
+			LOG.error("Exception on networkSclDisconnected", e);
 		}
 	}
 
 	public void deviceStarted() {
-		log.info("M2M Device started");	
+		LOG.debug("M2M Device started");	
 	}
 	
 	public void deviceStopped() {
-		log.info("M2M Device staopped");	
+		LOG.debug("M2M Device staopped");	
 	}
 	
 	public void deviceConfigUpdated() {
-		log.info("Device config updated");	
+		LOG.debug("Device config updated");	
 	}
 	
 	public void localSclIdUpdated() {
-		log.info("M2M Device local scl id updated");
+		LOG.debug("M2M Device local scl id updated");
 	}
 	
 	public Object getService(Bundle bundle, ServiceRegistration registration) {
 		String bundleName = bundle.getSymbolicName();
-		log.info("Created Network Scl service for bundle " + bundleName);
+		LOG.debug("Created Network Scl service for bundle " + bundleName);
 		return device.getNetworkScl(bundle.getSymbolicName());
 	}
 
 	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
-		log.info("Released Network Scl service for bundle " + bundle.getSymbolicName());
+		LOG.debug("Released Network Scl service for bundle " + bundle.getSymbolicName());
 	}
 
 }

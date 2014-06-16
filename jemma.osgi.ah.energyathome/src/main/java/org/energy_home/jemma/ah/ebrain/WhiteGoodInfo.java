@@ -16,12 +16,10 @@
 package org.energy_home.jemma.ah.ebrain;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.shal.DeviceInfo;
 
 public class WhiteGoodInfo extends ApplianceInfo {
-	protected static final Log log = LogFactory.getLog(WhiteGoodInfo.class.getSimpleName());
+	
 	private static final PowerProfileInfo[] EMPTY_PROFILES = new PowerProfileInfo[0];
 
 	public WhiteGoodInfo(DeviceInfo info) {

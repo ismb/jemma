@@ -25,16 +25,16 @@ import java.nio.channels.FileChannel;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FlexGatewayButtons implements Runnable {
 
 	static final String flexGatewayButtonsDevice = "/dev/input/event0";
 	private File buttonFile;
-	private Log log = LogFactory.getLog(FlexGatewayButtons.class);
+	private static final Logger LOG = LoggerFactory.getLogger( FlexGatewayButtons.class );
 	private Thread t;
 
 	private FileInputStream fis = null;
@@ -47,12 +47,12 @@ public class FlexGatewayButtons implements Runnable {
 	}
 
 	protected synchronized void deactivate() {
-		log.debug("deactivate");
+		LOG.debug("deactivate");
 		t.interrupt();
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			log.error("interrupted exception on join");
+			LOG.error("interrupted exception on join",e);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class FlexGatewayButtons implements Runnable {
 						// Value > 0 -> button released
 
 						// send event
-						log.debug("Button: ms " + tv + " type " + (type & 0xffff) + " code " + (code & 0xffff) + " value "
+						LOG.debug("Button: ms " + tv + " type " + (type & 0xffff) + " code " + (code & 0xffff) + " value "
 								+ (value & 0xffffffff));
 
 						Hashtable props = new Hashtable();
@@ -115,20 +115,20 @@ public class FlexGatewayButtons implements Runnable {
 			} catch (ClosedByInterruptException e) {
 				break;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				log.error("exception", e);
+				// FIXME Why these Breaks in catch block ? What is the effect on this ?this seems risky / to be reviewed
+				LOG.error("Exception on Run", e);
 				break;
 			} finally {
 				try {
 					if (channel != null)
 						channel.close();
 				} catch (IOException e) {
-					log.error("exception", e);
+					LOG.error("exception", e);
 					break;
 				}
 			}
 		}
-		log.debug("exiting");
+		LOG.debug("exiting");
 	}
 
 	private void postEvent(String topic, Map props) {
@@ -136,7 +136,7 @@ public class FlexGatewayButtons implements Runnable {
 			try {
 				this.eventAdmin.postEvent(new Event(topic, props));
 			} catch (Exception e) {
-				log.error(e);
+				LOG.error("Exception on postEvent",e);
 			}
 		}
 	}

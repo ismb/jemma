@@ -6,5 +6,5 @@ CACHE
 
 #no cache
 
-NETWORK
-*
+NETWORK:
+*.*

@@ -22,8 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.HacException;
 import org.energy_home.jemma.ah.hac.IAttributeValue;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
@@ -37,9 +35,11 @@ import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstanceItemsList;
 import org.energy_home.jemma.m2m.M2MConstants;
 import org.energy_home.jemma.shal.DeviceConfiguration.DeviceCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public class AHM2MHapService {
-	private static final Log log = LogFactory.getLog(AHM2MHapService.class);
+	private static final Logger LOG = LoggerFactory.getLogger( AHM2MHapService.class );
 	
 	static boolean isHapServiceAvailable() {
 		try {
@@ -164,7 +164,7 @@ public class AHM2MHapService {
 			else
 				return m2mHapService.createContentInstance(containerId, timestamp, value);
 		} catch (Exception e) {
-			log.error("sendAttributeValue error", e);
+			LOG.error("sendAttributeValue error", e);
 			throw new HacException("sendAttributeValue error");
 		}	
 	}
@@ -188,7 +188,7 @@ public class AHM2MHapService {
 			AHContainerAddress containerId = m2mHapService.getHagContainerAddress(appliancePid, (endPointId != null ? endPointId.toString() : null), attributeId);
 			return m2mHapService.createContentInstanceQueued(containerId, timestamp, value, sync);
 		} catch (Exception e) {
-			log.error("storeAttributeValue error", e);
+			LOG.error("storeAttributeValue error", e);
 			throw new HacException("storeAttributeValue error");
 		}		
 	}
@@ -205,7 +205,7 @@ public class AHM2MHapService {
 			ContentInstance ci = m2mHapService.getLatestContentInstance(containerId);
 			return new AttributeValue(ci.getContent(), ci.getId().longValue());
 		} catch (Exception e) {
-			log.error("getLastestAttributeValue error", e);
+			LOG.error("getLastestAttributeValue error", e);
 			throw new HacException("getLastestAttributeValue error");
 		}	
 	}
@@ -221,7 +221,7 @@ public class AHM2MHapService {
 			ContentInstance ci = m2mHapService.getOldestContentInstance(containerId);
 			return new AttributeValue(ci.getContent(), ci.getId().longValue());
 		} catch (Exception e) {
-			log.error("getOldestAttributeValue error", e);
+			LOG.error("getOldestAttributeValue error", e);
 			throw new HacException("getOldestAttributeValue error");
 		}
 	}
@@ -240,7 +240,7 @@ public class AHM2MHapService {
 			ContentInstance ci = m2mHapService.getContentInstance(containerId, timestamp);
 			return new AttributeValue(ci.getContent(), ci.getId().longValue());
 		} catch (Exception e) {
-			log.error("getOldestAttributeValue error", e);
+			LOG.error("getOldestAttributeValue error", e);
 			throw new HacException("getOldestAttributeValue error");
 		}
 	}

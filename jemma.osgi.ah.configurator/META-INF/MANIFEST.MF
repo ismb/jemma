@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400600193227
+Bnd-LastModified: 1401874985216
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Category: Automation@Home Configurator
 Bundle-ManifestVersion: 2
 Bundle-Name: A@H configurator
@@ -11,14 +11,14 @@ Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.7
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.configurator;version="1.0.1"
-Import-Package: javax.xml.parsers;version="[1.3,2)",org.apache.commons.l
- ogging;version="[1.1,2)",org.apache.xml.serialize;version="[2.9,3)",org
- .eclipse.osgi.framework.console;version="[1.0,2)",org.energy_home.jemma
- .ah.hac;version="[3.0,4)",org.energy_home.jemma.ah.hac.lib;version="3.0
- .1",org.energy_home.jemma.ah.hac.lib.ext;version="3.0.2",org.osgi.frame
- work;version="[1.5,2)",org.osgi.service.cm;version="[1.2,2)",org.osgi.s
- ervice.component;version="[1.1,2)",org.osgi.service.useradmin;version="
- [1.1,2)",org.w3c.dom;version="1.3.0",org.xml.sax;version="[2.0,3)"
+Import-Package: javax.xml.parsers;version="[1.3,2)",org.apache.xml.seria
+ lize;version="[2.9,3)",org.eclipse.osgi.framework.console;version="[1.0
+ ,2)",org.energy_home.jemma.ah.hac;version="[3.0,4)",org.energy_home.jem
+ ma.ah.hac.lib;version="3.0.1",org.energy_home.jemma.ah.hac.lib.ext;vers
+ ion="3.0.2",org.osgi.framework;version="[1.5,2)",org.osgi.service.cm;ve
+ rsion="[1.2,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.s
+ ervice.useradmin;version="[1.1,2)",org.slf4j;version="[1.7.7,2)",org.w3
+ c.dom;version="1.3.0",org.xml.sax;version="[2.0,3)"
 Service-Component: OSGI-INF/configurator.xml,OSGI-INF/configurator_comma
  nds.xml
 Tool: Bnd-1.50.0

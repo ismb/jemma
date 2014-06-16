@@ -16,8 +16,8 @@
 package org.energy_home.jemma.internal.shapi;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.hac.ApplianceException;
@@ -38,7 +38,7 @@ public  class ServiceClusterProxy extends ServiceCluster {
 	private static final String CORE_CLUSTERS_ATTRIBUTE_NAME_PREFIX = "org.energy_home.jemma.ah.cluster.ah";
 	private static final String TELECOMITALIA_PACKAGE_PREFIX = "org.energy_home.jemma.";
 	
-	protected static final Log log = LogFactory.getLog(ServiceClusterProxy.class);
+	protected static final Logger LOG = LoggerFactory.getLogger( ServiceClusterProxy.class );
 	
 	public static boolean isAnUnconfirmedCommand(AHContainerAddress containerAddress) {
 		//String containerName = containerAddress.getContainerName();
@@ -115,13 +115,13 @@ public  class ServiceClusterProxy extends ServiceCluster {
 		try {
 			String attributeId = getAttributeId(clusterName, attributeName);
 			if (attributeId == null) {
-				log.info("Received attribute value for unexported attribute: " + clusterName + ", " + attributeName);
+				LOG.debug("Received attribute value for unexported attribute: " + clusterName + ", " + attributeName);
 			} else {
 				Object decodedValue = decodeAttributeValue(appliancePid, endPointId, attributeName, value);	
 				sendAttributeValue(appliancePid, endPointId, attributeId, timestamp, decodedValue, batchRequest);
 			}
 		} catch (Exception e) {
-			log.error("Error in notifyAttributeValue for appliance " + appliancePid, e);
+			LOG.error("Error in notifyAttributeValue for appliance " + appliancePid, e);
 		}
 	}
 	
@@ -137,7 +137,7 @@ public  class ServiceClusterProxy extends ServiceCluster {
 			int endPointId = peerEndPoint.getId();
 			sendAttributeValue(appliancePid, endPointId, HacCommon.getPeerClusterName(getName()), attributeName, attributeValue.getTimestamp(), attributeValue.getValue(), true);		
 		} catch (Exception e) {
-			log.error("notifyAttributeValue error", e);
+			LOG.error("notifyAttributeValue error", e);
 		}
 	}
 	

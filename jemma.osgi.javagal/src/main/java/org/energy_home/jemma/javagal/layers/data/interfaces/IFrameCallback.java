@@ -15,7 +15,7 @@
  */
 package org.energy_home.jemma.javagal.layers.data.interfaces;
 
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 
 /**
  * Interface used to link the IConnector implementation class with the IDataLayer implementation class
@@ -24,5 +24,5 @@ import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
  *
  */
 public interface IFrameCallback {
-	public void notifyFrame(final ByteArrayObject frame);
+	public void notifyFrame(final ShortArrayObject frame);
 }

@@ -17,8 +17,6 @@ package org.energy_home.jemma.ah.zigbee.appliances;
 
 import java.util.Dictionary;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
@@ -27,11 +25,13 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclRelativeHumidi
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclTemperatureMeasurementServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclURMETTemperatureHumidityAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
-	private static final Log log = LogFactory.getLog(ZclURMETTemperatureHumidityAppliance.class);
+	private static final Logger LOG = LoggerFactory.getLogger( ZclURMETTemperatureHumidityAppliance.class );
 
 	public static final String ENDPOINT_TYPE = "URMET-Temperature & Humidity";
 
@@ -49,10 +49,10 @@ public class ZclURMETTemperatureHumidityAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		log.debug("attached");
+		LOG.debug("ZclURMETTemperatureHumidityAppliance attached");
 	}
 
 	protected void detached() {
-		log.debug("detached");
+		LOG.debug("ZclURMETTemperatureHumidityAppliance detached");
 	}
 }

@@ -41,7 +41,7 @@ public class ApplianceEventsAndAlertsClusterProxy extends ServiceClusterProxy im
 						new Integer(alerts[0]), true);
 			}
 		} catch (Exception e) {
-			log.error("Error while receiving execAlertsNotification for appliance " + appliancePid + ", endPoint " + endPointId, e);
+			LOG.error("Error while receiving execAlertsNotification for appliance " + appliancePid + ", endPoint " + endPointId, e);
 		}		
 	}
 
@@ -54,7 +54,7 @@ public class ApplianceEventsAndAlertsClusterProxy extends ServiceClusterProxy im
 			super.sendAttributeValue(appliancePid, endPointId, AHContainers.attrId_ah_cluster_applevents_event, System.currentTimeMillis(),
 				new Short(EventIdentification), true);
 		} catch (Exception e) {
-			log.error("Error while receiving execAlertsNotification for appliance " + appliancePid + ", endPoint " + endPointId, e);
+			LOG.error("Error while receiving execAlertsNotification for appliance " + appliancePid + ", endPoint " + endPointId, e);
 		}
 	}
 

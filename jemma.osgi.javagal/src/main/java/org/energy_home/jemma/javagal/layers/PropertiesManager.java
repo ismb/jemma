@@ -15,11 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers;
 
-import org.energy_home.jemma.zgd.jaxb.KeyType;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,22 +22,31 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
+import org.energy_home.jemma.zgd.jaxb.KeyType;
+import org.energy_home.jemma.zgd.jaxb.LogicalType;
+import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
+import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Properties manager class. Loads/saves from/to a ".properties" file the
  * desired values for JavaGal execution. It's THE way to control a number of
  * parameters at startup.
  * 
+ * 
+ * 
  * @author 
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
+//FIXME Note by Riccardo: I'm deprecating this class: we should switch to ManagedService/ConfigAdmin service instead of this: it's more standard
+@Deprecated
 public class PropertiesManager {
 
-	private final Log logger = LogFactory.getLog(PropertiesManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger( PropertiesManager.class );
 	/**
 	 * Local StartupAttributeInfo reference.
 	 */
@@ -60,7 +64,7 @@ public class PropertiesManager {
 	 *            the URL pointing to a .properties file.
 	 */
 	public PropertiesManager(URL _url) {
-		logger.info("PropertiesManager - Costructor - Loading configuration file...");
+		LOG.debug("PropertiesManager - Costructor - Loading configuration file...");
 		InputStream in = null;
 		try {
 			in = _url.openStream();
@@ -78,7 +82,7 @@ public class PropertiesManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("PropertiesManager - Costructor - Configuration file loaded!");
+		LOG.debug("PropertiesManager - Costructor - Configuration file loaded!");
 	}
 
 	/**
@@ -88,6 +92,7 @@ public class PropertiesManager {
 	 */
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
+		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
 	}
@@ -395,10 +400,10 @@ public class PropertiesManager {
 		//props.setProperty("StartupSet", String.valueOf(sai.getStartupSet()));
 
 		/* networkKey */
-		props.setProperty("networkKey", sai.getNetworkKey().toString());
+		props.setProperty("networkKey", DataManipulation.convertBytesToString(sai.getNetworkKey()));
 
 		/* PreconfiguredLinkKey */
-		props.setProperty("preconfiguredLinkKey", sai.getPreconfiguredLinkKey().toString());
+		props.setProperty("preconfiguredLinkKey", DataManipulation.convertBytesToString(sai.getPreconfiguredLinkKey()));
 
 	}
 

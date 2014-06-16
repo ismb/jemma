@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1400600229053
+Bnd-LastModified: 1401875025305
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Category: Automation@Home Application
 Bundle-ManifestVersion: 2
 Bundle-Name: Greenathome Appliance
@@ -12,26 +12,25 @@ Bundle-Version: 2.1.19
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.greenathome;uses:="org.energy_h
  ome.jemma.ah.hac,org.energy_home.jemma.ah.hac.lib";version="2.1.19"
-Import-Package: javax.xml.soap,org.apache.commons.logging;version="[1.1,
- 2)",org.eclipse.core.runtime.jobs,org.energy_home.jemma.ah.cluster.ah;v
- ersion="[3.0,4)",org.energy_home.jemma.ah.cluster.zigbee.custom;version
- ="[3.0.0,3.1.0)",org.energy_home.jemma.ah.cluster.zigbee.eh;version="[3
- .1.0,3.2.0)",org.energy_home.jemma.ah.cluster.zigbee.general;version="[
- 3.1.0,3.2.0)",org.energy_home.jemma.ah.cluster.zigbee.hvac;version="[3.
- 0,4)",org.energy_home.jemma.ah.cluster.zigbee.measurement;version="[3.0
- ,4)",org.energy_home.jemma.ah.cluster.zigbee.metering;version="[3.1.0,3
- .2.0)",org.energy_home.jemma.ah.cluster.zigbee.security;version="[3.0,4
- )",org.energy_home.jemma.ah.cluster.zigbee.zll;version="[1.0,2)",org.en
- ergy_home.jemma.ah.configurator;version="[1.0,2)",org.energy_home.jemma
- .ah.eh.esp;version="[2.2.4,2.3.0)",org.energy_home.jemma.ah.greenathome
- ,org.energy_home.jemma.ah.hac;version="[3.0.0,3.1.0)",org.energy_home.j
- emma.ah.hac.lib;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.li
- b.ext;version="[3.2.0,3.5.0)",org.energy_home.jemma.ah.hap.client;versi
- on="[1.4.0,1.5.0)",org.energy_home.jemma.ah.m2m.device;version="[1.3.0,
- 1.4.0)",org.energy_home.jemma.hac.adapter.http;version="[2.0,3)",org.en
- ergy_home.jemma.m2m;version="[1.3,2)",org.osgi.framework;version="1.3.0
- ",org.osgi.service.device;version="[1.1,2)",org.osgi.service.http;versi
- on="[1.2,2)",org.osgi.util.tracker;version="[1.4,2)",org.w3c.dom;versio
- n="[3.0,4)"
+Import-Package: javax.xml.soap,org.eclipse.core.runtime.jobs,org.energy_
+ home.jemma.ah.cluster.ah;version="[3.0,4)",org.energy_home.jemma.ah.clu
+ ster.zigbee.custom;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.clu
+ ster.zigbee.eh;version="[3.1.0,3.2.0)",org.energy_home.jemma.ah.cluster
+ .zigbee.general;version="[3.1.0,3.2.0)",org.energy_home.jemma.ah.cluste
+ r.zigbee.hvac;version="[3.0,4)",org.energy_home.jemma.ah.cluster.zigbee
+ .measurement;version="[3.0,4)",org.energy_home.jemma.ah.cluster.zigbee.
+ metering;version="[3.1.0,3.2.0)",org.energy_home.jemma.ah.cluster.zigbe
+ e.security;version="[3.0,4)",org.energy_home.jemma.ah.cluster.zigbee.zl
+ l;version="[1.0,2)",org.energy_home.jemma.ah.configurator;version="[1.0
+ ,2)",org.energy_home.jemma.ah.eh.esp;version="[2.2.4,2.3.0)",org.energy
+ _home.jemma.ah.greenathome,org.energy_home.jemma.ah.hac;version="[3.0.0
+ ,3.1.0)",org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)",org.e
+ nergy_home.jemma.ah.hac.lib.ext;version="[3.2.0,3.5.0)",org.energy_home
+ .jemma.ah.hap.client;version="[1.4.0,1.5.0)",org.energy_home.jemma.ah.m
+ 2m.device;version="[1.3.0,1.4.0)",org.energy_home.jemma.hac.adapter.htt
+ p;version="[2.0,3)",org.energy_home.jemma.m2m;version="[1.3,2)",org.osg
+ i.framework;version="1.3.0",org.osgi.service.device;version="[1.1,2)",o
+ rg.osgi.service.http;version="[1.2,2)",org.osgi.util.tracker;version="[
+ 1.4,2)",org.slf4j;version="[1.7.7,2)",org.w3c.dom;version="[3.0,4)"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0

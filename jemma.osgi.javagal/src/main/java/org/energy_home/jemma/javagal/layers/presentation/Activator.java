@@ -15,21 +15,18 @@
  */
 package org.energy_home.jemma.javagal.layers.presentation;
 
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
-
-import java.io.File;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Osgi Activator implementation.
@@ -41,7 +38,8 @@ import org.osgi.framework.ServiceRegistration;
 public class Activator implements BundleActivator {
 	private BundleContext bc;
 	private GalExtenderProxyFactory _fac = null;
-	private final static Log log = LogFactory.getLog(Activator.class);
+	//FIXME mass-rename to LOG when ready
+	private static final Logger log = LoggerFactory.getLogger( Activator.class );
 	private ServiceRegistration gatewayInterfaceRegistration;
 	private ServiceRegistration gatewayFactoryRegistration;
 
@@ -66,7 +64,10 @@ public class Activator implements BundleActivator {
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 			if (context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME) != null)
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
+			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG) != null)
+				PropertiesManager.props.setProperty("debugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG));
 
+			
 			if (_fac == null)
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
 
@@ -123,7 +124,7 @@ public class Activator implements BundleActivator {
 				log.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}
@@ -153,7 +154,7 @@ public class Activator implements BundleActivator {
 			try {
 				return _fac;
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Exception",e);
 				return null;
 			}
 		}

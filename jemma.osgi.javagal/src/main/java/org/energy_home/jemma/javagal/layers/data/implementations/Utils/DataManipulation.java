@@ -18,18 +18,17 @@ package org.energy_home.jemma.javagal.layers.data.implementations.Utils;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Utility class with a number of data's manipulation methods. 
+ * Utility class with a number of data's manipulation methods.
  * 
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * @author 
+ *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  */
 public class DataManipulation {
 
@@ -44,7 +43,7 @@ public class DataManipulation {
 
 	// Defining array of bytes to pass later to the key
 
-	private static Log logger = LogFactory.getLog(DataManipulation.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DataManipulation.class);
 
 	/**
 	 * Converts a string to an array of bytes.
@@ -57,30 +56,13 @@ public class DataManipulation {
 		int len = s.length();
 		byte[] data = new byte[len / 2];
 		for (int i = 0; i < len; i += 2) {
-			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
-					.digit(s.charAt(i + 1), 16));
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
 		}
 		return data;
 	}
 
-	/**
-	 * Converts a string to an array of shorts.
-	 * 
-	 * @param _list
-	 *            the short list to convert.
-	 * @return the converted array of shorts.
-	 */
-	public static short[] toVectFromList(List<Short> _list) {
-		short[] _vect = new short[_list.size()];
-		int i = 0;
-		for (short s : _list)
-			_vect[i++] = s;
-		return _vect;
-
-	}
-
 	
-	
+
 	/**
 	 * Creates an int starting from two given shorts. An int is composed of four
 	 * bytes. Numbering the four bytes from 1 (the most important) to 4 (the
@@ -126,16 +108,13 @@ public class DataManipulation {
 	 *            byte placed in position 8
 	 * @return the resulting long
 	 */
-	public static long toLong(byte _1, byte _2, byte _3, byte _4, byte _5,
-			byte _6, byte _7, byte _8) {
-		ByteBuffer bb = ByteBuffer.wrap(new byte[] { _1, _2, _3, _4, _5, _6,
-				_7, _8 });
+	public static long toLong(byte _1, byte _2, byte _3, byte _4, byte _5, byte _6, byte _7, byte _8) {
+		ByteBuffer bb = ByteBuffer.wrap(new byte[] { _1, _2, _3, _4, _5, _6, _7, _8 });
 		return bb.getLong();
 	}
-	
-	
+
 	/**
-	 * Starts from a {@code short[]} and returns a sub array, converted as
+	 * Starts from a {@code byte[]} and returns a sub array, converted as
 	 * {@code byte[]}.
 	 * 
 	 * @param array
@@ -154,94 +133,7 @@ public class DataManipulation {
 		return toReturn;
 	}
 
-
-	/**
-	 * Converts a {@code long} to a {@code List<Byte>}. A long is composed of
-	 * eight bytes. Numbering them from 1 (the most important) to 8 (the least
-	 * important), the resulting list will have all them placed in the same
-	 * order. The pad parameter indicate the minimum size of the resulting list.
-	 * In case its size is less then the one indicated in the pad parameter, a
-	 * number of leading zeros will be inserted.
-	 * 
-	 * @param toConvert
-	 *            the long to convert.
-	 * @param pad
-	 *            the minimum size of the returned {@code Byte}'s list.
-	 * @return the converted list.
-	 */
-	public static List<Byte> toByteList(Long toConvert, int pad) {
-		List<Byte> toReturn = new ArrayList<Byte>();
-
-		String inString = Long.toHexString(toConvert);
-
-		int length = inString.length();
-
-		// Characters must be even in number
-		if (length % 2 != 0) {
-			// System.out
-			// .print("Odd number of chars in conversion from Long to byte[] ");
-			inString = "0" + inString;
-			length = inString.length();
-		}
-
-		for (int start = 0; start < length; start += 2) {
-			toReturn.add((byte) Short.parseShort(
-					inString.substring(start, Math.min(length, start + 2)), 16));
-		}
-
-		if (toReturn.size() < pad) {
-			int diff = pad - toReturn.size();
-			for (int i = 0; i < diff; i++) {
-				toReturn.add(0, (byte) 0);
-			}
-		}
-
-		return toReturn;
-	}
-
-	/**
-	 * Converts a {@code Short} to a {@code List<Byte>}. A short is composed of
-	 * two bytes. Numbering them from 1 (the most important) to 2 (the least
-	 * important), the resulting list will have all them placed in the same
-	 * order. The pad parameter indicate the minimum size of the resulting list.
-	 * In case its size is less then the one indicated in the pad parameter, a
-	 * number of leading zeros will be inserted.
-	 * 
-	 * @param toConvert
-	 *            the short to convert.
-	 * @param pad
-	 *            the minimum size of the returned {@code Byte}'s list.
-	 * @return the converted list.
-	 */
-	public static List<Byte> toByteList(Short toConvert, int pad) {
-		List<Byte> toReturn = new ArrayList<Byte>();
-
-		String inString = Integer.toHexString(toConvert);
-
-		int length = inString.length();
-
-		// Characters must be even in number
-		if (length % 2 != 0) {
-			// System.out
-			// .print("Odd number of chars in conversion from Long to byte[] ");
-			inString = "0" + inString;
-			length = inString.length();
-		}
-
-		for (int start = 0; start < length; start += 2) {
-			toReturn.add((byte) Short.parseShort(
-					inString.substring(start, Math.min(length, start + 2)), 16));
-		}
-
-		if (toReturn.size() < pad) {
-			int diff = pad - toReturn.size();
-			for (int i = 0; i < diff; i++) {
-				toReturn.add(0, (byte) 0);
-			}
-		}
-
-		return toReturn;
-	}
+	
 
 	/**
 	 * Converts a {@code long} to a {@code byte[]}. A long is composed of eight
@@ -255,7 +147,7 @@ public class DataManipulation {
 	 *            the long to convert
 	 * @return the resulting array.
 	 */
-	public static byte[] longToBytes(long x) {
+	private static byte[] longToBytes(long x) {
 		ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.order(ByteOrder.BIG_ENDIAN);
 		buffer.putLong(x);
@@ -273,7 +165,7 @@ public class DataManipulation {
 	 *            the int to convert.
 	 * @return the resulting array.
 	 */
-	public static byte[] intToBytes(int x) {
+	private static byte[] intToBytes(int x) {
 		ByteBuffer buffer = ByteBuffer.allocate(4);
 		buffer.order(ByteOrder.BIG_ENDIAN);
 		buffer.putInt(x);
@@ -358,8 +250,7 @@ public class DataManipulation {
 			toReturn[i] = byteArray[x++];
 		return toReturn;
 	}
-	
-	
+
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
 	 * by a leading caption.
@@ -369,29 +260,12 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void debugLogArrayHexRadix(String caption, List<Short> arr) {
+	public static void debugLogArrayShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
+		for (Short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.debug(caption + ":" + sb.toString());
-	}
-	
-	/**
-	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
-	 * by a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void errorLogListHexRadix(String caption, List<Short> arr) {
-		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
-			sb.append(String.format("%02X", s));
-		}
-		logger.error(caption + ":" + sb.toString());
+		LOG.debug(caption + ":" + sb.toString());
 	}
 
 	/**
@@ -403,24 +277,19 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadix(String caption, short[] arr) {
+	public static void errorLogListShortHexRadix(String caption, List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
-			sb.append(String.format("%02X", s));
+		for (Short s : arr) {
+			sb.append(String.format("%02X", s.byteValue()));
 		}
-		logger.info(caption + ":" + sb.toString());
+		LOG.error(caption + ":" + sb.toString());
+
 	}
+
 	
+
 	
-	public static void errorArrayHexRadix(String caption, short[] arr) {
-		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
-			sb.append(String.format("%02X", s));
-		}
-		logger.error(caption + ":" + sb.toString());
-	}
-	
-	
+
 	/**
 	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
 	 * by a leading caption.
@@ -430,12 +299,12 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadixDataReceived(String caption, short[] arr) {
+	public static void logArrayShortToHex(String caption, short[] arr) {
 		StringBuilder sb = new StringBuilder();
-		for (short s : arr) {
-			sb.append(String.format("%02X", s));
+		for (Short s : arr) {
+			sb.append(String.format("%02X", s.byteValue()));
 		}
-		logger.info(caption + sb.toString());
+		LOG.info(caption + ":" + sb.toString());
 	}
 
 	/**
@@ -447,13 +316,19 @@ public class DataManipulation {
 	 * @param arr
 	 *            the array to log.
 	 */
-	public static void logArrayHexRadix(String caption, byte[] arr) {
+	public static void logArrayBytesHexRadix(String caption, byte[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		logger.info(caption + ":" + sb.toString());
+		LOG.info(caption + ":" + sb.toString());
 	}
+
+	
+
+	
+
+	
 
 	/**
 	 * Produces an hexadecimal string representation of a given {@code byte[]}.
@@ -463,14 +338,12 @@ public class DataManipulation {
 	 * @return the produced hexadecimal string representation.
 	 */
 	public static String convertBytesToString(byte[] arr) {
-		String sb = new String();
+		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
-			sb += String.format("%02X", s);
+			sb.append(String.format("%02X", s));
 		}
-		return sb;
+		return sb.toString();
 	}
-
-	
 
 	/**
 	 * Reverses the order of elements in a given {@code byte[]}.

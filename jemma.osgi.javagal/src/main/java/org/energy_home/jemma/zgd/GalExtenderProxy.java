@@ -18,9 +18,10 @@ package org.energy_home.jemma.zgd;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.presentation.Activator;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Aliases;
@@ -61,7 +62,7 @@ import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
  * 
  */
 public class GalExtenderProxy implements IGalExtender {
-	private final static Log logger = LogFactory.getLog(GalExtenderProxyFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GalExtenderProxyFactory.class);
 	/**
 	 * The identification number for this proxy instance.
 	 */
@@ -104,20 +105,27 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public String getInfoBaseAttribute(short attrId) throws Exception, Exception, GatewayException {
+		String res = null;
 		switch (attrId) {
-		case 0xA1:
-		case 0x80:
-		case 0x9A:
-			return gal.NMLE_GetSync(attrId);
+		case 0xA0:// nwkSecurityLevel
+		case 0x80:// Short PanId
+		case 0x9A:// Extended Pan ID
+		case 0x96:// NetWorkAddress
+		case 0xDA:// DeviceType
+		case 0xDB:// nwkSoftwareVersion
+		case 0xE6: // SASNwkKey
 
+			res = gal.NMLE_GetSync(attrId);
+			break;
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
-			return gal.APSME_GETSync(attrId);
-
+			res = gal.APSME_GETSync(attrId);
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}
+		return res;
 	}
 
 	@Override
@@ -125,12 +133,12 @@ public class GalExtenderProxy implements IGalExtender {
 	public long createCallback(Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 	}
-	
+
 	@Deprecated
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("Create ApsCallBack(short endpoint, APSMessageListener listener)...");
+			LOG.debug("Create ApsCallBack(short endpoint, APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();
@@ -149,7 +157,7 @@ public class GalExtenderProxy implements IGalExtender {
 	@Override
 	public long createAPSCallback(APSMessageListener listener) throws IOException, Exception, GatewayException {
 		if (gal.getPropertiesManager().getDebugEnabled()) {
-			logger.info("Create ApsCallBack(APSMessageListener listener)...");
+			LOG.debug("Create ApsCallBack(APSMessageListener listener)...");
 		}
 		Callback _newCallBack = new Callback();
 		Filter _newFilter = new Filter();
@@ -433,12 +441,12 @@ public class GalExtenderProxy implements IGalExtender {
 		case 0xA1:
 		case 0x80:
 			gal.NMLE_SetSync(attrId, value);
-
+			break;
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
 			gal.APSME_SETSync(attrId, value);
-
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}

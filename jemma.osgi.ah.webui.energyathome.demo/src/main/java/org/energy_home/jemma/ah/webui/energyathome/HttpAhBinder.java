@@ -15,12 +15,6 @@
  */
 package org.energy_home.jemma.ah.webui.energyathome;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,20 +24,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IAttributeValue;
+import org.energy_home.jemma.ah.hac.ICategory;
+import org.energy_home.jemma.ah.hac.ILocation;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
+import org.energy_home.jemma.hac.adapter.http.HttpServletBinder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
-import org.energy_home.jemma.hac.adapter.http.HttpServletBinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpAhBinder implements EventHandler, HttpServletBinder {
 
 	private static final long serialVersionUID = 1L;
 	
-	protected final static Log log = LogFactory.getLog(HttpAhBinder.class);
+	private static final Logger LOG = LoggerFactory.getLogger( HttpAhBinder.class );
 	
 	private HttpImplementor implementor = null;
 	
@@ -131,7 +130,7 @@ public class HttpAhBinder implements EventHandler, HttpServletBinder {
 								break;
 							}
 						} else {
-							log.warn("unsupported type '" + typename + "'in target signature");
+							LOG.warn("unsupported type '" + typename + "'in target signature");
 							signatureMach = false;
 							break;
 
@@ -143,7 +142,7 @@ public class HttpAhBinder implements EventHandler, HttpServletBinder {
 						result = method.invoke(targetObject, arglist);
 						return this.resultToJSON(result);
 					} else {
-						log.error("signature not found for method " + methodName);
+						LOG.error("signature not found for method " + methodName);
 					}
 				}
 			}

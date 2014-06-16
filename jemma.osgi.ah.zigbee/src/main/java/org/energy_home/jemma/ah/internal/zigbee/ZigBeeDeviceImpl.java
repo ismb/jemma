@@ -18,8 +18,6 @@ package org.energy_home.jemma.ah.internal.zigbee;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
 import org.energy_home.jemma.ah.hac.ApplianceException;
@@ -41,6 +39,8 @@ import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.emory.mathcs.backport.java.util.concurrent.SynchronousQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
@@ -98,7 +98,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	private Lock messagesLock = new ReentrantLock();
 	private Object lock = new Object();
 
-	protected Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger( ZigBeeDeviceImpl.class );
 	private ZigBeeDeviceListener driver;
 	private ZigBeeManagerImpl zigbeeManager;
 	private NodeDescriptor node = null;
@@ -189,7 +189,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		pendingReplies.put(key, sq);
 		messagesLock.unlock();
 
-		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
+		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, hash, profileId, clusterId, zclFrame);
 
 		synchronized (lock) {
@@ -222,17 +222,17 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
-				log.debug("Aspetto Lock...");
+				LOG.debug("Aspetto Lock...");
 				messagesLock.lock();
-				log.debug("Dentro Lock...");
+				LOG.debug("Dentro Lock...");
 				pendingReplies.remove(new Long(hash));
-				log.debug("Entry rimossa...");
+				LOG.debug("Entry rimossa...");
 				messagesLock.unlock();
-				log.debug("Lock rilasciato...");
+				LOG.debug("Lock rilasciato...");
 				throw new ZigBeeException("timeout");
 			}
 
-			if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
+			if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 				this.logZclMessage(false, hash, profileId, clusterId, zclFrame);
 
 			return zclResponseFrame;
@@ -246,16 +246,16 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		if (zclFrame != null) {
 			if (outgoing) {
 				if (hash != -1)
-					log.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Tx > 0x" + Hex.toHexString(clusterId, 2)
+					LOG.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Tx > 0x" + Hex.toHexString(clusterId, 2)
 							+ " [clusterId] " + zclFrame.toString());
 				else
-					log.debug(this.getPid() + ": " + "        " + " [hash]: Tx > 0x" + Hex.toHexString(clusterId, 2)
+					LOG.debug(this.getPid() + ": " + "        " + " [hash]: Tx > 0x" + Hex.toHexString(clusterId, 2)
 							+ " [clusterId] " + zclFrame.toString());
 			} else
-				log.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Rx > 0x" + Hex.toHexString(clusterId, 2)
+				LOG.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Rx > 0x" + Hex.toHexString(clusterId, 2)
 						+ " [clusterId] " + zclFrame.toString());
 		} else {
-			log.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Rx > timeout in poll");
+			LOG.debug(this.getPid() + ": " + Hex.toHexString(hash, 4) + " [hash]: Rx > timeout in poll");
 		}
 	}
 
@@ -271,7 +271,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 
-		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
+		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(false, hash,
 					(short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
 
@@ -290,7 +290,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						if (handled)
 							return handled;
 					} catch (Exception e) {
-						log.error("Exception in calling partition frame notifyZclFrame", e);
+						LOG.error("Exception in calling partition frame notifyZclFrame", e);
 					}
 				}
 			}
@@ -308,13 +308,12 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		} else {
 			try {
 				
-				log.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
+				LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash ));
 				sq.put(zclFrame);
-				log.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
+				LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)" );
 				
 			} catch (InterruptedException e) {
-				if (log.isErrorEnabled())
-					log.error("exception", e);
+				LOG.error("exception", e);
 
 				return false;
 			}
@@ -325,8 +324,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 	private void notifyListeners(short clusterId, IZclFrame zclFrame) throws ZclException {
 
-		if (log.isDebugEnabled() && zigbeeManager.isNotifyFrameLogEnabled())
-			log.debug("notify listeners for cluster " + clusterId);
+		if (LOG.isDebugEnabled() && zigbeeManager.isNotifyFrameLogEnabled())
+			LOG.debug("notify listeners for cluster " + clusterId);
+		
 		Vector listeners = null;
 
 		if (zclFrame.isClientToServer()) {
@@ -346,7 +346,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 					handled = handled || listener.notifyZclFrame(clusterId, zclFrame);
 				} catch (Throwable e) {
 					// FIXME reply with an error sent to the peer device
-					log.error("Exception while notifyZclFrame to clusterId " + clusterId, e);
+					LOG.error("Exception while notifyZclFrame to clusterId " + clusterId, e);
 					exception = e;
 				}
 			}
@@ -365,7 +365,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 				// Altrough there are listeners, no one of them handled the
 				// incoming command
-				log.debug("the command was not handled by any listener");
+				LOG.debug("the command was not handled by any listener");
 				if (zclFrame.isManufacturerSpecific()) {
 					if (zclFrame.getFrameType() == IZclFrame.GENERAL_COMMAND) {
 						throw new ZclException(ZCL.UNSUP_MANUF_GENERAL_COMMAND);
@@ -385,7 +385,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				}
 			}
 		} else {
-			log.debug("no listeners set");
+			LOG.debug("no listeners set");
 			throw new ZclException(ZCL.NOT_AUTHORIZED);
 		}
 	}
@@ -425,7 +425,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 	public boolean post(short profileId, short clusterId, IZclFrame zclFrame) {
 
-		if (log.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
+		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, -1, profileId, clusterId, zclFrame);
 
 		synchronized (lock) {
@@ -495,7 +495,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	protected void announce() {
 		synchronized (lock) {
 			deviceAlive();
-			log.debug("received an announcement on device " + getIeeeAddress());
+			LOG.debug("received an announcement on device " + getIeeeAddress());
 			this.notifyListeners(ZigBeeDeviceListener.ANNOUNCEMENT);
 		}
 	}
@@ -551,7 +551,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	public boolean setListener(ZigBeeDeviceListener listener) {
 		synchronized (lock) {
 			if (this.listener != null)
-				log.fatal("error. Another listener already set!");
+				LOG.warn("error. Another listener already set!");
 
 			this.listener = listener;
 			return true;
@@ -564,7 +564,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				this.listener = null;
 				return true;
 			} else {
-				log.fatal("error. Removing a listener never set!");
+				LOG.error("error. Removing a listener never set!");
 			}
 
 			return false;
@@ -576,7 +576,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			try {
 				this.zigbeeManager.remove(this);
 			} catch (Exception e) {
-				log.error("", e);
+				LOG.error("Exception on remove", e);
 			}
 		}
 	}
@@ -590,7 +590,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				partitionServerImpl = new ZclPartitionServerImpl();
 				partitionServerImpl.zclAttach(this);
 			} catch (ApplianceException e) {
-				log.debug("Error creating ZclPartitionFsmServer", e);
+				LOG.debug("Error creating ZclPartitionFsmServer", e);
 				return false;
 			}
 		}
@@ -612,7 +612,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		try {
 			this.notifyZclFrame(clusterId, zclFrame);
 		} catch (ZclException e) {
-			log.error("exception", e);
+			LOG.error("exception on injectZclFrame", e);
 		}
 	}
 }

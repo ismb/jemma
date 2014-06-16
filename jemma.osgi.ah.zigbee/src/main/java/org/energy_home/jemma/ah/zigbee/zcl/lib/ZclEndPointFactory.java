@@ -15,14 +15,15 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclEndPointFactory {
-	private final static Log log = LogFactory.getLog(ZclEndPointFactory.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger( ZclEndPointFactory.class );
 	
 	public static final int ZIGBEE_ON_OFF_SWITCH_DEVICE_ID = 0x0000;
 	public static final int ZIGBEE_LEVEL_CONTROLLABLE_OUTPUT_ID = 0x0003;
@@ -89,7 +90,7 @@ public class ZclEndPointFactory {
 			if (cluster != null) {
 				endPoint.addServiceCluster(cluster);
 			} else {
-				log.warn("Unsupported server side cluster " + clusterId);
+				LOG.warn("Unsupported server side cluster " + clusterId);
 			}
 		}
 		for (int i = 0; i < clientClusterIds.length; i++) {
@@ -98,7 +99,7 @@ public class ZclEndPointFactory {
 			if (cluster != null) {
 				endPoint.addServiceCluster(cluster);
 			} else {
-				log.warn("Unsupported client side cluster " + clusterId);
+				LOG.warn("Unsupported client side cluster " + clusterId);
 			}	
 		}
 	}

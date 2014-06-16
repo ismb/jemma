@@ -1,184 +1,222 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-		<meta http-equiv="Pragma" content="no-cache" />
-		<meta http-equiv="Expires" content="0" />
-	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <title>Java GAL - Admin Console</title>
-	    <link rel="stylesheet" type="text/css" href="./css/jquery-ui-1.10.4.custom.css">
-	    <link rel="stylesheet" type="text/css" href="./css/searchFilter.css">
-	    <link rel="stylesheet" type="text/css" href="./css/ui.jqgrid.css">
-	    <link rel="stylesheet" type="text/css" href="./css/ui.multiselect.css">
-	    <link rel="stylesheet" type="text/css" href="./css/common.css">
-	    <link rel="stylesheet" type="text/css" href="./css/layout-default-latest.css">
-	    <link rel="stylesheet" type="text/css" href="./css/apprise.css">
-	    <link rel="stylesheet" type="text/css" href="./css/custom.css">
+<head>
+<meta http-equiv="Cache-Control"
+	content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ZigBee Admin Console</title>
+<link rel="stylesheet" type="text/css"
+	href="./css/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" type="text/css" href="./css/searchFilter.css">
+<link rel="stylesheet" type="text/css" href="./css/ui.jqgrid.css">
+<link rel="stylesheet" type="text/css" href="./css/ui.multiselect.css">
+<link rel="stylesheet" type="text/css" href="./css/common.css">
+<link rel="stylesheet" type="text/css"
+	href="./css/layout-default-latest.css">
+<link rel="stylesheet" type="text/css" href="./css/apprise.css">
+<link rel="stylesheet" type="text/css" href="./css/custom.css">
 
-		<script type="text/javascript" src="./js/bignumber.js"></script>
-		<script type="text/javascript" src="./js/jsonbigint.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery-ui-1.10.4.custom.js"></script>
-		<script type="text/javascript" src="./js/jquery/ui.multiselect.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery.jqGrid.src.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery.searchFilter.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery.tablednd.js"></script>
-		<script type="text/javascript" src="./js/jquery/grid.addons.js"></script>
-		<script type="text/javascript" src="./js/jquery/grid.postext.js"></script>
-		<script type="text/javascript" src="./js/jquery/grid.setcolumns.js"></script>
-		<script type="text/javascript" src="./js/jquery/json2.js"></script>
-		<script type="text/javascript" src="./js/jquery/jstorage.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
-		<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
-		<script type="text/javascript" src="./js/jquery/i18n/grid.locale-it.js"></script>
-		<script type="text/javascript" src="./js/jquery/apprise-1.5.full.js"></script>
-		<script type="text/javascript" src="./js/common.js"></script>
-		<script type="text/javascript" src="./js/gestPathLibrary.js"></script>
-		<script type="text/javascript" src="./js/gestManufacturerLibrary.js"></script>
-		<script type="text/javascript" src="./js/gestMenu.js"></script>
-		<script type="text/javascript" src="./js/gestCreateCenterPane.js"></script>
-		
-			
-		
-		
-		
-	
-		
-		
-		
-		
-		<script type="text/javascript" src="./js/langIT.js"></script>
-		
-		<script type="text/javascript" src="./js/arbor/arbor.js"></script>
-		<script type="text/javascript" src="./js/arbor/arbor-tween.js"></script>
-		<script type="text/javascript" src="./js/arbor/graphics.js"></script>
-		<script type="text/javascript" src="./js/arbor/md5.js"></script>
-		
-		
-		
-		
-		<script type="text/javascript" src="./js/xmlPathLibrary.js"></script>
-		<script type="text/javascript" src="./js/readXML.js"></script>
-		<script type="text/javascript">
-		
-		// At the top of your script:
-		if ( ! window.console ) console = { log: function(){} };
-		// If you use other console methods, add them to the object literal above
+<script type="text/javascript" src="./js/bignumber.js"></script>
+<script type="text/javascript" src="./js/jsonbigint.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
+<script type="text/javascript"
+	src="./js/jquery/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="./js/jquery/ui.multiselect.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.searchFilter.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.tablednd.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.addons.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.postext.js"></script>
+<script type="text/javascript" src="./js/jquery/grid.setcolumns.js"></script>
+<script type="text/javascript" src="./js/jquery/json2.js"></script>
+<script type="text/javascript" src="./js/jquery/jstorage.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.layout-latest.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery.blockUI.js"></script>
+<script type="text/javascript" src="./js/jquery/i18n/grid.locale-it.js"></script>
+<script type="text/javascript" src="./js/jquery/apprise-1.5.full.js"></script>
+<script type="text/javascript" src="./js/common.js"></script>
+<script type="text/javascript" src="./js/gestPathLibrary.js"></script>
+<script type="text/javascript" src="./js/gestManufacturerLibrary.js"></script>
+<script type="text/javascript" src="./js/gestMenu.js"></script>
+<script type="text/javascript" src="./js/gestCreateCenterPane.js"></script>
 
-		// Then, anywhere in your script:
-		console.log('This message will be logged, but will not cause an error in IE7');
-		
-	    var arrowimages={down:['downarrowclass', './css/images/arrow-down.gif', 25], 
-	    				 right:['rightarrowclass', './css/images/arrow-right.gif']};
-	    
-	    
-	    
-		    $.datepicker.setDefaults($.datepicker.regional[ "en" ]);
-		    $.datepicker.setDefaults({
-		        changeMonth: true,
-		        changeYear: true,
-		        dateFormat: 'dd/mm/yy',
-		        yearRange:"c-100:c+10"
-		    });
-		    
-		    window.alert = function(msg, title, callback)
-		    {
-		        //jAlert(msg, title, callback);
-		        apprise(msg,{},callback);
-		
-		    }
-		
-		    
-		    window.confirm = function(msg, title, callback)
-		    {
-		        //jConfirm(msg, title, callback);
-		        apprise(msg, {'verify':true, 'textYes':'Yes', 'textNo':'No'},callback);
-		    }
-			
-			
-		    window.prompt = function(message, value, title, callback)
-		    {
-		        //jPrompt(message, value, title, callback);
-		        apprise(msg, {input:true}, callback);
-		    }
-		
-		    var confirmV2 = function(msg, callback)
-		    {
-		        apprise(msg,{'newVerify':true, 'textYes':'Yes', 'textNo':'No','textCancel':'Cancel'},callback);
-		    }
-		
-		
-		    $(document).ready(function () {
-		        var westsize = '25%';
-		    	var javaGalGuiLayout = $('body').layout({
-		        										  resizeWhileDragging: true, 
-		        										  sizable: true, 
-		        										  animatePaneSizing: true, 
-		        										  fxSpeed: 'slow', 
-		        										  west__size: westsize, 
-		        										  spacing_open: 0, 
-		        										  spacing_closed: 0});
-		    	
-		    	$("#westTD").css( "width", westsize);
-		    	$.jStorage.set("ChannelRadioValue",null);
-		        $.ajax({
-					dataType:"json",
-					url: DEFINEPATH.channelPath
-				}).done(function(data){
-					
-					if (data.status.code == 0){
-						//Tutto ok
-						var chR = data.detail.value[0];
-						$.jStorage.set("ChannelRadioValue", chR);
-						$('#spChannelRadioHP').text(chR);
-						$('#spZigBeeState').text('ENABLE').css('color', 'green');
-					} else {
-						//Visualizzo il messaggi odi errore
-						$.jStorage.set("ChannelRadioError", data.status.message);
-						$('#spChannelRadioHP').text(data.status.message);
-						$('#spZigBeeState').text('DISABLE').css('color', 'red');
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="./js/langIT.js"></script>
+
+<script type="text/javascript" src="./js/arbor/arbor.js"></script>
+<script type="text/javascript" src="./js/arbor/arbor-tween.js"></script>
+<script type="text/javascript" src="./js/arbor/graphics.js"></script>
+<script type="text/javascript" src="./js/arbor/md5.js"></script>
+
+
+
+
+<script type="text/javascript" src="./js/xmlPathLibrary.js"></script>
+<script type="text/javascript" src="./js/readXML.js"></script>
+<script type="text/javascript">
+	// At the top of your script:
+	if (!window.console)
+		console = {
+			log : function() {
+			}
+		};
+	// If you use other console methods, add them to the object literal above
+
+	// Then, anywhere in your script:
+	console
+			.log('This message will be logged, but will not cause an error in IE7');
+
+	var arrowimages = {
+		down : [ 'downarrowclass', './css/images/arrow-down.gif', 25 ],
+		right : [ 'rightarrowclass', './css/images/arrow-right.gif' ]
+	};
+
+	$.datepicker.setDefaults($.datepicker.regional["en"]);
+	$.datepicker.setDefaults({
+		changeMonth : true,
+		changeYear : true,
+		dateFormat : 'dd/mm/yy',
+		yearRange : "c-100:c+10"
+	});
+
+	window.alert = function(msg, title, callback) {
+		//jAlert(msg, title, callback);
+		apprise(msg, {}, callback);
+
+	}
+
+	window.confirm = function(msg, title, callback) {
+		//jConfirm(msg, title, callback);
+		apprise(msg, {
+			'verify' : true,
+			'textYes' : 'Yes',
+			'textNo' : 'No'
+		}, callback);
+	}
+
+	window.prompt = function(message, value, title, callback) {
+		//jPrompt(message, value, title, callback);
+		apprise(msg, {
+			input : true
+		}, callback);
+	}
+
+	var confirmV2 = function(msg, callback) {
+		apprise(msg, {
+			'newVerify' : true,
+			'textYes' : 'Yes',
+			'textNo' : 'No',
+			'textCancel' : 'Cancel'
+		}, callback);
+	}
+
+	$(document).ready(
+			function() {
+				var westsize = '25%';
+				var javaGalGuiLayout = $('body').layout({
+					resizeWhileDragging : true,
+					sizable : true,
+					animatePaneSizing : true,
+					fxSpeed : 'slow',
+					west__size : westsize,
+					spacing_open : 0,
+					spacing_closed : 0
+				});
+
+				$("#westTD").css("width", westsize);
+				$.jStorage.set("ChannelRadioValue", null);
+
+				$.ajax({
+					dataType : "json",
+					url : DEFINEPATH.versionPath
+				}).done(function(data) {
+					if (data.status.code == 0) {
+						var version = data.detail.version.manufacturerVersion;
+						$('#spGalVersion').text(version);
 					}
-				}); 
-		        
-		        var myGestCPane = new jGGGestCenterPane();
-		        var myMenu = new jGGSxMenu();
-		        	myMenu.newButton('btnChannelNetwork', myGestCPane.templateActivator, 'tplChannelNetwork');
-		        	myMenu.newButton('btnVersionJGal', myGestCPane.templateActivator, 'tplVersionJGal'); 
-		        	myMenu.newButton('btnViewDevice', myGestCPane.templateActivator, 'tplViewDevice');
-		        	myMenu.newButton('btnViewGraphNodes', myGestCPane.templateActivator, 'tplViewGraphNodes');
-		        	myMenu.newButton('btnManageNetwork', myGestCPane.templateActivator, 'tplManageNetwork');
-		    
-		    
-		        	$("#btnViewDevice").click();
-		    	
-		    
-		    });
-		    </script>
+				else {
+					
+					$('#spGalVersion')
+							.text(data.status.message);
+						}
+				
+				});
+
+				$.ajax({
+					dataType : "json",
+					url : DEFINEPATH.channelPath
+				}).done(
+						function(data) {
+
+							if (data.status.code == 0) {
+								//Tutto ok
+								var chR = data.detail.value[0];
+								$.jStorage.set("ChannelRadioValue", chR);
+								$('#spChannelRadioHP').text(chR);
+								$('#spZigBeeState').text('RUNNING').css('color',
+										'green');
+							} else {
+								//Visualizzo il messaggi odi errore
+								$.jStorage.set("ChannelRadioError",
+										data.status.message);
+								$('#spChannelRadioHP')
+										.text(data.status.message);
+								$('#spZigBeeState').text('NOT RUNNING').css(
+										'color', 'red');
+							}
+						});
+
+				var myGestCPane = new jGGGestCenterPane();
+				var myMenu = new jGGSxMenu();
+				myMenu.newButton('btnChannelNetwork',
+						myGestCPane.templateActivator, 'tplChannelNetwork');
+				myMenu.newButton('btnViewDevice',
+						myGestCPane.templateActivator, 'tplViewDevice');
+				myMenu.newButton('btnViewGraphNodes',
+						myGestCPane.templateActivator, 'tplViewGraphNodes');
+				myMenu.newButton('btnManageNetwork',
+						myGestCPane.templateActivator, 'tplManageNetwork');
+				$("#btnViewDevice").click();
+
+			});
+</script>
+
+
+</head>
+<body>
+	<div id="north" class="ui-layout-north" style="overflow: hidden;">
+		<table>
+			<tr>
+				<td valign="middle" align="left" id="westTD">Gal Version: <span
+					id="spGalVersion"></span><br /> Network channel: <span
+					id="spChannelRadioHP"></span><br /> Status of the Network: <span
+					id="spZigBeeState"></span><br />
+				</td>
+				<td valign="middle" align="center" style="background-color: red"><label
+					class="title">ZigBee Admin Console</label></td>
+				<td valign="middle" width="20%"><img
+					src="images/2000px-logo_telecom_italia-svg.png" height="100px" /></td>
+			</tr>
+		</table>
+	</div>
+	<div id="west" class="ui-layout-west">
+		<button id="btnViewDevice"></button>
+		<button id="btnViewGraphNodes"></button>
+		<button id="btnChannelNetwork"></button>
+		<button id="btnManageNetwork"></button>
 		
-		
-	</head>
-	<body>
-		<div id="north" class="ui-layout-north" style="overflow: hidden;">
-		    <table>
-		        <tr>
-		            <td valign="middle" align="left" id="westTD">
-		            	Actual Channel Network: <span id="spChannelRadioHP"></span><br />
-		            	Status of the Network: <span id="spZigBeeState"></span><br />
-		            </td>
-		            <td valign="middle" align="center"  style="background-color: red"><label class="title">Java GAL - Admin Console</label></td>
-		            <td valign="middle" width="20%"><img src="images/2000px-logo_telecom_italia-svg.png" height="100px"/></td>
-		        </tr>
-		    </table>
-		    </div>
-		<div id="west" class="ui-layout-west">
-			<button id="btnVersionJGal"></button>
-			<button id="btnViewDevice"></button>
-			<button id="btnViewGraphNodes"></button>
-			<button id="btnManageNetwork"></button>
-			<button id="btnChannelNetwork"></button>
-		</div>
-		<div id="center" class="ui-layout-center">
-		</div>
-		<!-- div id="ghostDiv" style="display: none;"></div> -->
-	</body>
+	</div>
+	<div id="center" class="ui-layout-center"></div>
+	<!-- div id="ghostDiv" style="display: none;"></div> -->
+</body>
 </html>

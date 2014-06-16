@@ -25,8 +25,6 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 
 import java.math.BigInteger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestClientManagerAndListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
@@ -46,7 +44,6 @@ import org.restlet.resource.ServerResource;
  *
  */
 public class ServicesResource extends ServerResource {
-	private Log log = LogFactory.getLog(ServicesResource.class);
 
 	private GatewayInterface proxyGalInterface;
 	private String timeoutString = null;

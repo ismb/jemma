@@ -389,8 +389,6 @@ CostiConsumi.VisConsumoMaggiore = function() {
 
 	if (!CostiConsumi.suddivisioneCostiRender) {
 		CostiConsumi.GetSuddivisioneConsumi();
-	} else {
-		hideSpinner();
 	}
 
 	if (Main.env == 0)

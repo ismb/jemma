@@ -15,19 +15,17 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.APSMessageListener;
-import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code APSMessageListener} interface for the Rest server.
@@ -43,7 +41,7 @@ import org.restlet.resource.ClientResource;
  */
 public class RestApsMessageListener implements APSMessageListener {
 
-	private Log log = LogFactory.getLog(RestApsMessageListener.class);
+	private static final Logger LOG = LoggerFactory.getLogger( RestApsMessageListener.class );
 	private Long CalbackIdentifier = -1L;
 	private Callback callback;
 	private String urilistener;
@@ -98,7 +96,7 @@ public class RestApsMessageListener implements APSMessageListener {
 						info.setEventCallbackIdentifier(CalbackIdentifier);
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
-							log.info(xml);
+							LOG.debug("Marshaled:" +xml);
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
 						resource = null;

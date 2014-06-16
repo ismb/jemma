@@ -28,9 +28,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.energy_home.jemma.javagal.rest.PropertiesManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class.
@@ -54,7 +53,7 @@ public class Util {
 	 */
 	public static final String UTF8_CHAR_ENCODING = "UTF-8";
 	private static Random r;
-	private static Log logger = LogFactory.getLog(Util.class);
+	private static final Logger LOG = LoggerFactory.getLogger( Util.class );
 
 	static {
 		unsigned8MaxValue = Long.decode("0xff");
@@ -121,7 +120,7 @@ public class Util {
 			
 			return _tores;
 		} catch (JAXBException e) {
-			logger.error("Exception on marshal : " + e.getMessage());
+			LOG.error("Exception on marshal : ", e);
 			return EMPTY_STRING;
 		}
 	}
