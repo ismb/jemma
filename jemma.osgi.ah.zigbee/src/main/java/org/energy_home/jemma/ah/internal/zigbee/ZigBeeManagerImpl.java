@@ -488,10 +488,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 	public void notifyAPSMessage(APSMessageEvent msg) {
 
-		log.info("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
-		log.info("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
-		log.info("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
-		log.info("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
+		log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
+		log.debug("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
+		log.debug("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
+		log.debug("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
 		if (enableNotifyFrameLogs)
 			this.printAPSMessageEvent(msg);
 
@@ -630,8 +630,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeDiscovered(Status status, WSNNode node) {
-		log.info("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
-		log.info("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
+		log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
+		log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
 		rwLock.writeLock().lock();
 		try {
 			if (status.getCode() != GatewayConstants.SUCCESS) {

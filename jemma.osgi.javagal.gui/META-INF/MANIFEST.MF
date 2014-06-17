@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1402908022044
+Bnd-LastModified: 1402992972806
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-ManifestVersion: 2
@@ -15,7 +15,6 @@ Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
  t;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)",org.osgi.se
  rvice.useradmin;version="[1.1,2)",org.osgi.util.tracker;version="1.4.2"
  ,org.slf4j;version="[1.7.7,2)"
-Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0",org.eclipse.eq
- uinox.useradmin;bundle-version="1.1.100"
+Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
