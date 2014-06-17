@@ -1516,6 +1516,7 @@ public class DataFreescale implements IDataLayer {
 
 					synchronized (pl) {
 						pl.getStatus().setCode(message[3]);
+						ServiceDescriptor _toRes = new ServiceDescriptor();
 						if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
 
 							SimpleDescriptor _sp = new SimpleDescriptor();
@@ -1535,12 +1536,13 @@ public class DataFreescale implements IDataLayer {
 								_sp.getApplicationOutputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
 								_index = _index + 2;
 							}
-							ServiceDescriptor _toRes = new ServiceDescriptor();
+							
 							_toRes.setAddress(_add);
 							_toRes.setEndPoint(EndPoint);
 							_toRes.setSimpleDescriptor(_sp);
-							pl.set_objectOfResponse(_toRes);
+							
 						}
+						pl.set_objectOfResponse(_toRes);
 						pl.notify();
 					}
 					break;
