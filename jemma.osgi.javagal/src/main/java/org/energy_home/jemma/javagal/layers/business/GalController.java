@@ -380,7 +380,7 @@ public class GalController {
 			result.setAddress(GalNode.get_node().getAddress());
 			List<WrapperWSNNode> _list = getNetworkcache();
 			for (WrapperWSNNode o : _list) {
-				
+
 				if (o.get_node() != null && o.get_node().getAddress() != null && o.get_node().getAddress().getNetworkAddress().equals(get_GalNode().get_node().getAddress().getNetworkAddress())) {
 					o.set_nodeServices(result);
 					result = o.get_nodeServices();
@@ -614,10 +614,10 @@ public class GalController {
 			Thread thr = new Thread() {
 				@Override
 				public void run() {
+					NodeDescriptor nodeDescriptor = new NodeDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
-
-							NodeDescriptor nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
+							nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
 							Integer shortAddress = null;
 							if (addrOfInterest.getNetworkAddress() == null)
 								shortAddress = getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress());
@@ -634,32 +634,33 @@ public class GalController {
 							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 
 						} catch (IOException e) {
+
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, null);
-							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, null, addrOfInterest);
+							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
+							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 						} catch (GatewayException e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, null);
-							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, null, addrOfInterest);
+							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
+							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 
 						} catch (Exception e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, null);
-							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, null, addrOfInterest);
+							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
+							get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 
 						}
 					} else {
 						Status _s = new Status();
 						_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_s.setMessage("Gal is not in running state!");
-						get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, null);
-						get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, null, addrOfInterest);
+						get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
+						get_gatewayEventManager().notifyNodeDescriptorExtended(_requestIdentifier, _s, nodeDescriptor, addrOfInterest);
 
 					}
 
@@ -1168,6 +1169,7 @@ public class GalController {
 			Thread thr = new Thread() {
 				@Override
 				public void run() {
+					NodeServices _newNodeService = new NodeServices();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
 						List<Short> _s = null;
@@ -1178,7 +1180,6 @@ public class GalController {
 							if (aoi.getIeeeAddress() == null)
 								aoi.setIeeeAddress(getIeeeAddress_FromNetworkCache(aoi.getNetworkAddress()));
 
-							NodeServices _newNodeService = new NodeServices();
 							_newNodeService.setAddress(aoi);
 							if (_newNodeService.getAddress().getIeeeAddress() == null)
 								_newNodeService.getAddress().setIeeeAddress(getIeeeAddress_FromNetworkCache(_newNodeService.getAddress().getNetworkAddress()));
@@ -1194,26 +1195,29 @@ public class GalController {
 							}
 							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _ok, _newNodeService);
 						} catch (IOException e) {
+							_newNodeService.setAddress(aoi);
 							Status _s1 = new Status();
 							_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s1.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, null);
+							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, _newNodeService);
 						} catch (GatewayException e) {
+							_newNodeService.setAddress(aoi);
 							Status _s1 = new Status();
 							_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s1.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, null);
+							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, _newNodeService);
 						} catch (Exception e) {
+							_newNodeService.setAddress(aoi);
 							Status _s1 = new Status();
 							_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s1.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, null);
+							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, _newNodeService);
 						}
 					} else {
 						Status _s1 = new Status();
 						_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_s1.setMessage("Gal is not in running state");
-						get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, null);
+						get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _s1, _newNodeService);
 
 					}
 				}
@@ -2157,7 +2161,7 @@ public class GalController {
 			Thread thr = new Thread() {
 				@Override
 				public void run() {
-					ServiceDescriptor _toRes;
+					ServiceDescriptor _toRes = new ServiceDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
 
@@ -2171,28 +2175,32 @@ public class GalController {
 								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 
 							} else {
+								_toRes.setAddress(addrOfInterest);
 								Status s1 = new Status();
 								s1.setCode((short) GatewayConstants.GENERAL_ERROR);
 								s1.setMessage("Ieee Null");
-								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, s1, null);
+								get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, s1, _toRes);
 
 							}
 						} catch (GatewayException e) {
+							_toRes.setAddress(addrOfInterest);
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, null);
+							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 						} catch (Exception e) {
+							_toRes.setAddress(addrOfInterest);
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, null);
+							get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 						}
 					} else {
+						_toRes.setAddress(addrOfInterest);
 						Status _s = new Status();
 						_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_s.setMessage("Gal is not in running state!");
-						get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, null);
+						get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 					}
 				}
 			};
@@ -2242,7 +2250,7 @@ public class GalController {
 			Thread thr = new Thread() {
 				@Override
 				public void run() {
-					BindingList _toRes;
+					BindingList _toRes = new BindingList();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
 							Status _s = new Status();
@@ -2254,18 +2262,18 @@ public class GalController {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, null);
+							get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, _toRes);
 						} catch (Exception e) {
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 							_s.setMessage(e.getMessage());
-							get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, null);
+							get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, _toRes);
 						}
 					} else {
 						Status _s = new Status();
 						_s.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_s.setMessage("Gal is not in running state!");
-						get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, null);
+						get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, _toRes);
 					}
 				}
 			};
