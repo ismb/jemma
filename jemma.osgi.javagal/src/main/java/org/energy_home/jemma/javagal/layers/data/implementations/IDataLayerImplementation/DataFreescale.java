@@ -1951,13 +1951,11 @@ public class DataFreescale implements IDataLayer {
 			else {
 				if (gal.getPropertiesManager().getDebugEnabled())
 					LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()));
-
 				return;
 			}
 
 		}
 		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getSourceAddress().getIeeeAddress() == null)) {
-
 			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
 			if (_iee != null)
 				messageEvent.getSourceAddress().setIeeeAddress(_iee);
