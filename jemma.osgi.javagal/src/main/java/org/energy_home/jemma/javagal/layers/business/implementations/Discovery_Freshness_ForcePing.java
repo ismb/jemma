@@ -270,7 +270,12 @@ public class Discovery_Freshness_ForcePing {
 				if (!newNodeWrapperChild.isSleepy()) {
 
 					newNodeWrapperChild.set_discoveryCompleted(false);
-
+					indexChildOnCache = gal.existIntoNetworkCache(newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
+					
+					if (indexChildOnCache == -1) {
+						gal.getNetworkcache().add(newNodeWrapperChild);
+					}
+					
 					if (function == TypeFunction.DISCOVERY) {
 						if (gal.getPropertiesManager().getDebugEnabled()) {
 							logger.info("Scheduling Discovery for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
@@ -289,10 +294,10 @@ public class Discovery_Freshness_ForcePing {
 							newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
 					}
 
-					indexChildOnCache = gal.existIntoNetworkCache(newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
-					if (indexChildOnCache == -1) {
-						gal.getNetworkcache().add(newNodeWrapperChild);
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info(funcionName + ": Found new Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X",node.getNetworkAddress()));
 					}
+
 
 				} else {
 					/* If Sleepy EndDevice */
@@ -309,17 +314,13 @@ public class Discovery_Freshness_ForcePing {
 						gal.getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
 						/**/
 					}
+				
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						logger.info(funcionName + ": Found new Sleepy Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X",node.getNetworkAddress()));
+					}
 				}
 
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					// System.out.println(funcionName + ": Found new Node:"
-					// +
-					// newNodeWrapperChild.get_node().getAddress().getNetworkAddress()
-					// + " from NeighborTableListCount of:" +
-					// node.getNetworkAddress());
-
-					logger.info(funcionName + ": Found new Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X",node.getNetworkAddress()));
-				}
+				
 
 			} else {
 
