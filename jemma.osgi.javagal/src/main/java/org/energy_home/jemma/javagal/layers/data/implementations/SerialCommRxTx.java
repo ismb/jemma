@@ -107,8 +107,12 @@ public class SerialCommRxTx implements IConnector {
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN
-					// | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					/*
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					serialPort.setDTR(true);
+					serialPort.setRTS(true);
+					*/
+					
 					serialPort.enableReceiveTimeout(2000);
 
 					serialPort.notifyOnDataAvailable(true);
