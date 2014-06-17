@@ -1936,10 +1936,13 @@ public class DataFreescale implements IDataLayer {
 			if (_iee != null)
 				messageEvent.getDestinationAddress().setIeeeAddress(_iee);
 			else {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					LOG.error("Message discarded Ieee destination address not found, related ShortAddress:",String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()));
 
-				return;
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.error("Message discarded Ieee destination address not found, related ShortAddress:", String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+					return;
+				}
 			}
 		}
 
@@ -1949,9 +1952,11 @@ public class DataFreescale implements IDataLayer {
 			if (_short != null)
 				messageEvent.getDestinationAddress().setNetworkAddress(_short);
 			else {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()));
-				return;
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
 			}
 
 		}
@@ -1960,9 +1965,11 @@ public class DataFreescale implements IDataLayer {
 			if (_iee != null)
 				messageEvent.getSourceAddress().setIeeeAddress(_iee);
 			else {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
-				return;
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+						if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
 			}
 
 		}
@@ -1972,9 +1979,11 @@ public class DataFreescale implements IDataLayer {
 			if (_short != null)
 				messageEvent.getSourceAddress().setNetworkAddress(_short);
 			else {
-				if (gal.getPropertiesManager().getDebugEnabled())
-					LOG.error("Message discarded Short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()));
-				return;
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+					if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.error("Message discarded Short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
 			}
 
 		}
@@ -2135,7 +2144,7 @@ public class DataFreescale implements IDataLayer {
 			// 0x8034 is a LeaveAnnouncement, 0x0013 is a
 			// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
 
-			if ((gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001)))) {
+			if ((gal.getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031)))) {
 
 				if (address.getNetworkAddress().intValue() != gal.get_GalNode().get_node().getAddress().getNetworkAddress().intValue()) {
 
@@ -2212,7 +2221,6 @@ public class DataFreescale implements IDataLayer {
 
 								_newWrapperNode.reset_numberOfAttempt();
 								_newWrapperNode.set_discoveryCompleted(true);
-								
 
 								_indexOnCache = gal.existIntoNetworkCache(_newNode.getAddress().getNetworkAddress());
 								if (_indexOnCache > -1) {
