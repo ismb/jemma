@@ -96,6 +96,24 @@ public class PropertiesManager {
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
 	}
+	
+
+	/**
+	 * Gets NumberOfThreadForAnyPool property.
+	 * 
+	 * @return the NumberOfThreadForAnyPool value.
+	 */
+	public int getNumberOfThreadForAnyPool() {
+		String _value = props.getProperty("NumberOfThreadForAnyPool");
+		return Integer.parseInt(_value);
+
+	}
+
+	
+	
+	
+	
+	
 
 	/**
 	 * Sets DebugEnabled property's value.
