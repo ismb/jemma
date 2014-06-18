@@ -1449,7 +1449,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					 * Ho cambiato il valore di timeout perch&egrave; 100ms
 					 * &egrave; troppo poco [Marco Nieddu]
 					 */
-					localEndpoint = gateway.configureEndpoint(2000, sd);
+					localEndpoint = gateway.configureEndpoint(10000, sd);
 					// start discovery announcement
 					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
 					// subscribe liveness

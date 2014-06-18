@@ -48,7 +48,7 @@ public class localServicesServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		Object done = session.getValue("logon.isDone");
+		Object done = session.getValue("javaGallogon.isDone");
 		if (done != null) {
 
 			

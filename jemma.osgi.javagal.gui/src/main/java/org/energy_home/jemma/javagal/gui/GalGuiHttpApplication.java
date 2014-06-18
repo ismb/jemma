@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.http.HttpContext;
@@ -45,44 +45,53 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private boolean useBasic = false;
 	private UserAdmin userAdmin = null;
 	private boolean enableSecurity = true;
+	private boolean userCreated = false;
 	private ComponentContext ctxt;
+	private HttpService httpService;
 	private String realm = "javaGalGui Login";
-	private String applicationWebAlias = "/javaGalWebGui";
+	private String applicationWebAlias = "";
+	private static final Logger LOG = LoggerFactory.getLogger(GalGuiHttpApplication.class);
 
-	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
 
-	protected void activate(ComponentContext ctxt) {
+	protected synchronized void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		
+		applicationWebAlias = "/" + this.ctxt.getProperties().get("rootContext").toString();
+		HttpAdapter = new HttpBinder();
+		setRootUrl(applicationWebAlias);
+		registerResource("/", "webapp");
+		setHttpContext(this);
+		super.bindHttpService(httpService);
+
+		LOG.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
 	}
 
-	public void deactivate() {
-		log.debug("deactivated");
+	public synchronized void deactivate() {
+		this.ctxt = null;
+		this.bc = null;
+		userCreated = false;
+		LOG.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		installUsers();
-	}
+		
 
-	protected void installUsers() {
-		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
-		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
-		if (userAdmin != null) {
-			User adminUser = (User) createRole(userAdmin, username, Role.USER);
-			setUserCredentials(adminUser, password);
-		} else {
-			log.error("UserAdmin Null");
-
-		}
 	}
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
 		if (this.userAdmin == s)
 			this.userAdmin = null;
+	}
+
+	protected void installUsers() {
+		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
+		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
+		User adminUser = (User) createRole(userAdmin, username, Role.USER);
+		setUserCredentials(adminUser, password);
+		userCreated = true;
 	}
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
@@ -96,17 +105,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	}
 
-	protected synchronized void setHttpService(HttpService s) {
-		HttpAdapter = new HttpBinder();
-		setRootUrl(applicationWebAlias);
-		registerResource("/", "webapp");
-		setHttpContext(this);
-		super.bindHttpService(s);
-		log.info("JavaGalAdminGui started");
+	protected void setHttpService(HttpService s) {
+		httpService = s;
+
 	}
 
-	protected synchronized void unsetHttpService(HttpService s) {
+	protected void unsetHttpService(HttpService s) {
 		this.unbindHttpService(s);
+		httpService = null;
 	}
 
 	public String getMimeType(String page) {
@@ -129,17 +135,6 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		else
 			u = this.bc.getBundle().getResource(name);
 		return u;
-	}
-
-	private boolean getProperty(Map props, String name, boolean value) {
-		if (props == null) {
-			return value;
-		}
-		Object prop = props.get(name);
-		if (prop == null) {
-			return value;
-		}
-		return ((Boolean) prop).booleanValue();
 	}
 
 	@Override
@@ -198,11 +193,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 						if (!allowUser(username, password)) {
 							return redirectToLoginPage(request, response);
 						} else {
-							session.putValue("logon.isDone", username);
+							session.putValue("javaGallogon.isDone", username);
 							try {
 								String target = (String) session.getValue("login.target");
 								if (target != null) {
-									
+
 									response.sendRedirect(target);
 								} else {
 									response.sendRedirect(applicationWebAlias + "/home.html");
@@ -216,7 +211,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 							return true;
 						} else {
 							session.putValue("login.target", applicationWebAlias + "/home.html");
-							Object done = session.getValue("logon.isDone");
+							Object done = session.getValue("javaGallogon.isDone");
 							if (done == null) {
 								if (request.getMethod().equals("GET")) {
 									return redirectToLoginPage(request, response);
@@ -264,7 +259,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	private boolean allowUser(String username, String password) {
+		
+		
 		if (userAdmin != null) {
+			if (!userCreated)
+				installUsers();
 			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
 			if (user == null)
 				return false;

@@ -60,7 +60,7 @@ public class ApsMessageManager {
 	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
 	
-		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+		executor = Executors.newFixedThreadPool(gal.getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 			
 			@Override
 			public Thread newThread(Runnable r) {

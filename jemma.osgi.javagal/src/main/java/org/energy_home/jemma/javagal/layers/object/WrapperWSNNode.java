@@ -30,7 +30,7 @@ import org.energy_home.jemma.zgd.jaxb.WSNNode;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
-public  class  WrapperWSNNode {
+public class WrapperWSNNode {
 	int _timerID = 0;
 	private WSNNode _node;
 	private Timer _timerDiscovery;
@@ -40,6 +40,18 @@ public  class  WrapperWSNNode {
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
+
+	public synchronized Timer getTimerDiscovery() {
+		return _timerDiscovery;
+	}
+
+	public synchronized Timer getTimerFreshness() {
+		return _timerFreshness;
+	}
+
+	public synchronized Timer getTimerForcePing() {
+		return _timerForcePing;
+	}
 
 	public synchronized NodeDescriptor getNodeDescriptor() {
 		return _nodeDescriptor;
@@ -64,9 +76,6 @@ public  class  WrapperWSNNode {
 
 	public WrapperWSNNode(GalController _gal) {
 		gal = _gal;
-		this._node = null;
-		this._timerDiscovery = null;
-		this._timerFreshness = null;
 		this._numberOfAttempt = 0;
 		this.lastDiscovered = 0;
 
@@ -107,13 +116,16 @@ public  class  WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerDiscovery(int seconds) {
-
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
 			_timerDiscovery.purge();
 		}
 		if (seconds >= 0) {
-			String name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			String name = "";
+			synchronized (this._node) {
+
+				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			}
 			_timerDiscovery = new Timer(name);
 			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
 
@@ -128,19 +140,21 @@ public  class  WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerFreshness(int seconds) {
-
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
 			_timerFreshness.purge();
-			//System.out.println("Stopping timer Freshness ("+_timerFreshness.hashCode()+")");
 		}
 
 		if (seconds >= 0) {
 
-			String name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			String name = "";
+			synchronized (this._node) {
+				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+
+			}
+
 			_timerFreshness = new Timer(name);
 			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
-			//LOG.debug("Creation of new Timer  Freshness "+_timerFreshness.hashCode()+"("+seconds+" seconds)");
 		}
 
 	}
@@ -152,13 +166,19 @@ public  class  WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerForcePing(int seconds) {
+
 		if (_timerForcePing != null) {
 			_timerForcePing.cancel();
 			_timerForcePing.purge();
 		}
 
 		if (seconds >= 0) {
-			String name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+			String name = "";
+
+			synchronized (this._node) {
+				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+
+			}
 			_timerForcePing = new Timer(name);
 			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 
@@ -190,10 +210,11 @@ public  class  WrapperWSNNode {
 		if (_timerDiscovery != null) {
 			_timerDiscovery.cancel();
 			_timerDiscovery.purge();
-			
+
 			_timerDiscovery = null;
 
 		}
+
 		if (_timerFreshness != null) {
 			_timerFreshness.cancel();
 			_timerFreshness.purge();
@@ -207,9 +228,6 @@ public  class  WrapperWSNNode {
 			_timerForcePing = null;
 
 		}
-		
-		//System.out.println("\n\rAbort all timers of node:" + this.get_node().getAddress().getNetworkAddress() + "\n\r");
-		
 
 	}
 
@@ -278,9 +296,7 @@ public  class  WrapperWSNNode {
 
 		@Override
 		public void run() {
-			//LOG.debug("\n\rTimer Elapsed:" + _name+ "\n\r");
-			_timerDiscovery.cancel();
-			
+			getTimerDiscovery().cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
 
 		}
@@ -298,12 +314,11 @@ public  class  WrapperWSNNode {
 
 		@Override
 		public void run() {
-			// System.out.println("\n\rTimer Elapsed:" +
-			// _name+"("+_timerFreshness.hashCode()+") "+new Date());
-			_timerFreshness.cancel();
+
+			getTimerFreshness().cancel();
+
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
-			
-			
+
 		}
 	}
 
@@ -319,8 +334,7 @@ public  class  WrapperWSNNode {
 
 		@Override
 		public void run() {
-			//LOG.debug("\n\rTimer Elapsed:" + _name+ "\n\r");
-			_timerForcePing.cancel();
+			getTimerForcePing().cancel();
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
 
 		}
