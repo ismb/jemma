@@ -195,7 +195,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 						} else {
 							session.putValue("javaGallogon.isDone", username);
 							try {
-								String target = (String) session.getValue("login.target");
+								String target = (String) session.getValue("javaGalLogin.target");
 								if (target != null) {
 
 									response.sendRedirect(target);
@@ -210,7 +210,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 						if (queryString.toLowerCase().equals(applicationWebAlias.toLowerCase() + "/login.html")) {
 							return true;
 						} else {
-							session.putValue("login.target", applicationWebAlias + "/home.html");
+							session.putValue("javaGalLogin.target", applicationWebAlias + "/home.html");
 							Object done = session.getValue("javaGallogon.isDone");
 							if (done == null) {
 								if (request.getMethod().equals("GET")) {
