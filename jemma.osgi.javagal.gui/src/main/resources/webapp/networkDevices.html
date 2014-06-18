@@ -10,11 +10,15 @@
 				Cancel : function() {
 					$(this).dialog("close");
 				}
-			},
-			close : function() {
-				$(this).dialog("close");
 			}
 		});
+
+		$('#dialog-form-device-details').dialog('option', 'buttons', [ {
+			text : 'Close',
+			click : function() {
+				$(this).dialog('close');
+			}
+		} ]);
 
 		$("#dialog-form-open-network").dialog({
 			autoOpen : false,
@@ -25,12 +29,11 @@
 				Cancel : function() {
 					btnCloseNetw();
 				}
-			},
-			close : function() {
-				btnCloseNetw();
 			}
 		});
 
+		$(".ui-dialog-titlebar-close").hide();
+		
 		function leaveDevice(shortAddress) {
 			var result = window.confirm(
 					'Are you sure you want to leave the selected device: 0x'
@@ -72,7 +75,8 @@
 
 								if (dataBig.status.code == 0) {
 									/*Clear all data*/
-									$("#detail_address").val("");
+									$("#detail_shortaddress").val("");
+									$("#detail_ieeeaddress").val("");
 									$("#detail_active_endpoints").empty();
 									$("#detail_manufacturer").val("");
 									$("#detail_logical_type").val("");
@@ -82,33 +86,35 @@
 									$("#detail_device_version").val("");
 									$("#detail_input_clusters").empty();
 									$("#detail_output_clusters").empty();
-
 									$("#dialog-form-device-details").dialog(
 											"open");
-									/*Address section*/
-									var address = '0x'
-											+ padLeft(
-													16,
-													dataBig.detail.nodeServices.address.ieeeAddress
-															.toString(16))
-													.toUpperCase().trim()
-											+ " - "
-											+ '0x'
-											+ padLeft(
-													4,
-													dataBig.detail.nodeServices.address.networkAddress
-															.toString(16))
-													.toUpperCase().trim();
-									$("#detail_address_hidden")
-											.val(
-													padLeft(
-															4,
-															dataBig.detail.nodeServices.address.networkAddress
-																	.toString(16))
-															.toUpperCase()
-															.trim());
-									$("#detail_address").val(address);
-									$('#detail_address').attr('readonly', true);
+									/*Short Address section*/
+									var shortAddress = padLeft(
+											4,
+											dataBig.detail.nodeServices.address.networkAddress
+													.toString(16))
+											.toUpperCase().trim();
+									$("#detail_shortaddress_hidden").val(
+											shortAddress);
+									$("#detail_shortaddress").val(
+											"0x" + shortAddress);
+									$('#detail_shortaddress').attr('readonly',
+											true);
+
+									/*Ieee Address section*/
+									var ieeeAddress = padLeft(
+											16,
+											dataBig.detail.nodeServices.address.ieeeAddress
+													.toString(16))
+											.toUpperCase().trim();
+									$("#detail_ieeeaddress_hidden").val(
+											ieeeAddress
+
+									);
+									$("#detail_ieeeaddress").val(
+											"0x" + ieeeAddress);
+									$('#detail_ieeeaddress').attr('readonly',
+											true);
 
 									/*EndPoint section*/
 									$
@@ -130,7 +136,8 @@
 													});
 
 									/*Manufacturer Section*/
-									var manufacturer = dataBig.detail.nodeDescriptor.manufacturerCode;
+									var manufacturer = "0x"
+											+ dataBig.detail.nodeDescriptor.manufacturerCode;
 									$("#detail_manufacturer").val(manufacturer);
 									$('#detail_manufacturer').attr('readonly',
 											true);
@@ -156,95 +163,101 @@
 
 		}
 
-		$("#tblViewDevice").jqGrid(
-				{
-					rowNum : 10000,
-					datatype : "local",
-					colNames : [ LANG.centerPane.lblDeviceNetAdd,
-							LANG.centerPane.lblDeviceIeeAdd,
-							LANG.centerPane.lblDeviceSIndex,
-							LANG.centerPane.lblDeviceAssDev,
-							LANG.centerPane.lblDeviceAltPan,
-							LANG.centerPane.lblDeviceDevFFD,
-							LANG.centerPane.lblDeviceMainPo,
-							LANG.centerPane.lblDeviceLogical,
-							LANG.centerPane.lblDeviceRecOWI,
-							LANG.centerPane.lblDeviceSecSup,
-							LANG.centerPane.lblDeviceAllAdd,
-							LANG.centerPane.lblDeviceDiscovered,
+		$("#tblViewDevice")
+				.jqGrid(
+						{
+							rowNum : 1000,
+							datatype : "local",
+							colNames : [ 
+							        LANG.centerPane.lblDeviceDiscovered,
+									LANG.centerPane.lblDeviceNetAdd,
+									LANG.centerPane.lblDeviceIeeAdd,
+									LANG.centerPane.lblDeviceSIndex,
+									LANG.centerPane.lblDeviceAssDev,
+									LANG.centerPane.lblDeviceAltPan,
+									LANG.centerPane.lblDeviceDevFFD,
+									LANG.centerPane.lblDeviceMainPo,
+									LANG.centerPane.lblDeviceLogical,
+									LANG.centerPane.lblDeviceRecOWI,
+									LANG.centerPane.lblDeviceSecSup,
+									LANG.centerPane.lblDeviceAllAdd,
+									'','' ],
+							colModel : [ {
+								name : 'tDiscovered',
+								width : 160,
+								align : "center"
+								
+							}, {
+								name : 'nAdd',
+								width : 165,
+								align : "center"
+							}, {
+								name : 'iAdd',
+								width : 180,
+								align : "center"
+							}, {
+								name : 'start',
+								width : 110,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'devices',
+								width : 175,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'alt',
+								width : 225,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'ffd',
+								width : 140,
+								align : "center",
+								hidden : true
 
-							LANG.centerPane.lblActions ],
-					colModel : [ {
-						name : 'nAdd',
-						width : 165,
-						align : "center"
-					}, {
-						name : 'iAdd',
-						width : 180,
-						align : "center"
-					}, {
-						name : 'start',
-						width : 110,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'devices',
-						width : 175,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'alt',
-						width : 225,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'ffd',
-						width : 140,
-						align : "center",
-						hidden : true
+							}, {
+								name : 'powered',
+								width : 150,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'logical',
+								width : 110,
+								align : "center"
 
-					}, {
-						name : 'powered',
-						width : 150,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'logical',
-						width : 110,
-						align : "center"
-
-					}, {
-						name : 'idle',
-						width : 220,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'security',
-						width : 180,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'aAdd',
-						width : 160,
-						align : "center",
-						hidden : true
-					}, {
-						name : 'tDiscovered',
-						width : 160,
-						align : "center"
-					}, {
-						name : 'aAct',
-						width : 160,
-						align : "center"
-					}, ],
-					sortname : 'id',
-					viewrecords : true,
-					caption : LANG.menu.btnViewDevice,
-					sortorder : "desc",
-					autowidth : false,
-					subGrid : false,
-					pager : '#pager'
-				});
+							}, {
+								name : 'idle',
+								width : 220,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'security',
+								width : 180,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'aAdd',
+								width : 160,
+								align : "center",
+								hidden : true
+							}, {
+								name : 'aActDetails',
+								width : 30,
+								align : "center"
+							},{
+								name : 'aActLeave',
+								width : 30,
+								align : "center"
+							}, ],
+							sortname : 'id',
+							viewrecords : true,
+							caption : LANG.menu.btnViewDevice,
+							sortorder : "desc",
+							autowidth : false,
+							subGrid : false,
+							pager : '#pager'
+						});
 
 		$("#tblViewDevice").jqGrid('setGroupHeaders', {
 			useColSpanStyle : true,
@@ -252,17 +265,13 @@
 				startColumnName : 'nAdd',
 				numberOfColumns : 2,
 				titleText : LANG.centerPane.lblDeviceAddress
-			}, {
-				startColumnName : 'alt',
-				numberOfColumns : 6,
-				titleText : LANG.centerPane.lblDeviceCInfo
 			} ]
 		});
 
 		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
 
-		function loadData() {
-
+		var loadData = function() {
+			
 			$
 					.ajax({
 						url : DEFINEPATH.viewDevicePath
@@ -270,7 +279,6 @@
 					.done(
 							function(data) {
 								var dataBig = json_parse(data);
-
 								var mydataViewDeviceNew = [];
 								if (dataBig.status.code == 0) {
 									var vLogical = "";
@@ -338,31 +346,29 @@
 												idle : nObj.capabilityInformation.receiverOnWhenIdle,
 												security : nObj.capabilityInformation.securitySupported,
 												aAdd : nObj.capabilityInformation.allocateAddress,
-												tDiscovered : new Date(),
-												aAct : "<div id=\"deviceMenu\"><ul><li><a href=\"javascript:infoDevice('"
-														+ strNetworkAddress
-														+ "');\">Details</a></li><li><a href=\"javascript:leaveDevice('"
-														+ strNetworkAddress
-														+ "');\">Remove Device</li></ul></div>"
-
+												tDiscovered : "<img src='./css/images/newDevice.png' class='newDevice' />",
+												aActDetails : "<a href=\"javascript:infoDevice('" + strNetworkAddress + "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
+												aActLeave :   "<a href=\"javascript:leaveDevice('" + strNetworkAddress + "');\"><img src='./css/images/leave.png' class='gridButton' title='Device Leave' /></a>"
 											};
 
 											mydataViewDeviceNew
 													.push(currentNode);
+											
+											
 
 										}
 									}
-									if (nodes.length == 0) {
+									if (nodes == null || nodes.length == 0) {
 
 										nodes = mydataViewDeviceNew;
 									} else {
 
 										/*Find nodes Removed*/
-
 										$
 												.each(
 														nodes,
 														function(key, value) {
+															value.tDiscovered = "&nbsp;";
 															
 															var found = false;
 															$
@@ -371,8 +377,9 @@
 																			function(
 																					key1,
 																					value1) {
-																				debugger;
+
 																				if (value.iAdd == value1.iAdd) {
+
 																					found = true;
 																					return;
 																				}
@@ -389,7 +396,7 @@
 												.each(
 														mydataViewDeviceNew,
 														function(key, value) {
-															
+
 															var found = false;
 															$
 																	.each(
@@ -397,15 +404,17 @@
 																			function(
 																					key1,
 																					value1) {
-																				debugger;
+
 																				if (value.iAdd == value1.iAdd) {
+
 																					found = true;
 																					return;
 																				}
 
 																			});
 															if (!found)
-																nodes.push(key);
+																nodes
+																		.push(value);
 
 														});
 									}
@@ -435,7 +444,7 @@
 			count = count - 1;
 			if (count <= 0) {
 				clearInterval(counter);
-				$("#dialog-form-open-network").dialog("close");
+				btnCloseNetw();
 				return;
 			} else {
 
@@ -499,12 +508,11 @@
 
 		};
 
-		$("#detail_button_simple_descriptor").button();
 		$("#detail_button_simple_descriptor")
 				.click(
 
 						function() {
-							var short_address = $("#detail_address_hidden")
+							var short_address = $("#detail_shortaddress_hidden")
 									.val();
 							var endpoint = $("#detail_active_endpoints").val();
 							$
@@ -689,74 +697,83 @@
 
 						});
 
-		loadData();
+		$(document).ready(function() {
+			loadData();
+		});
 	</script>
 	<div id="container">
-		<!-- <table style="width: 100%; height: 100%" border="1" -->
-		<!-- <tr -->
-		<!-- <td align="center" -->
 		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
-		<!-- div id="pager"></div -->
-		<!-- </td -->
-		<!-- </tr -->
-		<!-- <tr -->
-		<!-- <td align="center"><br / -->
 		<input id="btnOpenNetw" type="button" value="Open Network" />
-
-		</td>
-		<!-- </tr -->
-		<!-- </table -->
 	</div>
 
 
 	<div id="dialog-form-device-details" title="Device details">
 		<form>
 			<fieldset>
-				<table style="width: 100%" border="0">
+				<table style="width: 100%">
 					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
-							name="detail_address_hidden" id="detail_address_hidden" /> <label
-							for="detail_address">Address</label></td>
-						<td><input type="text" name="detail_address"
-							id="detail_address" size="35"
-							class="text ui-widget-content ui-corner-all"></td>
+							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
+							<label for="detail_shortaddress">Short Address:</label></td>
+						<td valign="top"><input type="text" name="detail_shortaddress"
+							id="detail_shortaddress" size="35"
+							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_active_endpoints">Active EndPoints</label></td>
-						<td valign="top"><select name="detail_active_endpoints"
-							id="detail_active_endpoints"></select> <input
-							id="detail_button_simple_descriptor" type="button"
-							value="Details" /></td>
-					</tr>
-					<tr>
-						<td valign="top" style="width: 150px"><label
-							for="detail_manufacturer">Manufacturer</label></td>
+							for="detail_manufacturer">Manufacturer:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_manufacturer" id="detail_manufacturer"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
+
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_logical_type">Logical Type</label></td>
+							for="detail_logical_type">Logical Type:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_logical_type" id="detail_logical_type"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
+
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_is_sleepy">Sleepy device</label></td>
+							for="detail_is_sleepy">Sleeping device:</label></td>
 						<td valign="top"><input type="text" name="detail_is_sleepy"
 							id="detail_is_sleepy"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 
 					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_ieeeaddress_hidden" id="detail_ieeeaddress_hidden" />
+							<label for="detail_address">Ieee Address:</label></td>
+						<td><input type="text" name="detail_ieeeaddress"
+							id="detail_ieeeaddress" size="35"
+							class="text ui-widget-content ui-corner-all"></td>
+					</tr>
+				</table>
+			</fieldset>
+			<br />
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_profile">Profile</label></td>
+							for="detail_active_endpoints">Active EndPoints:</label></td>
+						<td valign="middle"><select name="detail_active_endpoints"
+							id="detail_active_endpoints"></select><a
+							id="detail_button_simple_descriptor"><img
+								src="./css/images/info.png" class="infoButton" title="Simple Descriptor"></a></td>
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_profile">Profile:</label></td>
 						<td valign="top"><input type="text" name="detail_profile"
-							id="detail_profile" class="text ui-widget-content ui-corner-all" />
-						</td>
+							id="detail_profile" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
 
 					</tr>
 
@@ -764,10 +781,10 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_device">Device</label></td>
+							for="detail_device">Device Type:</label></td>
 						<td valign="top"><input type="text" name="detail_device"
-							id="detail_device" class="text ui-widget-content ui-corner-all" />
-						</td>
+							id="detail_device" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
 
 					</tr>
 
@@ -776,7 +793,7 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_device_version">Device Version</label></td>
+							for="detail_device_version">Device Version:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_device_version" id="detail_device_version"
 							class="text ui-widget-content ui-corner-all" /></td>
@@ -787,7 +804,7 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_input_clusters">Input Clusters</label></td>
+							for="detail_input_clusters">Input Clusters:</label></td>
 						<td valign="top"><select name="detail_input_clusters"
 							id="detail_input_clusters" size="5	" style="width: 100%">
 						</select></td>
@@ -795,7 +812,7 @@
 					</tr>
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_output_clusters">Output Clusters</label></td>
+							for="detail_output_clusters">Output Clusters:</label></td>
 						<td valign="top"><select name="detail_output_clusters"
 							id="detail_output_clusters" size="5" style="width: 100%"></select>
 						</td>
@@ -811,7 +828,7 @@
 	<div id="dialog-form-open-network" title="Open Network">
 		<form>
 			<fieldset>
-				<table style="width: 100%" border="0">
+				<table style="width: 100%">
 					<tr>
 						<td valign="top" align="center" style="width: 150px"><span>Remaning
 						</span><span id="permit-join-counter"></span><span> seconds to

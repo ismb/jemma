@@ -39,7 +39,7 @@ import org.energy_home.jemma.javagal.layers.presentation.Activator;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class ZdoManager /* implements APSMessageListener */{
-	private static final Logger LOG = LoggerFactory.getLogger( ZdoManager.class );
+	private static final Logger LOG = LoggerFactory.getLogger(ZdoManager.class);
 
 	/**
 	 * The local {@link GalController} reference.
@@ -73,11 +73,7 @@ public class ZdoManager /* implements APSMessageListener */{
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a MGMT_LQI_Response");
 			}
-			
-			
-			
-		 	
-			
+
 		}
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
@@ -157,58 +153,40 @@ public class ZdoManager /* implements APSMessageListener */{
 			_Node.set_discoveryCompleted(true);
 			_Node.reset_numberOfAttempt();
 			int _index = -1;
-			synchronized (gal) {
-				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
-					/* id not exist */
-					gal.getNetworkcache().add(_Node);
-					if (!_Node.isSleepy()) {
-						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-						}
-						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-						}
+			if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
+				/* id not exist */
+				gal.getNetworkcache().add(_Node);
+				if (!_Node.isSleepy()) {
+					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+						_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 					}
-					/* Saving the Panid in order to leave the Philips light */
-					gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
-					/**/
-
-					
-				} else/* if exist */{
-					gal.getNetworkcache().get(_index).abortTimers();
-					gal.getNetworkcache().remove(_index);
-					gal.getNetworkcache().add(_Node);
-					if (!_Node.isSleepy()) {
-						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
-						}
-						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
-						}
+					if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+						_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
 					}
 				}
-			}
-			Status _s = new Status();
-			_s.setCode((short) 0x00);
-			try {
-				gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				{
-					LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+				/* Saving the Panid in order to leave the Philips light */
+				gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
+				/**/
 
+				Status _s = new Status();
+				_s.setCode((short) 0x00);
+				try {
+					gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
+				} catch (Exception e) {
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
+					}
+				}
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 				}
 			}
 
 		}
 
-		
 		gal.getApsManager().APSMessageIndication(message);
 		gal.getMessageManager().APSMessageIndication(message);
-		
+
 		// TODO ZDPMessage
 		ZDPMessage _zdpM = new ZDPMessage();
 		_zdpM.setClusterID(message.getClusterID());

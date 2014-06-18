@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class CedacIO implements EventHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger( CedacIO.class );
+	private static final Logger LOG = LoggerFactory.getLogger(CedacIO.class);
 
 	private static final int BOOTING = 0;
 	private static final int ADDING_NODE = 1;
@@ -46,8 +46,8 @@ public class CedacIO implements EventHandler {
 	private static final int OVERLOAD = 8;
 	private static final int OVERLOAD_FIRST_WARNING = 9;
 	private static final int OVERLOAD_SECOND_WARNING = 10;
-	
-	private static final int secondForBeepInOverloadState = 2500; //1500
+
+	private static final int secondForBeepInOverloadState = 2500; // 1500
 
 	private boolean guiOn = false;
 	private boolean platformOn = false;
@@ -63,18 +63,14 @@ public class CedacIO implements EventHandler {
 
 	private boolean booting = false;
 	private ServiceRegistration sr = null;
-	
+
 	private boolean overloadingChangeState = false;
 	private Timer timer = new Timer();
 	private int state;
 	private int previousState;
 
 	public void start(BundleContext bc) {
-		String[] topics = new String[] { "ah/provision/BEGIN", 
-										 "org/osgi/framework/ServiceEvent/*",
-										 "org/osgi/framework/BundleEvent/*", 
-										 "ah/START_IDENTIFY",
-										 "ah/eh/overload/*"};
+		String[] topics = new String[] { "ah/provision/BEGIN", "org/osgi/framework/ServiceEvent/*", "org/osgi/framework/BundleEvent/*", "ah/START_IDENTIFY", "ah/eh/overload/*" };
 
 		Dictionary props = new Hashtable();
 		props.put(EventConstants.EVENT_TOPIC, topics);
@@ -96,11 +92,14 @@ public class CedacIO implements EventHandler {
 		Bundle[] bundles = bc.getBundles();
 		for (int i = 0; i < bundles.length; i++) {
 			String symbolicName = bundles[i].getSymbolicName();
-			if (symbolicName.equals("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
-				synchronized (this) {
-					this.guiOn = true;
-					handleStateChanged();
-					continue;
+			//TODO IVAN da MARCO
+			if (symbolicName != null) {
+				if (symbolicName.equals("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
+					synchronized (this) {
+						this.guiOn = true;
+						handleStateChanged();
+						continue;
+					}
 				}
 			}
 		}
@@ -146,7 +145,7 @@ public class CedacIO implements EventHandler {
 		LOG.trace("CEDAC IO: " + event + " trapped in HandleEvent");
 
 		no_overload = false;
-		
+
 		if (event.getTopic().equals("org/osgi/framework/BundleEvent/STARTED")) {
 			Object bundle = (Object) event.getProperty("bundle");
 			if (bundle.toString().startsWith("org.energy_home.jemma.osgi.ah.webui.energyathome")) {
@@ -263,16 +262,15 @@ public class CedacIO implements EventHandler {
 		// Manage overload
 		if (this.no_overload) {
 			this.changeState(NO_OVERLOAD);
-			if ((this.previousState >= BOOTING) && (this.previousState <= IDENTIFYING) && 
-					(this.overloadingChangeState)){
+			if ((this.previousState >= BOOTING) && (this.previousState <= IDENTIFYING) && (this.overloadingChangeState)) {
 				this.changeState(this.previousState);
 			}
 			this.overloadingChangeState = false;
 		} else if (this.overload) {
-			if (!this.overloadingChangeState){
+			if (!this.overloadingChangeState) {
 				this.previousState = this.getCurrentState();
 			}
-			
+
 			if (this.overloadFirstThresoldWarning) {
 				this.changeState(OVERLOAD_FIRST_WARNING);
 			} else if (this.overloadSecondThresoldWarning) {
@@ -299,9 +297,9 @@ public class CedacIO implements EventHandler {
 	}
 
 	private void changeState(int state) {
-		
+
 		switch (state) {
-		
+
 		case NO_OVERLOAD:
 			FlexGatewayLed2.setRgbLedOnCedac(Color.BLUE, false, false, false, 0, 0);
 			break;
@@ -309,12 +307,12 @@ public class CedacIO implements EventHandler {
 			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 255, 0), false, false, false, 0, 2);
 			this.gestBuzzCedacIO();
 			break;
-			
+
 		case OVERLOAD_FIRST_WARNING:
 			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 128, 0), false, false, false, 0, 1);
 			this.gestBuzzCedacIO();
 			break;
-			
+
 		case OVERLOAD_SECOND_WARNING:
 			FlexGatewayLed2.setRgbLedOnCedac(new Color(255, 0, 255), false, false, false, 0, 2);
 			this.gestBuzzCedacIO();
@@ -355,11 +353,11 @@ public class CedacIO implements EventHandler {
 
 		this.state = state;
 	}
-	
-	private void gestBuzzCedacIO(){
-		if (!this.overloadingChangeState){
+
+	private void gestBuzzCedacIO() {
+		if (!this.overloadingChangeState) {
 			FlexGatewayBuzz.cmdStartBuzzOnCedac();
-			timer.schedule(new TimerTask(){
+			timer.schedule(new TimerTask() {
 				public void run() {
 					FlexGatewayBuzz.cmdStopBuzzOnCedac();
 				}
