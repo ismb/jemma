@@ -77,32 +77,52 @@
 							$("#btnAutomaticScanChannel")
 									.click(
 											function(event) {
-												var ccrTimeOut = '00000014';
-												var newChannelLbl;
+												
+												
+												var result = window
+												.confirm(
+														'Are you sure you want to change the network channel?',
+														'Change channel',
+														function(result) {
+															if (result) {
 
-												newChannelLbl = $(
-														'#rdRadioChannel :radio:checked')
-														.val();
+																var ccrTimeOut = '00000014';
+																var newChannelLbl;
 
-												var opChannelRadio = '0xFE';
-												$
-														.ajax(
-																{
-																	dataType : "json",
-																	url : DEFINEPATH.changeChannelPath
-																			+ 'timeout='
-																			+ ccrTimeOut
-																			+ '&scanChannel=0'
-																			+ '&scanDuration='
-																			+ opChannelRadio
-																})
-														.done(
-																function(data) {
-																	if (data.status.code == 0) {
-																		getChannelAndUpdateGui();
-																	}
-																});
+																newChannelLbl = $(
+																		'#rdRadioChannel :radio:checked')
+																		.val();
 
+																var opChannelRadio = '0xFE';
+																$
+																		.ajax(
+																				{
+																					dataType : "json",
+																					url : DEFINEPATH.changeChannelPath
+																							+ 'timeout='
+																							+ ccrTimeOut
+																							+ '&scanChannel=0'
+																							+ '&scanDuration='
+																							+ opChannelRadio
+																				})
+																		.done(
+																				function(data) {
+																					if (data.status.code == 0) {
+																						getChannelAndUpdateGui();
+																					}
+																				});
+
+															}
+														});
+												
+												
+												
+												
+
+											
+											
+											
+											
 											});
 
 							var getChannelAndUpdateGui = function() {
