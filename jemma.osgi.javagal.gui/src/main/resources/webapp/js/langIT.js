@@ -70,7 +70,8 @@ var LANG = {
 		lblDeviceEndPoint : "Device Id",
 		lblDeviceVersEndPoint : "Device Version",
 		lblInputCluster : "Input Cluster",
-		lblOutputCluster : "Output Cluster"
+		lblOutputCluster : "Output Cluster",
+		btnAutomaticScanChannel: "Automatic channel"
 	},
 	
 	propertyName: {
