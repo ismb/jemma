@@ -1156,7 +1156,6 @@ public class DataFreescale implements IDataLayer {
 		if (gal.getPropertiesManager().getDebugEnabled())
 			DataManipulation.logArrayShortToHex("Extracted NLME-GET.Confirm", message);
 		String _Key = String.format("%02X", (byte) message[4]);
-		// Found APSDE-DATA.Confirm. Remove the lock
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (gal.getPropertiesManager().getDebugEnabled())
@@ -1536,11 +1535,11 @@ public class DataFreescale implements IDataLayer {
 								_sp.getApplicationOutputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
 								_index = _index + 2;
 							}
-							
+
 							_toRes.setAddress(_add);
 							_toRes.setEndPoint(EndPoint);
 							_toRes.setSimpleDescriptor(_sp);
-							
+
 						}
 						pl.set_objectOfResponse(_toRes);
 						pl.notify();
@@ -1694,15 +1693,87 @@ public class DataFreescale implements IDataLayer {
 		// Found APSDE-DATA.Confirm. Remove the lock
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
-				/* DestAddress + DestEndPoint + SourceEndPoint */
-				/*
-				 * if (gal.getPropertiesManager().getDebugEnabled())
-				 * logger.info("APSDE-DATA.Confirm KEY SENT: " + pl.get_Key() +
-				 * " -- KEY Received: " + Key);
-				 */
+
 				if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
 					synchronized (pl) {
 						pl.getStatus().setCode(message[14]);
+						switch (pl.getStatus().getCode()) {
+						case 0x00:
+							pl.getStatus().setMessage("gSuccess (Success)");
+							break;
+						case 0x05:
+							pl.getStatus().setMessage("gPartialSuccess (Partial Success)");
+							break;
+						case 0x07:
+							pl.getStatus().setMessage("gSecurity_Fail (Security fail)");
+							break;
+						case 0x0A:
+							pl.getStatus().setMessage("gApsInvalidParameter_c (Security fail)");
+							break;
+						case 0x04:
+							pl.getStatus().setMessage("gZbNotOnNetwork_c (Transmitted the data frame)");
+							break;
+						case 0x01:
+							pl.getStatus().setMessage("gApsIllegalDevice_c (Transmitted the data frame)");
+							break;
+						case 0x02:
+							pl.getStatus().setMessage("gZbNoMem_c (Transmitted the data frame)");
+							break;
+						case 0xA0:
+							pl.getStatus().setMessage("gApsAsduTooLong_c (ASDU too long)");
+							break;
+						case 0xA3:
+							pl.getStatus().setMessage("gApsIllegalRequest_c (Invalid parameter)");
+							break;
+						case 0xA8:
+							pl.getStatus().setMessage("gNo_BoundDevice (No bound device)");
+							break;
+						case 0xA9:
+							pl.getStatus().setMessage("gNo_ShortAddress (No Short Address)");
+							break;
+						case 0xAE:
+							pl.getStatus().setMessage("gApsTableFull_c (Aps Table Full)");
+							break;
+						case 0xC3:
+							pl.getStatus().setMessage("INVALID_REQUEST (Not a valid request)");
+							break;
+						case 0xCC:
+							pl.getStatus().setMessage("MAX_FRM_COUNTER (Frame counter has reached maximum value for outgoing frame)");
+							break;
+						case 0xCD:
+							pl.getStatus().setMessage("NO_KEY (Key not available)");
+							break;
+						case 0xCE:
+							pl.getStatus().setMessage("BAD_CCM_OUTPUT (Security engine produced erraneous output)");
+							break;
+						case 0xF1:
+							pl.getStatus().setMessage("TRANSACTION_OVERFLOW (Transaction Overflow)");
+							break;
+						case 0xF0:
+							pl.getStatus().setMessage("TRANSACTION_EXPIRED (Transaction Expired)");
+							break;
+						case 0xE1:
+							pl.getStatus().setMessage(" CHANNEL_ACCESS_FAILURE (Key not available)");
+							break;
+						case 0xE6:
+							pl.getStatus().setMessage("INVALID_GTS (Not valid GTS)");
+							break;
+						case 0xF3:
+							pl.getStatus().setMessage("UNAVAILABLE_KEY (Key not found)");
+							break;
+						case 0xE5:
+							pl.getStatus().setMessage("FRAME_TOO_LONG (Frame too long)");
+							break;
+						case 0xE4:
+							pl.getStatus().setMessage("FAILED_SECURITY_CHECK (Failed security check)");
+							break;
+						case 0xE8:
+							pl.getStatus().setMessage("INVALID_PARAMETER (Not valid parameter)");
+							break;
+						case 0xE9:
+							pl.getStatus().setMessage("NO_ACK (Acknowledgement was not received)");
+							break;
+						}
 						pl.notify();
 					}
 					break;
@@ -1940,7 +2011,7 @@ public class DataFreescale implements IDataLayer {
 			else {
 
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-						if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.error("Message discarded Ieee destination address not found, related ShortAddress:", String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 
 					return;
@@ -1955,7 +2026,7 @@ public class DataFreescale implements IDataLayer {
 				messageEvent.getDestinationAddress().setNetworkAddress(_short);
 			else {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-						if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
@@ -1968,7 +2039,7 @@ public class DataFreescale implements IDataLayer {
 				messageEvent.getSourceAddress().setIeeeAddress(_iee);
 			else {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-						if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
@@ -1990,7 +2061,8 @@ public class DataFreescale implements IDataLayer {
 
 		}
 		if (messageEvent.getProfileID().equals(0)) {/*
-													 * ZDO Command
+													 * // profileid == 0 ZDO
+													 * Command
 													 */
 			if (messageEvent.getClusterID() == 0x8031) {
 				String __key = "";
@@ -2009,7 +2081,7 @@ public class DataFreescale implements IDataLayer {
 					}
 				}
 			}
-			// profileid == 0
+
 			if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
 					WrapperWSNNode node = null;
@@ -2624,13 +2696,15 @@ public class DataFreescale implements IDataLayer {
 				}
 				throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
 			} else {
+
 				if (status.getCode() != 0) {
 					if (gal.getPropertiesManager().getDebugEnabled()) {
 						LOG.info("Returned Status: " + status.getCode());
 					}
-					throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
-
+					// CHECK CEDAC for status A7 e D1
+					throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
 				}
+
 				return status;
 			}
 		} else {
@@ -4398,7 +4472,7 @@ public class DataFreescale implements IDataLayer {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					LOG.info("Returned Status: " + status.getCode());
 				}
-				throw new GatewayException("Error on  INTERPAN-DATA.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
+				throw new GatewayException("Error on  INTERPAN-DATA.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
 
 			}
 			return status;
