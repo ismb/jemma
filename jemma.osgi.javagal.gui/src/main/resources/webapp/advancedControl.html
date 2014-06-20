@@ -177,6 +177,7 @@
 
 							var myCPMenu = new jGGCenterPaneMenuChannel();
 							myCPMenu.newButton('btnManualScan', null, null);
+							
 							var chR = $.jStorage.get("ChannelRadioValue");
 							if (chR != null) {
 								var radioCh = $('#radioChannel' + chR);
@@ -184,7 +185,7 @@
 								radioCh.button("refresh");
 
 							} else {
-								chR = searchChannel();
+								getChannelAndUpdateGui();
 
 							}
 
@@ -257,7 +258,7 @@
 																		"ChannelRadioValue",
 																		null);
 
-														searchChannel();
+														getChannelAndUpdateGui();
 													}
 												});
 
@@ -359,7 +360,7 @@
 				<tr>
 					<td><br />
 						<div>
-							<b>This functions should be used only by expert users!</b>
+							<b>This functions should be used only by expert users</b>
 						</div> <input type="button" id="btnStartGal" class="tnHeaderHome2"
 						title="Start" /> <input type="button" id="btnRestartGal1"
 						class="tnHeaderHome2" title="Total reset" /> <input type="button"

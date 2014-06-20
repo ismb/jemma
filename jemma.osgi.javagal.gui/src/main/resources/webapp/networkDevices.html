@@ -36,9 +36,9 @@
 
 		function leaveDevice(shortAddress) {
 			var result = window.confirm(
-					'Are you sure you want to leave the selected device: 0x'
+					'Are you sure you want to disconnect the selected device: 0x'
 							+ shortAddress.toUpperCase() + '?',
-					'Leave Command', function(result) {
+					'Disconnect Device', function(result) {
 						if (result) {
 							$.ajax(
 									{
@@ -167,10 +167,10 @@
 				{
 					pginput : false,
 					pgbuttons : false,
-					rowNum : 1000,
+					rowNum : 50,
 					datatype : "local",
 					colNames : [ LANG.centerPane.lblDeviceDiscovered,
-							LANG.centerPane.lblDeviceNetAdd,
+					             LANG.centerPane.lblDeviceNetAdd,
 							LANG.centerPane.lblDeviceIeeAdd,
 							LANG.centerPane.lblDeviceSIndex,
 							LANG.centerPane.lblDeviceAssDev,
@@ -181,7 +181,7 @@
 							LANG.centerPane.lblDeviceRecOWI,
 							LANG.centerPane.lblDeviceSecSup,
 							LANG.centerPane.lblDeviceAllAdd, '', '' ],
-					colModel : [ {
+					colModel : [{
 						name : 'tDiscovered',
 						width : 160,
 						align : "center"
@@ -267,8 +267,11 @@
 			} ]
 		});
 
-		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
+		
 
+		$("#tblViewDevice").jqGrid('setGridHeight',  $("#container").height());
+
+		
 		var loadData = function() {
 
 			$
@@ -345,7 +348,8 @@
 												idle : nObj.capabilityInformation.receiverOnWhenIdle,
 												security : nObj.capabilityInformation.securitySupported,
 												aAdd : nObj.capabilityInformation.allocateAddress,
-												tDiscovered : "<img src='./css/images/newDevice.png' class='newDevice' />",
+												tDiscovered : ((nodes == null || nodes.length == 0) ? "&nbsp;"
+														: "<img src='./css/images/newDevice.png' class='newDevice' />"),
 												aActDetails : "<a href=\"javascript:infoDevice('"
 														+ strNetworkAddress
 														+ "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
@@ -420,8 +424,12 @@
 														});
 									}
 
+									
+
 									reloadGridFromLocalArray("tblViewDevice",
 											nodes);
+
+									
 								}
 
 							});
@@ -703,10 +711,10 @@
 		});
 	</script>
 	<div id="container">
-		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
-		<div id="pager"></div>
-		<br/>
-		<input id="btnOpenNetw" type="button" value="Add new devices" />
+			<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+			<div id="pager"></div>
+			<br/><br/>
+			<input id="btnOpenNetw" type="button" value="Add new devices" />
 	</div>
 
 
@@ -834,7 +842,9 @@
 			<fieldset>
 				<table style="width: 100%">
 					<tr>
-						<td valign="top" align="center" style="width: 150px"><span id="permit-join-counter"></span><span> seconds remaining to add new devices</span></td>
+						<td valign="top" align="center" style="width: 150px"><span
+							id="permit-join-counter"></span><span> seconds remaining
+								to add new devices</span></td>
 					</tr>
 				</table>
 			</fieldset>

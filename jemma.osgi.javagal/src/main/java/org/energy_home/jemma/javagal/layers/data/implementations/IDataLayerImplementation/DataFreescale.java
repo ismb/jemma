@@ -2699,16 +2699,34 @@ public class DataFreescale implements IDataLayer {
 
 				if (status.getCode() != 0) {
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						LOG.info("Returned Status: " + status.getCode());
+						LOG.error("Send aps returned Status: " + status.getCode());
 					}
-					// CHECK CEDAC for status A7 e D1
-					throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
-				}
+					// CHECK if node is a sleepy end device
+					int index = gal.existIntoNetworkCache(message.getDestinationAddress().getNetworkAddress());
+					if (index != -1) {
+						if (gal.getNetworkcache().get(index).isSleepy()) {
+							if (status.getCode() == 0xA7)
+								return status;
+							else
+								throw new GatewayException("Error on  APSDE-DATA.Request.Request. The destination node is Unreachable:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
+						} else {
+							if (status.getCode() == 0xD1) {
+								// No route entry, check connections
+								gal.getNetworkcache().get(index).setTimerForcePing(1);
+								return status;
+							} else
+								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
+						}
 
-				return status;
+					} else {
+						throw new GatewayException("Error on APSDE-DATA.Request.Request. The destination node is Unknown");
+
+					}
+				} else
+					return status;
 			}
 		} else {
-			throw new GatewayException("Error on  APSDE-DATA.Request.Request. Destination address is null");
+			throw new GatewayException("Error on APSDE-DATA.Request.Request. Destination address is null");
 
 		}
 	}
