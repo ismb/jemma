@@ -3,7 +3,9 @@ var LANG = {
 	menu : {
 		btnChannelNetwork : "Advanced Controls",
 		btnVersionJGal : "Java Gal Version",
-		btnViewDevice : "Network Devices",
+		btnViewDevice : "Network devices",
+		btnViewDeviceNew : "Network devices added now",
+		
 		btnViewGraphNodes : "Network Topology",
 		btnManageNetwork : "ZigBee Network info"
 	},
@@ -70,7 +72,8 @@ var LANG = {
 		lblDeviceEndPoint : "Device Id",
 		lblDeviceVersEndPoint : "Device Version",
 		lblInputCluster : "Input Cluster",
-		lblOutputCluster : "Output Cluster"
+		lblOutputCluster : "Output Cluster",
+		btnAutomaticScanChannel: "Automatic channel"
 	},
 	
 	propertyName: {

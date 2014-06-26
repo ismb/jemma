@@ -8,6 +8,8 @@
 							myNMMenu.newButton('btnStartGal', null, null);
 							myNMMenu.newButton('btnRestartGal1', null, null);
 							myNMMenu.newButton('btnRestartGal2', null, null);
+							myNMMenu.newButton('btnAutomaticScanChannel', null,
+									null);
 							var timeout = '00002710';
 							$
 									.ajax(
@@ -60,7 +62,11 @@
 																				.done(
 																						function(
 																								data) {
-																							chR = searchChannel();
+																							
+																							if (data.status.code == 0) {
+																								getChannelAndUpdateGui();
+																							}
+																							
 																						});
 
 																	}
@@ -68,8 +74,58 @@
 
 											});
 
-							var searchChannel = function() {
-								var newChannel;
+							$("#btnAutomaticScanChannel")
+									.click(
+											function(event) {
+												
+												
+												var result = window
+												.confirm(
+														'Are you sure you want to change the network channel?',
+														'Change channel',
+														function(result) {
+															if (result) {
+
+																var ccrTimeOut = '00000014';
+																var newChannelLbl;
+
+																newChannelLbl = $(
+																		'#rdRadioChannel :radio:checked')
+																		.val();
+
+																var opChannelRadio = '0xFE';
+																$
+																		.ajax(
+																				{
+																					dataType : "json",
+																					url : DEFINEPATH.changeChannelPath
+																							+ 'timeout='
+																							+ ccrTimeOut
+																							+ '&scanChannel=0'
+																							+ '&scanDuration='
+																							+ opChannelRadio
+																				})
+																		.done(
+																				function(data) {
+																					if (data.status.code == 0) {
+																						getChannelAndUpdateGui();
+																					}
+																				});
+
+															}
+														});
+												
+												
+												
+												
+
+											
+											
+											
+											
+											});
+
+							var getChannelAndUpdateGui = function() {
 								$
 										.ajax({
 											dataType : "json",
@@ -78,8 +134,9 @@
 										.done(
 												function(data) {
 													if (data.status.code == 0) {
-														//Tutto ok
-														newChannel = data.detail.value[0];
+
+														var newChannel = data.detail.value;
+
 														$.jStorage
 																.set(
 																		"ChannelRadioValue",
@@ -91,13 +148,14 @@
 																.text('RUNNING')
 																.css('color',
 																		'green');
-														
-														var radioCh = $('#radioChannel' + newChannel);
+
+														var radioCh = $('#radioChannel'
+																+ newChannel);
+
 														radioCh[0].checked = true;
-														radioCh.button("refresh");
-														
-														
-														
+														radioCh
+																.button("refresh");
+														updateCurrentChannel();
 													} else {
 														//Visualizzo il messaggio di errore
 														newChannel = $.jStorage
@@ -110,15 +168,16 @@
 																		'NOT RUNNING')
 																.css('color',
 																		'red');
-														
+														updateCurrentChannel();
+
 													}
-													return newChannel;
-													
+
 												});
 							}
 
 							var myCPMenu = new jGGCenterPaneMenuChannel();
 							myCPMenu.newButton('btnManualScan', null, null);
+							
 							var chR = $.jStorage.get("ChannelRadioValue");
 							if (chR != null) {
 								var radioCh = $('#radioChannel' + chR);
@@ -126,8 +185,8 @@
 								radioCh.button("refresh");
 
 							} else {
-								chR = searchChannel();
-								
+								getChannelAndUpdateGui();
+
 							}
 
 							$("#rdRadioChannel").css("font-size", "12px");
@@ -135,9 +194,7 @@
 
 							var fchangeStatuGal = function(
 									buttonInHeaderPressed) {
-								
-								
-								
+
 								var timeout, startMode, url, type, errorMsg = '';
 
 								var objToSend = {
@@ -187,16 +244,23 @@
 												function(data) {
 													var dataBig = json_parse(data);
 													if (dataBig.status.code == 0) {
-														var chR = $.jStorage.get("ChannelRadioValue");
+														var chR = $.jStorage
+																.get("ChannelRadioValue");
 														if (chR != null) {
-															var radioCh = $('#radioChannel' + chR);
+															var radioCh = $('#radioChannel'
+																	+ chR);
 															radioCh[0].checked = false;
-															radioCh.button("refresh");
+															radioCh
+																	.button("refresh");
 														}
-														$.jStorage.set("ChannelRadioValue", null);
-														
-														searchChannel();
-												}});
+														$.jStorage
+																.set(
+																		"ChannelRadioValue",
+																		null);
+
+														getChannelAndUpdateGui();
+													}
+												});
 
 							}
 
@@ -220,25 +284,44 @@
 								fchangeStatuGal('btnRestartGal2');
 							});
 
+							var updateCurrentChannel = function() {
+								var chR = $.jStorage.get("ChannelRadioValue");
+								if (chR != null) {
+									$('#radioCurrentChannel').text(chR);
+								} else {
+									$('#radioCurrentChannel').text("NULL");
+								}
+							}
+							updateCurrentChannel();
 						});
 	</script>
 	<div id="container">
 		<form id="chooseRadioChannel">
 			<table style="width: 100%">
 				<tr>
+					<td align="center">The network is currently using channel:<b><label
+							id="radioCurrentChannel"></label></b>
+
+					</td>
+				</tr>
+				<tr>
+					<td align="center">Click this button to change the channel.
+						The system automatically selects the best available channel.<br />
+						<input type="button" id="btnAutomaticScanChannel"
+						title="Automatic" />
+					</td>
+				</tr>
+				<tr>
 					<td align="center">
-						<div class="italicsFont">In order to change the network
-							channel, you have to select a number between (11 to 26 or
-							"Automatic" for auto-scan the best channel) and click the button
-							"Change"</div>
+						<div class="italicsFont">If you want to use a specific radio
+							channel, you should select the channel number below and then
+							press the button CHANGE</div>
 					</td>
 				</tr>
 				<tr>
 					<td align="center"><br />
 						<div id="rdRadioChannel">
-							<input type="radio" id="radioChannel0" name="radioRadioChannel"
-								value="0"><label for="radioChannel0">Automatic</label> <input
-								type="radio" id="radioChannel11" name="radioRadioChannel"
+							<input type="radio" id="radioChannel11" name="radioRadioChannel"
 								value="11"><label for="radioChannel11">11</label> <input
 								type="radio" id="radioChannel12" name="radioRadioChannel"
 								value="12"><label for="radioChannel12">12</label> <input
@@ -270,22 +353,14 @@
 								value="25"><label for="radioChannel25">25</label> <input
 								type="radio" id="radioChannel26" name="radioRadioChannel"
 								value="26"><label for="radioChannel26">26</label>&nbsp;&nbsp;&nbsp;&nbsp;<input
-								type="buton" id="btnManualScan"></input>
+								type="button" id="btnManualScan"></input>
 						</div> <br /></td>
 				</tr>
-				<tr>
-					<td align="center">
-						<div class="italicsFont">It is recommended not to change the
-							radio channel of the ZigBee network as the system automatically
-							selects the best available radio channel to reduce interference
-							probability. This functionality should be used only by expert
-							users.</div>
-					</td>
-				</tr>
+
 				<tr>
 					<td><br />
 						<div>
-							<b>This functions could be used only by expert users!</b>
+							<b>This functions should be used only by expert users</b>
 						</div> <input type="button" id="btnStartGal" class="tnHeaderHome2"
 						title="Start" /> <input type="button" id="btnRestartGal1"
 						class="tnHeaderHome2" title="Total reset" /> <input type="button"

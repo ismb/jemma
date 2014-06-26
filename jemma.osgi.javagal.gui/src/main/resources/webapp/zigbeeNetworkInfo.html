@@ -196,7 +196,7 @@
 
 							$("#tblAttributes").jqGrid(
 									{
-										rowNum : 1000,
+										rowNum : 50,
 										datatype : "local",
 										colNames : [ LANG.centerPane.lblName,
 												LANG.centerPane.lblValue, ],
@@ -215,9 +215,11 @@
 										caption : LANG.menu.btnManageNetwork,
 										sortorder : "desc",
 										autowidth : false,
-										subGrid : false,
-										pager : '#pager'
+										subGrid : false
+										
 									});
+							
+							$("#tblAttributes").jqGrid('setGridHeight', $("#container").height());
 						});
 	</script>
 	<div id="container">

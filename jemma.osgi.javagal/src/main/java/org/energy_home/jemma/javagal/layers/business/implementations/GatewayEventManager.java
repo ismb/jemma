@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.business.implementations;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
@@ -82,6 +84,13 @@ public class GatewayEventManager implements IGatewayEventManager {
 			}
 		});
 
+		if (executor instanceof ThreadPoolExecutor)
+		{
+			((ThreadPoolExecutor)executor).setKeepAliveTime(60, TimeUnit.SECONDS);
+			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+			
+			
+		}
 	}
 
 	/**

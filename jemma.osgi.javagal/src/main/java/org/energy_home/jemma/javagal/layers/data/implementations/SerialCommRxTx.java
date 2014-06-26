@@ -15,17 +15,13 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
+import gnu.io.*;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
@@ -93,7 +89,7 @@ public class SerialCommRxTx implements IConnector {
 
 		try {
 			portIdentifier = null;
-			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
+			//System.setProperty("javax.comm.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				LOG.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());

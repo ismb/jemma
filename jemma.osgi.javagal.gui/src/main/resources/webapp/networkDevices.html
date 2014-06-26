@@ -33,12 +33,12 @@
 		});
 
 		$(".ui-dialog-titlebar-close").hide();
-		
+
 		function leaveDevice(shortAddress) {
 			var result = window.confirm(
-					'Are you sure you want to leave the selected device: 0x'
+					'Are you sure you want to disconnect the selected device: 0x'
 							+ shortAddress.toUpperCase() + '?',
-					'Leave Command', function(result) {
+					'Disconnect Device', function(result) {
 						if (result) {
 							$.ajax(
 									{
@@ -163,101 +163,100 @@
 
 		}
 
-		$("#tblViewDevice")
-				.jqGrid(
-						{
-							rowNum : 1000,
-							datatype : "local",
-							colNames : [ 
-							        LANG.centerPane.lblDeviceDiscovered,
-									LANG.centerPane.lblDeviceNetAdd,
-									LANG.centerPane.lblDeviceIeeAdd,
-									LANG.centerPane.lblDeviceSIndex,
-									LANG.centerPane.lblDeviceAssDev,
-									LANG.centerPane.lblDeviceAltPan,
-									LANG.centerPane.lblDeviceDevFFD,
-									LANG.centerPane.lblDeviceMainPo,
-									LANG.centerPane.lblDeviceLogical,
-									LANG.centerPane.lblDeviceRecOWI,
-									LANG.centerPane.lblDeviceSecSup,
-									LANG.centerPane.lblDeviceAllAdd,
-									'','' ],
-							colModel : [ {
-								name : 'tDiscovered',
-								width : 160,
-								align : "center"
-								
-							}, {
-								name : 'nAdd',
-								width : 165,
-								align : "center"
-							}, {
-								name : 'iAdd',
-								width : 180,
-								align : "center"
-							}, {
-								name : 'start',
-								width : 110,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'devices',
-								width : 175,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'alt',
-								width : 225,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'ffd',
-								width : 140,
-								align : "center",
-								hidden : true
+		$("#tblViewDevice").jqGrid(
+				{
+					pginput : false,
+					pgbuttons : false,
+					rowNum : 50,
+					datatype : "local",
+					colNames : [ '',
+					             LANG.centerPane.lblDeviceNetAdd,
+							LANG.centerPane.lblDeviceIeeAdd,
+							LANG.centerPane.lblDeviceSIndex,
+							LANG.centerPane.lblDeviceAssDev,
+							LANG.centerPane.lblDeviceAltPan,
+							LANG.centerPane.lblDeviceDevFFD,
+							LANG.centerPane.lblDeviceMainPo,
+							LANG.centerPane.lblDeviceLogical,
+							LANG.centerPane.lblDeviceRecOWI,
+							LANG.centerPane.lblDeviceSecSup,
+							LANG.centerPane.lblDeviceAllAdd, '', '' ],
+					colModel : [{
+						name : 'tDiscovered',
+						width : 160,
+						align : "center"
 
-							}, {
-								name : 'powered',
-								width : 150,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'logical',
-								width : 110,
-								align : "center"
+					}, {
+						name : 'nAdd',
+						width : 165,
+						align : "center"
+					}, {
+						name : 'iAdd',
+						width : 180,
+						align : "center"
+					}, {
+						name : 'start',
+						width : 110,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'devices',
+						width : 175,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'alt',
+						width : 225,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'ffd',
+						width : 140,
+						align : "center",
+						hidden : true
 
-							}, {
-								name : 'idle',
-								width : 220,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'security',
-								width : 180,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'aAdd',
-								width : 160,
-								align : "center",
-								hidden : true
-							}, {
-								name : 'aActDetails',
-								width : 30,
-								align : "center"
-							},{
-								name : 'aActLeave',
-								width : 30,
-								align : "center"
-							}, ],
-							sortname : 'id',
-							viewrecords : true,
-							caption : LANG.menu.btnViewDevice,
-							sortorder : "desc",
-							autowidth : false,
-							subGrid : false,
-							pager : '#pager'
-						});
+					}, {
+						name : 'powered',
+						width : 150,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'logical',
+						width : 110,
+						align : "center"
+
+					}, {
+						name : 'idle',
+						width : 220,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'security',
+						width : 180,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'aAdd',
+						width : 160,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'aActDetails',
+						width : 30,
+						align : "center"
+					}, {
+						name : 'aActLeave',
+						width : 30,
+						align : "center"
+					}, ],
+					sortname : 'id',
+					viewrecords : true,
+					caption : LANG.menu.btnViewDevice,
+					sortorder : "desc",
+					autowidth : false,
+					subGrid : false,
+					pager : '#pager'
+				});
 
 		$("#tblViewDevice").jqGrid('setGroupHeaders', {
 			useColSpanStyle : true,
@@ -268,10 +267,13 @@
 			} ]
 		});
 
-		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
+		
 
+		$("#tblViewDevice").jqGrid('setGridHeight',  $("#container").height());
+
+		
 		var loadData = function() {
-			
+
 			$
 					.ajax({
 						url : DEFINEPATH.viewDevicePath
@@ -346,15 +348,18 @@
 												idle : nObj.capabilityInformation.receiverOnWhenIdle,
 												security : nObj.capabilityInformation.securitySupported,
 												aAdd : nObj.capabilityInformation.allocateAddress,
-												tDiscovered : "<img src='./css/images/newDevice.png' class='newDevice' />",
-												aActDetails : "<a href=\"javascript:infoDevice('" + strNetworkAddress + "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
-												aActLeave :   "<a href=\"javascript:leaveDevice('" + strNetworkAddress + "');\"><img src='./css/images/leave.png' class='gridButton' title='Device Leave' /></a>"
+												tDiscovered : ((nodes == null || nodes.length == 0) ? "&nbsp;"
+														: "New Device"),
+												aActDetails : "<a href=\"javascript:infoDevice('"
+														+ strNetworkAddress
+														+ "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
+												aActLeave : "<a href=\"javascript:leaveDevice('"
+														+ strNetworkAddress
+														+ "');\"><img src='./css/images/leave.png' class='gridButton' title='Device Leave' /></a>"
 											};
 
 											mydataViewDeviceNew
 													.push(currentNode);
-											
-											
 
 										}
 									}
@@ -369,7 +374,7 @@
 														nodes,
 														function(key, value) {
 															value.tDiscovered = "&nbsp;";
-															
+
 															var found = false;
 															$
 																	.each(
@@ -419,8 +424,12 @@
 														});
 									}
 
+									
+
 									reloadGridFromLocalArray("tblViewDevice",
 											nodes);
+
+									
 								}
 
 							});
@@ -702,8 +711,10 @@
 		});
 	</script>
 	<div id="container">
-		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
-		<input id="btnOpenNetw" type="button" value="Open Network" />
+			<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+			<div id="pager"></div>
+			<br/><br/>
+			<input id="btnOpenNetw" type="button" value="Add new devices" />
 	</div>
 
 
@@ -715,8 +726,8 @@
 						<td valign="top" style="width: 150px"><input type="hidden"
 							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
 							<label for="detail_shortaddress">Short Address:</label></td>
-						<td valign="top"><input type="text" name="detail_shortaddress"
-							id="detail_shortaddress" size="35"
+						<td valign="top"><input type="text"
+							name="detail_shortaddress" id="detail_shortaddress" size="35"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 					<tr>
@@ -762,7 +773,8 @@
 						<td valign="middle"><select name="detail_active_endpoints"
 							id="detail_active_endpoints"></select><a
 							id="detail_button_simple_descriptor"><img
-								src="./css/images/info.png" class="infoButton" title="Simple Descriptor"></a></td>
+								src="./css/images/info.png" class="infoButton"
+								title="Simple Descriptor"></a></td>
 					</tr>
 
 
@@ -825,14 +837,14 @@
 
 
 
-	<div id="dialog-form-open-network" title="Open Network">
+	<div id="dialog-form-open-network" title="Network opened">
 		<form>
 			<fieldset>
 				<table style="width: 100%">
 					<tr>
-						<td valign="top" align="center" style="width: 150px"><span>Remaning
-						</span><span id="permit-join-counter"></span><span> seconds to
-								join devices into the network..</span></td>
+						<td valign="top" align="center" style="width: 150px"><span
+							id="permit-join-counter"></span><span> seconds remaining
+								to add new devices</span></td>
 					</tr>
 				</table>
 			</fieldset>
