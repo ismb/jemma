@@ -109,7 +109,16 @@ public class PropertiesManager {
 
 	}
 
-	
+	/**
+	 * Gets KeepAliveThread property.
+	 * 
+	 * @return the KeepAliveThread value.
+	 */
+	public int getKeepAliveThread() {
+		String _value = props.getProperty("KeepAliveThread");
+		return Integer.parseInt(_value);
+
+	}
 	
 	
 	

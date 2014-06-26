@@ -126,7 +126,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (executor instanceof ThreadPoolExecutor)
 		{
-			((ThreadPoolExecutor)executor).setKeepAliveTime(60, TimeUnit.SECONDS);
+			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
 			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
 			
 		}
