@@ -41,8 +41,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
 import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyQueryResponse;
@@ -105,6 +103,8 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -224,6 +224,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 
 	private Hashtable devicesUnderInstallation = new Hashtable();
+	private Hashtable devicesInstalled = new Hashtable();
 	private LinkedList discoveredNodesQueue = new LinkedList();
 	private LinkedList inProcessNode = new LinkedList();
 	private Hashtable installedDevices = new Hashtable();
@@ -287,8 +288,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	private Properties properties;
 
 	private EventAdmin eventAdmin;
-	//FIXME Mass-rename log to LOG for consistancy
-	private static final Logger log = LoggerFactory.getLogger( ZigBeeManagerImpl.class );
+	// FIXME Mass-rename log to LOG for consistancy
+	private static final Logger log = LoggerFactory.getLogger(ZigBeeManagerImpl.class);
 
 	public static final String propertyFilename = "org.energy_home.jemma.ah.zigbee.properties";
 	private String propertiesFilename = ".";
@@ -477,9 +478,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	protected static String getIeeeAddress(Address a) {
-		if (a.getIeeeAddress() != null)
+		if (a.getIeeeAddress() != null) {
 			return a.getIeeeAddress().toString();
-		else
+		} else
 			return null;
 	}
 
@@ -487,6 +488,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 * Called when a message has been received from ZigBee
 	 */
 	public void notifyAPSMessage(APSMessageEvent msg) {
+
+		log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
+		log.debug("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
+		log.debug("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
+		log.debug("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
 		if (enableNotifyFrameLogs)
 			this.printAPSMessageEvent(msg);
 
@@ -554,7 +560,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							this.post(msg, zclResponseFrame);
 							log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
 							// }
-							
+
 						}
 
 						if (enableNotifyFrameLogs) {
@@ -625,6 +631,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeDiscovered(Status status, WSNNode node) {
+		log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
+		log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
 		rwLock.writeLock().lock();
 		try {
 			if (status.getCode() != GatewayConstants.SUCCESS) {
@@ -852,7 +860,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void serviceDescriptorRetrieved(Status status, ServiceDescriptor service) {
 		rwLock.writeLock().lock();
-		
+
 		try {
 			this.timerCancel(galCommandTimer);
 			Address a = service.getAddress();
@@ -866,9 +874,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			if ((status.getCode() != GatewayConstants.SUCCESS) || (installingDevice == null)) {
 				// in case of failure services is null and there is no way to
 				// retrieve the Address so try to guess it.
-				 installingDevice = this.getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
+				installingDevice = this.getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
 				if (installingDevice != null) {
-					 a = installingDevice.getAddress();
+					a = installingDevice.getAddress();
 					log.error(getIeeeAddressHex(a) + ": serviceDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
 
 					// retries until retry counter goes to 0
@@ -1134,7 +1142,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		msg.setData(zclFrame.getData());
 
 		TxOptions tx = new TxOptions();
-		tx.setAcknowledged(true);
+		tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 		tx.setPermitFragmentation(false);
 		tx.setSecurityEnabled(false);
 		tx.setUseNetworkKey(true);
@@ -1175,7 +1183,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		msg.setData(zclFrame.getData());
 
 		TxOptions tx = new TxOptions();
-		tx.setAcknowledged(true);
+		tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 		tx.setPermitFragmentation(false);
 		tx.setSecurityEnabled(false);
 		tx.setUseNetworkKey(true);
@@ -1568,7 +1576,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				gateway.deleteCallback(this.callbackId);
 			callbackId = -1;
 		} catch (Exception e) {
-			log.error("Exception",e);
+			log.error("Exception", e);
 		}
 
 		unregisterAllDevices();
@@ -1628,7 +1636,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
 						return;
 					} catch (Exception e) {
-						log.error("Exception",e);
+						log.error("Exception", e);
 					}
 				}
 
@@ -1678,6 +1686,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			// crashed.
 			if (status.getCode() == 0) {
 				String nodePid = getNodePid(node.getAddress());
+
+				synchronized (this.devicesInstalled) {
+					this.devicesInstalled.remove(node.getAddress().getIeeeAddress());
+				}
 				Vector deviceRegs = (Vector) this.ieee2sr.get(nodePid);
 				if (deviceRegs != null) {
 					log.debug(getIeeeAddressHex(node.getAddress()) + ": node has been removed");
@@ -1805,8 +1817,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				log.debug("in terminateDeviceDiscovery() sending leave to node " + getIeeeAddressHex(installationStatus.getAddress()));
 				gateway.leave(100, installationStatus.getAddress());
 			} catch (Exception e) {
-				log.error("Exception",e);
+				log.error("Exception", e);
 			}
+		}
+		synchronized (this.devicesInstalled) {
+			this.devicesInstalled.put(installationStatus.getAddress().getIeeeAddress(), this.devicesUnderInstallation.get(nodePid));
 		}
 		this.devicesUnderInstallation.remove(nodePid);
 		this.discoveredNodesQueue.remove(installationStatus);
@@ -1881,7 +1896,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				zclResponseFrame.setCommandId(0);
 				ZclIdentifyQueryResponse.zclSerialize(zclResponseFrame, r);
 			} catch (ZclValidationException e) {
-				log.error("Exception",e);
+				log.error("Exception", e);
 			}
 
 			break;
@@ -1905,7 +1920,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			responseMsg.setData(zclResponseFrame.getData());
 
 			TxOptions tx = new TxOptions();
-			tx.setAcknowledged(true);
+			tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 			tx.setPermitFragmentation(false);
 			tx.setSecurityEnabled(false);
 			tx.setUseNetworkKey(true);
@@ -1963,6 +1978,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		} finally {
 			rwLock.writeLock().unlock();
 		}
+	}
+
+	private boolean isSleepyEndDevice(BigInteger ieee) {
+
+		InstallationStatus status = (InstallationStatus) this.devicesInstalled.get(ieee);
+		if (status == null)
+			return true;
+		else
+			return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
 	}
 
 	protected void remove(ZigBeeDevice device) throws Exception {
@@ -2187,7 +2211,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			try {
 				this.eventAdmin.postEvent(new Event(topic, props));
 			} catch (Exception e) {
-				log.error("Exception",e);
+				log.error("Exception", e);
 			}
 		}
 	}
