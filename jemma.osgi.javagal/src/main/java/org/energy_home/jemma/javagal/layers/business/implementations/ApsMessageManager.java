@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.business.implementations;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
@@ -68,6 +70,14 @@ public class ApsMessageManager {
 				return new Thread(r, "THPool-APSMessageIndication");
 			}
 		});
+		
+		if (executor instanceof ThreadPoolExecutor)
+		{
+			((ThreadPoolExecutor)executor).setKeepAliveTime(60, TimeUnit.SECONDS);
+			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+
+			
+		}
 
 		
 		

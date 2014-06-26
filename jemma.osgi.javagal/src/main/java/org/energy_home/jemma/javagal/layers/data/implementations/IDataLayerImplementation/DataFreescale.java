@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
@@ -113,6 +115,7 @@ public class DataFreescale implements IDataLayer {
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		dongleRs232 = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
+
 		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
@@ -121,6 +124,12 @@ public class DataFreescale implements IDataLayer {
 			}
 		});
 
+		if (executor instanceof ThreadPoolExecutor)
+		{
+			((ThreadPoolExecutor)executor).setKeepAliveTime(60, TimeUnit.SECONDS);
+			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+			
+		}
 	}
 
 	public void initialize() {
