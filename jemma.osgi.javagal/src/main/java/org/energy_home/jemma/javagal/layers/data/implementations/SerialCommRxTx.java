@@ -89,7 +89,7 @@ public class SerialCommRxTx implements IConnector {
 
 		try {
 			portIdentifier = null;
-			//System.setProperty("javax.comm.SerialPorts", portName);
+			System.setProperty("gnu.io.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				LOG.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
