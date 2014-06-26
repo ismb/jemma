@@ -514,11 +514,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			return;
 		}
 
-		rwLock.readLock().lock();
+		rwLock.writeLock().lock();
 
 		if (enableLockingLogs) {
-			if (rwLock.getReadLockCount() > 1) {
-				log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple read lock" + rwLock.getReadLockCount());
+			if (rwLock.getWriteHoldCount() > 1) {
+				log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple write lock" + rwLock.getWriteHoldCount());
 			}
 		}
 
@@ -590,9 +590,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			}
 		} finally {
 			if (enableLockingLogs) {
-				log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and read lock count is: " + rwLock.getReadLockCount());
+				log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and write lock count is: " + rwLock.getWriteHoldCount());
 			}
-			rwLock.readLock().unlock();
+			rwLock.writeLock().unlock();
 		}
 
 		if (enableNotifyFrameLogs) {
