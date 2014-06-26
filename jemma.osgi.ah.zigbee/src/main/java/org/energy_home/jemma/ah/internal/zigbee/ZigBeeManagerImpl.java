@@ -224,6 +224,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 
 	private Hashtable devicesUnderInstallation = new Hashtable();
+	private Hashtable devicesInstalled = new Hashtable();
 	private LinkedList discoveredNodesQueue = new LinkedList();
 	private LinkedList inProcessNode = new LinkedList();
 	private Hashtable installedDevices = new Hashtable();
@@ -1141,7 +1142,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		msg.setData(zclFrame.getData());
 
 		TxOptions tx = new TxOptions();
-		tx.setAcknowledged(true);
+		tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 		tx.setPermitFragmentation(false);
 		tx.setSecurityEnabled(false);
 		tx.setUseNetworkKey(true);
@@ -1182,7 +1183,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		msg.setData(zclFrame.getData());
 
 		TxOptions tx = new TxOptions();
-		tx.setAcknowledged(true);
+		tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 		tx.setPermitFragmentation(false);
 		tx.setSecurityEnabled(false);
 		tx.setUseNetworkKey(true);
@@ -1685,6 +1686,10 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			// crashed.
 			if (status.getCode() == 0) {
 				String nodePid = getNodePid(node.getAddress());
+
+				synchronized (this.devicesInstalled){
+					this.devicesInstalled.remove(node.getAddress().getIeeeAddress());
+				}
 				Vector deviceRegs = (Vector) this.ieee2sr.get(nodePid);
 				if (deviceRegs != null) {
 					log.debug(getIeeeAddressHex(node.getAddress()) + ": node has been removed");
@@ -1815,6 +1820,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				log.error("Exception",e);
 			}
 		}
+		synchronized (this.devicesInstalled){
+			this.devicesInstalled.put(installationStatus.getAddress().getIeeeAddress(), this.devicesUnderInstallation.get(nodePid));
+		}
 		this.devicesUnderInstallation.remove(nodePid);
 		this.discoveredNodesQueue.remove(installationStatus);
 		this.inProcessNode.remove(installationStatus);
@@ -1912,7 +1920,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			responseMsg.setData(zclResponseFrame.getData());
 
 			TxOptions tx = new TxOptions();
-			tx.setAcknowledged(true);
+			tx.setAcknowledged(isSleepyEndDevice(msg.getDestinationAddress().getIeeeAddress()));
 			tx.setPermitFragmentation(false);
 			tx.setSecurityEnabled(false);
 			tx.setUseNetworkKey(true);
@@ -1970,6 +1978,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		} finally {
 			rwLock.writeLock().unlock();
 		}
+	}
+	
+	private boolean isSleepyEndDevice(BigInteger ieee){
+		
+		InstallationStatus status = (InstallationStatus) this.devicesInstalled.get(ieee);
+		if (status == null)
+			return true;
+		else 
+			return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
 	}
 
 	protected void remove(ZigBeeDevice device) throws Exception {
