@@ -306,6 +306,22 @@
 					            //Sleepy
 						        //gfx.text(node.data.rxOnWhenIdleString, pt.x, pt.y+ 67, {color:'Black', align:"center", font:"Arial", size:12});
 					          
+					            
+					           //debugger;
+					          if (node.name)
+				            	{
+				            var p = JSON.parse($.jStorage.get("Node:"+node.name));  
+					    	 
+					    	 if (p)
+					    		 {
+					    		 node.p = p;
+					    		 node.fixed = true;
+					    		 console.log("Positioning Node: " + node.name);
+					    		 }
+				            	}
+					       
+					        
+					        
 					        })
 					        sys.eachEdge(function(edge, pt1, pt2){
 					        	if (edge.source != edge.target)
@@ -444,6 +460,7 @@
 					            node.p.y = parent.p.y + .05*Math.random() - .025
 					            node.tempMass = .001
 					          }
+					       
 					        })
 					      },
 					      
@@ -475,6 +492,9 @@
 					              }
 					            }
 					            
+					            /*Get Node Position*/
+					           
+					            
 					            return false
 					          },
 					          clicked:function(e){
@@ -505,6 +525,13 @@
 					            if (dragged !== null && dragged.node !== null){
 					              var p = sys.fromScreen(s)
 					              dragged.node.p = p
+					              
+					             
+					              /*Set Node Position*/
+						            if (dragged.node.name)
+						            	$.jStorage.set("Node:"+dragged.node.name, JSON.stringify(dragged.node.p));
+						            
+					              
 					            }
 
 					            return false
@@ -514,6 +541,10 @@
 					            if (dragged===null || dragged.node===undefined) return
 					            if (dragged.node !== null) dragged.node.fixed = false
 					            dragged.node.tempMass = 1000
+					            
+					            
+					           
+					            
 					            dragged = null;
 					            // selected = null
 					            $(canvas).unbind('mousemove', handler.dragged)
@@ -534,6 +565,15 @@
 			    sys.parameters({stiffness:1000, repulsion:1.000, gravity:false, dt:0.0,friction: '1.0',fps:1,precision :1});
 			    sys.renderer = Renderer("#sitemap");
 			    sys.graft(Nodes);
+			    
+			    
+			    
+			    
+			        
+			        
+			   
+			    
+			    
 			    }
 			});
 		  })
@@ -544,15 +584,15 @@
 		<canvas id="sitemap" width="100" height="100"></canvas>
 	</div>
 	<div>
-		<table style="width:100%">
-		<tr>
-		<th>Device Type</th>
-		<th>Manufacturer</th>
-		<th>Link Quality</th>
-		</tr>
+		<table style="width: 100%">
+			<tr>
+				<th>Device Type</th>
+				<th>Manufacturer</th>
+				<th>Link Quality</th>
+			</tr>
 			<tr>
 				<td valign="top" width="300">
-					<table style="width:100%">
+					<table style="width: 100%">
 						<tr>
 							<td style="background-color: #e9ae11">Coordinator</td>
 						</tr>
@@ -571,7 +611,7 @@
 					</table>
 				</td>
 				<td valign="top" width="300">
-					<table style="width:100%">
+					<table style="width: 100%">
 						<tr>
 							<td style="background-color: blue">Freescale</td>
 						</tr>
@@ -587,12 +627,12 @@
 					</table>
 				</td>
 				<td valign="top" width="300">
-					<table style="width:100%">
+					<table style="width: 100%">
 						<tr>
 							<td style="background-color: #ff0000"><50</td>
 						</tr>
 						<tr>
-							<td style="background-color: #ff69b4"> >50<100</td>
+							<td style="background-color: #ff69b4">>50<100</td>
 						</tr>
 						<tr>
 							<td style="background-color: #fdb11b">>100<150</td>
@@ -604,10 +644,10 @@
 							<td style="background-color: #9aff69">>200</td>
 						</tr>
 					</table>
-					
-					
-									
-									
+
+
+
+
 				</td>
 			</tr>
 		</table>
