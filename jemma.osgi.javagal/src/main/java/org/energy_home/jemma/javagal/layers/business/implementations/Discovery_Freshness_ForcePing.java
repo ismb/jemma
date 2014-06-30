@@ -218,7 +218,7 @@ public class Discovery_Freshness_ForcePing {
 							_s.setCode((short) 0x00);
 							_s.setMessage("Successful - " + functionName + " Algorithm");
 							if (gal.getPropertiesManager().getDebugEnabled())
-								logger.info("Starting nodeDiscovered from function: " + functionName);
+								logger.info("Starting nodeDiscovered from function: " + functionName + " Node: " +  String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 							gal.get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
 						}
 					}

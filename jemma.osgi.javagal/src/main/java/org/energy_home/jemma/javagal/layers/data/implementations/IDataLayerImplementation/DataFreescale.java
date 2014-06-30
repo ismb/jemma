@@ -124,11 +124,10 @@ public class DataFreescale implements IDataLayer {
 			}
 		});
 
-		if (executor instanceof ThreadPoolExecutor)
-		{
-			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
-			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
-			
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
 		}
 	}
 
@@ -2322,6 +2321,10 @@ public class DataFreescale implements IDataLayer {
 
 								Status _st = new Status();
 								_st.setCode((short) GatewayConstants.SUCCESS);
+
+								if (gal.getPropertiesManager().getDebugEnabled())
+									LOG.info("Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
 								gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
 								/*
 								 * Saving the Panid in order to leave the

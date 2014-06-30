@@ -282,6 +282,10 @@ public class ApsMessageManager {
 
 					}
 				}
+				
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("Aps Message Indication done!");
+				}
 			}
 		});
 		
