@@ -487,117 +487,129 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	/**
 	 * Called when a message has been received from ZigBee
 	 */
-	public void notifyAPSMessage(APSMessageEvent msg) {
+	public void notifyAPSMessage(final APSMessageEvent msg) {
 
-		log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
-		log.debug("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
-		log.debug("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
-		log.debug("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
-		if (enableNotifyFrameLogs)
-			this.printAPSMessageEvent(msg);
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
 
-		// forward the message to the peer device
-		Address srcAddress = msg.getSourceAddress();
-		String nodePid = getNodePid(srcAddress);
+				log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
+				log.debug("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
+				log.debug("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
+				log.debug("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
+				if (enableNotifyFrameLogs)
+					printAPSMessageEvent(msg);
 
-		if (nodePid == null) {
-			log.debug("message discarded because the src node ieee address is not present");
-			return;
-		}
+				// forward the message to the peer device
+				Address srcAddress = msg.getSourceAddress();
+				String nodePid = getNodePid(srcAddress);
 
-		if ((log != null) && (enableNotifyFrameLogs)) {
-			log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
-		}
+				if (nodePid == null) {
+					log.debug("message discarded because the src node ieee address is not present");
+					return;
+				}
 
-		if (msg.getDestinationEndpoint() == 0xFF) {
-			handleBroadcastMessages(msg);
-			return;
-		}
+				if ((log != null) && (enableNotifyFrameLogs)) {
+					log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
+				}
 
-		rwLock.writeLock().lock();
+				if (msg.getDestinationEndpoint() == 0xFF) {
+					handleBroadcastMessages(msg);
+					return;
+				}
 
-		if (enableLockingLogs) {
-			if (rwLock.getWriteHoldCount() > 1) {
-				log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple write lock" + rwLock.getWriteHoldCount());
-			}
-		}
+				rwLock.readLock().lock();
 
-		// Drop messages that doesn't belong to the exported clusters
-		if (enableNotifyFrameLogs)
-			this.printAPSMessageEvent(msg);
-
-		try {
-			Vector devices = (Vector) ieee2devices.get(nodePid);
-
-			ZclFrame zclFrame = new ZclFrame(msg.getData());
-
-			int clusterID = msg.getClusterID();
-			if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
-				// FIXME: qui dovremmo dare un errore differente a seconda se il
-				// comando' e' generale e manufacturer specific
-				IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, ZCL.UNSUP_CLUSTER_COMMAND);
-				log.error("APS message coming from clusterID 0x" + Hex.toHexString(clusterID, 4) + ". This clusterId is not supported by the gateway");
-				this.post(msg, zclResponseFrame);
-				return;
-			}
-
-			if (devices != null) {
-				Iterator it = devices.iterator();
-				boolean epFound = false;
-				while (it.hasNext()) {
-					ZigBeeDeviceImpl device = (ZigBeeDeviceImpl) it.next();
-					if (device.getEp() == msg.getSourceEndpoint()) {
-						if (enableNotifyFrameLogs) {
-							log.debug("notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
-						}
-						try {
-							device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
-						} catch (ZclException e) {
-							// TODO: check merge, following if was commented in
-							// 3.3.0
-							// if (!zclFrame.isDefaultResponseDisabled()) {
-							IZclFrame zclResponseFrame = this.getDefaultResponse(zclFrame, e.getStatusCode());
-							this.post(msg, zclResponseFrame);
-							log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
-							// }
-
-						}
-
-						if (enableNotifyFrameLogs) {
-							log.debug("after notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
-						}
-						epFound = true;
-
-						break;
+				if (enableLockingLogs) {
+					if (rwLock.getReadHoldCount() > 1) {
+						log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple read lock" + rwLock.getReadHoldCount());
 					}
 				}
-				if (!epFound && log.isDebugEnabled())
-					log.error("not found any matching ep for the incoming message");
 
-			} else {
-				IZclFrame zclResponseFrame;
-				InstallationStatus installationStatus = this.getInstallingDevice(srcAddress);
-				if (installationStatus != null) {
-					log.error(getIeeeAddressHex(srcAddress) + ": received a message from a node that is not installed. Reply with TIMEOUT");
-					zclResponseFrame = this.getDefaultResponse(zclFrame, 0x94);
-				} else {
-					log.error("received a message from an unknown node " + getIeeeAddressHex(srcAddress) + " . Reply with TIMEOUT");
+				// Drop messages that doesn't belong to the exported clusters
+				if (enableNotifyFrameLogs)
+					printAPSMessageEvent(msg);
 
-					zclResponseFrame = this.getDefaultResponse(zclFrame, 0x94);
+				try {
+					Vector devices = (Vector) ieee2devices.get(nodePid);
+
+					ZclFrame zclFrame = new ZclFrame(msg.getData());
+
+					int clusterID = msg.getClusterID();
+					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
+						// FIXME: qui dovremmo dare un errore differente a
+						// seconda se il
+						// comando' e' generale e manufacturer specific
+						IZclFrame zclResponseFrame = getDefaultResponse(zclFrame, ZCL.UNSUP_CLUSTER_COMMAND);
+						log.error("APS message coming from clusterID 0x" + Hex.toHexString(clusterID, 4) + ". This clusterId is not supported by the gateway");
+						post(msg, zclResponseFrame);
+						return;
+					}
+
+					if (devices != null) {
+						Iterator it = devices.iterator();
+						boolean epFound = false;
+						while (it.hasNext()) {
+							ZigBeeDeviceImpl device = (ZigBeeDeviceImpl) it.next();
+							if (device.getEp() == msg.getSourceEndpoint()) {
+								if (enableNotifyFrameLogs) {
+									log.debug("notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
+								}
+								try {
+									device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
+								} catch (ZclException e) {
+									// TODO: check merge, following if was
+									// commented in
+									// 3.3.0
+									// if
+									// (!zclFrame.isDefaultResponseDisabled()) {
+									IZclFrame zclResponseFrame = getDefaultResponse(zclFrame, e.getStatusCode());
+									post(msg, zclResponseFrame);
+									log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
+									// }
+
+								}
+
+								if (enableNotifyFrameLogs) {
+									log.debug("after notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
+								}
+								epFound = true;
+
+								break;
+							}
+						}
+						if (!epFound && log.isDebugEnabled())
+							log.error("not found any matching ep for the incoming message");
+
+					} else {
+						IZclFrame zclResponseFrame;
+						InstallationStatus installationStatus = getInstallingDevice(srcAddress);
+						if (installationStatus != null) {
+							log.error(getIeeeAddressHex(srcAddress) + ": received a message from a node that is not installed. Reply with TIMEOUT");
+							zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
+						} else {
+							log.error("received a message from an unknown node " + getIeeeAddressHex(srcAddress) + " . Reply with TIMEOUT");
+
+							zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
+						}
+
+						post(msg, zclResponseFrame);
+					}
+				} finally {
+
+					if (enableLockingLogs) {
+						log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and read lock count is: " + rwLock.getReadHoldCount());
+					}
+					rwLock.readLock().unlock();
+
 				}
 
-				this.post(msg, zclResponseFrame);
+				if (enableNotifyFrameLogs) {
+					log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId() + ": leave notifyAPSMessage()");
+				}
 			}
-		} finally {
-			if (enableLockingLogs) {
-				log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and write lock count is: " + rwLock.getWriteHoldCount());
-			}
-			rwLock.writeLock().unlock();
-		}
-
-		if (enableNotifyFrameLogs) {
-			log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId() + ": leave notifyAPSMessage()");
-		}
+		};
+		thr.start();
 	}
 
 	private boolean checkGatewaySimpleDescriptor(int clusterID, IZclFrame zclFrame) {
@@ -630,33 +642,40 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		log.debug("inquiryCompleted: not used!");
 	}
 
-	public void nodeDiscovered(Status status, WSNNode node) {
-		log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
-		log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
-		rwLock.writeLock().lock();
-		try {
-			if (status.getCode() != GatewayConstants.SUCCESS) {
-				log.error("called nodeDiscovered with status different from SUCCESS, message is '" + status.getMessage() + "'");
-				return;
+	public void nodeDiscovered(final Status status, final WSNNode node) {
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
+
+				log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
+				log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
+				rwLock.writeLock().lock();
+				try {
+					if (status.getCode() != GatewayConstants.SUCCESS) {
+						log.error("called nodeDiscovered with status different from SUCCESS, message is '" + status.getMessage() + "'");
+						return;
+					}
+
+					Address a = node.getAddress();
+
+					if (enableDiscoveryLogs)
+						log.info(getIeeeAddressHex(a) + ": node discovered");
+
+					// skip the coordinator
+					if (a.getNetworkAddress().intValue() == 0) {
+						galIeeeAddress = getIeeeAddressHex(a);
+						if (enableDiscoveryLogs)
+							log.debug("discovered node with address 0. Skipping it");
+						return;
+					}
+
+					nodeDiscovered(a);
+				} finally {
+					rwLock.writeLock().unlock();
+				}
 			}
-
-			Address a = node.getAddress();
-
-			if (enableDiscoveryLogs)
-				log.info(getIeeeAddressHex(a) + ": node discovered");
-
-			// skip the coordinator
-			if (a.getNetworkAddress().intValue() == 0) {
-				this.galIeeeAddress = getIeeeAddressHex(a);
-				if (enableDiscoveryLogs)
-					log.debug("discovered node with address 0. Skipping it");
-				return;
-			}
-
-			nodeDiscovered(a);
-		} finally {
-			rwLock.writeLock().unlock();
-		}
+		};
+		thr.start();
 	}
 
 	private void nodeDiscovered(Address a) {
@@ -777,192 +796,209 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	}
 
-	public void servicesDiscovered(Status status, NodeServices services) {
-		if (status.getCode() != GatewayConstants.SUCCESS) {
-			rwLock.writeLock().lock();
-			try {
-				this.timerCancel(galCommandTimer);
+	public void servicesDiscovered(final Status status, final NodeServices services) {
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
 
-				// in case of failure services is null and there is no way to
-				// retrieve the Address so try to guess it.
-				InstallationStatus installingDevice = this.getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICES);
-				Address a = installingDevice.getAddress();
-				if (installingDevice != null) {
-					log.error(getIeeeAddressHex(a) + ": servicesDiscovered callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
+				if (status.getCode() != GatewayConstants.SUCCESS) {
+					rwLock.writeLock().lock();
+					try {
+						timerCancel(galCommandTimer);
 
-					// retries until retry counter goes to 0
-					if (installingDevice.getRetryCounter() > 0) {
-						try {
-							log.debug(getIeeeAddressHex(a) + ": retry startServiceDiscovery()");
-							gateway.startServiceDiscovery(timeout, a);
-							timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+						// in case of failure services is null and there is no
+						// way to
+						// retrieve the Address so try to guess it.
+						InstallationStatus installingDevice = getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICES);
+						Address a = installingDevice.getAddress();
+						if (installingDevice != null) {
+							log.error(getIeeeAddressHex(a) + ": servicesDiscovered callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
+
+							// retries until retry counter goes to 0
+							if (installingDevice.getRetryCounter() > 0) {
+								try {
+									log.debug(getIeeeAddressHex(a) + ": retry startServiceDiscovery()");
+									gateway.startServiceDiscovery(timeout, a);
+									timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+									return;
+								} catch (Exception e) {
+									log.error("exception in startServiceDiscovery() ", e);
+								}
+							}
+
+							// abort installation of this node
+							log.error(getIeeeAddressHex(a) + ": too many retries for getting services");
+							terminateDeviceDiscovery(installingDevice);
+							handleNextDiscoveredNode();
 							return;
-						} catch (Exception e) {
-							log.error("exception in startServiceDiscovery() ", e);
 						}
+					} finally {
+						rwLock.writeLock().unlock();
 					}
-
-					// abort installation of this node
-					log.error(getIeeeAddressHex(a) + ": too many retries for getting services");
-					this.terminateDeviceDiscovery(installingDevice);
-					this.handleNextDiscoveredNode();
 					return;
 				}
-			} finally {
-				rwLock.writeLock().unlock();
-			}
-			return;
-		}
 
-		Address a = services.getAddress();
+				Address a = services.getAddress();
 
-		synchronized (rwLock) {
-			this.timerCancel(galCommandTimer);
-			InstallationStatus installingDevice = this.getInstallingDevice(a);
-			if (installingDevice == null) {
-				log.error(getIeeeAddressHex(a) + ": unsolicited serviceDiscovered()");
-				this.terminateDeviceDiscovery(installingDevice);
-				this.handleNextDiscoveredNode();
-				return;
-			}
-
-			if (enableDiscoveryLogs)
-				log.debug(getIeeeAddressHex(installingDevice.getAddress()) + ": discovered " + services.getActiveEndpoints().size() + " endpoint(s)");
-
-			if ((services.getActiveEndpoints().size() > 1) && (!handleMultipleEps)) {
-				log.warn("sorry but currently (in this version) we handle only the first one!");
-			}
-
-			installingDevice.setNodeServices(services);
-			installingDevice.setStatus(InstallationStatus.ACTIVE_ENDPOINTS_RETRIEVED);
-			installingDevice.resetRetryCounter();
-
-			List activeEndpoints = services.getActiveEndpoints();
-
-			for (int i = 0; i < activeEndpoints.size(); i++) {
-				installingDevice.setCurrentService(i);
-				ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(i);
-
-				try {
-					installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
-					if (enableDiscoveryLogs)
-						log.debug(getIeeeAddressHex(a) + ": getting Service Descriptor for EP " + ep.getEndPoint());
-					gateway.getServiceDescriptor(timeout, a, ep.getEndPoint());
-					timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
-				} catch (Exception e) {
-					this.terminateDeviceDiscovery(installingDevice);
-					this.handleNextDiscoveredNode();
+				timerCancel(galCommandTimer);
+				InstallationStatus installingDevice = getInstallingDevice(a);
+				if (installingDevice == null) {
+					log.error(getIeeeAddressHex(a) + ": unsolicited serviceDiscovered()");
+					terminateDeviceDiscovery(installingDevice);
+					handleNextDiscoveredNode();
+					return;
 				}
-				break;
+
+				if (enableDiscoveryLogs)
+					log.debug(getIeeeAddressHex(installingDevice.getAddress()) + ": discovered " + services.getActiveEndpoints().size() + " endpoint(s)");
+
+				if ((services.getActiveEndpoints().size() > 1) && (!handleMultipleEps)) {
+					log.warn("sorry but currently (in this version) we handle only the first one!");
+				}
+
+				installingDevice.setNodeServices(services);
+				installingDevice.setStatus(InstallationStatus.ACTIVE_ENDPOINTS_RETRIEVED);
+				installingDevice.resetRetryCounter();
+
+				List activeEndpoints = services.getActiveEndpoints();
+
+				for (int i = 0; i < activeEndpoints.size(); i++) {
+					installingDevice.setCurrentService(i);
+					ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(i);
+
+					try {
+						installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
+						if (enableDiscoveryLogs)
+							log.debug(getIeeeAddressHex(a) + ": getting Service Descriptor for EP " + ep.getEndPoint());
+						gateway.getServiceDescriptor(timeout, a, ep.getEndPoint());
+						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+					} catch (Exception e) {
+						terminateDeviceDiscovery(installingDevice);
+						handleNextDiscoveredNode();
+					}
+					break;
+				}
 			}
-		}
+		};
+		thr.start();
+
 	}
 
-	public void serviceDescriptorRetrieved(Status status, ServiceDescriptor service) {
-		rwLock.writeLock().lock();
+	public void serviceDescriptorRetrieved(final Status status, final ServiceDescriptor service) {
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
 
-		try {
-			this.timerCancel(galCommandTimer);
-			Address a = service.getAddress();
-			String ieeeAddress = getIeeeAddressHex(a);
-			InstallationStatus installingDevice = this.getInstallingDevice(a);
-			if (installingDevice == null) {
-				Exception st = new Exception();
-				st.printStackTrace();
-			}
+				rwLock.writeLock().lock();
 
-			if ((status.getCode() != GatewayConstants.SUCCESS) || (installingDevice == null)) {
-				// in case of failure services is null and there is no way to
-				// retrieve the Address so try to guess it.
-				installingDevice = this.getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
-				if (installingDevice != null) {
-					a = installingDevice.getAddress();
-					log.error(getIeeeAddressHex(a) + ": serviceDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
+				try {
+					timerCancel(galCommandTimer);
+					Address a = service.getAddress();
+					String ieeeAddress = getIeeeAddressHex(a);
+					InstallationStatus installingDevice = getInstallingDevice(a);
+					if (installingDevice == null) {
+						Exception st = new Exception();
+						st.printStackTrace();
+					}
 
-					// retries until retry counter goes to 0
-					if (installingDevice.getRetryCounter() > 0) {
-						try {
-							int i = installingDevice.getCurrentService();
-							if (i >= 0) {
-								NodeServices services = installingDevice.getNodeServices();
-								ActiveEndpoints ep = (ActiveEndpoints) services.getActiveEndpoints().get(i);
+					if ((status.getCode() != GatewayConstants.SUCCESS) || (installingDevice == null)) {
+						// in case of failure services is null and there is no
+						// way to
+						// retrieve the Address so try to guess it.
+						installingDevice = getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
+						if (installingDevice != null) {
+							a = installingDevice.getAddress();
+							log.error(getIeeeAddressHex(a) + ": serviceDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
+
+							// retries until retry counter goes to 0
+							if (installingDevice.getRetryCounter() > 0) {
+								try {
+									int i = installingDevice.getCurrentService();
+									if (i >= 0) {
+										NodeServices services = installingDevice.getNodeServices();
+										ActiveEndpoints ep = (ActiveEndpoints) services.getActiveEndpoints().get(i);
+										if (enableDiscoveryLogs)
+											log.debug(getIeeeAddressHex(a) + ": getting Service Descriptor for EP " + ep.getEndPoint());
+										gateway.getServiceDescriptor(timeout, a, ep.getEndPoint());
+										timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+										return;
+									} else {
+										log.error(getIeeeAddressHex(a) + ": wrong ep index stored into InstallationStatus. Abort installation of this node");
+									}
+								} catch (Exception e) {
+									log.error(getIeeeAddressHex(a) + ": exception in startServiceDiscovery(). Abort installation of this node", e);
+								}
+							} else {
+								int i = installingDevice.getCurrentService();
+								if (i >= 0) {
+									NodeServices services = installingDevice.getNodeServices();
+									ActiveEndpoints ep = (ActiveEndpoints) services.getActiveEndpoints().get(i);
+									log.error(getIeeeAddressHex(a) + ": too many retries for serviceDescriptor for ep " + ep.getEndPoint() + ". Abort installation of this node");
+								}
+							}
+
+							terminateDeviceDiscovery(installingDevice);
+							handleNextDiscoveredNode();
+							return;
+						} else {
+							log.error("unable to find an associated installation status: unsolicited serviceDescriptorRetrieved()");
+						}
+						return;
+					}
+
+					installingDevice.addServiceDescriptor(service.getEndPoint(), service);
+
+					if (handleMultipleEps) {
+						int retrievedServiceIndex = installingDevice.getCurrentService();
+						installingDevice.resetRetryCounter();
+						List activeEndpoints = installingDevice.getNodeServices().getActiveEndpoints();
+						retrievedServiceIndex++;
+						if (retrievedServiceIndex < activeEndpoints.size()) {
+							try {
+								installingDevice.setCurrentService(retrievedServiceIndex);
+								installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
+								ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(retrievedServiceIndex);
 								if (enableDiscoveryLogs)
 									log.debug(getIeeeAddressHex(a) + ": getting Service Descriptor for EP " + ep.getEndPoint());
 								gateway.getServiceDescriptor(timeout, a, ep.getEndPoint());
 								timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
 								return;
-							} else {
-								log.error(getIeeeAddressHex(a) + ": wrong ep index stored into InstallationStatus. Abort installation of this node");
+							} catch (Exception e) {
+								terminateDeviceDiscovery(installingDevice);
+								handleNextDiscoveredNode();
 							}
-						} catch (Exception e) {
-							log.error(getIeeeAddressHex(a) + ": exception in startServiceDiscovery(). Abort installation of this node", e);
-						}
-					} else {
-						int i = installingDevice.getCurrentService();
-						if (i >= 0) {
-							NodeServices services = installingDevice.getNodeServices();
-							ActiveEndpoints ep = (ActiveEndpoints) services.getActiveEndpoints().get(i);
-							log.error(getIeeeAddressHex(a) + ": too many retries for serviceDescriptor for ep " + ep.getEndPoint() + ". Abort installation of this node");
 						}
 					}
 
-					this.terminateDeviceDiscovery(installingDevice);
-					this.handleNextDiscoveredNode();
-					return;
-				} else {
-					log.error("unable to find an associated installation status: unsolicited serviceDescriptorRetrieved()");
-				}
-				return;
-			}
-
-			installingDevice.addServiceDescriptor(service.getEndPoint(), service);
-
-			if (handleMultipleEps) {
-				int retrievedServiceIndex = installingDevice.getCurrentService();
-				installingDevice.resetRetryCounter();
-				List activeEndpoints = installingDevice.getNodeServices().getActiveEndpoints();
-				retrievedServiceIndex++;
-				if (retrievedServiceIndex < activeEndpoints.size()) {
+					installingDevice.setStatus(InstallationStatus.INSTALLED);
 					try {
-						installingDevice.setCurrentService(retrievedServiceIndex);
-						installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICE_DESCRIPTOR);
-						ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(retrievedServiceIndex);
-						if (enableDiscoveryLogs)
-							log.debug(getIeeeAddressHex(a) + ": getting Service Descriptor for EP " + ep.getEndPoint());
-						gateway.getServiceDescriptor(timeout, a, ep.getEndPoint());
-						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
-						return;
+						finalizeNode(installingDevice);
 					} catch (Exception e) {
-						this.terminateDeviceDiscovery(installingDevice);
-						this.handleNextDiscoveredNode();
+						log.error("exception", e);
+						if (cacheDiscoveryInfos) {
+							// dump to file the currently discovered devices
+							// descriptors
+							updateDiscoveredDevicesDb(ieeeAddress, installingDevice);
+						}
+						terminateDeviceDiscovery(installingDevice);
+						handleNextDiscoveredNode();
+						return;
 					}
+
+					if (cacheDiscoveryInfos) {
+						// dump to file the currently discovered devices
+						// descriptors
+						updateDiscoveredDevicesDb(ieeeAddress, installingDevice);
+					}
+
+					terminateDeviceDiscovery(installingDevice);
+					handleNextDiscoveredNode();
+				} finally {
+					rwLock.writeLock().unlock();
 				}
 			}
-
-			installingDevice.setStatus(InstallationStatus.INSTALLED);
-			try {
-				this.finalizeNode(installingDevice);
-			} catch (Exception e) {
-				log.error("exception", e);
-				if (cacheDiscoveryInfos) {
-					// dump to file the currently discovered devices descriptors
-					this.updateDiscoveredDevicesDb(ieeeAddress, installingDevice);
-				}
-				this.terminateDeviceDiscovery(installingDevice);
-				this.handleNextDiscoveredNode();
-				return;
-			}
-
-			if (cacheDiscoveryInfos) {
-				// dump to file the currently discovered devices descriptors
-				this.updateDiscoveredDevicesDb(ieeeAddress, installingDevice);
-			}
-
-			this.terminateDeviceDiscovery(installingDevice);
-			this.handleNextDiscoveredNode();
-		} finally {
-			rwLock.writeLock().unlock();
-		}
+		};
+		thr.start();
 	}
 
 	/**
@@ -1350,135 +1386,156 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		}
 	}
 
-	public void gatewayStartResult(Status status) {
-		if (status.getCode() == 0) {
-			if (log != null)
-				log.info("zigbee network up and running.");
+	public void gatewayStartResult(final Status status) {
 
-			synchronized (sLock) {
-				this.galRunning = 2;
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
 
-				if (!getUseNVM())
-					this.setUseNVM(true);
+				if (status.getCode() == 0) {
+					if (log != null)
+						log.info("zigbee network up and running.");
 
-				if (cmProps.isLqiEnabled())
-					timerStart(discoveryTimer, cmProps.getInitialDiscoveryDelay());
+					synchronized (sLock) {
+						galRunning = 2;
 
-				// register any cached node
-				finalizeNodes();
-			}
+						if (!getUseNVM())
+							setUseNVM(true);
 
-		} else {
-			if (status.getCode() == GatewayConstants.NETWORK_FAILURE) {
-				synchronized (sLock) {
-					log.error("ZigBeeGateway started with status code: NETWORK_FAILURE");
+						if (cmProps.isLqiEnabled())
+							timerStart(discoveryTimer, cmProps.getInitialDiscoveryDelay());
+
+						// register any cached node
+						finalizeNodes();
+					}
+
+				} else {
+					if (status.getCode() == GatewayConstants.NETWORK_FAILURE) {
+						synchronized (sLock) {
+							log.error("ZigBeeGateway started with status code: NETWORK_FAILURE");
+						}
+					} else {
+						log.info("ZigBeeGateway started with status code " + status.getCode());
+					}
 				}
-			} else {
-				log.info("ZigBeeGateway started with status code " + status.getCode());
 			}
-		}
+		};
+		thr.start();
 	}
 
-	public void dongleResetResult(Status status) {
+	public void dongleResetResult(final Status status) {
 
-		if (status.getCode() == GatewayConstants.SUCCESS) {
-			synchronized (sLock) {
-				try {
-					if (gateway == null) {
-						log.warn("dongleResetResult(): gateway is null");
-						return;
+		MyThread thr = new MyThread(this) {
+			@Override
+			public void run() {
+				Object parameter = this.getParameter();
+				if (status.getCode() == GatewayConstants.SUCCESS) {
+					synchronized (sLock) {
+						try {
+							if (gateway == null) {
+								log.warn("dongleResetResult(): gateway is null");
+								return;
+							}
+							// configure local endpoint
+							try {
+								gateway.clearEndpoint(localEndpoint);
+							} catch (Exception e) {
+								log.error("exception in clearEndpoint of endpoint " + localEndpoint + " " + e.getMessage());
+							}
+							// TODO the following input clusters have to be
+							// configurable
+							// from Config Admin or props file
+							// FIXME: this simple descriptor MUST be set to null
+							// when
+							// the gal is detached.
+							sd = new SimpleDescriptor();
+							sd.setEndPoint(new Short(localEndpoint));
+							sd.setApplicationDeviceVersion(new Short((short) 0x01));
+							sd.setApplicationDeviceIdentifier(new Integer(0x0050)); // ESP
+							sd.setApplicationProfileIdentifier(new Integer(0x0104)); // HA
+							List outputClusters = sd.getApplicationOutputCluster();
+							List inputClusters = sd.getApplicationInputCluster();
+
+							// TODO the following input clusters have to be
+							// configurable
+							// from Config Admin or props file
+
+							outputClusters.add(new Integer(ZclSimpleMeteringClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclMeterIdentificationClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclPowerProfileClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclApplianceStatisticsClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
+
+							outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
+
+							if (enableEnergyAtHomeClusters) {
+								// This is the list of Client side clusters
+								// supported by
+								// E@H
+								outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
+							}
+
+							if (enableAllClusters) {
+								outputClusters.add(new Integer(ZclOccupancySensingClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclIASZoneClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclTemperatureMeasurementClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclIlluminanceMeasurementClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
+								outputClusters.add(new Integer(ZclThermostatClient.CLUSTER_ID)); // Thermostat
+																									// cluster
+
+							}
+
+							// This is the list of Server side clusters
+							// supported by E@H
+							inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
+							inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
+							inputClusters.add(new Integer(ZclTimeServer.CLUSTER_ID));
+
+							if (enableEnergyAtHomeClusters) {
+								inputClusters.add(new Integer(ZclSimpleMeteringServer.CLUSTER_ID));
+								inputClusters.add(new Integer(ZclPartitionServer.CLUSTER_ID));
+							}
+							if (enableAllClusters) {
+								inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
+							}
+							/*
+							 * Ho cambiato il valore di timeout perch&egrave;
+							 * 100ms &egrave; troppo poco [Marco Nieddu]
+							 */
+							localEndpoint = gateway.configureEndpoint(10000, sd);
+							// start discovery announcement
+							gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
+							// subscribe liveness
+							gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE);
+							// register local callback
+							callbackId = gateway.createAPSCallback(localEndpoint, (ZigBeeManagerImpl) parameter);
+							if (callbackId == -1) {
+								log.error("createAPSCallback returned -1");
+							}
+
+							// start gateway device
+							gateway.startGatewayDevice(0);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-					// configure local endpoint
-					try {
-						gateway.clearEndpoint(localEndpoint);
-					} catch (Exception e) {
-						log.error("exception in clearEndpoint of endpoint " + localEndpoint + " " + e.getMessage());
-					}
-					// TODO the following input clusters have to be configurable
-					// from Config Admin or props file
-					// FIXME: this simple descriptor MUST be set to null when
-					// the gal is detached.
-					sd = new SimpleDescriptor();
-					sd.setEndPoint(new Short(localEndpoint));
-					sd.setApplicationDeviceVersion(new Short((short) 0x01));
-					sd.setApplicationDeviceIdentifier(new Integer(0x0050)); // ESP
-					sd.setApplicationProfileIdentifier(new Integer(0x0104)); // HA
-					List outputClusters = sd.getApplicationOutputCluster();
-					List inputClusters = sd.getApplicationInputCluster();
 
-					// TODO the following input clusters have to be configurable
-					// from Config Admin or props file
-
-					outputClusters.add(new Integer(ZclSimpleMeteringClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclMeterIdentificationClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclPowerProfileClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceStatisticsClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
-
-					outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
-					outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
-
-					if (enableEnergyAtHomeClusters) {
-						// This is the list of Client side clusters supported by
-						// E@H
-						outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
-					}
-
-					if (enableAllClusters) {
-						outputClusters.add(new Integer(ZclOccupancySensingClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclIASZoneClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclTemperatureMeasurementClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclIlluminanceMeasurementClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
-						outputClusters.add(new Integer(ZclThermostatClient.CLUSTER_ID)); // Thermostat
-																							// cluster
-
-					}
-
-					// This is the list of Server side clusters supported by E@H
-					inputClusters.add(new Integer(ZclBasicServer.CLUSTER_ID));
-					inputClusters.add(new Integer(ZclIdentifyServer.CLUSTER_ID));
-					inputClusters.add(new Integer(ZclTimeServer.CLUSTER_ID));
-
-					if (enableEnergyAtHomeClusters) {
-						inputClusters.add(new Integer(ZclSimpleMeteringServer.CLUSTER_ID));
-						inputClusters.add(new Integer(ZclPartitionServer.CLUSTER_ID));
-					}
-					if (enableAllClusters) {
-						inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
-					}
-					/*
-					 * Ho cambiato il valore di timeout perch&egrave; 100ms
-					 * &egrave; troppo poco [Marco Nieddu]
-					 */
-					localEndpoint = gateway.configureEndpoint(10000, sd);
-					// start discovery announcement
-					gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
-					// subscribe liveness
-					gateway.subscribeNodeRemoval(0, GatewayConstants.DISCOVERY_FRESHNESS | GatewayConstants.DISCOVERY_LEAVE);
-					// register local callback
-					this.callbackId = gateway.createAPSCallback(localEndpoint, this);
-					if (this.callbackId == -1) {
-						log.error("createAPSCallback returned -1");
-					}
-
-					// start gateway device
-					gateway.startGatewayDevice(0);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} else {
+					log.error("dongleResetResult returned error code " + status.getCode());
 				}
 			}
+		};
 
-		} else {
-			log.error("dongleResetResult returned error code " + status.getCode());
-		}
+		new Thread(thr).start();
 	}
 
 	public void leaveResult(Status status) {
@@ -1486,14 +1543,20 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		rwLock.writeLock().unlock();
 	}
 
-	public void permitJoinResult(Status status) {
-		synchronized (sLock) {
-			log.debug("t" + 5);
-			log.debug("permit join returned status " + status.getCode());
-			if (status.getCode() == 0) {
-				this.postEvent("ah/zigbee/OPEN_NETWORK", null);
+	public void permitJoinResult(final Status status) {
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
+				synchronized (sLock) {
+					log.debug("t" + 5);
+					log.debug("permit join returned status " + status.getCode());
+					if (status.getCode() == 0) {
+						postEvent("ah/zigbee/OPEN_NETWORK", null);
+					}
+				}
 			}
-		}
+		};
+		thr.start();
 	}
 
 	private void tryReconnectToJGal(int delay) {
@@ -1606,67 +1669,75 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		ieee2sr.clear();
 	}
 
-	public void nodeDescriptorRetrieved(Status status, NodeDescriptor node) {
-		// guess the installing device because the node descriptor doesn't
-		// contain the address of the device
-		rwLock.writeLock().lock();
-		try {
-			this.timerCancel(galCommandTimer);
-			if (gateway == null) {
-				log.warn("in nodeDescriptorRetrieved() detected that gateway has been removed");
-				return;
-			}
+	public void nodeDescriptorRetrieved(final Status status, final NodeDescriptor node) {
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
 
-			InstallationStatus installingDevice = this.getInstallingDevice(InstallationStatus.WAITING_FOR_NODE_DESCRIPTOR);
-			if (installingDevice == null) {
-				log.warn("received a node descriptor from an unsolicited node");
-				this.handleNextDiscoveredNode();
-				return;
-			}
-
-			String nodePid = getNodePid(installingDevice.getAddress());
-			String nodeIeeeAddressHex = getIeeeAddressHex(installingDevice.getAddress());
-
-			if (status.getCode() != 0) {
-				log.error(nodeIeeeAddressHex + ": nodeDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed pid '" + nodePid);
-				if (installingDevice.getRetryCounter() > 0) {
-					try {
-						gateway.getNodeDescriptor(timeout, installingDevice.getAddress());
-						log.debug(nodeIeeeAddressHex + ": called getNodeDescriptor()");
-						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+				// guess the installing device because the node descriptor
+				// doesn't
+				// contain the address of the device
+				rwLock.writeLock().lock();
+				try {
+					timerCancel(galCommandTimer);
+					if (gateway == null) {
+						log.warn("in nodeDescriptorRetrieved() detected that gateway has been removed");
 						return;
-					} catch (Exception e) {
-						log.error("Exception", e);
 					}
+
+					InstallationStatus installingDevice = getInstallingDevice(InstallationStatus.WAITING_FOR_NODE_DESCRIPTOR);
+					if (installingDevice == null) {
+						log.warn("received a node descriptor from an unsolicited node");
+						handleNextDiscoveredNode();
+						return;
+					}
+
+					String nodePid = getNodePid(installingDevice.getAddress());
+					String nodeIeeeAddressHex = getIeeeAddressHex(installingDevice.getAddress());
+
+					if (status.getCode() != 0) {
+						log.error(nodeIeeeAddressHex + ": nodeDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed pid '" + nodePid);
+						if (installingDevice.getRetryCounter() > 0) {
+							try {
+								gateway.getNodeDescriptor(timeout, installingDevice.getAddress());
+								log.debug(nodeIeeeAddressHex + ": called getNodeDescriptor()");
+								timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+								return;
+							} catch (Exception e) {
+								log.error("Exception", e);
+							}
+						}
+
+						// abort installation of this node
+						log.error(nodeIeeeAddressHex + ": too many retries for getting node descriptor");
+						terminateDeviceDiscovery(installingDevice);
+						handleNextDiscoveredNode();
+						return;
+					}
+
+					if (enableDiscoveryLogs)
+						log.debug(nodeIeeeAddressHex + ": retrieved node descriptor");
+
+					// update the state
+					installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICES);
+					installingDevice.resetRetryCounter();
+					installingDevice.setNodeDescriptor(node);
+
+					try {
+						if (enableDiscoveryLogs)
+							log.debug(nodeIeeeAddressHex + ": startServiceDiscovery()");
+						gateway.startServiceDiscovery(timeout, installingDevice.getAddress());
+						timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
+					} catch (Exception e) {
+						terminateDeviceDiscovery(installingDevice);
+						handleNextDiscoveredNode();
+					}
+				} finally {
+					rwLock.writeLock().unlock();
 				}
-
-				// abort installation of this node
-				log.error(nodeIeeeAddressHex + ": too many retries for getting node descriptor");
-				this.terminateDeviceDiscovery(installingDevice);
-				this.handleNextDiscoveredNode();
-				return;
 			}
-
-			if (enableDiscoveryLogs)
-				log.debug(nodeIeeeAddressHex + ": retrieved node descriptor");
-
-			// update the state
-			installingDevice.setStatus(InstallationStatus.WAITING_FOR_SERVICES);
-			installingDevice.resetRetryCounter();
-			installingDevice.setNodeDescriptor(node);
-
-			try {
-				if (enableDiscoveryLogs)
-					log.debug(nodeIeeeAddressHex + ": startServiceDiscovery()");
-				gateway.startServiceDiscovery(timeout, installingDevice.getAddress());
-				timerStart(galCommandTimer, (int) (timeout / 1000) + timeoutOffset);
-			} catch (Exception e) {
-				this.terminateDeviceDiscovery(installingDevice);
-				this.handleNextDiscoveredNode();
-			}
-		} finally {
-			rwLock.writeLock().unlock();
-		}
+		};
+		thr.start();
 	}
 
 	protected Dictionary getConfiguration() {
@@ -1678,41 +1749,49 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		return config;
 	}
 
-	public void nodeRemoved(Status status, WSNNode node) {
-		rwLock.writeLock().lock();
-		try {
-			// notifies the node
-			// TODO: if the node has short address 0 it means that the dongle is
-			// crashed.
-			if (status.getCode() == 0) {
-				String nodePid = getNodePid(node.getAddress());
+	public void nodeRemoved(final Status status, final WSNNode node) {
 
-				synchronized (this.devicesInstalled) {
-					this.devicesInstalled.remove(node.getAddress().getIeeeAddress());
-				}
-				Vector deviceRegs = (Vector) this.ieee2sr.get(nodePid);
-				if (deviceRegs != null) {
-					log.debug(getIeeeAddressHex(node.getAddress()) + ": node has been removed");
-					this.ieee2sr.remove(nodePid);
-					this.ieee2devices.remove(nodePid);
-					for (Iterator iterator = deviceRegs.iterator(); iterator.hasNext();) {
-						ServiceRegistration deviceReg = (ServiceRegistration) iterator.next();
-						deviceReg.unregister();
-					}
-				} else {
-					log.warn(nodePid + ": unknown node has been removed");
-				}
+		Thread thr = new Thread() {
+			@Override
+			public void run() {
+				rwLock.writeLock().lock();
+				try {
+					// notifies the node
+					// TODO: if the node has short address 0 it means that the
+					// dongle is
+					// crashed.
+					if (status.getCode() == 0) {
+						String nodePid = getNodePid(node.getAddress());
 
-				if (cacheDiscoveryInfos) {
-					this.installedDevices.remove(nodePid);
-					if (dumpDiscoveryInfos) {
-						this.dumpDiscoveredDevicesDb(dumpAllDevices);
+						synchronized (devicesInstalled) {
+							devicesInstalled.remove(node.getAddress().getIeeeAddress());
+						}
+						Vector deviceRegs = (Vector) ieee2sr.get(nodePid);
+						if (deviceRegs != null) {
+							log.debug(getIeeeAddressHex(node.getAddress()) + ": node has been removed");
+							ieee2sr.remove(nodePid);
+							ieee2devices.remove(nodePid);
+							for (Iterator iterator = deviceRegs.iterator(); iterator.hasNext();) {
+								ServiceRegistration deviceReg = (ServiceRegistration) iterator.next();
+								deviceReg.unregister();
+							}
+						} else {
+							log.warn(nodePid + ": unknown node has been removed");
+						}
+
+						if (cacheDiscoveryInfos) {
+							installedDevices.remove(nodePid);
+							if (dumpDiscoveryInfos) {
+								dumpDiscoveredDevicesDb(dumpAllDevices);
+							}
+						}
 					}
+				} finally {
+					rwLock.writeLock().unlock();
 				}
 			}
-		} finally {
-			rwLock.writeLock().unlock();
-		}
+		};
+		thr.start();
 	}
 
 	protected boolean isGalRunning() {
@@ -1845,7 +1924,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	private InstallationStatus getInstallingDevice(Address a) {
-		synchronized (rwLock) {
+		synchronized (sLock) {
 			String nodePid = getNodePid(a);
 			return (InstallationStatus) this.devicesUnderInstallation.get(nodePid);
 		}
@@ -2259,5 +2338,22 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public boolean isNotifyFrameLogEnabled() {
 		return this.enableNotifyFrameLogs;
+	}
+
+	public class MyThread implements Runnable {
+
+		Object parameter = null;
+
+		public MyThread(Object _parameter) {
+			parameter = _parameter;
+		}
+
+		public void run() {
+		}
+
+		public Object getParameter() {
+			return parameter;
+		}
+
 	}
 }
