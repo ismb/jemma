@@ -88,14 +88,13 @@ public class SerialCommRxTx implements IConnector, Runnable {
 	private boolean connect(String portName, int speed) throws Exception {
 
 		try {
-			portIdentifier = null;
 			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
+			portIdentifier = null;
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				LOG.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
 				disconnect();
 				return false;
-
 			} else {
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
@@ -119,7 +118,6 @@ public class SerialCommRxTx implements IConnector, Runnable {
 
 					return true;
 				} else {
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						LOG.error("Error on serial port connection:" + portName);
 					disconnect();
 					return false;
@@ -128,22 +126,15 @@ public class SerialCommRxTx implements IConnector, Runnable {
 
 		} catch (NoSuchPortException e) {
 			disconnect();
-			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: NoSuchPortException " + portName);
-			// e.printStackTrace();
 			return false;
 		} catch (PortInUseException e) {
 			disconnect();
-			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: PortInUseException");
-
-			// e.printStackTrace();
 			return false;
 		} catch (UnsupportedCommOperationException e) {
 			disconnect();
-			if (DataLayer.getPropertiesManager().getDebugEnabled())
 				LOG.error("the connection could not be made: UnsupportedCommOperationException");
-			// e.printStackTrace();
 			return false;
 		}
 
