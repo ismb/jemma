@@ -89,7 +89,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 
 		try {
 			portIdentifier = null;
-			System.setProperty("gnu.io.SerialPorts", portName);
+			System.setProperty("gnu.io.rxtx.SerialPorts", portName);
 			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()) {
 				LOG.error("Error: Port is currently in use:" + portName + " by: " + portIdentifier.getCurrentOwner());
@@ -106,10 +106,8 @@ public class SerialCommRxTx implements IConnector, Runnable {
 					// | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					// serialPort.setDTR(true);
 					// serialPort.setRTS(true);
-
 					serialPort.enableReceiveTimeout(2000);
-
-					serialPort.notifyOnDataAvailable(true);
+					// serialPort.notifyOnDataAvailable(true);
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
@@ -197,7 +195,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 	@Override
 	public void disconnect() throws IOException {
 		System.setProperty("gnu.io.rxtx.SerialPorts", "");
-		serialReader.interrupt();
+		// serialReader.interrupt();
 		setConnected(false);
 
 		serialReader = null;
@@ -216,7 +214,11 @@ public class SerialCommRxTx implements IConnector, Runnable {
 			serialPort = null;
 
 			portIdentifier = null;
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
 
+			}
 		}
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			LOG.info("RS232 - Disconnected");
