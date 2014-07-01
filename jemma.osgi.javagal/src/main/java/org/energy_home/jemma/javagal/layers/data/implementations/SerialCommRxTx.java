@@ -100,9 +100,10 @@ public class SerialCommRxTx implements IConnector, Runnable {
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
-					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN
+					// | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 					// serialPort.setDTR(true);
 					// serialPort.setRTS(true);
 
@@ -165,7 +166,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						LOG.info(">>> Sending: " + buff.ToHexString());
 					ou.write(buff.getByteArray(), 0, buff.getCount(true));
-					//ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
+					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 
 				} catch (Exception e) {
 
