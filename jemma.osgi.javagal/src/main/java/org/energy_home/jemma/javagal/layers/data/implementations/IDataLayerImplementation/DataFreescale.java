@@ -2075,6 +2075,8 @@ public class DataFreescale implements IDataLayer {
 			if (messageEvent.getClusterID() == 0x8031) {
 				String __key = "";
 				__key = String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress());
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.info("Received LQI_RSP from node:" + __key);
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {

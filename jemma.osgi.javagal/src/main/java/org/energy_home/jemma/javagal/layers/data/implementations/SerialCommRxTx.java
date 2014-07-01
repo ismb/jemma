@@ -44,7 +44,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 
 	private Boolean ignoreMessage = Boolean.FALSE;
 	private SerialPort serialPort;
-	private static final Logger LOG = LoggerFactory.getLogger(DataFreescale.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SerialCommRxTx.class);
 
 	CommPortIdentifier portIdentifier;
 	InputStream in = null;
@@ -100,13 +100,11 @@ public class SerialCommRxTx implements IConnector, Runnable {
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-					/*
-					 * serialPort.setFlowControlMode(SerialPort.
-					 * FLOWCONTROL_RTSCTS_IN |
-					 * SerialPort.FLOWCONTROL_RTSCTS_OUT);
-					 * serialPort.setDTR(true); serialPort.setRTS(true);
-					 */
+					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+
+					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+					// serialPort.setDTR(true);
+					// serialPort.setRTS(true);
 
 					serialPort.enableReceiveTimeout(2000);
 
@@ -165,13 +163,14 @@ public class SerialCommRxTx implements IConnector, Runnable {
 			if (ou != null) {
 				try {
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.debug(">>> Sending", buff.ToHexString());
+						LOG.info(">>> Sending: " + buff.ToHexString());
 					ou.write(buff.getByteArray(), 0, buff.getCount(true));
-					// ou.flush();//TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
+					//ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
+
 				} catch (Exception e) {
 
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.error("Error writing Rs232" + e.getMessage());
+						LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
 					throw e;
 
 				}
@@ -179,7 +178,8 @@ public class SerialCommRxTx implements IConnector, Runnable {
 			} else
 				throw new Exception("Error on serial write - out == null");
 
-		}
+		} else
+			throw new Exception("Error on serial write - not connected");
 	}
 
 	/**
@@ -234,6 +234,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 						buffer[pos] = data.shortValue();
 						pos = pos + 1;
 					}
+
 					if (!getIgnoreMessage() && pos > 0) {
 						ShortArrayObject frame = new ShortArrayObject(buffer, pos);
 						getDataLayer().notifyFrame(frame);
