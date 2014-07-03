@@ -3,6 +3,13 @@
 		$(document)
 				.ready(
 						function() {
+							
+							  
+							  $(document).bind("contextmenu",function(e){
+					              return true;
+					       });
+							  
+							  
 							var rtnObjConfig = '';
 							var myNMMenu = new jGGNetworkManageMenu();
 							myNMMenu.newButton('btnStartGal', null, null);

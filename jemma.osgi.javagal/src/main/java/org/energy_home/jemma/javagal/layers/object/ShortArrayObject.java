@@ -159,6 +159,24 @@ public class ShortArrayObject {
 			_data[i] = ((Short) buff[i]).byteValue();
 		return _data;
 	}
+	
+	
+
+	/**
+	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
+	 * that all elements in the backing array are returned, even those after the
+	 * {@code size} value that are to be considered invalid.
+	 * 
+	 * @return the byte array.
+	 */
+	public byte[] getByteArrayRealSize() {
+		short[] buff = getShortArray();
+		byte[] _data = new byte[getCount(true)];
+		for (int i = 0; i < _data.length; i++)
+			_data[i] = ((Short) buff[i]).byteValue();
+		return _data;
+	}
+	
 
 	/**
 	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note

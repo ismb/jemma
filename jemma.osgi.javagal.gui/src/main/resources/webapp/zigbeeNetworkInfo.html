@@ -3,6 +3,11 @@
 		$(document)
 				.ready(
 						function() {
+							
+							  
+							  $(document).bind("contextmenu",function(e){
+					              return true;
+					       });
 							var mydataAttributes = [];
 							/*0x96:NetWorkAddress*/
 							$.ajax(

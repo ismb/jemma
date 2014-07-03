@@ -34,7 +34,8 @@ import java.util.concurrent.TimeUnit;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.business.Utils;
-import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
+import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConnectorJssc;
+import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConnectorRxTx;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
@@ -113,7 +114,31 @@ public class DataFreescale implements IDataLayer {
 		gal = _gal;
 
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-		dongleRs232 = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+
+		// we don't know in advance which comm library is installed into the system.
+		boolean foundSerialLib = false;
+
+		/*
+		
+		try {
+			// we try first with RxTx
+			dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+			foundSerialLib = true;
+		} catch (NoClassDefFoundError e) {
+			LOG.warn("RxTx not found");
+		}
+*/
+		
+		if (!foundSerialLib) {
+			try {
+				// then with jSSC
+				dongleRs232 = new SerialPortConnectorJssc(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+				foundSerialLib = true;
+			} catch (NoClassDefFoundError e) {
+				LOG.warn("jSSC not found");
+			}
+		}
+
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
 
 		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {

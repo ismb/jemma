@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
-public class SerialCommRxTx implements IConnector, Runnable {
+public class SerialPortConnectorRxTx implements IConnector {
 	private Boolean connected = Boolean.FALSE;
 
 	private Boolean ignoreMessage = Boolean.FALSE;
 	private SerialPort serialPort;
-	private static final Logger LOG = LoggerFactory.getLogger(SerialCommRxTx.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SerialPortConnectorRxTx.class);
 
 	CommPortIdentifier portIdentifier;
 	InputStream in = null;
@@ -53,7 +53,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 	private IDataLayer DataLayer = null;
 	private String commport = "";
 	private int boudrate = 0;
-	Thread serialReader;
+	private SerialReader serialReader = null;
 
 	/**
 	 * Creates a new instance.
@@ -68,11 +68,10 @@ public class SerialCommRxTx implements IConnector, Runnable {
 	 * @throws Exception
 	 *             if an error occurs.
 	 */
-	public SerialCommRxTx(String _portName, int _boudRate, IDataLayer _DataLayer) throws Exception {
+	public SerialPortConnectorRxTx(String _portName, int _boudRate, IDataLayer _DataLayer) throws Exception {
 		DataLayer = _DataLayer;
 		commport = _portName;
 		boudrate = _boudRate;
-		new Thread(this, "SerialReader").start();
 	}
 
 	/**
@@ -100,21 +99,26 @@ public class SerialCommRxTx implements IConnector, Runnable {
 				if (serialPort instanceof SerialPort) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-
-					// serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN
-					// | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-					// serialPort.setDTR(true);
-					// serialPort.setRTS(true);
 					serialPort.enableReceiveTimeout(2000);
-					// serialPort.notifyOnDataAvailable(true);
+					serialPort.notifyOnDataAvailable(true);
+					
+					try {
+						serialReader = new SerialReader(this);
+						serialPort.addEventListener(serialReader);
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							LOG.info("Added SerialPort event listener");
+					} catch (TooManyListenersException e) {
+						disconnect();
+						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
+					}
+					
+					
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
 						LOG.info("Connection on " + portName + " established");
 
 					setConnected(true);
-					serialReader = new Thread(this, "SerialReader");
-					serialReader.start();
 
 					return true;
 				} else {
@@ -186,9 +190,7 @@ public class SerialCommRxTx implements IConnector, Runnable {
 	@Override
 	public void disconnect() throws IOException {
 		System.setProperty("gnu.io.rxtx.SerialPorts", "");
-		// serialReader.interrupt();
 		setConnected(false);
-
 		serialReader = null;
 
 		if (serialPort != null) {
@@ -215,34 +217,52 @@ public class SerialCommRxTx implements IConnector, Runnable {
 			LOG.info("RS232 - Disconnected");
 	}
 
-	@Override
-	public void run() {
-		short[] buffer = new short[5000];
-		while (isConnected()) {
-			try {
-				if (in != null) {
-					int pos = 0;
-					Integer data = 0;
-					while ((in.available()) > 0) {
-						data = in.read();
-						buffer[pos] = data.shortValue();
-						pos = pos + 1;
-					}
+	class SerialReader implements SerialPortEventListener {
 
-					if (!getIgnoreMessage() && pos > 0) {
-						ShortArrayObject frame = new ShortArrayObject(buffer, pos);
-						getDataLayer().notifyFrame(frame);
+		IConnector _caller = null;
+
+		public SerialReader(IConnector _parent) {
+
+			_caller = _parent;
+		}
+
+		public synchronized void serialEvent(SerialPortEvent event) {
+			try {
+				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+					try {
+						int pos = 0;
+						Integer data = 0;
+						short[] buffer = new short[1024];
+
+						while (in.available() > 0) {
+							try {
+								data = in.read();
+								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
+								pos = pos + 1;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+
+						if (!ignoreMessage) {
+
+							ShortArrayObject frame = new ShortArrayObject(buffer, pos);
+							_caller.getDataLayer().notifyFrame(frame);
+						}
+					} catch (Exception e) {
+						if (DataLayer.getPropertiesManager().getDebugEnabled())
+							LOG.error("Error on data received:" + e.getMessage());
 					}
 
 				}
 			} catch (Exception e) {
 				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.error("Error reading rs232 data:" + e.getMessage());
+					LOG.error("Error on read from serial data:" + e.getMessage());
 
 			}
 
 		}
-
 	}
 
 	private synchronized void setIgnoreMessage(boolean value) {
@@ -270,12 +290,11 @@ public class SerialCommRxTx implements IConnector, Runnable {
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			LOG.info("Waiting 3,5 seconds after command CPUReset...");
 		Thread.sleep(3500);
-
 		disconnect();
-		setIgnoreMessage(false);
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			LOG.info("Clear buffer after CPUReset...");
 		DataLayer.clearBuffer();
+		setIgnoreMessage(false);
 		if (DataLayer.getPropertiesManager().getDebugEnabled())
 			LOG.info("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {

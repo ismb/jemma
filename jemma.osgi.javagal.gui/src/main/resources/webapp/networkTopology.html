@@ -2,6 +2,7 @@
 	<script type="text/javascript">
 	(function($){
 		  
+		
 		  
 		  
 		 
@@ -9,6 +10,37 @@
 		  
 		  
 		  $(document).ready(function(){
+			  
+			  
+			  $(document).bind("contextmenu",function(e){
+	              return false;
+	       }); 
+			  
+			  
+			  $("#dialog-form-device-details_topology").dialog({
+					autoOpen : false,
+					height : 500,
+					width : 500,
+					modal : true,
+					buttons : {
+						Cancel : function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+			  
+			  
+			  $('#dialog-form-device-details_topology').dialog('option', 'buttons', [ {
+					text : 'Close',
+					click : function() {
+						$(this).dialog('close');
+					}
+				} ]);
+			  
+			  
+			  
+			  
+			  
 			  NodesCounter = 0;
 		    var CLR = {
 		      branch:"#b2b19d",
@@ -37,6 +69,9 @@
 						
 						var codeManufacturer = strIeeeAddress.substring(0,4);
 						var colorManufacturer, nameManufacturer, alphaInfo;
+						
+						colorManufacturer = '#00ff80';
+						/*
 						switch (codeManufacturer){
 							case DEFINEMANUFACTURER.FREESCALE:
 							  	colorManufacturer = 'blue'; 
@@ -59,6 +94,7 @@
 							  	alphaInfo = 1;
 							  	break; 
 						}
+						*/
 						
 						if (!Nodes.nodes[strIeeeAddress])
 							Nodes.nodes[strIeeeAddress] = {};
@@ -307,7 +343,7 @@
 						        //gfx.text(node.data.rxOnWhenIdleString, pt.x, pt.y+ 67, {color:'Black', align:"center", font:"Arial", size:12});
 					          
 					            
-					           //debugger;
+					      
 					          if (node.name)
 				            	{
 				            var p = JSON.parse($.jStorage.get("Node:"+node.name));  
@@ -475,45 +511,56 @@
 
 					        var handler = {
 					          moved:function(e){
-					            var pos = $(canvas).offset();
-					            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
-					            nearest = sys.nearest(_mouseP);
-
-					            if (!nearest.node) return false
-
-					            if (nearest.node.data.shape!='dot'){
-					              selected = (nearest.distance < 50) ? nearest : null
-					              if (selected){
-					              }
-					              else{
-					                 dom.removeClass('linkable')
-					                 window.status = ''
-					              }
-					            }
-					            
-					            /*Get Node Position*/
-					           
-					            
+					        	
 					            return false
 					          },
 					          clicked:function(e){
+					        	  if (e.button == 2)
+					        		 {
+					        		  //Continuare Issue 03/07/2014
+					        		  /*
+					        	  var pos = $(canvas).offset();
+						            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
+						            nearest = sys.nearest(_mouseP);
+						            if (!nearest.node) return false
+						              selected = (nearest.distance < 50) ? nearest : null
+			            		  	if (selected){
+			            		  		var edges = sys.getEdgesFrom(selected.node);
+			            		  		var strPopup = "";
+			            		  		edges.forEach(function(edge) {
+			            		  			strPopup+= "("+ edge.source.data.shortAddress + "-->" + edge.target.data.shortAddress+") Link quality: " + edge.data.value + " db\n" 
+			            		  			
+			            		  		});
+			            		  		$("#detail_links").val(strPopup);
+			            		  		$("#dialog-form-device-details_topology").dialog(
+										"open");
+			            		  	}	
+			            			 	*/
+						            }
+					        	  else
+					        		  {
+						            
+					        	  
 					            var pos = $(canvas).offset();
 					            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
 					            nearest = dragged = sys.nearest(_mouseP);
 					            
 					            if (nearest && selected && nearest.node===selected.node){
 					              var link = selected.node.data.link
-					              return false
+					              return false;
 					            }
 					            
 					            
-					            if (dragged && dragged.node !== null) dragged.node.fixed = true
+					            if (dragged && dragged.node !== null) dragged.node.fixed = true;
 
-					            $(canvas).unbind('mousemove', handler.moved);
-					            $(canvas).bind('mousemove', handler.dragged)
-					            $(window).bind('mouseup', handler.dropped)
-
-					            return false
+					           
+					        		  }
+					         
+					        	  $(canvas).unbind('mousemove', handler.moved);
+						            $(canvas).bind('mousemove', handler.dragged)
+						            $(window).bind('mouseup', handler.dropped)
+						            return true;
+					            
 					          },
 					          dragged:function(e){
 					            var old_nearest = nearest && nearest.node._id
@@ -566,7 +613,7 @@
 			    sys.graft(Nodes);
 			    
 			    
-			    
+			   
 			    
 			        
 			        
@@ -586,7 +633,7 @@
 		<table style="width: 100%">
 			<tr>
 				<th>Device Type</th>
-				<th>Manufacturer</th>
+				<!-- <th>Manufacturer</th> -->
 				<th>Link Quality</th>
 			</tr>
 			<tr>
@@ -609,6 +656,7 @@
 
 					</table>
 				</td>
+				<!-- 
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
@@ -624,7 +672,8 @@
 							<td style="background-color: red">Unnown</td>
 						</tr>
 					</table>
-				</td>
+				</td> 
+				-->
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
@@ -651,5 +700,130 @@
 			</tr>
 		</table>
 
+	</div>
+
+	<div id="dialog-form-device-details_topology" title="Device details">
+		<form>
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_links">Links:</label></td>
+						<td valign="top"><textarea name="detail_links"
+								id="detail_links" rows="10" cols="35"
+								class="text ui-widget-content ui-corner-all">
+								</textarea></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
+							<label for="detail_shortaddress">Short Address:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_shortaddress" id="detail_shortaddress" size="35"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_manufacturer">Manufacturer:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_manufacturer" id="detail_manufacturer"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_logical_type">Logical Type:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_logical_type" id="detail_logical_type"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_is_sleepy">Sleeping device:</label></td>
+						<td valign="top"><input type="text" name="detail_is_sleepy"
+							id="detail_is_sleepy"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_ieeeaddress_hidden" id="detail_ieeeaddress_hidden" />
+							<label for="detail_address">Ieee Address:</label></td>
+						<td><input type="text" name="detail_ieeeaddress"
+							id="detail_ieeeaddress" size="35"
+							class="text ui-widget-content ui-corner-all"></td>
+					</tr>
+				</table>
+			</fieldset>
+			<br />
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_active_endpoints">Active EndPoints:</label></td>
+						<td valign="middle"><select name="detail_active_endpoints"
+							id="detail_active_endpoints"></select><a
+							id="detail_button_simple_descriptor"><img
+								src="./css/images/info.png" class="infoButton"
+								title="Simple Descriptor"></a></td>
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_profile">Profile:</label></td>
+						<td valign="top"><input type="text" name="detail_profile"
+							id="detail_profile" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device">Device Type:</label></td>
+						<td valign="top"><input type="text" name="detail_device"
+							id="detail_device" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
+
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device_version">Device Version:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_device_version" id="detail_device_version"
+							class="text ui-widget-content ui-corner-all" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_input_clusters">Input Clusters:</label></td>
+						<td valign="top"><select name="detail_input_clusters"
+							id="detail_input_clusters" size="5	" style="width: 100%">
+						</select></td>
+
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_output_clusters">Output Clusters:</label></td>
+						<td valign="top"><select name="detail_output_clusters"
+							id="detail_output_clusters" size="5" style="width: 100%"></select>
+						</td>
+
+					</tr>
+				</table>
+			</fieldset>
+		</form>
 	</div>
 </div>
