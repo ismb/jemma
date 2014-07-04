@@ -15,9 +15,10 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
-import java.io.IOException;
-
-import jssc.*;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;

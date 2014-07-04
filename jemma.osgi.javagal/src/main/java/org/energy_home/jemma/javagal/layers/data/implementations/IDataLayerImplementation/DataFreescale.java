@@ -115,20 +115,17 @@ public class DataFreescale implements IDataLayer {
 
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 
-		// we don't know in advance which comm library is installed into the system.
+		// we don't know in advance which comm library is installed into the
+		// system.
 		boolean foundSerialLib = false;
 
-		/*
-		
-		try {
-			// we try first with RxTx
+		try { // we try first with RxTx
 			dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 			foundSerialLib = true;
 		} catch (NoClassDefFoundError e) {
 			LOG.warn("RxTx not found");
 		}
-*/
-		
+
 		if (!foundSerialLib) {
 			try {
 				// then with jSSC
@@ -137,6 +134,10 @@ public class DataFreescale implements IDataLayer {
 			} catch (NoClassDefFoundError e) {
 				LOG.warn("jSSC not found");
 			}
+		}
+
+		if (!foundSerialLib) {
+			throw new Exception("Error not found Rxtx or Jssc serial connector library");
 		}
 
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
