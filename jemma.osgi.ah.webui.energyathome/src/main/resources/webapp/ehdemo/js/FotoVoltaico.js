@@ -1009,8 +1009,17 @@ CostiConsumi.VisGrafico = function() {
 	if (InterfaceEnergyHome.mode > 0) {
 		var localAddress = $(location).attr('host');
 		var actualHagID = 'hag-'+Main.userId;
+		var protocol = "http://";
+		var initialURL;
+		
+		if (localAddress == "trial.energy-home.it"){
+			protocol = "https://";
+			initialURL = protocol + localAddress + "/proxy";
+		} else {
+			initialURL = protocol + localAddress;
+		}
 	
-		var currentUrl = "http://" + localAddress +"/HAP/SC/SB/SCLS/" + actualHagID + "/CS/ALL/1/ah.eh.esp.hourlyReceivedEnergyForecast/CIS?startInstanceId="+startInstance+"&endInstanceId="+endInstance;
+		var currentUrl = initialURL + "/HAP/SC/SB/SCLS/" + actualHagID + "/CS/ALL/1/ah.eh.esp.hourlyReceivedEnergyForecast/CIS?startInstanceId="+startInstance+"&endInstanceId="+endInstance;
 		var dataFC = new Array();
 		
 		if (Main.env > 0) {
@@ -1029,7 +1038,6 @@ CostiConsumi.VisGrafico = function() {
 			    			dataFC.push(value);
 			    		}
 			    	);
-			    	
 			    	CostiConsumi.VisGraficoForCast(serieIAC, dataIAC, cat, dataFC);
 			    },
 			    error: function(err) {
@@ -1037,11 +1045,9 @@ CostiConsumi.VisGrafico = function() {
 			    }
 			});
 		} else {
-			
 			CostiConsumi.VisGraficoForCast(serieIAC, dataIAC, cat, PrevisioneEnergiaProdotta);
 		}
 	} else {
-		
 		CostiConsumi.VisGraficoForCast(serieIAC, dataIAC, cat, PrevisioneEnergiaProdotta);
 	}
 	
