@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.business.implementations;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
@@ -60,7 +62,7 @@ public class ApsMessageManager {
 	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
 	
-		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+		executor = Executors.newFixedThreadPool(gal.getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 			
 			@Override
 			public Thread newThread(Runnable r) {
@@ -68,6 +70,14 @@ public class ApsMessageManager {
 				return new Thread(r, "THPool-APSMessageIndication");
 			}
 		});
+		
+		if (executor instanceof ThreadPoolExecutor)
+		{
+			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+
+			
+		}
 
 		
 		
@@ -271,6 +281,10 @@ public class ApsMessageManager {
 						// destinations.
 
 					}
+				}
+				
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					logger.info("Aps Message Indication done!");
 				}
 			}
 		});

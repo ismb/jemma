@@ -28,7 +28,7 @@ var InterfaceEnergyHome = {
 	errMessage: null,
 	errCode: 0,
 	status: 0,
-	serviceName : "org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService",
+	serviceName : "it.telecomitalia.ah.greenathome.GreenAtHomeApplianceService",
 	objService : null,
 	// costanti per parametri chiamate
 	MINUTE : 0,

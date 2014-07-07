@@ -18,7 +18,9 @@ package org.energy_home.jemma.javagal.layers.data.interfaces;
 
 import java.io.IOException;
 
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
+import jssc.SerialPortException;
+
+import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 
 /**
  * Interface for all serial implementation of the FlexGrid key (jssc and RxTx).
@@ -50,7 +52,7 @@ public interface IConnector {
 	 * @throws Exception
 	 *             if errors occurs in write process.
 	 */
-	public void write(ByteArrayObject buff) throws Exception;
+	public void write(ShortArrayObject buff) throws Exception;
 
 	/**
 	 * Tells if the dongle is connected or not.
@@ -64,6 +66,7 @@ public interface IConnector {
 	 * 
 	 * @throws IOException
 	 *             if an error occurs in disconnection phase.
+	 * @throws SerialPortException 
 	 */
-	public void disconnect() throws IOException;
+	public void disconnect() throws IOException, SerialPortException;
 }

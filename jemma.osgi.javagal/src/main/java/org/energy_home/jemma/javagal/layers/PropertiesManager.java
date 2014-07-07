@@ -15,11 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers;
 
-import org.energy_home.jemma.zgd.jaxb.KeyType;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -27,10 +22,14 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
+import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
+import org.energy_home.jemma.zgd.jaxb.KeyType;
+import org.energy_home.jemma.zgd.jaxb.LogicalType;
+import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
+import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
 /**
  * Properties manager class. Loads/saves from/to a ".properties" file the
@@ -93,9 +92,37 @@ public class PropertiesManager {
 	 */
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
+		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
 	}
+	
+
+	/**
+	 * Gets NumberOfThreadForAnyPool property.
+	 * 
+	 * @return the NumberOfThreadForAnyPool value.
+	 */
+	public int getNumberOfThreadForAnyPool() {
+		String _value = props.getProperty("NumberOfThreadForAnyPool");
+		return Integer.parseInt(_value);
+
+	}
+
+	/**
+	 * Gets KeepAliveThread property.
+	 * 
+	 * @return the KeepAliveThread value.
+	 */
+	public int getKeepAliveThread() {
+		String _value = props.getProperty("KeepAliveThread");
+		return Integer.parseInt(_value);
+
+	}
+	
+	
+	
+	
 
 	/**
 	 * Sets DebugEnabled property's value.
@@ -400,10 +427,10 @@ public class PropertiesManager {
 		//props.setProperty("StartupSet", String.valueOf(sai.getStartupSet()));
 
 		/* networkKey */
-		props.setProperty("networkKey", sai.getNetworkKey().toString());
+		props.setProperty("networkKey", DataManipulation.convertBytesToString(sai.getNetworkKey()));
 
 		/* PreconfiguredLinkKey */
-		props.setProperty("preconfiguredLinkKey", sai.getPreconfiguredLinkKey().toString());
+		props.setProperty("preconfiguredLinkKey", DataManipulation.convertBytesToString(sai.getPreconfiguredLinkKey()));
 
 	}
 
