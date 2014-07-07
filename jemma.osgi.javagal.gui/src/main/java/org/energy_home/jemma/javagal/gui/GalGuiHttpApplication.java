@@ -92,6 +92,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		User adminUser = (User) createRole(userAdmin, username, Role.USER);
 		setUserCredentials(adminUser, password);
 		userCreated = true;
+		
 	}
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {

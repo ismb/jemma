@@ -194,7 +194,7 @@ public class SerialPortConnectorJssc implements IConnector {
 							short[] buffer = new short[bufferOr.length];
 
 							for (int i = 0; i < buffer.length; i++) {
-								buffer[i] = bufferOr[i];
+								buffer[i] = (short) (bufferOr[i] & 0xFF);
 							}
 							ShortArrayObject frame = new ShortArrayObject(buffer, numberOfBytes);
 							_caller.getDataLayer().notifyFrame(frame);
