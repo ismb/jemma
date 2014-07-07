@@ -18,6 +18,8 @@ package org.energy_home.jemma.javagal.layers.data.interfaces;
 
 import java.io.IOException;
 
+import jssc.SerialPortException;
+
 import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 
 /**
@@ -64,6 +66,7 @@ public interface IConnector {
 	 * 
 	 * @throws IOException
 	 *             if an error occurs in disconnection phase.
+	 * @throws SerialPortException 
 	 */
-	public void disconnect() throws IOException;
+	public void disconnect() throws IOException, SerialPortException;
 }

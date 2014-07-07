@@ -50,7 +50,7 @@ public class ShortArrayObject {
 	public ShortArrayObject() {
 		_startedFromZero = false;
 		array = new short[MAX_ARRAY_DIMENSION];
-		
+
 		count = START;
 
 	}
@@ -68,8 +68,8 @@ public class ShortArrayObject {
 	 */
 	public ShortArrayObject(short[] buffer, int size) {
 		_startedFromZero = true;
-		array = new short[buffer.length];
-		System.arraycopy(buffer, 0, array, 0, array.length);
+		array = new short[size];
+		System.arraycopy(buffer, 0, array, 0, size);
 		count = size;
 
 	}
@@ -156,9 +156,27 @@ public class ShortArrayObject {
 		short[] buff = getShortArray();
 		byte[] _data = new byte[buff.length];
 		for (int i = 0; i < _data.length; i++)
-			_data[i] =  ((Short)buff[i]).byteValue();
+			_data[i] = ((Short) buff[i]).byteValue();
 		return _data;
 	}
+	
+	
+
+	/**
+	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
+	 * that all elements in the backing array are returned, even those after the
+	 * {@code size} value that are to be considered invalid.
+	 * 
+	 * @return the byte array.
+	 */
+	public byte[] getByteArrayRealSize() {
+		short[] buff = getShortArray();
+		byte[] _data = new byte[getCount(true)];
+		for (int i = 0; i < _data.length; i++)
+			_data[i] = ((Short) buff[i]).byteValue();
+		return _data;
+	}
+	
 
 	/**
 	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
@@ -183,10 +201,6 @@ public class ShortArrayObject {
 			_data[i] = getByteArray()[START + i];
 		return _data;
 	}
-
-	
-
-	
 
 	/**
 	 * Gets the number of valid byte(s) carried by this byte array.
@@ -218,7 +232,7 @@ public class ShortArrayObject {
 		StringBuffer _res = new StringBuffer();
 		short[] _vect = getShortArray();
 		for (int i = 0; i < getCount(true); i++)
-			_res.append(String.format("%02X", ((Short)_vect[i]).byteValue()));
+			_res.append(String.format("%02X", ((Short) _vect[i]).byteValue()));
 		return _res.toString();
 	}
 }

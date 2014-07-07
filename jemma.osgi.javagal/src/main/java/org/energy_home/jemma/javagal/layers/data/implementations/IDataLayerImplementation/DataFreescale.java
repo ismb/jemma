@@ -34,7 +34,8 @@ import java.util.concurrent.TimeUnit;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.business.Utils;
-import org.energy_home.jemma.javagal.layers.data.implementations.SerialCommRxTx;
+import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConnectorJssc;
+import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConnectorRxTx;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
@@ -113,7 +114,32 @@ public class DataFreescale implements IDataLayer {
 		gal = _gal;
 
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-		dongleRs232 = new SerialCommRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+
+		// we don't know in advance which comm library is installed into the
+		// system.
+		boolean foundSerialLib = false;
+
+		try { // we try first with RxTx
+			dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+			foundSerialLib = true;
+		} catch (NoClassDefFoundError e) {
+			LOG.warn("RxTx not found");
+		}
+
+		if (!foundSerialLib) {
+			try {
+				// then with jSSC
+				dongleRs232 = new SerialPortConnectorJssc(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+				foundSerialLib = true;
+			} catch (NoClassDefFoundError e) {
+				LOG.warn("jSSC not found");
+			}
+		}
+
+		if (!foundSerialLib) {
+			throw new Exception("Error not found Rxtx or Jssc serial connector library");
+		}
+
 		INTERNAL_TIMEOUT = gal.getPropertiesManager().getCommandTimeoutMS();
 
 		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
@@ -124,11 +150,10 @@ public class DataFreescale implements IDataLayer {
 			}
 		});
 
-		if (executor instanceof ThreadPoolExecutor)
-		{
-			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
-			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
-			
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
 		}
 	}
 
@@ -2076,6 +2101,8 @@ public class DataFreescale implements IDataLayer {
 			if (messageEvent.getClusterID() == 0x8031) {
 				String __key = "";
 				__key = String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress());
+				if (gal.getPropertiesManager().getDebugEnabled())
+					LOG.info("Received LQI_RSP from node:" + __key);
 				synchronized (listLocker) {
 					for (ParserLocker pl : listLocker) {
 						if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
@@ -2322,6 +2349,10 @@ public class DataFreescale implements IDataLayer {
 
 								Status _st = new Status();
 								_st.setCode((short) GatewayConstants.SUCCESS);
+
+								if (gal.getPropertiesManager().getDebugEnabled())
+									LOG.info("Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
 								gal.get_gatewayEventManager().nodeDiscovered(_st, _newNode);
 								/*
 								 * Saving the Panid in order to leave the

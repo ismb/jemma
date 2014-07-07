@@ -306,7 +306,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeDiscovered(final Status _status, final WSNNode _node) throws Exception {
-		try {
+		
 
 			executor.execute(new Runnable() {
 				public void run() {
@@ -321,17 +321,14 @@ public class GatewayEventManager implements IGatewayEventManager {
 				}
 
 			});
-		} catch (Exception e) {
-
-			throw e;
-		}
+		
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void nodeRemoved(final Status _status, final WSNNode _node) throws Exception {
-		try {
+		
 			executor.execute(new Runnable() {
 				public void run() {
 					for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -343,10 +340,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 				}
 			});
 
-		} catch (Exception e) {
-
-			throw e;
-		}
+		
 	}
 
 	/**
