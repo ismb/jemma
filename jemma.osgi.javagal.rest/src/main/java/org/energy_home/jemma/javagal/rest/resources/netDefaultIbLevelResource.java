@@ -62,6 +62,11 @@ public class netDefaultIbLevelResource extends ServerResource {
 		_det.getValue().add("c8 - apsUseInsecureJoin (Use secure or insecure join)");
 		_det.getValue().add("80 - nwkPanId (The PAN Identifier for the PAN of which the device is amember.)");
 		_det.getValue().add("9A - nwkExtendedPANID (The Extended PAN Identifier for the PAN of which the device is a member.)");
+		_det.getValue().add("A0 - nwkSecurityLevel");
+		_det.getValue().add("96 - nwkShortAddress");
+		_det.getValue().add("DA - nwkDeviceType");
+		_det.getValue().add("DB - nwkSoftwareVersion");
+		_det.getValue().add("E6 - SASNwkKey");
 		_info.setDetail(_det);
 		getResponse().setEntity(Util.marshal(_info), MediaType.APPLICATION_XML);
 		return;

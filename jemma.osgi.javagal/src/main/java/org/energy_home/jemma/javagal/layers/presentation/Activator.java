@@ -15,21 +15,18 @@
  */
 package org.energy_home.jemma.javagal.layers.presentation;
 
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayInterface;
-
-import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Osgi Activator implementation.
@@ -67,7 +64,13 @@ public class Activator implements BundleActivator {
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 			if (context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME) != null)
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
+			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG) != null)
+				PropertiesManager.props.setProperty("debugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG));
+			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_SERIAL_LOG) != null)
+				PropertiesManager.props.setProperty("serialDataDebugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_SERIAL_LOG));
 
+			
+			
 			if (_fac == null)
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
 
