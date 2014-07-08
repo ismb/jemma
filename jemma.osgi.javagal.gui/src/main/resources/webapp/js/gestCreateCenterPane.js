@@ -13,11 +13,10 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
 	
 	that.templateActivator = function(idTpl){
 		
-    	var arrTplToImport = {tplChannelNetwork: './networkChannel.html', 
-    	                      tplVersionJGal: './versionJGal.html', 
-    	                      tplViewDevice: './viewDevice.html', 
-    	                      tplViewGraphNodes: './viewGraphNodes.html', 
-    	                      tplManageNetwork: './manageNetwork.html'};
+    	var arrTplToImport = {tplChannelNetwork: './advancedControl.html', 
+    	                      tplViewDevice: './networkDevices.html', 
+    	                      tplViewGraphNodes: './networkTopology.html', 
+    	                      tplManageNetwork: './zigbeeNetworkInfo.html'};
     	
     	var tmpFileToLoad = eval("arrTplToImport."+idTpl);
     	

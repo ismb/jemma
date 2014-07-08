@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1401290980327
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1404401973487
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.utils.Activator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgi Utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.utils;singleton:=true
+Bundle-SymbolicName: jemma.osgi.utils
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.6
 Created-By: Apache Maven Bundle Plugin
@@ -17,8 +17,8 @@ Export-Package: org.energy_home.jemma.osgi.utils.equinox.console;uses:="
  ="1.0.1",org.energy_home.jemma.utils.encrypt;uses:="javax.crypto.spec,j
  avax.crypto";version="1.0.0",org.energy_home.jemma.utils.rest;uses:="or
  g.apache.http.protocol,org.apache.http.conn.scheme,org.apache.http.para
- ms,org.apache.http.conn.ssl,org.apache.http.client,org.apache.http.impl
- .client,org.apache.http.conn,org.apache.http.impl.auth,org.apache.http.
+ ms,org.apache.http.conn.ssl,org.apache.http.client,org.apache.http.conn
+ ,org.apache.http.impl.client,org.apache.http.impl.auth,org.apache.http.
  client.methods,org.apache.http.impl.conn.tsccm,org.apache.http.util,org
  .apache.http.auth,org.apache.http";version="1.0.0",org.energy_home.jemm
  a.utils.thread;version="1.0.0",org.energy_home.jemma.utils.xml.jaxb;use
@@ -48,7 +48,3 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- stax-api-1.0-2.jar,
- wstx-asl-3.2.3.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar

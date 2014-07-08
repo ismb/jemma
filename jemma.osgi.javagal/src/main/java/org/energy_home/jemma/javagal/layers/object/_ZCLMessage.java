@@ -85,10 +85,10 @@ public class _ZCLMessage {
 		boolean _bit0 = false;
 		boolean _bit1 = false;
 
-		if ((FrameControl & 0x01) == 1) {
+		if ((FrameControl & 0x01) == 0x01) {
 			_bit0 = true;
 		}
-		if ((FrameControl & 0x02) == 1) {
+		if ((FrameControl & 0x02) == 0x02) {
 			_bit1 = true;
 		}
 
@@ -98,7 +98,7 @@ public class _ZCLMessage {
 			_commandSpecifcForCluster = true;
 
 		// Check Manufacurer code
-		if ((FrameControl & 0x04) == 1) {
+		if ((FrameControl & 0x04) == 0x04) {
 			TransequenceNumber = _Data[3];
 			CommandID = _Data[4];
 			int x = 0;
@@ -114,9 +114,9 @@ public class _ZCLMessage {
 				Payload[x++] = _Data[i];
 
 		}
-		Server_to_Client = ((FrameControl & 0x08) == 1) ? true : false;// Direction
+		Server_to_Client = ((FrameControl & 0x08) == 0x08) ? true : false;// Direction
 																		// Bit
-		Disable_DefaultResponse = ((FrameControl & 0x10) == 1) ? true : false;// Disable
+		Disable_DefaultResponse = ((FrameControl & 0x10) == 0x10) ? true : false;// Disable
 																				// Disable_DefaultResponse
 																				// Bit
 
