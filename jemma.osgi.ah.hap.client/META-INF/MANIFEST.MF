@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1401290986320
-Build-Jdk: 1.7.0_51
-Built-By: einann
+Bnd-LastModified: 1404401987097
+Build-Jdk: 1.6.0_45
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.hap.client.HapCoreServic
  e
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Hap Client
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.hap.client;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.hap.client
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.2.15
 Created-By: Apache Maven Bundle Plugin
@@ -45,8 +45,3 @@ Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- stax-api-1.0-2.jar,
- wstx-asl-3.2.3.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar,
- easymock-2.4.jar
