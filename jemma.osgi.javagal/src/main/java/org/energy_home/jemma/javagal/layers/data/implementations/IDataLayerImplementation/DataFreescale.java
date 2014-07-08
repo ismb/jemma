@@ -88,12 +88,10 @@ public class DataFreescale implements IDataLayer {
 
 	GalController gal = null;
 	private IConnector dongleRs232 = null;
-	// FIXME mass-rename logger to LOG when ready
+	
 	private static final Logger LOG = LoggerFactory.getLogger(DataFreescale.class);
 	private final List<ParserLocker> listLocker;
-	/**
-	 * Default timeout's value.
-	 */
+	
 	public Long INTERNAL_TIMEOUT;
 
 	public final static short MAX_TO_SEND_BYTE_ARRAY = 2048;
@@ -254,14 +252,14 @@ public class DataFreescale implements IDataLayer {
 			while (!receivedDataQueue.isEmpty()) {
 				if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
 					if (gal.getPropertiesManager().getDebugEnabled()) {
-						DataManipulation.errorLogListShortHexRadix("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from", receivedDataQueue);
+						LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(receivedDataQueue));
 					}
 					receivedDataQueue.remove(0);
 					continue;
 				}
 				List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
 				if (gal.getPropertiesManager().getDebugEnabled())
-					DataManipulation.debugLogArrayShortHexRadix("Analyzing Raw Data", copyList);
+					LOG.debug("Analyzing Raw Data:" + DataManipulation.convertListShortToString(copyList));
 
 				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 					if (gal.getPropertiesManager().getDebugEnabled())
@@ -287,7 +285,7 @@ public class DataFreescale implements IDataLayer {
 
 				if (csc.getLastCalulated() != messageCfc) {
 					if (gal.getPropertiesManager().getDebugEnabled())
-						DataManipulation.errorLogListShortHexRadix("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from", receivedDataQueue);
+						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(receivedDataQueue));
 					receivedDataQueue.remove(0);
 					continue;
 
@@ -319,7 +317,7 @@ public class DataFreescale implements IDataLayer {
 
 	public void processMessages(short[] message) throws Exception {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Processing message", message);
+			LOG.info("Processing message: "+  DataManipulation.convertArrayShortToString(message));
 
 		ByteBuffer bb = ByteBuffer.allocate(2);
 		bb.order(ByteOrder.BIG_ENDIAN);
@@ -397,7 +395,7 @@ public class DataFreescale implements IDataLayer {
 		/* APS-ZDP-Mgmt_Lqi.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtLqiResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO", message);
+				LOG.info("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO: "+  DataManipulation.convertArrayShortToString(message));
 
 		}
 		/* ZTC-ReadExtAddr.Confirm */
@@ -414,7 +412,7 @@ public class DataFreescale implements IDataLayer {
 		/* ZDP-Mgmt_Leave.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtLeaveResponse) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Leave.Response", message);
+				LOG.info("Extracted ZDP-Mgmt_Leave.Response: " +  DataManipulation.convertArrayShortToString(message));
 
 		}
 		/* ZDP-Active_EP_rsp.response */
@@ -454,52 +452,52 @@ public class DataFreescale implements IDataLayer {
 		/* MacGetPIBAttribute.Confirm */
 		else if (_command == FreescaleConstants.MacGetPIBAttributeConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacGetPIBAttribute.Confirm", message);
+				LOG.info("Extracted MacGetPIBAttribute.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacBeaconNotify.Indication */
 		else if (_command == FreescaleConstants.MacBeaconNotifyIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacBeaconNotify.Indication", message);
+				LOG.info("Extracted MacBeaconNotify.Indication: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacBeaconStart.Indication */
 		else if (_command == FreescaleConstants.MacPollNotifyIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacBeaconStart.Indication", message);
+				LOG.info("Extracted MacBeaconStart.Indication: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-NETWORK-FORMATION.Confirmn */
 		else if (_command == FreescaleConstants.NLMENETWORKFORMATIONConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Confirm", message);
+				LOG.info("Extracted NLME-NETWORK-FORMATION.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-START-ROUTER.Request */
 		else if (_command == FreescaleConstants.NLMESTARTROUTERRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Confirm", message);
+				LOG.info("Extracted NLME-NETWORK-FORMATION.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacStart.Request */
 		else if (_command == FreescaleConstants.MacStartRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacStart.Request", message);
+				LOG.info("Extracted MacStart.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacStart.Confirm */
 		else if (_command == FreescaleConstants.MacStartConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacStart.Confirm", message);
+				LOG.info("Extracted MacStart.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-START-ROUTER.Confirm */
 		else if (_command == FreescaleConstants.NLMESTARTROUTERConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-START-ROUTER.Confirm", message);
+				LOG.info("Extracted NLME-START-ROUTER.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NWK-ProcessSecureFrame.Report */
 		else if (_command == FreescaleConstants.NWKProcessSecureFrameReport) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NWK-ProcessSecureFrame.Report", message);
+				LOG.info("Extracted NWK-ProcessSecureFrame.Report: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* ZDP-Nwk-ProcessSecureFrame.Confirm */
 		else if (_command == FreescaleConstants.ZDPNwkProcessSecureFrameConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted ZDP-Nwk-ProcessSecureFrame.Confirm", message);
+				LOG.info("Extracted ZDP-Nwk-ProcessSecureFrame.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 
 		/* BlackBox.WriteSAS.Confirm */
@@ -553,62 +551,62 @@ public class DataFreescale implements IDataLayer {
 		/* MacSetPIBAttribute.Confirm */
 		else if (_command == FreescaleConstants.MacSetPIBAttributeConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacSetPIBAttribute.Confirm", message);
+				LOG.info("Extracted MacSetPIBAttribute.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-ENERGY-SCAN.Request */
 		else if (_command == FreescaleConstants.NLMEENERGYSCANRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-ENERGY-SCAN.Request", message);
+				LOG.info("Extracted NLME-ENERGY-SCAN.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacScan.Request */
 		else if (_command == FreescaleConstants.MacScanRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacScan.Request", message);
+				LOG.info("Extracted MacScan.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacScan.Confirm */
 		else if (_command == FreescaleConstants.MacScanConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacScan.Confirm", message);
+				LOG.info("Extracted MacScan.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-ENERGY-SCAN.confirm */
 		else if (_command == FreescaleConstants.NLMEENERGYSCANconfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-ENERGY-SCAN.confirm", message);
+				LOG.info("Extracted NLME-ENERGY-SCAN.confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-NETWORK-DISCOVERY.Request */
 		else if (_command == FreescaleConstants.NLMENETWORKDISCOVERYRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-DISCOVERY.Request", message);
+				LOG.info("Extracted NLME-NETWORK-DISCOVERY.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacScan.Request */
 		else if (_command == FreescaleConstants.MacScanRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted MacScan.Request", message);
+				LOG.info("Extracted MacScan.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-NETWORK-DISCOVERY.Confirm */
 		else if (_command == FreescaleConstants.NLMENetworkDiscoveryConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-DISCOVERY.Confirm", message);
+				LOG.info("Extracted NLME-NETWORK-DISCOVERY.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-NETWORK-FORMATION.Request */
 		else if (_command == FreescaleConstants.NLMENETWORKFORMATIONRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-NETWORK-FORMATION.Request", message);
+				LOG.info("Extracted NLME-NETWORK-FORMATION.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-SET.Request */
 		else if (_command == FreescaleConstants.NLMESetRequest) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("Extracted NLME-SET.Request", message);
+				LOG.info("Extracted NLME-SET.Request: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-NWK-STATUS.Indication */
 		else if (_command == FreescaleConstants.NLMENwkStatusIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("NLME-NWK-STATUS.Indication", message);
+				LOG.info("NLME-NWK-STATUS.Indication: "+  DataManipulation.convertArrayShortToString(message));
 		}
 		/* NLME-ROUTE-DISCOVERY.confirm */
 		else if (_command == FreescaleConstants.NLMENWKSTATUSIndication) {
 			if (gal.getPropertiesManager().getDebugEnabled())
-				DataManipulation.logArrayShortToHex("NLME-ROUTE-DISCOVERY.confirm", message);
+				LOG.info("NLME-ROUTE-DISCOVERY.confirm: "+  DataManipulation.convertArrayShortToString(message));
 		}
 
 	}
@@ -781,7 +779,7 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("Extracted NLME-JOIN.Confirm: Invalid Status - " + _status);
 		}
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("NLME-JOIN.Confirm", message);
+			LOG.info("NLME-JOIN.Confirm: " +  DataManipulation.convertArrayShortToString(message));
 	}
 
 	/**
@@ -789,7 +787,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void ztcClearNeighborTableEntryConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("ZTC-ClearNeighborTableEntry.Confirm", message);
+			LOG.info("ZTC-ClearNeighborTableEntry.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		short status = message[3];
 		String mess = "";
 		switch (status) {
@@ -817,7 +815,8 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsClearDeviceKeyPairSetConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("APS-ClearDeviceKeyPairSet.Confirm", message);
+			LOG.debug("APS-ClearDeviceKeyPairSet.Confirm: "+ DataManipulation.convertArrayShortToString(message));
+			
 		short status = message[3];
 		String mess = "";
 		switch (status) {
@@ -845,7 +844,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpMgmtPermitJoinResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Permit_Join.response", message);
+			LOG.info("Extracted ZDP-Mgmt_Permit_Join.response: "+  DataManipulation.convertArrayShortToString(message));
 		short status = message[3];
 		String mess = "";
 
@@ -890,7 +889,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsmeSetConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APSME-SET.Confirm", message);
+			LOG.info("Extracted APSME-SET.Confirm: "+ DataManipulation.convertArrayShortToString(message));
 		short status = message[3];
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -911,7 +910,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void nmleSetConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted NMLE-SET.Confirm", message);
+			LOG.info("Extracted NMLE-SET.Confirm: " +  DataManipulation.convertArrayShortToString(message));
 		short status = message[3];
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -933,7 +932,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpNodeDescriptorResponse(short[] message) throws Exception {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-NodeDescriptor.Response", message);
+			LOG.info("Extracted ZDP-NodeDescriptor.Response: "+  DataManipulation.convertArrayShortToString(message));
 		int _NWKAddressOfInterest = DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]);
 		Address _addressOfInterst = new Address();
 		_addressOfInterst.setNetworkAddress(_NWKAddressOfInterest);
@@ -1061,7 +1060,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void ztcGetChannelConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZTC-GetChannel.Confirm", message);
+			LOG.info("Extracted ZTC-GetChannel.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (pl.getType() == TypeMessage.CHANNEL_REQUEST) {
@@ -1081,7 +1080,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void blackBoxWriteSASConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted BlackBox.WriteSAS.Confirm", message);
+			LOG.info("Extracted BlackBox.WriteSAS.Confirm: "+ DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (pl.getType() == TypeMessage.WRITE_SAS) {
@@ -1100,7 +1099,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void ztcModeSelectConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZTC-ModeSelect.Confirm", message);
+			LOG.info("Extracted ZTC-ModeSelect.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		short status = message[3];
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1120,7 +1119,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsRegisterEndPointConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APS-RegisterEndPoint.Confirm", message);
+			LOG.info("Extracted APS-RegisterEndPoint.Confirm: "+ DataManipulation.convertArrayShortToString(message));
 		// Found APS-RegisterEndPoint.Confirm. Remove the lock
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1140,7 +1139,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpStartNwkExConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-StartNwkEx.Confirm", message);
+			LOG.info("Extracted ZDP-StartNwkEx.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (pl.getType() == TypeMessage.START_NETWORK) {
@@ -1162,7 +1161,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsmeGetConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APSME_GET.Confirm", message);
+			LOG.info("Extracted APSME_GET.Confirm: "+ DataManipulation.convertArrayShortToString(message));
 		String _Key = String.format("%02X", message[4]);
 		// Found APSME_GET-DATA.Confirm. Remove the lock
 		synchronized (listLocker) {
@@ -1188,7 +1187,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void nlmeGetConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted NLME-GET.Confirm", message);
+			LOG.info("Extracted NLME-GET.Confirm: " + DataManipulation.convertArrayShortToString(message));
 		String _Key = String.format("%02X", (byte) message[4]);
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1215,7 +1214,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpStopNwkExConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-StopNwkEx.Confirm", message);
+			LOG.info("Extracted ZDP-StopNwkEx.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (pl.getType() == TypeMessage.STOP_NETWORK) {
@@ -1240,7 +1239,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpActiveEndPointResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-Active_EP_rsp.response", message);
+			LOG.info("Extracted ZDP-Active_EP_rsp.response: " +  DataManipulation.convertArrayShortToString(message));
 		short Status = message[3];
 		Address _add = new Address();
 
@@ -1305,7 +1304,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpIeeeAddrResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-IEEE_addr.response", message);
+			LOG.info("Extracted ZDP-IEEE_addr.response: "+  DataManipulation.convertArrayShortToString(message));
 
 		long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
 		Integer shortAddress = DataManipulation.toIntFromShort((byte) message[13], (byte) message[12]);
@@ -1332,7 +1331,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void ztcReadExtAddrConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZTC-ReadExtAddr.Confirm", message);
+			LOG.info("Extracted ZTC-ReadExtAddr.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		long longAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
 		BigInteger _bi = BigInteger.valueOf(longAddress);
 		synchronized (listLocker) {
@@ -1354,7 +1353,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsDeregisterEndPointConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APS-DeregisterEndPoint.Confirm", message);
+			LOG.info("Extracted APS-DeregisterEndPoint.Confirm: " +  DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT)) {
@@ -1373,7 +1372,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpMgmtBindResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Bind.Response", message);
+			LOG.info("Extracted ZDP-Mgmt_Bind.Response: "+  DataManipulation.convertArrayShortToString(message));
 
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1432,7 +1431,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpUnbindResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-UNBIND.Response", message);
+			LOG.info("Extracted ZDP-UNBIND.Response: "+  DataManipulation.convertArrayShortToString(message));
 
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1467,7 +1466,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpBindResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-BIND.Response", message);
+			LOG.info("Extracted ZDP-BIND.Response: " +  DataManipulation.convertArrayShortToString(message));
 
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1503,7 +1502,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsGetEndPointListConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APS-GetEndPointIdList.Confirm", message);
+			LOG.info("Extracted APS-GetEndPointIdList.Confirm: "+ DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if ((pl.getType() == TypeMessage.GET_END_POINT_LIST)) {
@@ -1532,7 +1531,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpSimpleDescriptorResponse(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-SimpleDescriptor.Response", message);
+			LOG.info("Extracted ZDP-SimpleDescriptor.Response: "+  DataManipulation.convertArrayShortToString(message));
 		/* Address + EndPoint */
 		Address _add = new Address();
 		_add.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
@@ -1589,7 +1588,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void zdpMgmtNwkUpdateNotify(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted ZDP-Mgmt_Nwk_Update.Notify", message);
+			LOG.info("Extracted ZDP-Mgmt_Nwk_Update.Notify: "+  DataManipulation.convertArrayShortToString(message));
 
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
@@ -1686,9 +1685,9 @@ public class DataFreescale implements IDataLayer {
 			}
 
 		}
-		String logMessage = "Extracted ZTC-ERROR.Event Status:" + MessageStatus;
+		String logMessage = "Extracted ZTC-ERROR.Event Status: " + MessageStatus;
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex(logMessage, message);
+			LOG.info(logMessage + " from " +    DataManipulation.convertArrayShortToString(message));
 	}
 
 	/**
@@ -1696,7 +1695,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void interpanDataConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted INTERPAN-Data.Confirm", message);
+			LOG.info("Extracted INTERPAN-Data.Confirm: "+  DataManipulation.convertArrayShortToString(message));
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 
@@ -1716,7 +1715,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsdeDataConfirm(short[] message) {
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APSDE-DATA.Confirm", message);
+			LOG.info("Extracted APSDE-DATA.Confirm: " +    DataManipulation.convertArrayShortToString(message));
 
 		/* DestAddress + DestEndPoint + SourceEndPoint */
 		long destAddress = DataManipulation.toLong((byte) message[11], (byte) message[10], (byte) message[9], (byte) message[8], (byte) message[7], (byte) message[6], (byte) message[5], (byte) message[4]);
@@ -2037,7 +2036,8 @@ public class DataFreescale implements IDataLayer {
 		messageEvent.setRxTime((long) DataManipulation.toIntFromShort((byte) message[(lastAsdu + 8)], (byte) message[(lastAsdu + 5)]));
 
 		if (gal.getPropertiesManager().getDebugEnabled())
-			DataManipulation.logArrayShortToHex("Extracted APSDE-DATA.Indication", message);
+			LOG.info("Extracted APSDE-DATA.Indication: "+ DataManipulation.convertArrayShortToString(message));
+		
 		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null)) {
 			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress());
 			if (_iee != null)
