@@ -253,18 +253,18 @@ public class DataFreescale implements IDataLayer {
 			Short _toremove = 0;
 			while (!receivedDataQueue.isEmpty()) {
 				if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
-					if (gal.getPropertiesManager().getDebugEnabled()) {
+					if (gal.getPropertiesManager().getserialDataDebugEnabled()) {
 						LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(receivedDataQueue));
 					}
 					receivedDataQueue.remove(0);
 					continue;
 				}
 				List<Short> copyList = new ArrayList<Short>(receivedDataQueue);
-				if (gal.getPropertiesManager().getDebugEnabled())
+				if (gal.getPropertiesManager().getserialDataDebugEnabled())
 					LOG.debug("Analyzing Raw Data:" + DataManipulation.convertListShortToString(copyList));
 
 				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-					if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getserialDataDebugEnabled())
 						LOG.debug("Error, Data received not completed, waiting new raw data...");
 					return null;
 
@@ -272,7 +272,7 @@ public class DataFreescale implements IDataLayer {
 
 				int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
 				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-					if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getserialDataDebugEnabled())
 						LOG.debug("Data received not completed, waiting new raw data...");
 					return null;
 				}
@@ -286,7 +286,7 @@ public class DataFreescale implements IDataLayer {
 					csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
 
 				if (csc.getLastCalulated() != messageCfc) {
-					if (gal.getPropertiesManager().getDebugEnabled())
+					if (gal.getPropertiesManager().getserialDataDebugEnabled())
 						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(receivedDataQueue));
 					receivedDataQueue.remove(0);
 					continue;
@@ -318,11 +318,10 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public void processMessages(short[] message) throws Exception {
-		/*
-		 * if (gal.getPropertiesManager().getDebugEnabled())
-		 * LOG.info("Processing message: "+
-		 * DataManipulation.convertArrayShortToString(message));
-		 */
+
+		if (gal.getPropertiesManager().getserialDataDebugEnabled())
+			LOG.info("Processing message: " + DataManipulation.convertArrayShortToString(message));
+
 		ByteBuffer bb = ByteBuffer.allocate(2);
 		bb.order(ByteOrder.BIG_ENDIAN);
 		bb.put((byte) message[0]);
@@ -2228,7 +2227,7 @@ public class DataFreescale implements IDataLayer {
 					WrapperWSNNode node = null;
 					synchronized (gal) {
 						index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
-						if (index > -1){
+						if (index > -1) {
 							node = gal.getNetworkcache().get(index);
 							if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
 								gal.get_gatewayEventManager().notifyZCLCommand(_zm);
@@ -2236,15 +2235,12 @@ public class DataFreescale implements IDataLayer {
 								gal.getMessageManager().APSMessageIndication(messageEvent);
 
 							}
-						}
-						else
-						{
+						} else {
 							if (gal.getPropertiesManager().getDebugEnabled())
 								LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
 						}
 					}
-					
 
 				} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
 					WrapperWSNNode node = null;
@@ -2263,13 +2259,11 @@ public class DataFreescale implements IDataLayer {
 								gal.getMessageManager().APSMessageIndication(messageEvent);
 
 							}
-						}
-						else
-						{
+						} else {
 							if (gal.getPropertiesManager().getDebugEnabled())
 								LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
-							
+
 						}
 					}
 
