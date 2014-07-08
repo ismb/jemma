@@ -1696,7 +1696,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					String nodeIeeeAddressHex = getIeeeAddressHex(installingDevice.getAddress());
 
 					if (status.getCode() != 0) {
-						log.error(nodeIeeeAddressHex + ": nodeDescriptorRetrieved callback returned error code " + status.getCode() + "'. Guessed pid '" + nodePid);
+						log.error(nodeIeeeAddressHex + ": nodeDescriptorRetrieved callback returned error code " + status.getCode() + " Message:" +status.getMessage() +" '. Guessed pid '" + nodePid);
 						if (installingDevice.getRetryCounter() > 0) {
 							try {
 								gateway.getNodeDescriptor(timeout, installingDevice.getAddress());
