@@ -368,7 +368,8 @@ CostiConsumi.GetDatiPotenza = function() {
 	}
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAttribute(CostiConsumi.DatiPotenzaAttuale, InterfaceEnergyHome.POTENZA_TOTALE);
+			//InterfaceEnergyHome.objService.getAttribute(CostiConsumi.DatiPotenzaAttuale, InterfaceEnergyHome.POTENZA_TOTALE);
+			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiPotenzaAttuale);
 		} catch (err) {
 			if (Main.env == 0) console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiPotenza method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenza", err);
@@ -394,11 +395,40 @@ CostiConsumi.GetDatiPotenza = function() {
 CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 	if (Main.env == 0) console.log('FotoVoltaico.js', 'DatiPotenzaAttuale', 'Entro!');
 
-	if (err != null){
+	/*if (err != null){
 		if (Main.env == 0) console.log('exception in FotoVoltaico.js - in CostiConsumi.DatiPotenzaAttuale method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiPotenzaAttuale", err);
 	} else if (result != null){
 		CostiConsumi.potenzaAttuale.value = result.value;
+	} else {
+		CostiConsumi.potenzaAttuale.value = null;
+	}*/
+	if (err != null) {
+		if (Main.env == 0)
+			console
+					.log(
+							'exception in FotoVoltaico.js - in CostiConsumi.DatiPotenzaAttuale method: ',
+							err);
+		InterfaceEnergyHome.GestErrorEH("DatiPotenzaAttuale", err);
+	} else if (result != null) {
+		if (InterfaceEnergyHome.mode == 0) {
+			CostiConsumi.potenzaAttuale.value = result.value;
+		} else{
+			//prelevare dato smart info
+			$.each(result.list,function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+						CostiConsumi.SmartInfo = elettrodom["map"];
+						device_value = CostiConsumi.SmartInfo.device_value;
+						if (device_value != undefined) {
+							CostiConsumi.potenzaAttuale.value = Math.floor(device_value.value.value);
+						}
+					}
+					if (Main.env == 0)
+						console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
+				}
+			});
+		}
 	} else {
 		CostiConsumi.potenzaAttuale.value = null;
 	}
@@ -700,7 +730,7 @@ CostiConsumi.VisGrafico = function() {
 	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
 	var dataVenduta = new Array();
 	var dataAcquistata = new Array();
-	var newdataConsumi = new Array(); //Questa mi serve per visualizzare nel grafico il dato del consumo - l'energia comprata (così il totale visualizzato è il totale dell'energia consumata)
+	var newdataConsumi = new Array(); //Questa mi serve per visualizzare nel grafico il dato del consumo - l'energia comprata (cos‚Äú il totale visualizzato ÔøΩ il totale dell'energia consumata)
 	
 	if (Main.env == 0) console.log('dataConsumi', dataConsumi);
 	if (Main.env == 0) console.log('dataIAC', dataIAC);
@@ -728,7 +758,7 @@ CostiConsumi.VisGrafico = function() {
 			
 			tmpAcquistata = tmp - dataIAC[index];
 			if (tmpAcquistata < 0){
-				//Ho prodotto di più di quanto ho consumato
+				//Ho prodotto di piÔøΩ di quanto ho consumato
 				dataVenduta[index] = Math.abs(tmpAcquistata);
 				dataAcquistata[index] = 0;
 			} else {
@@ -1652,12 +1682,12 @@ CostiConsumi.changeGestTimer = function(){
 	//  e visualizzare un messaggio all'utente.
 	CostiConsumi.timerPotenza = setInterval("CostiConsumi.GetDatiPotenza()", CostiConsumi.TIMER_CHANGE_TIMER);
 	var err = {};
-	err.msg = "L'aggiornamento verrà effettuato ogni 15', per ripristinare l'aggiornamento al minuto, aggiornare la pagina.";
+	err.msg = "L'aggiornamento verrÀÜ effettuato ogni 15', per ripristinare l'aggiornamento al minuto, aggiornare la pagina.";
 	InterfaceEnergyHome.GestErrorEH("changeGestTimer", err);
 }
 */
 
-/* Vecchio grafico che può tornare utile
+/* Vecchio grafico che puÀú tornare utile
    Visualizza solo il consumo e la produzione
 
 chartConsumi = new Highcharts.Chart({
