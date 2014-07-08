@@ -127,7 +127,7 @@ public class SerialPortConnectorJssc implements IConnector {
 		if (isConnected()) {
 
 			try {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
+				if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info(">>> Sending: " + buff.ToHexString());
 				serialPort.writeBytes(buff.getByteArrayRealSize());
 			} catch (Exception e) {

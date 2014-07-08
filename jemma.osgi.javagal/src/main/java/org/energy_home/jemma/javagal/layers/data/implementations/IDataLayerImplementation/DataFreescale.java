@@ -219,7 +219,7 @@ public class DataFreescale implements IDataLayer {
 							if (_currentCommandReived != null) {
 								synchronized (receivedDataQueue) {
 
-									if (gal.getPropertiesManager().getDebugEnabled())
+									if (gal.getPropertiesManager().getserialDataDebugEnabled())
 										LOG.info("<<< Received data:" + _currentCommandReived.ToHexString());
 
 									short[] shortArray = _currentCommandReived.getShortArray();
@@ -935,8 +935,6 @@ public class DataFreescale implements IDataLayer {
 	 * @throws Exception
 	 */
 	private void zdpNodeDescriptorResponse(short[] message) throws Exception {
-		if (gal.getPropertiesManager().getDebugEnabled())
-			LOG.info("Extracted ZDP-NodeDescriptor.Response: " + DataManipulation.convertArrayShortToString(message));
 		int _NWKAddressOfInterest = DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]);
 		Address _addressOfInterst = new Address();
 		_addressOfInterst.setNetworkAddress(_NWKAddressOfInterest);
@@ -1048,17 +1046,14 @@ public class DataFreescale implements IDataLayer {
 		synchronized (listLocker) {
 			for (ParserLocker pl : listLocker) {
 				if (pl.getType() == TypeMessage.NODE_DESCRIPTOR && pl.get_Key().equalsIgnoreCase(_key)) {
+					if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.info("@Extracted ZDP-NodeDescriptor.Response: " + DataManipulation.convertArrayShortToString(message) + " -- KEY: " + _key);
 					synchronized (pl) {
 						pl.getStatus().setCode(message[3]);/* Status */
 						pl.set_objectOfResponse(_node);
 						pl.notify();
 					}
 					break;
-				} else {
-
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.info("@Extracted ZDP-NodeDescriptor.Response: " + DataManipulation.convertArrayShortToString(message) + " -- KEY: " + _key);
-
 				}
 			}
 		}
@@ -1846,20 +1841,25 @@ public class DataFreescale implements IDataLayer {
 			return;
 		case 0x01:
 			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[7], (byte) message[6]));
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-			else
+			try {
+				_ieee = gal.getIeeeAddress_FromShortAddress(address.getNetworkAddress());
+			} catch (GatewayException e1) {
+				LOG.error(e1.getMessage());
 				return;
+			}
+			address.setIeeeAddress(_ieee);
 			messageEvent.setSrcAddress(address);
 			break;
 		case 0x02:
 			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[7], (byte) message[6]));
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-			else
+			try {
+				_ieee = gal.getIeeeAddress_FromShortAddress(address.getNetworkAddress());
+			} catch (GatewayException e) {
+				LOG.error(e.getMessage());
 				return;
+			}
+
+			address.setIeeeAddress(_ieee);
 			messageEvent.setSrcAddress(address);
 
 			break;
@@ -1886,20 +1886,24 @@ public class DataFreescale implements IDataLayer {
 			return;
 		case 0x01:
 			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[18], (byte) message[17]));
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-			else
+			try {
+				_ieee = gal.getIeeeAddress_FromShortAddress(address.getNetworkAddress());
+			} catch (GatewayException e) {
+				LOG.error(e.getMessage());
 				return;
+			}
+			address.setIeeeAddress(_ieee);
 			messageEvent.setDstAddress(address);
 			break;
 		case 0x02:
 			address.setNetworkAddress(DataManipulation.toIntFromShort((byte) message[18], (byte) message[17]));
-			_ieee = gal.getIeeeAddress_FromNetworkCache(address.getNetworkAddress());
-			if (_ieee != null)
-				address.setIeeeAddress(_ieee);
-			else
+			try {
+				_ieee = gal.getIeeeAddress_FromShortAddress(address.getNetworkAddress());
+			} catch (GatewayException e) {
+				LOG.error(e.getMessage());
 				return;
+			}
+			address.setIeeeAddress(_ieee);
 			messageEvent.setDstAddress(address);
 
 			break;
@@ -2048,26 +2052,26 @@ public class DataFreescale implements IDataLayer {
 			LOG.info("Extracted APSDE-DATA.Indication: " + DataManipulation.convertArrayShortToString(message));
 
 		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getDestinationAddress().getIeeeAddress() == null)) {
-			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getDestinationAddress().getNetworkAddress());
-			if (_iee != null)
-				messageEvent.getDestinationAddress().setIeeeAddress(_iee);
-			else {
-
+			BigInteger _iee = null;
+			try {
+				_iee = gal.getIeeeAddress_FromShortAddress(messageEvent.getDestinationAddress().getNetworkAddress());
+			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
 					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded Ieee destination address not found, related ShortAddress:", String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 
-					return;
+						return;
 				}
 			}
+			messageEvent.getDestinationAddress().setIeeeAddress(_iee);
+
 		}
 
 		if ((messageEvent.getDestinationAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getDestinationAddress().getNetworkAddress() == null)) {
 
-			Integer _short = gal.getShortAddress_FromNetworkCache(messageEvent.getDestinationAddress().getIeeeAddress());
-			if (_short != null)
-				messageEvent.getDestinationAddress().setNetworkAddress(_short);
-			else {
+			Integer _short = null;
+			try {
+				_short = gal.getShortAddress_FromIeeeAddress(messageEvent.getDestinationAddress().getIeeeAddress());
+			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
 					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
@@ -2075,12 +2079,14 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
+			messageEvent.getDestinationAddress().setNetworkAddress(_short);
+
 		}
 		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getSourceAddress().getIeeeAddress() == null)) {
-			BigInteger _iee = gal.getIeeeAddress_FromNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
-			if (_iee != null)
-				messageEvent.getSourceAddress().setIeeeAddress(_iee);
-			else {
+			BigInteger _iee = null;
+			try {
+				_iee = gal.getIeeeAddress_FromShortAddress(messageEvent.getSourceAddress().getNetworkAddress());
+			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
 					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
@@ -2088,19 +2094,23 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 
+			messageEvent.getSourceAddress().setIeeeAddress(_iee);
+
 		}
 		if ((messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getSourceAddress().getNetworkAddress() == null)) {
 
-			Integer _short = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
-			if (_short != null)
-				messageEvent.getSourceAddress().setNetworkAddress(_short);
-			else {
+			Integer _short = null;
+			try {
+				_short = gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress());
+			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
 					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded Short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+						LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
 			}
+
+			messageEvent.getSourceAddress().setNetworkAddress(_short);
 
 		}
 		if (messageEvent.getProfileID().equals(0)) {/*
@@ -2131,29 +2141,43 @@ public class DataFreescale implements IDataLayer {
 				if (messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) {
 					WrapperWSNNode node = null;
 					synchronized (gal) {
-						int index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
+						short index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
 						if (index > -1) {
 							node = gal.getNetworkcache().get(index);
+							if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
+								gal.getZdoManager().ZDOMessageIndication(messageEvent);
+							}
+						} else {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+							return;
 						}
 
-					}
-
-					if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
-						gal.getZdoManager().ZDOMessageIndication(messageEvent);
 					}
 
 				} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
 					WrapperWSNNode node = null;
 					synchronized (gal) {
-						Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
-						if ((index != null) && (index > -1)) {
+						Short index = -1;
+						try {
+							index = gal.existIntoNetworkCache(gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress()));
+						} catch (GatewayException e) {
+							LOG.error(e.getMessage());
+						}
+						if (index > -1) {
 							node = gal.getNetworkcache().get(index);
+							if (node != null && (node.is_discoveryCompleted())) {
+								gal.getZdoManager().ZDOMessageIndication(messageEvent);
+							}
+						} else {
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+							return;
+
 						}
 
 					}
-					if (node != null && (node.is_discoveryCompleted())) {
-						gal.getZdoManager().ZDOMessageIndication(messageEvent);
-					}
+
 				}
 			}
 		} else {
@@ -2204,28 +2228,49 @@ public class DataFreescale implements IDataLayer {
 					WrapperWSNNode node = null;
 					synchronized (gal) {
 						index = gal.existIntoNetworkCache(messageEvent.getSourceAddress().getNetworkAddress());
-						if (index > -1)
+						if (index > -1){
 							node = gal.getNetworkcache().get(index);
-					}
-					if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
-						gal.get_gatewayEventManager().notifyZCLCommand(_zm);
-						gal.getApsManager().APSMessageIndication(messageEvent);
-						gal.getMessageManager().APSMessageIndication(messageEvent);
+							if (node != null && (node.get_node().getAddress().getIeeeAddress() != null) && (node.is_discoveryCompleted())) {
+								gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+								gal.getApsManager().APSMessageIndication(messageEvent);
+								gal.getMessageManager().APSMessageIndication(messageEvent);
 
+							}
+						}
+						else
+						{
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+							return;
+						}
 					}
+					
 
 				} else if (messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) {
 					WrapperWSNNode node = null;
 					synchronized (gal) {
-						Integer index = gal.getShortAddress_FromNetworkCache(messageEvent.getSourceAddress().getIeeeAddress());
-						if ((index != null) && (index > -1))
+						short index = -1;
+						try {
+							index = gal.existIntoNetworkCache(gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress()));
+						} catch (GatewayException e) {
+							LOG.error(e.getMessage());
+						}
+						if (index > -1) {
 							node = gal.getNetworkcache().get(index);
-					}
-					if ((node != null) && (node.is_discoveryCompleted())) {
-						gal.get_gatewayEventManager().notifyZCLCommand(_zm);
-						gal.getApsManager().APSMessageIndication(messageEvent);
-						gal.getMessageManager().APSMessageIndication(messageEvent);
+							if ((node != null) && (node.is_discoveryCompleted())) {
+								gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+								gal.getApsManager().APSMessageIndication(messageEvent);
+								gal.getMessageManager().APSMessageIndication(messageEvent);
 
+							}
+						}
+						else
+						{
+							if (gal.getPropertiesManager().getDebugEnabled())
+								LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+							return;
+							
+						}
 					}
 
 				}
@@ -3706,7 +3751,7 @@ public class DataFreescale implements IDataLayer {
 
 		SendRs232Data(_res);
 		if (addrOfInterest.getIeeeAddress() == null) {
-			BigInteger _add = gal.getIeeeAddress_FromNetworkCache(addrOfInterest.getNetworkAddress());
+			BigInteger _add = gal.getIeeeAddress_FromShortAddress(addrOfInterest.getNetworkAddress());
 			if (_add != null)
 				addrOfInterest.setIeeeAddress(_add);
 		}
@@ -3941,7 +3986,7 @@ public class DataFreescale implements IDataLayer {
 
 		ShortArrayObject _res = new ShortArrayObject();
 		if (addrOfInterest.getNetworkAddress() == null)
-			addrOfInterest.setNetworkAddress(gal.getShortAddress_FromNetworkCache(addrOfInterest.getIeeeAddress()));
+			addrOfInterest.setNetworkAddress(gal.getShortAddress_FromIeeeAddress(addrOfInterest.getIeeeAddress()));
 
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/* ShortNetworkAddress */
 		_res.addByte((byte) index);/* startIndex */
@@ -4003,7 +4048,7 @@ public class DataFreescale implements IDataLayer {
 		byte[] _reversed;
 
 		ShortArrayObject _res = new ShortArrayObject();
-		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromNetworkCache(binding.getSourceIEEEAddress()).shortValue()), 2);
+		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromIeeeAddress(binding.getSourceIEEEAddress()).shortValue()), 2);
 
 		byte[] ieeeAddress = DataManipulation.toByteVect(binding.getSourceIEEEAddress(), 8);
 		_reversed = DataManipulation.reverseBytes(ieeeAddress);
@@ -4106,7 +4151,7 @@ public class DataFreescale implements IDataLayer {
 
 		ShortArrayObject _res = new ShortArrayObject();
 
-		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromNetworkCache(binding.getSourceIEEEAddress()).shortValue()), 2);
+		_res.addBytesShort(Short.reverseBytes(gal.getShortAddress_FromIeeeAddress(binding.getSourceIEEEAddress()).shortValue()), 2);
 
 		byte[] ieeeAddress = DataManipulation.toByteVect(binding.getSourceIEEEAddress(), 8);
 		_reversed = DataManipulation.reverseBytes(ieeeAddress);

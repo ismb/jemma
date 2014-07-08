@@ -101,7 +101,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 					serialPort.enableReceiveTimeout(2000);
 					serialPort.notifyOnDataAvailable(true);
-					
+
 					try {
 						serialReader = new SerialReader(this);
 						serialPort.addEventListener(serialReader);
@@ -111,8 +111,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
 					}
-					
-					
+
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
 					if (DataLayer.getPropertiesManager().getDebugEnabled())
@@ -122,7 +121,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 					return true;
 				} else {
-						LOG.error("Error on serial port connection:" + portName);
+					LOG.error("Error on serial port connection:" + portName);
 					disconnect();
 					return false;
 				}
@@ -130,15 +129,15 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 		} catch (NoSuchPortException e) {
 			disconnect();
-				LOG.error("the connection could not be made: NoSuchPortException " + portName);
+			LOG.error("the connection could not be made: NoSuchPortException " + portName);
 			return false;
 		} catch (PortInUseException e) {
 			disconnect();
-				LOG.error("the connection could not be made: PortInUseException");
+			LOG.error("the connection could not be made: PortInUseException");
 			return false;
 		} catch (UnsupportedCommOperationException e) {
 			disconnect();
-				LOG.error("the connection could not be made: UnsupportedCommOperationException");
+			LOG.error("the connection could not be made: UnsupportedCommOperationException");
 			return false;
 		}
 
@@ -156,7 +155,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
+					if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
 						LOG.info(">>> Sending: " + buff.ToHexString());
 					ou.write(buff.getByteArray(), 0, buff.getCount(true));
 					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
@@ -243,7 +242,6 @@ public class SerialPortConnectorRxTx implements IConnector {
 								e.printStackTrace();
 							}
 						}
-
 
 						if (!ignoreMessage) {
 

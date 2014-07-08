@@ -44,6 +44,8 @@ public class GatewayProperties extends Properties {
 	public static final String ZGD_DONGLE_TYPE_PROP_NAME = "zgd.dongle.type";
 	public static final String ZGD_DONGLE_SPEED_PROP_NAME = "zgd.dongle.speed";
 	public static final String ZGD_GAL_ENABLE_LOG = "org.energy_home.jemma.javagal.debugEnabled";
+	public static final String ZGD_GAL_ENABLE_SERIAL_LOG = "org.energy_home.jemma.javagal.serialDataDebugEnabled";
+	
 	
 	/**
 	 * Creates a new instance setting up a set of initial properties for the
