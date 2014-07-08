@@ -1,7 +1,4 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
-<<<<<<< HEAD
-* text=auto
-=======
 * text=auto
 
 # Explicitly declare text files you want to always be normalized and converted
@@ -15,4 +12,3 @@
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
->>>>>>> aa5bbf7e4e335041ce14a6258f160b374f37d3a9
