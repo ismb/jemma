@@ -457,7 +457,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status addBinding(long timeout, Binding binding) throws IOException,
+	public Status addBinding(long timeout, Binding binding, Address aoi) throws IOException,
 			Exception, GatewayException;
 
 	/**
@@ -475,7 +475,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status removeBinding(long timeout, Binding binding)
+	public Status removeBinding(long timeout, Binding binding, Address aoi)
 			throws IOException, Exception, GatewayException;
 
 	public Status frequencyAgilitySync(long timeout, short scanChannel,
