@@ -117,21 +117,23 @@ public class DataFreescale implements IDataLayer {
 		// system.
 		boolean foundSerialLib = false;
 
-		try { // we try first with RxTx
-			dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+		try {
+			// then with jSSC
+			dongleRs232 = new SerialPortConnectorJssc(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 			foundSerialLib = true;
 		} catch (NoClassDefFoundError e) {
-			LOG.warn("RxTx not found");
+			LOG.warn("jSSC not found");
 		}
 
 		if (!foundSerialLib) {
-			try {
-				// then with jSSC
-				dongleRs232 = new SerialPortConnectorJssc(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
+
+			try { // we try first with RxTx
+				dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 				foundSerialLib = true;
 			} catch (NoClassDefFoundError e) {
-				LOG.warn("jSSC not found");
+				LOG.warn("RxTx not found");
 			}
+
 		}
 
 		if (!foundSerialLib) {
