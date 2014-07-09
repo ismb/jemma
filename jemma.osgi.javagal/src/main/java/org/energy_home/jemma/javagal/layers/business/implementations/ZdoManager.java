@@ -173,9 +173,9 @@ public class ZdoManager /* implements APSMessageListener */{
 				try {
 					gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
 				} catch (Exception e) {
-					if (gal.getPropertiesManager().getDebugEnabled()) {
-						LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
-					}
+
+					LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
+
 				}
 				if (gal.getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());

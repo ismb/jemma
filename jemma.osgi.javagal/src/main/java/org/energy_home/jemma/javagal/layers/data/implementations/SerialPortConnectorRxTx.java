@@ -162,8 +162,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 				} catch (Exception e) {
 
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
+					LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
 					throw e;
 
 				}
@@ -249,14 +248,14 @@ public class SerialPortConnectorRxTx implements IConnector {
 							_caller.getDataLayer().notifyFrame(frame);
 						}
 					} catch (Exception e) {
-						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							LOG.error("Error on data received:" + e.getMessage());
+
+						LOG.error("Error on data received:" + e.getMessage());
 					}
 
 				}
 			} catch (Exception e) {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.error("Error on read from serial data:" + e.getMessage());
+
+				LOG.error("Error on read from serial data:" + e.getMessage());
 
 			}
 

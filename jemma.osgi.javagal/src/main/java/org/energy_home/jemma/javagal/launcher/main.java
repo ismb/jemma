@@ -111,7 +111,6 @@ public class main {
 		try {
 			new GalExtenderProxyFactory(PropertiesManager).createGatewayInterfaceObject();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			LOG.error("Error starting GAL: " + e.getMessage());
 			return;
 		}

@@ -178,16 +178,16 @@ public class DataFreescale implements IDataLayer {
 												try {
 													processMessages(message);
 												} catch (Exception e) {
-													if (gal.getPropertiesManager().getDebugEnabled())
-														LOG.error("Error on processMessages: " + e.getMessage());
-													e.printStackTrace();
+
+													LOG.error("Error on processMessages: " + e.getMessage());
+
 												}
 											}
 										});
 									} catch (Exception e) {
-										if (gal.getPropertiesManager().getDebugEnabled())
-											LOG.error("Error on processMessages: " + e.getMessage());
-										e.printStackTrace();
+
+										LOG.error("Error on processMessages: " + e.getMessage());
+
 									}
 
 								} else
@@ -1865,11 +1865,9 @@ public class DataFreescale implements IDataLayer {
 
 			break;
 		default:
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Message Discarded: not valid Source Address Mode");
-			}
-			// Error found, we don't proceed and discard the
-			// message
+
+			LOG.error("Message Discarded: not valid Source Address Mode");
+
 			return;
 		}
 
@@ -1909,11 +1907,9 @@ public class DataFreescale implements IDataLayer {
 
 			break;
 		default:
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Message Discarded: not valid Destination Address Mode");
-			}
-			// Error found, we don't proceed and discard the
-			// message
+
+			LOG.error("Message Discarded: not valid Destination Address Mode");
+
 			return;
 		}
 
@@ -1966,9 +1962,9 @@ public class DataFreescale implements IDataLayer {
 			messageEvent.setDestinationEndpoint(message[6]);
 			break;
 		default:
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Message Discarded: not valid Destination Address Mode");
-			}
+
+			LOG.error("Message Discarded: not valid Destination Address Mode");
+
 			return;
 		}
 
@@ -2004,9 +2000,9 @@ public class DataFreescale implements IDataLayer {
 
 			break;
 		default:
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Message Discarded: not valid Source Address Mode");
-			}
+
+			LOG.error("Message Discarded: not valid Source Address Mode");
+
 			return;
 		}
 
@@ -2058,9 +2054,9 @@ public class DataFreescale implements IDataLayer {
 				_iee = gal.getIeeeAddress_FromShortAddress(messageEvent.getDestinationAddress().getNetworkAddress());
 			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded Ieee destination address not found for Short Address:" + String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
-						return;
+
+					LOG.error("Message discarded Ieee destination address not found for Short Address:" + String.format("%04X", messageEvent.getDestinationAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
 				}
 			}
 			messageEvent.getDestinationAddress().setIeeeAddress(_iee);
@@ -2074,8 +2070,8 @@ public class DataFreescale implements IDataLayer {
 				_short = gal.getShortAddress_FromIeeeAddress(messageEvent.getDestinationAddress().getIeeeAddress());
 			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+					LOG.error("Message discarded Short destination address not found for Ieee Address:" + String.format("%16X", messageEvent.getDestinationAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
 			}
@@ -2089,8 +2085,8 @@ public class DataFreescale implements IDataLayer {
 				_iee = gal.getIeeeAddress_FromShortAddress(messageEvent.getSourceAddress().getNetworkAddress());
 			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+					LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
 			}
@@ -2105,8 +2101,8 @@ public class DataFreescale implements IDataLayer {
 				_short = gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress());
 			} catch (GatewayException e) {
 				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
-					if (gal.getPropertiesManager().getDebugEnabled())
-						LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+					LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 					return;
 				}
 			}
@@ -2149,8 +2145,8 @@ public class DataFreescale implements IDataLayer {
 								gal.getZdoManager().ZDOMessageIndication(messageEvent);
 							}
 						} else {
-							if (gal.getPropertiesManager().getDebugEnabled())
-								LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+							LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
 						}
 
@@ -2163,8 +2159,8 @@ public class DataFreescale implements IDataLayer {
 						try {
 							index = gal.existIntoNetworkCache(gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress()));
 						} catch (GatewayException e) {
-							if (gal.getPropertiesManager().getDebugEnabled())
-								LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+							LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
 
 						}
@@ -2236,8 +2232,8 @@ public class DataFreescale implements IDataLayer {
 
 							}
 						} else {
-							if (gal.getPropertiesManager().getDebugEnabled())
-								LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+							LOG.error("Message discarded Source Node not found for Short Address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
 						}
 					}
@@ -2249,8 +2245,8 @@ public class DataFreescale implements IDataLayer {
 						try {
 							index = gal.existIntoNetworkCache(gal.getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress()));
 						} catch (GatewayException e) {
-							if (gal.getPropertiesManager().getDebugEnabled())
-								LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+
+							LOG.error("Message discarded Source Node not found for Ieee Address:" + String.format("%016X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
 							return;
 
 						}
@@ -2350,8 +2346,8 @@ public class DataFreescale implements IDataLayer {
 											LOG.info("Readed Ieee of the new node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()) + " Ieee: " + _newNode.getAddress().getIeeeAddress().toString());
 										}
 									} catch (Exception e) {
-										if (gal.getPropertiesManager().getDebugEnabled())
-											LOG.error("Error reading Ieee of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+										LOG.error("Error reading Ieee of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
 
 									}
 								}
@@ -2369,8 +2365,8 @@ public class DataFreescale implements IDataLayer {
 
 										}
 									} catch (Exception e) {
-										if (gal.getPropertiesManager().getDebugEnabled())
-											LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
+
+										LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newNode.getAddress().getNetworkAddress()));
 
 									}
 								}
@@ -2512,9 +2508,9 @@ public class DataFreescale implements IDataLayer {
 		}
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in APSME SET");
-			}
+
+			LOG.error("Timeout expired in APSME SET");
+
 			throw new GatewayException("Timeout expired in APSME SET");
 		} else {
 			if (status.getCode() != 0) {
@@ -2576,9 +2572,9 @@ public class DataFreescale implements IDataLayer {
 		}
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in APSME-GET.Request");
-			}
+
+			LOG.error("Timeout expired in APSME-GET.Request");
+
 			throw new GatewayException("Timeout expired in APSME-GET.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -2639,9 +2635,9 @@ public class DataFreescale implements IDataLayer {
 		}
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in NLME-GET.Request");
-			}
+
+			LOG.error("Timeout expired in NLME-GET.Request");
+
 			throw new GatewayException("Timeout expired in NLME-GET.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -2711,9 +2707,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-StopNwkEx.Request");
-			}
+			LOG.error("Timeout expired in ZDP-StopNwkEx.Request");
 
 			throw new GatewayException("Timeout expired in ZDP-StopNwkEx.Request");
 		} else {
@@ -2777,16 +2771,15 @@ public class DataFreescale implements IDataLayer {
 			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
 
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					LOG.error("Timeout expired in send aps message");
-				}
+				LOG.error("Timeout expired in send aps message");
+
 				throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
 			} else {
 
 				if (status.getCode() != 0) {
-					if (gal.getPropertiesManager().getDebugEnabled()) {
-						LOG.error("Send aps returned Status: " + status.getCode());
-					}
+
+					LOG.error("Send aps returned Status: " + status.getCode());
+
 					// CHECK if node is a sleepy end device
 					int index = gal.existIntoNetworkCache(message.getDestinationAddress().getNetworkAddress());
 					if (index != -1) {
@@ -2877,9 +2870,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in Configure End Point");
-			}
+			LOG.error("Timeout expired in Configure End Point");
+
 			throw new GatewayException("Timeout expired in Configure End Point");
 		} else {
 			if (status.getCode() != 0) {
@@ -2902,7 +2894,6 @@ public class DataFreescale implements IDataLayer {
 		Address address = apsMessage.getDestinationAddress();
 		byte[] _reversed = null;
 		switch (dam) {
-		// TODO Control those address modes!
 		case GatewayConstants.ADDRESS_MODE_SHORT:
 			byte[] networkAddress = DataManipulation.toByteVect(address.getNetworkAddress(), 8);
 			_reversed = DataManipulation.reverseBytes(networkAddress);
@@ -2916,7 +2907,6 @@ public class DataFreescale implements IDataLayer {
 				_res.addByte(b);
 			break;
 		case GatewayConstants.ADDRESS_MODE_ALIAS:
-			// TODO
 			throw new UnsupportedOperationException("Address Mode Alias");
 		default:
 			throw new Exception("Address Mode undefined!");
@@ -3157,9 +3147,8 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					LOG.error("Timeout expired in startGatewayDevice");
-				}
+
+				LOG.error("Timeout expired in startGatewayDevice");
 
 				throw new GatewayException("Timeout expired in ZDP-StartNwkEx.Request");
 			} else {
@@ -3178,7 +3167,6 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private Status WriteSasSync(long timeout, StartupAttributeInfo sai) throws InterruptedException, Exception {
-		// TODO CHECK
 		if (sai.getChannelMask() == null)
 			sai = gal.getPropertiesManager().getSturtupAttributeInfo();
 
@@ -3309,9 +3297,9 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in write sas");
-			}
+
+			LOG.error("Timeout expired in write sas");
+
 			throw new GatewayException("Timeout expired in write sas");
 		} else {
 			if (status.getCode() != 0) {
@@ -3445,9 +3433,9 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZTC-GetChannel.Request");
-			}
+
+			LOG.error("Timeout expired in ZTC-GetChannel.Request");
+
 			throw new GatewayException("Timeout expired in ZTC-GetChannel.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -3499,9 +3487,9 @@ public class DataFreescale implements IDataLayer {
 
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZTC-ReadExtAddr.Request");
-			}
+
+			LOG.error("Timeout expired in ZTC-ReadExtAddr.Request");
+
 			throw new GatewayException("Timeout expired in ZTC-ReadExtAddr.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -3559,9 +3547,9 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-IEEE_addr.Request");
-			}
+
+			LOG.error("Timeout expired in ZDP-IEEE_addr.Request");
+
 			throw new GatewayException("Timeout expired in ZDP-IEEE_addr.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -3699,9 +3687,8 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-Active_EP_req.Request");
-			}
+
+			LOG.error("Timeout expired in ZDP-Active_EP_req.Request");
 
 			throw new GatewayException("Timeout expired in ZDP-Active_EP_req.Request");
 		} else {
@@ -3790,9 +3777,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in Deregister End Point");
-			}
+			LOG.error("Timeout expired in Deregister End Point");
+
 			throw new GatewayException("Timeout expired in Deregister End Point");
 		} else {
 			if (status.getCode() != 0) {
@@ -3848,9 +3834,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in GetEndPointIdList");
-			}
+			LOG.error("Timeout expired in GetEndPointIdList");
+
 			throw new GatewayException("Timeout expired in GetEndPointIdList");
 		} else {
 			if (status.getCode() != 0) {
@@ -3920,9 +3905,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-SimpleDescriptor.Request");
-			}
+			LOG.error("Timeout expired in ZDP-SimpleDescriptor.Request");
+
 			throw new GatewayException("Timeout expired in ZDP-SimpleDescriptor.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4005,9 +3989,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-Mgmt_Bind.Request");
-			}
+			LOG.error("Timeout expired in ZDP-Mgmt_Bind.Request");
+
 			throw new GatewayException("Timeout expired in ZDP-Mgmt_Bind.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4107,9 +4090,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-BIND.Response");
-			}
+			LOG.error("Timeout expired in ZDP-BIND.Response");
+
 			throw new GatewayException("Timeout expired in ZDP-BIND.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4210,9 +4192,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-UNBIND.Response");
-			}
+			LOG.error("Timeout expired in ZDP-UNBIND.Response");
+
 			throw new GatewayException("Timeout expired in ZDP-UNBIND.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4311,9 +4292,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ClearDeviceKeyPairSet");
-			}
+			LOG.error("Timeout expired in ClearDeviceKeyPairSet");
+
 			throw new GatewayException("Timeout expired in ClearDeviceKeyPairSet");
 		} else {
 			if (status.getCode() != 0) {
@@ -4373,9 +4353,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZTC-ClearNeighborTableEntry.Request");
-			}
+			LOG.error("Timeout expired in ZTC-ClearNeighborTableEntry.Request");
+
 			throw new GatewayException("Timeout expired in ZTC-ClearNeighborTableEntry.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4438,9 +4417,9 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in NMLE SET");
-			}
+
+			LOG.error("Timeout expired in NMLE SET");
+
 			throw new GatewayException("Timeout expired in NMLE SET");
 		} else {
 			if (status.getCode() != 0) {
@@ -4494,9 +4473,9 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in ZDP-Mgmt_Lqi.Request");
-			}
+
+			LOG.error("Timeout expired in ZDP-Mgmt_Lqi.Request");
+
 			throw new GatewayException("Timeout expired in ZDP-Mgmt_Lqi.Request");
 		} else {
 			if (status.getCode() != 0) {
@@ -4554,9 +4533,8 @@ public class DataFreescale implements IDataLayer {
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.error("Timeout expired in send InterPANMessage");
-			}
+			LOG.error("Timeout expired in send InterPANMessage");
+
 			throw new GatewayException("Timeout expired in send InterPANMessage. No Confirm Received.");
 		} else {
 			if (status.getCode() != 0) {

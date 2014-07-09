@@ -578,11 +578,7 @@ public class GalController {
 									e.setLQI((short) _n1._LQI);
 									_list0.getNeighbor().add(e);
 								} catch (Exception ex) {
-
-									if (PropertiesManager.getDebugEnabled()) {
-										logger.error(ex.getMessage());
-
-									}
+									logger.error(ex.getMessage());
 								}
 							}
 							_lqinode.setNeighborList(_list0);
@@ -757,8 +753,8 @@ public class GalController {
 
 								} else {
 									setGatewayStatus(GatewayStatus.GW_READY_TO_START);
-									if (PropertiesManager.getDebugEnabled())
-										logger.error("*******Gateway NOT Started!");
+
+									logger.error("*******Gateway NOT Started!");
 									_res.setCode((short) GatewayConstants.GENERAL_ERROR);
 									_res.setMessage("No Network Event Running received!");
 
@@ -827,8 +823,8 @@ public class GalController {
 							logger.info("***Gateway Started now!****");
 					} else {
 						setGatewayStatus(GatewayStatus.GW_READY_TO_START);
-						if (PropertiesManager.getDebugEnabled())
-							logger.error("Gateway NOT Started!");
+
+						logger.error("Gateway NOT Started!");
 						_status.setCode((short) GatewayConstants.GENERAL_ERROR);
 						_status.setMessage("No Network Event Running received!");
 					}
@@ -1491,7 +1487,7 @@ public class GalController {
 	}
 
 	private void leavePhilips(final long timeout, final int _requestIdentifier, final Address addrOfInterest) throws IOException, Exception, GatewayException {
-			WrapperWSNNode node = null;
+		WrapperWSNNode node = null;
 		/* Check if the device is the Philips light */
 		int _index = -1;
 		if ((_index = existIntoNetworkCache(addrOfInterest.getNetworkAddress())) > -1) {
@@ -1774,8 +1770,8 @@ public class GalController {
 
 			}
 		} else {
-			if (PropertiesManager.getDebugEnabled())
-				logger.error("Error on startNodeDiscovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
+
+			logger.error("Error on startNodeDiscovery: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 			throw new GatewayException("No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 		}
 
@@ -1802,9 +1798,9 @@ public class GalController {
 			}
 
 		} else {
-			if (PropertiesManager.getDebugEnabled()) {
-				logger.error("Error on subscribeNodeRemoval: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
-			}
+
+			logger.error("Error on subscribeNodeRemoval: No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
+
 			throw new GatewayException("No GatewayEventListener found for the User. Set the GatewayEventListener before call this API!");
 		}
 
@@ -1862,9 +1858,8 @@ public class GalController {
 						try {
 							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
 						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Error retrieving the PanID of the Network!");
-							}
+
+							logger.error("Error retrieving the PanID of the Network!");
 
 						}
 					}
@@ -1879,9 +1874,8 @@ public class GalController {
 							// +
 							// _NetworkAdd);
 						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Error retrieving the Gal Network Address!");
-							}
+
+							logger.error("Error retrieving the Gal Network Address!");
 
 						}
 					}
@@ -1891,9 +1885,8 @@ public class GalController {
 						try {
 							_IeeeAdd = DataLayer.readExtAddressGal(PropertiesManager.getCommandTimeoutMS());
 						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Error retrieving the Gal IEEE Address!");
-							}
+
+							logger.error("Error retrieving the Gal IEEE Address!");
 
 						}
 					}
@@ -1938,15 +1931,14 @@ public class GalController {
 
 							} else {
 								// System.out.println("ERROR on Read Node Descriptor of Gal.");
-								if (PropertiesManager.getDebugEnabled()) {
-									logger.error("ERROR on Read Node Descriptor of Gal.!");
-								}
+
+								logger.error("ERROR on Read Node Descriptor of Gal.!");
+
 							}
 
 						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Error retrieving the Gal Node Descriptor!");
-							}
+
+							logger.error("Error retrieving the Gal Node Descriptor!");
 
 						}
 					}
@@ -1966,9 +1958,8 @@ public class GalController {
 
 							}
 						} catch (Exception e) {
-							if (PropertiesManager.getDebugEnabled()) {
-								logger.error("Error retrieving the Gal Node Descriptor!");
-							}
+
+							logger.error("Error retrieving the Gal Node Descriptor!");
 
 						}
 
@@ -2006,9 +1997,9 @@ public class GalController {
 					try {
 						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
 					} catch (Exception e) {
-						if (PropertiesManager.getDebugEnabled()) {
-							logger.error("Error calling nodeDiscovered for the GAL node!");
-						}
+
+						logger.error("Error calling nodeDiscovered for the GAL node!");
+
 					}
 				}
 
