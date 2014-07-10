@@ -20,7 +20,6 @@
 // Generated on: 2014.04.03 at 05:23:14 PM CEST 
 //
 
-
 package org.energy_home.jemma.zgd.jaxb;
 
 import java.math.BigInteger;
@@ -29,11 +28,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for Address complex type.
+ * <p>
+ * Java class for Address complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="Address">
@@ -52,90 +53,87 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Address", propOrder = {
-    "networkAddress",
-    "ieeeAddress",
-    "aliasAddress"
-})
+@XmlType(name = "Address", propOrder = { "networkAddress", "ieeeAddress", "aliasAddress" })
 public class Address {
 
-    @XmlElement(name = "NetworkAddress")
-    protected Integer networkAddress;
-    @XmlElement(name = "IeeeAddress")
-    protected BigInteger ieeeAddress;
-    @XmlElement(name = "AliasAddress")
-    protected String aliasAddress;
+	@XmlElement(name = "NetworkAddress")
+	protected Integer networkAddress;
+	@XmlElement(name = "IeeeAddress")
+	protected BigInteger ieeeAddress;
+	@XmlElement(name = "AliasAddress")
+	protected String aliasAddress;
 
-    /**
-     * Gets the value of the networkAddress property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getNetworkAddress() {
-        return networkAddress;
-    }
+	/**
+	 * Gets the value of the networkAddress property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getNetworkAddress() {
+		return networkAddress;
+	}
 
-    /**
-     * Sets the value of the networkAddress property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setNetworkAddress(Integer value) {
-        this.networkAddress = value;
-    }
+	/**
+	 * Sets the value of the networkAddress property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setNetworkAddress(Integer value) {
+		// try
+		// {
+		// value.toString();
+		this.networkAddress = value;
+		// }
+		// catch(Exception e)
+		// {
+		// if (this.networkAddress != null)
+		// e.printStackTrace();
 
-    /**
-     * Gets the value of the ieeeAddress property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getIeeeAddress() {
-        return ieeeAddress;
-    }
+		// }
+	}
 
-    /**
-     * Sets the value of the ieeeAddress property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setIeeeAddress(BigInteger value) {
-        this.ieeeAddress = value;
-    }
+	/**
+	 * Gets the value of the ieeeAddress property.
+	 * 
+	 * @return possible object is {@link BigInteger }
+	 * 
+	 */
+	public BigInteger getIeeeAddress() {
+		return ieeeAddress;
+	}
 
-    /**
-     * Gets the value of the aliasAddress property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAliasAddress() {
-        return aliasAddress;
-    }
+	/**
+	 * Sets the value of the ieeeAddress property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link BigInteger }
+	 * 
+	 */
+	public void setIeeeAddress(BigInteger value) {
+		this.ieeeAddress = value;
+	}
 
-    /**
-     * Sets the value of the aliasAddress property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAliasAddress(String value) {
-        this.aliasAddress = value;
-    }
+	/**
+	 * Gets the value of the aliasAddress property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getAliasAddress() {
+		return aliasAddress;
+	}
+
+	/**
+	 * Sets the value of the aliasAddress property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setAliasAddress(String value) {
+		this.aliasAddress = value;
+	}
 
 }

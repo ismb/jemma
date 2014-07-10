@@ -92,9 +92,10 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if (_fac != null)
-			_fac.destroyGal();
+		if (_fac != null){
 
+			_fac.destroyGal();
+		}
 		if (gatewayInterfaceServiceFactory != null) {
 
 			if (gatewayInterfaceRegistration != null) {

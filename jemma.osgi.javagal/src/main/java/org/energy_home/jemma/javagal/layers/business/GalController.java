@@ -500,7 +500,7 @@ public class GalController {
 		WrapperWSNNode x = null;
 		synchronized (this) {
 			int _index = -1;
-			_index = existIntoNetworkCache(aoi.getNetworkAddress());
+			_index = existIntoNetworkCache(aoi);
 			if (_index > -1)
 				x = getNetworkcache().get(_index);
 
@@ -626,7 +626,7 @@ public class GalController {
 						try {
 							nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
 							int _index = -1;
-							if ((_index = existIntoNetworkCache(addrOfInterest.getNetworkAddress())) > -1)
+							if ((_index = existIntoNetworkCache(addrOfInterest)) > -1)
 								getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
@@ -673,7 +673,7 @@ public class GalController {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				NodeDescriptor nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
 				int _index = -1;
-				if ((_index = existIntoNetworkCache(addrOfInterest.getNetworkAddress())) > -1)
+				if ((_index = existIntoNetworkCache(addrOfInterest)) > -1)
 					getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
 				return nodeDescriptor;
 			} else
@@ -1183,7 +1183,7 @@ public class GalController {
 								_newNodeService.getActiveEndpoints().add(_n);
 							}
 							int _index = -1;
-							if ((_index = existIntoNetworkCache(aoi.getNetworkAddress())) == -1) {
+							if ((_index = existIntoNetworkCache(aoi)) == -1) {
 								getNetworkcache().get(_index).set_nodeServices(_newNodeService);
 							}
 							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _ok, _newNodeService);
@@ -1233,7 +1233,7 @@ public class GalController {
 					_newNodeService.getActiveEndpoints().add(_n);
 				}
 				int _index = -1;
-				if ((_index = existIntoNetworkCache(aoi.getNetworkAddress())) > -1) {
+				if ((_index = existIntoNetworkCache(aoi)) > -1) {
 					getNetworkcache().get(_index).set_nodeServices(_newNodeService);
 				}
 
@@ -1396,7 +1396,7 @@ public class GalController {
 								if (_s.getCode() == GatewayConstants.SUCCESS) {
 
 									/* get the node from cache */
-									int index = existIntoNetworkCache(addrOfInterest.getNetworkAddress());
+									int index = existIntoNetworkCache(addrOfInterest);
 									if (index > -1) {
 										WrapperWSNNode _wrapper = getNetworkcache().get(index);
 										_wrapper.abortTimers();
@@ -1465,7 +1465,7 @@ public class GalController {
 					if (_s.getCode() == GatewayConstants.SUCCESS) {
 
 						/* get the node from cache */
-						int index = existIntoNetworkCache(addrOfInterest.getNetworkAddress());
+						int index = existIntoNetworkCache(addrOfInterest);
 						if (index > -1) {
 							WrapperWSNNode _wrapper = getNetworkcache().get(index);
 							_wrapper.abortTimers();
@@ -1490,7 +1490,7 @@ public class GalController {
 		WrapperWSNNode node = null;
 		/* Check if the device is the Philips light */
 		int _index = -1;
-		if ((_index = existIntoNetworkCache(addrOfInterest.getNetworkAddress())) > -1) {
+		if ((_index = existIntoNetworkCache(addrOfInterest)) > -1) {
 			node = getNetworkcache().get(_index);
 		}
 
@@ -1748,6 +1748,8 @@ public class GalController {
 					x.abortTimers();
 				}
 				getNetworkcache().clear();
+				System.out.println("\n\n\n\n\nAdding node from start Discovery: " + GalNode.get_node().getAddress().getNetworkAddress());
+
 				getNetworkcache().add(GalNode);
 				getNetworkcache().get(0).set_discoveryCompleted(false);
 				getNetworkcache().get(0).setTimerForcePing(getPropertiesManager().getForcePingTimeout());
@@ -1918,7 +1920,8 @@ public class GalController {
 								int _index = -1;
 
 								/* If the Node Not Exists */
-								if ((_index = existIntoNetworkCache(_add.getNetworkAddress())) == -1) {
+								if ((_index = existIntoNetworkCache(_add)) == -1) {
+									System.out.println("\n\n\n\n\nAdding node from SetStatus: " + galNodeWrapper.get_node().getAddress().getNetworkAddress());
 									getNetworkcache().add(galNodeWrapper);
 								}
 								/* The GAl node is already present into the DB */
@@ -1995,7 +1998,7 @@ public class GalController {
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
 					try {
-						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
+						get_gatewayEventManager().nodeDiscovered(_s, (WSNNode) ((Object)galNodeWrapper.get_node()).getClass().newInstance());
 					} catch (Exception e) {
 
 						logger.error("Error calling nodeDiscovered for the GAL node!");
@@ -2434,16 +2437,36 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public synchronized short existIntoNetworkCache(Integer shortAddress) {
+	public synchronized short existIntoNetworkCache(Address address) {
 		short __indexOnCache = -1;
+		short _indexToReturn = -1;
+		String AddressStr = "";
 		List<WrapperWSNNode> _list = getNetworkcache();
+		System.out.println("\n\n\n\n[ExistIntoNetworkCache] Start Search Node ShortAddress: " + ((address.getNetworkAddress() != null) ? String.format("%04X", address.getNetworkAddress()) : "NULL") + " -- IeeeAdd: " + ((address.getIeeeAddress() != null) ? String.format("%04X", address.getIeeeAddress()) : "NULL"));
 		for (WrapperWSNNode y : _list) {
+			System.out.println("[ExistIntoNetworkCache] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
 			__indexOnCache++;
-			if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue())
-				return __indexOnCache;
+			if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && address.getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == address.getNetworkAddress().intValue()) {
+				AddressStr = String.format("%04X", y.get_node().getAddress().getNetworkAddress());
+				_indexToReturn = __indexOnCache;
+			} else if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && address.getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == address.getIeeeAddress().longValue()) {
+				AddressStr = String.format("%16X", y.get_node().getAddress().getIeeeAddress());
 
+				_indexToReturn = __indexOnCache;
+			}
 		}
-		return -1;
+
+		if (_indexToReturn > -1) {
+			System.out.println("Found node:" + AddressStr);
+			return _indexToReturn;
+		} else {
+			if (address.getNetworkAddress() != null)
+				System.out.println("Not Found node:" + String.format("%04X", address.getNetworkAddress()));
+			else if (address.getIeeeAddress() != null)
+				System.out.println("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
+			return -1;
+		}
+
 	}
 
 	/**
@@ -2455,14 +2478,19 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 * @throws GatewayException
 	 */
-	public synchronized BigInteger getIeeeAddress_FromShortAddress(Integer shortAddress) throws GatewayException {
+	public synchronized BigInteger getIeeeAddress_FromShortAddress(Integer shortAddress) throws Exception {
 		List<WrapperWSNNode> _list = getNetworkcache();
+		System.out.println("\n\n\n\n[getIeeeAddress_FromShortAddress] Start Search Node: " + String.format("%04X", shortAddress));
 		for (WrapperWSNNode y : _list) {
-			if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue())
-				return y.get_node().getAddress().getIeeeAddress();
+			System.out.println("[getIeeeAddress_FromShortAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
 
+			if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue()) {
+				System.out.println("[getIeeeAddress_FromShortAddress] FOUND Node: " + String.format("%04X", shortAddress));
+
+				return y.get_node().getAddress().getIeeeAddress();
+			}
 		}
-		throw new GatewayException("Short Address not found on GAL: " + String.format("%04X", shortAddress));
+		throw new Exception("Short Address not found on GAL: " + String.format("%04X", shortAddress));
 
 	}
 
@@ -2475,13 +2503,18 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 * @throws GatewayException
 	 */
-	public synchronized Integer getShortAddress_FromIeeeAddress(BigInteger IeeeAddress) throws GatewayException {
+	public synchronized Integer getShortAddress_FromIeeeAddress(BigInteger IeeeAddress) throws Exception {
 		List<WrapperWSNNode> _list = getNetworkcache();
+		System.out.println("\n\n\n\n[getShortAddress_FromIeeeAddress] Start Search Node: " + String.format("%016X", IeeeAddress));
 		for (WrapperWSNNode y : _list) {
-			if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue())
+			System.out.println("[getShortAddress_FromIeeeAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
+			if (y.is_discoveryCompleted() && (y.get_node() != null) && (y.get_node().getAddress() != null) && (y.get_node().getAddress().getIeeeAddress() != null) && (y.get_node().getAddress().getNetworkAddress() != null) && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue()) {
+				System.out.println("\n\n\n\n[getShortAddress_FromIeeeAddress] FOUND Node: " + String.format("%016X", IeeeAddress));
+
 				return y.get_node().getAddress().getNetworkAddress();
+			}
 		}
-		throw new GatewayException("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));
+		throw new Exception("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));
 	}
 
 	/**
@@ -2503,5 +2536,7 @@ public class GalController {
 		}
 		return -1;
 	}
-
+	
+	
+	
 }

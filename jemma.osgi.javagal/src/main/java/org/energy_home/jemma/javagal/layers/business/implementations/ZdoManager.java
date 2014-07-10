@@ -104,16 +104,18 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
 				int _index = -1;
-				if ((_index = gal.existIntoNetworkCache(_add.getNetworkAddress())) != -1) {
-					gal.getNetworkcache().remove(_index);
-					Status _s = new Status();
-					_s.setCode((short) 0x00);
-					_s.setMessage("Successful - Device Removed by Leave Response");
-					try {
-						gal.get_gatewayEventManager().nodeRemoved(_s, _nodeRemoved);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				synchronized (gal.getNetworkcache()) {
+					if ((_index = gal.existIntoNetworkCache(_add)) != -1) {
+						gal.getNetworkcache().remove(_index);
+						Status _s = new Status();
+						_s.setCode((short) 0x00);
+						_s.setMessage("Successful - Device Removed by Leave Response");
+						try {
+							gal.get_gatewayEventManager().nodeRemoved(_s, _nodeRemoved);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -153,32 +155,36 @@ public class ZdoManager /* implements APSMessageListener */{
 			_Node.set_discoveryCompleted(true);
 			_Node.reset_numberOfAttempt();
 			int _index = -1;
-			if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress().getNetworkAddress())) == -1) {
-				/* id not exist */
-				gal.getNetworkcache().add(_Node);
-				if (!_Node.isSleepy()) {
-					if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-						_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+			synchronized (gal.getNetworkcache()) {
+				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
+					/* id not exist */
+					System.out.println("\n\n\n\n\nAdding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+
+					gal.getNetworkcache().add(_Node);
+					if (!_Node.isSleepy()) {
+						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
+							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+						}
+						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
+							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+						}
 					}
-					if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-						_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+					/* Saving the Panid in order to leave the Philips light */
+					gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
+					/**/
+
+					Status _s = new Status();
+					_s.setCode((short) 0x00);
+					try {
+						gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
+					} catch (Exception e) {
+
+						LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
+
 					}
-				}
-				/* Saving the Panid in order to leave the Philips light */
-				gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
-				/**/
-
-				Status _s = new Status();
-				_s.setCode((short) 0x00);
-				try {
-					gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
-				} catch (Exception e) {
-
-					LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
-
-				}
-				if (gal.getPropertiesManager().getDebugEnabled()) {
-					LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+					}
 				}
 			}
 
