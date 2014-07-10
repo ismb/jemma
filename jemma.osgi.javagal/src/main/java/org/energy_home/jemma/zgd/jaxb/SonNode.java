@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -48,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SonNode")
-public class SonNode {
+public class SonNode implements Serializable{
 
     @XmlAttribute(name = "ShortAddr")
     protected Integer shortAddr;

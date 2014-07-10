@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
     "extendedActiveEndpointListAvailable",
     "extendedSimpleDescriptorListAvailable"
 })
-public class DescriptorCapability {
+public class DescriptorCapability implements Serializable {
 
     @XmlElement(name = "ExtendedActiveEndpointListAvailable")
     protected boolean extendedActiveEndpointListAvailable;

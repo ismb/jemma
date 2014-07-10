@@ -22,7 +22,9 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Address", propOrder = { "networkAddress", "ieeeAddress", "aliasAddress" })
-public class Address {
+public class Address implements Serializable{
 
 	@XmlElement(name = "NetworkAddress")
 	protected Integer networkAddress;

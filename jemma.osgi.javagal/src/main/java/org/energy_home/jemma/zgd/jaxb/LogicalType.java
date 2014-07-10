@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
@@ -47,7 +49,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "LogicalType")
 @XmlEnum
-public enum LogicalType {
+public enum LogicalType implements Serializable {
 
     @XmlEnumValue("Current")
     CURRENT("Current"),

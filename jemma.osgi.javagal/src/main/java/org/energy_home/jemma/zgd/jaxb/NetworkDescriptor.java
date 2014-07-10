@@ -23,7 +23,9 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -72,7 +74,7 @@ import javax.xml.bind.annotation.XmlType;
     "endDeviceCapacity",
     "nwkRootURI"
 })
-public class NetworkDescriptor {
+public class NetworkDescriptor implements Serializable{
 
     @XmlElement(name = "ExtendedPanId")
     protected BigInteger extendedPanId;

@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -52,7 +54,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ResetInfo", propOrder = {
     "warmStart"
 })
-public class ResetInfo {
+public class ResetInfo implements Serializable{
 
     @XmlElement(name = "WarmStart")
     protected boolean warmStart;
