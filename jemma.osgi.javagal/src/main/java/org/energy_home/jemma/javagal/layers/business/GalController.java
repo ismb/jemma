@@ -1344,10 +1344,6 @@ public class GalController {
 	 */
 	public void sendInterPANMessage(long timeout, long _requestIdentifier, InterPANMessage message) throws IOException, Exception, GatewayException {
 		if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
-			if (message.getDestinationAddress().getNetworkAddress() == null && message.getDestinationAddress().getIeeeAddress() != null)
-				message.getDestinationAddress().setNetworkAddress(getShortAddress_FromIeeeAddress(message.getDestinationAddress().getIeeeAddress()));
-			if (message.getDestinationAddress().getIeeeAddress() == null && message.getDestinationAddress().getNetworkAddress() != null)
-				message.getDestinationAddress().setIeeeAddress(getIeeeAddress_FromShortAddress(message.getDestinationAddress().getNetworkAddress()));
 			DataLayer.sendInterPANMessaSync(timeout, message);
 		} else
 			throw new GatewayException("Gal is not in running state!");
