@@ -54,8 +54,8 @@ var InterfaceEnergyHome = {
 	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug", //"it.telecomitalia.ah.zigbee.smartplug",
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
-	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cos“ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
-	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lÕutente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
+	RETE_TOTALE : "SoldPower", //potenza istantanea  venduta alla rete (meglio usare nella gui solo i precedenti due valori, e ricavare per differenza questo, cosï¿½ si garantisce che i valori sono coerenti anche se le richieste json partono in istanti differenti)
+	PRESENZA_PRODUZIONE : "PeakProducedPower", //potenza di picco degli impianti fotovoltaici (vale 0 se lï¿½utente non ha nessun impianto fotovoltaico) e deve essere aggiunta alla gui di configurazione
 	CONSUMO : "ah.eh.esp.Energy",
 	COSTO : "ah.eh.esp.EnergyCost",
 	PRODUZIONE : "ah.eh.esp.ProducedEnergy",

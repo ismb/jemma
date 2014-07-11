@@ -72,7 +72,7 @@ var Msg = {
 		"RegistrazioneCancellaButt" : "Cancella"
 	},
 	home : {
-		"costiVuoto" : "Questa funzione non Ë ancora disponibile. <br> Potrai consultare i costi di casa tua oltre ai tuoi consumi nella seconda parte del trial",
+		"costiVuoto" : "Questa funzione non ÔøΩ ancora disponibile. <br> Potrai consultare i costi di casa tua oltre ai tuoi consumi nella seconda parte del trial",
 		"costi" : "COSTI",
 		"titoloPV" : "IMPIANTO FOTOVOLTAICO",
 		"titoloConsumi" : "CONSUMI",
@@ -160,7 +160,7 @@ var Msg = {
 	},
 	community : {
 		"titoloForum" : "FORUM ENERGY@HOME",
-		"forumMsg" : "Questa e' la sezione del forum Energy@Home. <br>Qui potrai esprimere la tua opinione, fare i tuoi commenti, chiedere informazioni agli altri partecipanti del trial, ricevere suggerimenti ed anche segnalare eventuali criticita' o dubbi sulla sperimentazione. <br>Accedi al forum, registrati e poi inserisci tanti messaggi quanti vuoi su uno o più dei 'topic' proposti. <br>Buona sperimentazione!",
+		"forumMsg" : "Questa e' la sezione del forum Energy@Home. <br>Qui potrai esprimere la tua opinione, fare i tuoi commenti, chiedere informazioni agli altri partecipanti del trial, ricevere suggerimenti ed anche segnalare eventuali criticita' o dubbi sulla sperimentazione. <br>Accedi al forum, registrati e poi inserisci tanti messaggi quanti vuoi su uno o piÔøΩ dei 'topic' proposti. <br>Buona sperimentazione!",
 		"forumText" : "Clicca qui"
 	},
 	opzLocal : {
@@ -277,7 +277,7 @@ var Msg = {
 		24 : "Aspirapolvere",
 		25 : "Phon",
 		26 : "Macchina del pane",
-		27 : "Macchina del caffè",
+		27 : "Macchina del caffÔøΩ",
 		28 : "Tosta pane",
 		29 : "Robot cucina",
 		30 : "Depuratore acqua",

@@ -326,7 +326,7 @@
                     
           $('#docs').find(">div").hide()
           $('#docs').find('#'+_path).show()
-          document.title = "arbor.js » " + _path
+          document.title = "arbor.js ï¿½ " + _path
           break
         }
         

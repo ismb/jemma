@@ -397,7 +397,7 @@ CostiConsumi.DatiMaxElettr = function() {
 	listaFiltrata.sort(function(a, b) {
 		var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
 		var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
-		//Se uno dei due elettrodomestici in sort è una lavatrice (whitegood) e il consumo è sotto a 1W, normalizzo a 0
+		//Se uno dei due elettrodomestici in sort ÔøΩ una lavatrice (whitegood) e il consumo ÔøΩ sotto a 1W, normalizzo a 0
 		if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
 			firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
 		}
@@ -917,7 +917,7 @@ CostiConsumi.launchFeed = function() {
 CostiConsumi.Initfeed = function(channel) {
 	var feed;
 
-	/* Se i feed sono già stati caricati non viene inoltrata un altra richiesta */
+	/* Se i feed sono giÔøΩ stati caricati non viene inoltrata un altra richiesta */
 	if (channel == 0 && CostiConsumi.notizie.length != 0) {
 
 		CostiConsumi.caricafeed();
@@ -954,7 +954,7 @@ CostiConsumi.Initfeed = function(channel) {
 					//}
 					if (!result.error) {
 						/* salvo i feed nella variabile CostiConsumi.notizie 
-						 * la prima news è selezionata random, dalla seconda in poi vengono inserite nello stesso ordine con cui vengono ricevute */
+						 * la prima news ÔøΩ selezionata random, dalla seconda in poi vengono inserite nello stesso ordine con cui vengono ricevute */
 						var randIndex = Math.floor(Math.random() * result.feed.entries.length);
 						var entryRand = result.feed.entries[randIndex];
 						var itemRand = {
@@ -1116,7 +1116,7 @@ CostiConsumi.popSemaphoro = function(nAjaxFnz, nStack){
 	}
 }
 
-//In baase al timestamp con cui è stato registrato, eseguo la funzione
+//In baase al timestamp con cui ÔøΩ stato registrato, eseguo la funzione
 CostiConsumi.executeSemaphoro = function(nStack){
 	
 	if (Main.env == 0) console.log('CostiConsumi1.js', 'execute Semaphoro', 'Entro con param nStack='+nStack);
