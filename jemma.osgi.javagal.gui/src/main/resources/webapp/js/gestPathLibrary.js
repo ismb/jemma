@@ -10,5 +10,7 @@ var DEFINEPATH = {
 	viewLQI : "/json/net/default/allwsnnodes/lqi",
 	leavePath : "/json/net/default/wsnnodes/",
 	permitJoinPath : "/json/net/default/allwsnnodes/permitjoin",
-	simpleDescriptorPath : "/json/net/default/wsnnodes/services"
+	simpleDescriptorPath : "/json/net/default/wsnnodes/services",
+	attributeInfoPath : "/json/net/default/ib"
+	
 }

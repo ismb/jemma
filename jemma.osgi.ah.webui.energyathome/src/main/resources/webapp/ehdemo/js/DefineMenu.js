@@ -12,7 +12,7 @@ if (Main.enablePV === true){
 									 "Image" : Define.menu["consumi"], //Define.menu["costi"],
 									 "ImageSelected" : Define.menu["consumiSel"], //Define.menu["costiSel"],
 									 "Section": Tracing.CONSUMPTIONS,
-									 "FuncEnter" : "LazyScript.load('js/CostiConsumi3.js?201305315125',function(){CostiConsumi.GestConsumi();})", //"LazyScript.load('js/CostiConsumi2.js',function(){CostiConsumi.GestCosti();})",
+									 "FuncEnter" : "showSpinner();LazyScript.load('js/CostiConsumi3.js?201305315125',function(){CostiConsumi.GestConsumi();})", //"LazyScript.load('js/CostiConsumi2.js',function(){CostiConsumi.GestCosti();})",
 									 "FuncExit": "CostiConsumi.ExitConsumi()" }, //"CostiConsumi.ExitCosti()" }, 
 									{"Nome" : Msg.menu["dispositivi"],
 									 "Image" : Define.menu["dispositivi"],

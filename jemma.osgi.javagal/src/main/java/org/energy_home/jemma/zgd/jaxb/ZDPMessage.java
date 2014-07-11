@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -67,7 +69,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "clusterID",
     "command"
 })
-public class ZDPMessage {
+public class ZDPMessage implements Serializable {
 
     @XmlElement(name = "SourceAddress")
     protected Address sourceAddress;

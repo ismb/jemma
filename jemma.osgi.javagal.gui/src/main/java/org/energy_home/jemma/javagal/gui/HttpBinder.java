@@ -17,23 +17,19 @@ package org.energy_home.jemma.javagal.gui;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpBinder implements EventHandler, HttpServletBinder {
 
 	private static final long serialVersionUID = 1L;
 
-	protected final static Log log = LogFactory.getLog(HttpBinder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HttpBinder.class);
 
+	
 	private HttpImplementor implementor = null;
 
 	public HttpBinder() {

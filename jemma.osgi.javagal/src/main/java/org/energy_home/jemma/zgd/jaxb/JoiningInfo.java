@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -55,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
     "permitDuration",
     "tcSignificance"
 })
-public class JoiningInfo {
+public class JoiningInfo implements Serializable {
 
     @XmlElement(name = "PermitDuration")
     @XmlSchemaType(name = "unsignedByte")

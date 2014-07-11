@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -55,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
     "status",
     "networkStatusCode"
 })
-public class NetworkStatusCode {
+public class NetworkStatusCode implements Serializable{
 
     @XmlElement(name = "Status")
     @XmlSchemaType(name = "unsignedInt")

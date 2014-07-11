@@ -83,6 +83,7 @@ public class GalExtenderProxyFactory {
 	public synchronized void destroyGal() throws Exception {
 		if (gal != null) {
 			gal.getDataLayer().destroy();
+			
 			gal.getDataLayer().getIKeyInstance().disconnect();
 			gal = null;
 		}

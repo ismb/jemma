@@ -23,8 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -66,7 +68,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "EnergyScanResult", propOrder = {
     "scannedChannel"
 })
-public class EnergyScanResult {
+public class EnergyScanResult implements Serializable {
 
     @XmlElement(name = "ScannedChannel")
     protected List<EnergyScanResult.ScannedChannel> scannedChannel;

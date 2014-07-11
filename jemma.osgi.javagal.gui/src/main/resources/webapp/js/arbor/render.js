@@ -18,7 +18,7 @@
       redraw:function(){
         if (!particleSystem) return
 
-        gfx.clear() // convenience ƒ: clears the whole canvas rect
+        gfx.clear() // convenience ï¿½: clears the whole canvas rect
 
         // draw the nodes & save their bounds for edge drawing
         var nodeBoxes = {};

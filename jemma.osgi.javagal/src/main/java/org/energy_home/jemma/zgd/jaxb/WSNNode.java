@@ -23,8 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -63,7 +65,7 @@ import javax.xml.bind.annotation.XmlType;
     "associatedDevices",
     "capabilityInformation"
 })
-public class WSNNode {
+public class WSNNode implements Serializable {
 
     @XmlElement(name = "Address", required = true)
     protected Address address;

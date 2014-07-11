@@ -18,6 +18,10 @@ package org.energy_home.jemma.javagal.layers.object;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class used to populate the Lqi Response received
  * 
@@ -33,7 +37,8 @@ public class Mgmt_LQI_rsp {
 	public short _StartIndex;
 	public short _NeighborTableListCount;
 	public List<NeighborTableLis_Record> NeighborTableList;
-
+	private static final Logger LOG = LoggerFactory.getLogger(Mgmt_LQI_rsp.class);
+	
 	public Mgmt_LQI_rsp(byte[] data) {
 		/* 02 00 01 00 01 */
 		_Status = data[1];
@@ -52,7 +57,7 @@ public class Mgmt_LQI_rsp {
 		}
 		else
 		{
-			System.out.println("\n\rReceived a not Success status from the LQI Req Status value:" + _Status +"\n\r");
+				LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status +"\n\r");
 		}
 
 	}

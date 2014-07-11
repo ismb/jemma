@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 /**
  * Object carrying a {@code byte[]} of fixed length. The aims of this class is
- * to provide {@code byte[]} reuse. An instance of {@link ByteArrayObject}
+ * to provide {@code byte[]} reuse. An instance of {@link ShortArrayObject}
  * contains a byte array where only the first {@link #count} bytes are to be
  * considered valid.
  * 
@@ -29,7 +29,7 @@ import java.util.Iterator;
  *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
-public class ByteArrayObject {
+public class ShortArrayObject {
 	/**
 	 * The maximum array dimension.
 	 */
@@ -47,10 +47,10 @@ public class ByteArrayObject {
 	/**
 	 * Creates a new empty {@code ByteArrayObject} instance.
 	 */
-	public ByteArrayObject() {
+	public ShortArrayObject() {
 		_startedFromZero = false;
 		array = new short[MAX_ARRAY_DIMENSION];
-		
+
 		count = START;
 
 	}
@@ -66,10 +66,10 @@ public class ByteArrayObject {
 	 * @param size
 	 *            the size of the valid values on the byte array.
 	 */
-	public ByteArrayObject(short[] buffer, int size) {
+	public ShortArrayObject(short[] buffer, int size) {
 		_startedFromZero = true;
-		array = new short[buffer.length];
-		System.arraycopy(buffer, 0, array, 0, buffer.length);
+		array = new short[size];
+		System.arraycopy(buffer, 0, array, 0, size);
 		count = size;
 
 	}
@@ -156,9 +156,27 @@ public class ByteArrayObject {
 		short[] buff = getShortArray();
 		byte[] _data = new byte[buff.length];
 		for (int i = 0; i < _data.length; i++)
-			_data[i] =  ((Short)buff[i]).byteValue();
+			_data[i] = ((Short) buff[i]).byteValue();
 		return _data;
 	}
+	
+	
+
+	/**
+	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
+	 * that all elements in the backing array are returned, even those after the
+	 * {@code size} value that are to be considered invalid.
+	 * 
+	 * @return the byte array.
+	 */
+	public byte[] getByteArrayRealSize() {
+		short[] buff = getShortArray();
+		byte[] _data = new byte[getCount(true)];
+		for (int i = 0; i < _data.length; i++)
+			_data[i] = ((Short) buff[i]).byteValue();
+		return _data;
+	}
+	
 
 	/**
 	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
@@ -182,38 +200,6 @@ public class ByteArrayObject {
 		for (int i = 0; i < _data.length; i++)
 			_data[i] = getByteArray()[START + i];
 		return _data;
-	}
-
-	/**
-	 * Gets a {@code byte[]} containing just the valid values carried by this
-	 * byte array object.
-	 * 
-	 * @return the real byte array.
-	 */
-	public Short[] getRealShortArray() {
-		Short[] _data = new Short[(_startedFromZero) ? count : (count - START)];
-		for (int i = 0; i < _data.length; i++)
-			_data[i] = getShortArray()[START + i];
-		return _data;
-	}
-
-	/**
-	 * Gets part of the "real byte array" contained in this byte array object.
-	 * The "real byte array" is the sub array containing just the valid values.
-	 * 
-	 * @param offset
-	 *            the offset to start from.
-	 * @param count
-	 *            the size of returned sub byte array.
-	 * @return the sub byte array to return.
-	 */
-	public byte[] getPartialRealByteArray(int offset, int count) {
-		Short[] vect = getRealShortArray();
-		byte[] tores = new byte[count];
-		int x = 0;
-		for (int i = offset; i < (offset + count); i++)
-			tores[x++] = vect[i].byteValue();
-		return tores;
 	}
 
 	/**
@@ -246,7 +232,7 @@ public class ByteArrayObject {
 		StringBuffer _res = new StringBuffer();
 		short[] _vect = getShortArray();
 		for (int i = 0; i < getCount(true); i++)
-			_res.append(String.format("%02X", ((Short)_vect[i]).byteValue()));
+			_res.append(String.format("%02X", ((Short) _vect[i]).byteValue()));
 		return _res.toString();
 	}
 }

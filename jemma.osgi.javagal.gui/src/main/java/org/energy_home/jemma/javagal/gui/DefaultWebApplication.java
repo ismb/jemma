@@ -69,7 +69,7 @@ public class DefaultWebApplication {
 				try {
 					httpService.registerResources(this.toAlias(this.rootUrl + r.getAlias()), r.getPath(), this.getHttpContext());
 				} catch (Throwable e) {
-					System.out.println(e.getMessage());
+					e.printStackTrace();
 					continue;
 				}
 			}
@@ -79,7 +79,7 @@ public class DefaultWebApplication {
 				try {
 					httpService.registerServlet(this.toAlias(this.rootUrl + sr.getAlias()), sr.getServlet(), null, this.getHttpContext());
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					e.printStackTrace();
 					continue;
 				}
 			}

@@ -25,6 +25,7 @@ import org.energy_home.jemma.javagal.json.servlet.allLqiInformationsServlet;
 import org.energy_home.jemma.javagal.json.servlet.allPermitJoinServlet;
 import org.energy_home.jemma.javagal.json.servlet.channelServlet;
 import org.energy_home.jemma.javagal.json.servlet.frequencyAgilityServlet;
+import org.energy_home.jemma.javagal.json.servlet.getInfoBaseAttributesServlet;
 import org.energy_home.jemma.javagal.json.servlet.localServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeDescriptorAndServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeServicesServlet;
@@ -112,6 +113,10 @@ public class ServletContainer implements HttpSessionListener{
 			 */
 			service.registerServlet(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.LOCALNODE_SERVICES, new localServicesServlet(gatewayInterface), null, null);
 
+			/*
+			 * Defines InfoBase route "/net/default/ib"
+			 */
+			service.registerServlet(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.INFOBASE, new getInfoBaseAttributesServlet(gatewayInterface), null, null);
 			
 			
 			
@@ -167,19 +172,22 @@ public class ServletContainer implements HttpSessionListener{
 		 */
 		service.unregister(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.LOCALNODE_SERVICES);
 
+		/*
+		 * Defines InfoBaseAttribute route "/net/default/ib"
+		 */
+		service.unregister(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.INFOBASE);
+		
 		
 		
 	}
 
 	@Override
 	public void sessionCreated(HttpSessionEvent arg0) {
-		System.out.print("Session new ");
 		
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent arg0) {
-		System.out.print("Session end ");
 		
 	}
 }

@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -44,7 +46,7 @@ import javax.xml.namespace.QName;
  * 
  */
 @XmlRegistry
-public class ObjectFactory {
+public class ObjectFactory implements Serializable{
 
     private final static QName _ResetInfo_QNAME = new QName("http://www.zigbee.org/GWGRESTSchema", "ResetInfo");
     private final static QName _RouteDiscoveryInfo_QNAME = new QName("http://www.zigbee.org/GWGRESTSchema", "RouteDiscoveryInfo");

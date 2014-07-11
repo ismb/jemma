@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -56,7 +58,7 @@ import javax.xml.bind.annotation.XmlType;
     "buffer",
     "action"
 })
-public class Callback {
+public class Callback implements Serializable {
 
     @XmlElement(name = "Filter")
     protected Filter filter;

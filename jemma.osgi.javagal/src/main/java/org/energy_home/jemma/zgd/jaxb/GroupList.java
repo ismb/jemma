@@ -23,8 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "GroupList", propOrder = {
     "group"
 })
-public class GroupList {
+public class GroupList implements Serializable {
 
     @XmlElement(name = "Group")
     protected List<Group> group;

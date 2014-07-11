@@ -25,11 +25,18 @@ import java.math.BigInteger;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ManageMapPanId {
 	String filename;
+GalController gal;
+private static final Logger logger = LoggerFactory.getLogger(ManageMapPanId.class);
 
-	public ManageMapPanId() {
+	public ManageMapPanId(GalController _gal) {
 		try {
+			gal = _gal;
 			filename = System.getProperty("user.home") + File.separator + "mapPainId.properties";
 			File f = new File(filename);
 			if (!f.exists())
@@ -42,57 +49,85 @@ public class ManageMapPanId {
 	}
 
 	public synchronized Integer getPanid(BigInteger address) {
+		FileInputStream stream = null;
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(filename));
+			stream = new FileInputStream(filename);
+			properties.load(stream);
 			String _res = properties.getProperty(address.toString());
 
 			if (_res != null)
-				return Integer.parseInt(_res,16);
+				return Integer.parseInt(_res, 16);
 			else
 				return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 
+		} finally {
+			if (stream != null)
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 		}
 	}
 
 	public synchronized void setPanid(BigInteger address, String panId) {
+		FileInputStream stream = null;
+		OutputStream out = null;
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(filename));
+			stream = new FileInputStream(filename);
+			properties.load(stream);
 			String _oldvalue = properties.getProperty(address.toString());
-			if (_oldvalue == null)
-			{
+			if (_oldvalue == null) {
 				properties.setProperty(address.toString(), panId);
-				OutputStream out = new FileOutputStream(filename);
+				out = new FileOutputStream(filename);
 				properties.store(out, null);
 				out.flush();
-				out.close();
-			}
-			else if (!_oldvalue.toLowerCase().equals(panId.toLowerCase())) {
+
+			} else if (!_oldvalue.toLowerCase().equals(panId.toLowerCase())) {
 				properties.setProperty(address.toString(), panId);
-				OutputStream out = new FileOutputStream(filename);
+				out = new FileOutputStream(filename);
 				properties.store(out, null);
 				out.flush();
-				out.close();
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+
+		} finally {
+			if (stream != null)
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			if (out != null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 		}
 	}
 
 	void printFile() {
-
+		FileInputStream stream = null;
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(filename));
+			stream = new FileInputStream(filename);
+			properties.load(stream);
 			Enumeration<?> e = properties.propertyNames();
 			while (e.hasMoreElements()) {
 				String key = (String) e.nextElement();
-				System.out.println(key + " -- " + properties.getProperty(key));
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.info(key + " -- " + properties.getProperty(key));
 			}
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -100,6 +135,14 @@ public class ManageMapPanId {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} finally {
+			if (stream != null)
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 		}
 
 	}
