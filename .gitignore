@@ -1,6 +1,7 @@
 *MANIFEST.MF
 *~
 *.svn.*
+*.orig.*
 *.classpath*
 *.project
 */.settings/*
