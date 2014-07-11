@@ -158,7 +158,8 @@ public class ZdoManager /* implements APSMessageListener */{
 			synchronized (gal.getNetworkcache()) {
 				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
 					/* id not exist */
-					System.out.println("\n\n\n\n\nAdding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());
+					if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.info("Adding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 
 					gal.getNetworkcache().add(_Node);
 					if (!_Node.isSleepy()) {

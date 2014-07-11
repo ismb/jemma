@@ -2234,7 +2234,8 @@ public class DataFreescale implements IDataLayer {
 					o.set_discoveryCompleted(false);
 					_newNode.setAddress(address);
 					o.set_node(_newNode);
-					System.out.println("\n\n\n\n\nAdding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
+					if (gal.getPropertiesManager().getDebugEnabled())
+						LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
 					gal.getNetworkcache().add(o);
 
 					Runnable thr = new MyThread(address) {
@@ -2252,7 +2253,8 @@ public class DataFreescale implements IDataLayer {
 								/*
 								 * Reading the IEEEAddress of the new node
 								 */
-								while (_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) {
+								int counter = 0;
+								while ((_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) && counter <= 30) {
 									try {
 										if (gal.getPropertiesManager().getDebugEnabled())
 											LOG.info("Sending IeeeReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
@@ -2265,16 +2267,25 @@ public class DataFreescale implements IDataLayer {
 
 										LOG.error("Error reading Ieee of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
 										try {
+											counter++;
 											Thread.sleep(50);
 										} catch (InterruptedException e1) {
+											counter++;
 											// TODO Auto-generated catch block
 											e1.printStackTrace();
 										}
 
 									}
 								}
+								if (counter >= 30) {
+									gal.getNetworkcache().remove(_indexOnCache);
+									return;
 
-								while (_newWrapperNode.getNodeDescriptor() == null) {
+								}
+
+								counter = 0;
+
+								while (_newWrapperNode.getNodeDescriptor() == null && counter <= 30) {
 									try {
 										if (gal.getPropertiesManager().getDebugEnabled())
 											LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
@@ -2289,14 +2300,21 @@ public class DataFreescale implements IDataLayer {
 
 										LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
 										try {
+											counter++;
 											Thread.sleep(50);
 										} catch (InterruptedException e1) {
+											counter++;
 											// TODO Auto-generated catch block
 											e1.printStackTrace();
 										}
 									}
 								}
 
+								if (counter >= 30) {
+									gal.getNetworkcache().remove(_indexOnCache);
+									return;
+
+								}
 								_newWrapperNode.reset_numberOfAttempt();
 								_newWrapperNode.set_discoveryCompleted(true);
 
@@ -3419,8 +3437,7 @@ public class DataFreescale implements IDataLayer {
 		// Control
 		if (gal.getPropertiesManager().getDebugEnabled()) {
 			LOG.info("ZDP-IEEE_addr.Request.Request:" + _res.ToHexString());
-			// System.out.println("ZDP-IEEE_addr.Request.Request:" +
-			// _res.ToHexString());
+
 		}
 
 		ParserLocker lock = new ParserLocker();

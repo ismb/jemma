@@ -284,7 +284,8 @@ public class Discovery_Freshness_ForcePing {
 					/*
 					 * node child not exists
 					 */
-					System.out.println("\n\n\n\n\nAdding node from Discovery Child: " + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " -- " + String.format("%016X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()));
+					if (gal.getPropertiesManager().getDebugEnabled())
+						logger.info("Adding node from Discovery Child: " + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " -- " + String.format("%016X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()));
 					gal.getNetworkcache().add(newNodeWrapperChild);
 
 					if (!newNodeWrapperChild.isSleepy()) {

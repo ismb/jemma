@@ -42,11 +42,7 @@ import org.restlet.resource.ServerResource;
  */
 public class netDefaultIbLevelResource extends ServerResource {
 
-	public <T extends Enum<T>> void enumValues(Class<T> enumType) {
-	    for (T c : enumType.getEnumConstants()) {
-	         System.out.println(c.name());
-	    }
-	}
+	
 	
 	
 	@Get
