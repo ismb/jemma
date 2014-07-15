@@ -1690,8 +1690,7 @@ public class DataFreescale implements IDataLayer {
 
 		}
 		String logMessage = "Extracted ZTC-ERROR.Event Status: " + MessageStatus;
-		if (gal.getPropertiesManager().getDebugEnabled())
-			LOG.info(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
+			LOG.error(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
 	}
 
 	/**
