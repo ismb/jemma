@@ -80,6 +80,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringSer
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlClient;
 import org.energy_home.jemma.zgd.APSMessageListener;
+import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayEventListener;
 import org.energy_home.jemma.zgd.GatewayException;
@@ -1629,6 +1630,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		this.terminateDeviceDiscoveryAll();
 
 		try {
+			
 			gateway.setGatewayEventListener(null);
 			gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_STOP);
 		} catch (Exception e) {
