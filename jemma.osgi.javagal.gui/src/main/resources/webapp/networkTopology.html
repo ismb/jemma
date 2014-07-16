@@ -10,12 +10,13 @@
 		  
 		  
 		  $(document).ready(function(){
+			 var tooltip  = null;
 			  
-			  
+			 /* 
 			  $(document).bind("contextmenu",function(e){
 	              return false;
 	       }); 
-			  
+			  */
 			  
 			  $("#dialog-form-device-details_topology").dialog({
 					autoOpen : false,
@@ -39,7 +40,7 @@
 			  
 			  
 			  
-			  
+			   
 			  
 			  NodesCounter = 0;
 		    var CLR = {
@@ -71,30 +72,7 @@
 						var colorManufacturer, nameManufacturer, alphaInfo;
 						
 						colorManufacturer = '#00ff80';
-						/*
-						switch (codeManufacturer){
-							case DEFINEMANUFACTURER.FREESCALE:
-							  	colorManufacturer = 'blue'; 
-							  	nameManufacturer = 'Freescale';
-							  	alphaInfo = 1;
-						  		break; 
-							case DEFINEMANUFACTURER.FOURNOKS:
-							  	colorManufacturer = 'grey'; 
-							  	nameManufacturer = '4-Noks';
-							  	alphaInfo = 1;
-							  	break; 
-							case DEFINEMANUFACTURER.FLEXGRID:
-							  	colorManufacturer = 'yellow'; 
-							  	nameManufacturer = 'FlexGrid';
-							  	alphaInfo = 1;
-							  	break; 
-							 default:
-							  	colorManufacturer = 'red'; 
-							  	nameManufacturer = 'Manufacturer:Unknown';
-							  	alphaInfo = 1;
-							  	break; 
-						}
-						*/
+						
 						
 						if (!Nodes.nodes[strIeeeAddress])
 							Nodes.nodes[strIeeeAddress] = {};
@@ -145,11 +123,9 @@
 									var dataToShift = edge.deviceTypeRxOnWhenIdleRelationship;
 									var tmp = dataToShift;
 									var deviceType = (tmp & 3);
-									//console.log("deviceType: " + deviceType);
 									
 									tmp = dataToShift;
 									var rxOnWhenIdle = ((tmp & 12) >> 2);
-									//console.log("rxOnWhenIdle: " + rxOnWhenIdle);
 									var rxOnWhenIdleString, rxOnWhenIdleColor;
 									switch (rxOnWhenIdle){
 										case 0: 
@@ -199,7 +175,6 @@
 									
 										tmp = dataToShift;
 									var relationship = ((tmp & 112) >> 4);
-									//console.log("relationship: " + relationship);
 									var relationshipString;
 									switch (relationship){
 										case 0: 
@@ -220,7 +195,6 @@
 									}
 									var permitJoin = edge.permitJoining;
 									var permitJoinString, permitJoinColor;
-									//console.log("permitJoin: " + permitJoin);
 									switch (permitJoin){
 										case 0: 
 											permitJoinString = 'PermitJoin: false';
@@ -324,7 +298,6 @@
 					          var w1 = 40
 					          if (node.data.alpha===0) return
 					            nodeBoxes[node.name] = [pt.x-w/2, pt.y-w/2, w,w]
-					        	  //permitJoinString,permitJoinColor,relationshipString,rxOnWhenIdleString,rxOnWhenIdleColor,deviceTypeString,deviceTypeColor,shortAddress
 					        	gfx.oval(pt.x-w1/2, pt.y-w1/2, w1, w1, {fill:node.data.color, alpha:node.data.alpha});
 					        	gfx.rect(pt.x-w/2, pt.y-8, w, 20, 4, {fill:node.data.deviceTypeColor, alpha:node.data.alpha});
 					          	var nodeName = "";
@@ -333,16 +306,7 @@
 					        	else
 					        		nodeName = "0x" + node.data.shortAddress;
 					        	gfx.text(nodeName , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
-					            //Label
-					            //gfx.text(node.data.label, pt.x, pt.y+ 37, {color:"Black", align:"center", font:"Arial", size:12});
-					            //DeviceType
-					            //gfx.text(node.data.deviceTypeString, pt.x, pt.y+ 47, {color:node.data.deviceTypeColor, align:"center", font:"Arial", size:12});
-						        //PermitJoin
-					            //gfx.text(node.data.permitJoinString, pt.x, pt.y+ 57, {color:'Black', align:"center", font:"Arial", size:12});
-					            //Sleepy
-						        //gfx.text(node.data.rxOnWhenIdleString, pt.x, pt.y+ 67, {color:'Black', align:"center", font:"Arial", size:12});
-					          
-					            
+					                  
 					      
 					          if (node.name)
 				            	{
@@ -511,8 +475,14 @@
 
 					        var handler = {
 					          moved:function(e){
-					        	
-					            return false
+					        	  
+					            return false;
+					          },
+					          over:function(e){
+					        	  
+					        	 
+					            
+					            return false;
 					          },
 					          clicked:function(e){
 					        	  if (e.button == 2)
@@ -602,6 +572,8 @@
 					        }
 					        $(canvas).mousedown(handler.clicked);
 					        $(canvas).mousemove(handler.moved);
+					        $(canvas).mouseover(handler.over);
+					       
 					      }
 					    }
 					    return that
