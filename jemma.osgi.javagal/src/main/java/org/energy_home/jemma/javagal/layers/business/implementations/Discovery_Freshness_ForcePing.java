@@ -166,6 +166,17 @@ public class Discovery_Freshness_ForcePing {
 								if (gal.getPropertiesManager().getDebugEnabled()) {
 									logger.warn("patch that correct a 4-noks bug - 07-12-2011");
 								}
+								if (function == TypeFunction.FRESHNESS)
+									if (gal.getPropertiesManager().getKeepAliveThreshold() > 0)
+										__currentNodeWrapper.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+								if (function == TypeFunction.FORCEPING)
+									if (gal.getPropertiesManager().getForcePingTimeout() > 0)
+										__currentNodeWrapper.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+
+								if (gal.getPropertiesManager().getDebugEnabled()) {
+									logger.info(functionName + " completed for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+								}
+								
 								return;
 							} else {
 								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && _Lqi.NeighborTableList != null) {
