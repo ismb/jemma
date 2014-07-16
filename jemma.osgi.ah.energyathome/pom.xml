@@ -45,6 +45,7 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Require-Bundle>org.apache.httpcomponents.httpclient;bundle-version="4.1.0",
 							 org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
