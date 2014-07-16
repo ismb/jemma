@@ -37,6 +37,8 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
 import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dispatches Gateway Device Events to registered listeners. This class is
@@ -61,6 +63,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 	final static int DISCOVERY_ANNOUNCEMENTS = 2;
 	final static int DISCOVERY_LEAVE = 4;
 	final static int DISCOVERY_FRESHNESS = 16;
+
+	private static final Logger LOG = LoggerFactory.getLogger( GatewayEventManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -305,7 +309,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeDiscovered(final Status status, final WSNNode _node) throws Exception {
-
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {

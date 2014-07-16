@@ -46,7 +46,7 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 public class ApsMessageManager {
 	ExecutorService executor = null;
 	//FIXME mass-rename to LOG when available
-	private static final Logger logger = LoggerFactory.getLogger( ApsMessageManager.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ApsMessageManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -99,7 +99,7 @@ public class ApsMessageManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication in process...");
+					LOG.info("Aps Message Indication in process...");
 				}
 
 				for (CallbackEntry ce : gal.getCallbacks()) {
@@ -200,7 +200,7 @@ public class ApsMessageManager {
 											}
 										}
 									} else if (msam == 0x03) {
-										logger.info("AIA");
+										LOG.info("AIA");
 
 										// ASK No ieee address defined in
 										// the AddressSpecification
@@ -284,7 +284,7 @@ public class ApsMessageManager {
 				}
 				
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication done!");
+					LOG.info("Aps Message Indication done!");
 				}
 			}
 		});

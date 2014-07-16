@@ -1284,13 +1284,20 @@ public class GalController {
 		boolean _listenerFound = false;
 		for (int i = 0; i < getListGatewayEventListener().size(); i++) {
 			if (getListGatewayEventListener().get(i).getProxyIdentifier() == proxyIdentifier) {
-				_listenerFound = true;
-				break;
+				if (listener == null) {
+					getListGatewayEventListener().remove(i);
+					if (getPropertiesManager().getDebugEnabled())
+						logger.info("Removing Listener for: " + proxyIdentifier);
+					return;
+				} else {
+					_listenerFound = true;
+					break;
+				}
 			}
 
 		}
 
-		if (!_listenerFound) {
+		if ((!_listenerFound) && (listener != null)) {
 			GatewayDeviceEventEntry<GatewayEventListener> gdee = new GatewayDeviceEventEntry<GatewayEventListener>();
 			gdee.setGatewayEventListener(listener);
 			gdee.setProxyIdentifier(proxyIdentifier);
@@ -2458,9 +2465,9 @@ public class GalController {
 			if (address.getNetworkAddress() != null)
 				if (getPropertiesManager().getDebugEnabled())
 					logger.debug("Not Found node:" + String.format("%04X", address.getNetworkAddress()));
-			else if (address.getIeeeAddress() != null)
-				if (getPropertiesManager().getDebugEnabled())
-					logger.debug("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
+				else if (address.getIeeeAddress() != null)
+					if (getPropertiesManager().getDebugEnabled())
+						logger.debug("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
 			return -1;
 		}
 

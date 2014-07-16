@@ -48,7 +48,7 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-SymbolicName>jemma.osgi.javagal;singleton:=true</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.name};singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
