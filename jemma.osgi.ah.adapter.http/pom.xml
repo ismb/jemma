@@ -44,7 +44,7 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.5</Bundle-RequiredExecutionEnvironment>
 						<Import-Package>edu.emory.mathcs.backport.java.util.concurrent,
 							 org.energy_home.jemma.ah.hac,
 							 org.energy_home.jemma.ah.hac.lib,
