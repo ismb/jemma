@@ -645,10 +645,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeDiscovered(final Status status, final WSNNode node) {
+		System.out.println("NodeDiscovered Node:" + node.getAddress().getNetworkAddress() + "  Status:" + status.getCode() +" Class:" + this.hashCode() );
+		
 		Thread thr = new Thread() {
 			@Override
 			public void run() {
-
 				log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
 				log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
 				rwLock.writeLock().lock();
@@ -1590,6 +1591,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		this.terminateDeviceDiscoveryAll();
 		try {
+			System.out.println("Setting GatewayEventListener Class: " + this.hashCode());
 			gateway.setGatewayEventListener(this);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -1630,7 +1632,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		this.terminateDeviceDiscoveryAll();
 
 		try {
-			
+			System.out.println("Removing GatewayEventListener: " + this.hashCode());
 			gateway.setGatewayEventListener(null);
 			gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_STOP);
 		} catch (Exception e) {
