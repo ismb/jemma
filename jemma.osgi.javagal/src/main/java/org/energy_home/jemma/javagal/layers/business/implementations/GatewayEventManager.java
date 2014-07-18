@@ -478,7 +478,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized void notifyZDPCommand(final ZDPMessage message) {
+	public synchronized void notifyZDPEvent(final ZDPMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -495,7 +495,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized void notifyZCLCommand(final ZCLMessage message) {
+	public synchronized void notifyZCLEvent(final ZCLMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {

@@ -2178,7 +2178,7 @@ public class DataFreescale implements IDataLayer {
 			_zm.setZCLHeader(_header.getRealByteArray());
 			_zm.setZCLPayload(_payload.getRealByteArray());
 			if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
-				gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+				gal.get_gatewayEventManager().notifyZCLEvent(_zm);
 				gal.getApsManager().APSMessageIndication(messageEvent);
 				gal.getMessageManager().APSMessageIndication(messageEvent);
 			}
