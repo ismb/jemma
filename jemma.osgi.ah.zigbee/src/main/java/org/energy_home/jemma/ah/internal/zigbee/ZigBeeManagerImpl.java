@@ -53,6 +53,7 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
 import org.energy_home.jemma.ah.zigbee.ZigBeeMngrService;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclException;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationClient;
@@ -1471,6 +1472,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 							outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclDoorLockClient.CLUSTER_ID));
 
 							if (enableEnergyAtHomeClusters) {
 								// This is the list of Client side clusters
@@ -1489,9 +1491,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 								outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 								outputClusters.add(new Integer(ZclLightLinkColorControlClient.CLUSTER_ID));
 								outputClusters.add(new Integer(ZclLevelControlClient.CLUSTER_ID));
-								outputClusters.add(new Integer(ZclThermostatClient.CLUSTER_ID)); // Thermostat
-																									// cluster
-
+								outputClusters.add(new Integer(ZclThermostatClient.CLUSTER_ID));
 							}
 
 							// This is the list of Server side clusters
