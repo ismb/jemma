@@ -2315,10 +2315,10 @@ public class DataFreescale implements IDataLayer {
 
 								}
 								_newWrapperNode.reset_numberOfAttempt();
-								_newWrapperNode.set_discoveryCompleted(true);
+								
 
 								if (!_newWrapperNode.isSleepy()) {
-
+									_newWrapperNode.set_discoveryCompleted(false);
 									if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 										_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 									}
@@ -2326,7 +2326,7 @@ public class DataFreescale implements IDataLayer {
 										_newWrapperNode.setTimerForcePing(0);
 									}
 								} else {
-
+									_newWrapperNode.set_discoveryCompleted(true);
 									Status _st = new Status();
 									_st.setCode((short) GatewayConstants.SUCCESS);
 
