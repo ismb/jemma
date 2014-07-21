@@ -12,11 +12,309 @@
 		  $(document).ready(function(){
 			 var tooltip  = null;
 			  
-			 /* 
+			
 			  $(document).bind("contextmenu",function(e){
 	              return false;
 	       }); 
-			  */
+			  
+			  $("#detail_button_simple_descriptorTopology")
+				.click(
+
+						function() {
+							var short_address = $("#detail_shortaddress_hiddenTopology")
+									.val();
+							var endpoint = $("#detail_active_endpointsTopology").val();
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.simpleDescriptorPath
+														+ "?timeout=00002710&addr="
+														+ short_address
+														+ "&endpoint="
+														+ endpoint
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
+													/*Profile Section*/
+													var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
+													var profileDesc = getSingleProfileFromID(padLeft(
+															4,
+															profile
+																	.toString(16))
+															.toLowerCase()
+															.trim());
+													if (profileDesc) {
+														$("#detail_profileTopology")
+																.val(
+																		profileDesc.description
+																				+ ' (0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ ")");
+													} else {
+
+														$("#detail_profileTopology")
+																.val(
+																		'Unknown profile - 0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim());
+
+													}
+
+													$('#detail_profileTopology').attr(
+															'readonly', true);
+
+													/*Device Section*/
+													var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
+													var deviceDescr = getSingleDeviceName(
+															padLeft(
+																	4,
+																	device
+																			.toString(16))
+																	.toUpperCase()
+																	.trim(),
+															padLeft(
+																	4,
+																	profile
+																			.toString(16))
+																	.toLowerCase()
+																	.trim());
+													if (deviceDescr) {
+														$("#detail_deviceTopology")
+																.val(
+																		deviceDescr
+																				+ ' (0x'
+																				+ padLeft(
+																						4,
+																						device
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ ")");
+													} else {
+														$("#detail_deviceTopology")
+																.val(
+
+																		'Unknown device - 0x'
+																				+ padLeft(
+																						4,
+																						device
+																								.toString(16))
+																						.toUpperCase()
+																						.trim());
+													}
+													$('#detail_deviceTopology').attr(
+															'readonly', true);
+
+													/*Device Version Section*/
+													var device_version = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceVersion;
+													$("#detail_device_versionTopology")
+															.val(
+																	'0x'
+																			+ padLeft(
+																					2,
+																					device_version
+																							.toString(16))
+																					.toUpperCase()
+																					.trim());
+													$('#detail_device_versionTopology')
+															.attr('readonly',
+																	true);
+
+													/*Input CLuster Section*/
+													var input_cluster = "";
+													$("#detail_input_clustersTopology")
+															.empty();
+													$
+															.each(
+																	dataBig.detail.serviceDescriptor.simpleDescriptor.applicationInputCluster,
+																	function(
+																			index,
+																			value) {
+
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
+																		$(
+																				"#detail_input_clustersTopology")
+																				.append(
+																						'<option value="'+value+'">'
+																								+ ((clusterDescr) ? clusterDescr.description
+																										: "Unknown cluster")
+																								+ ' (0x'
+																								+ padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()
+																								+ ')</option>');
+																	});
+
+													/*Output CLuster Section*/
+													var output_cluster = "";
+													$("#detail_output_clustersTopology")
+															.empty();
+													$
+															.each(
+																	dataBig.detail.serviceDescriptor.simpleDescriptor.applicationOutputCluster,
+																	function(
+																			index,
+																			value) {
+
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
+
+																		$(
+																				"#detail_output_clustersTopology")
+																				.append(
+																						'<option value="'+value+'">'
+																								+ ((clusterDescr) ? clusterDescr.description
+																										: "Unknown cluster")
+																								+ ' (0x'
+																								+ padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()
+																								+ ')</option>');
+																	});
+												} else {
+													alert("Error on simple descriptor request: "
+															+ dataBig.status.message);
+												}
+
+											});
+
+						});
+
+			  
+			  
+			  function infoDeviceTopology(shortAddress) {
+				  
+					$
+							.ajax(
+									{
+										url : DEFINEPATH.detailDevicePath
+												+ "?timeout=00002710&addr="
+												+ shortAddress,
+										type : 'GET'
+									})
+							.done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											/*Clear all data*/
+											$("#detail_shortaddressTopology").val("");
+											$("#detail_ieeeaddressTopology").val("");
+											$("#detail_active_endpointsTopology").empty();
+											$("#detail_manufacturerTopology").val("");
+											$("#detail_logical_typeTopology").val("");
+											$("#detail_is_sleepyTopology").val("");
+											$("#detail_profileTopology").val("");
+											$("#detail_deviceTopology").val("");
+											$("#detail_device_versionTopology").val("");
+											$("#detail_input_clustersTopology").empty();
+											$("#detail_output_clustersTopology").empty();
+											$("#dialog-form-device-details_topology").dialog(
+													"open");
+											/*Short Address section*/
+											var shortAddress = padLeft(
+													4,
+													dataBig.detail.nodeServices.address.networkAddress
+															.toString(16))
+													.toUpperCase().trim();
+											$("#detail_shortaddress_hiddenTopology").val(
+													shortAddress);
+											$("#detail_shortaddressTopology").val(
+													"0x" + shortAddress);
+											$('#detail_shortaddressTopology').attr('readonly',
+													true);
+
+											/*Ieee Address section*/
+											var ieeeAddress = padLeft(
+													16,
+													dataBig.detail.nodeServices.address.ieeeAddress
+															.toString(16))
+													.toUpperCase().trim();
+											$("#detail_ieeeaddress_hiddenTopology").val(
+													ieeeAddress
+
+											);
+											$("#detail_ieeeaddressTopology").val(
+													"0x" + ieeeAddress);
+											$('#detail_ieeeaddressTopology').attr('readonly',
+													true);
+
+											/*EndPoint section*/
+											$
+													.each(
+															dataBig.detail.nodeServices.activeEndpoints,
+															function(index, value) {
+																$(
+																		"#detail_active_endpointsTopology")
+																		.append(
+																				'<option value="'+value.endPoint+'">'
+																						+ '0x'
+																						+ padLeft(
+																								"2",
+																								value.endPoint
+																										.toString(16))
+																								.toUpperCase()
+																								.trim()
+																						+ '</option>');
+															});
+
+											/*Manufacturer Section*/
+											var manufacturer = "0x"
+													+ dataBig.detail.nodeDescriptor.manufacturerCode;
+											$("#detail_manufacturerTopology").val(manufacturer);
+											$('#detail_manufacturerTopology').attr('readonly',
+													true);
+
+											/*LogicalType Section*/
+											var logicaltype = dataBig.detail.nodeDescriptor.logicalType;
+											$("#detail_logical_typeTopology").val(logicaltype);
+											$('#detail_logical_typeTopology').attr('readonly',
+													true);
+
+											/*Sleepy EndDevice*/
+											var isSleepy = (dataBig.detail.nodeDescriptor.macCapabilityFlag.receiverOnWhenIdle) ? "False"
+													: "True";
+											$("#detail_is_sleepyTopology").val(isSleepy);
+											$('#detail_is_sleepyTopology').attr('readonly',
+													true);
+											
+											if ($("#detail_active_endpointsTopology").val() != "")
+												$("#detail_button_simple_descriptorTopology")
+													.click();
+
+										} else {
+											alert("Error on Info command: "
+													+ dataBig.status.message);
+										}
+									});
+
+				}
+			  
 			  
 			  $("#dialog-form-device-details_topology").dialog({
 					autoOpen : false,
@@ -43,12 +341,7 @@
 			   
 			  
 			  NodesCounter = 0;
-		    var CLR = {
-		      branch:"#b2b19d",
-		      code:"orange",
-		      doc:"#922E00",
-		      demo:"#a7af00"
-		    }
+		    
 		    
 			$.ajax({
 				url : DEFINEPATH.viewLQI
@@ -67,19 +360,9 @@
 						
 						NodesCounter++;
 						var strIeeeAddress = padLeft(16, node.nodeAddress.toString(16)).toUpperCase();
-						
-						var codeManufacturer = strIeeeAddress.substring(0,4);
-						var colorManufacturer, nameManufacturer, alphaInfo;
-						
-						colorManufacturer = '#00ff80';
-						
-						
 						if (!Nodes.nodes[strIeeeAddress])
 							Nodes.nodes[strIeeeAddress] = {};
-						Nodes.nodes[strIeeeAddress]['color']   = colorManufacturer;
 						Nodes.nodes[strIeeeAddress]['shape']   = 'dot';
-						Nodes.nodes[strIeeeAddress]['label']   = nameManufacturer;
-						Nodes.nodes[strIeeeAddress]['alpha']   = alphaInfo;
 						if (node.neighborList)
 								{
 								var nears;
@@ -125,22 +408,7 @@
 									var deviceType = (tmp & 3);
 									
 									tmp = dataToShift;
-									var rxOnWhenIdle = ((tmp & 12) >> 2);
-									var rxOnWhenIdleString, rxOnWhenIdleColor;
-									switch (rxOnWhenIdle){
-										case 0: 
-											rxOnWhenIdleString = 'RxOnWhenIdle = false';
-											rxOnWhenIdleColor = '#dc143c';
-											break;
-										case 1: 
-											rxOnWhenIdleString = 'RxOnWhenIdle = true';
-											rxOnWhenIdleColor = '#217346';
-											break;
-										case 2: 
-											rxOnWhenIdleString = 'RxOnWhenIdle:Unknown';
-											rxOnWhenIdleColor = null;
-											break;
-									}
+									
 									
 									
 									var deviceTypeString, deviceTypeColor;
@@ -162,7 +430,7 @@
 											else
 												{
 												deviceTypeString = 'End Device';
-												deviceTypeColor = '#e7aabb';
+												deviceTypeColor = '#9900FF';
 												
 												
 												}
@@ -174,50 +442,12 @@
 									}
 									
 										tmp = dataToShift;
-									var relationship = ((tmp & 112) >> 4);
-									var relationshipString;
-									switch (relationship){
-										case 0: 
-											relationshipString = 'Neighbor is the parent';
-											break;
-										case 1: 
-											relationshipString = 'Neighbor is a child';
-											break;
-										case 2: 
-											relationshipString = 'Neighbor is a sibling';
-											break;
-										case 3: 
-											relationshipString = 'None of the above';
-											break;
-										case 4: 
-											relationshipString = 'Previous child';
-											break;
-									}
-									var permitJoin = edge.permitJoining;
-									var permitJoinString, permitJoinColor;
-									switch (permitJoin){
-										case 0: 
-											permitJoinString = 'PermitJoin: false';
-											permitJoinColor = '#dc143c';
-											break;
-										case 1: 
-											permitJoinString = 'PermitJoin: true';
-											permitJoinColor = '#217346';
-											break;
-										case 2: 
-											permitJoinString = 'PermitJoin: Unknown';
-											permitJoinColor = null;
-											break;
-									}
+									
+									
 									
 									
 									if (!Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()])
 										Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()] = {};
-									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['permitJoinString']   = permitJoinString;
-									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['permitJoinColor']    = permitJoinColor;
-									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['relationshipString'] = relationshipString;
-									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['rxOnWhenIdleString'] = rxOnWhenIdleString;
-									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['rxOnWhenIdleColor']  = rxOnWhenIdleColor;
 									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['deviceTypeString']   =  deviceTypeString;
 									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['deviceTypeColor']    = deviceTypeColor;
 									Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()]['shortAddress']       = padLeft(4, edge.shortAddress.toString(16)).toUpperCase();
@@ -294,21 +524,22 @@
 					      redraw:function(){
 					        gfx.clear()
 					        sys.eachNode(function(node, pt){
-					          var w = 20
-					          var w1 = 40
-					          if (node.data.alpha===0) return
-					            nodeBoxes[node.name] = [pt.x-w/2, pt.y-w/2, w,w]
-					        	gfx.oval(pt.x-w1/2, pt.y-w1/2, w1, w1, {fill:node.data.color, alpha:node.data.alpha});
-					        	gfx.rect(pt.x-w/2, pt.y-8, w, 20, 4, {fill:node.data.deviceTypeColor, alpha:node.data.alpha});
-					          	var nodeName = "";
-					        	if (node.data.shortAddress == null)
-					        		nodeName = "Acquiring address..."
-					        	else
-					        		nodeName = "0x" + node.data.shortAddress;
-					        	gfx.text(nodeName , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
-					                  
-					      
-					          if (node.name)
+					        	var w = 20
+						          var w1 = 40
+						          var nodeName = "";
+						        	if (node.data.shortAddress == null)
+						        	{
+						        		nodeName = "Acquiring address and related informations...Wait!"
+						        	node.data.deviceTypeColor = "#000000";
+						        	}
+						        	else
+						        		nodeName = "0x" + node.data.shortAddress;
+						            nodeBoxes[node.name] = [pt.x-w/2, pt.y-w/2, w,w]
+						        	gfx.oval(pt.x-w1/2, pt.y-w1/2, w1, w1, {fill:node.data.deviceTypeColor});
+						        	gfx.rect(pt.x-w/2, pt.y-8, w, 20, 4, {fill:node.data.deviceTypeColor});
+						        	gfx.text(nodeName , pt.x, pt.y+ 37, {color:"black", align:"center", font:"Arial", size:12});
+
+						        	if (node.name)
 				            	{
 				            var p = JSON.parse($.jStorage.get("Node:"+node.name));  
 					    	 
@@ -317,7 +548,7 @@
 					    		 node.p = p;
 					    		 node.fixed = true;
 					    		 }
-				            	}
+			            	}
 					       
 					        
 					        
@@ -487,25 +718,16 @@
 					          clicked:function(e){
 					        	  if (e.button == 2)
 					        		 {
-					        		  //Continuare Issue 03/07/2014
-					        		  /*
+					        		 
 					        	  var pos = $(canvas).offset();
 						            _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
 						            nearest = sys.nearest(_mouseP);
 						            if (!nearest.node) return false
 						              selected = (nearest.distance < 50) ? nearest : null
-			            		  	if (selected){
-			            		  		var edges = sys.getEdgesFrom(selected.node);
-			            		  		var strPopup = "";
-			            		  		edges.forEach(function(edge) {
-			            		  			strPopup+= "("+ edge.source.data.shortAddress + "-->" + edge.target.data.shortAddress+") Link quality: " + edge.data.value + " db\n" 
-			            		  			
-			            		  		});
-			            		  		$("#detail_links").val(strPopup);
-			            		  		$("#dialog-form-device-details_topology").dialog(
-										"open");
-			            		  	}	
-			            			 	*/
+			            		  	if (selected)
+			            		  		infoDeviceTopology(selected.node.data.shortAddress);
+			            		  	
+			            			 	
 						            }
 					        	  else
 					        		  {
@@ -618,7 +840,7 @@
 							<td style="background-color: #388f89">Router</td>
 						</tr>
 						<tr>
-							<td style="background-color: #e7aabb">EndDevice</td>
+							<td style="background-color: #9900FF">EndDevice</td>
 						</tr>
 						<tr>
 							<td style="background-color: #e796af">Sleepy EndDevice</td>
@@ -628,24 +850,7 @@
 
 					</table>
 				</td>
-				<!-- 
-				<td valign="top" width="300">
-					<table style="width: 100%">
-						<tr>
-							<td style="background-color: blue">Freescale</td>
-						</tr>
-						<tr>
-							<td style="background-color: yellow">FlexGrid</td>
-						</tr>
-						<tr>
-							<td style="background-color: grey">4-Noks</td>
-						</tr>
-						<tr>
-							<td style="background-color: red">Unnown</td>
-						</tr>
-					</table>
-				</td> 
-				-->
+
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
@@ -679,51 +884,48 @@
 			<fieldset>
 				<table style="width: 100%">
 					<tr>
-						<td valign="top" style="width: 150px"><label
-							for="detail_links">Links:</label></td>
-						<td valign="top"><textarea name="detail_links"
-								id="detail_links" rows="10" cols="35"
-								class="text ui-widget-content ui-corner-all">
-								</textarea></td>
-					</tr>
-					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
-							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
-							<label for="detail_shortaddress">Short Address:</label></td>
+							name="detail_shortaddress_hiddenTopology"
+							id="detail_shortaddress_hiddenTopology" /> <label
+							for="detail_shortaddressTopology">Network Address:</label></td>
 						<td valign="top"><input type="text"
-							name="detail_shortaddress" id="detail_shortaddress" size="35"
+							name="detail_shortaddressTopology"
+							id="detail_shortaddressTopology" size="35"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_manufacturer">Manufacturer:</label></td>
+							for="detail_manufacturerTopology">Manufacturer:</label></td>
 						<td valign="top"><input type="text"
-							name="detail_manufacturer" id="detail_manufacturer"
-							class="text ui-widget-content ui-corner-all" /></td>
-					</tr>
-
-					<tr>
-						<td valign="top" style="width: 150px"><label
-							for="detail_logical_type">Logical Type:</label></td>
-						<td valign="top"><input type="text"
-							name="detail_logical_type" id="detail_logical_type"
+							name="detail_manufacturerTopology"
+							id="detail_manufacturerTopology"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_is_sleepy">Sleeping device:</label></td>
-						<td valign="top"><input type="text" name="detail_is_sleepy"
-							id="detail_is_sleepy"
+							for="detail_logical_typeTopology">Device Type:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_logical_typeTopology"
+							id="detail_logical_typeTopology"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_is_sleepyTopology">Sleeping device:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_is_sleepyTopology" id="detail_is_sleepyTopology"
 							class="text ui-widget-content ui-corner-all" /></td>
 					</tr>
 
 					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
-							name="detail_ieeeaddress_hidden" id="detail_ieeeaddress_hidden" />
-							<label for="detail_address">Ieee Address:</label></td>
-						<td><input type="text" name="detail_ieeeaddress"
-							id="detail_ieeeaddress" size="35"
+							name="detail_ieeeaddress_hiddenTopology"
+							id="detail_ieeeaddress_hiddenTopology" /> <label
+							for="detail_addressTopology">Ieee Address:</label></td>
+						<td><input type="text" name="detail_ieeeaddressTopology"
+							id="detail_ieeeaddressTopology" size="35"
 							class="text ui-widget-content ui-corner-all"></td>
 					</tr>
 				</table>
@@ -733,10 +935,11 @@
 				<table style="width: 100%">
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_active_endpoints">Active EndPoints:</label></td>
-						<td valign="middle"><select name="detail_active_endpoints"
-							id="detail_active_endpoints"></select><a
-							id="detail_button_simple_descriptor"><img
+							for="detail_active_endpointsTopology">Active EndPoints:</label></td>
+						<td valign="middle"><select
+							name="detail_active_endpointsTopology"
+							id="detail_active_endpointsTopology"></select><a
+							id="detail_button_simple_descriptorTopology"><img
 								src="./css/images/info.png" class="infoButton"
 								title="Simple Descriptor"></a></td>
 					</tr>
@@ -746,32 +949,33 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_profile">Profile:</label></td>
-						<td valign="top"><input type="text" name="detail_profile"
-							id="detail_profile" class="text ui-widget-content ui-corner-all"
-							style="width: 250px" /></td>
-
-					</tr>
-
-
-
-					<tr>
-						<td valign="top" style="width: 150px"><label
-							for="detail_device">Device Type:</label></td>
-						<td valign="top"><input type="text" name="detail_device"
-							id="detail_device" class="text ui-widget-content ui-corner-all"
-							style="width: 250px" /></td>
-
-					</tr>
-
-
-
-
-					<tr>
-						<td valign="top" style="width: 150px"><label
-							for="detail_device_version">Device Version:</label></td>
+							for="detail_profileTopology">Profile:</label></td>
 						<td valign="top"><input type="text"
-							name="detail_device_version" id="detail_device_version"
+							name="detail_profileTopology" id="detail_profileTopology"
+							class="text ui-widget-content ui-corner-all" style="width: 250px" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_deviceTopology">Device Type:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_deviceTopology" id="detail_deviceTopology"
+							class="text ui-widget-content ui-corner-all" style="width: 250px" /></td>
+
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device_versionTopology">Device Version:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_device_versionTopology"
+							id="detail_device_versionTopology"
 							class="text ui-widget-content ui-corner-all" /></td>
 
 					</tr>
@@ -780,17 +984,18 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_input_clusters">Input Clusters:</label></td>
-						<td valign="top"><select name="detail_input_clusters"
-							id="detail_input_clusters" size="5	" style="width: 100%">
+							for="detail_input_clustersTopology">Input Clusters:</label></td>
+						<td valign="top"><select name="detail_input_clustersTopology"
+							id="detail_input_clustersTopology" size="5	" style="width: 100%">
 						</select></td>
 
 					</tr>
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_output_clusters">Output Clusters:</label></td>
-						<td valign="top"><select name="detail_output_clusters"
-							id="detail_output_clusters" size="5" style="width: 100%"></select>
+							for="detail_output_clustersTopology">Output Clusters:</label></td>
+						<td valign="top"><select
+							name="detail_output_clustersTopology"
+							id="detail_output_clustersTopology" size="5" style="width: 100%"></select>
 						</td>
 
 					</tr>

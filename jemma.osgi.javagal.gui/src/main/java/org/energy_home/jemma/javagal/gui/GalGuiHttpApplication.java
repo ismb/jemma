@@ -138,11 +138,23 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		} else if (page.endsWith(".html")) {
 			return "text/html";
 		}
-		return null;
+		else if (page.endsWith(".ico")) {
+			return "image/x-icon";
+		}
+		else if (page.endsWith(".png")) {
+			return "image/png";
+		}
+		else 
+			return null;
 	}
 
 	public URL getResource(String name) {
 		URL u = null;
+		if (name.endsWith("/")) {
+			// the resource name ends with slash, defaults to index.html
+			name += "home.html";
+		}
+		
 		if (name.equals("webapp/"))
 			u = this.bc.getBundle().getResource(name + "home.html");
 		else
@@ -152,7 +164,12 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	@Override
 	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// we need http scheme!
+		if (request.getRequestURI().contains("favicon.ico"))
+			return true;
+		else
+			LOG.debug("Http Request:" + request.getRequestURI());
+		
+
 		if (enableHttps && !request.getScheme().equals("https")) {
 			try {
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -199,8 +216,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 					// this is a restricted area so performs login
 
 					String a = request.getMethod();
-					String submit = request.getParameter("submit");
-					if (submit != null) {
+					String submit = request.getParameter("submit");					if (submit != null) {
 						String username = request.getParameter("username");
 						String password = request.getParameter("password");
 						if (!allowUser(username, password)) {
@@ -240,9 +256,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 			}
 		}
 
-		if (request.getRequestURI().endsWith(".png")) {
-			response.setHeader("Cache-Control", "public, max-age=10000");
-		}
+		
 
 		return true;
 	}

@@ -1690,7 +1690,7 @@ public class DataFreescale implements IDataLayer {
 
 		}
 		String logMessage = "Extracted ZTC-ERROR.Event Status: " + MessageStatus;
-			LOG.error(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
+		LOG.error(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
 	}
 
 	/**
@@ -2323,21 +2323,22 @@ public class DataFreescale implements IDataLayer {
 										_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 									}
 									if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-										_newWrapperNode.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+										_newWrapperNode.setTimerForcePing(0);
 									}
-								}
+								} else {
 
-								Status _st = new Status();
-								_st.setCode((short) GatewayConstants.SUCCESS);
+									Status _st = new Status();
+									_st.setCode((short) GatewayConstants.SUCCESS);
 
-								if (gal.getPropertiesManager().getDebugEnabled())
-									LOG.info("Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+									if (gal.getPropertiesManager().getDebugEnabled())
+										LOG.info("Calling NodeDescovered  from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
 
-								try {
-									gal.get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
-								} catch (Exception e) {
-									LOG.info("Error Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
+									try {
+										gal.get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
+									} catch (Exception e) {
+										LOG.info("Error Calling NodeDescovered from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
 
+									}
 								}
 								/*
 								 * Saving the Panid in order to leave the

@@ -1919,7 +1919,7 @@ public class GalController {
 								galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
 
 								galNodeWrapper.reset_numberOfAttempt();
-								galNodeWrapper.set_discoveryCompleted(true);
+								galNodeWrapper.set_discoveryCompleted(false);
 								int _index = -1;
 
 								/* If the Node Not Exists */

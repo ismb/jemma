@@ -154,6 +154,10 @@
 									$("#detail_is_sleepy").val(isSleepy);
 									$('#detail_is_sleepy').attr('readonly',
 											true);
+									
+									if ($("#detail_active_endpoints").val() != "")
+										$("#detail_button_simple_descriptor")
+											.click();
 
 								} else {
 									alert("Error on Info command: "
@@ -732,7 +736,7 @@
 					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
 							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
-							<label for="detail_shortaddress">Short Address:</label></td>
+							<label for="detail_shortaddress">Network Address:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_shortaddress" id="detail_shortaddress" size="35"
 							class="text ui-widget-content ui-corner-all" /></td>
@@ -747,7 +751,7 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_logical_type">Logical Type:</label></td>
+							for="detail_logical_type">Device Type:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_logical_type" id="detail_logical_type"
 							class="text ui-widget-content ui-corner-all" /></td>
