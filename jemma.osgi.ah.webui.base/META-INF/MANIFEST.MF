@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1405006676755
+Bnd-LastModified: 1406023887141
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Category: Web UI libs
