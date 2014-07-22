@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406023850342
+Bnd-LastModified: 1406030176130
 Build-Jdk: 1.6.0_45
 Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.m2m.device.M2MDeviceActi
