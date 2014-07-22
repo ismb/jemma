@@ -381,7 +381,7 @@
 											colorLQI = '#31962a';
 											weightLQI = 0.4;
 									} else if (edge.lqi > 200){
-											colorLQI = '#9aff69';
+											colorLQI = '#006600';
 											weightLQI = 0.5;
 									}
 									weightLQI = 0.5;
@@ -415,7 +415,7 @@
 									switch (deviceType){
 										case 0: 
 											deviceTypeString = 'Coordinator';
-											deviceTypeColor = '#e9ae11';
+											deviceTypeColor = '#000099';
 											break;
 										case 1: 
 											deviceTypeString = 'Router';
@@ -425,7 +425,7 @@
 											if (rxOnWhenIdle == 1)
 												{
 											deviceTypeString = 'End Device Sleepy';
-											deviceTypeColor = '#e796af';
+											deviceTypeColor = '#996600';
 												}
 											else
 												{
@@ -592,7 +592,7 @@
 					        	          var wt = !isNaN(weight) ? parseFloat(weight) : ctx.lineWidth
 					        	          var arrowLength = 6 + wt
 					        	          var arrowWidth = 2 + wt
-					        	          ctx.fillStyle = 'Black'
+					        	          ctx.fillStyle = '#FFFFFF'
 					        	          ctx.translate(head.x, head.y);
 					        	          ctx.rotate(Math.atan2(head.y - tail.y, head.x - tail.x));
 					        	          ctx.clearRect(-arrowLength/2,-wt/2, arrowLength/2,wt)
@@ -833,16 +833,16 @@
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
-							<td style="background-color: #e9ae11">Coordinator</td>
+							<td style="background-color: #000099; color:#FFFFFF;">Coordinator</td>
 						</tr>
 						<tr>
-							<td style="background-color: #388f89">Router</td>
+							<td style="background-color: #388f89; color:#FFFFFF;">Router</td>
 						</tr>
 						<tr>
-							<td style="background-color: #9900FF">EndDevice</td>
+							<td style="background-color: #9900FF; color:#FFFFFF;">EndDevice</td>
 						</tr>
 						<tr>
-							<td style="background-color: #e796af">Sleepy EndDevice</td>
+							<td style="background-color: #996600; color:#FFFFFF;">Sleepy EndDevice</td>
 						</tr>
 					</table>
 				</td>
@@ -850,19 +850,19 @@
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
-							<td style="background-color: #ff0000"><50</td>
+							<td style="background-color: #ff0000; color:#FFFFFF;"><50</td>
 						</tr>
 						<tr>
-							<td style="background-color: #ff69b4">>50<100</td>
+							<td style="background-color: #ff69b4; color:#FFFFFF;">>50<100</td>
 						</tr>
 						<tr>
-							<td style="background-color: #fdb11b">>100<150</td>
+							<td style="background-color: #fdb11b; color:#FFFFFF;">>100<150</td>
 						</tr>
 						<tr>
-							<td style="background-color: #31962a">>150<200</td>
+							<td style="background-color: #31962a; color:#FFFFFF;">>150<200</td>
 						</tr>
 						<tr>
-							<td style="background-color: #9aff69">>200</td>
+							<td style="background-color: #006600; color:#FFFFFF;">>200</td>
 						</tr>
 					</table>
 
