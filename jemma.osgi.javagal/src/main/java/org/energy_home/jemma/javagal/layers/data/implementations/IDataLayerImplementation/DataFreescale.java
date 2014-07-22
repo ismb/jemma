@@ -2323,7 +2323,8 @@ public class DataFreescale implements IDataLayer {
 										_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 									}
 									if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-										_newWrapperNode.setTimerForcePing(0);
+										/*Starting immediately a ForcePig in order to retrieve the LQI informations on the new node*/
+										_newWrapperNode.setTimerForcePing(1);
 									}
 								} else {
 									_newWrapperNode.set_discoveryCompleted(true);
