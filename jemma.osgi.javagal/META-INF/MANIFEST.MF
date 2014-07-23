@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1404738619322
+Bnd-LastModified: 1404804970408
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
