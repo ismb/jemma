@@ -283,11 +283,36 @@
 																						+ '</option>');
 															});
 
+											
 											/*Manufacturer Section*/
-											var manufacturer = "0x"
-													+ dataBig.detail.nodeDescriptor.manufacturerCode;
-											$("#detail_manufacturerTopology").val(manufacturer);
-											$('#detail_manufacturerTopology').attr('readonly',
+									var manufacturer = dataBig.detail.nodeDescriptor.manufacturerCode;
+									var manufacturerDesc = getManufacturerFromID(padLeft(
+											4, manufacturer)
+											.toLowerCase().trim());
+									if (manufacturerDesc) {
+										$("#detail_manufacturerTopology")
+												.val(
+														manufacturerDesc
+																+ ' (0x'
+																+ padLeft(
+																		4,
+																		manufacturer
+																				)
+																		.toUpperCase()
+																		.trim()
+																+ ")");
+									} else {
+
+										$("#detail_manufacturerTopology")
+												.val(
+														'Unknown Manufacturer - 0x'
+																+ padLeft(
+																		4,
+																		manufacturer)
+																		.toUpperCase()
+																		.trim());
+
+									}$('#detail_manufacturerTopology').attr('readonly',
 													true);
 
 											/*LogicalType Section*/
@@ -826,23 +851,28 @@
 	<div>
 		<table style="width: 100%">
 			<tr>
-				<th valign="middle">Device Type&nbsp;&nbsp;<img src="images/circle.png" alt="Device Type simbol" align="top" height="20" width="20"/></th>
-				<th valign="middle">Link Quality&nbsp;&nbsp;<img src="images/arrow.png" alt="Link Quality simbol" align="top" height="20" width="20"/></th>
+				<th valign="middle">Device Type&nbsp;&nbsp;<img
+					src="images/circle.png" alt="Device Type simbol" align="top"
+					height="20" width="20" /></th>
+				<th valign="middle">Link Quality&nbsp;&nbsp;<img
+					src="images/arrow.png" alt="Link Quality simbol" align="top"
+					height="20" width="20" /></th>
 			</tr>
 			<tr>
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
-							<td style="background-color: #000099; color:#FFFFFF;">Coordinator</td>
+							<td style="background-color: #000099; color: #FFFFFF;">Coordinator</td>
 						</tr>
 						<tr>
-							<td style="background-color: #388f89; color:#FFFFFF;">Router</td>
+							<td style="background-color: #388f89; color: #FFFFFF;">Router</td>
 						</tr>
 						<tr>
-							<td style="background-color: #9900FF; color:#FFFFFF;">EndDevice</td>
+							<td style="background-color: #9900FF; color: #FFFFFF;">EndDevice</td>
 						</tr>
 						<tr>
-							<td style="background-color: #996600; color:#FFFFFF;">Sleepy EndDevice</td>
+							<td style="background-color: #996600; color: #FFFFFF;">Sleepy
+								EndDevice</td>
 						</tr>
 					</table>
 				</td>
@@ -850,19 +880,19 @@
 				<td valign="top" width="300">
 					<table style="width: 100%">
 						<tr>
-							<td style="background-color: #ff0000; color:#FFFFFF;"><50</td>
+							<td style="background-color: #ff0000; color: #FFFFFF;"><50</td>
 						</tr>
 						<tr>
-							<td style="background-color: #ff69b4; color:#FFFFFF;">>50<100</td>
+							<td style="background-color: #ff69b4; color: #FFFFFF;">>50<100</td>
 						</tr>
 						<tr>
-							<td style="background-color: #fdb11b; color:#FFFFFF;">>100<150</td>
+							<td style="background-color: #fdb11b; color: #FFFFFF;">>100<150</td>
 						</tr>
 						<tr>
-							<td style="background-color: #31962a; color:#FFFFFF;">>150<200</td>
+							<td style="background-color: #31962a; color: #FFFFFF;">>150<200</td>
 						</tr>
 						<tr>
-							<td style="background-color: #006600; color:#FFFFFF;">>200</td>
+							<td style="background-color: #006600; color: #FFFFFF;">>200</td>
 						</tr>
 					</table>
 
@@ -895,7 +925,7 @@
 						<td valign="top"><input type="text"
 							name="detail_manufacturerTopology"
 							id="detail_manufacturerTopology"
-							class="text ui-widget-content ui-corner-all" /></td>
+							class="text ui-widget-content ui-corner-all" style="width: 250px" /></td>
 					</tr>
 
 					<tr>

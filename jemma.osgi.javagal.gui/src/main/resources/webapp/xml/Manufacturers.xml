@@ -1,0 +1,14 @@
+<root>
+	<manufacturer>
+		<manufacturerid>4100</manufacturerid>
+		<description>Freescale</description>
+	</manufacturer>
+	<manufacturer>
+		<manufacturerid>4209</manufacturerid>
+		<description>4-Noks</description>
+	</manufacturer>
+	<manufacturer>
+		<manufacturerid>4353</manufacturerid>
+		<description>FlexGrid</description>
+	</manufacturer>
+</root>
