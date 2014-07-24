@@ -99,7 +99,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyGatewayStartResult(final Status status) {
+	public synchronized void notifyGatewayStartResult(final Status status) {
 		executor.execute(new Runnable() {
 
 			public void run() {
@@ -115,7 +115,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyGatewayStartResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifyGatewayStartResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
@@ -131,7 +131,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyServicesDiscovered(final int _requestIdentifier, final Status status, final NodeServices nodeServices) {
+	public synchronized void notifyServicesDiscovered(final int _requestIdentifier, final Status status, final NodeServices nodeServices) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
@@ -147,7 +147,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyGatewayStopResult(final Status status) {
+	public synchronized void notifyGatewayStopResult(final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -162,7 +162,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyGatewayStopResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifyGatewayStopResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -179,7 +179,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifypermitJoinResult(final Status status) {
+	public synchronized void notifypermitJoinResult(final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
@@ -194,7 +194,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifypermitJoinResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifypermitJoinResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
@@ -208,7 +208,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyResetResult(final Status status) {
+	public synchronized void notifyResetResult(final Status status) {
 		/*
 		 * Thread thr = new Thread() {
 		 * 
@@ -227,7 +227,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyResetResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifyResetResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
@@ -243,7 +243,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptor(final Status _status, final NodeDescriptor _node) {
+	public synchronized void notifyNodeDescriptor(final Status _status, final NodeDescriptor _node) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -259,7 +259,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptor(final int _requestIdentifier, final Status _status, final NodeDescriptor _node) {
+	public synchronized void notifyNodeDescriptor(final int _requestIdentifier, final Status _status, final NodeDescriptor _node) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -276,7 +276,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptorExtended(final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
+	public synchronized void notifyNodeDescriptorExtended(final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -291,7 +291,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptorExtended(final int _requestIdentifier, final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
+	public synchronized void notifyNodeDescriptorExtended(final int _requestIdentifier, final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -308,7 +308,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void nodeDiscovered(final Status status, final WSNNode _node) throws Exception {
+	public synchronized void nodeDiscovered(final Status status, final WSNNode _node) throws Exception {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -329,7 +329,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void nodeRemoved(final Status _status, final WSNNode _node) throws Exception {
+	public synchronized void nodeRemoved(final Status _status, final WSNNode _node) throws Exception {
 
 		executor.execute(new Runnable() {
 			public void run() {
@@ -347,7 +347,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResult(final int _requestIdentifier, final Status _status) {
+	public synchronized void notifyleaveResult(final int _requestIdentifier, final Status _status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -363,7 +363,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResult(final Status _status) {
+	public synchronized void notifyleaveResult(final Status _status) {
 		executor.execute(new Runnable() {
 			public void run() {
 
@@ -379,7 +379,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResultExtended(final int _requestIdentifier, final Status _status, final Address _address) {
+	public synchronized void notifyleaveResultExtended(final int _requestIdentifier, final Status _status, final Address _address) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -396,7 +396,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResultExtended(final Status _status, final Address _address) {
+	public synchronized void notifyleaveResultExtended(final Status _status, final Address _address) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -412,7 +412,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyserviceDescriptorRetrieved(final int _requestIdentifier, final Status status, final ServiceDescriptor service) {
+	public synchronized void notifyserviceDescriptorRetrieved(final int _requestIdentifier, final Status status, final ServiceDescriptor service) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -428,7 +428,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifynodeBindingsRetrieved(final int _requestIdentifier, final Status status, final BindingList bindings) {
+	public synchronized void notifynodeBindingsRetrieved(final int _requestIdentifier, final Status status, final BindingList bindings) {
 
 		executor.execute(new Runnable() {
 			public void run() {
@@ -445,7 +445,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifybindingResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifybindingResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -461,7 +461,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyUnbindingResult(final int _requestIdentifier, final Status status) {
+	public synchronized void notifyUnbindingResult(final int _requestIdentifier, final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
 
@@ -478,7 +478,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyZDPCommand(final ZDPMessage message) {
+	public synchronized void notifyZDPEvent(final ZDPMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -495,7 +495,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyZCLCommand(final ZCLMessage message) {
+	public synchronized void notifyZCLEvent(final ZCLMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -511,7 +511,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyFrequencyAgility(final Status _status) {
+	public synchronized void notifyFrequencyAgility(final Status _status) {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
@@ -525,7 +525,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	}
 
 	@Override
-	public void notifyInterPANMessageEvent(InterPANMessageEvent message) {
+	public synchronized void notifyInterPANMessageEvent(InterPANMessageEvent message) {
 		// TODO Auto-generated method stub
 
 	}

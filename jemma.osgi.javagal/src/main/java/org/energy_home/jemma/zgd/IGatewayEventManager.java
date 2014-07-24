@@ -308,13 +308,13 @@ public interface IGatewayEventManager {
 	public void notifyUnbindingResult(int _requestIdentifier, Status status);
 
 	/**
-	 * Called to notify the received ZDPCommand to all relevant registered
+	 * Called to notify the received ZDPMessage to all relevant registered
 	 * listeners.
 	 * 
 	 * @param message
 	 *            the ZDP message command to notify to the listeners.
 	 */
-	public void notifyZDPCommand(ZDPMessage message);
+	public void notifyZDPEvent(ZDPMessage message);
 
 	
 	/**
@@ -328,13 +328,13 @@ public interface IGatewayEventManager {
 	
 	
 	/**
-	 * Called to notify the received ZCLCommand to all relevant registered
+	 * Called to notify the received ZCLEvent to all relevant registered
 	 * listeners.
 	 * 
 	 * @param message
 	 *            the ZCL message command to notify to the listeners.
 	 */
-	public void notifyZCLCommand(ZCLMessage message);
+	public void notifyZCLEvent(ZCLMessage message);
 
 	/**
 	 * Called to notify Frequency Agility's Event to all relevant registered

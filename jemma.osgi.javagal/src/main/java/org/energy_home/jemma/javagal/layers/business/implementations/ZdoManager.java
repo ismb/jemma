@@ -202,6 +202,6 @@ public class ZdoManager /* implements APSMessageListener */{
 		_zdpM.setRxTime(message.getRxTime());
 		_zdpM.setSourceAddress(message.getSourceAddress());
 		_zdpM.setSourceAddressMode(message.getSourceAddressMode());
-		gal.get_gatewayEventManager().notifyZDPCommand(_zdpM);
+		gal.get_gatewayEventManager().notifyZDPEvent(_zdpM);
 	}
 }

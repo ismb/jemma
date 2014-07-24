@@ -1690,7 +1690,7 @@ public class DataFreescale implements IDataLayer {
 
 		}
 		String logMessage = "Extracted ZTC-ERROR.Event Status: " + MessageStatus;
-			LOG.error(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
+		LOG.error(logMessage + " from " + DataManipulation.convertArrayShortToString(message));
 	}
 
 	/**
@@ -2178,7 +2178,7 @@ public class DataFreescale implements IDataLayer {
 			_zm.setZCLHeader(_header.getRealByteArray());
 			_zm.setZCLPayload(_payload.getRealByteArray());
 			if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
-				gal.get_gatewayEventManager().notifyZCLCommand(_zm);
+				gal.get_gatewayEventManager().notifyZCLEvent(_zm);
 				gal.getApsManager().APSMessageIndication(messageEvent);
 				gal.getMessageManager().APSMessageIndication(messageEvent);
 			}
@@ -2315,29 +2315,31 @@ public class DataFreescale implements IDataLayer {
 
 								}
 								_newWrapperNode.reset_numberOfAttempt();
-								_newWrapperNode.set_discoveryCompleted(true);
+								
 
 								if (!_newWrapperNode.isSleepy()) {
-
+									_newWrapperNode.set_discoveryCompleted(false);
 									if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
 										_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 									}
 									if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-										_newWrapperNode.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+										/*Starting immediately a ForcePig in order to retrieve the LQI informations on the new node*/
+										_newWrapperNode.setTimerForcePing(1);
 									}
-								}
+								} else {
+									_newWrapperNode.set_discoveryCompleted(true);
+									Status _st = new Status();
+									_st.setCode((short) GatewayConstants.SUCCESS);
 
-								Status _st = new Status();
-								_st.setCode((short) GatewayConstants.SUCCESS);
+									if (gal.getPropertiesManager().getDebugEnabled())
+										LOG.info("Calling NodeDescovered  from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
 
-								if (gal.getPropertiesManager().getDebugEnabled())
-									LOG.info("Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+									try {
+										gal.get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
+									} catch (Exception e) {
+										LOG.info("Error Calling NodeDescovered from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
 
-								try {
-									gal.get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
-								} catch (Exception e) {
-									LOG.info("Error Calling NodeDescovered from AutodiscoveredNode:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
-
+									}
 								}
 								/*
 								 * Saving the Panid in order to leave the

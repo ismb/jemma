@@ -1,399 +1,1130 @@
-/**
- * This file is part of JEMMA - http://jemma.energy-home.org
- * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
- *
- * JEMMA is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License (LGPL) version 3
- * or later as published by the Free Software Foundation, which accompanies
- * this distribution and is available at http://www.gnu.org/licenses/lgpl.html
- *
- * JEMMA is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License (LGPL) for more details.
- *
- */
+
 package org.energy_home.jemma.ah.zigbee.zcl.cluster.closures;
 
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearAllPINCodesResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearAllRFIDCodesResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearHolidayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearPINCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearRFIDCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearWeekdayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ClearYearDayScheduleResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockClient;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetHolidayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetLogRecordResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetPINCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetRFIDCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetUserStatusResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetUsertypeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetWeekdayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.GetYearDayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.LockDoorResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetHolidayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetPINCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetRFIDCodeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetUserStatusResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetUsertypeResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetWeekdayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.SetYearDayScheduleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.ToggleResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.UnlockDoorResponse;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.UnlockWithTimeoutResponse;
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
+import org.energy_home.jemma.ah.zigbee.ZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDevice;
 import org.energy_home.jemma.ah.zigbee.ZigBeeDeviceListener;
+import org.energy_home.jemma.ah.zigbee.zcl.IZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclServiceCluster;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBitmap8;
+import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeBoolean;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeEnum8;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeString;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI16;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI32;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.types.ZclDataTypeUI8;
 
-public class ZclDoorLockClient extends ZclServiceCluster implements DoorLockClient, ZigBeeDeviceListener {
 
-	public final static short CLUSTER_ID = 257;
+/**
+ * This file is part of JEMMA - http://jemma.energy-home.org
+ * (C) Copyright 2014 Telecom Italia (http://www.telecomitalia.it)
+ * 
+ * JEMMA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License (LGPL) version 3
+ * or later as published by the Free Software Foundation, which accompanies
+ * this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+ * 
+ * JEMMA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License (LGPL) for more details.
+ * 
+ * This class has been generated by the Jemma ZigBee Cluster Library
+ * generator, version 2.0.13-SNAPSHOT
+ * 
+ */
+public class ZclDoorLockClient
+    extends ZclServiceCluster
+    implements DoorLockClient, ZigBeeDeviceListener
+{
 
-	public ZclDoorLockClient() throws ApplianceException {
-		super();
-	}
+    public final static short CLUSTER_ID = 257;
 
-	public boolean notifyZclFrame(short clusterId, IZclFrame zclFrame) throws Exception {
-		boolean handled;
-		handled = super.notifyZclFrame(clusterId, zclFrame);
-		if (handled) {
-			return handled;
-		}
-		int commandId = zclFrame.getCommandId();
-		if (zclFrame.isServerToClient()) {
-			throw new ZclValidationException("invalid direction field");
-		}
-		IZclFrame responseZclFrame = null;
-		ZigBeeDevice device = getZigBeeDevice();
-		int statusCode = ZCL.SUCCESS;
-		DoorLockServer c = ((DoorLockServer) getSinglePeerCluster((DoorLockServer.class
-				.getName())));
-		switch (commandId) {
-		case 0:
-			responseZclFrame = parseLockDoorResponse(c, zclFrame);
-			break;
-		case 1:
-			responseZclFrame = parseUnlockDoorResponse(c, zclFrame);
-			break;
-		case 2:
-			responseZclFrame = parseToggleResponse(c, zclFrame);
-			break;
-		case 3:
-			responseZclFrame = parseUnlockWithTimeoutResponse(c, zclFrame);
-			break;
-		case 4:
-			responseZclFrame = parseGetLogRecordResponse(c, zclFrame);
-			break;
-		case 5:
-			responseZclFrame = parseSetPINCodeResponse(c, zclFrame);
-			break;
-		case 6:
-			responseZclFrame = parseGetPINCodeResponse(c, zclFrame);
-			break;
-		case 7:
-			responseZclFrame = parseClearPINCodeResponse(c, zclFrame);
-			break;
-		case 8:
-			responseZclFrame = parseClearAllPINCodesResponse(c, zclFrame);
-			break;
-		case 9:
-			responseZclFrame = parseSetUserStatusResponse(c, zclFrame);
-			break;
-		case 10:
-			responseZclFrame = parseGetUserStatusResponse(c, zclFrame);
-			break;
-		case 11:
-			responseZclFrame = parseSetWeekdayScheduleResponse(c, zclFrame);
-			break;
-		case 12:
-			responseZclFrame = parseGetWeekdayScheduleResponse(c, zclFrame);
-			break;
-		case 13:
-			responseZclFrame = parseClearWeekdayScheduleResponse(c, zclFrame);
-			break;
-		case 14:
-			responseZclFrame = parseSetYearDayScheduleResponse(c, zclFrame);
-			break;
-		case 15:
-			responseZclFrame = parseGetYearDayScheduleResponse(c, zclFrame);
-			break;
-		case 16:
-			responseZclFrame = parseClearYearDayScheduleResponse(c, zclFrame);
-			break;
-		case 17:
-			responseZclFrame = parseSetHolidayScheduleResponse(c, zclFrame);
-			break;
-		case 18:
-			responseZclFrame = parseGetHolidayScheduleResponse(c, zclFrame);
-			break;
-		case 19:
-			responseZclFrame = parseClearHolidayScheduleResponse(c, zclFrame);
-			break;
-		case 20:
-			responseZclFrame = parseSetUsertypeResponse(c, zclFrame);
-			break;
-		case 21:
-			responseZclFrame = parseGetUsertypeResponse(c, zclFrame);
-			break;
-		case 22:
-			responseZclFrame = parseSetRFIDCodeResponse(c, zclFrame);
-			break;
-		case 23:
-			responseZclFrame = parseGetRFIDCodeResponse(c, zclFrame);
-			break;
-		case 24:
-			responseZclFrame = parseClearRFIDCodeResponse(c, zclFrame);
-			break;
-		case 25:
-			responseZclFrame = parseClearAllRFIDCodesResponse(c, zclFrame);
-			break;
-		case 32:
-			responseZclFrame = parseOperationEventNotification(c, zclFrame);
-			break;
-		case 33:
-			responseZclFrame = parseProgrammingEventNotification(c, zclFrame);
-			break;
-		}
-		if (responseZclFrame == null) {
-			if (!zclFrame.isDefaultResponseDisabled()) {
-				responseZclFrame = getDefaultResponse(zclFrame, statusCode);
-			}
-		}
-		if (!(responseZclFrame == null)) {
-			device.post(ZclDoorLockClient.CLUSTER_ID, responseZclFrame);
-			return true;
-		}
-		return false;
-	}
+    public ZclDoorLockClient()
+        throws ApplianceException
+    {
+        super();
+    }
 
-	protected int getClusterId() {
-		return CLUSTER_ID;
-	}
+    public boolean notifyZclFrame(short clusterId, IZclFrame zclFrame)
+        throws Exception
+    {
+        boolean handled;
+        handled = super.notifyZclFrame(clusterId, zclFrame);
+        if (handled) {
+            return handled;
+        }
+        int commandId = zclFrame.getCommandId();
+        if (zclFrame.isServerToClient()) {
+            throw new ZclValidationException("invalid direction field");
+        }
+        IZclFrame responseZclFrame = null;
+        ZigBeeDevice device = getZigBeeDevice();
+        int statusCode = ZCL.SUCCESS;
+        org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer c = ((org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer) getSinglePeerCluster((DoorLockServer.class.getName())));
+        switch (commandId) {
+            case  0 :
+                responseZclFrame = parseLockDoor(c, zclFrame);
+                break;
+            case  1 :
+                responseZclFrame = parseUnlockDoor(c, zclFrame);
+                break;
+            case  2 :
+                responseZclFrame = parseToggle(c, zclFrame);
+                break;
+            case  3 :
+                responseZclFrame = parseUnlockWithTimeout(c, zclFrame);
+                break;
+            case  4 :
+                responseZclFrame = parseGetLogRecord(c, zclFrame);
+                break;
+            case  5 :
+                responseZclFrame = parseSetPINCode(c, zclFrame);
+                break;
+            case  6 :
+                responseZclFrame = parseGetPINCode(c, zclFrame);
+                break;
+            case  7 :
+                responseZclFrame = parseClearPINCode(c, zclFrame);
+                break;
+            case  8 :
+                responseZclFrame = parseClearAllPINCodes(c, zclFrame);
+                break;
+            case  9 :
+                responseZclFrame = parseSetUserStatus(c, zclFrame);
+                break;
+            case  10 :
+                responseZclFrame = parseGetUserStatus(c, zclFrame);
+                break;
+            case  11 :
+                responseZclFrame = parseSetWeekdaySchedule(c, zclFrame);
+                break;
+            case  12 :
+                responseZclFrame = parseGetWeekdaySchedule(c, zclFrame);
+                break;
+            case  13 :
+                responseZclFrame = parseClearWeekdaySchedule(c, zclFrame);
+                break;
+            case  14 :
+                responseZclFrame = parseSetYearDaySchedule(c, zclFrame);
+                break;
+            case  15 :
+                responseZclFrame = parseGetYearDaySchedule(c, zclFrame);
+                break;
+            case  16 :
+                responseZclFrame = parseClearYearDaySchedule(c, zclFrame);
+                break;
+            case  17 :
+                responseZclFrame = parseSetHolidaySchedule(c, zclFrame);
+                break;
+            case  18 :
+                responseZclFrame = parseGetHolidaySchedule(c, zclFrame);
+                break;
+            case  19 :
+                responseZclFrame = parseClearHolidaySchedule(c, zclFrame);
+                break;
+            case  20 :
+                responseZclFrame = parseSetUsertype(c, zclFrame);
+                break;
+            case  21 :
+                responseZclFrame = parseGetUsertype(c, zclFrame);
+                break;
+            case  22 :
+                responseZclFrame = parseSetRFIDCode(c, zclFrame);
+                break;
+            case  23 :
+                responseZclFrame = parseGetRFIDCode(c, zclFrame);
+                break;
+            case  24 :
+                responseZclFrame = parseClearRFIDCode(c, zclFrame);
+                break;
+            case  25 :
+                responseZclFrame = parseClearAllRFIDCodes(c, zclFrame);
+                break;
+            default:
+                return false;
+        }
+        if (responseZclFrame == null) {
+            if (!zclFrame.isDefaultResponseDisabled()) {
+                responseZclFrame = getDefaultResponse(zclFrame, statusCode);
+            }
+        } else {
+            device.post(ZclDoorLockClient.CLUSTER_ID, responseZclFrame);
+        }
+        return true;
+    }
 
-	protected IZclFrame parseLockDoorResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execLockDoorResponse(Status, null);
-		return null;
-	}
+    protected int getClusterId() {
+        return CLUSTER_ID;
+    }
 
-	protected IZclFrame parseUnlockDoorResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execUnlockDoorResponse(Status, null);
-		return null;
-	}
+    protected IZclAttributeDescriptor[] getPeerClusterAttributeDescriptors() {
+        return ZclDoorLockServer.attributeDescriptors;
+    }
 
-	protected IZclFrame parseToggleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execToggleResponse(Status, null);
-		return null;
-	}
+    public void execOperationEventNotification(short OperationEventSource, short OperationEventCode, int UserID, short PIN, long ZigBeeLocalTime, String Data, IEndPointRequestContext context)
+        throws ApplianceException, ServiceClusterException
+    {
+        int size = 0;
+        size += ZclDataTypeUI8 .zclSize(OperationEventSource);
+        size += ZclDataTypeUI8 .zclSize(OperationEventCode);
+        size += ZclDataTypeUI16 .zclSize(UserID);
+        size += ZclDataTypeUI8 .zclSize(PIN);
+        size += ZclDataTypeUI32 .zclSize(ZigBeeLocalTime);
+        size += ZclDataTypeString.zclSize(Data);
+        ZclFrame zclFrame = new ZclFrame(1, size);
+        zclFrame.setCommandId(32);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, OperationEventSource);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, OperationEventCode);
+        ZclDataTypeUI16 .zclSerialize(zclFrame, UserID);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, PIN);
+        ZclDataTypeUI32 .zclSerialize(zclFrame, ZigBeeLocalTime);
+        ZclDataTypeString.zclSerialize(zclFrame, Data);
+        issueExec(zclFrame, 11, context);
+    }
 
-	protected IZclFrame parseUnlockWithTimeoutResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execUnlockWithTimeoutResponse(Status, null);
-		return null;
-	}
+    public void execProgrammingEventNotification(short ProgramEventSource, short OperationEventCode, int UserID, short PIN, short UserType, short UserStatus, long ZigBeeLocalTime, String Data, IEndPointRequestContext context)
+        throws ApplianceException, ServiceClusterException
+    {
+        int size = 0;
+        size += ZclDataTypeUI8 .zclSize(ProgramEventSource);
+        size += ZclDataTypeUI8 .zclSize(OperationEventCode);
+        size += ZclDataTypeUI16 .zclSize(UserID);
+        size += ZclDataTypeUI8 .zclSize(PIN);
+        size += ZclDataTypeUI8 .zclSize(UserType);
+        size += ZclDataTypeUI8 .zclSize(UserStatus);
+        size += ZclDataTypeUI32 .zclSize(ZigBeeLocalTime);
+        size += ZclDataTypeString.zclSize(Data);
+        ZclFrame zclFrame = new ZclFrame(1, size);
+        zclFrame.setCommandId(33);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, ProgramEventSource);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, OperationEventCode);
+        ZclDataTypeUI16 .zclSerialize(zclFrame, UserID);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, PIN);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, UserType);
+        ZclDataTypeUI8 .zclSerialize(zclFrame, UserStatus);
+        ZclDataTypeUI32 .zclSerialize(zclFrame, ZigBeeLocalTime);
+        ZclDataTypeString.zclSerialize(zclFrame, Data);
+        issueExec(zclFrame, 11, context);
+    }
 
-	protected IZclFrame parseGetLogRecordResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		int LogEntryID = ZclDataTypeUI16.zclParse(zclFrame);
-		long Timestamp = ZclDataTypeUI32.zclParse(zclFrame);
-		short EventType = ZclDataTypeEnum8.zclParse(zclFrame);
-		short Source = ZclDataTypeUI8.zclParse(zclFrame);
-		short EventIDAlarmCode = ZclDataTypeUI8.zclParse(zclFrame);
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		String PIN = ZclDataTypeString.zclParse(zclFrame);
-		o.execGetLogRecordResponse(LogEntryID, Timestamp, EventType, Source, EventIDAlarmCode, UserID, PIN, null);
-		return null;
-	}
+    protected IZclFrame parseLockDoor(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        String PINRFIDCode = ZclDataTypeString.zclParse(zclFrame);
+        LockDoorResponse r = o.execLockDoor(PINRFIDCode, endPoint.getDefaultRequestContext());
+        int size = ZclLockDoorResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(0);
+        ZclLockDoorResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetPINCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetPINCodeResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseUnlockDoor(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        String PINRFIDCode = ZclDataTypeString.zclParse(zclFrame);
+        UnlockDoorResponse r = o.execUnlockDoor(PINRFIDCode, endPoint.getDefaultRequestContext());
+        int size = ZclUnlockDoorResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(1);
+        ZclUnlockDoorResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetPINCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short UserStatus = ZclDataTypeUI8.zclParse(zclFrame);
-		short UserType = ZclDataTypeUI8.zclParse(zclFrame);
-		String Code = ZclDataTypeString.zclParse(zclFrame);
-		o.execGetPINCodeResponse(UserID, UserStatus, UserType, Code, null);
-		return null;
-	}
+    protected IZclFrame parseToggle(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        String PINRFIDCode = ZclDataTypeString.zclParse(zclFrame);
+        ToggleResponse r = o.execToggle(PINRFIDCode, endPoint.getDefaultRequestContext());
+        int size = ZclToggleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(2);
+        ZclToggleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearPINCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearPINCodeResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseUnlockWithTimeout(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int TimeoutInSeconds = ZclDataTypeUI16 .zclParse(zclFrame);
+        String PINRFIDCode = ZclDataTypeString.zclParse(zclFrame);
+        UnlockWithTimeoutResponse r = o.execUnlockWithTimeout(TimeoutInSeconds, PINRFIDCode, endPoint.getDefaultRequestContext());
+        int size = ZclUnlockWithTimeoutResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(3);
+        ZclUnlockWithTimeoutResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearAllPINCodesResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearAllPINCodesResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetLogRecord(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int LogIndex = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetLogRecordResponse r = o.execGetLogRecord(LogIndex, endPoint.getDefaultRequestContext());
+        int size = ZclGetLogRecordResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(4);
+        ZclGetLogRecordResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetUserStatusResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetUserStatusResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseSetPINCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        short UserStatus = ZclDataTypeUI8 .zclParse(zclFrame);
+        short UserType = ZclDataTypeUI8 .zclParse(zclFrame);
+        String PIN = ZclDataTypeString.zclParse(zclFrame);
+        SetPINCodeResponse r = o.execSetPINCode(UserID, UserStatus, UserType, PIN, endPoint.getDefaultRequestContext());
+        int size = ZclSetPINCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(5);
+        ZclSetPINCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetUserStatusResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short UserStatus = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execGetUserStatusResponse(UserID, UserStatus, null);
-		return null;
-	}
+    protected IZclFrame parseGetPINCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetPINCodeResponse r = o.execGetPINCode(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetPINCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(6);
+        ZclGetPINCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetWeekdayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetWeekdayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseClearPINCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        ClearPINCodeResponse r = o.execClearPINCode(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclClearPINCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(7);
+        ZclClearPINCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetWeekdayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short ScheduleID = ZclDataTypeUI8.zclParse(zclFrame);
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		short DaysMask = ZclDataTypeBitmap8.zclParse(zclFrame);
-		short StartHour = ZclDataTypeUI8.zclParse(zclFrame);
-		short StartMinute = ZclDataTypeUI8.zclParse(zclFrame);
-		short EndHour = ZclDataTypeUI8.zclParse(zclFrame);
-		short EndMinute = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execGetWeekdayScheduleResponse(ScheduleID, UserID, Status, DaysMask, StartHour, StartMinute, EndHour, EndMinute, null);
-		return null;
-	}
+    protected IZclFrame parseClearAllPINCodes(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        ClearAllPINCodesResponse r = o.execClearAllPINCodes(endPoint.getDefaultRequestContext());
+        int size = ZclClearAllPINCodesResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(8);
+        ZclClearAllPINCodesResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearWeekdayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearWeekdayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseSetUserStatus(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        short UserStatus = ZclDataTypeUI8 .zclParse(zclFrame);
+        SetUserStatusResponse r = o.execSetUserStatus(UserID, UserStatus, endPoint.getDefaultRequestContext());
+        int size = ZclSetUserStatusResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(9);
+        ZclSetUserStatusResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetYearDayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetYearDayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetUserStatus(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetUserStatusResponse r = o.execGetUserStatus(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetUserStatusResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(10);
+        ZclGetUserStatusResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetYearDayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short ScheduleID = ZclDataTypeUI8.zclParse(zclFrame);
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		long ZigBeeLocalStartTime = ZclDataTypeUI32.zclParse(zclFrame);
-		long ZigBeeLocalEndTime = ZclDataTypeUI32.zclParse(zclFrame);
-		o.execGetYearDayScheduleResponse(ScheduleID, UserID, Status, ZigBeeLocalStartTime, ZigBeeLocalEndTime, null);
-		return null;
-	}
+    protected IZclFrame parseSetWeekdaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        short DaysMask = ZclDataTypeBitmap8 .zclParse(zclFrame);
+        short StartHour = ZclDataTypeUI8 .zclParse(zclFrame);
+        short StartMinute = ZclDataTypeUI8 .zclParse(zclFrame);
+        short EndHour = ZclDataTypeUI8 .zclParse(zclFrame);
+        short EndMinute = ZclDataTypeUI8 .zclParse(zclFrame);
+        SetWeekdayScheduleResponse r = o.execSetWeekdaySchedule(ScheduleID, UserID, DaysMask, StartHour, StartMinute, EndHour, EndMinute, endPoint.getDefaultRequestContext());
+        int size = ZclSetWeekdayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(11);
+        ZclSetWeekdayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearYearDayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearYearDayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetWeekdaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetWeekdayScheduleResponse r = o.execGetWeekdaySchedule(ScheduleID, UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetWeekdayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(12);
+        ZclGetWeekdayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetHolidayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetHolidayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseClearWeekdaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        ClearWeekdayScheduleResponse r = o.execClearWeekdaySchedule(ScheduleID, UserID, endPoint.getDefaultRequestContext());
+        int size = ZclClearWeekdayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(13);
+        ZclClearWeekdayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetHolidayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short HolidayScheduleID = ZclDataTypeUI8.zclParse(zclFrame);
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		long ZigBeeLocalStartTime = ZclDataTypeUI32.zclParse(zclFrame);
-		long ZigBeeLocalEndTime = ZclDataTypeUI32.zclParse(zclFrame);
-		short OperatingModeDuringHoliday = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execGetHolidayScheduleResponse(HolidayScheduleID, Status, ZigBeeLocalStartTime, ZigBeeLocalEndTime,
-				OperatingModeDuringHoliday, null);
-		return null;
-	}
+    protected IZclFrame parseSetYearDaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        long ZigBeeLocalStartTime = ZclDataTypeUI32 .zclParse(zclFrame);
+        long ZigBeeLocalEndTime = ZclDataTypeUI32 .zclParse(zclFrame);
+        SetYearDayScheduleResponse r = o.execSetYearDaySchedule(ScheduleID, UserID, ZigBeeLocalStartTime, ZigBeeLocalEndTime, endPoint.getDefaultRequestContext());
+        int size = ZclSetYearDayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(14);
+        ZclSetYearDayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearHolidayScheduleResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearHolidayScheduleResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetYearDaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetYearDayScheduleResponse r = o.execGetYearDaySchedule(ScheduleID, UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetYearDayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(15);
+        ZclGetYearDayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetUsertypeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetUsertypeResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseClearYearDaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short ScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        ClearYearDayScheduleResponse r = o.execClearYearDaySchedule(ScheduleID, UserID, endPoint.getDefaultRequestContext());
+        int size = ZclClearYearDayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(16);
+        ZclClearYearDayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetUsertypeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short UserType = ZclDataTypeEnum8.zclParse(zclFrame);
-		o.execGetUsertypeResponse(UserID, UserType, null);
-		return null;
-	}
+    protected IZclFrame parseSetHolidaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short HolidayScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        long ZigBeeLocalStartTime = ZclDataTypeUI32 .zclParse(zclFrame);
+        long ZigBeeLocalEndTime = ZclDataTypeUI32 .zclParse(zclFrame);
+        short OperatingModeDuringHoliday = ZclDataTypeEnum8 .zclParse(zclFrame);
+        SetHolidayScheduleResponse r = o.execSetHolidaySchedule(HolidayScheduleID, ZigBeeLocalStartTime, ZigBeeLocalEndTime, OperatingModeDuringHoliday, endPoint.getDefaultRequestContext());
+        int size = ZclSetHolidayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(17);
+        ZclSetHolidayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseSetRFIDCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execSetRFIDCodeResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetHolidaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short HolidayScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        GetHolidayScheduleResponse r = o.execGetHolidaySchedule(HolidayScheduleID, endPoint.getDefaultRequestContext());
+        int size = ZclGetHolidayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(18);
+        ZclGetHolidayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseGetRFIDCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short UserStatus = ZclDataTypeUI8.zclParse(zclFrame);
-		short UserType = ZclDataTypeUI8.zclParse(zclFrame);
-		String RFIDCode = ZclDataTypeString.zclParse(zclFrame);
-		o.execGetRFIDCodeResponse(UserID, UserStatus, UserType, RFIDCode, null);
-		return null;
-	}
+    protected IZclFrame parseClearHolidaySchedule(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        short HolidayScheduleID = ZclDataTypeUI8 .zclParse(zclFrame);
+        ClearHolidayScheduleResponse r = o.execClearHolidaySchedule(HolidayScheduleID, endPoint.getDefaultRequestContext());
+        int size = ZclClearHolidayScheduleResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(19);
+        ZclClearHolidayScheduleResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearRFIDCodeResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
-			throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearRFIDCodeResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseSetUsertype(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        short UserType = ZclDataTypeEnum8 .zclParse(zclFrame);
+        SetUsertypeResponse r = o.execSetUsertype(UserID, UserType, endPoint.getDefaultRequestContext());
+        int size = ZclSetUsertypeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(20);
+        ZclSetUsertypeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseClearAllRFIDCodesResponse(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short Status = ZclDataTypeUI8.zclParse(zclFrame);
-		o.execClearAllRFIDCodesResponse(Status, null);
-		return null;
-	}
+    protected IZclFrame parseGetUsertype(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetUsertypeResponse r = o.execGetUsertype(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetUsertypeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(21);
+        ZclGetUsertypeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseOperationEventNotification(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short OperationEventSource = ZclDataTypeUI8.zclParse(zclFrame);
-		short OperationEventCode = ZclDataTypeUI8.zclParse(zclFrame);
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short PIN = ZclDataTypeUI8.zclParse(zclFrame);
-		long ZigBeeLocalTime = ZclDataTypeUI32.zclParse(zclFrame);
-		String Data = ZclDataTypeString.zclParse(zclFrame);
-		o.execOperationEventNotification(OperationEventSource, OperationEventCode, UserID, PIN, ZigBeeLocalTime, Data, null);
-		return null;
-	}
+    protected IZclFrame parseSetRFIDCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        short UserStatus = ZclDataTypeUI8 .zclParse(zclFrame);
+        short UserType = ZclDataTypeUI8 .zclParse(zclFrame);
+        String RFIDCode = ZclDataTypeString.zclParse(zclFrame);
+        SetRFIDCodeResponse r = o.execSetRFIDCode(UserID, UserStatus, UserType, RFIDCode, endPoint.getDefaultRequestContext());
+        int size = ZclSetRFIDCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(22);
+        ZclSetRFIDCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
 
-	protected IZclFrame parseProgrammingEventNotification(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o,
-			IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
-		short ProgramEventSource = ZclDataTypeUI8.zclParse(zclFrame);
-		short OperationEventCode = ZclDataTypeUI8.zclParse(zclFrame);
-		int UserID = ZclDataTypeUI16.zclParse(zclFrame);
-		short PIN = ZclDataTypeUI8.zclParse(zclFrame);
-		short UserType = ZclDataTypeUI8.zclParse(zclFrame);
-		short UserStatus = ZclDataTypeUI8.zclParse(zclFrame);
-		long ZigBeeLocalTime = ZclDataTypeUI32.zclParse(zclFrame);
-		String Data = ZclDataTypeString.zclParse(zclFrame);
-		o.execProgrammingEventNotification(ProgramEventSource, OperationEventCode, UserID, PIN, UserType, UserStatus,
-				ZigBeeLocalTime, Data, null);
-		return null;
-	}
+    protected IZclFrame parseGetRFIDCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        GetRFIDCodeResponse r = o.execGetRFIDCode(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclGetRFIDCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(23);
+        ZclGetRFIDCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
+
+    protected IZclFrame parseClearRFIDCode(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        int UserID = ZclDataTypeUI16 .zclParse(zclFrame);
+        ClearRFIDCodeResponse r = o.execClearRFIDCode(UserID, endPoint.getDefaultRequestContext());
+        int size = ZclClearRFIDCodeResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(24);
+        ZclClearRFIDCodeResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
+
+    protected IZclFrame parseClearAllRFIDCodes(org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer o, IZclFrame zclFrame)
+        throws ApplianceException, ServiceClusterException
+    {
+        ClearAllRFIDCodesResponse r = o.execClearAllRFIDCodes(endPoint.getDefaultRequestContext());
+        int size = ZclClearAllRFIDCodesResponse.zclSize(r);
+        IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
+        zclResponseFrame.setCommandId(25);
+        ZclClearAllRFIDCodesResponse.zclSerialize(zclResponseFrame, r);
+        return zclResponseFrame;
+    }
+
+    protected int readAttributeResponseGetSize(int attrId)
+        throws ServiceClusterException, ZclValidationException
+    {
+        switch (attrId) {
+            case  0 :
+                return ZclDataTypeEnum8 .zclSize((short)0);
+            case  1 :
+                return ZclDataTypeEnum8 .zclSize((short)0);
+            case  2 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  3 :
+                return ZclDataTypeEnum8 .zclSize((short)0);
+            case  4 :
+                return ZclDataTypeUI32 .zclSize(0);
+            case  5 :
+                return ZclDataTypeUI32 .zclSize(0);
+            case  6 :
+                return ZclDataTypeUI16 .zclSize(0);
+            case  16 :
+                return ZclDataTypeUI16 .zclSize(0);
+            case  17 :
+                return ZclDataTypeUI16 .zclSize(0);
+            case  18 :
+                return ZclDataTypeUI16 .zclSize(0);
+            case  19 :
+                return ZclDataTypeUI16 .zclSize(0);
+            case  20 :
+                return ZclDataTypeUI8 .zclSize((short) 0);
+            case  21 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  22 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  23 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  24 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  25 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  26 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  32 :
+            	return ZclDataTypeBoolean.zclSize(true);
+            	/*	
+            case  33 :
+                return ZclDataTypeString.zclSize((short)0);
+                */
+            case  34 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  35 :
+                return ZclDataTypeUI32 .zclSize(0);
+            case  36 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  37 :
+                return ZclDataTypeEnum8 .zclSize((short)0);
+            case  38 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  39 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  40 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  41 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  42 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  43 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  48 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  49 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  50 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  51 :
+                return ZclDataTypeBoolean.zclSize(true);
+            case  52 :
+                return ZclDataTypeUI8 .zclSize((short)0);
+            case  64 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  65 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  66 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  67 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  68 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  69 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  70 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            case  71 :
+                return ZclDataTypeBitmap16 .zclSize(0);
+            default:
+                throw new UnsupportedClusterAttributeException();
+        }
+    }
+
+    protected boolean fillAttributeRecord(IZclFrame zclResponseFrame, int attrId)
+        throws ApplianceException, ServiceClusterException
+    {
+        org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer c = ((org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer) getSinglePeerCluster((DoorLockServer.class.getName())));
+        switch (attrId) {
+            case  0 :
+            {
+                short v;
+                v = c.getLockState(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeEnum8 .ZCL_DATA_TYPE);
+                ZclDataTypeEnum8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  1 :
+            {
+                short v;
+                v = c.getLockType(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeEnum8 .ZCL_DATA_TYPE);
+                ZclDataTypeEnum8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  2 :
+            {
+                boolean v;
+                v = c.getActuatorEnabled(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  3 :
+            {
+                short v;
+                v = c.getDoorState(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeEnum8 .ZCL_DATA_TYPE);
+                ZclDataTypeEnum8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  4 :
+            {
+                long v;
+                v = c.getDoorOpenEvents(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI32 .ZCL_DATA_TYPE);
+                ZclDataTypeUI32 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  5 :
+            {
+                long v;
+                v = c.getDoorClosedEvents(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI32 .ZCL_DATA_TYPE);
+                ZclDataTypeUI32 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  6 :
+            {
+                int v;
+                v = c.getOpenPeriod(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI16 .ZCL_DATA_TYPE);
+                ZclDataTypeUI16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  16 :
+            {
+                int v;
+                v = c.getNumberofLogRecordsSupported(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI16 .ZCL_DATA_TYPE);
+                ZclDataTypeUI16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  17 :
+            {
+                int v;
+                v = c.getNumberofTotalUsersSupported(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI16 .ZCL_DATA_TYPE);
+                ZclDataTypeUI16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  18 :
+            {
+                int v;
+                v = c.getNumberofPINUsersSupported(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI16 .ZCL_DATA_TYPE);
+                ZclDataTypeUI16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  19 :
+            {
+                int v;
+                v = c.getNumberofRFIDUsersSupported(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI16 .ZCL_DATA_TYPE);
+                ZclDataTypeUI16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  20 :
+            {
+                short v;
+                v = c.getNumberofWeekDaySchedulesSupportedPerUser(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  21 :
+            {
+                short v;
+                v = c.getNumberofYearDaySchedulesSupportedPerUser(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  22 :
+            {
+                short v;
+                v = c.getNumberofHolidaySchedulesSupported(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  23 :
+            {
+                short v;
+                v = c.getMaxPINCodeLength(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  24 :
+            {
+                short v;
+                v = c.getMinPINCodeLength(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  25 :
+            {
+                short v;
+                v = c.getMaxRFIDCodeLength(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  26 :
+            {
+                short v;
+                v = c.getMinRFIDCodeLength(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  32 :
+            {
+                boolean v;
+                v = c.getEnableLogging(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  33 :
+            {
+                String v;
+                v = c.getLanguage(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeString.ZCL_DATA_TYPE);
+                ZclDataTypeString.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  34 :
+            {
+                short v;
+                v = c.getLEDSettings(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  35 :
+            {
+                long v;
+                v = c.getAutoRelockTime(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI32 .ZCL_DATA_TYPE);
+                ZclDataTypeUI32 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  36 :
+            {
+                short v;
+                v = c.getSoundVolume(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  37 :
+            {
+                short v;
+                v = c.getOperatingmode(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeEnum8 .ZCL_DATA_TYPE);
+                ZclDataTypeEnum8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  38 :
+            {
+                int v;
+                v = c.getSupportedOperatingModes(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  39 :
+            {
+                int v;
+                v = c.getDefaultConfigurationRegister(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  40 :
+            {
+                boolean v;
+                v = c.getEnableLocalProgramming(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  41 :
+            {
+                boolean v;
+                v = c.getEnableOneTouchLocking(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  42 :
+            {
+                boolean v;
+                v = c.getEnableInsideStatusLED(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  43 :
+            {
+                boolean v;
+                v = c.getEnablePrivacyModeButton(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  48 :
+            {
+                short v;
+                v = c.getWrongcodeentrylimit(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  49 :
+            {
+                short v;
+                v = c.getUserCodeTemporaryDisableTime(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  50 :
+            {
+                boolean v;
+                v = c.getSendPINovertheAir(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  51 :
+            {
+                boolean v;
+                v = c.getRequirePINforRFOperation(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBoolean.ZCL_DATA_TYPE);
+                ZclDataTypeBoolean.zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  52 :
+            {
+                short v;
+                v = c.getZigBeeSecurityLevel(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeUI8 .ZCL_DATA_TYPE);
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  64 :
+            {
+                int v;
+                v = c.getAlarmMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  65 :
+            {
+                int v;
+                v = c.getKeypadOperationEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  66 :
+            {
+                int v;
+                v = c.getRFOperationEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  67 :
+            {
+                int v;
+                v = c.getManualOperationEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  68 :
+            {
+                int v;
+                v = c.getRFIDOperationEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  69 :
+            {
+                int v;
+                v = c.getKeypadProgrammingEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  70 :
+            {
+                int v;
+                v = c.getRFProgrammingEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            case  71 :
+            {
+                int v;
+                v = c.getRFIDProgrammingEventMask(endPoint.getDefaultRequestContext());
+                ZclDataTypeUI8 .zclSerialize(zclResponseFrame, ZCL.SUCCESS);
+                zclResponseFrame.appendUInt8(ZclDataTypeBitmap16 .ZCL_DATA_TYPE);
+                ZclDataTypeBitmap16 .zclSerialize(zclResponseFrame, v);
+                break;
+            }
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    protected short writeAttribute(IZclFrame zclFrame, int attrId, short dataType)
+        throws Exception
+    {
+        switch (attrId) {
+            case  0 :
+            case  1 :
+            case  2 :
+            case  3 :
+            case  4 :
+            case  5 :
+            case  6 :
+            case  16 :
+            case  17 :
+            case  18 :
+            case  19 :
+            case  20 :
+            case  21 :
+            case  22 :
+            case  23 :
+            case  24 :
+            case  25 :
+            case  26 :
+            case  32 :
+            case  33 :
+            case  34 :
+            case  35 :
+            case  36 :
+            case  37 :
+            case  38 :
+            case  39 :
+            case  40 :
+            case  41 :
+            case  42 :
+            case  43 :
+            case  48 :
+            case  49 :
+            case  50 :
+            case  51 :
+            case  52 :
+            case  64 :
+            case  65 :
+            case  66 :
+            case  67 :
+            case  68 :
+            case  69 :
+            case  70 :
+            case  71 :
+                return ZCL.READ_ONLY;
+            default:
+                return ZCL.UNSUPPORTED_ATTRIBUTE;
+        }
+    }
 
 }
