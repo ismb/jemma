@@ -834,8 +834,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						// way to
 						// retrieve the Address so try to guess it.
 						InstallationStatus installingDevice = getInstallingDevice(InstallationStatus.WAITING_FOR_SERVICES);
-						Address a = installingDevice.getAddress();
+						
 						if (installingDevice != null) {
+							Address a = installingDevice.getAddress();
 							log.error(getIeeeAddressHex(a) + ": servicesDiscovered callback returned error code " + status.getCode() + "'. Guessed address '" + getIeeeAddressHex(a));
 
 							// retries until retry counter goes to 0
@@ -1985,6 +1986,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	private InstallationStatus getInstallingDevice(int deviceStatus) {
+		//MARCO-->E' qui che succede il problema del lock, questa funzione restituisce null e nessuno testa il fatto che il risultato sia null
 		Enumeration keys = this.devicesUnderInstallation.keys();
 		while (keys.hasMoreElements()) {
 			String nodePid = (String) keys.nextElement();

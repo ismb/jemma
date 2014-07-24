@@ -134,7 +134,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		} else if (page.endsWith(".css")) {
 			return "text/css";
 		} else if (page.endsWith(".js")) {
-			return "text/javascript";
+			return "application/javascript";
 		} else if (page.endsWith(".html")) {
 			return "text/html";
 		}
@@ -215,10 +215,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 				if (queryString.toLowerCase().startsWith(applicationWebAlias.toLowerCase())) {
 					// this is a restricted area so performs login
 
-					String a = request.getMethod();
-					String submit = request.getParameter("submit");					if (submit != null) {
-						String username = request.getParameter("username");
-						String password = request.getParameter("password");
+					
+					if (request.getMethod() == "POST") {
+						String username64 = request.getParameter("username");
+						String password64 = request.getParameter("password");
+						
+						String username = new String(Base64.decode(username64.getBytes()));
+						String password = new String(Base64.decode(password64.getBytes()));
+								
 						if (!allowUser(username, password)) {
 							return redirectToLoginPage(request, response);
 						} else {
