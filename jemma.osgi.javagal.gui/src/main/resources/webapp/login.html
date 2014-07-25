@@ -149,6 +149,19 @@
 		document.getElementById("password").value = password64;
 		document.getElementById("frm1").submit();
 	}
+	
+	
+	function mykeypress(e)
+	{
+		if (e.keyCode == 13) {
+		   login64();
+	       return false;
+	    }
+		 return true;
+	}
+	
+	
+	
 </script>
 
 
@@ -256,7 +269,7 @@ input.passw {
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 
 </head>
-<body>
+<body oncontextmenu="return false">
 	<div id="container">
 		<form>
 			<h1>Secure access for</h1>
@@ -264,11 +277,11 @@ input.passw {
 				<legend>ZigBee Admin Console - Login</legend>
 				<p>
 					<label for="loginusername">Username</label> <input type="text"
-						value="" id="loginusername" class="user" name="loginusername">
+						value="" id="loginusername" class="user" name="loginusername" onkeypress="return mykeypress(event);">
 				</p>
 				<p>
 					<label for="loginpassword">Password</label> <input type="password"
-						value="" id="loginpassword" class="passw" name="loginpassword">
+						value="" id="loginpassword" class="passw" name="loginpassword" onkeypress="return mykeypress(event);">
 				</p>
 				<p>
 					<input type="button" class="button" value="login" name="login"
