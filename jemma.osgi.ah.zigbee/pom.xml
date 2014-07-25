@@ -44,6 +44,8 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
+						
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Import-Package> edu.emory.mathcs.backport.java.util.concurrent,
 							 edu.emory.mathcs.backport.java.util.concurrent.locks,

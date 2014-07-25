@@ -294,14 +294,14 @@ CostiConsumi.VisCosti = function() {
 	if (CostiConsumi.costoOdierno == null)
 		txt = Msg.home["datoNonDisponibile"];
 	else
-		txt = (CostiConsumi.costoOdierno).toFixed(2) + " €";
+		txt = (CostiConsumi.costoOdierno).toFixed(2) + " ï¿½";
 	$("#DettaglioCostoOdierno").html(
 			Msg.home["costoFinora"] + ":<br><br><b>"+ txt + "</b>");
 	
 	if (CostiConsumi.costoPrevMese == null)
 		txt = Msg.home["datoNonDisponibile"];
 	else
-		txt = (CostiConsumi.costoPrevMese).toFixed(2) + " €";
+		txt = (CostiConsumi.costoPrevMese).toFixed(2) + " ï¿½";
 	$("#DettaglioCostoPrevisto").html(
 			Msg.home["costoPrevisto"] + ": <br><br><b>"	+ txt + "</b>");
 	
@@ -603,7 +603,7 @@ CostiConsumi.VisIndicatoreCosti = function() {
 		}
 	}
 	$('#CostoIndicatoreImg').gauge("value", perc);
-	// calcolo come sono rispetto alla media (per differenze sotto 0.10 € considero uguale
+	// calcolo come sono rispetto alla media (per differenze sotto 0.10 ï¿½ considero uguale
 	if ((odierno == null) || (medio == null))
 		diffInd = 3;
 	else
@@ -638,7 +638,7 @@ CostiConsumi.DatiCostoPrevistoCb = function(val) {
 	if (CostiConsumi.costoPrevMese == null)
 		txt = Msg.home["datoNonDisponibile"];
 	else
-		txt = (CostiConsumi.costoPrevMese).toFixed(2) + " €";
+		txt = (CostiConsumi.costoPrevMese).toFixed(2) + " ï¿½";
 	$("#DettaglioCostoPrevisto").html(
 			Msg.home["costoPrevisto"] + ": <br><br><b>"	+ txt + "</b>");
 
@@ -678,7 +678,7 @@ CostiConsumi.DatiCostoMedioCb = function(val) {
 	if (CostiConsumi.costoOdierno == null)
 		txt = Msg.home["datoNonDisponibile"];
 	else
-		txt = (CostiConsumi.costoOdierno).toFixed(2) + " €";
+		txt = (CostiConsumi.costoOdierno).toFixed(2) + " ï¿½";
 	$("#DettaglioCostoOdierno").html(
 			Msg.home["costoFinora"] + ":<br><br><b>"+ txt + "</b>");
 	**/
@@ -706,7 +706,7 @@ CostiConsumi.DatiCostoOdiernoCb = function(val) {
 	if (CostiConsumi.costoOdierno == null)
 		txt = Msg.home["datoNonDisponibile"];
 	else
-		txt = (CostiConsumi.costoOdierno).toFixed(2) + " €";
+		txt = (CostiConsumi.costoOdierno).toFixed(2) + " ï¿½";
 	$("#DettaglioCostoOdierno").html(Msg.home["costoFinora"] + ":<br><br><b>"+ txt + "</b>");
 	Log.alert(80, CostiConsumi.MODULE, "DatiCostoOdiernoCb = " + val);
 	InterfaceEnergyHome.GetCostoGiornaliero(CostiConsumi.DatiCostoGiornalieroCb);
@@ -1426,7 +1426,7 @@ CostiConsumi.GetDatiConsumi = function() {
 CostiConsumi.Initfeed = function (channel){
 	var feed;
 	
-	/* Se i feed sono giˆ stati caricati non viene inoltrata un altra richiesta */
+	/* Se i feed sono giï¿½ stati caricati non viene inoltrata un altra richiesta */
 	if(channel == 0 && CostiConsumi.notizie.length != 0){
 		
 		CostiConsumi.caricafeed();

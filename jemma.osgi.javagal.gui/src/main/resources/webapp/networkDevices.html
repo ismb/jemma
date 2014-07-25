@@ -136,9 +136,35 @@
 													});
 
 									/*Manufacturer Section*/
-									var manufacturer = "0x"
-											+ dataBig.detail.nodeDescriptor.manufacturerCode;
-									$("#detail_manufacturer").val(manufacturer);
+									var manufacturer = dataBig.detail.nodeDescriptor.manufacturerCode;
+									var manufacturerDesc = getManufacturerFromID(padLeft(
+											4, manufacturer)
+											.toLowerCase().trim());
+									if (manufacturerDesc) {
+										$("#detail_manufacturer")
+												.val(
+														manufacturerDesc
+																+ ' (0x'
+																+ padLeft(
+																		4,
+																		manufacturer
+																				)
+																		.toUpperCase()
+																		.trim()
+																+ ")");
+									} else {
+
+										$("#detail_manufacturer")
+												.val(
+														'Unknown Manufacturer - 0x'
+																+ padLeft(
+																		4,
+																		manufacturer)
+																		.toUpperCase()
+																		.trim());
+
+									}
+
 									$('#detail_manufacturer').attr('readonly',
 											true);
 
@@ -155,6 +181,10 @@
 									$('#detail_is_sleepy').attr('readonly',
 											true);
 
+									if ($("#detail_active_endpoints").val() != "")
+										$("#detail_button_simple_descriptor")
+												.click();
+
 								} else {
 									alert("Error on Info command: "
 											+ dataBig.status.message);
@@ -169,8 +199,7 @@
 					pgbuttons : false,
 					rowNum : 50,
 					datatype : "local",
-					colNames : [ '',
-					             LANG.centerPane.lblDeviceNetAdd,
+					colNames : [ '', LANG.centerPane.lblDeviceNetAdd,
 							LANG.centerPane.lblDeviceIeeAdd,
 							LANG.centerPane.lblDeviceSIndex,
 							LANG.centerPane.lblDeviceAssDev,
@@ -181,7 +210,7 @@
 							LANG.centerPane.lblDeviceRecOWI,
 							LANG.centerPane.lblDeviceSecSup,
 							LANG.centerPane.lblDeviceAllAdd, '', '' ],
-					colModel : [{
+					colModel : [ {
 						name : 'tDiscovered',
 						width : 160,
 						align : "center"
@@ -267,11 +296,8 @@
 			} ]
 		});
 
-		
+		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
 
-		$("#tblViewDevice").jqGrid('setGridHeight',  $("#container").height());
-
-		
 		var loadData = function() {
 
 			$
@@ -424,12 +450,9 @@
 														});
 									}
 
-									
-
 									reloadGridFromLocalArray("tblViewDevice",
 											nodes);
 
-									
 								}
 
 							});
@@ -707,21 +730,19 @@
 						});
 
 		$(document).ready(function() {
-			
-			  
-			  $(document).bind("contextmenu",function(e){
-	              return true;
-	       }); 
-			  
-			  
+
+			$(document).bind("contextmenu", function(e) {
+				return false;
+			});
+
 			loadData();
 		});
 	</script>
 	<div id="container">
-			<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
-			<div id="pager"></div>
-			<br/><br/>
-			<input id="btnOpenNetw" type="button" value="Add new devices" />
+		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+		<div id="pager"></div>
+		<br />
+		<br /> <input id="btnOpenNetw" type="button" value="Add new devices" />
 	</div>
 
 
@@ -732,7 +753,7 @@
 					<tr>
 						<td valign="top" style="width: 150px"><input type="hidden"
 							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
-							<label for="detail_shortaddress">Short Address:</label></td>
+							<label for="detail_shortaddress">Network Address:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_shortaddress" id="detail_shortaddress" size="35"
 							class="text ui-widget-content ui-corner-all" /></td>
@@ -742,12 +763,12 @@
 							for="detail_manufacturer">Manufacturer:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_manufacturer" id="detail_manufacturer"
-							class="text ui-widget-content ui-corner-all" /></td>
+							class="text ui-widget-content ui-corner-all" style="width: 250px" /></td>
 					</tr>
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_logical_type">Logical Type:</label></td>
+							for="detail_logical_type">Device Type:</label></td>
 						<td valign="top"><input type="text"
 							name="detail_logical_type" id="detail_logical_type"
 							class="text ui-widget-content ui-corner-all" /></td>
@@ -800,7 +821,7 @@
 
 					<tr>
 						<td valign="top" style="width: 150px"><label
-							for="detail_device">Device Type:</label></td>
+							for="detail_device">Device Name:</label></td>
 						<td valign="top"><input type="text" name="detail_device"
 							id="detail_device" class="text ui-widget-content ui-corner-all"
 							style="width: 250px" /></td>

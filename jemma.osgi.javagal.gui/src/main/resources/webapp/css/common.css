@@ -7,20 +7,20 @@ body
 {
     font-size   : 22px;
     font-weight : bold;
-    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family : Arial,sans-serif;
     color       : white;
     text-align: center;
 }
 
 label
 {
-    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family : Arial,sans-serif;
     font-size   : 0.8em;
 }
 
 .labeltitle
 {
-    font-family    : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family    : Arial,sans-serif;
     font-size      : 1.4em;
     font-style     : oblique;
     font-weight    : bold;
@@ -65,13 +65,13 @@ label
 
 input
 {
-    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family : Arial,sans-serif;
     font-size   : 0.8em;
 }
 
 input[readonly]
 {
-    font-family      : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family      : Arial,sans-serif;
     font-size        : 0.8em;
     background-color : lightgray;
 }
@@ -85,7 +85,7 @@ input[readonly]
 {
     background-color : #6464ff;
     color            : #ffffff;
-    font-family      : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family      : Arial,sans-serif;
     font-size        : 0.8em;
     width            : 100%;
     text-align       : center;
@@ -93,14 +93,14 @@ input[readonly]
 
 legend
 {
-    font-family : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family : Arial,sans-serif;
     font-size   : 1.6em;
     font-weight : bold;
 }
 
 .hor_menu
 {
-    font-family     : Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-family     : Arial,sans-serif;
     font-style      : italic;
     font-size       : 2em;
     background      : url('images/arrow_right_menu.png') left no-repeat;
@@ -167,19 +167,9 @@ legend
     color      : #C800C8;
 }
 
-.custom_ui-icon-apriEmergenza
-{
-    background : url('images/apriEmergenza.gif') center no-repeat !important;
-    width      : 20px;
-    height     : 20px;
-}
 
-.custom_ui-icon-visualizzaDatiConsenso
-{
-    background : url('images/visualizzaConsenso.gif') center no-repeat !important;
-    width      : 20px;
-    height     : 20px;
-}
+
+
 
 .ui-icon-male
 {

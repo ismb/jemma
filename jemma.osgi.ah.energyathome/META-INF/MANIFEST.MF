@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1404804989649
+Bnd-LastModified: 1406030201591
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Energyathome
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.energyathome
+Bundle-SymbolicName: jemma.osgi.ah.energyathome;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.2.25
 Created-By: Apache Maven Bundle Plugin

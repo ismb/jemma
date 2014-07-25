@@ -23,8 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "BindingList", propOrder = {
     "binding"
 })
-public class BindingList {
+public class BindingList implements Serializable {
 
     @XmlElement(name = "Binding")
     protected List<Binding> binding;

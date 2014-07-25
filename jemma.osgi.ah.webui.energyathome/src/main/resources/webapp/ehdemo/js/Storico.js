@@ -262,7 +262,7 @@ Storico.VisStorico = function(tipo) {
 		}
 	}
 	
-	//filtro con jquery.grep e se il risultato è < al 30% visualizzo il div col msg di errore
+	//filtro con jquery.grep e se il risultato ÔøΩ < al 30% visualizzo il div col msg di errore
 	var consumiNullGrep = jQuery.grep(dati1, function(valueDati1){
 		return (valueDati1 != null);
 	});
@@ -1405,8 +1405,8 @@ Storico.GestStorico = function() {
 	var divContent = $("#Content");
 
 	/*
-	 * Controllo che il div di Report non sia già stato riempito. Se non esiste
-	 * lo inizializzo, se già esiste lo visualizzo solamente
+	 * Controllo che il div di Report non sia giÔøΩ stato riempito. Se non esiste
+	 * lo inizializzo, se giÔøΩ esiste lo visualizzo solamente
 	 */
 
 	if (divContent.length == 0) {

@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -54,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
     "languageCode",
     "characterSet"
 })
-public class LanguageAndCharacterSet {
+public class LanguageAndCharacterSet implements Serializable {
 
     @XmlElement(name = "LanguageCode", required = true)
     protected String languageCode;

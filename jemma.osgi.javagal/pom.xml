@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    This file is part of JEMMA - http://jemma.energy-home.org
-    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
-
-    JEMMA is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License (LGPL) version 3
-    or later as published by the Free Software Foundation, which accompanies
-    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
-
-    JEMMA is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License (LGPL) for more details.
-
-
--->
+<!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
+	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License (LGPL) version 3 or later as published by the Free 
+	Software Foundation, which accompanies this distribution and is available 
+	at http://www.gnu.org/licenses/lgpl.html JEMMA is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Lesser General Public License (LGPL) for more details. -->
 <!-- This file is part of JEMMA - http://jemma.energy-home.org (C) Copyright 
 	2013 Telecom Italia (http://www.telecomitalia.it) JEMMA is free software: 
 	you can redistribute it and/or modify it under the terms of the GNU Lesser 
@@ -56,13 +48,14 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-SymbolicName>jemma.osgi.javagal;singleton:=true</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.layers.presentation.Activator</Bundle-Activator>
-						<Import-Package> 
+						<Import-Package>
 							gnu.io;version="1.0.0";resolution:=optional,
+							org.apache.commons.lang3;version="3.3.2",
 							jssc;resolution:=optional,
 							org.slf4j;version="[1.7.7,2)",
 							org.osgi.framework,
@@ -92,9 +85,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j.version}</version>
 		</dependency>
 
 		<dependency>
@@ -102,20 +95,24 @@
 			<artifactId>javax.xml</artifactId>
 			<version>${javax.xml.version}</version>
 		</dependency>
-		 <dependency>
+		<dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>org.rxtx</artifactId>
 			<version>1.0.0</version>
 			<optional>true</optional>
-		 </dependency>
-		 
-		 <dependency>
+		</dependency>
+
+		<dependency>
 			<groupId>jssc</groupId>
 			<artifactId>jssc</artifactId>
 			<version>2.8.0</version>
 			<optional>true</optional>
-		 </dependency>
-		 
-		
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
 	</dependencies>
 </project>

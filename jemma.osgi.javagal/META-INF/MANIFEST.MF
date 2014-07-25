@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1404804970408
+Bnd-LastModified: 1406030188849
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
  vator
 Bundle-ManifestVersion: 2
@@ -18,7 +18,7 @@ Export-Package: org.energy_home.jemma.zgd;uses:="org.energy_home.jemma.z
 Import-Package: gnu.io;resolution:=optional;version="1.0.0",javax.xml.bi
  nd,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.x
  ml.namespace;version="[1.3,2)",jssc;resolution:=optional;version="[2.8,
- 3)",org.energy_home.jemma.zgd.jaxb;version="[1.0,2)",org.osgi.framework
- ;version="[1.5,2)",org.osgi.util.tracker;version="1.4.2",org.slf4j;vers
- ion="[1.7.7,2)"
+ 3)",org.apache.commons.lang3;version="3.3.2",org.energy_home.jemma.zgd.
+ jaxb;version="[1.0,2)",org.osgi.framework;version="[1.5,2)",org.osgi.ut
+ il.tracker;version="1.4.2",org.slf4j;version="[1.7.7,2)"
 Tool: Bnd-1.50.0

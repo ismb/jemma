@@ -97,6 +97,22 @@ public class PropertiesManager {
 
 	}
 	
+	/**
+	 * Gets serialDataDebugEnabled property.
+	 * 
+	 * @return the serialDataDebugEnabled value.
+	 */
+	public boolean getserialDataDebugEnabled() {
+		String _value = props.getProperty("serialDataDebugEnabled");
+		
+		return (_value.equalsIgnoreCase("0")) ? false : true;
+
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Gets NumberOfThreadForAnyPool property.
@@ -134,6 +150,19 @@ public class PropertiesManager {
 		props.setProperty("debugEnabled", _debug.toString());
 
 	}
+	
+	/**
+	 * Sets DebugEnabled property's value.
+	 * 
+	 * @param _debug
+	 *            the value to set
+	 */
+	public void setserialDataDebugEnabled(Boolean _debug) {
+		props.setProperty("serialDataDebugEnabled", _debug.toString());
+
+	}
+	
+	
 
 	/**
 	 * Gets KeepAliveNumberOfAttempt property used in Discovery operation.

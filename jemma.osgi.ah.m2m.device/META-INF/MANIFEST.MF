@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1404804947951
+Bnd-LastModified: 1406030176130
 Build-Jdk: 1.6.0_45
-Built-By: Administrator
+Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.m2m.device.M2MDeviceActi
  vator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: M2M Device
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.ah.m2m.device
+Bundle-SymbolicName: jemma.osgi.ah.m2m.device;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.2.15
 Created-By: Apache Maven Bundle Plugin

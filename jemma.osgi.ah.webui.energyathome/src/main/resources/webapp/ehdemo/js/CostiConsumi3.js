@@ -878,7 +878,9 @@ CostiConsumi.Initfeed = function(channel) {
 					if (!result.error) {
 						/* salvo i feed nella variabile CostiConsumi.notizie 
 						 * la prima news � selezionata random, dalla seconda in poi vengono inserite nello stesso ordine con cui vengono ricevute */
-						var randIndex = Math.floor((Math.random() * result.feed.entries.length) + 1);
+						//var randIndex = Math.floor((Math.random() * result.feed.entries.length) + 1);
+						var randIndex = Math.floor((Math.random() * result.feed.entries.length));
+						
 						var entryRand = result.feed.entries[randIndex];
 						var itemRand = {
 								title : entryRand.title,

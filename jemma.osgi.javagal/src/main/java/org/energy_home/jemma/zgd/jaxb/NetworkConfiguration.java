@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -61,7 +63,7 @@ import javax.xml.bind.annotation.XmlType;
     "superFrameOrder",
     "batteryLifeExtension"
 })
-public class NetworkConfiguration {
+public class NetworkConfiguration implements Serializable{
 
     @XmlElement(name = "ScanChannels")
     protected Long scanChannels;

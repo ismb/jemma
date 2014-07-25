@@ -48,7 +48,7 @@ Report.Init = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divReport = $("#Report");
 
-	/* Controllo che il div di Report non sia giˆ stato riempito. Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+	/* Controllo che il div di Report non sia giï¿½ stato riempito. Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	if (divReport.length == 0) {
 		$("#Container").append(Report.htmlContent);
 		
@@ -70,7 +70,7 @@ Report.Init = function() {
 										.append($(document.createElement('td')).attr('id', 'previsione').attr('class', 'altro'))));
 		
 
-		/* Aggiungo il Div che conterrˆ l'accordion */
+		/* Aggiungo il Div che conterrï¿½ l'accordion */
 		$(document.createElement('div')).attr('id', 'EventiCasa1').appendTo($("#ReportDatiCasa"));
 
 		/* Imposto il contenuto dell'accordion */

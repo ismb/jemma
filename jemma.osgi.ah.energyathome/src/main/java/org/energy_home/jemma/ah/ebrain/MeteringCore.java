@@ -213,7 +213,10 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			}
 			
 			String applianceId = appliance.getApplianceId();
-			meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
+			//meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
+			//meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
+            meteringProxy.subscribeIstantaneousDemand(applianceId, 5, 10, 5);
+
 			if (checkMeteringSubscriptions) {
 				float power = meteringProxy.getIstantaneousDemand(applianceId);
 				notifyIstantaneousDemandPower(applianceId, System.currentTimeMillis(), power);

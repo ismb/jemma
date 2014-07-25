@@ -185,6 +185,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		messagesLock.lock();
 		pendingReplies.put(key, sq);
+		System.out.println("[IZclFrame invoke] pendingReplies count:" + pendingReplies.size());
 		messagesLock.unlock();
 
 		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())

@@ -183,13 +183,11 @@ public class ServletContainer implements HttpSessionListener{
 
 	@Override
 	public void sessionCreated(HttpSessionEvent arg0) {
-		System.out.print("Session new ");
 		
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent arg0) {
-		System.out.print("Session end ");
 		
 	}
 }

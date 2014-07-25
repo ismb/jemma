@@ -251,78 +251,41 @@ public class DataManipulation {
 		return toReturn;
 	}
 
-	/**
-	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
-	 * by a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void debugLogArrayShortHexRadix(String caption, List<Short> arr) {
+	
+	public static String  convertListShortToString(List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
 		for (Short s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		LOG.debug(caption + ":" + sb.toString());
+		return sb.toString();
 	}
-
-	/**
-	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
-	 * by a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void errorLogListShortHexRadix(String caption, List<Short> arr) {
-		StringBuilder sb = new StringBuilder();
-		for (Short s : arr) {
-			sb.append(String.format("%02X", s.byteValue()));
-		}
-		LOG.error(caption + ":" + sb.toString());
-
-	}
+	
+	
+	
 
 	
 
 	
 
-	/**
-	 * Logs an hexadecimal representation of a given {@code short[]}, preceded
-	 * by a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void logArrayShortToHex(String caption, short[] arr) {
+	
+	public static String convertArrayShortToString(short[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (Short s : arr) {
 			sb.append(String.format("%02X", s.byteValue()));
 		}
-		LOG.info(caption + ":" + sb.toString());
+		return sb.toString();
 	}
-
-	/**
-	 * Logs an hexadecimal representation of a given {@code byte[]}, preceded by
-	 * a leading caption.
-	 * 
-	 * @param caption
-	 *            the leading caption.
-	 * @param arr
-	 *            the array to log.
-	 */
-	public static void logArrayBytesHexRadix(String caption, byte[] arr) {
+	
+	public static String convertArrayBytesToString(byte[] arr) {
 		StringBuilder sb = new StringBuilder();
 		for (byte s : arr) {
 			sb.append(String.format("%02X", s));
 		}
-		LOG.info(caption + ":" + sb.toString());
+		return sb.toString();
 	}
+	
+
+	
 
 	
 

@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -62,7 +64,7 @@ import javax.xml.bind.annotation.XmlType;
     "securitySupported",
     "allocateAddress"
 })
-public class MACCapability {
+public class MACCapability implements Serializable{
 
     @XmlElement(name = "AlternatePanCoordinator")
     protected boolean alternatePanCoordinator;

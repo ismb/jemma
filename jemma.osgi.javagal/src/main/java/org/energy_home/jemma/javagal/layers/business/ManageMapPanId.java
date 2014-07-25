@@ -25,11 +25,18 @@ import java.math.BigInteger;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ManageMapPanId {
 	String filename;
+GalController gal;
+private static final Logger logger = LoggerFactory.getLogger(ManageMapPanId.class);
 
-	public ManageMapPanId() {
+	public ManageMapPanId(GalController _gal) {
 		try {
+			gal = _gal;
 			filename = System.getProperty("user.home") + File.separator + "mapPainId.properties";
 			File f = new File(filename);
 			if (!f.exists())
@@ -119,7 +126,8 @@ public class ManageMapPanId {
 			Enumeration<?> e = properties.propertyNames();
 			while (e.hasMoreElements()) {
 				String key = (String) e.nextElement();
-				System.out.println(key + " -- " + properties.getProperty(key));
+				if (gal.getPropertiesManager().getDebugEnabled())
+					logger.info(key + " -- " + properties.getProperty(key));
 			}
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

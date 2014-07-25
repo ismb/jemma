@@ -127,13 +127,12 @@ public class SerialPortConnectorJssc implements IConnector {
 		if (isConnected()) {
 
 			try {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
+				if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info(">>> Sending: " + buff.ToHexString());
 				serialPort.writeBytes(buff.getByteArrayRealSize());
 			} catch (Exception e) {
 
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
+				LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
 				throw e;
 
 			}
@@ -194,20 +193,20 @@ public class SerialPortConnectorJssc implements IConnector {
 							short[] buffer = new short[bufferOr.length];
 
 							for (int i = 0; i < buffer.length; i++) {
-								buffer[i] = bufferOr[i];
+								buffer[i] = (short) (bufferOr[i] & 0xFF);
 							}
 							ShortArrayObject frame = new ShortArrayObject(buffer, numberOfBytes);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
 					}
 				} catch (Exception e) {
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.error("Error on data received:" + e.getMessage());
+
+					LOG.error("Error on data received:" + e.getMessage());
 				}
 
 			} catch (Exception e) {
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.error("Error on read from serial data:" + e.getMessage());
+
+				LOG.error("Error on read from serial data:" + e.getMessage());
 
 			}
 

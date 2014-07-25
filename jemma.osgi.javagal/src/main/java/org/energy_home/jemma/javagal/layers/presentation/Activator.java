@@ -38,8 +38,7 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator {
 	private BundleContext bc;
 	private GalExtenderProxyFactory _fac = null;
-	//FIXME mass-rename to LOG when ready
-	private static final Logger log = LoggerFactory.getLogger( Activator.class );
+	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	private ServiceRegistration gatewayInterfaceRegistration;
 	private ServiceRegistration gatewayFactoryRegistration;
 
@@ -49,12 +48,12 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		log.info("Starting Gal:Osgi...");
+		LOG.info("Starting Gal:Osgi...");
 		bc = context;
 		try {
 			String _path = "config.properties";
 
-			log.info("FILE Conf: " + _path);
+			LOG.info("FILE Conf: " + _path);
 
 			PropertiesManager PropertiesManager = new PropertiesManager(bc.getBundle().getResource(_path));
 
@@ -66,7 +65,10 @@ public class Activator implements BundleActivator {
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME));
 			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG) != null)
 				PropertiesManager.props.setProperty("debugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_LOG));
+			if (context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_SERIAL_LOG) != null)
+				PropertiesManager.props.setProperty("serialDataDebugEnabled", context.getProperty(GatewayProperties.ZGD_GAL_ENABLE_SERIAL_LOG));
 
+			
 			
 			if (_fac == null)
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
@@ -77,11 +79,11 @@ public class Activator implements BundleActivator {
 			gatewayFactoryServiceFactory = new GatewayFactoryServiceFactory();
 			gatewayFactoryRegistration = bc.registerService(GalExtenderProxyFactory.class.getName(), gatewayFactoryServiceFactory, null);
 
-			log.info("Gal:Osgi Started!");
+			LOG.info("Gal:Osgi Started!");
 		} catch (Exception e) {
 			if (_fac!= null)
 				_fac.destroyGal();
-			log.error("Error Creating Gal Osgi");
+			LOG.error("Error Creating Gal Osgi");
 			
 			e.printStackTrace();
 		}
@@ -89,11 +91,11 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if (_fac != null)
+		if (_fac != null){
+
 			_fac.destroyGal();
-
+		}
 		if (gatewayInterfaceServiceFactory != null) {
-
 			if (gatewayInterfaceRegistration != null) {
 				gatewayInterfaceRegistration.unregister();
 				gatewayInterfaceRegistration = null;
@@ -108,7 +110,7 @@ public class Activator implements BundleActivator {
 			}
 		}
 
-		log.info("Gal Osgi Stopped!");
+		LOG.info("Gal Osgi Stopped!");
 	}
 
 	/**
@@ -121,10 +123,10 @@ public class Activator implements BundleActivator {
 		public Object getService(Bundle bundle, ServiceRegistration reg) {
 			try {
 				gatewayInterface = _fac.createGatewayInterfaceObject();
-				log.info("Called getService!");
+				LOG.info("Called getService!");
 				return gatewayInterface;
 			} catch (Exception e) {
-				log.error("Exception",e);
+				LOG.error("Exception",e);
 				return null;
 			}
 		}
@@ -133,12 +135,13 @@ public class Activator implements BundleActivator {
 		public void ungetService(Bundle bundle, ServiceRegistration reg, Object service) {
 			try {
 				((GalExtenderProxy) gatewayInterface).deleteProxy();
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			log.info("Called UngetService!");
+			LOG.info("Called UngetService!");
 		}
 	}
 
@@ -154,7 +157,7 @@ public class Activator implements BundleActivator {
 			try {
 				return _fac;
 			} catch (Exception e) {
-				log.error("Exception",e);
+				LOG.error("Exception",e);
 				return null;
 			}
 		}
