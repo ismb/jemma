@@ -285,9 +285,9 @@
 					autowidth : false,
 					subGrid : false,
 					pager : '#pager',
-					//Subgrid
-					height: '75%',
-			        hidegrid:false,
+					height: '100%',
+					/*Subgrid
+				    hidegrid:false,
 			        subGrid: true,
 			        subGridOptions: { "plusicon" : "ui-icon-triangle-1-e",
 			                          "minusicon" :"ui-icon-triangle-1-s",
@@ -324,9 +324,7 @@
                         $("#"+subgrid_table_id).jqGrid('navGrid',"#"+pager_id,{edit:false,add:false,del:false,search:false});
                          
                     }
-			                          //End Subgrid
-			                         
-			                          
+                    End Subgrid*/
 				});
 
 		$("#tblViewDevice").jqGrid('setGroupHeaders', {
@@ -338,7 +336,7 @@
 			} ]
 		});
 
-		$("#tblViewDevice").jqGrid('setGridHeight', $("#container").height());
+		$("#tblViewDevice").jqGrid('setGridHeight', "400");
 
 		var loadData = function() {
 
