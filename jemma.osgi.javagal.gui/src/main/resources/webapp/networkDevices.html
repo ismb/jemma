@@ -382,7 +382,9 @@
 													nObj.address.ieeeAddress
 															.toString(16));
 
-											if (strNetworkAddress == 0)
+											if (nObj.capabilityInformation=='undefined')
+												vLogical = "No capability information";
+											else if (strNetworkAddress == 0)
 												vLogical = "Coordinator";
 											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
 													&& nObj.capabilityInformation.deviceIsFFD == false)
@@ -397,7 +399,7 @@
 														+ nObj.capabilityInformation.receiverOnWhenIdle
 														+ "/IsFFD="
 														+ nObj.capabilityInformation.deviceIsFFD;
-
+											
 											var currentNode = {
 												nAdd : '0x'
 														+ strNetworkAddress
