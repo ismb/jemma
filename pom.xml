@@ -60,7 +60,8 @@
 		<org.mortbay.jetty.server.version>6.1.23</org.mortbay.jetty.server.version>
 		<org.mortbay.jetty.util.version>6.1.23</org.mortbay.jetty.util.version>
 		<org.eclipse.equinox.registry.version>3.4.100</org.eclipse.equinox.registry.version>
-		<org.apache.felix.webconsole.version>3.1.8</org.apache.felix.webconsole.version>
+		<!--<org.apache.felix.webconsole.version>3.1.8</org.apache.felix.webconsole.version>-->
+		<org.apache.felix.webconsole.version>4.2.2</org.apache.felix.webconsole.version>
 		<org.apache.felix.webconsole.plugins.event.version>1.0.2</org.apache.felix.webconsole.plugins.event.version>
 		<org.apache.felix.webconsole.plugins.memoryusage.version>1.0.2</org.apache.felix.webconsole.plugins.memoryusage.version>
 		<org.apache.felix.webconsole.plugins.upnp.version>1.0.0</org.apache.felix.webconsole.plugins.upnp.version>
