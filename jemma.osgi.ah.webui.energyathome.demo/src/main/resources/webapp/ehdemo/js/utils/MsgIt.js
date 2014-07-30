@@ -220,7 +220,8 @@ var Msg = {
 			"Errore: dati mancanti",
 			"Attenzione! Il contatore ENEL non e' configurato nel sistema Energy@Home",
 			"Identificativo Utente non trovato.",
-			"Attenzione! Il contatore di produzione non e' configurato nel sistema Energy@Home"],
+			"Impianto PV non configurato"],
+			//"Attenzione! Il contatore di produzione non e' configurato nel sistema Energy@Home"],
 	locazioni : {
 		"kitchen" : "Cucina",
 		"bathroom" : "Bagno",
