@@ -359,14 +359,15 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										}
 										
 										
-									}
-									else {
+									} else if (elemento["type"]=="org.energy_home.jemma.ah.zigbee.lockdoor") {  //LockDoor
+										Elettrodom["type"]="lockdoor";
+										if(Elettrodom["connessione"]==2){
+											Elettrodom["stato"]=1;
+											Elettrodom["open"]=0 // Oppure?
+										}
+									} else {
 										Elettrodom["type"] = 'smartplug';
-										
 									}
-				
-									
-				
 									var str = elemento["icon"];
 				
 									Elettrodom["icona"] = str.replace(".png", "");
@@ -686,6 +687,11 @@ Elettrodomestici.refreshDevices=function(){
 				if(cat_id==39){
 					interfaccia_src="js/dispositivi/ifIndesitFridge.html";
 					Elettrodomestici.interfaccia= ifIndesitFridge;
+				}
+				//LockDoor
+				if(cat_id==40){
+					interfaccia_src="js/dispositivi/ifLockDoor.html";
+					Elettrodomestici.interfaccia= ifLockDoor;
 				}
 				
 				if(Elettrodomestici.listaElettrodomestici[index].connessione!=2 || Elettrodomestici.listaElettrodomestici[index].stato==4 ){
