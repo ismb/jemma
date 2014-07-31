@@ -17,6 +17,7 @@ package org.energy_home.jemma.ah.internal.zigbee;
 
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
@@ -219,13 +220,13 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
-				LOG.debug("Aspetto Lock...");
+				
 				messagesLock.lock();
-				LOG.debug("Dentro Lock...");
+				
 				pendingReplies.remove(new Long(hash));
-				LOG.debug("Entry rimossa...");
+				
 				messagesLock.unlock();
-				LOG.debug("Lock rilasciato...");
+				
 				throw new ZigBeeException("timeout");
 			}
 
@@ -297,7 +298,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 			messagesLock.lock();
 			SynchronousQueue sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
-			messagesLock.unlock();
+			
 
 			if (sq == null) {
 				// simply sends the message to the upper layer. If any exception
@@ -306,9 +307,13 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				notifyListeners(clusterId, zclFrame);
 			} else {
 				try {
-
 					LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash));
-					sq.put(zclFrame);
+
+					synchronized (sq) {
+						sq.put(zclFrame);	
+					}
+
+					
 					LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
 
 				} catch (InterruptedException e) {
@@ -317,6 +322,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 					return false;
 				}
 			}
+			messagesLock.unlock();
 		}
 
 		return true;
