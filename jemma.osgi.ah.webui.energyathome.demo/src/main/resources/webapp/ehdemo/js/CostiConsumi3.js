@@ -1222,8 +1222,10 @@ CostiConsumi.caricafeed = function() {
  ******************************************************************************/
 
 CostiConsumi.InitfeedSim = function() {
-
-	CostiConsumi.notizie = NotizieSimul;
+	if (typeof NotizieSimul !== 'undefined') {
+		CostiConsumi.notizie = NotizieSimul;
+	}
+	
 	CostiConsumi.caricafeed();
 	$("#backNews").click(function() {
 		CostiConsumi.notizieid = CostiConsumi.notizieid - 2;
