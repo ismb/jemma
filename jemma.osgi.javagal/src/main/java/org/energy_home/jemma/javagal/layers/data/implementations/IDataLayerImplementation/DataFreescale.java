@@ -441,6 +441,14 @@ public class DataFreescale implements IDataLayer {
 			apsmeGetConfirm(message);
 
 		}
+		
+		
+		/* MacGetPIBAttribute.Confirm */
+		else if (_command == FreescaleConstants.MacGetPIBAttributeConfirm) {
+			MacGetConfirm(message);
+		}
+		
+		
 		// ZDP-StartNwkEx.Confirm
 		else if (_command == FreescaleConstants.ZTCStartNwkExConfirm) {
 			zdpStartNwkExConfirm(message);
@@ -1187,6 +1195,34 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
+	
+	
+	
+	/**
+	 * @param message
+	 */
+	private void MacGetConfirm(short[] message) {
+		if (gal.getPropertiesManager().getDebugEnabled())
+			LOG.info("Extracted MacGetPIBAttribute.Confirm: " + DataManipulation.convertArrayShortToString(message));
+		String _Key = String.format("%02X", message[4]);
+		// Found MacGetPIBAttribute.Confirm. Remove the lock
+		synchronized (listLocker) {
+			for (ParserLocker pl : listLocker) {
+				if (pl.getType() == TypeMessage.MAC_GET && pl.get_Key().equalsIgnoreCase(_Key)) {
+					short _Length = (short) DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]);
+					byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
+					if (_Length >= 2)
+						_res = DataManipulation.reverseBytes(_res);
+					synchronized (pl) {
+						pl.getStatus().setCode(message[3]);
+						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
+						pl.notify();
+					}
+					break;
+				}
+			}
+		}
+	}
 	/**
 	 * @param message
 	 */
@@ -2514,11 +2550,11 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public String NMLE_GetSync(long timeout, short _AttID) throws Exception {
+	public String NMLE_GetSync(long timeout, short _AttID, short iEntry) throws Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* iId */
 		_res.addByte((byte) 0x00);/* iIndex */
-		_res.addByte((byte) 0x00);/* iEntries */
+		_res.addByte((byte) iEntry);/* iEntries */
 		_res.addByte((byte) 0x00);/* iEntrySize */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.NLMEGetRequest);/*
 																				 * StartSequence
@@ -4481,6 +4517,76 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public synchronized boolean getDestroy() {
 		return destroy;
+	}
+
+	@Override
+	public String MacGetPIBAttributeSync(long timeout, short _AttID) throws Exception {
+
+			ShortArrayObject _res = new ShortArrayObject();
+			_res.addByte((byte) _AttID);/* iId */
+			_res.addByte((byte) 0x00);/* iIndex */
+			_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.MacGetPIBAttributeRequest);/*
+																						 * StartSequence
+																						 * +
+																						 * Control
+																						 */
+			if (gal.getPropertiesManager().getDebugEnabled()) {
+				LOG.info("MacGetPIBAttribute.Request:" + _res.ToHexString());
+			}
+
+			ParserLocker lock = new ParserLocker();
+
+			lock.setType(TypeMessage.MAC_GET);
+			lock.set_Key(String.format("%02X", _AttID));
+			Status status = new Status();
+			try {
+				synchronized (listLocker) {
+					listLocker.add(lock);
+				}
+				SendRs232Data(_res);
+				synchronized (lock) {
+					try {
+						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+							lock.wait(timeout);
+					} catch (InterruptedException e) {
+
+					}
+				}
+				status = lock.getStatus();
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+						listLocker.remove(lock);
+				}
+			} catch (Exception e) {
+				synchronized (listLocker) {
+					if (listLocker.contains(lock))
+						listLocker.remove(lock);
+				}
+
+			}
+
+			if (status.getCode() == ParserLocker.INVALID_ID) {
+
+				LOG.error("Timeout expired in MacGetPIBAttribute.Request");
+
+				throw new GatewayException("Timeout expired in MacGetPIBAttribute.Request");
+			} else {
+				if (status.getCode() != 0) {
+					if (gal.getPropertiesManager().getDebugEnabled()) {
+						LOG.info("Returned Status: " + status.getCode());
+					}
+					throw new GatewayException("Error on MacGetPIBAttribute.Request. Status code: " + status.getCode() + " Status Message: " + status.getMessage());
+				} else
+					return (String) lock.get_objectOfResponse();
+			}
+
+		
+		
+		
+		
+		
+		
+		
 	}
 
 }

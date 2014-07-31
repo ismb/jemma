@@ -136,6 +136,23 @@ public interface IDataLayer extends IFrameCallback {
 	 */
 	public String APSME_GETSync(long timeout, short _AttID) throws Exception;
 
+	
+	
+	
+	
+	/**
+	 * Gets MACGetPibAttributes synchronously.
+	 * 
+	 * @param timeout
+	 *            the desired timeout value.
+	 * @param _AttID
+	 *            attribute id.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public String MacGetPIBAttributeSync(long timeout, short _AttID) throws Exception;
+
+	
 	/**
 	 * Gets NLME synchronously.
 	 * 
@@ -147,7 +164,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if an error occurs.
 	 */
-	public String NMLE_GetSync(long timeout, short _AttID) throws Exception;
+	public String NMLE_GetSync(long timeout, short _AttID, short iEntry) throws Exception;
 
 	public Status NMLE_SETSync(long timeout, short _AttID, String _value) throws Exception;
 
