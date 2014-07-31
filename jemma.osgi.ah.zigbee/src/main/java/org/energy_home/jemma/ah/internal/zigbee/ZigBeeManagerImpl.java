@@ -305,7 +305,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	protected void activate(ComponentContext ctxt, Map props) {
 		rwLock.writeLock().lock();
-		//System.out.println("activate Locking...");
 		try {
 			this.ctxt = ctxt;
 			if (enableDsLogs)
@@ -327,7 +326,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		} finally {
 
 			rwLock.writeLock().unlock();
-			//System.out.println("activate UnLocked!");
+			
 		}
 	}
 
@@ -360,7 +359,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	protected void deactivate(ComponentContext ctxt) {
 
 		rwLock.writeLock().lock();
-		//System.out.println("deactivate Locking...");
+		
 		try {
 			if (enableDsLogs)
 				log.debug("deactivated");
@@ -378,18 +377,18 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		} finally {
 
 			rwLock.writeLock().unlock();
-			//System.out.println("deactivate UnLocked");
+			
 		}
 	}
 
 	protected void modified(ComponentContext ctxt, Map props) {
 		rwLock.writeLock().lock();
-		//System.out.println("modified Locking...");
+		
 		try {
 			update(props);
 		} finally {
 			rwLock.writeLock().unlock();
-			//System.out.println("modified Unlocked");
+			
 		}
 	}
 
@@ -530,9 +529,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				}
 
 				rwLock.readLock().lock();
-				//System.out.println("notifyAps Locking...");
-				//System.out.println("notifyAps Actual Lock number: " + rwLock.getReadHoldCount());
-
+				
 				if (enableLockingLogs) {
 					if (rwLock.getReadHoldCount() > 1) {
 						log.debug("Thr: " + Thread.currentThread().getId() + ": There are multiple read lock" + rwLock.getReadHoldCount());
@@ -614,7 +611,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						log.debug("Thr: " + Thread.currentThread().getId() + ": unlocking and read lock count is: " + rwLock.getReadHoldCount());
 					}
 					rwLock.readLock().unlock();
-					//System.out.println("notifyAps Unlocked");
+					
 
 				}
 
@@ -657,16 +654,14 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeDiscovered(final Status status, final WSNNode node) {
-		//System.out.println("NodeDiscovered Node:" + node.getAddress().getNetworkAddress() + "  Status:" + status.getCode() + " Class:" + this.hashCode());
-
+		
 		Thread thr = new Thread() {
 			@Override
 			public void run() {
 				log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
 				log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
 				rwLock.writeLock().lock();
-				//System.out.println("nodeDiscovered Locking Lock number: " + rwLock.getWriteHoldCount());
-
+				
 				try {
 					if (status.getCode() != GatewayConstants.SUCCESS) {
 						log.error("called nodeDiscovered with status different from SUCCESS, message is '" + status.getMessage() + "'");
@@ -689,7 +684,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					nodeDiscovered(a);
 				} finally {
 					rwLock.writeLock().unlock();
-					//System.out.println("nodeDiscovered Unlocked");
+					
 
 				}
 			}
@@ -822,8 +817,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 				if (status.getCode() != GatewayConstants.SUCCESS) {
 					rwLock.writeLock().lock();
-					//System.out.println("nodeservicesDiscovered Locking Lock number: " + rwLock.getWriteHoldCount());
-
+					
 					try {
 						timerCancel(galCommandTimer);
 
@@ -856,8 +850,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						}
 					} finally {
 						rwLock.writeLock().unlock();
-						//System.out.println("nodeservicesDiscovered Unlocked");
-
+						
 					}
 					return;
 				}
@@ -914,8 +907,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			public void run() {
 
 				rwLock.writeLock().lock();
-				//System.out.println("serviceDescriptorRetrieved Locking.. Lock Number: " + rwLock.getWriteHoldCount());
-
+				
 				try {
 					timerCancel(galCommandTimer);
 					Address a = service.getAddress();
@@ -1020,7 +1012,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					handleNextDiscoveredNode();
 				} finally {
 					rwLock.writeLock().unlock();
-					//System.out.println("serviceDescriptorRetrieved Unlocked");
 				}
 			}
 		};
@@ -1287,15 +1278,13 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		case JGalReconnectTimer:
 			synchronized (sLock) {
 				rwLock.writeLock().lock();
-				//System.out.println("timer JGalReconnectTimer Locking.. Lock Number: " + rwLock.getWriteHoldCount());
-
+			
 				boolean galBound = false;
 
 				try {
 					galBound = bindGal();
 				} finally {
 					rwLock.writeLock().unlock();
-					//System.out.println("timer JGalReconnectTimer UnLocked");
 				}
 
 				if (!galBound) {
@@ -1324,23 +1313,21 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		case permitJoinAllTimer:
 			rwLock.writeLock().lock();
-			//System.out.println("timer permitJoinAllTimer Locking.. Lock Number: " + rwLock.getWriteHoldCount());
-
+			
 			try {
 				timerCancel(permitJoinAllTimer);
 				this.terminateDeviceDiscoveryForJoinedDevices();
 				this.postEvent("ah/zigbee/CLOSE_NETWORK", null);
 			} finally {
 				rwLock.writeLock().unlock();
-				//System.out.println("timer permitJoinAllTimer Unlocked");
+				
 
 			}
 			break;
 
 		case galCommandTimer:
 			rwLock.writeLock().lock();
-			//System.out.println("timer galCommandTimer Locking.. Lock Number: " + rwLock.getWriteHoldCount());
-
+			
 			log.warn("galCommandTimer expired");
 			// if this timer expires, it means that the GAL was not sending a
 			// calback for node descriptor or service discriptor or active
@@ -1389,7 +1376,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				}
 			} finally {
 				rwLock.writeLock().unlock();
-				//System.out.println("timer galCommandTimer UnLocked");
+				
 
 			}
 			break;
@@ -1624,7 +1611,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		this.terminateDeviceDiscoveryAll();
 		try {
-			//System.out.println("Setting GatewayEventListener Class: " + this.hashCode());
 			gateway.setGatewayEventListener(this);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -1665,7 +1651,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		this.terminateDeviceDiscoveryAll();
 
 		try {
-			//System.out.println("Removing GatewayEventListener: " + this.hashCode());
 			gateway.setGatewayEventListener(null);
 			gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_STOP);
 		} catch (Exception e) {
@@ -1715,7 +1700,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				// doesn't
 				// contain the address of the device
 				rwLock.writeLock().lock();
-				//System.out.println("nodeDescriptorRetrieved Locking  Lock Cont:" + rwLock.getWriteHoldCount());
 				try {
 					timerCancel(galCommandTimer);
 					if (gateway == null) {
@@ -1772,8 +1756,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 				} finally {
 					rwLock.writeLock().unlock();
-					//System.out.println("nodeDescriptorRetrieved Unlocked");
-
+				
 				}
 			}
 		};
@@ -1795,8 +1778,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			@Override
 			public void run() {
 				rwLock.writeLock().lock();
-				//System.out.println("nodeRemoved Locking  Lock Cont:" + rwLock.getWriteHoldCount());
-
+				
 				try {
 					// notifies the node
 					// TODO: if the node has short address 0 it means that the
@@ -1830,7 +1812,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 				} finally {
 					rwLock.writeLock().unlock();
-					//System.out.println("nodeRemoved UnLocked");
+				
 
 				}
 			}
@@ -1844,8 +1826,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void permitJoin(short duration) throws Exception {
 		rwLock.writeLock().lock();
-		//System.out.println("permitJoin Locking  Lock Cont:" + rwLock.getWriteHoldCount());
-
+		
 		try {
 			if (gateway == null) {
 				throw new Exception("zgd not started");
@@ -1866,8 +1847,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			throw e;
 		} finally {
 			rwLock.writeLock().unlock();
-			//System.out.println("permitJoin UnLocked");
-
+			
 		}
 	}
 
@@ -1961,8 +1941,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	private InstallationStatus addInstallingDevice(Address a) {
 		rwLock.writeLock().lock();
-		//System.out.println("addInstallingDevice Locking  Lock Cont:" + rwLock.getWriteHoldCount());
-
+		
 		try {
 			String nodePid = getNodePid(a);
 			InstallationStatus installationStatus = new InstallationStatus(a);
@@ -1970,7 +1949,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			return installationStatus;
 		} finally {
 			rwLock.writeLock().unlock();
-			//System.out.println("addInstallingDevice UnLocked");
+			
 
 		}
 	}
@@ -2096,8 +2075,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void removeDevice(String nodePid) throws Exception {
 		rwLock.writeLock().lock();
-		//System.out.println("removeDevice Locking  Lock Cont:" + rwLock.getWriteHoldCount());
-
+		
 		try {
 			Vector devices = (Vector) ieee2devices.get(nodePid);
 			if (devices == null || devices.size() == 0)
@@ -2112,7 +2090,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			this.unregisterDevice(nodePid);
 		} finally {
 			rwLock.writeLock().unlock();
-			//System.out.println("removeDevice UnLocked");
 
 		}
 	}

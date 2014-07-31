@@ -193,7 +193,6 @@ public class ZigBeeCommandProvider implements CommandProvider {
 
 	private String printDevice(ZigBeeDevice zbDevice) {
 		String out = "";
-
 		out += "ieee address = " + zbDevice.getIeeeAddress() + ", ep = " + zbDevice.getServiceDescriptor().getEndPoint();
 		out += ", profileid = " + zbDevice.getServiceDescriptor().getSimpleDescriptor().getApplicationProfileIdentifier();
 		out += ", deviceid = " + zbDevice.getServiceDescriptor().getSimpleDescriptor().getApplicationDeviceIdentifier();
