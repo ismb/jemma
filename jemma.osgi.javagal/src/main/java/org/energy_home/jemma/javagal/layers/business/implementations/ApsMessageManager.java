@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -274,9 +275,13 @@ public class ApsMessageManager {
 							apml.notifyAPSMessage(message);
 
 						MessageListener napml = ce.getGenericDestination();
-						if (napml != null)
-							napml.notifyAPSMessage(message);
-
+						if (napml != null){
+							APSMessageEvent cmessage = null;
+							synchronized (message) {
+								cmessage = SerializationUtils.clone(message);
+							}
+							napml.notifyAPSMessage(cmessage);
+						}
 						// Add it to the list of already notified
 						// destinations.
 
