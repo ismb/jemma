@@ -289,9 +289,11 @@ var Msg = {
 		33 : "Swimming pool pump",
 		34 : "MAC Lamp",
 		35 : "Philips Lamp",
-		36 : "Thermostat",
+		36 : "Centralite Thermostat",
 		37 : "Indesit Whashing Machine",
 		38 : "Indesit Oven",
-		39 : "Indesit Fridge"
+		39 : "Indesit Fridge",
+		40 : "Door Lock",
+		41 : "Reloc Temperature Sensor"
 	}
 }
