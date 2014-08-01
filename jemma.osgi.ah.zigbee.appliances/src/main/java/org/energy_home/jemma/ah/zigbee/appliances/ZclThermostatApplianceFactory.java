@@ -25,7 +25,7 @@ import java.util.Dictionary;
 
 import org.osgi.service.device.Driver;
 
-public class ZclZoppasDisplayApplianceFactory extends DriverApplianceFactory implements Driver {
+public class ZclThermostatApplianceFactory extends DriverApplianceFactory implements Driver {
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.thermostat";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Termostat";
 	public static final String DEVICE_TYPE = "ZigBee";
@@ -38,7 +38,7 @@ public class ZclZoppasDisplayApplianceFactory extends DriverApplianceFactory imp
 	}
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
-		return new ZclZoppasDisplayAppliance(pid, config);
+		return new ZclThermostatAppliance(pid, config);
 	}
 
 	public String deviceMatchFilterString() {
