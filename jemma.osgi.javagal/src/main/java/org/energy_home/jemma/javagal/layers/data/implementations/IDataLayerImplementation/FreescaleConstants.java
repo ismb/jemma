@@ -206,6 +206,7 @@ public class FreescaleConstants {
 	static final short  ZTCClearNeighborTableEntryConfirm = (short) 0xA451;
 	
 	
+	static final short  MacGetPIBAttributeRequest = (short) 0x8503;
 	
 	
 	

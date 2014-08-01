@@ -51,7 +51,7 @@ public class wsnNodesServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		Object done = session.getValue("logon.isDone");
+		Object done = session.getValue("javaGallogon.isDone");
 		if (done != null) {
 			
 			Object mode = request.getParameter(Resources.URI_PARAM_MODE);
@@ -104,7 +104,7 @@ public class wsnNodesServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
-		Object done = session.getValue("logon.isDone");
+		Object done = session.getValue("javaGallogon.isDone");
 		if (done != null) {
 			
 			String timeoutString = null;

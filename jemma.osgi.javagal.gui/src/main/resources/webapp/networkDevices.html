@@ -1,0 +1,886 @@
+<div id="tplViewDevice">
+	<script type="text/javascript" lang="javascript">
+		var nodes = [];
+		$("#dialog-form-device-details").dialog({
+			autoOpen : false,
+			height : 500,
+			width : 500,
+			modal : true,
+			buttons : {
+				Cancel : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$('#dialog-form-device-details').dialog('option', 'buttons', [ {
+			text : 'Close',
+			click : function() {
+				$(this).dialog('close');
+			}
+		} ]);
+
+		$("#dialog-form-open-network").dialog({
+			autoOpen : false,
+			height : 220,
+			width : 500,
+			modal : true,
+			buttons : {
+				Cancel : function() {
+					btnCloseNetw();
+				}
+			}
+		});
+
+		$(".ui-dialog-titlebar-close").hide();
+
+		function leaveDevice(shortAddress) {
+			var result = window.confirm(
+					'Are you sure you want to disconnect the selected device: 0x'
+							+ shortAddress.toUpperCase() + '?',
+					'Disconnect Device', function(result) {
+						if (result) {
+							$.ajax(
+									{
+										url : DEFINEPATH.leavePath
+												+ "?timeout=00002710&addr="
+												+ shortAddress,
+										type : 'DELETE'
+									}).done(
+									function(data) {
+										var dataBig = json_parse(data);
+										if (dataBig.status.code == 0) {
+											loadData();
+										} else {
+											alert("Error on Leave command: "
+													+ dataBig.status.message);
+										}
+									});
+						}
+					});
+		}
+
+		function infoDevice(shortAddress) {
+			$
+					.ajax(
+							{
+								url : DEFINEPATH.detailDevicePath
+										+ "?timeout=00002710&addr="
+										+ shortAddress,
+								type : 'GET'
+							})
+					.done(
+							function(data) {
+								var dataBig = json_parse(data);
+
+								if (dataBig.status.code == 0) {
+									/*Clear all data*/
+									$("#detail_shortaddress").val("");
+									$("#detail_ieeeaddress").val("");
+									$("#detail_active_endpoints").empty();
+									$("#detail_manufacturer").val("");
+									$("#detail_logical_type").val("");
+									$("#detail_is_sleepy").val("");
+									$("#detail_profile").val("");
+									$("#detail_device").val("");
+									$("#detail_device_version").val("");
+									$("#detail_input_clusters").empty();
+									$("#detail_output_clusters").empty();
+									$("#dialog-form-device-details").dialog(
+											"open");
+									/*Short Address section*/
+									var shortAddress = padLeft(
+											4,
+											dataBig.detail.nodeServices.address.networkAddress
+													.toString(16))
+											.toUpperCase().trim();
+									$("#detail_shortaddress_hidden").val(
+											shortAddress);
+									$("#detail_shortaddress").val(
+											"0x" + shortAddress);
+									$('#detail_shortaddress').attr('readonly',
+											true);
+
+									/*Ieee Address section*/
+									var ieeeAddress = padLeft(
+											16,
+											dataBig.detail.nodeServices.address.ieeeAddress
+													.toString(16))
+											.toUpperCase().trim();
+									$("#detail_ieeeaddress_hidden").val(
+											ieeeAddress
+
+									);
+									$("#detail_ieeeaddress").val(
+											"0x" + ieeeAddress);
+									$('#detail_ieeeaddress').attr('readonly',
+											true);
+
+									/*EndPoint section*/
+									$
+											.each(
+													dataBig.detail.nodeServices.activeEndpoints,
+													function(index, value) {
+														$(
+																"#detail_active_endpoints")
+																.append(
+																		'<option value="'+value.endPoint+'">'
+																				+ '0x'
+																				+ padLeft(
+																						"2",
+																						value.endPoint
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ '</option>');
+													});
+
+									/*Manufacturer Section*/
+									var manufacturer = dataBig.detail.nodeDescriptor.manufacturerCode;
+									var manufacturerDesc = getManufacturerFromID(padLeft(
+											4, manufacturer)
+											.toLowerCase().trim());
+									if (manufacturerDesc) {
+										$("#detail_manufacturer")
+												.val(
+														manufacturerDesc
+																+ ' (0x'
+																+ padLeft(
+																		4,
+																		manufacturer
+																				)
+																		.toUpperCase()
+																		.trim()
+																+ ")");
+									} else {
+
+										$("#detail_manufacturer")
+												.val(
+														'Unknown Manufacturer - 0x'
+																+ padLeft(
+																		4,
+																		manufacturer)
+																		.toUpperCase()
+																		.trim());
+
+									}
+
+									$('#detail_manufacturer').attr('readonly',
+											true);
+
+									/*LogicalType Section*/
+									var logicaltype = dataBig.detail.nodeDescriptor.logicalType;
+									$("#detail_logical_type").val(logicaltype);
+									$('#detail_logical_type').attr('readonly',
+											true);
+
+									/*Sleepy EndDevice*/
+									var isSleepy = (dataBig.detail.nodeDescriptor.macCapabilityFlag.receiverOnWhenIdle) ? "False"
+											: "True";
+									$("#detail_is_sleepy").val(isSleepy);
+									$('#detail_is_sleepy').attr('readonly',
+											true);
+
+									if ($("#detail_active_endpoints").val() != "")
+										$("#detail_button_simple_descriptor")
+												.click();
+
+								} else {
+									alert("Error on Info command: "
+											+ dataBig.status.message);
+								}
+							});
+
+		}
+
+		$("#tblViewDevice").jqGrid(
+				{
+					pginput : false,
+					pgbuttons : false,
+					rowNum : 50,
+					datatype : "local",
+					colNames : [ '', LANG.centerPane.lblDeviceNetAdd,
+							LANG.centerPane.lblDeviceIeeAdd,
+							LANG.centerPane.lblDeviceSIndex,
+							LANG.centerPane.lblDeviceAssDev,
+							LANG.centerPane.lblDeviceAltPan,
+							LANG.centerPane.lblDeviceDevFFD,
+							LANG.centerPane.lblDeviceMainPo,
+							LANG.centerPane.lblDeviceLogical,
+							LANG.centerPane.lblDeviceRecOWI,
+							LANG.centerPane.lblDeviceSecSup,
+							LANG.centerPane.lblDeviceAllAdd, '', '' ],
+					colModel : [ {
+						name : 'tDiscovered',
+						width : 160,
+						align : "center"
+
+					}, {
+						name : 'nAdd',
+						width : 165,
+						align : "center"
+					}, {
+						name : 'iAdd',
+						width : 180,
+						align : "center"
+					}, {
+						name : 'start',
+						width : 110,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'devices',
+						width : 175,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'alt',
+						width : 225,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'ffd',
+						width : 140,
+						align : "center",
+						hidden : true
+
+					}, {
+						name : 'powered',
+						width : 150,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'logical',
+						width : 110,
+						align : "center"
+
+					}, {
+						name : 'idle',
+						width : 220,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'security',
+						width : 180,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'aAdd',
+						width : 160,
+						align : "center",
+						hidden : true
+					}, {
+						name : 'aActDetails',
+						width : 30,
+						align : "center"
+					}, {
+						name : 'aActLeave',
+						width : 30,
+						align : "center"
+					}, ],
+					sortname : 'id',
+					viewrecords : true,
+					caption : LANG.menu.btnViewDevice,
+					sortorder : "desc",
+					autowidth : false,
+					subGrid : false,
+					pager : '#pager',
+					height: '100%',
+				});
+
+		$("#tblViewDevice").jqGrid('setGroupHeaders', {
+			useColSpanStyle : true,
+			groupHeaders : [ {
+				startColumnName : 'nAdd',
+				numberOfColumns : 2,
+				titleText : LANG.centerPane.lblDeviceAddress
+			} ]
+		});
+
+		$("#tblViewDevice").jqGrid('setGridHeight', "400");
+
+		var loadData = function() {
+
+			$
+					.ajax({
+						url : DEFINEPATH.viewDevicePath
+					})
+					.done(
+							function(data) {
+								var dataBig = json_parse(data);
+								var mydataViewDeviceNew = [];
+								if (dataBig.status.code == 0) {
+									var vLogical = "";
+									var nodesObj = dataBig.detail.wsnNodes;
+									var nodeObj = nodesObj.wsnNode;
+									if (typeof (nodeObj) != 'undefined') {
+										for (var iCounter = 0; iCounter < nodeObj.length; iCounter++) {
+											var nObj = nodeObj[iCounter];
+											var associatedString = '';
+											if (typeof (nObj.associatedDevices) != 'undefined') {
+												if (typeof (nObj.associatedDevices[0]) != 'undefined') {
+													var associatedDev = nObj.associatedDevices[0].sonNode;
+													if (typeof (associatedDev) != 'undefined') {
+														for (var sCounter = 0; sCounter < associatedDev.length; sCounter++) {
+															var tmpStringToHex = associatedDev[sCounter].shortAddr
+																	.toString(16);
+															var str = padLeft(
+																	4,
+																	tmpStringToHex);
+															associatedString = '0x'
+																	+ str
+																			.toUpperCase()
+																	+ '<br />'
+																	+ associatedString;
+														}
+													}
+												}
+											}
+											var strNetworkAddress = padLeft(4,
+													nObj.address.networkAddress
+															.toString(16));
+											var strIeeeAddress = padLeft(16,
+													nObj.address.ieeeAddress
+															.toString(16));
+
+											if (nObj.capabilityInformation=='undefined')
+												vLogical = "No capability information";
+											else if (strNetworkAddress == 0)
+												vLogical = "Coordinator";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
+													&& nObj.capabilityInformation.deviceIsFFD == false)
+												vLogical = "Sleepy EndDevice";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
+													&& nObj.capabilityInformation.deviceIsFFD == true)
+												vLogical = "End Device";
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true)
+												vLogical = "Router";
+											else
+												vLogical = "RxOnIdle="
+														+ nObj.capabilityInformation.receiverOnWhenIdle
+														+ "/IsFFD="
+														+ nObj.capabilityInformation.deviceIsFFD;
+											
+											var currentNode = {
+												nAdd : '0x'
+														+ strNetworkAddress
+																.toUpperCase(),
+												iAdd : '0x'
+														+ strIeeeAddress
+																.toUpperCase(),
+												logical : vLogical,
+												start : nObj.startIndex,
+												devices : associatedString,
+												alt : nObj.capabilityInformation.alternatePanCoordinator,
+												ffd : nObj.capabilityInformation.deviceIsFFD,
+												powered : nObj.capabilityInformation.mainsPowered,
+												idle : nObj.capabilityInformation.receiverOnWhenIdle,
+												security : nObj.capabilityInformation.securitySupported,
+												aAdd : nObj.capabilityInformation.allocateAddress,
+												tDiscovered : ((nodes == null || nodes.length == 0) ? "&nbsp;"
+														: "New Device"),
+												aActDetails : "<a href=\"javascript:infoDevice('"
+														+ strNetworkAddress
+														+ "');\"><img src='./css/images/details.png' class='gridButton' title='Device Details' /></a>",
+												aActLeave : "<a href=\"javascript:leaveDevice('"
+														+ strNetworkAddress
+														+ "');\"><img src='./css/images/leave.png' class='gridButton' title='Device Leave' /></a>"
+											};
+
+											mydataViewDeviceNew
+													.push(currentNode);
+
+										}
+									}
+									if (nodes == null || nodes.length == 0) {
+
+										nodes = mydataViewDeviceNew;
+									} else {
+
+										/*Find nodes Removed*/
+										$
+												.each(
+														nodes,
+														function(key, value) {
+															value.tDiscovered = "&nbsp;";
+
+															var found = false;
+															$
+																	.each(
+																			mydataViewDeviceNew,
+																			function(
+																					key1,
+																					value1) {
+
+																				if (value.iAdd == value1.iAdd) {
+
+																					found = true;
+																					return;
+																				}
+
+																			});
+															if (!found)
+																removeA(nodes,
+																		value);
+
+														});
+
+										/*Add nodes Discovered*/
+										$
+												.each(
+														mydataViewDeviceNew,
+														function(key, value) {
+
+															var found = false;
+															$
+																	.each(
+																			nodes,
+																			function(
+																					key1,
+																					value1) {
+
+																				if (value.iAdd == value1.iAdd) {
+
+																					found = true;
+																					return;
+																				}
+
+																			});
+															if (!found)
+																nodes
+																		.push(value);
+
+														});
+									}
+
+									reloadGridFromLocalArray("tblViewDevice",
+											nodes);
+
+								}
+
+							});
+		}
+
+		function removeA(arr, what) {
+			var what, a = arguments, L = a.length, ax;
+			while (L > 1 && arr.length) {
+				what = a[--L];
+				while ((ax = arr.indexOf(what)) !== -1) {
+					arr.splice(ax, 1);
+				}
+			}
+			return arr;
+		}
+
+		var count = -1;
+		var counter = -1;
+
+		function timer() {
+			count = count - 1;
+			if (count <= 0) {
+				clearInterval(counter);
+				btnCloseNetw();
+				return;
+			} else {
+
+				$('#permit-join-counter').text(count);
+
+			}
+		}
+
+		$("#btnOpenNetw").button();
+		$("#btnOpenNetw").click(
+				function() {
+
+					var JoiningInfo = {
+						permitDuration : 60,
+						tcSignificance : true
+					};
+					$.ajax({
+						url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
+						type : 'POST',
+						data : JSON.stringify(JoiningInfo),
+						contentType : "application/json; charset=utf-8"
+					}).done(
+							function(data) {
+								var dataBig = json_parse(data);
+								if (dataBig.status.code == 0) {
+									count = 60;
+									$('#permit-join-counter').text(count);
+									$("#dialog-form-open-network").dialog(
+											"open");
+									counter = setInterval(timer, 1000); //1000 will  run it every 1 second
+
+								} else {
+									alert("Error on PermitJoin command: "
+											+ dataBig.status.message);
+								}
+							});
+				});
+
+		var btnCloseNetw = function() {
+			var JoiningInfo = {
+				'permitDuration' : 0,
+				'tcSignificance' : true
+			};
+			$.ajax({
+				url : DEFINEPATH.permitJoinPath + "?timeout=00002710",
+				type : 'POST',
+				data : JSON.stringify(JoiningInfo),
+				contentType : "application/json; charset=utf-8"
+			}).done(
+					function(data) {
+						var dataBig = json_parse(data);
+						if (dataBig.status.code == 0) {
+							clearInterval(counter);
+							$("#dialog-form-open-network").dialog("close");
+							loadData();
+						} else {
+							alert("Error on PermitJoin command: "
+									+ dataBig.status.message);
+						}
+					});
+
+		};
+
+		$("#detail_button_simple_descriptor")
+				.click(
+
+						function() {
+							var short_address = $("#detail_shortaddress_hidden")
+									.val();
+							var endpoint = $("#detail_active_endpoints").val();
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.simpleDescriptorPath
+														+ "?timeout=00002710&addr="
+														+ short_address
+														+ "&endpoint="
+														+ endpoint
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
+													/*Profile Section*/
+													var profile = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationProfileIdentifier;
+													var profileDesc = getSingleProfileFromID(padLeft(
+															4,
+															profile
+																	.toString(16))
+															.toLowerCase()
+															.trim());
+													if (profileDesc) {
+														$("#detail_profile")
+																.val(
+																		profileDesc.description
+																				+ ' (0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ ")");
+													} else {
+
+														$("#detail_profile")
+																.val(
+																		'Unknown profile - 0x'
+																				+ padLeft(
+																						4,
+																						profile
+																								.toString(16))
+																						.toUpperCase()
+																						.trim());
+
+													}
+
+													$('#detail_profile').attr(
+															'readonly', true);
+
+													/*Device Section*/
+													var device = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceIdentifier;
+													var deviceDescr = getSingleDeviceName(
+															padLeft(
+																	4,
+																	device
+																			.toString(16))
+																	.toUpperCase()
+																	.trim(),
+															padLeft(
+																	4,
+																	profile
+																			.toString(16))
+																	.toLowerCase()
+																	.trim());
+													if (deviceDescr) {
+														$("#detail_device")
+																.val(
+																		deviceDescr
+																				+ ' (0x'
+																				+ padLeft(
+																						4,
+																						device
+																								.toString(16))
+																						.toUpperCase()
+																						.trim()
+																				+ ")");
+													} else {
+														$("#detail_device")
+																.val(
+
+																		'Unknown device - 0x'
+																				+ padLeft(
+																						4,
+																						device
+																								.toString(16))
+																						.toUpperCase()
+																						.trim());
+													}
+													$('#detail_device').attr(
+															'readonly', true);
+
+													/*Device Version Section*/
+													var device_version = dataBig.detail.serviceDescriptor.simpleDescriptor.applicationDeviceVersion;
+													$("#detail_device_version")
+															.val(
+																	'0x'
+																			+ padLeft(
+																					2,
+																					device_version
+																							.toString(16))
+																					.toUpperCase()
+																					.trim());
+													$('#detail_device_version')
+															.attr('readonly',
+																	true);
+
+													/*Input CLuster Section*/
+													var input_cluster = "";
+													$("#detail_input_clusters")
+															.empty();
+													$
+															.each(
+																	dataBig.detail.serviceDescriptor.simpleDescriptor.applicationInputCluster,
+																	function(
+																			index,
+																			value) {
+
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
+																		$(
+																				"#detail_input_clusters")
+																				.append(
+																						'<option value="'+value+'">'
+																								+ ((clusterDescr) ? clusterDescr.description
+																										: "Unknown cluster")
+																								+ ' (0x'
+																								+ padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()
+																								+ ')</option>');
+																	});
+
+													/*Output CLuster Section*/
+													var output_cluster = "";
+													$("#detail_output_clusters")
+															.empty();
+													$
+															.each(
+																	dataBig.detail.serviceDescriptor.simpleDescriptor.applicationOutputCluster,
+																	function(
+																			index,
+																			value) {
+
+																		var clusterDescr = getClusterDescription(padLeft(
+																				4,
+																				value
+																						.toString(16))
+																				.toUpperCase()
+																				.trim());
+
+																		$(
+																				"#detail_output_clusters")
+																				.append(
+																						'<option value="'+value+'">'
+																								+ ((clusterDescr) ? clusterDescr.description
+																										: "Unknown cluster")
+																								+ ' (0x'
+																								+ padLeft(
+																										4,
+																										value
+																												.toString(16))
+																										.toUpperCase()
+																										.trim()
+																								+ ')</option>');
+																	});
+												} else {
+													alert("Error on simple descriptor request: "
+															+ dataBig.status.message);
+												}
+
+											});
+
+						});
+
+		$(document).ready(function() {
+
+			$(document).bind("contextmenu", function(e) {
+				return false;
+			});
+
+			loadData();
+		});
+	</script>
+	<div id="container">
+		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+		<div id="pager"></div>
+		<br /> <br /> <input id="btnOpenNetw" type="button"
+			value="Add new devices" />
+	</div>
+
+
+	<div id="dialog-form-device-details" title="Device details">
+		<form>
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_shortaddress_hidden" id="detail_shortaddress_hidden" />
+							<label for="detail_shortaddress">Network Address:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_shortaddress" id="detail_shortaddress" size="35"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_manufacturer">Manufacturer:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_manufacturer" id="detail_manufacturer"
+							class="text ui-widget-content ui-corner-all" style="width: 250px" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_logical_type">Device Type:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_logical_type" id="detail_logical_type"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_is_sleepy">Sleeping device:</label></td>
+						<td valign="top"><input type="text" name="detail_is_sleepy"
+							id="detail_is_sleepy"
+							class="text ui-widget-content ui-corner-all" /></td>
+					</tr>
+
+					<tr>
+						<td valign="top" style="width: 150px"><input type="hidden"
+							name="detail_ieeeaddress_hidden" id="detail_ieeeaddress_hidden" />
+							<label for="detail_address">Ieee Address:</label></td>
+						<td><input type="text" name="detail_ieeeaddress"
+							id="detail_ieeeaddress" size="35"
+							class="text ui-widget-content ui-corner-all"></td>
+					</tr>
+				</table>
+			</fieldset>
+			<br />
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_active_endpoints">Active EndPoints:</label></td>
+						<td valign="middle"><select name="detail_active_endpoints"
+							id="detail_active_endpoints"></select><a
+							id="detail_button_simple_descriptor"><img
+								src="./css/images/info.png" class="infoButton"
+								title="Simple Descriptor"></a></td>
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_profile">Profile:</label></td>
+						<td valign="top"><input type="text" name="detail_profile"
+							id="detail_profile" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device">Device Name:</label></td>
+						<td valign="top"><input type="text" name="detail_device"
+							id="detail_device" class="text ui-widget-content ui-corner-all"
+							style="width: 250px" /></td>
+
+					</tr>
+
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_device_version">Device Version:</label></td>
+						<td valign="top"><input type="text"
+							name="detail_device_version" id="detail_device_version"
+							class="text ui-widget-content ui-corner-all" /></td>
+
+					</tr>
+
+
+
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_input_clusters">Input Clusters:</label></td>
+						<td valign="top"><select name="detail_input_clusters"
+							id="detail_input_clusters" size="5	" style="width: 100%">
+						</select></td>
+
+					</tr>
+					<tr>
+						<td valign="top" style="width: 150px"><label
+							for="detail_output_clusters">Output Clusters:</label></td>
+						<td valign="top"><select name="detail_output_clusters"
+							id="detail_output_clusters" size="5" style="width: 100%"></select>
+						</td>
+
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+	</div>
+
+
+
+	<div id="dialog-form-open-network" title="Network opened">
+		<form>
+			<fieldset>
+				<table style="width: 100%">
+					<tr>
+						<td valign="top" align="center" style="width: 150px"><span
+							id="permit-join-counter"></span><span> seconds remaining
+								to add new devices</span></td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+	</div>
+
+
+</div>

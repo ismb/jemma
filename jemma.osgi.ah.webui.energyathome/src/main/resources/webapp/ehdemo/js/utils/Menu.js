@@ -58,9 +58,9 @@ Menu.Init = function(mainDiv, contentDiv) {
 	Menu.MainHtml = "";
 	for (i = 0; i < num; i++) {
 		Menu.MainHtml = Menu.MainHtml + 
-						"<img id='MainElSfondo' src='"+ Menu.sfondoElImg + "' style='position:absolute;top:"+ topOffset + "px;left:" + leftOffset + "px' + width='" + dim+ "px' + height='" + dim + "px'>"+ 
-						"<div class='MainMenuEl' id='MainEl" + i+ "' tabIndex='0' onClick='Menu.OnClickMainMenu(" + i+ ")' width='" + dim + "px' height='" + hDiv+ "px' style='position:absolute;top:"+ (topOffset + extraTopOffset) + "px;left:" + leftOffset+ "px' >" + 
-						"  <img id='MainImg" + i+ "' class='MainMenuImg' width='" + dimImage + "px' height='"+ dimImage + "px' src='" + Menu.MainMenu[i].Image+ "' style='position:absolute;top:" + imgTopOffset + "px;left:"+ imgLeftOffset + "px'>" +
+						"<img id='MainElSfondo' src='"+ Menu.sfondoElImg + "' style='position:absolute;top:"+ topOffset + "px;left:" + leftOffset + "px;z-index:100;' + width='" + dim+ "px' + height='" + dim + "px'>"+ 
+						"<div class='MainMenuEl' id='MainEl" + i+ "' tabIndex='0' onClick='Menu.OnClickMainMenu(" + i+ ")' width='" + dim + "px' height='" + hDiv+ "px' style='position:absolute;top:"+ (topOffset + extraTopOffset) + "px;left:" + leftOffset+ "px;z-index:100;' >" + 
+						"  <img id='MainImg" + i+ "' class='MainMenuImg' width='" + dimImage + "px' height='"+ dimImage + "px' src='" + Menu.MainMenu[i].Image+ "' style='position:absolute;top:" + imgTopOffset + "px;left:"+ imgLeftOffset + "px;z-index:100;'>" +
 						"  <p id='NomeMain" + i+ "' class='MainMenuTitle'>" + Menu.MainMenu[i].Nome+ "</p>"+
 						"</div>";
 

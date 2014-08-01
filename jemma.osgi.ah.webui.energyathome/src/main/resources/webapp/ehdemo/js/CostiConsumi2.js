@@ -331,7 +331,7 @@ CostiConsumi.VisIndicatoreCosti = function() {
 		}
 	}
 	$('#CostoIndicatoreImg').gauge("value", perc);
-	// calcolo come sono rispetto alla media (per differenze sotto 0.10Û  considero uguale)
+	// calcolo come sono rispetto alla media (per differenze sotto 0.10ï¿½  considero uguale)
 	if ((odierno == null) || (medio == null)){
 		diffInd = 3;
 	} else {

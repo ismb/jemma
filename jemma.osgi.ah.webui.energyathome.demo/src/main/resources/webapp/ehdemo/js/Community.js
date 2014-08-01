@@ -19,8 +19,8 @@ Community.GestForum = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divCommunity = $("#Community");
 	
-    /* Controllo che il div di Report non sia giˆ stato riempito. 
-     * Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+    /* Controllo che il div di Report non sia giï¿½ stato riempito. 
+     * Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	
 	if (divCommunity.length == 0){
 	

@@ -23,7 +23,9 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -64,7 +66,7 @@ import javax.xml.bind.annotation.XmlType;
     "capabilityInformation",
     "securityEnable"
 })
-public class JoinConfiguration {
+public class JoinConfiguration implements Serializable {
 
     @XmlElement(name = "ExtendedPanId", required = true)
     protected BigInteger extendedPanId;

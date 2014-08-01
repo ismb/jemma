@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -64,7 +66,7 @@ import javax.xml.bind.annotation.XmlType;
     "backupDiscoveryCache",
     "networkManager"
 })
-public class ServerMask {
+public class ServerMask implements Serializable{
 
     @XmlElement(name = "PrimaryTrustCenter")
     protected boolean primaryTrustCenter;

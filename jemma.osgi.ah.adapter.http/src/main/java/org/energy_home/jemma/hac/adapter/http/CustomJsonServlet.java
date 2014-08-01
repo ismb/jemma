@@ -36,7 +36,8 @@ public class CustomJsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 7495225913754933111L;
 	private HttpServletBinder httpAdapter = null;
 	// int offset;
-	@Deprecated //FIXME we should leave the log configuration to the log configuration file!
+	//FIXME we should leave the log configuration to the log configuration file!
+	@Deprecated 
 	private boolean logEnabled = false;
 
 	private static final Logger LOG = LoggerFactory.getLogger( CustomJsonServlet.class );

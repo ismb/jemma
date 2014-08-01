@@ -13,6 +13,32 @@
     margin-right: auto;
 }
 
+.infoButton {
+        width: 24px;
+        height: 24px;
+        cursor:pointer;
+        vertical-align:middle;
+    }
+    
+    
+ .gridButton {
+        width: 24px;
+        height: 24px;
+        cursor:pointer;
+        vertical-align:middle;
+    }​
+ 
+ 
+  
+  .newDevice{
+        width: 15px;
+        height: 15px;
+        cursor:pointer;
+        vertical-align:middle;
+    }  
+    
+
+
 #rdRadioChannel{
 	width: 90%;
 	margin:50 auto;
@@ -41,7 +67,7 @@
 
 .tblVersion{
 	margin:0 auto;
-	border=1;
+	border:1;
 }
 
 .italicsFont{

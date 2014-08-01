@@ -24,14 +24,16 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.useradmin.Authorization;
+import org.osgi.service.useradmin.Group;
 import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
@@ -45,44 +47,64 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	private boolean useBasic = false;
 	private UserAdmin userAdmin = null;
 	private boolean enableSecurity = true;
+	private boolean userCreated = false;
 	private ComponentContext ctxt;
+	private HttpService httpService;
 	private String realm = "javaGalGui Login";
-	private String applicationWebAlias = "/javaGalWebGui";
+	private String applicationWebAlias = "";
+	private static final Logger LOG = LoggerFactory.getLogger(GalGuiHttpApplication.class);
 
-	private static final Log log = LogFactory.getLog(GalGuiHttpApplication.class);
 	HttpBinder HttpAdapter = null;
 	private BundleContext bc;
 
-	protected void activate(ComponentContext ctxt) {
+	protected synchronized void activate(ComponentContext ctxt) {
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
-		
+		applicationWebAlias = "/" + this.ctxt.getProperties().get("rootContext").toString();
+		HttpAdapter = new HttpBinder();
+		setRootUrl(applicationWebAlias);
+		registerResource("/", "webapp");
+		setHttpContext(this);
+		super.bindHttpService(httpService);
+
+		LOG.debug("Bundle Active now: rootContext is: " + applicationWebAlias);
 	}
 
-	public void deactivate() {
-		log.debug("deactivated");
+	public synchronized void deactivate() {
+		this.ctxt = null;
+		this.bc = null;
+		userCreated = false;
+		LOG.debug("deactivated");
 	}
 
 	protected synchronized void setUserAdmin(UserAdmin s) {
 		this.userAdmin = s;
-		installUsers();
-	}
 
-	protected void installUsers() {
-		String username = bc.getProperty("org.energy_home.jemma.javagal.username");
-		String password = bc.getProperty("org.energy_home.jemma.javagal.password");
-		if (userAdmin != null) {
-			User adminUser = (User) createRole(userAdmin, username, Role.USER);
-			setUserCredentials(adminUser, password);
-		} else {
-			log.error("UserAdmin Null");
-
-		}
 	}
 
 	protected synchronized void unsetUserAdmin(UserAdmin s) {
 		if (this.userAdmin == s)
 			this.userAdmin = null;
+	}
+
+	protected void installUsers() {
+
+		String username = bc.getProperty("org.energy_home.jemma.username");
+		String password = bc.getProperty("org.energy_home.jemma.password");
+
+		User adminUser = (User) createRole(userAdmin, "Administrators", Role.USER);
+
+		setUserCredentials(adminUser, password);
+
+		if (userAdmin.getRole("Administrators") == null) {
+			Group administrator = (Group) createRole(userAdmin, "Administrators", Role.GROUP);
+			administrator.addMember(adminUser);
+
+		} else
+			((Group) userAdmin.getRole("Administrators")).addMember(adminUser);
+
+		userCreated = true;
+
 	}
 
 	protected Role createRole(UserAdmin ua, String name, int roleType) {
@@ -96,17 +118,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 
 	}
 
-	protected synchronized void setHttpService(HttpService s) {
-		HttpAdapter = new HttpBinder();
-		setRootUrl(applicationWebAlias);
-		registerResource("/", "webapp");
-		setHttpContext(this);
-		super.bindHttpService(s);
-		log.info("JavaGalAdminGui started");
+	protected void setHttpService(HttpService s) {
+		httpService = s;
+
 	}
 
-	protected synchronized void unsetHttpService(HttpService s) {
+	protected void unsetHttpService(HttpService s) {
 		this.unbindHttpService(s);
+		httpService = null;
 	}
 
 	public String getMimeType(String page) {
@@ -115,15 +134,27 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		} else if (page.endsWith(".css")) {
 			return "text/css";
 		} else if (page.endsWith(".js")) {
-			return "text/javascript";
+			return "application/javascript";
 		} else if (page.endsWith(".html")) {
 			return "text/html";
 		}
-		return null;
+		else if (page.endsWith(".ico")) {
+			return "image/x-icon";
+		}
+		else if (page.endsWith(".png")) {
+			return "image/png";
+		}
+		else 
+			return null;
 	}
 
 	public URL getResource(String name) {
 		URL u = null;
+		if (name.endsWith("/")) {
+			// the resource name ends with slash, defaults to index.html
+			name += "home.html";
+		}
+		
 		if (name.equals("webapp/"))
 			u = this.bc.getBundle().getResource(name + "home.html");
 		else
@@ -131,20 +162,14 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		return u;
 	}
 
-	private boolean getProperty(Map props, String name, boolean value) {
-		if (props == null) {
-			return value;
-		}
-		Object prop = props.get(name);
-		if (prop == null) {
-			return value;
-		}
-		return ((Boolean) prop).booleanValue();
-	}
-
 	@Override
 	public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// we need http scheme!
+		if (request.getRequestURI().contains("favicon.ico"))
+			return true;
+		else
+			LOG.debug("Http Request:" + request.getRequestURI());
+		
+
 		if (enableHttps && !request.getScheme().equals("https")) {
 			try {
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -190,19 +215,22 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 				if (queryString.toLowerCase().startsWith(applicationWebAlias.toLowerCase())) {
 					// this is a restricted area so performs login
 
-					String a = request.getMethod();
-					String submit = request.getParameter("submit");
-					if (submit != null) {
-						String username = request.getParameter("username");
-						String password = request.getParameter("password");
+					
+					if (request.getMethod() == "POST") {
+						String username64 = request.getParameter("username");
+						String password64 = request.getParameter("password");
+						
+						String username = new String(Base64.decode(username64.getBytes()));
+						String password = new String(Base64.decode(password64.getBytes()));
+								
 						if (!allowUser(username, password)) {
 							return redirectToLoginPage(request, response);
 						} else {
-							session.putValue("logon.isDone", username);
+							session.putValue("javaGallogon.isDone", username);
 							try {
-								String target = (String) session.getValue("login.target");
+								String target = (String) session.getValue("javaGalLogin.target");
 								if (target != null) {
-									
+
 									response.sendRedirect(target);
 								} else {
 									response.sendRedirect(applicationWebAlias + "/home.html");
@@ -215,8 +243,8 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 						if (queryString.toLowerCase().equals(applicationWebAlias.toLowerCase() + "/login.html")) {
 							return true;
 						} else {
-							session.putValue("login.target", applicationWebAlias + "/home.html");
-							Object done = session.getValue("logon.isDone");
+							session.putValue("javaGalLogin.target", applicationWebAlias + "/home.html");
+							Object done = session.getValue("javaGallogon.isDone");
 							if (done == null) {
 								if (request.getMethod().equals("GET")) {
 									return redirectToLoginPage(request, response);
@@ -232,9 +260,7 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 			}
 		}
 
-		if (request.getRequestURI().endsWith(".png")) {
-			response.setHeader("Cache-Control", "public, max-age=10000");
-		}
+		
 
 		return true;
 	}
@@ -252,28 +278,41 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 	}
 
 	private void setUserCredentials(User user, String password) {
-		Object currentProperties = user.getProperties().get("org.energy_home.jemma.javagal.username");
-		Object currentCredential = user.getCredentials().get("org.energy_home.jemma.javagal.username");
+		Object currentCredential = user.getProperties().get("org.energy_home.jemma.username");
+		if (currentCredential == null) {
+			user.getProperties().put("org.energy_home.jemma.username", user.getName().toLowerCase());
+			user.getCredentials().put("org.energy_home.jemma.password", password);
 
-		if (currentProperties == null)
-			user.getProperties().put("org.energy_home.jemma.javagal.username", user.getName().toLowerCase());
-
-		if (currentCredential == null)
-			user.getCredentials().put("org.energy_home.jemma.javagal.password", password);
+		}
 
 	}
 
 	private boolean allowUser(String username, String password) {
+
 		if (userAdmin != null) {
-			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
+			if (!userCreated)
+				installUsers();
+			User user = userAdmin.getUser("org.energy_home.jemma.username", username);
 			if (user == null)
 				return false;
-			if (!user.hasCredential("org.energy_home.jemma.javagal.password", password)) {
+			if (!user.hasCredential("org.energy_home.jemma.password", password)) {
 				return false;
-			} else
-				return true;
-		}
-		return false;
+			} else {
+				Group group = (Group) userAdmin.getRole("Administrators");
+				if (group == null) {
+					return false;
+				} else {
+					for (Role x : group.getMembers())
+					{
+						if (x.getName().equalsIgnoreCase(username))
+							return true;
+					}
+					return false;
+				}
+			}
+		} else
+			return false;
+
 	}
 
 	private boolean failAuthorization(HttpServletRequest request, HttpServletResponse response) {
@@ -296,11 +335,11 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		}
 
 		if (userAdmin != null) {
-			User user = userAdmin.getUser("org.energy_home.jemma.javagal.username", username);
+			User user = userAdmin.getUser("org.energy_home.jemma.username", username);
 			if (user == null) {
 				throw new LoginException();
 			}
-			if (!user.hasCredential("org.energy_home.jemma.javagal.password", password)) {
+			if (!user.hasCredential("org.energy_home.jemma.password", password)) {
 				throw new LoginException();
 			}
 

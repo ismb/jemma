@@ -84,9 +84,7 @@ public class Activator implements BundleActivator {
 					container.unregister();
 					try {
 						((GalExtenderProxy)container.gatewayInterface).deleteProxy();
-						//gatewayFactory.destroyGal();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 

@@ -77,9 +77,9 @@ var Msg = {
 		"indicatoreSopra" : "ABOVE THE AVERAGE",
 		"indicatoreMedia" : "ON THE AVERAGE",
 		"indicatoreSotto" : "BELOW THE AVERAGE",
-		"costoVerde" : "<b>Very good!</b><br>You’re under your average",
-		"costoGiallo" : "<b>Good</b><br>You’re on your average",
-		"costoRosso" : "<b>Attention!</b><br>You’re above your average",
+		"costoVerde" : "<b>Very good!</b><br>Youï¿½re under your average",
+		"costoGiallo" : "<b>Good</b><br>Youï¿½re on your average",
+		"costoRosso" : "<b>Attention!</b><br>Youï¿½re above your average",
 		"costoVuoto" : "<b>N.A.</b>",
 		"spesaMensile" : "YOUR MONTHLY EXPENSES",
 		"tariffa" : "Your tariff",
@@ -289,9 +289,11 @@ var Msg = {
 		33 : "Swimming pool pump",
 		34 : "MAC Lamp",
 		35 : "Philips Lamp",
-		36 : "Thermostat",
+		36 : "Centralite Thermostat",
 		37 : "Indesit Whashing Machine",
 		38 : "Indesit Oven",
-		39 : "Indesit Fridge"
+		39 : "Indesit Fridge",
+		40 : "Door Lock",
+		41 : "Reloc Temperature Sensor"
 	}
 }

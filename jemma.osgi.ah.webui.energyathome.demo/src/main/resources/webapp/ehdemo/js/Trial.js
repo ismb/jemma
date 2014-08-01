@@ -39,8 +39,8 @@ Trial.GestTariffa = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divTariffa = $("#Tariffa");
 	
-    /* Controllo che il div di Report non sia giˆ stato riempito. 
-     * Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+    /* Controllo che il div di Report non sia giï¿½ stato riempito. 
+     * Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	
 	if (divTariffa.length == 0){
 	
@@ -64,8 +64,8 @@ Trial.GestInformazioni = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divInfo = $("#Info");
 	
-    /* Controllo che il div di Report non sia giˆ stato riempito. 
-     * Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+    /* Controllo che il div di Report non sia giï¿½ stato riempito. 
+     * Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	
 	if (divInfo.length == 0){
 	
@@ -88,8 +88,8 @@ Trial.GestContatti = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divContatti = $("#Contat");
 	
-    /* Controllo che il div di Report non sia giˆ stato riempito. 
-     * Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+    /* Controllo che il div di Report non sia giï¿½ stato riempito. 
+     * Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	
 	if (divContatti.length == 0){
 	
@@ -114,8 +114,8 @@ Trial.GestQuestionari = function() {
 	/* Creo il contenitore dei dati di report per la Gui e lo aggiungo alla pagina */
 	var divQuestionari = $("#Questionari");
 	
-    /* Controllo che il div di Report non sia giˆ stato riempito. 
-     * Se non esiste lo inizializzo, se giˆ esiste lo visualizzo solamente */
+    /* Controllo che il div di Report non sia giï¿½ stato riempito. 
+     * Se non esiste lo inizializzo, se giï¿½ esiste lo visualizzo solamente */
 	
 	if (divQuestionari.length == 0){
 	

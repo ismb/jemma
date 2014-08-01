@@ -18,7 +18,10 @@ package org.energy_home.jemma.javagal.layers.business.implementations;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -44,7 +47,7 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 public class ApsMessageManager {
 	ExecutorService executor = null;
 	//FIXME mass-rename to LOG when available
-	private static final Logger logger = LoggerFactory.getLogger( ApsMessageManager.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ApsMessageManager.class );
 
 	/**
 	 * The local {@link GalController} reference.
@@ -60,7 +63,7 @@ public class ApsMessageManager {
 	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
 	
-		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+		executor = Executors.newFixedThreadPool(gal.getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 			
 			@Override
 			public Thread newThread(Runnable r) {
@@ -68,6 +71,14 @@ public class ApsMessageManager {
 				return new Thread(r, "THPool-APSMessageIndication");
 			}
 		});
+		
+		if (executor instanceof ThreadPoolExecutor)
+		{
+			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+
+			
+		}
 
 		
 		
@@ -89,7 +100,7 @@ public class ApsMessageManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				if (gal.getPropertiesManager().getDebugEnabled()) {
-					logger.info("Aps Message Indication in process...");
+					LOG.info("Aps Message Indication in process...");
 				}
 
 				for (CallbackEntry ce : gal.getCallbacks()) {
@@ -190,7 +201,7 @@ public class ApsMessageManager {
 											}
 										}
 									} else if (msam == 0x03) {
-										logger.info("AIA");
+										LOG.info("AIA");
 
 										// ASK No ieee address defined in
 										// the AddressSpecification
@@ -264,13 +275,21 @@ public class ApsMessageManager {
 							apml.notifyAPSMessage(message);
 
 						MessageListener napml = ce.getGenericDestination();
-						if (napml != null)
-							napml.notifyAPSMessage(message);
-
+						if (napml != null){
+							APSMessageEvent cmessage = null;
+							synchronized (message) {
+								cmessage = SerializationUtils.clone(message);
+							}
+							napml.notifyAPSMessage(cmessage);
+						}
 						// Add it to the list of already notified
 						// destinations.
 
 					}
+				}
+				
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					LOG.info("Aps Message Indication done!");
 				}
 			}
 		});

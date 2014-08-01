@@ -83,8 +83,9 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 	}
  
 	private UserAdmin userAdmin = null;
-	private String applicationWebAlias = "/energyathome";
-
+	private String applicationWebAlias = "/demo";
+	//private String applicationWebAlias = "/energyathome";
+	
 	private String realm = "Energy@Home Login";
 	private ComponentContext ctxt;
 

@@ -23,6 +23,8 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
@@ -49,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "DecodeLevel")
 @XmlEnum
-public enum DecodeLevel {
+public enum DecodeLevel implements Serializable{
 
     @XmlEnumValue("DecodeMAC")
     DECODE_MAC("DecodeMAC"),

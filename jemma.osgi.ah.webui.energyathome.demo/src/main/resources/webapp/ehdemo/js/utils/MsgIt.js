@@ -220,7 +220,8 @@ var Msg = {
 			"Errore: dati mancanti",
 			"Attenzione! Il contatore ENEL non e' configurato nel sistema Energy@Home",
 			"Identificativo Utente non trovato.",
-			"Attenzione! Il contatore di produzione non e' configurato nel sistema Energy@Home"],
+			"Impianto PV non configurato"],
+			//"Attenzione! Il contatore di produzione non e' configurato nel sistema Energy@Home"],
 	locazioni : {
 		"kitchen" : "Cucina",
 		"bathroom" : "Bagno",
@@ -289,9 +290,11 @@ var Msg = {
 		33 : "Pompa piscina",
 		34 : "Lampada Mac",
 		35 : "Lampada Philips",
-		36 : "Termostato",
+		36 : "Termostato Centralite",
 		37 : "Lavatrice Indesit",
 		38 : "Forno Indesit",
-		39 : "Frigorifero Indesit"
+		39 : "Frigorifero Indesit",
+		40 : "Serratura porta",
+		41 : "Sensore di Temperatura Reloc"
 	}
 }

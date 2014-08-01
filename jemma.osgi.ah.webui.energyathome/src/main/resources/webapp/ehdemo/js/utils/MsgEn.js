@@ -73,9 +73,9 @@ var Msg = {
 		"indicatoreSopra" : "ABOVE THE AVERAGE",
 		"indicatoreMedia" : "ON THE AVERAGE",
 		"indicatoreSotto" : "BELOW THE AVERAGE",
-		"costoVerde" : "<b>Very good!</b><br>You’re under your average",
-		"costoGiallo" : "<b>Good</b><br>You’re on your average",
-		"costoRosso" : "<b>Attention!</b><br>You’re above your average",
+		"costoVerde" : "<b>Very good!</b><br>Youï¿½re under your average",
+		"costoGiallo" : "<b>Good</b><br>Youï¿½re on your average",
+		"costoRosso" : "<b>Attention!</b><br>Youï¿½re above your average",
 		"costoVuoto" : "<b>Not available</b>",
 		"spesaMensile" : "YOUR MONTHLY EXPENSES",
 		"tariffa" : "Your tariff",
@@ -278,6 +278,9 @@ var Msg = {
 		30 : "Water Purifier",
 		31 : "Hob",
 		32 : "Electric Heater",
-		33 : "Swimming pool pump"
+		33 : "Swimming pool pump",
+		36 : "Centralite Thermostat",
+		40 : "Door Lock",
+		41 : "Reloc Temperature Sensor"
 	}
 }

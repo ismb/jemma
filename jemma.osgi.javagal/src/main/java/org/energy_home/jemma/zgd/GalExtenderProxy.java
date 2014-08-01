@@ -62,7 +62,7 @@ import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
  * 
  */
 public class GalExtenderProxy implements IGalExtender {
-	private static final Logger LOG = LoggerFactory.getLogger( GalExtenderProxyFactory.class );
+	private static final Logger LOG = LoggerFactory.getLogger(GalExtenderProxyFactory.class);
 	/**
 	 * The identification number for this proxy instance.
 	 */
@@ -105,20 +105,32 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public String getInfoBaseAttribute(short attrId) throws Exception, Exception, GatewayException {
+		String res = null;
 		switch (attrId) {
-		case 0xA1:
-		case 0x80:
-		case 0x9A:
-			return gal.NMLE_GetSync(attrId);
-
+		case 0xA0:// nwkSecurityLevel
+		case 0x80:// Short PanId
+		case 0x9A:// Extended Pan ID
+		case 0x96:// NetWorkAddress
+		case 0xDA:// DeviceType
+		case 0xDB:// nwkSoftwareVersion
+		case 0xE6:// nwkSoftwareVersion
+			res = gal.NMLE_GetSync(attrId,(short)0x00);
+			break;
+		case 0xA1:// nwkTransportKey
+			res = gal.NMLE_GetSync(attrId,(short)0x01);
+			break;
+		/*case 0x85: //MacKey
+			res =  gal.MacGetPIBAttributeSync(attrId);
+		*/
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
-			return gal.APSME_GETSync(attrId);
-
+			res = gal.APSME_GETSync(attrId);
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}
+		return res;
 	}
 
 	@Override
@@ -126,7 +138,7 @@ public class GalExtenderProxy implements IGalExtender {
 	public long createCallback(Callback callback, APSMessageListener listener) throws IOException, Exception, GatewayException {
 		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 	}
-	
+
 	@Deprecated
 	@Override
 	public long createAPSCallback(short endpoint, APSMessageListener listener) throws IOException, Exception, GatewayException {
@@ -434,12 +446,12 @@ public class GalExtenderProxy implements IGalExtender {
 		case 0xA1:
 		case 0x80:
 			gal.NMLE_SetSync(attrId, value);
-
+			break;
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:
 			gal.APSME_SETSync(attrId, value);
-
+			break;
 		default:
 			throw new Exception("Unsupported Attribute");
 		}

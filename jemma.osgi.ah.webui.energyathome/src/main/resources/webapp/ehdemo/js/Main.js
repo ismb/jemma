@@ -128,7 +128,7 @@ Main.PowerLimitCbFotoVoltaico = function(valProd) {
 	if (Main.env == 0) console.log(20, Main.MODULE, "Power limit Produzione = " + Main.contatoreProd);
 }
 
-//Metodo che gestisce i valori relativi al contatore dei consumi (sempre presente in tutte e due le modalità)
+//Metodo che gestisce i valori relativi al contatore dei consumi (sempre presente in tutte e due le modalitÔøΩ)
 Main.PowerLimitCb = function(val) {
 	Main.contatore = 0;
 	
@@ -333,7 +333,7 @@ Main.ResetError = function() {
 //Visualizzo messaggio di errore
 Main.VisError = function(err) {
 	var oldTxt = $("#ErrorMsgDIV").text();
-	//Visualizzo il nuovo messaggio di errore solo se non è già presente
+	//Visualizzo il nuovo messaggio di errore solo se non ÔøΩ giÔøΩ presente
 	if ((Msg.visErr[err] != oldTxt) && (oldTxt.indexOf(Msg.visErr[err]) < 0)){
 		$("#ErrorMsgDIV").html(oldTxt + ' <br /> ' + Msg.visErr[err]);
 	}

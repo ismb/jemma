@@ -1,0 +1,379 @@
+<div id="tplChannelNetwork">
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							
+							  
+							  $(document).bind("contextmenu",function(e){
+					              return false;
+					       });
+							  
+							  
+							var rtnObjConfig = '';
+							var myNMMenu = new jGGNetworkManageMenu();
+							myNMMenu.newButton('btnStartGal', null, null);
+							myNMMenu.newButton('btnRestartGal1', null, null);
+							myNMMenu.newButton('btnRestartGal2', null, null);
+							myNMMenu.newButton('btnAutomaticScanChannel', null,
+									null);
+							var timeout = '00002710';
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.infoForRestartGal
+														+ "timeout="
+														+ timeout
+														+ "&index=00"
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												rtnObjConfig = dataBig.detail.startupAttributeInfo;
+
+											});
+
+							$("#rdRadioChannel").buttonset();
+							$("#btnManualScan")
+									.click(
+											function(event) {
+												var result = window
+														.confirm(
+																'Are you sure you want to change the network channel?',
+																'Change channel',
+																function(result) {
+																	if (result) {
+
+																		event
+																				.preventDefault();
+																		var ccrTimeOut = '00000014';
+																		var newChannelLbl;
+
+																		newChannelLbl = $(
+																				'#rdRadioChannel :radio:checked')
+																				.val();
+
+																		var opChannelRadio = '0xFE';
+																		$
+																				.ajax(
+																						{
+																							dataType : "json",
+																							url : DEFINEPATH.changeChannelPath
+																									+ 'timeout='
+																									+ ccrTimeOut
+																									+ '&scanChannel='
+																									+ newChannelLbl
+																									+ '&scanDuration='
+																									+ opChannelRadio
+																						})
+																				.done(
+																						function(
+																								data) {
+																							
+																							if (data.status.code == 0) {
+																								getChannelAndUpdateGui();
+																							}
+																							
+																						});
+
+																	}
+																});
+
+											});
+
+							$("#btnAutomaticScanChannel")
+									.click(
+											function(event) {
+												
+												
+												var result = window
+												.confirm(
+														'Are you sure you want to change the network channel?',
+														'Change channel',
+														function(result) {
+															if (result) {
+
+																var ccrTimeOut = '00000014';
+																var newChannelLbl;
+
+																newChannelLbl = $(
+																		'#rdRadioChannel :radio:checked')
+																		.val();
+
+																var opChannelRadio = '0xFE';
+																$
+																		.ajax(
+																				{
+																					dataType : "json",
+																					url : DEFINEPATH.changeChannelPath
+																							+ 'timeout='
+																							+ ccrTimeOut
+																							+ '&scanChannel=0'
+																							+ '&scanDuration='
+																							+ opChannelRadio
+																				})
+																		.done(
+																				function(data) {
+																					if (data.status.code == 0) {
+																						getChannelAndUpdateGui();
+																					}
+																				});
+
+															}
+														});
+												
+												
+												
+												
+
+											
+											
+											
+											
+											});
+
+							var getChannelAndUpdateGui = function() {
+								$
+										.ajax({
+											dataType : "json",
+											url : DEFINEPATH.channelPath
+										})
+										.done(
+												function(data) {
+													if (data.status.code == 0) {
+
+														var newChannel = data.detail.value;
+
+														$.jStorage
+																.set(
+																		"ChannelRadioValue",
+																		newChannel);
+														$('#spChannelRadioHP')
+																.text(
+																		newChannel);
+														$('#spZigBeeState')
+																.text('RUNNING')
+																.css('color',
+																		'green');
+
+														var radioCh = $('#radioChannel'
+																+ newChannel);
+
+														radioCh[0].checked = true;
+														radioCh
+																.button("refresh");
+														updateCurrentChannel();
+													} else {
+														//Visualizzo il messaggio di errore
+														newChannel = $.jStorage
+																.get("ChannelRadioError");
+														$('#spChannelRadioHP')
+																.text(
+																		newChannel);
+														$('#spZigBeeState')
+																.text(
+																		'NOT RUNNING')
+																.css('color',
+																		'red');
+														updateCurrentChannel();
+
+													}
+
+												});
+							}
+
+							var myCPMenu = new jGGCenterPaneMenuChannel();
+							myCPMenu.newButton('btnManualScan', null, null);
+							
+							var chR = $.jStorage.get("ChannelRadioValue");
+							if (chR != null) {
+								var radioCh = $('#radioChannel' + chR);
+								radioCh[0].checked = true;
+								radioCh.button("refresh");
+
+							} else {
+								getChannelAndUpdateGui();
+
+							}
+
+							$("#rdRadioChannel").css("font-size", "12px");
+							$("#btnRadioChannel").css("font-size", "12px");
+
+							var fchangeStatuGal = function(
+									buttonInHeaderPressed) {
+
+								var timeout, startMode, url, type, errorMsg = '';
+
+								var objToSend = {
+									startupAttributeInfo : ''
+								};
+								objToSend.startupAttributeInfo = rtnObjConfig;
+								var data = JSON.stringify(objToSend);
+
+								switch (buttonInHeaderPressed) {
+								case 'btnStartGal':
+									type = 'POST';
+									timeout = '00002710';
+									url = DEFINEPATH.startGalPath + "timeout="
+											+ timeout + "&start=true";
+									errorMsg = 'Error in start mode: ';
+									break;
+								case 'btnRestartGal1':
+									type = 'GET';
+									startMode = '00';
+									timeout = '00002710';
+									url = DEFINEPATH.reStartGalPath
+											+ "timeout=" + timeout
+											+ "&startMode=" + startMode;
+									errorMsg = 'Error in restart in Association mode: ';
+									break;
+								case 'btnRestartGal2':
+									type = 'GET';
+									startMode = '01';
+									timeout = '00002710';
+									url = DEFINEPATH.reStartGalPath
+											+ "timeout=" + timeout
+											+ "&startMode=" + startMode;
+									errorMsg = 'Error in restart in NVM mode: ';
+									break;
+
+								}
+
+								$
+										.ajax(
+												{
+													type : type,
+													data : data,
+													url : url,
+													contentType : "application/json; charset=utf-8"
+												})
+										.done(
+												function(data) {
+													var dataBig = json_parse(data);
+													if (dataBig.status.code == 0) {
+														var chR = $.jStorage
+																.get("ChannelRadioValue");
+														if (chR != null) {
+															var radioCh = $('#radioChannel'
+																	+ chR);
+															radioCh[0].checked = false;
+															radioCh
+																	.button("refresh");
+														}
+														$.jStorage
+																.set(
+																		"ChannelRadioValue",
+																		null);
+
+														getChannelAndUpdateGui();
+													}
+												});
+
+							}
+
+							$('#btnRestartGal1')
+									.click(
+											function(event) {
+												var result = window
+														.confirm(
+																'Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?',
+																'Total reset',
+																function(result) {
+																	if (result) {
+																		fchangeStatuGal('btnRestartGal1');
+																	}
+																});
+											});
+							$('#btnStartGal').click(function(event) {
+								fchangeStatuGal('btnStartGal');
+							});
+							$('#btnRestartGal2').click(function(event) {
+								fchangeStatuGal('btnRestartGal2');
+							});
+
+							var updateCurrentChannel = function() {
+								var chR = $.jStorage.get("ChannelRadioValue");
+								if (chR != null) {
+									$('#radioCurrentChannel').text(chR);
+								} else {
+									$('#radioCurrentChannel').text("NULL");
+								}
+							}
+							updateCurrentChannel();
+						});
+	</script>
+	<div id="container">
+		<form id="chooseRadioChannel">
+			<table style="width: 100%">
+				<tr>
+					<td align="center">The network is currently using channel:<b><label
+							id="radioCurrentChannel"></label></b>
+
+					</td>
+				</tr>
+				<tr>
+					<td align="center">Click this button to change the channel.
+						The system automatically selects the best available channel.<br />
+						<input type="button" id="btnAutomaticScanChannel"
+						title="Automatic" />
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<div class="italicsFont">If you want to use a specific radio
+							channel, you should select the channel number below and then
+							press the button CHANGE</div>
+					</td>
+				</tr>
+				<tr>
+					<td align="center"><br />
+						<div id="rdRadioChannel">
+							<input type="radio" id="radioChannel11" name="radioRadioChannel"
+								value="11"><label for="radioChannel11">11</label> <input
+								type="radio" id="radioChannel12" name="radioRadioChannel"
+								value="12"><label for="radioChannel12">12</label> <input
+								type="radio" id="radioChannel13" name="radioRadioChannel"
+								value="13"><label for="radioChannel13">13</label> <input
+								type="radio" id="radioChannel14" name="radioRadioChannel"
+								value="14"><label for="radioChannel14">14</label> <input
+								type="radio" id="radioChannel15" name="radioRadioChannel"
+								value="15"><label for="radioChannel15">15</label> <input
+								type="radio" id="radioChannel16" name="radioRadioChannel"
+								value="16"><label for="radioChannel16">16</label> <input
+								type="radio" id="radioChannel17" name="radioRadioChannel"
+								value="17"><label for="radioChannel17">17</label> <input
+								type="radio" id="radioChannel18" name="radioRadioChannel"
+								value="18"><label for="radioChannel18">18</label> <input
+								type="radio" id="radioChannel19" name="radioRadioChannel"
+								value="19"><label for="radioChannel19">19</label> <input
+								type="radio" id="radioChannel20" name="radioRadioChannel"
+								value="20"><label for="radioChannel20">20</label> <input
+								type="radio" id="radioChannel21" name="radioRadioChannel"
+								value="21"><label for="radioChannel21">21</label> <input
+								type="radio" id="radioChannel22" name="radioRadioChannel"
+								value="22"><label for="radioChannel22">22</label> <input
+								type="radio" id="radioChannel23" name="radioRadioChannel"
+								value="23"><label for="radioChannel23">23</label> <input
+								type="radio" id="radioChannel24" name="radioRadioChannel"
+								value="24"><label for="radioChannel24">24</label> <input
+								type="radio" id="radioChannel25" name="radioRadioChannel"
+								value="25"><label for="radioChannel25">25</label> <input
+								type="radio" id="radioChannel26" name="radioRadioChannel"
+								value="26"><label for="radioChannel26">26</label>&nbsp;&nbsp;&nbsp;&nbsp;<input
+								type="button" id="btnManualScan"></input>
+						</div> <br /></td>
+				</tr>
+
+				<tr>
+					<td><br />
+						<div>
+							<b>This functions should be used only by expert users</b>
+						</div> <input type="button" id="btnStartGal" class="tnHeaderHome2"
+						title="Start" /> <input type="button" id="btnRestartGal1"
+						class="tnHeaderHome2" title="Total reset" /> <input type="button"
+						id="btnRestartGal2" class="tnHeaderHome2" title="Stop" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

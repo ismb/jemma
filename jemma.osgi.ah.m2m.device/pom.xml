@@ -43,6 +43,7 @@
 					<instructions>
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Import-Package> org.energy_home.jemma.utils.datetime;version="1.0.1",
 							 org.energy_home.jemma.utils.encrypt;version="[1.0.0,1.1.0)",

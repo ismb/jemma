@@ -78,6 +78,10 @@
     <description>Basic</description>
   </clusters>
   <clusters>
+    <clustersidentifier>0A06</clustersidentifier>
+    <description>Smart-info Identification</description>
+  </clusters>
+  <clusters>
     <clustersidentifier>0003</clustersidentifier>
     <description>Identify</description>
   </clusters>
@@ -2561,4 +2565,7 @@
     <DeviceID>0106</DeviceID>
     <ClusterID>0003</ClusterID>
   </ClientMandatoryList>
+  
+  
+  
 </root>

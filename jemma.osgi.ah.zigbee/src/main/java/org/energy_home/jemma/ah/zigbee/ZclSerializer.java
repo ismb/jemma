@@ -203,7 +203,6 @@ public class ZclSerializer {
 	}
 
 	public int getSeq() {
-		// System.out.println("Seq is " + seq);
 		return seq;
 	}
 

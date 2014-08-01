@@ -402,7 +402,7 @@ var ReportSim ={
 var DataSim = new Date (2012,3,25,12,56);
 
 var NotizieSimul = [
-{	description : "Sale al 20,3% la percentuale di elettricità convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al …",
+{	description : "Sale al 20,3% la percentuale di elettricitÔøΩ convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al ÔøΩ",
 	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
 	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
 },
@@ -412,9 +412,9 @@ var NotizieSimul = [
 },
 {	description : "In piazza le associazioni delle rinnovabili. hanno chiesto al governo, come un appello pubblicato sui giornali, di rivedere il ...",
 	link : "http://gogreen.virgilio.it/news/green-economy/rinnovabili-mobilitazione-durera_6273.html?pmk=rss",
-	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durerà"
+	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durerÔøΩ"
 },
-{	description : "L'appuntamento è il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale è quello di ottenere più sicurezza per i ...",
+{	description : "L'appuntamento ÔøΩ il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale ÔøΩ quello di ottenere piÔøΩ sicurezza per i ...",
 	link : "http://gogreen.virgilio.it/eventi/salvaciclisti_6272.html?pmk=rss",
 	title : "Salvaciclisti"
 },
@@ -422,9 +422,9 @@ var NotizieSimul = [
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/pesticidi-api-governo-decide-sospensioni_6271.html?pmk=rss",
 	title : "Pesticidi e api: il governo decide sulla sospensione degli agrofarmaci"
 },
-{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile è caro, genera piccoli sismi ...",
+{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile ÔøΩ caro, genera piccoli sismi ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/terremoti-locali-estrazione-scisto_6270.html?pmk=rss",
-	title : "Terremoti: a generare quelli locali è pure l'estrazione dello scisto"
+	title : "Terremoti: a generare quelli locali ÔøΩ pure l'estrazione dello scisto"
 },
 {	description : "Confermato il taglio degli incentivi del 32-36% e il registro obbligatorio per gli impianti di potenza superiore ai 12 ...",
 	link : "http://gogreen.virgilio.it/news/ambiente-energia/quinto-conto-energia-testo-decreto.html?pmk=rss",

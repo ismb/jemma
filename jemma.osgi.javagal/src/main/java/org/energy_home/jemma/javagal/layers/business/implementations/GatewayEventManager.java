@@ -15,6 +15,13 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
 import org.energy_home.jemma.zgd.GatewayEventListener;
@@ -30,6 +37,8 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
 import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dispatches Gateway Device Events to registered listeners. This class is
@@ -47,12 +56,15 @@ import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
  * 
  */
 
-//FIXME a lot of redundancy in this class: to be considered for refactoring
+// FIXME a lot of redundancy in this class: to be considered for refactoring
 public class GatewayEventManager implements IGatewayEventManager {
 	// final int DISCOVERY_STOP = 0;
+	ExecutorService executor = null;
 	final static int DISCOVERY_ANNOUNCEMENTS = 2;
 	final static int DISCOVERY_LEAVE = 4;
 	final static int DISCOVERY_FRESHNESS = 16;
+
+	private static final Logger LOG = LoggerFactory.getLogger(GatewayEventManager.class);
 
 	/**
 	 * The local {@link GalController} reference.
@@ -67,490 +79,591 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 */
 	public GatewayEventManager(GalController _gal) {
 		gal = _gal;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyGatewayStartResult(final Status status) {
-		Thread thr = new Thread() {
+		executor = Executors.newFixedThreadPool(gal.getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
+
 			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					gel.getGatewayEventListener().gatewayStartResult(status);
-				}
+			public Thread newThread(Runnable r) {
 
+				return new Thread(r, "THPool-EventManager");
 			}
-		};
-		thr.setName("Thread notifyGatewayStartResult(final Status status)");
-		thr.start();
-	}
+		});
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyGatewayStartResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					if (gel.getProxyIdentifier() == _requestIdentifier)
-						gel.getGatewayEventListener().gatewayStartResult(status);
-				}
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
 
-			}
-		};
-		thr.setName("Thread notifyGatewayStartResult(final int _requestIdentifier, final Status status)");
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyServicesDiscovered(final int _requestIdentifier, final Status status, final NodeServices nodeServices) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					if (gel.getProxyIdentifier() == _requestIdentifier)
-						gel.getGatewayEventListener().servicesDiscovered(status, nodeServices);
-				}
-
-			}
-		};
-		thr.setName("Thread notifyServicesDiscovered(final int _requestIdentifier, final Status status, final NodeServices nodeServices)");
-
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyGatewayStopResult(final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).gatewayStopResult(status);
-				}
-
-			}
-		};
-		thr.setName("Thread notifyGatewayStopResult(final Status status)");
-
-		thr.start();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyGatewayStopResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-							((GatewayEventListenerExtended) gl.getGatewayEventListener()).gatewayStopResult(status);
-				}
-
-			}
-		};
-		thr.setName("Thread notifyGatewayStopResult(final int _requestIdentifier, final Status status)");
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifypermitJoinResult(final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					gel.getGatewayEventListener().permitJoinResult(status);
-				}
-			}
-
-		};
-		thr.setName("Thread notifypermitJoinResult(final Status status)");
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifypermitJoinResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					if (gel.getProxyIdentifier() == _requestIdentifier)
-						gel.getGatewayEventListener().permitJoinResult(status);
-				}
-			}
-		};
-		thr.setName("Thread notifypermitJoinResult(final int _requestIdentifier, final Status status)");
-
-		thr.start();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyResetResult(final Status status) {
-		/*
-		 * Thread thr = new Thread() {
-		 * 
-		 * @Override public void run() {
-		 */
-		for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-			gel.getGatewayEventListener().dongleResetResult(status);
 		}
-
-		/*
-		 * } }; thr.setName("Thread notifyResetResult(final Status status)");
-		 * thr.start();
-		 */
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyResetResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyGatewayStartResult(final Status status) {
+		executor.execute(new Runnable() {
+
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					if (gel.getProxyIdentifier() == _requestIdentifier)
-						gel.getGatewayEventListener().dongleResetResult(status);
+					Status cstatus = null;
+					synchronized (status) {
+						cstatus = SerializationUtils.clone(status);
+					}
+					gel.getGatewayEventListener().gatewayStartResult(cstatus);
 				}
-			}
 
-		};
-		thr.setName("Thread notifyResetResult(final int _requestIdentifier, final Status status)");
-		thr.start();
+			}
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptor(final Status _status, final NodeDescriptor _node) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyGatewayStartResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					if (gel.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						gel.getGatewayEventListener().gatewayStartResult(cstatus);
+					}
+				}
+
+			}
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyServicesDiscovered(final int _requestIdentifier, final Status status, final NodeServices nodeServices) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					if (gel.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						NodeServices cnodeServices = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (nodeServices) {
+							cnodeServices = SerializationUtils.clone(nodeServices);
+						}
+						gel.getGatewayEventListener().servicesDiscovered(cstatus, cnodeServices);
+					}
+				}
+
+			}
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyGatewayStopResult(final Status status) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended))
-						gl.getGatewayEventListener().nodeDescriptorRetrieved(_status, _node);
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).gatewayStopResult(cstatus);
+					}
 				}
+
 			}
-
-		};
-		thr.setName("Thread notifyNodeDescriptor(final Status _status, final NodeDescriptor _node)");
-		thr.start();
-
+		});
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptor(final int _requestIdentifier, final Status _status, final NodeDescriptor _node) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyGatewayStopResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended))
-							gl.getGatewayEventListener().nodeDescriptorRetrieved(_status, _node);
+						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+							Status cstatus = null;
+							synchronized (status) {
+								cstatus = SerializationUtils.clone(status);
+							}
+							((GatewayEventListenerExtended) gl.getGatewayEventListener()).gatewayStopResult(cstatus);
+						}
 				}
-			}
 
-		};
-		thr.setName("Thread notifyNodeDescriptor(final int _requestIdentifier, final Status _status, final NodeDescriptor _node)");
-		thr.start();
+			}
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptorExtended(final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifypermitJoinResult(final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					Status cstatus = null;
+					synchronized (status) {
+						cstatus = SerializationUtils.clone(status);
+					}
+					gel.getGatewayEventListener().permitJoinResult(cstatus);
+				}
+			}
+
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifypermitJoinResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					if (gel.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						gel.getGatewayEventListener().permitJoinResult(cstatus);
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyResetResult(final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					Status cstatus = null;
+					synchronized (status) {
+						cstatus = SerializationUtils.clone(status);
+					}
+					gel.getGatewayEventListener().dongleResetResult(cstatus);
+				}
+			}
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyResetResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
+					if (gel.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						gel.getGatewayEventListener().dongleResetResult(cstatus);
+					}
+				}
+			}
+
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyNodeDescriptor(final Status status, final NodeDescriptor node) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).nodeDescriptorRetrievedExtended(_status, _node, _addressOfInterest);
+					if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
+						Status cstatus = null;
+						NodeDescriptor cnode = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (node) {
+							cnode = SerializationUtils.clone(node);
+						}
+						gl.getGatewayEventListener().nodeDescriptorRetrieved(cstatus, cnode);
+					}
 				}
 			}
 
-		};
-		thr.setName("Thread notifyNodeDescriptorExtended(final Status _status, final NodeDescriptor _node, final Address _addressOfInterest)");
+		});
 
-		thr.start();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyNodeDescriptorExtended(final int _requestIdentifier, final Status _status, final NodeDescriptor _node, final Address _addressOfInterest) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyNodeDescriptor(final int _requestIdentifier, final Status status, final NodeDescriptor node) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-							((GatewayEventListenerExtended) gl.getGatewayEventListener()).nodeDescriptorRetrievedExtended(_status, _node, _addressOfInterest);
+						if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
+							Status cstatus = null;
+							NodeDescriptor cnode = null;
+							synchronized (status) {
+								cstatus = SerializationUtils.clone(status);
+							}
+							synchronized (node) {
+								cnode = SerializationUtils.clone(node);
+							}
+							gl.getGatewayEventListener().nodeDescriptorRetrieved(cstatus, cnode);
+						}
 				}
 			}
 
-		};
-		thr.setName("Thread notifyNodeDescriptorExtended(final int _requestIdentifier, final Status _status, final NodeDescriptor _node, final Address _addressOfInterest)");
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void nodeDiscovered(final Status _status, final WSNNode _node) throws Exception {
-		try {
-			
+	public synchronized void notifyNodeDescriptorExtended(final Status status, final NodeDescriptor node, final Address address) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
 
-			Thread thr = new Thread() {
-				@Override
-				public void run() {
-					for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-						{
-							boolean _ReportOnExistingNodes = ((gl.getDiscoveryMask() & DISCOVERY_FRESHNESS) != 0);
-							boolean _ReportAnnouncements = ((gl.getDiscoveryMask() & DISCOVERY_ANNOUNCEMENTS) != 0);
-							if (_ReportOnExistingNodes || _ReportAnnouncements)
-								gl.getGatewayEventListener().nodeDiscovered(_status, _node);
+						Status cstatus = null;
+						NodeDescriptor cnode = null;
+						Address caddress = null;
+
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (node) {
+							cnode = SerializationUtils.clone(node);
+						}
+
+						synchronized (address) {
+							caddress = SerializationUtils.clone(address);
+						}
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).nodeDescriptorRetrievedExtended(cstatus, cnode, caddress);
+					}
+				}
+			}
+
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyNodeDescriptorExtended(final int _requestIdentifier, final Status status, final NodeDescriptor node, final Address address) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					if (gl.getProxyIdentifier() == _requestIdentifier)
+						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+							Status cstatus = null;
+							NodeDescriptor cnode = null;
+							Address caddress = null;
+
+							synchronized (status) {
+								cstatus = SerializationUtils.clone(status);
+							}
+							synchronized (node) {
+								cnode = SerializationUtils.clone(node);
+							}
+
+							synchronized (address) {
+								caddress = SerializationUtils.clone(address);
+							}
+
+							((GatewayEventListenerExtended) gl.getGatewayEventListener()).nodeDescriptorRetrievedExtended(cstatus, cnode, caddress);
+						}
+				}
+			}
+
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void nodeDiscovered(final Status status, final WSNNode node) throws Exception {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					{
+
+						boolean _ReportOnExistingNodes = ((gl.getDiscoveryMask() & DISCOVERY_FRESHNESS) != 0);
+						boolean _ReportAnnouncements = ((gl.getDiscoveryMask() & DISCOVERY_ANNOUNCEMENTS) != 0);
+						if (_ReportOnExistingNodes || _ReportAnnouncements) {
+
+							Status cstatus = null;
+							WSNNode cnode = null;
+							synchronized (status) {
+								cstatus = SerializationUtils.clone(status);
+							}
+							synchronized (node) {
+								cnode = SerializationUtils.clone(node);
+							}
+							gl.getGatewayEventListener().nodeDiscovered(cstatus, cnode);
 						}
 					}
 				}
+			}
 
-			};
-			thr.setName("Thread nodeDiscovered(final Status _status, final WSNNode _node)");
+		});
 
-			thr.start();
-		} catch (Exception e) {
-
-			throw e;
-		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void nodeRemoved(final Status _status, final WSNNode _node) throws Exception {
-		try {
-			Thread thr = new Thread() {
-				@Override
-				public void run() {
-					for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-						boolean _ReportLeave = ((gl.getFreshnessMask() & DISCOVERY_LEAVE) != 0);
-						if (_ReportLeave)
-							gl.getGatewayEventListener().nodeRemoved(_status, _node);
+	public synchronized void nodeRemoved(final Status status, final WSNNode node) throws Exception {
+
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					boolean _ReportLeave = ((gl.getFreshnessMask() & DISCOVERY_LEAVE) != 0);
+					if (_ReportLeave) {
+						Status cstatus = null;
+						WSNNode cnode = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (node) {
+							cnode = SerializationUtils.clone(node);
+						}
+						gl.getGatewayEventListener().nodeRemoved(cstatus, cnode);
 					}
-
 				}
-			};
-			thr.setName("Thread nodeRemoved(final Status _status, final WSNNode _node)");
 
-			thr.start();
+			}
+		});
 
-		} catch (Exception e) {
-
-			throw e;
-		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResult(final int _requestIdentifier, final Status _status) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyleaveResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					if (gl.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+
+						gl.getGatewayEventListener().leaveResult(cstatus);
+					}
+				}
+
+			}
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyleaveResult(final Status status) {
+		executor.execute(new Runnable() {
+			public void run() {
+
+				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+					Status cstatus = null;
+					synchronized (status) {
+						cstatus = SerializationUtils.clone(status);
+					}
+					gl.getGatewayEventListener().leaveResult(cstatus);
+				}
+
+			}
+		});
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public synchronized void notifyleaveResultExtended(final int _requestIdentifier, final Status status, final Address address) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier)
-						gl.getGatewayEventListener().leaveResult(_status);
+						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+
+							Status cstatus = null;
+							Address caddress = null;
+							synchronized (status) {
+								cstatus = SerializationUtils.clone(status);
+							}
+							synchronized (address) {
+								caddress = SerializationUtils.clone(address);
+							}
+
+							((GatewayEventListenerExtended) gl.getGatewayEventListener()).leaveResultExtended(cstatus, caddress);
+						}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyleaveResult(final int _requestIdentifier, final Status _status)");
-
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResult(final Status _status) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyleaveResultExtended(final Status status, final Address address) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					gl.getGatewayEventListener().leaveResult(_status);
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+						Status cstatus = null;
+						Address caddress = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (address) {
+							caddress = SerializationUtils.clone(address);
+						}
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).leaveResultExtended(cstatus, caddress);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyleaveResult(final Status _status)");
-
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResultExtended(final int _requestIdentifier, final Status _status, final Address _address) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyserviceDescriptorRetrieved(final int _requestIdentifier, final Status status, final ServiceDescriptor service) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-							((GatewayEventListenerExtended) gl.getGatewayEventListener()).leaveResultExtended(_status, _address);
+					if (gl.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						ServiceDescriptor cservice = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (service) {
+							cservice = SerializationUtils.clone(service);
+						}
+
+						gl.getGatewayEventListener().serviceDescriptorRetrieved(cstatus, cservice);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyleaveResultExtended(final int _requestIdentifier, final Status _status, final Address _address)");
-
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyleaveResultExtended(final Status _status, final Address _address) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifynodeBindingsRetrieved(final int _requestIdentifier, final Status status, final BindingList bindings) {
+
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).leaveResultExtended(_status, _address);
+					if (gl.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						BindingList cbindings = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						synchronized (bindings) {
+							cbindings = SerializationUtils.clone(bindings);
+						}
+
+						gl.getGatewayEventListener().nodeBindingsRetrieved(cstatus, cbindings);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyleaveResultExtended(final Status _status, final Address _address)");
-
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifyserviceDescriptorRetrieved(final int _requestIdentifier, final Status status, final ServiceDescriptor service) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifybindingResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						gl.getGatewayEventListener().serviceDescriptorRetrieved(status, service);
+					if (gl.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						gl.getGatewayEventListener().bindingResult(cstatus);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyserviceDescriptorRetrieved(final int _requestIdentifier, final Status status, final ServiceDescriptor service)");
-
-		thr.start();
+		});
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void notifynodeBindingsRetrieved(final int _requestIdentifier, final Status status, final BindingList bindings) {
-
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						gl.getGatewayEventListener().nodeBindingsRetrieved(status, bindings);
-				}
-
-			}
-		};
-		thr.setName("Thread notifynodeBindingsRetrieved(final int _requestIdentifier, final Status status, final BindingList bindings)");
-
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifybindingResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
-			public void run() {
-				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						gl.getGatewayEventListener().bindingResult(status);
-				}
-
-			}
-		};
-		thr.setName("Thread notifybindingResult(final int _requestIdentifier, final Status status)");
-
-		thr.start();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void notifyUnbindingResult(final int _requestIdentifier, final Status status) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyUnbindingResult(final int _requestIdentifier, final Status status) {
+		executor.execute(new Runnable() {
 			public void run() {
 
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						gl.getGatewayEventListener().unbindingResult(status);
+					if (gl.getProxyIdentifier() == _requestIdentifier) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						gl.getGatewayEventListener().unbindingResult(cstatus);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyUnbindingResult(final int _requestIdentifier, final Status status)");
-
-		thr.start();
+		});
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyZDPCommand(final ZDPMessage message) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyZDPEvent(final ZDPMessage message) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).notifyZDPCommand(message);
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+						ZDPMessage cmessage = null;
+						synchronized (message) {
+							cmessage = SerializationUtils.clone(message);
+						}
+
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).notifyZDPCommand(cmessage);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyZDPCommand(final ZDPMessage message)");
-
-		thr.start();
+		});
 
 	}
 
@@ -558,43 +671,47 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyZCLCommand(final ZCLMessage message) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyZCLEvent(final ZCLMessage message) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).notifyZCLCommand(message);
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+						ZCLMessage cmessage = null;
+						synchronized (message) {
+							cmessage = SerializationUtils.clone(message);
+						}
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).notifyZCLCommand(cmessage);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyZCLCommand(final ZCLMessage message)");
-		thr.start();
+		});
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void notifyFrequencyAgility(final Status _status) {
-		Thread thr = new Thread() {
-			@Override
+	public synchronized void notifyFrequencyAgility(final Status status) {
+		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)
-						((GatewayEventListenerExtended) gl.getGatewayEventListener()).FrequencyAgilityResponse(_status);
+					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+						Status cstatus = null;
+						synchronized (status) {
+							cstatus = SerializationUtils.clone(status);
+						}
+						((GatewayEventListenerExtended) gl.getGatewayEventListener()).FrequencyAgilityResponse(cstatus);
+					}
 				}
 
 			}
-		};
-		thr.setName("Thread notifyZCLCommand(final ZCLMessage message)");
-		thr.start();
+		});
 
 	}
 
 	@Override
-	public void notifyInterPANMessageEvent(InterPANMessageEvent message) {
+	public synchronized void notifyInterPANMessageEvent(InterPANMessageEvent message) {
 		// TODO Auto-generated method stub
 
 	}

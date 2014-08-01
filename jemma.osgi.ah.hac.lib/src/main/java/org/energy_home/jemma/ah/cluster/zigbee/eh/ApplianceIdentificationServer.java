@@ -50,7 +50,7 @@ public interface ApplianceIdentificationServer {
 
 	public String getProductRevision(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
-	public String getSoftwareRevision(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
+	public byte[] getSoftwareRevision(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
 	public String getProductTypeName(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
