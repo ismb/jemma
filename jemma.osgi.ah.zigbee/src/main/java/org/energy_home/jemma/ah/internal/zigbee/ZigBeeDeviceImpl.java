@@ -17,6 +17,7 @@ package org.energy_home.jemma.ah.internal.zigbee;
 
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
@@ -91,11 +92,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 	boolean warnings = false;
 
-	private Hashtable pendingReplies = new Hashtable();
+	private ConcurrentHashMap pendingReplies = new ConcurrentHashMap();
 	private Hashtable listenersListClientSide = new Hashtable();
 	private Hashtable listenersListServerSide = new Hashtable();
 
-	private Lock messagesLock = new ReentrantLock();
+	// private Lock messagesLock = new ReentrantLock();
 	private Object lock = new Object();
 
 	private static final Logger LOG = LoggerFactory.getLogger(ZigBeeDeviceImpl.class);
@@ -176,18 +177,17 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		return invoke((short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
 	}
 
-	public IZclFrame invoke(short profileId, short clusterId, IZclFrame zclFrame) throws ZigBeeException {
+	public synchronized IZclFrame invoke(short profileId, short clusterId, IZclFrame zclFrame) throws ZigBeeException {
+
 		// check if the message contains requires a default answer
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
-		messagesLock.lock();
-		pendingReplies.put(key, sq);
-		System.out.println("[IZclFrame invoke] pendingReplies count:" + pendingReplies.size());
-		messagesLock.unlock();
-
+		synchronized (pendingReplies) {
+			pendingReplies.put(key, sq);
+		}
 		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, hash, profileId, clusterId, zclFrame);
 
@@ -195,9 +195,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			// TODO: do we need to synchronize here?
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
 			if (!res) {
-				messagesLock.lock();
-				pendingReplies.remove(key);
-				messagesLock.unlock();
+				synchronized (pendingReplies) {
+					pendingReplies.remove(key);
+				}
 				throw new ZigBeeException("error sending message to ZigBee device");
 			}
 		}
@@ -220,13 +220,10 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
-				LOG.debug("Aspetto Lock...");
-				messagesLock.lock();
-				LOG.debug("Dentro Lock...");
-				pendingReplies.remove(new Long(hash));
-				LOG.debug("Entry rimossa...");
-				messagesLock.unlock();
-				LOG.debug("Lock rilasciato...");
+				synchronized (pendingReplies) {
+
+					pendingReplies.remove(new Long(hash));
+				}
 				throw new ZigBeeException("timeout");
 			}
 
@@ -295,21 +292,24 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		if (!zclFrame.isClientToServer() && zclFrame.getCommandId() == 10) {
 			notifyListeners(clusterId, zclFrame);
 		} else {
-
-			messagesLock.lock();
-			SynchronousQueue sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
-			messagesLock.unlock();
+			SynchronousQueue sq = null;
+			synchronized (pendingReplies) {
+				sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
+			}
 
 			if (sq == null) {
-				// simply sends the message to the upper layer. If any exception
-				// arises this exception is decoded and sent back to the source
+				// simply sends the message to the upper layer. If any
+				// exception
+				// arises this exception is decoded and sent back to the
+				// source
 				// ZigBee device
 				notifyListeners(clusterId, zclFrame);
 			} else {
 				try {
-
 					LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash));
+
 					sq.put(zclFrame);
+
 					LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
 
 				} catch (InterruptedException e) {
@@ -318,9 +318,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 					return false;
 				}
 			}
+
 		}
 
 		return true;
+
 	}
 
 	private void notifyListeners(short clusterId, IZclFrame zclFrame) throws ZclException {

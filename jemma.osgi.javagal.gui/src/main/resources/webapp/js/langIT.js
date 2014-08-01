@@ -83,7 +83,8 @@ var LANG = {
 		deviceType:"GAL device type",
 		securityLevel:"Network security level",
 		stackSoftwareVersion:"Stack Version",
-		networkKey:"Network Key"
+		networkKey:"Sas Network Key",
+		netKey:"Network Key"
 		
 		
 		

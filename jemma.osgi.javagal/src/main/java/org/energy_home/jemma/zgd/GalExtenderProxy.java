@@ -113,10 +113,15 @@ public class GalExtenderProxy implements IGalExtender {
 		case 0x96:// NetWorkAddress
 		case 0xDA:// DeviceType
 		case 0xDB:// nwkSoftwareVersion
-		case 0xE6: // SASNwkKey
-
-			res = gal.NMLE_GetSync(attrId);
+		case 0xE6:// nwkSoftwareVersion
+			res = gal.NMLE_GetSync(attrId,(short)0x00);
 			break;
+		case 0xA1:// nwkTransportKey
+			res = gal.NMLE_GetSync(attrId,(short)0x01);
+			break;
+		/*case 0x85: //MacKey
+			res =  gal.MacGetPIBAttributeSync(attrId);
+		*/
 		case 0xC3:
 		case 0xC4:
 		case 0xC8:

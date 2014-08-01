@@ -17,6 +17,7 @@ package org.energy_home.jemma.javagal.layers.business.implementations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.javagal.layers.presentation.Activator;
@@ -246,8 +247,14 @@ public class MessageManager {
 
 						MessageListener napml = ce.getGenericDestination();
 						if (napml != null)
-							napml.notifyAPSMessage(message);
-
+						{
+							APSMessageEvent cmessage = null;
+							synchronized (message) {
+								cmessage = SerializationUtils.clone(message);
+							}
+							
+							napml.notifyAPSMessage(cmessage);
+						}
 						// Add it to the list of already notified
 						// destinations.
 
@@ -392,9 +399,13 @@ public class MessageManager {
 					// destination.
 
 					MessageListener napml = ce.getGenericDestination();
-					if (napml != null)
-						napml.notifyInterPANMessage(message);
-
+					if (napml != null){
+						InterPANMessageEvent cmessage = null;
+						synchronized (message) {
+							cmessage = SerializationUtils.clone(message);
+						}
+						napml.notifyInterPANMessage(cmessage);
+					}
 					// Add it to the list of already notified
 					// destinations.
 

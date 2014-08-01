@@ -67,10 +67,12 @@
 		
 		<category icon="lamp.png" name="MAC lamp" pid="34"/> <!-- Lampada MAC -->
         <category icon="lamp.png" name="Philps lamp" pid="35"/> <!-- Lampada Philips -->
-        <category icon="thermostat.png" name="Thermostat" pid="36"/> <!-- Thermostat -->
+        <category icon="thermostat.png" name="Centralite Thermostat" pid="36"/> <!-- Thermostat -->
 		<category icon="whaser_dryer.png" name="Indesit Whashing Machine" pid="37"/>
 		<category icon="oven.png" name="Indesit Oven" pid="38"/>
 		<category icon="freezer.png" name="Indesit Fridge" pid="39"/>
+		<category icon="other.png" name="Door Lock" pid="40"/>
+		<category icon="thermostat.png" name="Reloc Temperature Sensor" pid="41"/>
 		
     </categories>
 	<rules>

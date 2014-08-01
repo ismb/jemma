@@ -63,6 +63,8 @@ public class netDefaultIbLevelResource extends ServerResource {
 		_det.getValue().add("DA - nwkDeviceType");
 		_det.getValue().add("DB - nwkSoftwareVersion");
 		_det.getValue().add("E6 - SASNwkKey");
+		//_det.getValue().add("85 - MacKey");
+		
 		_info.setDetail(_det);
 		getResponse().setEntity(Util.marshal(_info), MediaType.APPLICATION_XML);
 		return;

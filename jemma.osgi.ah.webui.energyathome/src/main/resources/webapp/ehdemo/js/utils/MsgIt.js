@@ -283,6 +283,14 @@ var Msg = {
 		30 : "Depuratore acqua",
 		31 : "Piano cottura",
 		32 : "Stufa elettrica",
-		33 : "Pompa piscina"
+		33 : "Pompa piscina",
+		34 : "Lampada Mac",
+		35 : "Lampada Philips",
+		36 : "Termostato Centralite",
+		37 : "Lavatrice Indesit",
+		38 : "Forno Indesit",
+		39 : "Frigorifero Indesit",
+		40 : "Serratura porta",
+		41 : "Sensore di temperatura Reloc"
 	}
 }
