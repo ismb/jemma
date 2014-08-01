@@ -80,6 +80,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringCli
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityClient;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.GalExtenderProxy;
 import org.energy_home.jemma.zgd.GatewayConstants;
@@ -1510,6 +1511,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclDoorLockClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclAirQualityClient.CLUSTER_ID));
 
 							if (enableEnergyAtHomeClusters) {
 								// This is the list of Client side clusters

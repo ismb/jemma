@@ -170,6 +170,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			String applianceId = appliance.getApplianceId();
 
 			meteringProxy.subscribeCurrentSummationDelivered(applianceId, minReportingInterval,	maxReportingInterval, deltaValue);
+			//meteringProxy.subscribeCurrentSummationDelivered(applianceId,5,10,5);
 			if (checkMeteringSubscriptions) {
 				double summation = meteringProxy.getCurrentSummationDelivered(applianceId);
 				notifyCurrentSummationDelivered(applianceId, System.currentTimeMillis(), summation);
@@ -186,6 +187,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			double deltaValue = SMART_INFO_SUMMATION_DELTA_VALUE / formatting;
 			String applianceId = appliance.getApplianceId();
 			meteringProxy.subscribeCurrentSummationReceived(applianceId, SMART_INFO_SUMMATION_MIN_INTERVAL, SMART_INFO_SUMMATION_MAX_INTERVAL, deltaValue);
+			//meteringProxy.subscribeCurrentSummationReceived(applianceId,5,10,5);
 			if (checkMeteringSubscriptions) {
 				double summation = meteringProxy.getCurrentSummationReceived(applianceId);
 				notifyCurrentSummationReceived(applianceId, System.currentTimeMillis(), summation);
@@ -213,9 +215,8 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			}
 			
 			String applianceId = appliance.getApplianceId();
-			//meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
-			//meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
-            meteringProxy.subscribeIstantaneousDemand(applianceId, 5, 10, 5);
+			meteringProxy.subscribeIstantaneousDemand(applianceId, minReportingInterval, maxReportingInterval, deltaValue);
+            //meteringProxy.subscribeIstantaneousDemand(applianceId,5,10,5);
 
 			if (checkMeteringSubscriptions) {
 				float power = meteringProxy.getIstantaneousDemand(applianceId);
