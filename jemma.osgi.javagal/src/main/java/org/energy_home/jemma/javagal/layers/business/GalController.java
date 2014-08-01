@@ -105,6 +105,7 @@ public class GalController {
 	private ManageMapPanId manageMapPanId;
 	private String networkPanID = null;
 
+
 	public String getNetworkPanID() {
 		return networkPanID;
 	}
@@ -1018,13 +1019,19 @@ public class GalController {
 	public String APSME_GETSync(short attrId) throws Exception, GatewayException {
 		return DataLayer.APSME_GETSync(PropertiesManager.getCommandTimeoutMS(), attrId);
 	}
+	
+	
+	public String MacGetPIBAttributeSync(short attrId) throws Exception, GatewayException {
+		return DataLayer.MacGetPIBAttributeSync(PropertiesManager.getCommandTimeoutMS(), attrId);
+	}
+	
 
 	public void APSME_SETSync(short attrId, String value) throws Exception, GatewayException {
 		DataLayer.APSME_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
-	public String NMLE_GetSync(short ilb) throws IOException, Exception, GatewayException {
-		String _value = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb);
+	public String NMLE_GetSync(short ilb, short iEntry) throws IOException, Exception, GatewayException {
+		String _value = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb,iEntry);
 		/* Refresh value of the PanId */
 		if (ilb == 80)
 			setNetworkPanID(_value);
@@ -1860,7 +1867,7 @@ public class GalController {
 					String _networkPanID = null;
 					while (_networkPanID == null) {
 						try {
-							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80);
+							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80,(short)0x00);
 						} catch (Exception e) {
 
 							LOG.error("Error retrieving the PanID of the Network!");
@@ -1873,7 +1880,7 @@ public class GalController {
 					String _NetworkAdd = null;
 					while (_NetworkAdd == null) {
 						try {
-							_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96);
+							_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96,(short)0x00);
 						} catch (Exception e) {
 
 							LOG.error("Error retrieving the Gal Network Address!");
@@ -1962,6 +1969,9 @@ public class GalController {
 						}
 
 					}
+					
+					
+					
 
 					if (!galNodeWrapper.isSleepy()) {
 						/* If the Node is NOT a sleepyEndDevice */

@@ -108,8 +108,7 @@
 																		'Unknown device - 0x'
 																				+ padLeft(
 																						4,
-																						device
-																								.toString(16))
+																						device.toString(16))
 																						.toUpperCase()
 																						.trim());
 													}
@@ -433,9 +432,7 @@
 									var deviceType = (tmp & 3);
 									
 									tmp = dataToShift;
-									
-									
-									
+									var rxOnWhenIdle = ((tmp & 12) >> 2);/* 2 and 3 bit */
 									var deviceTypeString, deviceTypeColor;
 									switch (deviceType){
 										case 0: 
@@ -447,17 +444,15 @@
 											deviceTypeColor = '#388f89';
 											break;
 										case 2: 
-											if (rxOnWhenIdle == 1)
+											if (rxOnWhenIdle == 0)
 												{
-											deviceTypeString = 'End Device Sleepy';
-											deviceTypeColor = '#996600';
+												   deviceTypeString = 'End Device Sleepy';
+												   deviceTypeColor = '#996600';
 												}
 											else
 												{
-												deviceTypeString = 'End Device';
-												deviceTypeColor = '#9900FF';
-												
-												
+												   deviceTypeString = 'End Device';
+												   deviceTypeColor = '#9900FF';
 												}
 											break;
 										case 3: 
@@ -465,11 +460,6 @@
 											deviceTypeColor = null;
 											break;
 									}
-									
-										tmp = dataToShift;
-									
-									
-									
 									
 									if (!Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()])
 										Nodes.nodes[padLeft(16, edge.ieeeAddress.toString(16)).toUpperCase()] = {};
@@ -880,16 +870,16 @@
 				<td valign="top">
 					<table style="width: 100%;" cellspacing="0" cellpadding="0" >
 						<tr>
-							<td width="35" valign="middle" align="center" ><img src="images/signal/1.png" alt="Signal <50" style="width:25px;heigth:15px;"/></td><td style="background-color: #ff0000; color: #FFFFFF;" valign="middle"  align="center" >&lt; 50</td>
+							<td width="35" valign="middle" align="center" ><img src="images/signal/1.png" alt="Signal <50" style="width:25px;heigth:15px;"/></td><td style="background-color: #ff0000; color: #FFFFFF;" valign="middle"  align="center" >&lt;50</td>
 						</tr>
 						<tr>
-							<td width="35" valign="middle" align="center" ><img src="images/signal/2.png" alt="Signal >50<100" style="width:25px;heigth:15px;" /></td><td style="background-color: #ff69b4; color: #FFFFFF;" valign="middle"  align="center" >&gt;50 &lt;100</td>
+							<td width="35" valign="middle" align="center" ><img src="images/signal/2.png" alt="Signal >50<100" style="width:25px;heigth:15px;" /></td><td style="background-color: #ff69b4; color: #FFFFFF;" valign="middle"  align="center" >&gt;50&nbsp;&nbsp;&lt;100</td>
 						</tr>
 						<tr>
-							<td width="35" valign="middle" align="center" ><img src="images/signal/3.png" alt="Signal >100<150" style="width:25px;heigth:15px;" /></td><td style="background-color: #fdb11b; color: #FFFFFF;" valign="middle"  align="center" >&gt;100 &lt;150</td>
+							<td width="35" valign="middle" align="center" ><img src="images/signal/3.png" alt="Signal >100<150" style="width:25px;heigth:15px;" /></td><td style="background-color: #fdb11b; color: #FFFFFF;" valign="middle"  align="center" >&gt;100&nbsp;&nbsp;&lt;150</td>
 						</tr>
 						<tr>
-							<td width="35" valign="middle" align="center" ><img src="images/signal/4.png" alt="Signal >150<200" style="width:25px;heigth:15px;" /></td><td style="background-color: #31962a; color: #FFFFFF;" valign="middle"  align="center" >&gt;150&lt; 200</td>
+							<td width="35" valign="middle" align="center" ><img src="images/signal/4.png" alt="Signal >150<200" style="width:25px;heigth:15px;" /></td><td style="background-color: #31962a; color: #FFFFFF;" valign="middle"  align="center" >&gt;150&nbsp;&nbsp;&lt;200</td>
 						</tr>
 						<tr>
 							<td width="35" valign="middle" align="center" ><img src="images/signal/5.png" alt="Signal >200" style="width:25px;heigth:15px;" /></td><td style="background-color: #006600; color: #FFFFFF;" valign="middle"  align="center" >&gt;200</td>

@@ -2,6 +2,7 @@ var jsonrpc = null;
 var OSGi = {
 	http_max_spare : 2,
 	servlet : "/demo/JSON-RPC"
+	//servlet : "/energyathome/JSON-RPC"
 };
 
 OSGi.getServletURI = function()

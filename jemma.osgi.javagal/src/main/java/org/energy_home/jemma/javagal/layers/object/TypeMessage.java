@@ -134,5 +134,10 @@ public enum TypeMessage {
 	/**
 	 * The "INTERPAN" message type.
 	 */
-	INTERPAN
+	INTERPAN,
+	/**
+	 * The "MACAttributes" message type.
+	 */
+	
+	MAC_GET
 }

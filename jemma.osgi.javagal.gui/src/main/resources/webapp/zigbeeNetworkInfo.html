@@ -172,7 +172,7 @@
 										mydataAttributes);
 							});
 
-							/*0xE6:networkKey*/
+							/*0xE6:SasnetworkKey*/
 							$.ajax(
 									{
 										url : DEFINEPATH.attributeInfoPath
@@ -198,6 +198,33 @@
 								reloadGridFromLocalArray("tblAttributes",
 										mydataAttributes);
 							});
+							
+							
+							/*0xA1:NetworkKey*/
+							$.ajax(
+									{
+										url : DEFINEPATH.attributeInfoPath
+												+ "?id=0xA1",
+										type : 'GET'
+									}).done(function(data) {
+								var dataBig = json_parse(data);
+								if (dataBig.status.code == 0) {
+									var value = (''+dataBig.detail.value).split('').reverse().join('').substring(2,32);
+									var currentAttribute = {
+										lblName : LANG.propertyName.netKey,
+										lblValue : "0x" + value,
+									};
+								} else {
+									var currentAttribute = {
+										lblName : LANG.propertyName.netKey,
+										lblValue : dataBig.status.message,
+									};
+
+								}
+								mydataAttributes.push(currentAttribute);
+								reloadGridFromLocalArray("tblAttributes",
+										mydataAttributes);
+							});
 
 							$("#tblAttributes").jqGrid(
 									{
@@ -212,7 +239,7 @@
 
 										}, {
 											name : 'lblValue',
-											width : 300,
+											width : 800,
 											align : "center"
 										}, ],
 										sortname : 'id',

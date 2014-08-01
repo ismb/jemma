@@ -297,6 +297,9 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										
 										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
 									} else {
+										/*
+										if (elettrodom["map"]["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE)
+										 */
 										//Analizzo gli altri elettrodomestici quindi elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTPLUG_APP_TYPE
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};

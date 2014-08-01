@@ -333,8 +333,10 @@ CostiConsumi.ExitFotoVoltaico = function() {
 	}
 	CostiConsumi.consumoGiornaliero = null;
 
-	chartConsumi.destroy();
-	chartVenduto.destroy();
+	if(chartConsumi!=null)
+		chartConsumi.destroy();
+	if(chartVenduto!=null)
+		chartVenduto.destroy();
 
 	Main.ResetError();
 	$("#CostiConsumi").hide();

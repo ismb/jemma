@@ -61,11 +61,8 @@ public class getInfoBaseAttributesServlet extends HttpServlet {
 			Object attributeIDParam = request.getParameter(Resources.PARAMETER_ID);
 
 			attributeIDString = attributeIDParam.toString();
-			
-			
 			attributeID = Long.decode(attributeIDString);
 			if (!Util.isUnsigned8(attributeID)) {
-
 				Info info = new Info();
 				Status _st = new Status();
 				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -75,10 +72,7 @@ public class getInfoBaseAttributesServlet extends HttpServlet {
 				info.setDetail(detailrr);
 				response.getOutputStream().print(gson.toJson(info));
 				return;
-
 			}
-			
-			
 			try {
 				result = gatewayInterface.getInfoBaseAttribute(attributeID.shortValue());
 			} catch (GatewayException e1) {
