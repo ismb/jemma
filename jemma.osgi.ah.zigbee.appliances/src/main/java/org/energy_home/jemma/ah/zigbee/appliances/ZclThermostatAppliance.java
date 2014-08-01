@@ -26,14 +26,14 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZclZoppasDisplayAppliance extends ZclAppliance {
+public class ZclThermostatAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
 
-	private static final Logger LOG = LoggerFactory.getLogger( ZclZoppasDisplayAppliance.class );
+	private static final Logger LOG = LoggerFactory.getLogger( ZclThermostatAppliance.class );
 
-	public static final String ENDPOINT_TYPE = "Thermostat";
+	public static final String ENDPOINT_TYPE = "Generic Thermostat";
 
-	public ZclZoppasDisplayAppliance(String pid, Dictionary config) throws ApplianceException {
+	public ZclThermostatAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
 
 		endPoint = this.zclAddEndPoint(ENDPOINT_TYPE);
@@ -45,11 +45,11 @@ public class ZclZoppasDisplayAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		LOG.debug("ZclZoppasDisplayAppliance attached");
+		LOG.debug("ZclGenericThermostatAppliance attached");
 	}
 
 	protected void detached() {
-		LOG.debug("ZclZoppasDisplayAppliance detached");
+		LOG.debug("ZclGenericThermostatAppliance detached");
 	}
 
 }

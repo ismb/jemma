@@ -77,6 +77,8 @@
 							 org.energy_home.jemma.ah.zigbee.zcl.cluster.metering;version="3.1.0",
 							 org.energy_home.jemma.ah.zigbee.zcl.cluster.security;version="3.0.0",
 							 org.energy_home.jemma.ah.zigbee.zcl.cluster.zll;version="1.0.0",
+							 org.energy_home.jemma.ah.zigbee.zcl.cluster.closures;version="1.0.0",
+							 org.energy_home.jemma.ah.zigbee.zcl.cluster.wulian;version="1.0.0", 
 							 org.energy_home.jemma.ah.zigbee.zcl.lib;version="3.0.0",
 							 org.energy_home.jemma.ah.zigbee.zcl.lib.types;version="3.0.0"
 						</Export-Package>

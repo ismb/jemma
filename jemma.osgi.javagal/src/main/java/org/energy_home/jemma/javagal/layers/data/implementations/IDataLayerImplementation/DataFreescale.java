@@ -2755,7 +2755,7 @@ public class DataFreescale implements IDataLayer {
 								gal.getNetworkcache().get(index).setTimerForcePing(1);
 								return status;
 							} else
-								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
+								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage() );
 						}
 
 					} else {

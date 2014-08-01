@@ -278,6 +278,9 @@ var Msg = {
 		30 : "Water Purifier",
 		31 : "Hob",
 		32 : "Electric Heater",
-		33 : "Swimming pool pump"
+		33 : "Swimming pool pump",
+		36 : "Centralite Thermostat",
+		40 : "Door Lock",
+		41 : "Reloc Temperature Sensor"
 	}
 }

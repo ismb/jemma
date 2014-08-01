@@ -44,7 +44,7 @@ public class Activator implements BundleActivator {
 		applicationFactories.add(new ZclZinApplianceFactory());
 		// applicationFactories.add(new Zcl4NoksSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclSmartPlugApplianceFactory());
-		applicationFactories.add(new ZclZoppasDisplayApplianceFactory());
+		applicationFactories.add(new ZclThermostatApplianceFactory());
 		applicationFactories.add(new Zcl4NoksThermostatApplianceFactory());
 		applicationFactories.add(new ZclRangeExtenderApplianceFactory());
 		applicationFactories.add(new ZclDimmableLightApplianceFactory());

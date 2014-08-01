@@ -201,16 +201,16 @@ public class ZclApplianceIdentificationServer extends ZclServiceCluster implemen
 		return v;
 	}
 
-	public String getSoftwareRevision(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+	public byte[] getSoftwareRevision(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
-			String objectResult = null;
-			objectResult = ((String) getValidCachedAttributeObject(23, context.getMaxAgeForAttributeValues()));
+			byte[] objectResult = null;
+			objectResult = ((byte[]) getValidCachedAttributeObject(23, context.getMaxAgeForAttributeValues()));
 			if (objectResult != null) {
 				return objectResult;
 			}
 		}
 		IZclFrame zclFrame = readAttribute(23, context);
-		String v = ZclDataTypeString.zclParse(zclFrame);
+		byte[] v = ZclDataTypeOctets.zclParse(zclFrame);
 		setCachedAttributeObject(23, v);
 		return v;
 	}
