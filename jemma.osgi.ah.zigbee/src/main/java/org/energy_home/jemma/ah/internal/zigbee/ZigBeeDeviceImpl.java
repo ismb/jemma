@@ -96,7 +96,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	private Hashtable listenersListClientSide = new Hashtable();
 	private Hashtable listenersListServerSide = new Hashtable();
 
-	//private Lock messagesLock = new ReentrantLock();
+	// private Lock messagesLock = new ReentrantLock();
 	private Object lock = new Object();
 
 	private static final Logger LOG = LoggerFactory.getLogger(ZigBeeDeviceImpl.class);
@@ -178,18 +178,16 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	}
 
 	public synchronized IZclFrame invoke(short profileId, short clusterId, IZclFrame zclFrame) throws ZigBeeException {
-		
-		
-		
+
 		// check if the message contains requires a default answer
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
-		
-		pendingReplies.put(key, sq);
-		
+		synchronized (pendingReplies) {
+			pendingReplies.put(key, sq);
+		}
 		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(true, hash, profileId, clusterId, zclFrame);
 
@@ -197,7 +195,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			// TODO: do we need to synchronize here?
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
 			if (!res) {
-				pendingReplies.remove(key);
+				synchronized (pendingReplies) {
+					pendingReplies.remove(key);
+				}
 				throw new ZigBeeException("error sending message to ZigBee device");
 			}
 		}
@@ -220,12 +220,10 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 						this.transmissionFailed();
 					}
 				}
+				synchronized (pendingReplies) {
 
-				
-
-				pendingReplies.remove(new Long(hash));
-
-
+					pendingReplies.remove(new Long(hash));
+				}
 				throw new ZigBeeException("timeout");
 			}
 
@@ -236,7 +234,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		} catch (InterruptedException e) {
 			throw new ZigBeeException("interrupted system call during post");
 		}
-		
+
 	}
 
 	private void logZclMessage(boolean outgoing, long hash, short profileId, short clusterId, IZclFrame zclFrame) {
@@ -262,70 +260,69 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	 */
 
 	public boolean notifyZclFrame(short clusterId, IZclFrame zclFrame) throws ZclException {
-		
 
-			long hash = calculateTxRxHash(clusterId, zclFrame);
+		long hash = calculateTxRxHash(clusterId, zclFrame);
 
-			if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
-				this.logZclMessage(false, hash, (short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
+		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
+			this.logZclMessage(false, hash, (short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
 
-			if (trackNode) {
-				deviceAlive();
-			}
+		if (trackNode) {
+			deviceAlive();
+		}
 
-			if (isPartitioningCluster(clusterId)) {
-				// the incoming frame is directed to the Partitioning Cluster
-				if (zclFrame.isClientToServer()) {
-					// this is a message sent from the PartitioningClient to the
-					// Partitioning Server clusters that is implemented on the
-					// gateway
-					if (this.partitionServerImpl != null) {
-						try {
-							boolean handled = this.partitionServerImpl.notifyZclFrame(clusterId, zclFrame);
-							if (handled)
-								return handled;
-						} catch (Exception e) {
-							LOG.error("Exception in calling partition frame notifyZclFrame", e);
-						}
+		if (isPartitioningCluster(clusterId)) {
+			// the incoming frame is directed to the Partitioning Cluster
+			if (zclFrame.isClientToServer()) {
+				// this is a message sent from the PartitioningClient to the
+				// Partitioning Server clusters that is implemented on the
+				// gateway
+				if (this.partitionServerImpl != null) {
+					try {
+						boolean handled = this.partitionServerImpl.notifyZclFrame(clusterId, zclFrame);
+						if (handled)
+							return handled;
+					} catch (Exception e) {
+						LOG.error("Exception in calling partition frame notifyZclFrame", e);
 					}
 				}
 			}
+		}
 
-			/* skip Reporting Attributes */
-			if (!zclFrame.isClientToServer() && zclFrame.getCommandId() == 10) {
+		/* skip Reporting Attributes */
+		if (!zclFrame.isClientToServer() && zclFrame.getCommandId() == 10) {
+			notifyListeners(clusterId, zclFrame);
+		} else {
+			SynchronousQueue sq = null;
+			synchronized (pendingReplies) {
+				sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
+			}
+
+			if (sq == null) {
+				// simply sends the message to the upper layer. If any
+				// exception
+				// arises this exception is decoded and sent back to the
+				// source
+				// ZigBee device
 				notifyListeners(clusterId, zclFrame);
 			} else {
+				try {
+					LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash));
 
-				SynchronousQueue sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
+					sq.put(zclFrame);
 
-				if (sq == null) {
-					// simply sends the message to the upper layer. If any
-					// exception
-					// arises this exception is decoded and sent back to the
-					// source
-					// ZigBee device
-					notifyListeners(clusterId, zclFrame);
-				} else {
-					try {
-						LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash));
+					LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
 
-						
-							sq.put(zclFrame);
-						
+				} catch (InterruptedException e) {
+					LOG.error("exception", e);
 
-						LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
-
-					} catch (InterruptedException e) {
-						LOG.error("exception", e);
-
-						return false;
-					}
+					return false;
 				}
-
 			}
 
-			return true;
-		
+		}
+
+		return true;
+
 	}
 
 	private void notifyListeners(short clusterId, IZclFrame zclFrame) throws ZclException {
