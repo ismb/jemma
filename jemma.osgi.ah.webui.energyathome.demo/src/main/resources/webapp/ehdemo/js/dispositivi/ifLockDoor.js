@@ -40,16 +40,16 @@ ifLockDoor.updateIcon=function(stato){
 }
 
 ifLockDoor.update= function(now){
-        
+	
         var t= new Date().getTime();
         
         var i= $("#Interfaccia").data("current_index");
 
-        var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
+        /*var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
         if (consumo!="n.a.") {
                 consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
         }
-        $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
+        $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);*/
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
         
         
@@ -64,24 +64,22 @@ ifLockDoor.update= function(now){
         ifLockDoor.timeout_timer=t;
         
         var class_stato="NP"
-        var t_value="";
-        var h_value="";
+        var statoDoor="";
         
-        if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
-                
+        if (Elettrodomestici.listaElettrodomestici[i].connessione == 2) {
         	ifLockDoor.stato=1;
-                //_value=Elettrodomestici.listaElettrodomestici[i].consumo_value;
-                t_value=Elettrodomestici.listaElettrodomestici[i].temperature+" °";
-                h_value=Elettrodomestici.listaElettrodomestici[i].humidity+" %"
-                
-        }else{
-                t_value="n.a.";
-                h_value="n.a.";
-                ifLockDoor.stato=-1;
+            statoDoor = Elettrodomestici.listaElettrodomestici[i].lockState;
+            if (statoDoor == 1){
+            	statoDoor="porta aperta";
+            } else {
+            	statoDoor="porta chiusa";
+            }
+        } else {
+    		statoDoor="n.a.";
+            ifLockDoor.stato=-1;
         }
         
-        $("#Interfaccia #Temperatura #temperatura_value").text(t_value);
-        $("#Interfaccia #Humidity #humidity_value").text(h_value);
+        $("#statodoor_value").text(statoDoor);
         
         ifLockDoor.updateIcon(ifThermostat.stato);
 }

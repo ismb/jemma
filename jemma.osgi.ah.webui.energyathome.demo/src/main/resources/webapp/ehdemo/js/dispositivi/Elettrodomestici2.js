@@ -296,19 +296,38 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										}
 										
 										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
-									} else {
-										/*
-										if (elettrodom["map"]["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE)
-										 */
-										//Analizzo gli altri elettrodomestici quindi elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTPLUG_APP_TYPE
+									} else if (elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE){
+										//Analizzo la lavatrice whitegood (per adesso stesso codice di uno smart plug)
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
 										} else {
-											var val = 50;//parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
+											var val = 50;//; parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
 											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
 										}
+										
+										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+									} else {
+										/*if (elettrodom["map"].pid == 'ah.app.3781220529323317'){
+											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] = InterfaceEnergyHome.LOCKDOOR_APP_TYPE;
+											elettrodom["map"].type = InterfaceEnergyHome.LOCKDOOR_APP_TYPE;
+											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] = 40;
+											elettrodom["map"].icon = 'lockdoor.png';
+											elettrodom["map"].lockState = 1;
+											
+											//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+										} else {*/
+											//Analizzo gli altri elettrodomestici quindi elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTPLUG_APP_TYPE
+											if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+											} else {
+												var val = 50;//parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
+												//elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+											}
+										/*}*/
 										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
 									}
 								});
@@ -354,19 +373,25 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									}
 									else if (elemento["type"]=="org.energy_home.jemma.ah.zigbee.thermostat") {
 										Elettrodom["type"]="thermostat";
-										if(Elettrodom["connessione"]==2)
-										{
+										if(Elettrodom["connessione"]==2){
 											Elettrodom["stato"]=1;
 											Elettrodom["temperature"]=elemento["temperature"]
 											Elettrodom["humidity"]=elemento["humidity"]
 										}
 										
 										
-									} else if (elemento["type"]=="org.energy_home.jemma.ah.zigbee.lockdoor") {  //LockDoor
-										Elettrodom["type"]="lockdoor";
-										if(Elettrodom["connessione"]==2){
-											Elettrodom["stato"]=1;
-											Elettrodom["open"]=0 // Oppure?
+									} else if (elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) {  //LockDoor
+										Elettrodom["type"] = elemento["type"];
+										if(Elettrodom["connessione"] == 2){
+											val = Elettrodom["lockState"] = elemento["lockState"];
+											//val = parseFloat(device_value.value.LockState);
+											if (val == 1){
+												elemento["device_value_2"] = 'open';
+												Elettrodom["icon"] = "lockdoor_acceso.png";
+											} else {
+												elemento["device_value_2"] = 'close';
+												Elettrodom["icon"] = "lockdoor_spento.png";
+											}
 										}
 									} else {
 										Elettrodom["type"] = 'smartplug';
@@ -788,6 +813,7 @@ Elettrodomestici.refreshConsumi=function(){
 Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 	connessioneElettr = elettrodomestico["connessione"];
 	consumoElettr = elettrodomestico["consumo"];
+	categoriaElettr = elettrodomestico["categoria"];
 	nomeElettr = elettrodomestico["nome"];
 	statoElettr = elettrodomestico["stato"];
 	if (forza_stato!=null) {
@@ -809,6 +835,14 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 				//Altrimenti lo visualizzo spento
 				estensioneIcona = "_spento.png";
 
+			}
+		} else if (categoriaElettr == 40) {
+			//DoorLock
+			var lockStateElettr = elettrodomestico["lockState"];
+			if (lockStateElettr > 0) {
+				estensioneIcona = "_acceso.png";
+			} else {
+				estensioneIcona = "_spento.png";
 			}
 		} else if (consumoElettr > 0) {
 			//Se c'� consumo visualizzo l'icona verde

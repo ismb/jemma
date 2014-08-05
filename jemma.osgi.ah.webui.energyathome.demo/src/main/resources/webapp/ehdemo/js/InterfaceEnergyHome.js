@@ -55,6 +55,7 @@ var InterfaceEnergyHome = {
 	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering",
 	//SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
 	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug",
+	LOCKDOOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.lockdoor",
 	
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
@@ -116,7 +117,7 @@ function bindService(name) {
 		try {
 			InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/demo/JSON-RPC");
 			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/energyathome/JSON-RPC");
-			// InterfaceEnergyHome.jsonrpc = new JSONRpcClient("http://10.38.1.7/energyathome/JSON-RPC");
+			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("http://10.38.3.25/demo/JSON-RPC");
 			InterfaceEnergyHome.jsonrpc.http_max_spare = 4;
 			JSONRpcClient.toplevel_ex_handler = function(e) {
 				//console.log(20, "JSONRpcClient", "Eccezione in JSONRpcClient: ");
