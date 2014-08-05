@@ -188,52 +188,6 @@ var clearForm = function (dialogName) {
 	});
 }
 
-/*var appendDivToAnotherDiv = function (divId, urlToLoad) {
-	$.ajax({
-		async: false,
-		type: 'GET',
-		url: urlToLoad,
-		success: function (data) {
-			$(data).appendTo('#' + divId);
-			if (loadEventsOnFields)
-            {
-				fieldCharCheck();
-                addNameProperty(divId);
-
-            }
-
-
-			if(checkChangingFields)
-			{            	
-				$("#" + divId).find(":input").each(function() {
-					$(this).change( function() {
-						var fieldName = $(this).prop("id"); 	
-
-						//controllo se il change � scattato su un'autocomplete, in caso chiamo la funzione apposita
-						if($(this).prop("class").indexOf("autocomplete-input") >= 0)
-						{
-							saveChangedAutocomplete(fieldName);
-						}
-						else if ($("#container_changedFields").val().indexOf(fieldName + ",") == -1)
-						{
-							$(this).closest("#evt_container").data('changed', true);
-							$("#container_changedFields").val($("#container_changedFields").val() + fieldName + ",");
-						}
-
-					});
-				});
-
-				//faccio un check a parte per le autocomplete
-				$("#"+divId+" .ui-autocomplete-input").autocomplete({
-					change: function () {
-						saveChangedAutocomplete($(this).prop("id"));
-					}});
-			}
-			loadEventsOnFields = false;
-		}
-
-	});
-}   */
 
 var checkUncheck = function (localRow, toCheck, gridId) {
 	if (toCheck) {
@@ -835,4 +789,49 @@ function verShortAddr(cp, fieldToVerify){
 	} else {
 		return cp;
 	}
+}
+
+
+
+//At the top of your script:
+if (!window.console)
+	console = {
+		log : function() {
+		}
+	};
+// If you use other console methods, add them to the object literal above
+
+// Then, anywhere in your script:
+console
+		.log('This message will be logged, but will not cause an error in IE7');
+
+
+
+
+
+window.alert = function(msg, title, callback) {
+	apprise(msg, {}, callback);
+}
+
+window.confirm = function(msg, title, callback) {
+	apprise(msg, {
+		'verify' : true,
+		'textYes' : 'Yes',
+		'textNo' : 'No'
+	}, callback);
+}
+
+window.prompt = function(message, value, title, callback) {
+	apprise(msg, {
+		input : true
+	}, callback);
+}
+
+var confirmV2 = function(msg, callback) {
+	apprise(msg, {
+		'newVerify' : true,
+		'textYes' : 'Yes',
+		'textNo' : 'No',
+		'textCancel' : 'Cancel'
+	}, callback);
 }

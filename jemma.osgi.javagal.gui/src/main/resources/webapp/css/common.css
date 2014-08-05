@@ -1,27 +1,19 @@
 body
 {
-    font-size : 8px;
-}
-
-.title
-{
-    font-size   : 22px;
-    font-weight : bold;
-    font-family : Arial,sans-serif;
-    color       : white;
-    text-align: center;
+    font-size : 11px;
 }
 
 label
 {
     font-family : Arial,sans-serif;
-    font-size   : 0.8em;
+    font-size   : 11px;
+    font-weight    : bold;
 }
 
 .labeltitle
 {
     font-family    : Arial,sans-serif;
-    font-size      : 1.4em;
+    font-size      : 11px;
     font-style     : oblique;
     font-weight    : bold;
     text-transform : uppercase;
@@ -66,13 +58,13 @@ label
 input
 {
     font-family : Arial,sans-serif;
-    font-size   : 0.8em;
+    font-size   : 11px;
 }
 
 input[readonly]
 {
     font-family      : Arial,sans-serif;
-    font-size        : 0.8em;
+    font-size        : 11px;
     background-color : lightgray;
 }
 
@@ -86,7 +78,7 @@ input[readonly]
     background-color : #6464ff;
     color            : #ffffff;
     font-family      : Arial,sans-serif;
-    font-size        : 0.8em;
+    font-size        : 11px;
     width            : 100%;
     text-align       : center;
 }
@@ -94,7 +86,7 @@ input[readonly]
 legend
 {
     font-family : Arial,sans-serif;
-    font-size   : 1.6em;
+    font-size   : 11px;
     font-weight : bold;
 }
 
@@ -102,7 +94,7 @@ legend
 {
     font-family     : Arial,sans-serif;
     font-style      : italic;
-    font-size       : 2em;
+    font-size       : 11px;
     background      : url('images/arrow_right_menu.png') left no-repeat;
     padding-left    : 34px;
     text-decoration : none;

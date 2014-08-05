@@ -297,8 +297,7 @@
 			} ]
 		});
 
-		$("#tblViewDevice").jqGrid('setGridHeight', "400");
-
+		
 		var loadData = function() {
 
 			$
@@ -733,16 +732,12 @@
 						});
 
 		$(document).ready(function() {
-
-			$(document).bind("contextmenu", function(e) {
-				return false;
-			});
-
+			$("#tblViewDevice").jqGrid('setGridHeight', $("#content").height());
 			loadData();
 		});
 	</script>
 	<div id="container">
-		<table id="tblViewDevice" style="width: 100%; height: 100%"></table>
+		<table id="tblViewDevice" align="center"></table>
 		<div id="pager"></div>
 		<br /> <br /> <input id="btnOpenNetw" type="button"
 			value="Add new devices" />
@@ -804,7 +799,7 @@
 						<td valign="middle"><select name="detail_active_endpoints"
 							id="detail_active_endpoints"></select><a
 							id="detail_button_simple_descriptor"><img
-								src="./css/images/info.png" class="infoButton"
+								src="./css/images/details.png" class="infoButton"
 								title="Simple Descriptor"></a></td>
 					</tr>
 

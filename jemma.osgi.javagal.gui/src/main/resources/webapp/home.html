@@ -16,15 +16,14 @@
 <link rel="stylesheet" type="text/css"
 	href="./css/layout-default-latest.css">
 <link rel="stylesheet" type="text/css" href="./css/apprise.css">
-<link rel="stylesheet" type="text/css" href="./css/custom.css">
-
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="css/images/favicon.ico" type="image/x-icon">
+<link id="theme" rel="stylesheet" type="text/css" href="./css/style.css"
+	title="theme" />
 
 <script type="text/javascript" src="./js/bignumber.js"></script>
 <script type="text/javascript" src="./js/jsonbigint.js"></script>
 <script type="text/javascript" src="./js/jquery/jquery-1.10.2.js"></script>
-<script type="text/javascript"
-	src="./js/jquery/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="./js/jquery/jquery-ui-1.10.4.min.js"></script>
 <script type="text/javascript" src="./js/jquery/ui.multiselect.js"></script>
 <script type="text/javascript" src="./js/jquery/jquery.jqGrid.min.js"></script>
 <script type="text/javascript" src="./js/jquery/jquery.searchFilter.js"></script>
@@ -43,99 +42,17 @@
 <script type="text/javascript" src="./js/gestManufacturerLibrary.js"></script>
 <script type="text/javascript" src="./js/gestMenu.js"></script>
 <script type="text/javascript" src="./js/gestCreateCenterPane.js"></script>
-
-
-
-
-
-
-
-
-
-
 <script type="text/javascript" src="./js/langIT.js"></script>
-
 <script type="text/javascript" src="./js/arbor/arbor.js"></script>
 <script type="text/javascript" src="./js/arbor/arbor-tween.js"></script>
 <script type="text/javascript" src="./js/arbor/graphics.js"></script>
 <script type="text/javascript" src="./js/arbor/md5.js"></script>
-
-
-
-
 <script type="text/javascript" src="./js/xmlPathLibrary.js"></script>
 <script type="text/javascript" src="./js/readXML.js"></script>
 <script type="text/javascript">
-	// At the top of your script:
-	if (!window.console)
-		console = {
-			log : function() {
-			}
-		};
-	// If you use other console methods, add them to the object literal above
-
-	// Then, anywhere in your script:
-	console
-			.log('This message will be logged, but will not cause an error in IE7');
-
-	var arrowimages = {
-		down : [ 'downarrowclass', './css/images/arrow-down.gif', 25 ],
-		right : [ 'rightarrowclass', './css/images/arrow-right.gif' ]
-	};
-
-	$.datepicker.setDefaults($.datepicker.regional["en"]);
-	$.datepicker.setDefaults({
-		changeMonth : true,
-		changeYear : true,
-		dateFormat : 'dd/mm/yy',
-		yearRange : "c-100:c+10"
-	});
-
-	window.alert = function(msg, title, callback) {
-		//jAlert(msg, title, callback);
-		apprise(msg, {}, callback);
-
-	}
-
-	window.confirm = function(msg, title, callback) {
-		//jConfirm(msg, title, callback);
-		apprise(msg, {
-			'verify' : true,
-			'textYes' : 'Yes',
-			'textNo' : 'No'
-		}, callback);
-	}
-
-	window.prompt = function(message, value, title, callback) {
-		//jPrompt(message, value, title, callback);
-		apprise(msg, {
-			input : true
-		}, callback);
-	}
-
-	var confirmV2 = function(msg, callback) {
-		apprise(msg, {
-			'newVerify' : true,
-			'textYes' : 'Yes',
-			'textNo' : 'No',
-			'textCancel' : 'Cancel'
-		}, callback);
-	}
-
 	$(document).ready(
 			function() {
-				var westsize = '25%';
-				var javaGalGuiLayout = $('body').layout({
-					resizeWhileDragging : true,
-					sizable : true,
-					animatePaneSizing : true,
-					fxSpeed : 'slow',
-					west__size : westsize,
-					spacing_open : 0,
-					spacing_closed : 0
-				});
 
-				$("#westTD").css("width", westsize);
 				$.jStorage.set("ChannelRadioValue", null);
 
 				$.ajax({
@@ -144,14 +61,12 @@
 				}).done(function(data) {
 					if (data.status.code == 0) {
 						var version = data.detail.version.manufacturerVersion;
-						$('#spGalVersion').text(version);
+						$('#spGalVersion').text(version).css('color','green' );
+					} else {
+
+						$('#spGalVersion').text(data.status.message);
 					}
-				else {
-					
-					$('#spGalVersion')
-							.text(data.status.message);
-						}
-				
+
 				});
 
 				$.ajax({
@@ -164,65 +79,122 @@
 								//Tutto ok
 								var chR = data.detail.value[0];
 								$.jStorage.set("ChannelRadioValue", chR);
-								$('#spChannelRadioHP').text(chR);
-								$('#spZigBeeState').text('RUNNING').css('color',
+								$('#spChannelRadioHP').text(chR).css('color',
 										'green');
+								$('#spZigBeeState').text('RUNNING').css(
+										'color', 'green');
 							} else {
 								//Visualizzo il messaggi odi errore
 								$.jStorage.set("ChannelRadioError",
 										data.status.message);
 								$('#spChannelRadioHP')
-										.text(data.status.message);
+										.text(data.status.message).css('color',
+												'red');
 								$('#spZigBeeState').text('NOT RUNNING').css(
 										'color', 'red');
 							}
 						});
 
 				var myGestCPane = new jGGGestCenterPane();
-				var myMenu = new jGGSxMenu();
-				myMenu.newButton('btnChannelNetwork',
-						myGestCPane.templateActivator, 'tplChannelNetwork');
-				myMenu.newButton('btnViewDevice',
-						myGestCPane.templateActivator, 'tplViewDevice');
-				myMenu.newButton('btnViewGraphNodes',
-						myGestCPane.templateActivator, 'tplViewGraphNodes');
-				myMenu.newButton('btnManageNetwork',
-						myGestCPane.templateActivator, 'tplManageNetwork');
+				$("#btnViewDevice").text(LANG.menu.btnViewDevice);
+				$("#btnViewGraphNodes").text(LANG.menu.btnViewGraphNodes);
+				$("#btnManageNetwork").text(LANG.menu.btnManageNetwork);
+				$("#btnChannelNetwork").text(LANG.menu.btnChannelNetwork);
+
+				var myCallBack = function(p, a) {
+					var idTpl = a;
+					p(idTpl);
+				};
+
+				$("#btnViewGraphNodes").click(
+						function() {
+							selectMenu('btnViewGraphNodes');
+							return myCallBack(myGestCPane.templateActivator,
+									'tplViewGraphNodes')
+
+						});
+				$("#btnChannelNetwork").click(
+						function() {
+							selectMenu('btnChannelNetwork');
+							return myCallBack(myGestCPane.templateActivator,
+									'tplChannelNetwork')
+
+						});
+				$("#btnManageNetwork").click(
+						function() {
+							selectMenu('btnManageNetwork');
+							return myCallBack(myGestCPane.templateActivator,
+									'tplManageNetwork')
+
+						});
+				$("#btnViewDevice").click(
+						function() {
+							selectMenu('btnViewDevice');
+							return myCallBack(myGestCPane.templateActivator,
+									'tplViewDevice')
+
+						});
+
+				function selectMenu(idSelected) {
+					$("#btnViewGraphNodes").addClass('menuUnselected');
+					$("#btnViewGraphNodes").removeClass('menuSelected');
+
+					$("#btnChannelNetwork").addClass('menuUnselected');
+					$("#btnChannelNetwork").removeClass('menuSelected');
+
+					$("#btnManageNetwork").addClass('menuUnselected');
+					$("#btnManageNetwork").removeClass('menuSelected');
+
+					$("#btnViewDevice").addClass('menuUnselected');
+					$("#btnViewDevice").removeClass('menuSelected');
+
+					$("#" + idSelected).addClass('menuSelected');
+					$("#" + idSelected).removeClass('menuUnselected');
+
+				}
+
 				$("#btnViewDevice").click();
 
 			});
+
 	
-	$(document).bind("contextmenu",function(e){
-        return false;
- }); 
 </script>
 
 
 </head>
 <body>
-	<div id="north" class="ui-layout-north" style="overflow: hidden;">
-		<table>
-			<tr>
-				<td valign="middle" align="left" id="westTD">Gal Version: <span
-					id="spGalVersion"></span><br /> Network channel: <span
-					id="spChannelRadioHP"></span><br /> Status of the Network: <span
-					id="spZigBeeState"></span><br />
-				</td>
-				<td valign="middle" align="center" style="background-color: red"><label
-					class="title">ZigBee Admin Console</label></td>
-				<td valign="middle" width="20%"><img
-					src="images/2000px-logo_telecom_italia-svg.png" height="100px" /></td>
-			</tr>
-		</table>
+	<div id="wrapper">
+		<div id="bg">
+			<div id="header"></div>
+			<div id="page">
+				<div id="container">
+					<!-- banner -->
+					<div id="banner"></div>
+					<!-- end banner -->
+					<!-- horizontal navigation -->
+					<div id="nav1">
+						<ul>
+							<li style="border: none;"><a id="btnViewDevice" href="#" shape="rect"></a></li>
+							<li><a id="btnViewGraphNodes" href="#" shape="rect"></a></li>
+							<li><a id="btnChannelNetwork" href="#" shape="rect"></a></li>
+							<li><a id="btnManageNetwork" href="#" shape="rect"></a></li>
+						</ul>
+					</div>
+					<!-- end horizontal navigation -->
+					<!--  content -->
+					<div id="content">
+						<div class="clear" style="height: 40px"></div>
+					</div>
+					<!-- end content -->
+				</div>
+				<!-- end container -->
+			</div>
+			<div id="footerWrapper">
+				<div id="footer">
+					Gal Version:&nbsp;<span id="spGalVersion"></span>&nbsp;Network channel:&nbsp;<span id="spChannelRadioHP"></span>&nbsp;Status of the Network:&nbsp;<span id="spZigBeeState"></span>			
+				</div>
+			</div>
+		</div>
 	</div>
-	<div id="west" class="ui-layout-west">
-		<button id="btnViewDevice"></button>
-		<button id="btnViewGraphNodes"></button>
-		<button id="btnChannelNetwork"></button>
-		<button id="btnManageNetwork"></button>
-		
-	</div>
-	<div id="center" class="ui-layout-center"></div>
-	<!-- div id="ghostDiv" style="display: none;"></div> -->
 </body>
 </html>

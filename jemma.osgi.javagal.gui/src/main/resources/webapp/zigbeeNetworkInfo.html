@@ -5,9 +5,7 @@
 						function() {
 							
 							  
-							  $(document).bind("contextmenu",function(e){
-					              return false;
-					       });
+							  
 							var mydataAttributes = [];
 							/*0x96:NetWorkAddress*/
 							$.ajax(
@@ -239,7 +237,7 @@
 
 										}, {
 											name : 'lblValue',
-											width : 800,
+											width : 500,
 											align : "center"
 										}, ],
 										sortname : 'id',
@@ -250,11 +248,12 @@
 										subGrid : false
 										
 									});
+							$("#tblAttributes").jqGrid('setGridWidth', ($("#content").width()-100));
+							$("#tblAttributes").jqGrid('setGridHeight', $("#content").height());
 							
-							$("#tblAttributes").jqGrid('setGridHeight', $("#container").height());
 						});
 	</script>
 	<div id="container">
-		<table id="tblAttributes" style="width: 100%; height: 100%"></table>
+		<table id="tblAttributes" align="center"></table>
 	</div>
 </div>

@@ -116,4 +116,3 @@ var jGGNetworkManageMenu = function(spec){ //spec, optionDB){
 	
 	return that;
 };
-
