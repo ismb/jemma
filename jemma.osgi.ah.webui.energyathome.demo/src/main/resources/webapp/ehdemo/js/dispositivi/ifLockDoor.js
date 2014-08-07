@@ -81,5 +81,5 @@ ifLockDoor.update= function(now){
         
         $("#statodoor_value").text(statoDoor);
         
-        ifLockDoor.updateIcon(ifThermostat.stato);
+        ifLockDoor.updateIcon(ifLockDoor.stato);
 }

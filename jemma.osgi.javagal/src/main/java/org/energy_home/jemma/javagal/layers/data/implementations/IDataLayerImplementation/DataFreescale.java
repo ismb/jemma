@@ -116,7 +116,7 @@ public class DataFreescale implements IDataLayer {
 		boolean foundSerialLib = false;
 
 		try {
-			// then with jSSC
+			// we try first with RxTx
 			dongleRs232 = new SerialPortConnectorJssc(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 			foundSerialLib = true;
 		} catch (NoClassDefFoundError e) {
@@ -125,7 +125,7 @@ public class DataFreescale implements IDataLayer {
 
 		if (!foundSerialLib) {
 
-			try { // we try first with RxTx
+			try { // then with jSSC
 				dongleRs232 = new SerialPortConnectorRxTx(gal.getPropertiesManager().getzgdDongleUri(), gal.getPropertiesManager().getzgdDongleSpeed(), this);
 				foundSerialLib = true;
 			} catch (NoClassDefFoundError e) {
