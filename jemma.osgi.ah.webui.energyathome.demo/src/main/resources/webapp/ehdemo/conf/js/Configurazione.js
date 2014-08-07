@@ -414,6 +414,7 @@ Configurazione.GetIcone = function() {
 	Configurazione.icone[7] = "lvb2.png";
 	Configurazione.icone[8] = "tv.png";
 	Configurazione.icone[9] = "stufa.png";
+	Configurazione.icone[10] = "lockdoor.png";
 	/*Configurazione.icone[10] = "production_meter.png";
 	Configurazione.icone[11] = "secondary_meter.png";
 	Configurazione.icone[12] = "printer.png";
@@ -759,6 +760,7 @@ Configurazione.VisElettrodomestici = function() {
 			
 		availability = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_AVAIL];
 		device_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE];
+		category_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 
 		if ((availability == undefined) || (availability != 2)) {
 			htmlStato = "<div class='StatoDisconnesso'>" + Msg.config["disconnesso"] + "</div>";
@@ -777,6 +779,15 @@ Configurazione.VisElettrodomestici = function() {
 			if (device_value != undefined) {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
+				} else if (category_value == "40") {
+					val = parseFloat(device_value.value.LockState);
+					if (val == 1){
+						val = 'open';
+						imgDisp = "lockdoor_acceso.png";
+					} else {
+						val = 'close';
+						imgDisp = "lockdoor_spento.png";
+					}
 				} else {
 					val = parseFloat(device_value.value.value);
 					val = val.toFixed(1) + " W";
