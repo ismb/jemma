@@ -119,15 +119,19 @@
 													var deviceTypeStr = "";
 													var _value = ''+dataBig.detail.value;
 													switch (_value) {
-													case "C0":
+													case "00":
+														deviceTypeStr = "Current device type configuration";
+														break;
+													case "01":
 														deviceTypeStr = "Coordinator";
 														break;
-													case "80":
+													case "02":
 														deviceTypeStr = "Router";
 														break;
-													case "20":
+													case "03":
 														deviceTypeStr = "End Device";
 														break;
+													
 													default:
 														deviceTypeStr = "Unknown Device";
 													break;
@@ -137,7 +141,7 @@
 														lblName : LANG.propertyName.deviceType,
 														lblValue : "0x"
 																+ _value
-																+ "("
+																+ " ("
 																+ deviceTypeStr
 																+ ")",
 													};

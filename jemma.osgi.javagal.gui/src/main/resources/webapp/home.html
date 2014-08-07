@@ -16,7 +16,8 @@
 <link rel="stylesheet" type="text/css"
 	href="./css/layout-default-latest.css">
 <link rel="stylesheet" type="text/css" href="./css/apprise.css">
-<link rel="shortcut icon" href="css/images/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="css/images/favicon.ico"
+	type="image/x-icon">
 <link id="theme" rel="stylesheet" type="text/css" href="./css/style.css"
 	title="theme" />
 
@@ -61,7 +62,7 @@
 				}).done(function(data) {
 					if (data.status.code == 0) {
 						var version = data.detail.version.manufacturerVersion;
-						$('#spGalVersion').text(version).css('color','green' );
+						$('#spGalVersion').text(version).css('color', 'green');
 					} else {
 
 						$('#spGalVersion').text(data.status.message);
@@ -106,58 +107,56 @@
 					p(idTpl);
 				};
 
-				$("#btnViewGraphNodes").click(
+				$("#tdViewGraphNodes").click(
 						function() {
-							selectMenu('btnViewGraphNodes');
+							selectMenu('tdViewGraphNodes');
 							return myCallBack(myGestCPane.templateActivator,
 									'tplViewGraphNodes')
 
 						});
-				$("#btnChannelNetwork").click(
+				$("#tdChannelNetwork").click(
 						function() {
-							selectMenu('btnChannelNetwork');
+							selectMenu('tdChannelNetwork');
 							return myCallBack(myGestCPane.templateActivator,
 									'tplChannelNetwork')
 
 						});
-				$("#btnManageNetwork").click(
+				$("#tdManageNetwork").click(
 						function() {
-							selectMenu('btnManageNetwork');
+							selectMenu('tdManageNetwork');
 							return myCallBack(myGestCPane.templateActivator,
 									'tplManageNetwork')
 
 						});
-				$("#btnViewDevice").click(
+				$("#tdViewDevice").click(
 						function() {
-							selectMenu('btnViewDevice');
+							selectMenu('tdViewDevice');
 							return myCallBack(myGestCPane.templateActivator,
 									'tplViewDevice')
 
 						});
 
 				function selectMenu(idSelected) {
-					$("#btnViewGraphNodes").addClass('menuUnselected');
-					$("#btnViewGraphNodes").removeClass('menuSelected');
+					$("#tdViewGraphNodes").addClass('menuUnselected');
+					$("#tdViewGraphNodes").removeClass('menuSelected');
 
-					$("#btnChannelNetwork").addClass('menuUnselected');
-					$("#btnChannelNetwork").removeClass('menuSelected');
+					$("#tdChannelNetwork").addClass('menuUnselected');
+					$("#tdChannelNetwork").removeClass('menuSelected');
 
-					$("#btnManageNetwork").addClass('menuUnselected');
-					$("#btnManageNetwork").removeClass('menuSelected');
+					$("#tdManageNetwork").addClass('menuUnselected');
+					$("#tdManageNetwork").removeClass('menuSelected');
 
-					$("#btnViewDevice").addClass('menuUnselected');
-					$("#btnViewDevice").removeClass('menuSelected');
+					$("#tdViewDevice").addClass('menuUnselected');
+					$("#tdViewDevice").removeClass('menuSelected');
 
 					$("#" + idSelected).addClass('menuSelected');
 					$("#" + idSelected).removeClass('menuUnselected');
 
 				}
 
-				$("#btnViewDevice").click();
+				$("#tdViewDevice").click();
 
 			});
-
-	
 </script>
 
 
@@ -173,12 +172,14 @@
 					<!-- end banner -->
 					<!-- horizontal navigation -->
 					<div id="nav1">
-						<ul>
-							<li style="border: none;"><a id="btnViewDevice" href="#" shape="rect"></a></li>
-							<li><a id="btnViewGraphNodes" href="#" shape="rect"></a></li>
-							<li><a id="btnChannelNetwork" href="#" shape="rect"></a></li>
-							<li><a id="btnManageNetwork" href="#" shape="rect"></a></li>
-						</ul>
+						<table>
+							<tr>
+								<td id="tdViewDevice"><p id="btnViewDevice"></p></td>
+								<td id="tdViewGraphNodes"><p id="btnViewGraphNodes"></p></td>
+								<td id="tdChannelNetwork"><p id="btnChannelNetwork"></p></td>
+								<td id="tdManageNetwork"><p id="btnManageNetwork"></p></td>
+							</tr>
+						</table>
 					</div>
 					<!-- end horizontal navigation -->
 					<!--  content -->
@@ -191,7 +192,9 @@
 			</div>
 			<div id="footerWrapper">
 				<div id="footer">
-					Gal Version:&nbsp;<span id="spGalVersion"></span>&nbsp;Network channel:&nbsp;<span id="spChannelRadioHP"></span>&nbsp;Status of the Network:&nbsp;<span id="spZigBeeState"></span>			
+					Gal Version:&nbsp;<span id="spGalVersion"></span>&nbsp;Network
+					channel:&nbsp;<span id="spChannelRadioHP"></span>&nbsp;Status of
+					the Network:&nbsp;<span id="spZigBeeState"></span>
 				</div>
 			</div>
 		</div>

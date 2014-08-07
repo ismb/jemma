@@ -808,24 +808,23 @@
 			    sys.parameters({stiffness:1000, repulsion:1.000, gravity:false, dt:0.0,friction: '1.0',fps:1,precision :1});
 			    sys.renderer = Renderer("#sitemap");
 			    sys.graft(Nodes);
-			    $('#sitemap').width($('#content').width()-50);
-			    $('#sitemap').heigth(350);
+			    //$('#sitemap').width($('#content').width()-50);
+			    $('#sitemap').height(350);
 			    }
 			});
 		  })
 		})(this.jQuery)
 	</script>
-	<div id="arbor">
-		<div id="nav"></div>
-		<table align="center">
+	<div id="arbor" style="margin: 0px auto; width: 100%;">
+		<table style="width: 100%; margin: 0px auto;">
 			<tr>
-				<td><canvas id="sitemap" width="90" height="70"
-						style="border: 1px solid black; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;"></canvas></td>
+				<td><canvas id="sitemap"
+						style="width: 100%; height: 100%; border: 1px solid black; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;"></canvas></td>
 			</tr>
 		</table>
 	</div>
-	<div>
-		<table align="center">
+	<div style="margin: 0 auto;">
+		<table style="margin: 0 auto;">
 			<tr>
 				<td valign="top">
 					<table cellspacing="5" cellpadding="1"
