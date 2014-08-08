@@ -55,6 +55,7 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeMngrService;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclException;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationClient;
@@ -1431,9 +1432,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							List outputClusters = sd.getApplicationOutputCluster();
 							List inputClusters = sd.getApplicationInputCluster();
 
-							// TODO the following input clusters have to be
-							// configurable
-							// from Config Admin or props file
+							// TODO NB: the following input clusters have to be configurable from Config Admin or props file
 
 							outputClusters.add(new Integer(ZclSimpleMeteringClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclMeterIdentificationClient.CLUSTER_ID));
@@ -1442,19 +1441,18 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
-
+							outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclDoorLockClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclAirQualityClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclWindowCoveringClient.CLUSTER_ID));
 
 							if (enableEnergyAtHomeClusters) {
 								// This is the list of Client side clusters
-								// supported by
-								// E@H
+								// supported by E@H
 								outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
 								outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
-								outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
 							}
 
 							if (enableAllClusters) {
@@ -1482,7 +1480,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 								inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 							}
 							/*
-							 * Ho cambiato il valore di timeout perch&egrave;
+							 * Ho cambiato il valore di timeout perchè grave;
 							 * 100ms &egrave; troppo poco [Marco Nieddu]
 							 */
 							localEndpoint = gateway.configureEndpoint(10000, sd);
