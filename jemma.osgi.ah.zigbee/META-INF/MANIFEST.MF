@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406030229227
-Build-Jdk: 1.6.0_45
-Built-By: csto625
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: ZigBee Network Manager
@@ -53,17 +50,28 @@ Export-Package: org.energy_home.jemma.ah.zigbee;uses:="org.energy_home.j
  ll,org.energy_home.jemma.ah.zigbee,org.energy_home.jemma.ah.hac,org.ene
  rgy_home.jemma.ah.zigbee.zcl.lib.types,org.energy_home.jemma.ah.zigbee.
  zcl.cluster.general";version="1.0.0",org.energy_home.jemma.ah.zigbee.zc
- l.lib;uses:="org.energy_home.jemma.ah.zigbee.zcl,org.energy_home.jemma.
- zgd.jaxb,org.energy_home.jemma.ah.zigbee,org.energy_home.jemma.ah.hac,o
- rg.energy_home.jemma.ah.hac.lib,org.slf4j,org.energy_home.jemma.ah.zigb
- ee.zcl.lib.types,org.energy_home.jemma.ah.zigbee.zcl.cluster.measuremen
- t,org.energy_home.jemma.ah.zigbee.zcl.cluster.zll,org.energy_home.jemma
- .ah.zigbee.zcl.cluster.security,org.energy_home.jemma.ah.zigbee.zcl.clu
- ster.metering,org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac,org.ener
- gy_home.jemma.ah.zigbee.zcl.cluster.general,org.energy_home.jemma.ah.zi
- gbee.zcl.cluster.eh";version="3.0.0",org.energy_home.jemma.ah.zigbee.zc
- l.lib.types;uses:="org.energy_home.jemma.ah.zigbee.zcl,org.energy_home.
- jemma.ah.zigbee";version="3.0.0"
+ l.cluster.closures;uses:="org.energy_home.jemma.ah.zigbee.zcl,org.energ
+ y_home.jemma.ah.zigbee,org.energy_home.jemma.ah.zigbee.zcl.lib.types,or
+ g.energy_home.jemma.ah.cluster.zigbee.closures,org.energy_home.jemma.ah
+ .zigbee.zcl.lib,org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.h
+ ac.lib";version="1.0.0",org.energy_home.jemma.ah.zigbee.zcl.cluster.wul
+ ian;uses:="org.energy_home.jemma.ah.zigbee.zcl,org.energy_home.jemma.ah
+ .zigbee.zcl.lib,org.energy_home.jemma.ah.zigbee,org.energy_home.jemma.a
+ h.hac,org.energy_home.jemma.ah.zigbee.zcl.lib.types,org.energy_home.jem
+ ma.ah.cluster.zigbee.wulian";version="1.0.0",org.energy_home.jemma.ah.z
+ igbee.zcl.lib;uses:="org.energy_home.jemma.ah.zigbee.zcl,org.energy_hom
+ e.jemma.zgd.jaxb,org.energy_home.jemma.ah.zigbee,org.energy_home.jemma.
+ ah.hac,org.energy_home.jemma.ah.hac.lib,org.slf4j,org.energy_home.jemma
+ .ah.zigbee.zcl.lib.types,org.energy_home.jemma.ah.zigbee.zcl.cluster.me
+ asurement,org.energy_home.jemma.ah.zigbee.zcl.cluster.zll,org.energy_ho
+ me.jemma.ah.zigbee.zcl.cluster.security,org.energy_home.jemma.ah.zigbee
+ .zcl.cluster.closures,org.energy_home.jemma.ah.zigbee.zcl.cluster.wulia
+ n,org.energy_home.jemma.ah.zigbee.zcl.cluster.metering,org.energy_home.
+ jemma.ah.zigbee.zcl.cluster.hvac,org.energy_home.jemma.ah.zigbee.zcl.cl
+ uster.general,org.energy_home.jemma.ah.zigbee.zcl.cluster.eh";version="
+ 3.0.0",org.energy_home.jemma.ah.zigbee.zcl.lib.types;uses:="org.energy_
+ home.jemma.ah.zigbee.zcl,org.energy_home.jemma.ah.zigbee";version="3.0.
+ 0"
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent,edu.emory
  .mathcs.backport.java.util.concurrent.locks,org.eclipse.equinox.interna
  l.util.timer;version="[1.0,2)",org.eclipse.osgi.framework.console;versi
@@ -86,6 +94,15 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,edu.emory
  service.component;version="[1.1,2)",org.osgi.service.device;version="[1
  .1,2)",org.osgi.service.event;version="[1.2,2)",org.osgi.service.prefs;
  version="1.1.0",org.slf4j;version="[1.7.7,2)"
+Include-Resource: OSGI-INF/metatype/metatype.xml=OSGI-INF/metatype/metat
+ ype.xml,OSGI-INF/zbconsole.xml=OSGI-INF/zbconsole.xml,OSGI-INF/zigbee.x
+ ml=OSGI-INF/zigbee.xml,OSGI-INF/l10n/bundle_it.properties=OSGI-INF/l10n
+ /bundle_it.properties,OSGI-INF/l10n/bundle.properties=OSGI-INF/l10n/bun
+ dle.properties
+Private-Package: org.energy_home.jemma.ah.internal.utils,org.energy_home
+ .jemma.ah.internal.zigbee
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ easymock-2.4.jar

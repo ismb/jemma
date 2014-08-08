@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406030188849
-Build-Jdk: 1.6.0_45
-Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.javagal.layers.presentation.Acti
  vator
 Bundle-ManifestVersion: 2
@@ -21,4 +18,15 @@ Import-Package: gnu.io;resolution:=optional;version="1.0.0",javax.xml.bi
  3)",org.apache.commons.lang3;version="3.3.2",org.energy_home.jemma.zgd.
  jaxb;version="[1.0,2)",org.osgi.framework;version="[1.5,2)",org.osgi.ut
  il.tracker;version="1.4.2",org.slf4j;version="[1.7.7,2)"
+Include-Resource: config.properties=src/main/resources/config.properties
+ ,mapPanId.properties=src/main/resources/mapPanId.properties
+Private-Package: org.energy_home.jemma.javagal.layers.data.interfaces,or
+ g.energy_home.jemma.javagal.layers,org.energy_home.jemma.javagal.launch
+ er,org.energy_home.jemma.javagal.layers.data.implementations.IDataLayer
+ Implementation,org.energy_home.jemma.javagal.layers.object,org.energy_h
+ ome.jemma.javagal.layers.data.implementations,org.energy_home.jemma.jav
+ agal.layers.business,.,org.energy_home.jemma.javagal.layers.presentatio
+ n,org.energy_home.jemma.javagal.layers.data.implementations.Utils,org.e
+ nergy_home.jemma.javagal.layers.business.implementations
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

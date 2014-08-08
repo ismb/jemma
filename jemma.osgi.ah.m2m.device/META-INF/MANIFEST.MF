@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406030176130
-Build-Jdk: 1.6.0_45
-Built-By: csto625
 Bundle-Activator: org.energy_home.jemma.osgi.ah.m2m.device.M2MDeviceActi
  vator
 Bundle-Category: Automation@Home
@@ -35,6 +32,20 @@ Import-Package: javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.
  sion="[1.0.0,1.1.0)",org.energy_home.jemma.utils.xml.jaxb;version="[1.0
  .0,1.1.0)",org.osgi.framework;version="[1.5,2)",org.slf4j;version="[1.7
  .7,2)"
+Include-Resource: .m2m_connection_schema_xjc_flag=src/main/resources/.m2
+ m_connection_schema_xjc_flag,schemas/jaxb_m2m_bindings.xml=src/main/res
+ ources/schemas/jaxb_m2m_bindings.xml,schemas/m2m_connection.xsd=src/mai
+ n/resources/schemas/m2m_connection.xsd,schemas/ah.xsd=src/main/resource
+ s/schemas/ah.xsd,schemas/m2m.xsd=src/main/resources/schemas/m2m.xsd,sch
+ emas/jaxb_m2m_connection_bindings.xml=src/main/resources/schemas/jaxb_m
+ 2m_connection_bindings.xml,.m2m_schema_xjc_flag=src/main/resources/.m2m
+ _schema_xjc_flag
+Private-Package: schemas,org.energy_home.jemma.internal.ah.m2m.device,or
+ g.energy_home.jemma.osgi.ah.m2m.device,.
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ stax-api-1.0-2.jar,
+ wstx-asl-3.2.3.jar,
+ JAXBNamespacePrefixMapper-2.2.4.jar
