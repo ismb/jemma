@@ -42,7 +42,7 @@ import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
-import org.energy_home.jemma.javagal.layers.object.MyThread;
+import org.energy_home.jemma.javagal.layers.object.MyRunnable;
 import org.energy_home.jemma.javagal.layers.object.ParserLocker;
 import org.energy_home.jemma.javagal.layers.object.TypeMessage;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
@@ -110,9 +110,7 @@ public class DataFreescale implements IDataLayer {
 	 */
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
-
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-
 		// we don't know in advance which comm library is installed into the
 		// system.
 		boolean foundSerialLib = false;
@@ -201,6 +199,11 @@ public class DataFreescale implements IDataLayer {
 					}
 
 				}
+				if (executor != null)
+				{
+					executor.shutdown();
+					executor = null;
+				}
 				if (gal.getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-MessagesAnalizer Stopped!");
 			}
@@ -237,6 +240,11 @@ public class DataFreescale implements IDataLayer {
 
 					}
 
+				}
+				if (executor != null)
+				{
+					executor.shutdown();
+					executor = null;
 				}
 				if (gal.getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-RS232-Receiver Stopped!");
@@ -441,14 +449,12 @@ public class DataFreescale implements IDataLayer {
 			apsmeGetConfirm(message);
 
 		}
-		
-		
+
 		/* MacGetPIBAttribute.Confirm */
 		else if (_command == FreescaleConstants.MacGetPIBAttributeConfirm) {
 			MacGetConfirm(message);
 		}
-		
-		
+
 		// ZDP-StartNwkEx.Confirm
 		else if (_command == FreescaleConstants.ZTCStartNwkExConfirm) {
 			zdpStartNwkExConfirm(message);
@@ -1195,9 +1201,6 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
-	
-	
-	
 	/**
 	 * @param message
 	 */
@@ -1223,6 +1226,7 @@ public class DataFreescale implements IDataLayer {
 			}
 		}
 	}
+
 	/**
 	 * @param message
 	 */
@@ -2273,7 +2277,7 @@ public class DataFreescale implements IDataLayer {
 						LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
 					gal.getNetworkcache().add(o);
 
-					Runnable thr = new MyThread(address) {
+					Runnable thr = new MyRunnable(address) {
 						@Override
 						public void run() {
 							Address _address = (Address) this.getParameter();
@@ -2351,7 +2355,6 @@ public class DataFreescale implements IDataLayer {
 
 								}
 								_newWrapperNode.reset_numberOfAttempt();
-								
 
 								if (!_newWrapperNode.isSleepy()) {
 									_newWrapperNode.set_discoveryCompleted(false);
@@ -2359,7 +2362,11 @@ public class DataFreescale implements IDataLayer {
 										_newWrapperNode.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
 									}
 									if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-										/*Starting immediately a ForcePig in order to retrieve the LQI informations on the new node*/
+										/*
+										 * Starting immediately a ForcePig in
+										 * order to retrieve the LQI
+										 * informations on the new node
+										 */
 										_newWrapperNode.setTimerForcePing(1);
 									}
 								} else {
@@ -2755,7 +2762,7 @@ public class DataFreescale implements IDataLayer {
 								gal.getNetworkcache().get(index).setTimerForcePing(1);
 								return status;
 							} else
-								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage() );
+								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
 						}
 
 					} else {
@@ -4511,7 +4518,6 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public synchronized void destroy() {
 		destroy = true;
-
 	}
 
 	@Override
@@ -4522,71 +4528,64 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public String MacGetPIBAttributeSync(long timeout, short _AttID) throws Exception {
 
-			ShortArrayObject _res = new ShortArrayObject();
-			_res.addByte((byte) _AttID);/* iId */
-			_res.addByte((byte) 0x00);/* iIndex */
-			_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.MacGetPIBAttributeRequest);/*
-																						 * StartSequence
-																						 * +
-																						 * Control
-																						 */
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.info("MacGetPIBAttribute.Request:" + _res.ToHexString());
+		ShortArrayObject _res = new ShortArrayObject();
+		_res.addByte((byte) _AttID);/* iId */
+		_res.addByte((byte) 0x00);/* iIndex */
+		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.MacGetPIBAttributeRequest);/*
+																							 * StartSequence
+																							 * +
+																							 * Control
+																							 */
+		if (gal.getPropertiesManager().getDebugEnabled()) {
+			LOG.info("MacGetPIBAttribute.Request:" + _res.ToHexString());
+		}
+
+		ParserLocker lock = new ParserLocker();
+
+		lock.setType(TypeMessage.MAC_GET);
+		lock.set_Key(String.format("%02X", _AttID));
+		Status status = new Status();
+		try {
+			synchronized (listLocker) {
+				listLocker.add(lock);
+			}
+			SendRs232Data(_res);
+			synchronized (lock) {
+				try {
+					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+						lock.wait(timeout);
+				} catch (InterruptedException e) {
+
+				}
+			}
+			status = lock.getStatus();
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
+			}
+		} catch (Exception e) {
+			synchronized (listLocker) {
+				if (listLocker.contains(lock))
+					listLocker.remove(lock);
 			}
 
-			ParserLocker lock = new ParserLocker();
+		}
 
-			lock.setType(TypeMessage.MAC_GET);
-			lock.set_Key(String.format("%02X", _AttID));
-			Status status = new Status();
-			try {
-				synchronized (listLocker) {
-					listLocker.add(lock);
+		if (status.getCode() == ParserLocker.INVALID_ID) {
+
+			LOG.error("Timeout expired in MacGetPIBAttribute.Request");
+
+			throw new GatewayException("Timeout expired in MacGetPIBAttribute.Request");
+		} else {
+			if (status.getCode() != 0) {
+				if (gal.getPropertiesManager().getDebugEnabled()) {
+					LOG.info("Returned Status: " + status.getCode());
 				}
-				SendRs232Data(_res);
-				synchronized (lock) {
-					try {
-						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-							lock.wait(timeout);
-					} catch (InterruptedException e) {
+				throw new GatewayException("Error on MacGetPIBAttribute.Request. Status code: " + status.getCode() + " Status Message: " + status.getMessage());
+			} else
+				return (String) lock.get_objectOfResponse();
+		}
 
-					}
-				}
-				status = lock.getStatus();
-				synchronized (listLocker) {
-					if (listLocker.contains(lock))
-						listLocker.remove(lock);
-				}
-			} catch (Exception e) {
-				synchronized (listLocker) {
-					if (listLocker.contains(lock))
-						listLocker.remove(lock);
-				}
-
-			}
-
-			if (status.getCode() == ParserLocker.INVALID_ID) {
-
-				LOG.error("Timeout expired in MacGetPIBAttribute.Request");
-
-				throw new GatewayException("Timeout expired in MacGetPIBAttribute.Request");
-			} else {
-				if (status.getCode() != 0) {
-					if (gal.getPropertiesManager().getDebugEnabled()) {
-						LOG.info("Returned Status: " + status.getCode());
-					}
-					throw new GatewayException("Error on MacGetPIBAttribute.Request. Status code: " + status.getCode() + " Status Message: " + status.getMessage());
-				} else
-					return (String) lock.get_objectOfResponse();
-			}
-
-		
-		
-		
-		
-		
-		
-		
 	}
 
 }

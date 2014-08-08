@@ -3,176 +3,231 @@
 		$(document)
 				.ready(
 						function() {
-							
-							  
-							  $(document).bind("contextmenu",function(e){
-					              return false;
-					       });
+
 							var mydataAttributes = [];
 							/*0x96:NetWorkAddress*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0x96",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0x96",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.shortAddress,
-										lblValue : "0x" + dataBig.detail.value,
-									};
+													var currentAttribute = {
+														lblName : LANG.propertyName.shortAddress,
+														lblValue : "0x"
+																+ dataBig.detail.value,
+													};
 
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.shortAddress,
-										lblValue : dataBig.status.message,
-									};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.shortAddress,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							/*0x80:Short PanId*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0x80",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0x80",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.shortPanId,
-										lblValue : "0x" + dataBig.detail.value,
-									};
+													var currentAttribute = {
+														lblName : LANG.propertyName.shortPanId,
+														lblValue : "0x"
+																+ dataBig.detail.value,
+													};
 
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.shortPanId,
-										lblValue : dataBig.status.message,
-									};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.shortPanId,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							/*0x9A:Extended PanId*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0x9A",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0x9A",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.extendedPanId,
-										lblValue : "0x" + dataBig.detail.value,
-									};
+													var currentAttribute = {
+														lblName : LANG.propertyName.extendedPanId,
+														lblValue : "0x"
+																+ dataBig.detail.value,
+													};
 
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.extendedPanId,
-										lblValue : dataBig.status.message,
-									};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.extendedPanId,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							/*0xDA:DeviceType*/
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0xDA",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
+													var deviceTypeStr = "";
+													var _value = ''+dataBig.detail.value;
+													switch (_value) {
+													case "00":
+														deviceTypeStr = "Current device type configuration";
+														break;
+													case "01":
+														deviceTypeStr = "Coordinator";
+														break;
+													case "02":
+														deviceTypeStr = "Router";
+														break;
+													case "03":
+														deviceTypeStr = "End Device";
+														break;
+													
+													default:
+														deviceTypeStr = "Unknown Device";
+													break;
+													}
+													
+													var currentAttribute = {
+														lblName : LANG.propertyName.deviceType,
+														lblValue : "0x"
+																+ _value
+																+ " ("
+																+ deviceTypeStr
+																+ ")",
+													};
 
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0xDA",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.deviceType,
+														lblValue : dataBig.status.message,
+													};
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.deviceType,
-										lblValue : "0x" + dataBig.detail.value,
-									};
-
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.deviceType,
-										lblValue : dataBig.status.message,
-									};
-
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							/*0xA0:nwkSecurityLevel*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0xA0",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0xA0",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.securityLevel,
-										lblValue : "0x" + dataBig.detail.value,
-									};
+													var currentAttribute = {
+														lblName : LANG.propertyName.securityLevel,
+														lblValue : "0x"
+																+ dataBig.detail.value,
+													};
 
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.securityLevel,
-										lblValue : dataBig.status.message,
-									};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.securityLevel,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							/*0xDB:nwkSoftwareVersion*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0xDB",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0xDB",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
 
-									var currentAttribute = {
-										lblName : LANG.propertyName.stackSoftwareVersion,
-										lblValue : "0x" + dataBig.detail.value,
-									};
+													var currentAttribute = {
+														lblName : LANG.propertyName.stackSoftwareVersion,
+														lblValue : "0x"
+																+ dataBig.detail.value,
+													};
 
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.stackSoftwareVersion,
-										lblValue : dataBig.status.message,
-									};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.stackSoftwareVersion,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
-							/*0xE6:SasnetworkKey*/
+							/*
+							0xE6:SasnetworkKey
 							$.ajax(
 									{
 										url : DEFINEPATH.attributeInfoPath
@@ -198,33 +253,41 @@
 								reloadGridFromLocalArray("tblAttributes",
 										mydataAttributes);
 							});
-							
+							*/
 							
 							/*0xA1:NetworkKey*/
-							$.ajax(
-									{
-										url : DEFINEPATH.attributeInfoPath
-												+ "?id=0xA1",
-										type : 'GET'
-									}).done(function(data) {
-								var dataBig = json_parse(data);
-								if (dataBig.status.code == 0) {
-									var value = (''+dataBig.detail.value).split('').reverse().join('').substring(2,32);
-									var currentAttribute = {
-										lblName : LANG.propertyName.netKey,
-										lblValue : "0x" + value,
-									};
-								} else {
-									var currentAttribute = {
-										lblName : LANG.propertyName.netKey,
-										lblValue : dataBig.status.message,
-									};
+							$
+									.ajax(
+											{
+												url : DEFINEPATH.attributeInfoPath
+														+ "?id=0xA1",
+												type : 'GET'
+											})
+									.done(
+											function(data) {
+												var dataBig = json_parse(data);
+												if (dataBig.status.code == 0) {
+													var value = ('' + dataBig.detail.value)
+															.split('')
+															.reverse().join('')
+															.substring(2, 32);
+													var currentAttribute = {
+														lblName : LANG.propertyName.netKey,
+														lblValue : "0x" + value,
+													};
+												} else {
+													var currentAttribute = {
+														lblName : LANG.propertyName.netKey,
+														lblValue : dataBig.status.message,
+													};
 
-								}
-								mydataAttributes.push(currentAttribute);
-								reloadGridFromLocalArray("tblAttributes",
-										mydataAttributes);
-							});
+												}
+												mydataAttributes
+														.push(currentAttribute);
+												reloadGridFromLocalArray(
+														"tblAttributes",
+														mydataAttributes);
+											});
 
 							$("#tblAttributes").jqGrid(
 									{
@@ -239,7 +302,7 @@
 
 										}, {
 											name : 'lblValue',
-											width : 800,
+											width : 500,
 											align : "center"
 										}, ],
 										sortname : 'id',
@@ -248,13 +311,16 @@
 										sortorder : "desc",
 										autowidth : false,
 										subGrid : false
-										
+
 									});
-							
-							$("#tblAttributes").jqGrid('setGridHeight', $("#container").height());
+							$("#tblAttributes").jqGrid('setGridWidth',
+									($("#content").width() - 100));
+							$("#tblAttributes").jqGrid('setGridHeight',
+									$("#content").height());
+
 						});
 	</script>
 	<div id="container">
-		<table id="tblAttributes" style="width: 100%; height: 100%"></table>
+		<table id="tblAttributes" align="center"></table>
 	</div>
 </div>

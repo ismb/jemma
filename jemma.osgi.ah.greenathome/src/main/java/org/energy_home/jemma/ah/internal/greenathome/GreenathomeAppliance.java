@@ -735,7 +735,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			String value = "";
 
-			if (!peerAppliance.getDescriptor().getType().equals(SMARTINFO_APP_TYPE)) {
+			if (!peerAppliance.getDescriptor().getType()
+					.equals(SMARTINFO_APP_TYPE)) {
 				if (thermostatServer != null) {
 					float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
 					value = localTemperature + "^C";
