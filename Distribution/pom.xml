@@ -43,7 +43,8 @@
 				<executions>
 					<execution>
 						<id>distro-assembly</id>
-						<phase>package</phase>
+						<!---<phase>package</phase>-->
+						<phase>process-resources</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
