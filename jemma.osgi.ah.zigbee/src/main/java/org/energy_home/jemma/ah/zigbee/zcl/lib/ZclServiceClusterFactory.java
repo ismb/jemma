@@ -20,6 +20,8 @@ import java.util.HashMap;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;
@@ -54,6 +56,8 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclOccupancySensingClient;
@@ -121,6 +125,10 @@ public class ZclServiceClusterFactory {
 				ZclPowerConfigurationServer.class);
 		commonServerClusterMap.put(new Integer(ZclDoorLockServer.CLUSTER_ID),
 				ZclDoorLockServer.class);
+		commonServerClusterMap.put(new Integer(ZclAirQualityServer.CLUSTER_ID),
+				ZclAirQualityServer.class);
+		commonServerClusterMap.put(new Integer(ZclWindowCoveringServer.CLUSTER_ID),
+				ZclWindowCoveringServer.class);
 
 		commonClientClusterMap.put(new Integer(ZclBasicClient.CLUSTER_ID), ZclBasicClient.class);
 		commonClientClusterMap.put(new Integer(ZclIdentifyClient.CLUSTER_ID), ZclIdentifyClient.class);
@@ -156,6 +164,11 @@ public class ZclServiceClusterFactory {
 				ZclPowerConfigurationClient.class);
 		commonClientClusterMap.put(new Integer(ZclDoorLockClient.CLUSTER_ID),
 				ZclDoorLockClient.class);
+		commonClientClusterMap.put(new Integer(ZclAirQualityClient.CLUSTER_ID),
+				ZclAirQualityClient.class);
+		commonClientClusterMap.put(new Integer(ZclWindowCoveringClient.CLUSTER_ID),
+				ZclWindowCoveringClient.class);
+		
 
 		zllServerClusterMap.put(new Integer(ZclLightLinkIdentifyServer.CLUSTER_ID), ZclLightLinkIdentifyServer.class);
 		zllServerClusterMap.put(new Integer(ZclLightLinkLevelControlServer.CLUSTER_ID), ZclLightLinkLevelControlServer.class);
