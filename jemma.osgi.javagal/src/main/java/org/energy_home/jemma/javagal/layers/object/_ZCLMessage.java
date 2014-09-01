@@ -17,9 +17,10 @@ package org.energy_home.jemma.javagal.layers.object;
 
 /**
  * Class used to split an ApsMessage section Data into a Zcl Message.
- *
- * @author "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- *
+ * 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class _ZCLMessage {
 
@@ -38,7 +39,8 @@ public class _ZCLMessage {
 	public boolean Disable_DefaultResponse;
 
 	/**
-	 * Procedure that invert the direction bit of the Framecontrol Byte of a Zcl Header.
+	 * Procedure that invert the direction bit of the Framecontrol Byte of a Zcl
+	 * Header.
 	 */
 	public byte InvertDirectionBitOfFrameControl() {
 
@@ -50,7 +52,8 @@ public class _ZCLMessage {
 	}
 
 	/**
-	 * Procedure that disable the bit of the DefaultResponse into the Framecontrol Byte of a Zcl Header.
+	 * Procedure that disable the bit of the DefaultResponse into the
+	 * Framecontrol Byte of a Zcl Header.
 	 */
 	public byte SetBitDefaultResponse(boolean sendDefaltResponse) {
 		if (!sendDefaltResponse)
@@ -60,12 +63,15 @@ public class _ZCLMessage {
 	}
 
 	/**
-	 * Procedure that disable the bit of the DefaultResponse into the Framecontrol Byte of a Zcl Header.
-	 * @param sendDefaltResponse --> Value of the bit DefaultResponse
-	 * @param _FrameControl --> The FrameControl Byte
+	 * Procedure that disable the bit of the DefaultResponse into the
+	 * Framecontrol Byte of a Zcl Header.
+	 * 
+	 * @param sendDefaltResponse
+	 *            --> Value of the bit DefaultResponse
+	 * @param _FrameControl
+	 *            --> The FrameControl Byte
 	 */
-	public byte SetBitDefaultResponse(boolean sendDefaltResponse,
-			byte _FrameControl) {
+	public byte SetBitDefaultResponse(boolean sendDefaltResponse, byte _FrameControl) {
 
 		if (!sendDefaltResponse)
 			return ((byte) (_FrameControl | 4));
@@ -76,7 +82,9 @@ public class _ZCLMessage {
 
 	/**
 	 * Constructor that populate the class starting from a byte array
-	 * @param _Data --> The array on bytes that represent the Zcl Message
+	 * 
+	 * @param _Data
+	 *            --> The array on bytes that represent the Zcl Message
 	 * 
 	 */
 	public _ZCLMessage(byte[] _Data) {
@@ -115,10 +123,10 @@ public class _ZCLMessage {
 
 		}
 		Server_to_Client = ((FrameControl & 0x08) == 0x08) ? true : false;// Direction
-																		// Bit
+																			// Bit
 		Disable_DefaultResponse = ((FrameControl & 0x10) == 0x10) ? true : false;// Disable
-																				// Disable_DefaultResponse
-																				// Bit
+																					// Disable_DefaultResponse
+																					// Bit
 
 	}
 }
