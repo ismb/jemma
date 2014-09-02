@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406885948465
+Bnd-LastModified: 1407317447598
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.osgi.ah.hap.client.HapCoreServic

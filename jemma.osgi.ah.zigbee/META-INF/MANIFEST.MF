@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1406886016665
+Bnd-LastModified: 1407317545431
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-Category: Automation@Home
