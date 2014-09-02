@@ -180,6 +180,10 @@ public class ZclServiceClusterFactory {
 		// Wulian Clusters
 		wulianClientClusterMap.put(new Integer(ZclIRTransmitterClient.CLUSTER_ID & 0xffff), ZclIRTransmitterClient.class);
 		wulianServerClusterMap.put(new Integer(ZclIRTransmitterServer.CLUSTER_ID & 0xffff), ZclIRTransmitterServer.class);
+	
+	
+		
+
 	}
 
 	public static ZclServiceCluster getCluster(int clusterSide, Integer profileId, Integer clusterId) {
