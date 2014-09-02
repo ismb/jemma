@@ -211,6 +211,7 @@ public class DataFreescale implements IDataLayer {
 
 		};
 		thrAnalizer.setName("TH-MessagesAnalizer");
+		thrAnalizer.setPriority(Thread.MAX_PRIORITY);
 		thrAnalizer.start();
 
 		Thread thrReceiver = new Thread() {
@@ -254,6 +255,7 @@ public class DataFreescale implements IDataLayer {
 
 		};
 		thrReceiver.setName("TH-RS232-Receiver");
+		thrReceiver.setPriority(Thread.MAX_PRIORITY);
 		thrReceiver.start();
 
 	}
@@ -1595,7 +1597,6 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						ServiceDescriptor _toRes = new ServiceDescriptor();
 						if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
-
 							SimpleDescriptor _sp = new SimpleDescriptor();
 							_sp.setApplicationProfileIdentifier(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
 							_sp.setApplicationDeviceIdentifier(DataManipulation.toIntFromShort((byte) message[11], (byte) message[10]));

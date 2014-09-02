@@ -209,8 +209,8 @@ public class GalController {
 				BufferedWriter bufferFileWriter = null;
 
 				try {
-					LOG.error("********GAL node is not responding...Starting recovery procedue. Wait...");
-					LOG.error("********STARTING RECOVERY...");
+					LOG.error("\n\r********GAL node is not responding...Starting recovery procedue. Wait...");
+					LOG.error("\n\r********STARTING RECOVERY...");
 
 					/* Gal is not Responding */
 					File f = new File(filenamelog);
@@ -218,12 +218,12 @@ public class GalController {
 						try {
 							f.createNewFile();
 						} catch (IOException e2) {
-							LOG.error("Error creating file log: " + filenamelog);
+							LOG.error("\n\rError creating file log: " + filenamelog);
 						}
 
 					FileWriter fileWriter = new FileWriter(f, true);
 					bufferFileWriter = new BufferedWriter(fileWriter);
-					fileWriter.append(new Date(System.currentTimeMillis()).toString() +  "STARTING RECOVERY");
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() +  "STARTING RECOVERY");
 
 					/* Used for reset GAL */
 					if (DataLayer != null) {
@@ -292,7 +292,7 @@ public class GalController {
 					}
 					LOG.error("********RECOVERY DONE!");
 
-					fileWriter.append(new Date(System.currentTimeMillis()).toString() +  "RECOVERY DONE!");
+					fileWriter.append("\n\r"+new Date(System.currentTimeMillis()).toString() +  "RECOVERY DONE!");
 					return;
 				} catch (Exception e1) {
 					LOG.error("Error resetting GAL");
