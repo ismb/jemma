@@ -104,6 +104,11 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	private ZigBeeManagerImpl zigbeeManager;
 	private NodeDescriptor node = null;
 	private NodeServices nodeServices;
+	private Hashtable props;
+
+	public Hashtable getProps() {
+		return props;
+	}
 
 	public ZigBeeDeviceImpl(ZigBeeManagerImpl zigbeeManager, Timer timer, ServiceDescriptor service) {
 		this.zigbeeManager = zigbeeManager;
@@ -111,12 +116,13 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		this.service = service;
 	}
 
-	public ZigBeeDeviceImpl(ZigBeeManagerImpl zigbeeManager, Timer timer, NodeServices nodeServices, NodeDescriptor node, ServiceDescriptor service) {
+	public ZigBeeDeviceImpl(ZigBeeManagerImpl zigbeeManager, Timer timer, NodeServices nodeServices, NodeDescriptor node, ServiceDescriptor service, Hashtable props) {
 		this.zigbeeManager = zigbeeManager;
 		this.timer = timer;
 		this.service = service;
 		this.node = node;
 		this.nodeServices = nodeServices;
+		this.props = props;
 	}
 
 	/**

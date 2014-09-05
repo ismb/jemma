@@ -42,6 +42,6 @@ public class ZclSmartPlugApplianceFactory extends DriverApplianceFactory impleme
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(|(zigbee.device.device.id=1284)(zigbee.device.device.id=81)))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(|(zigbee.device.device.id=1284)(zigbee.device.device.id=81)))";
 	}
 }

@@ -6,8 +6,10 @@ import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
+import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
+import org.osgi.service.device.Driver;
 
-public class ZclWindowCoveringApplianceFactory {
+public class ZclWindowCoveringApplianceFactory extends DriverApplianceFactory implements Driver {
 
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.windowcovering";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Window Covering";
@@ -25,6 +27,6 @@ public class ZclWindowCoveringApplianceFactory {
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=514))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(zigbee.device.device.id=514))";
 	}
 }

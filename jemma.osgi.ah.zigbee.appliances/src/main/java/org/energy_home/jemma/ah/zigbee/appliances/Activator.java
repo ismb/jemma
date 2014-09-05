@@ -28,6 +28,7 @@ public class Activator implements BundleActivator {
 	private Vector applicationFactories = new Vector();
 
 	public void start(BundleContext bc) throws Exception {
+		
 		/**
 		 * @brief adding Appliance Factory here
 		 * bitronhome SMART-PLUG and Remote COntrol  by ISMB-Pert   
@@ -35,21 +36,33 @@ public class Activator implements BundleActivator {
 		applicationFactories.add(new ZclBitronhomeSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclBitronhomeRemoteControlApplianceFactory());
 		applicationFactories.add(new ZclURMETTemeratureHumidityApplianceFactory());
-		applicationFactories.add(new ZclURMETSmokeDetectorSirenApplianceFactory());
+		/*Marco da inserire LDAP corretto*/
+		//applicationFactories.add(new ZclURMETSmokeDetectorSirenApplianceFactory());
 		/**
 		 * Ends bitronhome 
 		 */
 		// applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
 		applicationFactories.add(new ZigbeeMeteringApplianceFactory());
-		applicationFactories.add(new ZclZinApplianceFactory());
+		
+		/*Marco, il driver sottostante è errato*/
+		//applicationFactories.add(new ZclZinApplianceFactory());
 		// applicationFactories.add(new Zcl4NoksSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclThermostatApplianceFactory());
 		applicationFactories.add(new Zcl4NoksThermostatApplianceFactory());
 		applicationFactories.add(new ZclRangeExtenderApplianceFactory());
-		applicationFactories.add(new ZclDimmableLightApplianceFactory());
+		//applicationFactories.add(new ZclDimmableLightApplianceFactory());
 		applicationFactories.add(new ZclColorLightApplianceFactory());
 		applicationFactories.add(new ZclIASZoneApplianceFactory());
+		
+		/*Marco*/
+		applicationFactories.add(new ZclUbisysDimmableLightApplianceFactory());
+		applicationFactories.add(new ZclUbisysDrimmerSwitchApplianceFactory());
+		applicationFactories.add(new ZclWindowCoveringApplianceFactory());
+		
+
+
+		
 		Iterator it = applicationFactories.iterator();
 
 		while (it.hasNext()) {

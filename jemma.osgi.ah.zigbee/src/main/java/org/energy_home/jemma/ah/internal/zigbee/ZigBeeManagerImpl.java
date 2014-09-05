@@ -650,9 +650,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	private void nodeDiscovered(Address a) {
-		if (enableDiscoveryLogs)
-			this.printTables();
-
 		String nodePid = getNodePid(a);
 		Vector devices = (Vector) this.getDevices(nodePid);
 		if (devices == null) {
@@ -709,49 +706,40 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		}
 	}
 
-	private void printTables() {
-		Collection nodes = getNodes();
-
-		log.debug("devices (" + nodes.size() + "):");
-
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
-			Vector devices = (Vector) iterator.next();
-			for (Iterator iterator2 = devices.iterator(); iterator2.hasNext();) {
-				ZigBeeDeviceImpl device = (ZigBeeDeviceImpl) iterator2.next();
-				if (enableDiscoveryLogs)
-					log.debug("\t" + getIeeeAddressHex(device.getServiceDescriptor().getAddress()));
-			}
-		}
+	public void printTables() {
+		StringBuilder info = new StringBuilder();
 		synchronized (inProcessNode) {
-			log.debug("inProcessNode (" + inProcessNode.size() + "):");
+			info.append("\n\rinProcessNode (" + inProcessNode.size() + "):");
 
 			for (Iterator iterator = inProcessNode.iterator(); iterator.hasNext();) {
-				log.debug("\t" + ((InstallationStatus) iterator.next()).toString());
+				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
 		synchronized (discoveredNodesQueue) {
-			log.debug("discoveredNodesQueue(" + discoveredNodesQueue.size() + "):");
+			info.append("\n\rdiscoveredNodesQueue(" + discoveredNodesQueue.size() + "):");
 
 			for (Iterator iterator = discoveredNodesQueue.iterator(); iterator.hasNext();) {
-				log.debug("\t" + ((InstallationStatus) iterator.next()).toString());
+				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
 		synchronized (devicesUnderInstallation) {
-			log.debug("devicesUnderInstallation (" + devicesUnderInstallation.size() + "):");
+			info.append("\n\rdevicesUnderInstallation (" + devicesUnderInstallation.size() + "):");
 
 			for (Iterator iterator = devicesUnderInstallation.values().iterator(); iterator.hasNext();) {
-				log.debug("\t" + ((InstallationStatus) iterator.next()).toString());
+				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
 
 		synchronized (installedDevices) {
 
-			log.debug("installedDevices (" + installedDevices.size() + "):");
+			info.append("\n\rtinstalledDevices (" + installedDevices.size() + "):");
 
 			for (Iterator iterator = installedDevices.values().iterator(); iterator.hasNext();) {
-				log.debug("\t" + ((InstallationStatus) iterator.next()).toString());
+				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
+		
+		log.info(info.toString());
 	}
 
 	private void startNodeDiscoveryProcess(InstallationStatus installationStatus) {
@@ -1004,7 +992,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		for (int i = 0; i < activeEndpoints.size(); i++) {
 			ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(i);
 			try {
-				log.info("finalizeNode for EndPoint index:" + i + " -- EndPoint number:" + ep.getEndPoint());
 				ServiceDescriptor service = installingDevice.getServiceDescriptor(ep.getEndPoint());
 				endPoints[i] = service.getSimpleDescriptor().getApplicationProfileIdentifier() + "." + service.getSimpleDescriptor().getApplicationDeviceIdentifier() + "." + new Short(service.getEndPoint());
 				ZigBeeDevice device = createDevice(installingDevice, service, endPoints);
@@ -1018,7 +1005,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					devices.add(device);
 				}
 			} catch (Exception e) {
-				log.error(getIeeeAddressHex(installingDevice.getAddress()) + ": Service descriptor is null while finalizing ep " + ep.getEndPoint() + ": skip it!");
+				log.error(getIeeeAddressHex(installingDevice.getAddress()) + ": Error creating device for ep " + ep.getEndPoint() + ": skip it!");
 				continue;
 
 			}
@@ -1092,7 +1079,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_CATEGORY, "ZigBee");
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_SERIAL, ieeeAddr);
-		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr);
+		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr + new Short(service.getEndPoint()));
 
 		deviceProps.put("zigbee.device.ep.id", new Short(service.getEndPoint()));
 		deviceProps.put("zigbee.device.profile.id", new Integer(profileId));
@@ -1101,9 +1088,15 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		deviceProps.put("zigbee.device.eps.number", new Integer(endPoints.length));
 
 		deviceProps.put("zigbee.device.manufacturer.id", node.getManufacturerCode());
-		ZigBeeDeviceImpl device = new ZigBeeDeviceImpl(this, timer, installingDevice.getNodeServices(), node, service);
+		ZigBeeDeviceImpl device = new ZigBeeDeviceImpl(this, timer, installingDevice.getNodeServices(), node, service, deviceProps);
 
 		// this registration starts the driver location process!
+		String InfoStr = "";
+		InfoStr = "Creating Device: " + ieeeAddr + "\n\r";
+		for (Object key : deviceProps.keySet()) {
+			InfoStr += ((String) key + ":" + deviceProps.get(key) + "\n\r");
+		}
+		log.info(InfoStr);
 		ServiceRegistration deviceServiceReg = ctxt.getBundleContext().registerService(ZigBeeDevice.class.getName(), device, deviceProps);
 
 		Vector deviceRegs = null;
@@ -1221,13 +1214,24 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void noDriverFound(ZigBeeDevice device) {
-		log.error("no driver found for device " + device.getIeeeAddress());
+		String InfoStr = "";
+		InfoStr = "no driver found for device:" + device.getIeeeAddress() + "\n\r";
+		for (Object key : ((ZigBeeDeviceImpl) device).getProps().keySet()) {
+			InfoStr += ((String) key + ":" + ((ZigBeeDeviceImpl) device).getProps().get(key) + "\n\r");
+		}
+		log.error(InfoStr);
 	}
 
 	public void attach(ZigBeeDevice device) {
 		// a driver has been attached to the device.
 		try {
+			String InfoStr = "Created device:" + device.getIeeeAddress() + "\n\r";
+			for (Object key : ((ZigBeeDeviceImpl) device).getProps().keySet()) {
+				InfoStr += ((String) key + ":" + ((ZigBeeDeviceImpl) device).getProps().get(key) + "\n\r");
+			}
+			log.info(InfoStr);
 			add(device);
+
 		} catch (Exception e) {
 			log.error("element not present in installing Devices list");
 		}

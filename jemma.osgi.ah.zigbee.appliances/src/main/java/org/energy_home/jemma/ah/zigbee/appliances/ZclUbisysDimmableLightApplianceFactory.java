@@ -9,10 +9,10 @@ import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
 import org.osgi.service.device.Driver;
 
-public class ZclDoorLockApplianceFactory extends DriverApplianceFactory implements Driver {
+public class ZclUbisysDimmableLightApplianceFactory extends DriverApplianceFactory implements Driver {
 
-	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.lockdoor";
-	public static final String APPLIANCE_FRIENDLY_NAME = "Door Lock";
+	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.dimmablelight";
+	public static final String APPLIANCE_FRIENDLY_NAME = "Dimmable Light";
 	public static final String DEVICE_TYPE = "ZigBee";
 
 	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
@@ -23,10 +23,11 @@ public class ZclDoorLockApplianceFactory extends DriverApplianceFactory implemen
 	}
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
-		return new ZclDoorLockAppliance(pid, config);
+		return new ZclUbisysDimmableLightAppliance(pid, config);
 	}
 
+	@Override
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=10))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(zigbee.device.device.id=257)(zigbee.device.manufacturer.id=4338))";
 	}
 }
