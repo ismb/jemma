@@ -29,10 +29,13 @@ then
   echo "Maven is not installed."
   sleep 4
   echo "Start Maven download"
+  sleep 2
   sudo apt-get install maven
   sudo "Finished installation"
+  
 fi  
 echo "Start compiling JEMMA"
+sleep 1
 mvn clean package eclipse:eclipse -D eclipse.pde install
 echo "Finished."
 sleep 1
