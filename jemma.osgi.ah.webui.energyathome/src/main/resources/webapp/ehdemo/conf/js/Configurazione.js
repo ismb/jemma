@@ -465,7 +465,7 @@ Configurazione.ScegliIcona = function() {
 		//console.log(80, Configurazione.MODULE, "num icone = " + num + " nRow = " + nRow + " nCol = " + nCol);
 
 		dimW = Math.round($(window).width() * 0.5 / (nRow + 2));
-		dimH = Math.round($(window).height() * 0.7 / (nCol + 2));
+		dimH = Math.round($(window).height() * 0.5 / (nCol + 2));
 
 		if (dimH > dimW){
 			dim = dimW;
@@ -494,7 +494,6 @@ Configurazione.ScegliIcona = function() {
 			}
 		}
 	}
-
 	$("#ScegliIconaDiv").height(Configurazione.hDivIcona);
 	$("#ScegliIconaDiv").width(Configurazione.wDivIcona);
 	$("#ScegliIconaDiv").show();

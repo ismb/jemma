@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1407317426231
+Bnd-LastModified: 1409670414214
 Build-Jdk: 1.6.0_45
 Built-By: Administrator
 Bundle-Category: Automation@Home
@@ -10,30 +10,34 @@ Bundle-SymbolicName: jemma.osgi.ah.hac.lib;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 3.1.4
 Created-By: Apache Maven Bundle Plugin
-Export-Package: org.energy_home.jemma.ah.cluster.ah;uses:="org.energy_ho
- me.jemma.ah.hac";version="3.0.1",org.energy_home.jemma.ah.cluster.zigbe
- e.closures;uses:="org.energy_home.jemma.ah.hac";version="1.0.0",org.ene
- rgy_home.jemma.ah.cluster.zigbee.custom;uses:="org.energy_home.jemma.ah
- .hac";version="3.0.0",org.energy_home.jemma.ah.cluster.zigbee.eh;uses:=
- "org.energy_home.jemma.ah.hac";version="3.1.0",org.energy_home.jemma.ah
- .cluster.zigbee.general;uses:="org.energy_home.jemma.ah.hac";version="3
- .1.0",org.energy_home.jemma.ah.cluster.zigbee.hvac;uses:="org.energy_ho
- me.jemma.ah.hac";version="3.0.0",org.energy_home.jemma.ah.cluster.zigbe
- e.measurement;uses:="org.energy_home.jemma.ah.hac";version="3.0.0",org.
- energy_home.jemma.ah.cluster.zigbee.metering;uses:="org.energy_home.jem
- ma.ah.hac";version="3.1.0",org.energy_home.jemma.ah.cluster.zigbee.secu
- rity;uses:="org.energy_home.jemma.ah.hac";version="3.0.0",org.energy_ho
- me.jemma.ah.cluster.zigbee.wulian;uses:="org.energy_home.jemma.ah.hac";
- version="1.0.0",org.energy_home.jemma.ah.cluster.zigbee.zll;uses:="org.
- energy_home.jemma.ah.hac";version="1.0.0",org.energy_home.jemma.ah.hac;
- uses:="org.osgi.service.device,org.osgi.service.cm";version="3.0.2",org
- .energy_home.jemma.ah.hac.lib;uses:="org.energy_home.jemma.ah.hac,org.e
- nergy_home.jemma.ah.hac.lib.ext,org.slf4j,org.energy_home.jemma.ah.clus
- ter.ah,org.osgi.service.device,org.osgi.util.tracker,org.osgi.framework
- ,org.osgi.service.cm";version="3.0.1",org.energy_home.jemma.ah.hac.lib.
- ext;uses:="org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.hac.li
- b,org.energy_home.jemma.ah.cluster.ah,org.osgi.framework,org.slf4j";ver
- sion="3.4.0"
+Export-Package: org.energy_home.jemma.ah.cluster.ah;version="3.0.1";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.closures;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.custom;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.eh;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.general;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.hvac;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.lube,
+ org.energy_home.jemma.ah.cluster.zigbee.measurement;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.metering;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.security;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.wulian;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.cluster.zigbee.zll;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
+ org.energy_home.jemma.ah.hac;version="3.0.2";uses:="org.osgi.service.device,org.osgi.service.cm",
+ org.energy_home.jemma.ah.hac.lib;version="3.0.1";
+  uses:="org.energy_home.jemma.ah.hac,
+   org.energy_home.jemma.ah.hac.lib.ext,
+   org.slf4j,
+   org.energy_home.jemma.ah.cluster.ah,
+   org.osgi.service.device,
+   org.osgi.util.tracker,
+   org.osgi.framework,
+   org.osgi.service.cm",
+ org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0";
+  uses:="org.energy_home.jemma.ah.hac,
+   org.energy_home.jemma.ah.hac.lib,
+   org.energy_home.jemma.ah.cluster.ah,
+   org.osgi.framework,
+   org.slf4j"
 Ignore-Package: java.lang.reflect,java.math,java.util,java.io,org.energy
  _home.jemma.ah.cluster.zigbee.general,org.energy_home.jemma.ah.hac,org.
  energy_home.jemma.ah.cluster.zigbee.measurement,org.energy_home.jemma.a

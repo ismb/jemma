@@ -35,7 +35,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
@@ -55,6 +54,7 @@ import org.energy_home.jemma.ah.zigbee.ZigBeeMngrService;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclException;
 import org.energy_home.jemma.ah.zigbee.zcl.ZclValidationException;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationClient;
@@ -73,6 +73,7 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclOccupancySensingClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclRelativeHumidityMeasurementClient;
@@ -999,33 +1000,27 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		List activeEndpoints = nodeServices.getActiveEndpoints();
 		Address a = nodeServices.getAddress();
 		String nodePid = getNodePid(a);
-
 		String[] endPoints = new String[activeEndpoints.size()];
-
 		for (int i = 0; i < activeEndpoints.size(); i++) {
 			ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(i);
-			ServiceDescriptor service = installingDevice.getServiceDescriptor(ep.getEndPoint());
-
-			endPoints[i] = service.getSimpleDescriptor().getApplicationProfileIdentifier() + "." + service.getSimpleDescriptor().getApplicationDeviceIdentifier() + "." + new Short(service.getEndPoint());
-		}
-		for (int i = 0; i < activeEndpoints.size(); i++) {
-			ActiveEndpoints ep = (ActiveEndpoints) activeEndpoints.get(i);
-			ServiceDescriptor service = installingDevice.getServiceDescriptor(ep.getEndPoint());
-			if (service == null) {
+			try {
+				log.info("finalizeNode for EndPoint index:" + i + " -- EndPoint number:" + ep.getEndPoint());
+				ServiceDescriptor service = installingDevice.getServiceDescriptor(ep.getEndPoint());
+				endPoints[i] = service.getSimpleDescriptor().getApplicationProfileIdentifier() + "." + service.getSimpleDescriptor().getApplicationDeviceIdentifier() + "." + new Short(service.getEndPoint());
+				ZigBeeDevice device = createDevice(installingDevice, service, endPoints);
+				if (device != null) {
+					// add the device to our db
+					Vector devices = this.getDevices(nodePid);
+					if (devices == null) {
+						devices = new Vector();
+						this.ieee2devices.put(nodePid, devices);
+					}
+					devices.add(device);
+				}
+			} catch (Exception e) {
 				log.error(getIeeeAddressHex(installingDevice.getAddress()) + ": Service descriptor is null while finalizing ep " + ep.getEndPoint() + ": skip it!");
 				continue;
-			}
 
-			ZigBeeDevice device = createDevice(installingDevice, service, endPoints);
-			if (device != null) {
-				// add the device to our db
-				Vector devices = this.getDevices(nodePid);
-				if (devices == null) {
-					devices = new Vector();
-					this.ieee2devices.put(nodePid, devices);
-				}
-
-				devices.add(device);
 			}
 		}
 	}
@@ -1234,7 +1229,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		try {
 			add(device);
 		} catch (Exception e) {
-			log.error("element not present in intstalling Devices list");
+			log.error("element not present in installing Devices list");
 		}
 	}
 
@@ -1430,9 +1425,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							List outputClusters = sd.getApplicationOutputCluster();
 							List inputClusters = sd.getApplicationInputCluster();
 
-							// TODO the following input clusters have to be
-							// configurable
-							// from Config Admin or props file
+							// TODO NB: the following input clusters have to be
+							// configurable from Config Admin or props file
 
 							outputClusters.add(new Integer(ZclSimpleMeteringClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclMeterIdentificationClient.CLUSTER_ID));
@@ -1441,18 +1435,18 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							outputClusters.add(new Integer(ZclApplianceControlClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclApplianceIdentificationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclApplianceEventsAndAlertsClient.CLUSTER_ID));
-
+							outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclPowerConfigurationClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclRelativeHumidityMeasurementClient.CLUSTER_ID));
 							outputClusters.add(new Integer(ZclDoorLockClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclAirQualityClient.CLUSTER_ID));
+							outputClusters.add(new Integer(ZclWindowCoveringClient.CLUSTER_ID));
 
 							if (enableEnergyAtHomeClusters) {
 								// This is the list of Client side clusters
-								// supported by
-								// E@H
+								// supported by E@H
 								outputClusters.add(new Integer(ZclBasicClient.CLUSTER_ID));
 								outputClusters.add(new Integer(ZclIdentifyClient.CLUSTER_ID));
-								outputClusters.add(new Integer(ZclOnOffClient.CLUSTER_ID));
 							}
 
 							if (enableAllClusters) {
@@ -1480,7 +1474,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 								inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 							}
 							/*
-							 * Ho cambiato il valore di timeout perch&egrave;
+							 * Ho cambiato il valore di timeout perch� grave;
 							 * 100ms &egrave; troppo poco [Marco Nieddu]
 							 */
 							localEndpoint = gateway.configureEndpoint(10000, sd);

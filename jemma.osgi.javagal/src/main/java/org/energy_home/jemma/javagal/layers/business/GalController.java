@@ -15,9 +15,13 @@
  */
 package org.energy_home.jemma.javagal.layers.business;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +38,7 @@ import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
-import org.energy_home.jemma.javagal.layers.object.MyThread;
+import org.energy_home.jemma.javagal.layers.object.MyRunnable;
 import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
 import org.energy_home.jemma.javagal.layers.object.ParserLocker;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
@@ -73,12 +77,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Actual JavaGal Controller. Only one instance of this object can exists at a
+ * JavaGal Controller. Only one instance of this object can exists at a
  * time. All clients can access this instance via their dedicated proxies (see
  * {@link org.energy_home.jemma.zgd.GalExtenderProxy}).
  * 
  * @author 
- *         "Ing. Marco Nieddu <marco.nieddu@consoft.it> or <marco.niedducv@gmail.com> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 
@@ -91,7 +95,8 @@ public class GalController {
 	// FIXME mass-rename logger to LOG when ready
 	private static final Logger LOG = LoggerFactory.getLogger(GalController.class);
 	private ApsMessageManager apsManager = null;
-
+	private SimpleDescriptor lastEndPoint = null;
+	private StartupAttributeInfo lastSai = null;
 	private MessageManager messageManager = null;
 
 	private ZdoManager zdoManager = null;
@@ -104,7 +109,6 @@ public class GalController {
 	PropertiesManager PropertiesManager = null;
 	private ManageMapPanId manageMapPanId;
 	private String networkPanID = null;
-
 
 	public String getNetworkPanID() {
 		return networkPanID;
@@ -164,11 +168,7 @@ public class GalController {
 				// FIXME why trow and catch directly in the same place ?
 				throw new Exception("No Platform found!");
 			} catch (Exception e) {
-				if (getPropertiesManager().getDebugEnabled()) // FIXME Silent
-																// exception if
-																// debug not
-																// enabled ???
-					LOG.error("Caught No Platform found", e);
+				LOG.error("Caught No Platform found", e);
 			}
 
 		/*
@@ -196,6 +196,117 @@ public class GalController {
 		if (getPropertiesManager().getDebugEnabled())
 			LOG.info("***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() + "***");
 
+	}
+
+	/**
+	 * recovery of the GAL,
+	 */
+	public synchronized void recoveryGAL() throws Exception {
+		MyRunnable thr = new MyRunnable(this) {
+			@Override
+			public void run() {
+				String filenamelog = System.getProperty("user.home") + File.separator + "GalLog.log";
+				BufferedWriter bufferFileWriter = null;
+
+				try {
+					LOG.error("\n\r********GAL node is not responding...Starting recovery procedue. Wait...");
+					LOG.error("\n\r********STARTING RECOVERY...");
+
+					/* Gal is not Responding */
+					File f = new File(filenamelog);
+					if (!f.exists())
+						try {
+							f.createNewFile();
+						} catch (IOException e2) {
+							LOG.error("\n\rError creating file log: " + filenamelog);
+						}
+
+					FileWriter fileWriter = new FileWriter(f, true);
+					bufferFileWriter = new BufferedWriter(fileWriter);
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() +  "STARTING RECOVERY");
+
+					/* Used for reset GAL */
+					if (DataLayer != null) {
+						if (getPropertiesManager().getDebugEnabled())
+							LOG.info("Starting reset...");
+						/* Stop all timers */
+						for (WrapperWSNNode x : getNetworkcache())
+							x.abortTimers();
+						getNetworkcache().clear();
+						/* Stop discovery and freshness */
+
+						/* Destroy Gal Node */
+						set_GalNode(null);
+
+						setGatewayStatus(GatewayStatus.GW_READY_TO_START);
+
+						if (DataLayer.getIKeyInstance().isConnected())
+							DataLayer.getIKeyInstance().disconnect();
+						DataLayer.destroy();
+						if (getPropertiesManager().getDebugEnabled())
+							LOG.info("Reset done!");
+					}
+					/* End of reset section */
+					if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
+						DataLayer = new DataFreescale((GalController) this.getParameter());
+						DataLayer.initialize();
+						try {
+
+							DataLayer.getIKeyInstance().initialize();
+						} catch (Exception e) {
+							DataLayer.getIKeyInstance().disconnect();
+							throw e;
+						}
+					} else
+						try {
+							throw new Exception("No Platform found!");
+						} catch (Exception e) {
+							LOG.error("Caught No Platform found", e);
+						}
+
+					if (DataLayer.getIKeyInstance().isConnected()) {
+						short _EndPoint = 0;
+						if (lastEndPoint == null) {
+							_EndPoint = configureEndpoint(PropertiesManager.getCommandTimeoutMS(), PropertiesManager.getSimpleDescriptorReadFromFile());
+							if (_EndPoint == 0)
+								throw new Exception("Error on configure endpoint");
+						} else {
+							_EndPoint = configureEndpoint(PropertiesManager.getCommandTimeoutMS(), lastEndPoint);
+							if (_EndPoint == 0)
+								throw new Exception("Error on configure endpoint");
+
+						}
+						Status st = null;
+						if (lastSai != null) {
+							st = startGatewayDevice(PropertiesManager.getCommandTimeoutMS(), -1, lastSai, false);
+
+						} else {
+							st = startGatewayDevice(PropertiesManager.getCommandTimeoutMS(), -1, PropertiesManager.getSturtupAttributeInfo(), false);
+						}
+						if (st.getCode() != GatewayConstants.SUCCESS)
+							throw new Exception("Error on starting gal" + st.getMessage());
+						else {
+
+							LOG.info("***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() + "***");
+						}
+					}
+					LOG.error("********RECOVERY DONE!");
+
+					fileWriter.append("\n\r"+new Date(System.currentTimeMillis()).toString() +  "RECOVERY DONE!");
+					return;
+				} catch (Exception e1) {
+					LOG.error("Error resetting GAL");
+				} finally {
+					try {
+						bufferFileWriter.close();
+					} catch (IOException e) {
+						LOG.error("Error closing file: " + filenamelog);
+					}
+				}
+
+			}
+		};
+		new Thread(thr).start();
 	}
 
 	/**
@@ -357,6 +468,7 @@ public class GalController {
 			throw new Exception("Simple Descriptor Out Of Memory");
 		} else {
 			short result = DataLayer.configureEndPointSync(timeout, desc);
+			lastEndPoint = desc;
 			return SerializationUtils.clone(result);
 		}
 	}
@@ -747,6 +859,7 @@ public class GalController {
 									}
 								}
 								if (_lockerStartDevice.getId() > 0) {
+									lastSai = sai;
 									if (PropertiesManager.getDebugEnabled())
 										LOG.info("Gateway Started now!");
 
@@ -818,6 +931,7 @@ public class GalController {
 					}
 
 					if (_lockerStartDevice.getId() > 0) {
+						lastSai = sai;
 						if (PropertiesManager.getDebugEnabled())
 							LOG.info("***Gateway Started now!****");
 					} else {
@@ -1019,19 +1133,17 @@ public class GalController {
 	public String APSME_GETSync(short attrId) throws Exception, GatewayException {
 		return DataLayer.APSME_GETSync(PropertiesManager.getCommandTimeoutMS(), attrId);
 	}
-	
-	
+
 	public String MacGetPIBAttributeSync(short attrId) throws Exception, GatewayException {
 		return DataLayer.MacGetPIBAttributeSync(PropertiesManager.getCommandTimeoutMS(), attrId);
 	}
-	
 
 	public void APSME_SETSync(short attrId, String value) throws Exception, GatewayException {
 		DataLayer.APSME_SETSync(PropertiesManager.getCommandTimeoutMS(), attrId, value);
 	}
 
 	public String NMLE_GetSync(short ilb, short iEntry) throws IOException, Exception, GatewayException {
-		String _value = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb,iEntry);
+		String _value = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), ilb, iEntry);
 		/* Refresh value of the PanId */
 		if (ilb == 80)
 			setNetworkPanID(_value);
@@ -1858,7 +1970,7 @@ public class GalController {
 
 		if (gatewayStatus == GatewayStatus.GW_RUNNING) {
 			/* Get The Network Address of the GAL */
-			Runnable thr = new MyThread(this) {
+			Runnable thr = new MyRunnable(this) {
 
 				@Override
 				public void run() {
@@ -1867,7 +1979,7 @@ public class GalController {
 					String _networkPanID = null;
 					while (_networkPanID == null) {
 						try {
-							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80,(short)0x00);
+							_networkPanID = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x80, (short) 0x00);
 						} catch (Exception e) {
 
 							LOG.error("Error retrieving the PanID of the Network!");
@@ -1880,7 +1992,7 @@ public class GalController {
 					String _NetworkAdd = null;
 					while (_NetworkAdd == null) {
 						try {
-							_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96,(short)0x00);
+							_NetworkAdd = DataLayer.NMLE_GetSync(PropertiesManager.getCommandTimeoutMS(), (short) 0x96, (short) 0x00);
 						} catch (Exception e) {
 
 							LOG.error("Error retrieving the Gal Network Address!");
@@ -1969,9 +2081,6 @@ public class GalController {
 						}
 
 					}
-					
-					
-					
 
 					if (!galNodeWrapper.isSleepy()) {
 						/* If the Node is NOT a sleepyEndDevice */

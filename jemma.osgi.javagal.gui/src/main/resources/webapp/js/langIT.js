@@ -77,14 +77,14 @@ var LANG = {
 	},
 	
 	propertyName: {
-		shortAddress:"Gal Short Address",
-		shortPanId:"Network Short PanID",
-		extendedPanId:"Network exteded PanID",
+		shortAddress:"Gal short address",
+		shortPanId:"Network short panID",
+		extendedPanId:"Network extended panID",
 		deviceType:"GAL device type",
 		securityLevel:"Network security level",
-		stackSoftwareVersion:"Stack Version",
-		networkKey:"Sas Network Key",
-		netKey:"Network Key"
+		stackSoftwareVersion:"Stack version",
+		networkKey:"Sas network key",
+		netKey:"Network key"
 		
 		
 		

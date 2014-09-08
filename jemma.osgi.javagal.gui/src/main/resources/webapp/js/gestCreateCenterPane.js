@@ -24,11 +24,8 @@ var jGGGestCenterPane = function(){ //spec, optionDB){
 			dataType:"html",
 			url: tmpFileToLoad //arrTplToImport[iCounter]
 		}).done(function(data){
-			/*$('#ghostDiv').empty();
-    		$("#ghostDiv").append(data);
-    		var childClones = $('#'+idTpl).children().clone(true,true);*/
-    		$('#center').empty();
-    		$('#center').append(data);
+    		$('#content').empty();
+    		$('#content').append(data);
     		
     		return that;
     	});

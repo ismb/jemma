@@ -29,7 +29,7 @@ public class ZclDoorLockAppliance extends ZclAppliance{
 			throws ApplianceException {
 		super(pid, config);
 
-		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_LOAD_CONTROL_DEVICE);
+		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_DOOR_LOCK);
 
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclDoorLockServer());

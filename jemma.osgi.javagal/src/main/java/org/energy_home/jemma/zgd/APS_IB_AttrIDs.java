@@ -15,18 +15,23 @@
  */
 package org.energy_home.jemma.zgd;
 
+/**
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ */
 public interface APS_IB_AttrIDs {
-	static final short	apsBindingTable				= 0xc1;
-	static final short	apsDesignatedCoordinator	= 0xc3;
-	static final short	apsChannelMask				= 0xc3;
-	static final short	apsUseExdendedPANID			= 0xc4;
-	static final short	apsGroupTable				= 0xc5;
-	static final short	apsNonmemberRadius			= 0xc6;
-	static final short	apsPermissionConfiguration	= 0xc7;
-	static final short	apsUseInsecureJoin			= 0xc8;
-	static final short	apsInterframeDelay			= 0xc9;
-	static final short	apsLastChannelEnergy		= 0xca;
-	static final short	apsLastChannelFailureRate	= 0xcb;
-	static final short	apsChannelTimer				= 0xcc;
-	static final short	apsMaxWindowSize			= 0xcd;
+	static final short apsBindingTable = 0xc1;
+	static final short apsDesignatedCoordinator = 0xc3;
+	static final short apsChannelMask = 0xc3;
+	static final short apsUseExdendedPANID = 0xc4;
+	static final short apsGroupTable = 0xc5;
+	static final short apsNonmemberRadius = 0xc6;
+	static final short apsPermissionConfiguration = 0xc7;
+	static final short apsUseInsecureJoin = 0xc8;
+	static final short apsInterframeDelay = 0xc9;
+	static final short apsLastChannelEnergy = 0xca;
+	static final short apsLastChannelFailureRate = 0xcb;
+	static final short apsChannelTimer = 0xcc;
+	static final short apsMaxWindowSize = 0xcd;
 }

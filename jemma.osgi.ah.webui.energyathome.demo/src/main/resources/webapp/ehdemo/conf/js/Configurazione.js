@@ -466,7 +466,7 @@ Configurazione.ScegliIcona = function() {
 		//console.log(80, Configurazione.MODULE, "num icone = " + num + " nRow = " + nRow + " nCol = " + nCol);
 
 		dimW = Math.round($(window).width() * 0.5 / (nRow + 2));
-		dimH = Math.round($(window).height() * 0.7 / (nCol + 2));
+		dimH = Math.round($(window).height() * 0.5 / (nCol + 2));
 
 		if (dimH > dimW){
 			dim = dimW;
@@ -767,6 +767,17 @@ Configurazione.VisElettrodomestici = function() {
 			val = "nd";
 		} else {
 			htmlStato = "<div class='StatoConnesso'>" + Msg.config["connesso"] + "</div>";
+			
+			//Codice x test
+			if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_PID] == "ah.app.3781220529323317"){
+				Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE] = {javaClass: "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended",
+																					  name: "IstantaneousDemands",
+																					  value: {javaClass: "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended",
+																						      LockState: false,
+																						      value: true}};
+
+				device_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE];
+			}
 
 			// if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE] == 1) {
 			// 		htmlStato = "<div class='StatoOn'>" + Msg.config["statoAcceso"] + "</div>";
@@ -780,8 +791,8 @@ Configurazione.VisElettrodomestici = function() {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
 				} else if (category_value == "40") {
-					val = parseFloat(device_value.value.LockState);
-					if (val == 1){
+					val = device_value.value.LockState;
+					if (val == true){
 						val = 'open';
 						imgDisp = "lockdoor_acceso.png";
 					} else {

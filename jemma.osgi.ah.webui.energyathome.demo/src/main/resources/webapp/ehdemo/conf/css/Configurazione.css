@@ -241,6 +241,7 @@ input[type=button]:hover {
 	top: 0%;
 	left: 20%;
 	background-color: white;
+	overflow:scroll;
 	border: solid 2px #3a8848;
 	border-radius: 4px;
 	-moz-border-radius: 4px; /* firefox */
