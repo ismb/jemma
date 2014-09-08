@@ -28,6 +28,6 @@ public class ZclUbisysDrimmerSwitchApplianceFactory extends DriverApplianceFacto
 
 	@Override
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(zigbee.device.device.id=260)(zigbee.device.manufacturer.id=4338))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=260)(zigbee.device.manufacturer.id=4338))";
 	}
 }

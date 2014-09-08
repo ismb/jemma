@@ -27,6 +27,6 @@ public class ZclWindowCoveringApplianceFactory extends DriverApplianceFactory im
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(zigbee.device.device.id=514))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=514))";
 	}
 }

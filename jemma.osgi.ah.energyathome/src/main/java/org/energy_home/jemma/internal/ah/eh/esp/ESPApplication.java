@@ -323,6 +323,8 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			deviceType = DeviceType.Other;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_DRIMMER_SWITCH))
 			deviceType = DeviceType.Other;
+		else if (epType.equals(IEndPointTypes.ZIGBEE_DOOR_LOCK))
+			deviceType = DeviceType.Other;
 		else {
 			LOG.warn("ESP unmanaged appliance type " + epType);
 			return null;

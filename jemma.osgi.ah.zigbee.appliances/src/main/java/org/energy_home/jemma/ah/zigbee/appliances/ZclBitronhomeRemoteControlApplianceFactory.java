@@ -61,7 +61,7 @@ public class ZclBitronhomeRemoteControlApplianceFactory extends DriverApplianceF
 	}
 
 	public String deviceMatchFilterString() {
-		String result = "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=6)(zigbee.device.manufacturer.id=0))"; 	
+		String result = "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=6))"; 	
 		return result; 
 		
 	}

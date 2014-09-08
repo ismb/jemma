@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
+import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.IlluminanceMeasurementServer;
@@ -105,6 +106,12 @@ public class AppliancesInitializationManager {
 		subscribe(serviceCluster, OnOffServer.ATTR_OnOff_NAME, installing);
 	}	
 	
+	
+	private void initDoorLockCluster(IServiceCluster serviceCluster, boolean installing) {
+		subscribe(serviceCluster, DoorLockServer.ATTR_DoorState_NAME, installing);
+	}
+	
+	
 	private void initTemperatureMeasurementCluster(IServiceCluster serviceCluster, boolean installing) {
 		subscribe(serviceCluster, TemperatureMeasurementServer.ATTR_MeasuredValue_NAME, installing);
 	}
@@ -130,6 +137,7 @@ public class AppliancesInitializationManager {
 	}
 	
 	public void initAppliance(IAppliance appliance, boolean installing) {
+
 		IEndPoint[] eps = appliance.getEndPoints();
 		if (eps != null) {
 			IEndPoint ep;
@@ -167,6 +175,11 @@ public class AppliancesInitializationManager {
 				sc = ep.getServiceCluster(ApplianceControlServer.class.getName());
 				if (sc != null) {
 					initApplianceControlCluster(sc, installing);
+				}
+				/*Added by Marco*/
+				sc = ep.getServiceCluster(DoorLockServer.class.getName());
+				if (sc != null) {
+					initDoorLockCluster(sc, installing);
 				}
 			}			
 		}

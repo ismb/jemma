@@ -44,6 +44,9 @@ public class ZclEndPointFactory {
 	
 	public static final int ZIGBEE_DRIMMER_SWITCH_ID = 0x0104;
 	
+	public static final int ZIGBEE_DOORLOCK_ID = 0x000A;
+	
+	
 	
 	private static String getEndPointType(int deviceId) {
 		switch (deviceId) {
@@ -72,7 +75,9 @@ public class ZclEndPointFactory {
 		case ZIGBEE_IAS_ZONE_ID:
 			return IEndPointTypes.ZIGBEE_IAS_ZONE;	
 		case ZIGBEE_DRIMMER_SWITCH_ID:
-			return IEndPointTypes.ZIGBEE_DRIMMER_SWITCH;	
+			return IEndPointTypes.ZIGBEE_DRIMMER_SWITCH;
+		case ZIGBEE_DOORLOCK_ID:
+				return IEndPointTypes.ZIGBEE_DOOR_LOCK;	
 		default:
 			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		

@@ -41,7 +41,7 @@ public class ZclURMETTemeratureHumidityApplianceFactory extends DriverApplianceF
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1022)(zigbee.device.profile.id=260)(zigbee.device.manufacturer.id=0))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1022)(zigbee.device.manufacturer.id=0))";
 
 	}
 /*

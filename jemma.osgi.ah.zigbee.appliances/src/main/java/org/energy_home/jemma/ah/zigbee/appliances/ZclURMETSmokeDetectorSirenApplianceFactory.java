@@ -41,7 +41,7 @@ public class ZclURMETSmokeDetectorSirenApplianceFactory extends DriverApplianceF
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(DEVICE_SERIAL=5149012990629360))";
+		return "(&(DEVICE_CATEGORY=ZigBee))";
 		
 		/*{zigbee.device.eps.number=1, 
 		zigbee.device.device.id=1026,
