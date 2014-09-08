@@ -73,6 +73,11 @@
 		<category icon="freezer.png" name="Indesit Fridge" pid="39"/>
 		<category icon="other.png" name="Door Lock" pid="40"/>
 		<category icon="thermostat.png" name="Reloc Temperature Sensor" pid="41"/>
+		<category icon="other.png" name="Ubisys Drimmer Switch" pid="42"/>
+		<category icon="other.png" name="Ubisys Dimmable Light" pid="43"/>
+		<category icon="other.png" name="Window Covering" pid="44"/>
+		
+		
 		
     </categories>
 	<rules>

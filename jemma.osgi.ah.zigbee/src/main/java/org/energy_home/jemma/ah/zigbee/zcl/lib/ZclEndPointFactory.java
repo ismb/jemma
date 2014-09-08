@@ -42,6 +42,9 @@ public class ZclEndPointFactory {
 	
 	public static final int ZIGBEE_IAS_ZONE_ID = 0x0402;
 	
+	public static final int ZIGBEE_DRIMMER_SWITCH_ID = 0x0104;
+	
+	
 	private static String getEndPointType(int deviceId) {
 		switch (deviceId) {
 		case ZIGBEE_ON_OFF_SWITCH_DEVICE_ID:
@@ -67,7 +70,9 @@ public class ZclEndPointFactory {
 		case ZIGBEE_TEMPERATURE_SENSOR_ID:
 			return IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR;	
 		case ZIGBEE_IAS_ZONE_ID:
-			return IEndPointTypes.ZIGBEE_IAS_ZONE;				
+			return IEndPointTypes.ZIGBEE_IAS_ZONE;	
+		case ZIGBEE_DRIMMER_SWITCH_ID:
+			return IEndPointTypes.ZIGBEE_DRIMMER_SWITCH;	
 		default:
 			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		

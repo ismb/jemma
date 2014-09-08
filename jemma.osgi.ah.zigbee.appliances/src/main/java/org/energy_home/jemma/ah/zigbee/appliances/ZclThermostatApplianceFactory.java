@@ -42,6 +42,6 @@ public class ZclThermostatApplianceFactory extends DriverApplianceFactory implem
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=769))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.profile.id=260)(zigbee.device.device.id=769))";
 	}
 }

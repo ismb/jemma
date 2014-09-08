@@ -37,10 +37,10 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 	private Filter classFilter = null;
 
 	protected boolean enableAutoInstall = false;
-	
+
 	HashMap trackedDevices = new HashMap();
-	HashMap appliance2tracker = new HashMap();	
-	
+	HashMap appliance2tracker = new HashMap();
+
 	void started(BundleContext bc) {
 		String enableAutoInstallStr = this.bc.getProperty("org.energy_home.jemma.ah.driver.autoinstall");
 		if (!isNullOrEmpty(enableAutoInstallStr)) {
@@ -51,11 +51,11 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			}
 		}
 	}
-	
+
 	private static boolean isNullOrEmpty(String s) {
 		return ((s == null) || (s.length() == 0));
 	}
-	
+
 	/**
 	 * Method used only by driver implementation (not used for {@code logical
 	 * appliances} factories)
@@ -89,25 +89,26 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 				record.deviceList.add(device);
 
 				appliance.start();
-				((DriverAppliance)appliance).attach(device);
+				((DriverAppliance) appliance).attach(device);
 
 				trackDevice(device, s);
 				if (appliance.isAvailable) {
 					config.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, appliance.getEndPointIds());
 					config.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, appliance.getEndPointTypes());
-					
-					Dictionary customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
-					if (customConfig != null) {				
+
+					Dictionary customConfig = ((DriverAppliance) record.appliance).getCustomConfiguration();
+					if (customConfig != null) {
 						for (Enumeration e = customConfig.keys(); e.hasMoreElements();) {
-							String key = (String)e.nextElement();
+							String key = (String) e.nextElement();
 							// Custom properties that are invalid are filtered
-							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF));
-								config.put(key, customConfig.get(key));
+							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF))
+								;
+							config.put(key, customConfig.get(key));
 						}
 					}
-					
+
 					if (!enableAutoInstall)
-						config.put("ah.status", "installing");		
+						config.put("ah.status", "installing");
 					ServiceRegistration sr = bc.registerService(IManagedAppliance.class.getName(), appliance, config);
 					record.applianceServiceRegistration = sr;
 				}
@@ -118,9 +119,9 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			// already started
 			IHacDevice device = (IHacDevice) bc.getService(s);
 			record.deviceList.add(device);
-			((DriverAppliance)record.appliance).attach(device);
+			((DriverAppliance) record.appliance).attach(device);
 			trackDevice(device, s);
-			// When the following condition could be true? 
+			// When the following condition could be true?
 			if (record.applianceServiceRegistration == null) {
 				if (record.appliance.isAvailable()) {
 					Hashtable config = new Hashtable();
@@ -128,22 +129,23 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 					config.put(IAppliance.APPLIANCE_PID, appliancePid);
 					config.put(IAppliance.APPLIANCE_EPS_IDS_PROPERTY, record.appliance.getEndPointIds());
 					config.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, record.appliance.getEndPointTypes());
-					
-					Dictionary customConfig = ((DriverAppliance)record.appliance).getCustomConfiguration();
-					if (customConfig != null) {				
+
+					Dictionary customConfig = ((DriverAppliance) record.appliance).getCustomConfiguration();
+					if (customConfig != null) {
 						for (Enumeration e = customConfig.keys(); e.hasMoreElements();) {
-							String key = (String)e.nextElement();
+							String key = (String) e.nextElement();
 							// Custom properties that are invalid are filtered
-							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF));
-								config.put(key, customConfig.get(key));
+							if (key.startsWith(IAppliance.APPLIANCE_CUSTOM_PROPERTIES_PREXIF))
+								;
+							config.put(key, customConfig.get(key));
 						}
 					}
-					
+
 					if (!enableAutoInstall)
-						config.put("ah.status", "installing");					
+						config.put("ah.status", "installing");
 					ServiceRegistration sr = bc.registerService(IManagedAppliance.class.getName(), record.appliance, config);
-					record.applianceServiceRegistration = sr;					
-				}					
+					record.applianceServiceRegistration = sr;
+				}
 			}
 		}
 
@@ -163,35 +165,32 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 			deviceTracker.close();
 		}
 	}
-	
+
 	void untrackAllDevices(ApplianceRecord record, boolean removeDevice) {
 		IHacDevice[] devices = new IHacDevice[record.deviceList.size()];
 		int i = 0;
 		for (Iterator iterator = record.deviceList.iterator(); iterator.hasNext();) {
 			IHacDevice device = (IHacDevice) iterator.next();
-			devices[i++] = device;	
+			devices[i++] = device;
 		}
-		// Multieps: an array is needed to avoid concurrent modification in deviceList while using another iterator
+		// Multieps: an array is needed to avoid concurrent modification in
+		// deviceList while using another iterator
 		for (int j = 0; j < devices.length; j++) {
-			untrackDevice(devices[j]);	
+			untrackDevice(devices[j]);
 			if (removeDevice)
 				devices[j].remove();
 		}
 	}
 
-	public String deviceMatchFilterString() {
-		return null;
-	}
+	public abstract String deviceMatchFilterString() ;
 
-	public String classMatchFilterString() {
-		return null;
-	}
+	public String classMatchFilterString() {return null;}
 
 	public boolean genericMatch(ServiceReference d) {
 		return false;
 	}
-	
-	public int match(ServiceReference d) {	
+
+	public int match(ServiceReference d) {
 		int matchValue;
 		String filterString;
 
@@ -208,21 +207,24 @@ public abstract class DriverApplianceFactory extends ApplianceFactory {
 		if (classFilter == null) {
 			try {
 				filterString = classMatchFilterString();
-				if (filterString != null)
+				if (filterString != null) {
 					classFilter = bc.createFilter(filterString);
+				}
+
 			} catch (InvalidSyntaxException e) {
 				LOG.warn("Error in classMatchFilterString LDAP expression", e);
 			}
 		}
-		
+
 		if ((deviceFilter != null) && deviceFilter.match(d)) {
 			matchValue = 10;
 		} else if ((classFilter != null) && classFilter.match(d)) {
 			matchValue = 5;
-		}  else if (genericMatch(d)) {
+		} else if (genericMatch(d)) {
 			matchValue = 1;
-		} else 
+		} else
 			matchValue = Device.MATCH_NONE;
+		
 		return matchValue;
 	}
 }

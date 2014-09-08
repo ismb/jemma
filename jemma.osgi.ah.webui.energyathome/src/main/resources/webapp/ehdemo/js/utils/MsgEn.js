@@ -281,6 +281,13 @@ var Msg = {
 		33 : "Swimming pool pump",
 		36 : "Centralite Thermostat",
 		40 : "Door Lock",
-		41 : "Reloc Temperature Sensor"
+		41 : "Reloc Temperature Sensor",
+		42 : "Ubisys Drimmer Switch",
+		43 : "Ubisys Dimmable Light",
+		44 : "Window Covering"
+		
+		
+			
+			
 	}
 }
