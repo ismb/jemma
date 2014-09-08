@@ -1243,7 +1243,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						/*Added by Marco*/
 						DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 						if (doorLockServer != null) {
-								((IServiceCluster) doorLockServer).setAttributeSubscription(DoorLockServer.ATTR_DoorState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+								((IServiceCluster) doorLockServer).setAttributeSubscription(DoorLockServer.ATTR_LockState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 							
 						} else {
 							LOG.debug("Door Lock Server Cluster missing on appliance " + peerAppliancePid);

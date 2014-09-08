@@ -108,7 +108,7 @@ public class AppliancesInitializationManager {
 	
 	
 	private void initDoorLockCluster(IServiceCluster serviceCluster, boolean installing) {
-		subscribe(serviceCluster, DoorLockServer.ATTR_DoorState_NAME, installing);
+		subscribe(serviceCluster, DoorLockServer.ATTR_LockState_NAME, installing);
 	}
 	
 	
