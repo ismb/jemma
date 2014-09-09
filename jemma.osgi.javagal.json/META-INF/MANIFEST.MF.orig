@@ -1,9 +1,15 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
+Bnd-LastModified: 1407421877523
+Build-Jdk: 1.6.0_45
+Built-By: csto625
+=======
+>>>>>>> 2d2de9adcc5146924720c41fd4d14a37e857ffcc
 Bundle-Activator: org.energy_home.jemma.javagal.json.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal json
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.json
+Bundle-SymbolicName: jemma.osgi.javagal.json;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
@@ -28,3 +34,4 @@ Private-Package: org.energy_home.jemma.javagal.json;org.energy_home.jemm
  .energy_home.jemma.javagal.json.util;-split-package:=merge-first
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

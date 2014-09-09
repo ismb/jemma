@@ -1,9 +1,15 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
+Bnd-LastModified: 1407421873472
+Build-Jdk: 1.6.0_45
+Built-By: csto625
+=======
+>>>>>>> 2d2de9adcc5146924720c41fd4d14a37e857ffcc
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.rest
+Bundle-SymbolicName: jemma.osgi.javagal.rest;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
@@ -14,7 +20,7 @@ Export-Package: org.energy_home.jemma.javagal.rest;uses:="org.energy_hom
  ma.javagal.rest.resources,org.restlet,org.energy_home.jemma.zgd.jaxb,or
  g.restlet.data,org.restlet.resource,org.restlet.representation,org.rest
  let.util";version="1.0",org.energy_home.jemma.javagal.rest.resources;us
- es:="org.restlet.resource,org.restlet,org.restlet.util,org.energy_home.
+ es:="org.restlet.resource,org.restlet.util,org.restlet,org.energy_home.
  jemma.zgd.jaxb,org.restlet.data,org.energy_home.jemma.javagal.rest,org.
  energy_home.jemma.zgd,org.energy_home.jemma.javagal.rest.util,org.restl
  et.representation";version="1.0",org.energy_home.jemma.javagal.rest.uti
@@ -33,3 +39,6 @@ Include-Resource: config.properties=src/main/resources/config.properties
 Private-Package: .
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .,
+ org.osgi.core-4.0.0.jar,
+ JAXBNamespacePrefixMapper-2.2.4.jar

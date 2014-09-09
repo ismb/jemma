@@ -1,10 +1,16 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
+Bnd-LastModified: 1407421905642
+Build-Jdk: 1.6.0_45
+Built-By: csto625
+=======
+>>>>>>> 2d2de9adcc5146924720c41fd4d14a37e857ffcc
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Energy@Home application infos
 Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.1, CDC-1.1/Foundatio
  n-1.1, J2SE-1.4
-Bundle-SymbolicName: jemma.osgi.ah.app
+Bundle-SymbolicName: jemma.osgi.ah.app;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 3.3.0
 Created-By: Apache Maven Bundle Plugin
@@ -12,3 +18,4 @@ Export-Package: org.energy_home.jemma.ah.app;version="3.3.0"
 Import-Package: org.osgi.framework;version="1.3.0"
 Private-Package: org.energy_home.jemma.ah.app.impl
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .
