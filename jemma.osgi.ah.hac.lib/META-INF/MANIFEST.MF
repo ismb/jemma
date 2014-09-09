@@ -7,34 +7,31 @@ Bundle-SymbolicName: jemma.osgi.ah.hac.lib;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 3.1.4
 Created-By: Apache Maven Bundle Plugin
-Export-Package: org.energy_home.jemma.ah.cluster.ah;version="3.0.1";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.closures;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.custom;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.eh;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.general;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.hvac;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.lube,
- org.energy_home.jemma.ah.cluster.zigbee.measurement;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.metering;version="3.1.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.security;version="3.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.wulian;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.cluster.zigbee.zll;version="1.0.0";uses:="org.energy_home.jemma.ah.hac",
- org.energy_home.jemma.ah.hac;version="3.0.2";uses:="org.osgi.service.device,org.osgi.service.cm",
- org.energy_home.jemma.ah.hac.lib;version="3.0.1";
-  uses:="org.energy_home.jemma.ah.hac,
-   org.energy_home.jemma.ah.hac.lib.ext,
-   org.slf4j,
-   org.energy_home.jemma.ah.cluster.ah,
-   org.osgi.service.device,
-   org.osgi.util.tracker,
-   org.osgi.framework,
-   org.osgi.service.cm",
- org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0";
-  uses:="org.energy_home.jemma.ah.hac,
-   org.energy_home.jemma.ah.hac.lib,
-   org.energy_home.jemma.ah.cluster.ah,
-   org.osgi.framework,
-   org.slf4j"
+Export-Package: org.energy_home.jemma.ah.cluster.ah;uses:="org.energy_ho
+ me.jemma.ah.hac";version="3.0.1",org.energy_home.jemma.ah.cluster.zigbe
+ e.closures;uses:="org.energy_home.jemma.ah.hac";version="1.0.0",org.ene
+ rgy_home.jemma.ah.cluster.zigbee.custom;uses:="org.energy_home.jemma.ah
+ .hac";version="3.0.0",org.energy_home.jemma.ah.cluster.zigbee.eh;uses:=
+ "org.energy_home.jemma.ah.hac";version="3.1.0",org.energy_home.jemma.ah
+ .cluster.zigbee.general;uses:="org.energy_home.jemma.ah.hac";version="3
+ .1.0",org.energy_home.jemma.ah.cluster.zigbee.hvac;uses:="org.energy_ho
+ me.jemma.ah.hac";version="3.0.0",org.energy_home.jemma.ah.cluster.zigbe
+ e.measurement;uses:="org.energy_home.jemma.ah.hac";version="3.0.0",org.
+ energy_home.jemma.ah.cluster.zigbee.metering;uses:="org.energy_home.jem
+ ma.ah.hac";version="3.1.0",org.energy_home.jemma.ah.cluster.zigbee.secu
+ rity;uses:="org.energy_home.jemma.ah.hac";version="3.0.0",org.energy_ho
+ me.jemma.ah.cluster.zigbee.wulian;uses:="org.energy_home.jemma.ah.hac";
+ version="1.0.0",org.energy_home.jemma.ah.cluster.zigbee.zll;uses:="org.
+ energy_home.jemma.ah.hac";version="1.0.0",org.energy_home.jemma.ah.clus
+ ter.zigbee.lube;uses:="org.energy_home.jemma.ah.hac";version="1.0.0",or
+ g.energy_home.jemma.ah.hac;uses:="org.osgi.service.device,org.osgi.serv
+ ice.cm";version="3.0.2",org.energy_home.jemma.ah.hac.lib;uses:="org.ene
+ rgy_home.jemma.ah.hac,org.energy_home.jemma.ah.hac.lib.ext,org.slf4j,or
+ g.energy_home.jemma.ah.cluster.ah,org.osgi.service.device,org.osgi.util
+ .tracker,org.osgi.framework,org.osgi.service.cm";version="3.0.1",org.en
+ ergy_home.jemma.ah.hac.lib.ext;uses:="org.energy_home.jemma.ah.hac,org.
+ energy_home.jemma.ah.hac.lib,org.energy_home.jemma.ah.cluster.ah,org.os
+ gi.framework,org.slf4j";version="3.4.0"
 Ignore-Package: java.util,org.energy_home.jemma.ah.cluster.zigbee.genera
  l,org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.cluster.zigbee.
  eh,org.energy_home.jemma.ah.cluster.zigbee.closures,java.lang.reflect,j
@@ -48,7 +45,6 @@ Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  ersion="[1.4,2)",org.slf4j;version="[1.7.7,2)"
 Include-Resource: OSGI-INF/application_proxy.xml=OSGI-INF/application_pr
  oxy.xml,OSGI-INF/common_services.xml=OSGI-INF/common_services.xml
-Private-Package: org.energy_home.jemma.ah.cluster.zigbee.lube,org.energy
- _home.jemma.ah.hac.lib.internal
+Private-Package: org.energy_home.jemma.ah.hac.lib.internal
 Service-Component: OSGI-INF/application_proxy.xml
 Tool: Bnd-1.50.0
