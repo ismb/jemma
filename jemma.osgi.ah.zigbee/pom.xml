@@ -52,6 +52,7 @@
 							 org.energy_home.jemma.ah.hac,
 							 org.energy_home.jemma.ah.hac.lib,
 							 org.energy_home.jemma.ah.hac.lib.ext,
+							 org.energy_home.jemma.ah.cluster.zigbee.lube,
 							 org.energy_home.jemma.ah.zigbee,
 							 org.energy_home.jemma.ah.zigbee.zcl,
 							 org.energy_home.jemma.ah.zigbee.zcl.lib.types,
