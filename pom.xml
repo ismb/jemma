@@ -160,6 +160,9 @@
 				<instructions>
 				    <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 				    <Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
+				    <_removeheaders>Bnd-LastModified, Built-By, Build-Jdk</_removeheaders>
+				    <!--<_removeheaders>Built-By</_removeheaders>
+				    <_removeheaders>Build-Jdk</_removeheaders>-->
 				</instructions>
 			    </configuration>
 			</plugin>

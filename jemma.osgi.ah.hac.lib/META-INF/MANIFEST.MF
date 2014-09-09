@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1407421844693
-Build-Jdk: 1.6.0_45
-Built-By: csto625
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Home Automation Core Service libs
@@ -49,5 +46,9 @@ Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  sgi.service.component;version="1.1.0",org.osgi.service.device;version="
  [1.1,2)",org.osgi.service.event;version="1.2.0",org.osgi.util.tracker;v
  ersion="[1.4,2)",org.slf4j;version="[1.7.7,2)"
+Include-Resource: OSGI-INF/application_proxy.xml=OSGI-INF/application_pr
+ oxy.xml,OSGI-INF/common_services.xml=OSGI-INF/common_services.xml
+Private-Package: org.energy_home.jemma.ah.hac.lib.internal
 Service-Component: OSGI-INF/application_proxy.xml
 Tool: Bnd-1.50.0
+Bundle-ClassPath: .

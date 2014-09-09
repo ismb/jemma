@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.energy-home</groupId>
-	<artifactId>jemma.osgi.ah.web.energyathome.demo</artifactId>
+	<artifactId>jemma.osgi.ah.webui.energyathome.demo</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.0.44</version>
 	<name>Energy@Home Web Application Demo</name>
