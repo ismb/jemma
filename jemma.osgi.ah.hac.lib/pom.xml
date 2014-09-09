@@ -68,6 +68,7 @@
 							org.energy_home.jemma.ah.cluster.zigbee.security;version="3.0.0",
 							org.energy_home.jemma.ah.cluster.zigbee.wulian;version="1.0.0",
 							org.energy_home.jemma.ah.cluster.zigbee.zll;version="1.0.0",
+							org.energy_home.jemma.ah.cluster.zigbee.lube;version="1.0.0",
 							org.energy_home.jemma.ah.hac;version="3.0.2";uses:="org.osgi.service.device,org.osgi.service.cm",
 							org.energy_home.jemma.ah.hac.lib;version="3.0.1",
 							org.energy_home.jemma.ah.hac.lib.ext;version="3.4.0"
