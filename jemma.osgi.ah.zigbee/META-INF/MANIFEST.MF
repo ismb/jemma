@@ -71,7 +71,8 @@ Export-Package: org.energy_home.jemma.ah.zigbee;uses:="org.energy_home.j
  .cluster.hvac,org.energy_home.jemma.ah.zigbee.zcl.cluster.eh";version="
  3.0.0",org.energy_home.jemma.ah.zigbee.zcl.lib.types;uses:="org.energy_
  home.jemma.ah.zigbee.zcl,org.energy_home.jemma.ah.zigbee";version="3.0.
- 0"
+ 0",org.energy_home.jemma.ah.cluster.zigbee.lube;uses:="org.energy_home.
+ jemma.ah.hac";version="2.1.26"
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent,edu.emory
  .mathcs.backport.java.util.concurrent.locks,org.eclipse.equinox.interna
  l.util.timer;version="[1.0,2)",org.eclipse.osgi.framework.console;versi

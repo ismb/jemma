@@ -40,36 +40,36 @@ Main.aggiornaTimestamp = function() {
 	
 	$("#Data").html(Utils.FormatDate(Main.dataAttuale, 2));
 	$("#Ora").html(Utils.FormatDate(Main.dataAttuale, 3));
-	if ((Main.userAgent.indexOf('MSIE 6.0') > -1) || 
-		(Main.userAgent.indexOf('MSIE 6.0b') > -1) || 
-		(Main.userAgent.indexOf('MSIE 6.01') > -1) || 
-		(Main.userAgent.indexOf('MSIE 6.1') > -1) || 
+	if ((Main.userAgent.indexOf('MSIE 6.0') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 6.0b') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 6.01') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 6.1') > -1)   || 
 		(Main.userAgent.indexOf('MSIE 5.5b1') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.50') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.5') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.23') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.22') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.21') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.2') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.17') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.16') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.15') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.14') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.13') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.12') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.05') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.01') > -1) || 
+		(Main.userAgent.indexOf('MSIE 5.50') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.5') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 5.23') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.22') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.21') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.2') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 5.17') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.16') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.15') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.14') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.13') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.12') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.05') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.01') > -1)  || 
 		(Main.userAgent.indexOf('MSIE 5.0b1') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.00') > -1) || 
-		(Main.userAgent.indexOf('MSIE 5.0') > -1) || 
-		(Main.userAgent.indexOf('MSIE 4.5') > -1) || 
-		(Main.userAgent.indexOf('MSIE 4.01') > -1) || 
-		(Main.userAgent.indexOf('MSIE 4.0') > -1) || 
-		(Main.userAgent.indexOf('MSIE 3.03') > -1) || 
-		(Main.userAgent.indexOf('MSIE 3.02') > -1) || 
-		(Main.userAgent.indexOf('MSIE 3.01') > -1) || 
-		(Main.userAgent.indexOf('MSIE 3.0B') > -1) || 
-		(Main.userAgent.indexOf('MSIE 3.0') > -1) || 
+		(Main.userAgent.indexOf('MSIE 5.00') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 5.0') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 4.5') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 4.01') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 4.0') > -1)   || 
+		(Main.userAgent.indexOf('MSIE 3.03') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 3.02') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 3.01') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 3.0B') > -1)  || 
+		(Main.userAgent.indexOf('MSIE 3.0') > -1)   || 
 		(Main.userAgent.indexOf('MSIE 2.0') > -1)){
 		Main.VisError(Msg.home["oldBrowser"]);
 	}
