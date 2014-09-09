@@ -50,6 +50,7 @@ public class Activator implements BundleActivator {
 		applicationFactories.add(new ZclDimmableLightApplianceFactory());
 		applicationFactories.add(new ZclColorLightApplianceFactory());
 		applicationFactories.add(new ZclIASZoneApplianceFactory());
+		applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
 		Iterator it = applicationFactories.iterator();
 
 		while (it.hasNext()) {

@@ -144,6 +144,7 @@
 				</includes>
 			</resource>
 		</resources>
+		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
 			    <groupId>org.apache.felix</groupId>
