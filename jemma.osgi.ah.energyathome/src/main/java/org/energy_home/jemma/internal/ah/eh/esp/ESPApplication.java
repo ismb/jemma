@@ -327,6 +327,8 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			deviceType = DeviceType.Other;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING))
 			deviceType = DeviceType.Other;
+		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING_CONTROLLER))
+			deviceType = DeviceType.Other;
 		else {
 			LOG.warn("ESP unmanaged appliance type " + epType);
 			return null;

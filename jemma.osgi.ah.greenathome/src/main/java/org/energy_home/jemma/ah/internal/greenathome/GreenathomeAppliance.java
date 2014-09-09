@@ -708,7 +708,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
 			
-			/*EndPoint by Marco*/
+			WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
+			if (windowCoveringClient != null) {
+				isStateChangable = true;
+				availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
+			}
+			
+			/*End by Marco*/
 			
 			
 			RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
@@ -1911,12 +1917,17 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
 		}
 		
-		
 		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
-
 		if (windowCoveringServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+		
+		
+		WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
+		if (windowCoveringClient != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
 		}
 		
 		/*End MArco*/
