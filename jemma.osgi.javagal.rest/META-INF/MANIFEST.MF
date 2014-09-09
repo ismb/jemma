@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1410172283333
-Build-Jdk: 1.6.0_45
-Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Rest
@@ -32,5 +29,7 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  r;version="1.4.2",org.restlet,org.restlet.data,org.restlet.representati
  on,org.restlet.resource,org.restlet.routing,org.restlet.util,org.slf4j;
  version="[1.7.7,2)"
+Include-Resource: config.properties=src/main/resources/config.properties
+Private-Package: .
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Tool: Bnd-1.50.0

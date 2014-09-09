@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1410172256856
-Build-Jdk: 1.6.0_45
-Built-By: Administrator
 Bundle-Category: Automation@Home Configurator
 Bundle-ManifestVersion: 2
 Bundle-Name: A@H configurator
@@ -19,6 +16,22 @@ Import-Package: javax.xml.parsers;version="[1.3,2)",org.apache.xml.seria
  rsion="[1.2,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.s
  ervice.useradmin;version="[1.1,2)",org.slf4j;version="[1.7.7,2)",org.w3
  c.dom;version="1.3.0",org.xml.sax;version="[2.0,3)"
+Include-Resource: OSGI-INF/configurator.xml=OSGI-INF/configurator.xml,OS
+ GI-INF/configurator_commands.xml=OSGI-INF/configurator_commands.xml,xml
+ /scenarios/AqualtisTest.xml=src/main/resources/xml/scenarios/AqualtisTe
+ st.xml,xml/scenarios/ConfigAdminTest.xml=src/main/resources/xml/scenari
+ os/ConfigAdminTest.xml,xml/scenarios/defaultconfig.xml=src/main/resourc
+ es/xml/scenarios/defaultconfig.xml,xml/scenarios/E-kitchen.xml=src/main
+ /resources/xml/scenarios/E-kitchen.xml,xml/scenarios/EAHMockup.xml=src/
+ main/resources/xml/scenarios/EAHMockup.xml,xml/scenarios/EmptyConfig.xm
+ l=src/main/resources/xml/scenarios/EmptyConfig.xml,xml/scenarios/Energy
+ AtHome.xml=src/main/resources/xml/scenarios/EnergyAtHome.xml,xml/scenar
+ ios/EspOsgiMockupTest.xml=src/main/resources/xml/scenarios/EspOsgiMocku
+ pTest.xml,xml/scenarios/Indesit.xml=src/main/resources/xml/scenarios/In
+ desit.xml,xml/scenarios/SmartHome.xml=src/main/resources/xml/scenarios/
+ SmartHome.xml
+Private-Package: xml.scenarios,org.energy_home.jemma.ah.internal.configu
+ rator
 Service-Component: OSGI-INF/configurator.xml,OSGI-INF/configurator_comma
  nds.xml
 Tool: Bnd-1.50.0

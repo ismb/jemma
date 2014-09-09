@@ -27,6 +27,6 @@ public class ZclDoorLockApplianceFactory extends DriverApplianceFactory implemen
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=10))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=10))";
 	}
 }

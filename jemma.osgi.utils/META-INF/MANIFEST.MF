@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1410172259531
-Build-Jdk: 1.6.0_45
-Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.osgi.utils.Activator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
@@ -45,6 +42,8 @@ Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  datetime;resolution:=optional;version="[1.0,2)",org.energy_home.jemma.u
  tils.thread;resolution:=optional;version="[1.0,2)",org.osgi.framework;v
  ersion="1.3.0",org.slf4j;version="[1.7.7,2)"
+Private-Package: org.energy_home.jemma.osgi.utils,org.energy_home.jemma.
+ internal.utils.thread,org.energy_home.jemma.internal.utils.datetime
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0

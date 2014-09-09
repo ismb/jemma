@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1410172295643
-Build-Jdk: 1.6.0_45
-Built-By: Administrator
 Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Hac Http Service Manager
@@ -28,4 +25,5 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  service.event;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)"
  ,org.osgi.service.useradmin;version="1.1.0",org.slf4j;version="[1.7.7,2
  )"
+Private-Package: org.energy_home.jemma.hac.adapter.http.impl
 Tool: Bnd-1.50.0

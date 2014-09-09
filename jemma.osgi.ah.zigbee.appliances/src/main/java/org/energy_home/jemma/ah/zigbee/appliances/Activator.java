@@ -59,8 +59,8 @@ public class Activator implements BundleActivator {
 		applicationFactories.add(new ZclUbisysDimmableLightApplianceFactory());
 		applicationFactories.add(new ZclUbisysDrimmerSwitchApplianceFactory());
 		applicationFactories.add(new ZclWindowCoveringApplianceFactory());
+		applicationFactories.add(new ZclDoorLockApplianceFactory());
 		
-
 
 		
 		Iterator it = applicationFactories.iterator();

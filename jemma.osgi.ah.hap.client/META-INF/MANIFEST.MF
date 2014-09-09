@@ -1,7 +1,4 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1410172269697
-Build-Jdk: 1.6.0_45
-Built-By: Administrator
 Bundle-Activator: org.energy_home.jemma.osgi.ah.hap.client.HapCoreServic
  e
 Bundle-Category: Automation@Home
@@ -42,6 +39,10 @@ Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
  osgi.framework;version="[1.5,2)",org.osgi.service.component;version="[1
  .1,2)",org.osgi.service.http;version="[1.2,2)",org.slf4j;version="[1.7.
  7,2)"
+Include-Resource: OSGI-INF/hapclient.xml=OSGI-INF/hapclient.xml,OSGI-INF
+ /m2mlocal.xml=OSGI-INF/m2mlocal.xml
+Private-Package: org.energy_home.jemma.internal.shapi,org.energy_home.je
+ mma.internal.ah.hap.client,org.energy_home.jemma.osgi.ah.hap.client
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
