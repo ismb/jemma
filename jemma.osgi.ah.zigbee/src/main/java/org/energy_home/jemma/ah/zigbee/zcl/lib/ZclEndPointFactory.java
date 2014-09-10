@@ -48,6 +48,8 @@ public class ZclEndPointFactory {
 	
 	
 	public static final int WINDOW_COVERING_ID = 0x0202;
+	public static final int WINDOW_COVERING_CONTROLLER_ID = 0x0203;
+	
 	
 	
 	private static String getEndPointType(int deviceId) {
@@ -82,6 +84,8 @@ public class ZclEndPointFactory {
 				return IEndPointTypes.ZIGBEE_DOOR_LOCK;	
 		case WINDOW_COVERING_ID:
 			return IEndPointTypes.ZIGBEE_WINDOW_COVERING;	
+		case WINDOW_COVERING_CONTROLLER_ID:
+			return IEndPointTypes.ZIGBEE_WINDOW_COVERING_CONTROLLER;	
 		default:
 			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		

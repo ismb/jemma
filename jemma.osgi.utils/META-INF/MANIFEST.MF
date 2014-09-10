@@ -14,8 +14,8 @@ Export-Package: org.energy_home.jemma.osgi.utils.equinox.console;uses:="
  ="1.0.1",org.energy_home.jemma.utils.encrypt;uses:="javax.crypto.spec,j
  avax.crypto";version="1.0.0",org.energy_home.jemma.utils.rest;uses:="or
  g.apache.http.protocol,org.apache.http.conn.scheme,org.apache.http.para
- ms,org.apache.http.conn.ssl,org.apache.http.client,org.apache.http.conn
- ,org.apache.http.impl.client,org.apache.http.impl.auth,org.apache.http.
+ ms,org.apache.http.conn.ssl,org.apache.http.client,org.apache.http.impl
+ .client,org.apache.http.conn,org.apache.http.impl.auth,org.apache.http.
  client.methods,org.apache.http.impl.conn.tsccm,org.apache.http.util,org
  .apache.http.auth,org.apache.http";version="1.0.0",org.energy_home.jemm
  a.utils.thread;version="1.0.0",org.energy_home.jemma.utils.xml.jaxb;use

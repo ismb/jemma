@@ -284,7 +284,8 @@ var Msg = {
 		41 : "Reloc Temperature Sensor",
 		42 : "Ubisys Drimmer Switch",
 		43 : "Ubisys Dimmable Light",
-		44 : "Window Covering"
+		44 : "Window Covering",
+		45 : "Window Covering Controller"
 		
 		
 			

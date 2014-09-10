@@ -20,12 +20,12 @@ Import-Package: gnu.io;resolution:=optional;version="1.0.0",javax.xml.bi
  il.tracker;version="1.4.2",org.slf4j;version="[1.7.7,2)"
 Include-Resource: config.properties=src/main/resources/config.properties
  ,mapPanId.properties=src/main/resources/mapPanId.properties
-Private-Package: org.energy_home.jemma.javagal.launcher,org.energy_home.
- jemma.javagal.layers.data.interfaces,org.energy_home.jemma.javagal.laye
- rs.data.implementations.IDataLayerImplementation,org.energy_home.jemma.
- javagal.layers.object,org.energy_home.jemma.javagal.layers.data.impleme
- ntations,org.energy_home.jemma.javagal.layers.business,.,org.energy_hom
- e.jemma.javagal.layers.presentation,org.energy_home.jemma.javagal.layer
- s.data.implementations.Utils,org.energy_home.jemma.javagal.layers,org.e
+Private-Package: org.energy_home.jemma.javagal.layers.data.interfaces,or
+ g.energy_home.jemma.javagal.layers,org.energy_home.jemma.javagal.launch
+ er,org.energy_home.jemma.javagal.layers.data.implementations.IDataLayer
+ Implementation,org.energy_home.jemma.javagal.layers.object,org.energy_h
+ ome.jemma.javagal.layers.data.implementations,org.energy_home.jemma.jav
+ agal.layers.business,.,org.energy_home.jemma.javagal.layers.presentatio
+ n,org.energy_home.jemma.javagal.layers.data.implementations.Utils,org.e
  nergy_home.jemma.javagal.layers.business.implementations
 Tool: Bnd-1.50.0

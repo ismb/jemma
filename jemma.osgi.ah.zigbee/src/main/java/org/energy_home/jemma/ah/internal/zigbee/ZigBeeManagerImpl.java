@@ -1079,7 +1079,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_CATEGORY, "ZigBee");
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_SERIAL, ieeeAddr);
-		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr + new Short(service.getEndPoint()));
+		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr +"-"+ new Short(service.getEndPoint()));
 
 		deviceProps.put("zigbee.device.ep.id", new Short(service.getEndPoint()));
 		deviceProps.put("zigbee.device.profile.id", new Integer(profileId));
