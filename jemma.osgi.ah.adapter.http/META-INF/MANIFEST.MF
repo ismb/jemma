@@ -19,11 +19,10 @@ Export-Package: org.energy_home.jemma.hac.adapter.http;uses:="org.energy
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  urity.auth,javax.security.auth.callback,javax.security.auth.login,javax
  .security.auth.spi,javax.servlet;version="[2.5,3)",javax.servlet.http;v
- ersion="[2.5,3)",org.energy_home.jemma.ah.hac;version="[3.0,4)",org.ene
- rgy_home.jemma.ah.hac.lib;version="[3.0,4)",org.json,org.osgi.framework
- ;version="1.3.0",org.osgi.service.component;version="[1.1,2)",org.osgi.
- service.event;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)"
- ,org.osgi.service.useradmin;version="1.1.0",org.slf4j;version="[1.7.7,2
- )"
+ ersion="[2.5,3)",org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.
+ hac.lib,org.json,org.osgi.framework;version="1.3.0",org.osgi.service.co
+ mponent;version="[1.1,2)",org.osgi.service.event;version="[1.2,2)",org.
+ osgi.service.http;version="[1.2,2)",org.osgi.service.useradmin;version=
+ "1.1.0",org.slf4j;version="[1.7.7,2)"
 Private-Package: org.energy_home.jemma.hac.adapter.http.impl
 Tool: Bnd-1.50.0
