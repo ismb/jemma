@@ -30,6 +30,7 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+//import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,11 @@ public class AppliancesInitializationManager {
 	private void initDoorLockCluster(IServiceCluster serviceCluster, boolean installing) {
 		subscribe(serviceCluster, DoorLockServer.ATTR_LockState_NAME, installing);
 	}
-	
+	/*
+	private void initWindowsCoveringCluster(IServiceCluster serviceCluster, boolean installing) {
+		subscribe(serviceCluster, ZclWindowCoveringServer.ATTR_CurrentPositionLiftPercentage_NAME, installing);
+	}
+	*/
 	
 	private void initTemperatureMeasurementCluster(IServiceCluster serviceCluster, boolean installing) {
 		subscribe(serviceCluster, TemperatureMeasurementServer.ATTR_MeasuredValue_NAME, installing);
@@ -181,6 +186,10 @@ public class AppliancesInitializationManager {
 				if (sc != null) {
 					initDoorLockCluster(sc, installing);
 				}
+				/*sc = ep.getServiceCluster(ZclWindowCoveringServer.class.getName());
+				if (sc != null) {
+					initWindowsCoveringCluster(sc, installing);
+				}*/
 			}			
 		}
 	}

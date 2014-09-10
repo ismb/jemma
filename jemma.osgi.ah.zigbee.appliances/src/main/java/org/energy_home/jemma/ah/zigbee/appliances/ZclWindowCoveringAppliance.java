@@ -38,17 +38,6 @@ public class ZclWindowCoveringAppliance extends ZclAppliance{
 		endPoint.addServiceCluster(new ZclIdentifyServer());
 		endPoint.addServiceCluster(new ZclScenesServer());
 		endPoint.addServiceCluster(new ZclGroupsServer());
-		
-		ConfigServer serviceCluster = (ConfigServer) this.getEndPoint(0).getServiceCluster("org.energy_home.jemma.ah.cluster.ah.ConfigServer");
-		if (serviceCluster != null) {
-			try {
-				if (serviceCluster.getIconName(null) == null) {
-					//serviceCluster.setIconName("lampadina.png", null);
-				}
-			} catch (ServiceClusterException e) {
-				
-			}
-		}
 	}
 	
 

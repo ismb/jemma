@@ -246,7 +246,7 @@ Elettrodomestici.GetDevices=function(callBack){
 
 //Funzione alternativa per la lista di elettrodomestici
 Elettrodomestici.GetDevicesInfos=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getInfosDemo(function(result, err, req) {
 				if (Elettrodomestici.requestCB == result.id){

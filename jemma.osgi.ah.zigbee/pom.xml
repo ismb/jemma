@@ -51,7 +51,6 @@
 							 org.energy_home.jemma.ah.hac,
 							 org.energy_home.jemma.ah.hac.lib,
 							 org.energy_home.jemma.ah.hac.lib.ext,
-							 org.energy_home.jemma.ah.cluster.zigbee.lube,
 							 org.energy_home.jemma.ah.zigbee,
 							 org.energy_home.jemma.ah.zigbee.zcl,
 							 org.energy_home.jemma.ah.zigbee.zcl.lib.types,
@@ -80,8 +79,7 @@
 							 org.energy_home.jemma.ah.zigbee.zcl.cluster.closures;version="1.0.0",
 							 org.energy_home.jemma.ah.zigbee.zcl.cluster.wulian;version="1.0.0", 
 							 org.energy_home.jemma.ah.zigbee.zcl.lib;version="3.0.0",
-							 org.energy_home.jemma.ah.zigbee.zcl.lib.types;version="3.0.0",
-							 org.energy_home.jemma.ah.cluster.zigbee.lube
+							 org.energy_home.jemma.ah.zigbee.zcl.lib.types;version="3.0.0"							 
 						</Export-Package>
 						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>

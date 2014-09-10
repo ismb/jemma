@@ -275,6 +275,8 @@ Main.onLoad = function() {
 				InterfaceEnergyHome.mode = 1;
 			} else if (mode == "cost"){
 				InterfaceEnergyHome.mode = 3;
+			} else if (mode == "noserver"){
+				InterfaceEnergyHome.mode = -1;
 			} else {
 				InterfaceEnergyHome.mode = 2;
 			}
