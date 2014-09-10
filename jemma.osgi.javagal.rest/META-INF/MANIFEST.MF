@@ -14,7 +14,7 @@ Export-Package: org.energy_home.jemma.javagal.rest;uses:="org.energy_hom
  ma.javagal.rest.resources,org.restlet,org.energy_home.jemma.zgd.jaxb,or
  g.restlet.data,org.restlet.resource,org.restlet.representation,org.rest
  let.util";version="1.0",org.energy_home.jemma.javagal.rest.resources;us
- es:="org.restlet.resource,org.restlet,org.restlet.util,org.energy_home.
+ es:="org.restlet.resource,org.restlet.util,org.restlet,org.energy_home.
  jemma.zgd.jaxb,org.restlet.data,org.energy_home.jemma.javagal.rest,org.
  energy_home.jemma.zgd,org.energy_home.jemma.javagal.rest.util,org.restl
  et.representation";version="1.0",org.energy_home.jemma.javagal.rest.uti

@@ -36,8 +36,8 @@ Ignore-Package: java.util,org.energy_home.jemma.ah.cluster.zigbee.genera
  l,org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.cluster.zigbee.
  eh,org.energy_home.jemma.ah.cluster.zigbee.closures,java.lang.reflect,j
  ava.math,java.io,org.energy_home.jemma.ah.cluster.ah,org.energy_home.je
- mma.ah.cluster.zigbee.measurement,org.energy_home.jemma.ah.cluster.zigb
- ee.metering,org.energy_home.jemma.ah.cluster.zigbee.security,java.lang
+ mma.ah.cluster.zigbee.measurement,java.lang,org.energy_home.jemma.ah.cl
+ uster.zigbee.metering,org.energy_home.jemma.ah.cluster.zigbee.security
 Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  sgi.framework;version="1.5.0",org.osgi.service.cm;version="1.2.0",org.o
  sgi.service.component;version="1.1.0",org.osgi.service.device;version="
