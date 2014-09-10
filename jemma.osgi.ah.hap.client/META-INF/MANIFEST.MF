@@ -5,7 +5,7 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Hap Client
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.hap.client;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.hap.client
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.2.15
 Created-By: Apache Maven Bundle Plugin
@@ -20,25 +20,23 @@ Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
  ns.codec.binary;version="[1.3,2)",org.apache.http;version="4.1.0",org.a
  pache.http.client;version="4.1.0",org.apache.http.entity;version="4.1.0
  ",org.apache.http.util;version="4.1.0",org.eclipse.osgi.framework.conso
- le;version="1.0.0",org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)
- ",org.energy_home.jemma.ah.cluster.zigbee.eh;version="[3.1.0,3.2.0)",or
- g.energy_home.jemma.ah.cluster.zigbee.general;version="[3.1.0,3.2.0)",o
- rg.energy_home.jemma.ah.cluster.zigbee.measurement;version="[3.0,4)",or
- g.energy_home.jemma.ah.cluster.zigbee.metering;version="[3.1.0,3.2.0)",
- org.energy_home.jemma.ah.cluster.zigbee.security;version="[3.0,4)",org.
- energy_home.jemma.ah.hac;version="[3.0.2,3.1.0)",org.energy_home.jemma.
- ah.hac.lib;version="[3.0,4)",org.energy_home.jemma.ah.hac.lib.ext;versi
- on="[3.4.0,3.5.0)",org.energy_home.jemma.ah.m2m.device;version="[1.3.0,
- 1.4.0)",org.energy_home.jemma.ah.m2m.device.lib;version="[1.3.0,1.4.0)"
- ,org.energy_home.jemma.m2m;version="[1.3.0,1.4.0)",org.energy_home.jemm
- a.m2m.ah;version="[1.2.2,1.3.0)",org.energy_home.jemma.osgi.utils.equin
- ox.console;version="[1.0,2)",org.energy_home.jemma.shal,org.energy_home
- .jemma.utils.datetime;version="[1.0.1,1.1.0)",org.energy_home.jemma.uti
- ls.rest;version="[1.0,2)",org.energy_home.jemma.utils.thread;version="1
- .0.0",org.energy_home.jemma.utils.xml.jaxb;version="[1.0.0,1.1.0)",org.
- osgi.framework;version="[1.5,2)",org.osgi.service.component;version="[1
- .1,2)",org.osgi.service.http;version="[1.2,2)",org.slf4j;version="[1.7.
- 7,2)"
+ le;version="1.0.0",org.energy_home.jemma.ah.cluster.ah,org.energy_home.
+ jemma.ah.cluster.zigbee.eh;version="[3.1.0,3.2.0)",org.energy_home.jemm
+ a.ah.cluster.zigbee.general;version="[3.1.0,3.2.0)",org.energy_home.jem
+ ma.ah.cluster.zigbee.measurement,org.energy_home.jemma.ah.cluster.zigbe
+ e.metering;version="[3.1.0,3.2.0)",org.energy_home.jemma.ah.cluster.zig
+ bee.security,org.energy_home.jemma.ah.hac;version="[3.0.2,3.1.0)",org.e
+ nergy_home.jemma.ah.hac.lib,org.energy_home.jemma.ah.hac.lib.ext;versio
+ n="[3.4.0,3.5.0)",org.energy_home.jemma.ah.m2m.device;version="[1.3.0,1
+ .4.0)",org.energy_home.jemma.ah.m2m.device.lib;version="[1.3.0,1.4.0)",
+ org.energy_home.jemma.m2m;version="[1.3.0,1.4.0)",org.energy_home.jemma
+ .m2m.ah;version="[1.2.2,1.3.0)",org.energy_home.jemma.osgi.utils.equino
+ x.console,org.energy_home.jemma.shal,org.energy_home.jemma.utils.dateti
+ me;version="[1.0.1,1.1.0)",org.energy_home.jemma.utils.rest,org.energy_
+ home.jemma.utils.thread;version="1.0.0",org.energy_home.jemma.utils.xml
+ .jaxb;version="[1.0.0,1.1.0)",org.osgi.framework;version="[1.5,2)",org.
+ osgi.service.component;version="[1.1,2)",org.osgi.service.http;version=
+ "[1.2,2)",org.slf4j;version="[1.7.7,2)"
 Include-Resource: OSGI-INF/hapclient.xml=OSGI-INF/hapclient.xml,OSGI-INF
  /m2mlocal.xml=OSGI-INF/m2mlocal.xml
 Private-Package: org.energy_home.jemma.internal.shapi,org.energy_home.je
@@ -46,8 +44,3 @@ Private-Package: org.energy_home.jemma.internal.shapi,org.energy_home.je
 Require-Bundle: jemma.osgi.ah.hac.lib
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- stax-api-1.0-2.jar,
- wstx-asl-3.2.3.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar,
- easymock-2.4.jar

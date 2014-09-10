@@ -66,4 +66,10 @@ public class ZclGenericApplianceFactory extends DriverApplianceFactory implement
 		return true;
 	}
 
+	@Override
+	public String deviceMatchFilterString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

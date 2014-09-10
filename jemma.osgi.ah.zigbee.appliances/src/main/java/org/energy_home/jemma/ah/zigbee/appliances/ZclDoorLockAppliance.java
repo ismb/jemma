@@ -28,9 +28,7 @@ public class ZclDoorLockAppliance extends ZclAppliance{
 	public ZclDoorLockAppliance(String pid, Dictionary config)
 			throws ApplianceException {
 		super(pid, config);
-
-		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_LOAD_CONTROL_DEVICE);
-
+		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_DOOR_LOCK);
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclDoorLockServer());
 		endPoint.addServiceCluster(new ZclBasicServer());
@@ -38,17 +36,6 @@ public class ZclDoorLockAppliance extends ZclAppliance{
 		//endPoint.addServiceCluster(new ZclIdentifyClient());
 		endPoint.addServiceCluster(new ZclScenesServer());
 		endPoint.addServiceCluster(new ZclGroupsServer());
-		
-		ConfigServer serviceCluster = (ConfigServer) this.getEndPoint(0).getServiceCluster("org.energy_home.jemma.ah.cluster.ah.ConfigServer");
-		if (serviceCluster != null) {
-			try {
-				if (serviceCluster.getIconName(null) == null) {
-					//serviceCluster.setIconName("lampadina.png", null);
-				}
-			} catch (ServiceClusterException e) {
-				
-			}
-		}
 	}
 	
 

@@ -40,6 +40,6 @@ public class ZclIASZoneApplianceFactory extends DriverApplianceFactory implement
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=1026))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1026))";
 	}
 }

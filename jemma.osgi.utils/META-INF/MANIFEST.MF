@@ -4,7 +4,7 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgi Utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.utils;singleton:=true
+Bundle-SymbolicName: jemma.osgi.utils
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.6
 Created-By: Apache Maven Bundle Plugin
@@ -47,7 +47,3 @@ Private-Package: org.energy_home.jemma.osgi.utils,org.energy_home.jemma.
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1
  .0",org.apache.httpcomponents.httpcore;bundle-version="4.1.0"
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- stax-api-1.0-2.jar,
- wstx-asl-3.2.3.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar

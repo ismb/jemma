@@ -3,7 +3,7 @@ Bundle-Activator: org.energy_home.jemma.javagal.rest.Activator
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Gal Rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.javagal.rest;singleton:=true
+Bundle-SymbolicName: jemma.osgi.javagal.rest
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
@@ -33,6 +33,3 @@ Include-Resource: config.properties=src/main/resources/config.properties
 Private-Package: .
 Require-Bundle: jemma.osgi.javagal;bundle-version="1.0.0"
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- org.osgi.core-4.0.0.jar,
- JAXBNamespacePrefixMapper-2.2.4.jar

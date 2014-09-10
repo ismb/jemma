@@ -38,8 +38,7 @@ public class ZigbeeWhiteGoodApplianceFactory extends DriverApplianceFactory impl
 	}
 
 	public String deviceMatchFilterString() {
-		return "( & ( DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1) (| (&(zigbee.device.profile.id=49724)(zigbee.device.device.id=2560)) (&(zigbee.device.profile.id=260)(zigbee.device.device.id=82))))";
-	}
+		return "( & ( DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1) (| (&(zigbee.device.profile.id=49724)(zigbee.device.device.id=2560)) (&(zigbee.device.profile.id=260)(zigbee.device.device.id=82))))";	}
 
 	public IApplianceDescriptor getDescriptor() {
 		return APPLIANCE_DESCRIPTOR;

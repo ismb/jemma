@@ -6,8 +6,10 @@ import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
+import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
+import org.osgi.service.device.Driver;
 
-public class ZclDoorLockApplianceFactory {
+public class ZclDoorLockApplianceFactory extends DriverApplianceFactory implements Driver {
 
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.lockdoor";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Door Lock";
@@ -25,6 +27,6 @@ public class ZclDoorLockApplianceFactory {
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=10))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=10))";
 	}
 }

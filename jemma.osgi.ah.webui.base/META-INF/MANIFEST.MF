@@ -4,7 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Web UI Base
 Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.2, J2SE-1.3, CDC-1.1
  /Foundation-1.1
-Bundle-SymbolicName: jemma.osgi.ah.webui.base;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.webui.base
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 2.0.12
 Created-By: Apache Maven Bundle Plugin
@@ -287,4 +287,3 @@ Private-Package: web.js.jsonrpc,web.js.flot.pie,web.js.jqtouch.extension
  mages,web.js.jqtouch.themes.jqt
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

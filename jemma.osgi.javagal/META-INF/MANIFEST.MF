@@ -29,4 +29,3 @@ Private-Package: org.energy_home.jemma.javagal.layers.data.interfaces,or
  n,org.energy_home.jemma.javagal.layers.data.implementations.Utils,org.e
  nergy_home.jemma.javagal.layers.business.implementations
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

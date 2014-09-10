@@ -295,6 +295,12 @@ var Msg = {
 		38 : "Forno Indesit",
 		39 : "Frigorifero Indesit",
 		40 : "Serratura porta",
-		41 : "Sensore di Temperatura Reloc"
+		41 : "Sensore di Temperatura Reloc",
+		42 : "Regolatore intensità Ubisys",
+		43 : "Attenuatore di luce Ubisys",
+		44 : "Tapparella finestra",
+		45 : "Controllore Tapparella finestra"
+		
+			
 	}
 }

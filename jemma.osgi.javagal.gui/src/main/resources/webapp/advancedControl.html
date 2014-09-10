@@ -3,13 +3,6 @@
 		$(document)
 				.ready(
 						function() {
-							
-							  
-							  $(document).bind("contextmenu",function(e){
-					              return false;
-					       });
-							  
-							  
 							var rtnObjConfig = '';
 							var myNMMenu = new jGGNetworkManageMenu();
 							myNMMenu.newButton('btnStartGal', null, null);
@@ -69,11 +62,11 @@
 																				.done(
 																						function(
 																								data) {
-																							
+
 																							if (data.status.code == 0) {
 																								getChannelAndUpdateGui();
 																							}
-																							
+
 																						});
 
 																	}
@@ -84,52 +77,44 @@
 							$("#btnAutomaticScanChannel")
 									.click(
 											function(event) {
-												
-												
+
 												var result = window
-												.confirm(
-														'Are you sure you want to change the network channel?',
-														'Change channel',
-														function(result) {
-															if (result) {
+														.confirm(
+																'Are you sure you want to change the network channel?',
+																'Change channel',
+																function(result) {
+																	if (result) {
 
-																var ccrTimeOut = '00000014';
-																var newChannelLbl;
+																		var ccrTimeOut = '00000014';
+																		var newChannelLbl;
 
-																newChannelLbl = $(
-																		'#rdRadioChannel :radio:checked')
-																		.val();
+																		newChannelLbl = $(
+																				'#rdRadioChannel :radio:checked')
+																				.val();
 
-																var opChannelRadio = '0xFE';
-																$
-																		.ajax(
-																				{
-																					dataType : "json",
-																					url : DEFINEPATH.changeChannelPath
-																							+ 'timeout='
-																							+ ccrTimeOut
-																							+ '&scanChannel=0'
-																							+ '&scanDuration='
-																							+ opChannelRadio
-																				})
-																		.done(
-																				function(data) {
-																					if (data.status.code == 0) {
-																						getChannelAndUpdateGui();
-																					}
-																				});
+																		var opChannelRadio = '0xFE';
+																		$
+																				.ajax(
+																						{
+																							dataType : "json",
+																							url : DEFINEPATH.changeChannelPath
+																									+ 'timeout='
+																									+ ccrTimeOut
+																									+ '&scanChannel=0'
+																									+ '&scanDuration='
+																									+ opChannelRadio
+																						})
+																				.done(
+																						function(
+																								data) {
+																							if (data.status.code == 0) {
+																								getChannelAndUpdateGui();
+																							}
+																						});
 
-															}
-														});
-												
-												
-												
-												
+																	}
+																});
 
-											
-											
-											
-											
 											});
 
 							var getChannelAndUpdateGui = function() {
@@ -150,7 +135,8 @@
 																		newChannel);
 														$('#spChannelRadioHP')
 																.text(
-																		newChannel);
+																		newChannel).css('color',
+																		'green');
 														$('#spZigBeeState')
 																.text('RUNNING')
 																.css('color',
@@ -169,7 +155,8 @@
 																.get("ChannelRadioError");
 														$('#spChannelRadioHP')
 																.text(
-																		newChannel);
+																		newChannel).css('color',
+																		'red');
 														$('#spZigBeeState')
 																.text(
 																		'NOT RUNNING')
@@ -184,7 +171,7 @@
 
 							var myCPMenu = new jGGCenterPaneMenuChannel();
 							myCPMenu.newButton('btnManualScan', null, null);
-							
+
 							var chR = $.jStorage.get("ChannelRadioValue");
 							if (chR != null) {
 								var radioCh = $('#radioChannel' + chR);
@@ -307,7 +294,7 @@
 			<table style="width: 100%">
 				<tr>
 					<td align="center">The network is currently using channel:<b><label
-							id="radioCurrentChannel"></label></b>
+							id="radioCurrentChannel" style="font-size: 12px"></label></b>
 
 					</td>
 				</tr>
@@ -326,8 +313,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td align="center"><br />
-						<div id="rdRadioChannel">
+					<td align="left"><br />
+						<div id="rdRadioChannel" style="width: 100%;">
 							<input type="radio" id="radioChannel11" name="radioRadioChannel"
 								value="11"><label for="radioChannel11">11</label> <input
 								type="radio" id="radioChannel12" name="radioRadioChannel"

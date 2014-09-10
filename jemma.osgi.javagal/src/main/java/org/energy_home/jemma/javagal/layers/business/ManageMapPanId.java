@@ -29,10 +29,15 @@ import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_F
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ */
 public class ManageMapPanId {
 	String filename;
-GalController gal;
-private static final Logger logger = LoggerFactory.getLogger(ManageMapPanId.class);
+	GalController gal;
+	private static final Logger logger = LoggerFactory.getLogger(ManageMapPanId.class);
 
 	public ManageMapPanId(GalController _gal) {
 		try {

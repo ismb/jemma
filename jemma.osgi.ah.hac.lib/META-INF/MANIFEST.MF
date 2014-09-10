@@ -22,21 +22,22 @@ Export-Package: org.energy_home.jemma.ah.cluster.ah;uses:="org.energy_ho
  rity;uses:="org.energy_home.jemma.ah.hac";version="3.0.0",org.energy_ho
  me.jemma.ah.cluster.zigbee.wulian;uses:="org.energy_home.jemma.ah.hac";
  version="1.0.0",org.energy_home.jemma.ah.cluster.zigbee.zll;uses:="org.
- energy_home.jemma.ah.hac";version="1.0.0",org.energy_home.jemma.ah.hac;
- uses:="org.osgi.service.device,org.osgi.service.cm";version="3.0.2",org
- .energy_home.jemma.ah.hac.lib;uses:="org.energy_home.jemma.ah.hac,org.e
- nergy_home.jemma.ah.hac.lib.ext,org.slf4j,org.energy_home.jemma.ah.clus
- ter.ah,org.osgi.service.device,org.osgi.util.tracker,org.osgi.framework
- ,org.osgi.service.cm";version="3.0.1",org.energy_home.jemma.ah.hac.lib.
- ext;uses:="org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.hac.li
- b,org.energy_home.jemma.ah.cluster.ah,org.osgi.framework,org.slf4j";ver
- sion="3.4.0"
-Ignore-Package: java.lang.reflect,java.math,java.util,java.io,org.energy
- _home.jemma.ah.cluster.zigbee.general,org.energy_home.jemma.ah.hac,org.
- energy_home.jemma.ah.cluster.zigbee.measurement,org.energy_home.jemma.a
- h.cluster.ah,org.energy_home.jemma.ah.cluster.zigbee.eh,java.lang,org.e
- nergy_home.jemma.ah.cluster.zigbee.security,org.energy_home.jemma.ah.cl
- uster.zigbee.metering
+ energy_home.jemma.ah.hac";version="1.0.0",org.energy_home.jemma.ah.clus
+ ter.zigbee.lube;uses:="org.energy_home.jemma.ah.hac";version="1.0.0",or
+ g.energy_home.jemma.ah.hac;uses:="org.osgi.service.device,org.osgi.serv
+ ice.cm";version="3.0.2",org.energy_home.jemma.ah.hac.lib;uses:="org.ene
+ rgy_home.jemma.ah.hac,org.energy_home.jemma.ah.hac.lib.ext,org.slf4j,or
+ g.energy_home.jemma.ah.cluster.ah,org.osgi.service.device,org.osgi.util
+ .tracker,org.osgi.framework,org.osgi.service.cm";version="3.0.1",org.en
+ ergy_home.jemma.ah.hac.lib.ext;uses:="org.energy_home.jemma.ah.hac,org.
+ energy_home.jemma.ah.hac.lib,org.energy_home.jemma.ah.cluster.ah,org.os
+ gi.framework,org.slf4j";version="3.4.0"
+Ignore-Package: java.util,org.energy_home.jemma.ah.cluster.zigbee.genera
+ l,org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.cluster.zigbee.
+ eh,org.energy_home.jemma.ah.cluster.zigbee.closures,java.lang.reflect,j
+ ava.math,java.io,org.energy_home.jemma.ah.cluster.ah,org.energy_home.je
+ mma.ah.cluster.zigbee.measurement,java.lang,org.energy_home.jemma.ah.cl
+ uster.zigbee.metering,org.energy_home.jemma.ah.cluster.zigbee.security
 Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.o
  sgi.framework;version="1.5.0",org.osgi.service.cm;version="1.2.0",org.o
  sgi.service.component;version="1.1.0",org.osgi.service.device;version="
@@ -47,4 +48,3 @@ Include-Resource: OSGI-INF/application_proxy.xml=OSGI-INF/application_pr
 Private-Package: org.energy_home.jemma.ah.hac.lib.internal
 Service-Component: OSGI-INF/application_proxy.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

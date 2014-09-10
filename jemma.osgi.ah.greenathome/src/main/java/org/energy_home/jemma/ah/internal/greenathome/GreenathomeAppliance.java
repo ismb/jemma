@@ -44,6 +44,8 @@ import javax.xml.soap.SOAPPart;
 import org.eclipse.core.runtime.jobs.Job;
 import org.energy_home.jemma.ah.cluster.ah.ConfigClient;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockClient;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksClient;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
@@ -105,6 +107,8 @@ import org.energy_home.jemma.ah.hap.client.IM2MHapService;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfig;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfigurator;
 import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringServer;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringClient;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
@@ -265,6 +269,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerCluster(LevelControlClient.class.getName());
 		greenathomeEndPoint.registerCluster(ColorControlClient.class.getName());
 		greenathomeEndPoint.registerCluster(ApplianceControlClient.class.getName());
+		/*Added by Marco*/
+		greenathomeEndPoint.registerCluster(DoorLockClient.class.getName());
+		greenathomeEndPoint.registerCluster(WindowCoveringClient.class.getName());
+		/*End by Marco*/
+		
 
 		this.greenathomeEndPoint.registerServiceClustersListener(this);
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
@@ -684,6 +693,30 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				isStateChangable = true;
 				availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
+			
+			
+			/*Added by Marco*/
+			DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+			if (doorLockServer != null) {
+				isStateChangable = true;
+				availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+			}
+			
+			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+			if (windowCoveringServer != null) {
+				isStateChangable = true;
+				availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+			}
+			
+			WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
+			if (windowCoveringClient != null) {
+				isStateChangable = true;
+				availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
+			}
+			
+			/*End by Marco*/
+			
+			
 			RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
 			if (humidityServer != null) {
 				isStateChangable = true;
@@ -735,7 +768,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			String value = "";
 
-			if (!peerAppliance.getDescriptor().getType().equals(SMARTINFO_APP_TYPE)) {
+			if (!peerAppliance.getDescriptor().getType()
+					.equals(SMARTINFO_APP_TYPE)) {
 				if (thermostatServer != null) {
 					float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
 					value = localTemperature + "^C";
@@ -1219,6 +1253,29 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("Illuminance Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
+						
+						
+						
+						/*Added by Marco*/
+						DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+						if (doorLockServer != null) {
+								((IServiceCluster) doorLockServer).setAttributeSubscription(DoorLockServer.ATTR_LockState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+							
+						} else {
+							LOG.debug("Door Lock Server Cluster missing on appliance " + peerAppliancePid);
+						}
+						
+						
+						WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+						if (windowCoveringServer != null) {
+							((IServiceCluster) windowCoveringServer).setAttributeSubscription(WindowCoveringServer.ATTR_CurrentPositionLiftPercentage_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+						}
+						else {
+							LOG.debug("Window Covering Server Cluster missing on appliance " + peerAppliancePid);
+						}
+						
+						/*End Marco*/
+						
 					} catch (ServiceClusterException e) {
 						LOG.error("Exception on initEndPoint", e);
 					} catch (ApplianceException e) {
@@ -1844,16 +1901,38 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (thermostatServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
-			int applianceStatus = 0;
 		}
 		RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
 		if (humidityServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) humidityServer).getEndPoint().isAvailable() ? 2 : 0;
-
-			int applianceStatus = 0;
 		}
 
+		/*Added by Marco*/
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+
+		if (doorLockServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+		
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+		if (windowCoveringServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+			LOG.info("******WindowCoveringServer isAvailable="+availability);
+		}
+		
+		
+		WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
+		if (windowCoveringClient != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
+			LOG.info("******WindowCoveringClient isAvailable="+availability);
+		}
+		
+		/*End Marco*/
+		
 		// handle Smart Info and Smart Plugs
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
 

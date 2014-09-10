@@ -42,6 +42,16 @@ public class ZclEndPointFactory {
 	
 	public static final int ZIGBEE_IAS_ZONE_ID = 0x0402;
 	
+	public static final int ZIGBEE_DRIMMER_SWITCH_ID = 0x0104;
+	
+	public static final int ZIGBEE_DOORLOCK_ID = 0x000A;
+	
+	
+	public static final int WINDOW_COVERING_ID = 0x0202;
+	public static final int WINDOW_COVERING_CONTROLLER_ID = 0x0203;
+	
+	
+	
 	private static String getEndPointType(int deviceId) {
 		switch (deviceId) {
 		case ZIGBEE_ON_OFF_SWITCH_DEVICE_ID:
@@ -67,7 +77,15 @@ public class ZclEndPointFactory {
 		case ZIGBEE_TEMPERATURE_SENSOR_ID:
 			return IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR;	
 		case ZIGBEE_IAS_ZONE_ID:
-			return IEndPointTypes.ZIGBEE_IAS_ZONE;				
+			return IEndPointTypes.ZIGBEE_IAS_ZONE;	
+		case ZIGBEE_DRIMMER_SWITCH_ID:
+			return IEndPointTypes.ZIGBEE_DRIMMER_SWITCH;
+		case ZIGBEE_DOORLOCK_ID:
+				return IEndPointTypes.ZIGBEE_DOOR_LOCK;	
+		case WINDOW_COVERING_ID:
+			return IEndPointTypes.ZIGBEE_WINDOW_COVERING;	
+		case WINDOW_COVERING_CONTROLLER_ID:
+			return IEndPointTypes.ZIGBEE_WINDOW_COVERING_CONTROLLER;	
 		default:
 			return IEndPointTypes.ZIGBEE_GENERIC_DEVICE;
 		}		

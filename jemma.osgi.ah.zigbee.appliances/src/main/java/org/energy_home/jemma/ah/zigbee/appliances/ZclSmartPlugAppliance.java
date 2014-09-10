@@ -39,7 +39,7 @@ public class ZclSmartPlugAppliance extends ZclAppliance {
 	public ZclSmartPlugAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
 
-		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_LOAD_CONTROL_DEVICE);
+		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_SMART_PLUG);	//@Changed by AndreaRanalli: to be verifies if this is correct!
 
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclOnOffServer());

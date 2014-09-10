@@ -3,7 +3,7 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: Cedac IO handler
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-SymbolicName: jemma.osgi.ah.io;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.io
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.16
 Created-By: Apache Maven Bundle Plugin
@@ -18,4 +18,3 @@ Private-Package: org.energy_home.jemma.ah.io.flexgateway,org.energy_home
 Service-Component: OSGI-INF/buttons.xml,OSGI-INF/cedacio.xml,OSGI-INF/ce
  dacioconsole.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

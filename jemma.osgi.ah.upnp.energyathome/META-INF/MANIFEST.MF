@@ -5,7 +5,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hac Upnp Adapter
 Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.2,CDC-1.1/Foundation
  -1.1,J2SE-1.4
-Bundle-SymbolicName: jemma.osgi.ah.upnp.energyathome;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.upnp.energyathome
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.1
 Created-By: Apache Maven Bundle Plugin
@@ -16,4 +16,3 @@ Include-Resource: OSGI-INF/hac_upnp.xml=OSGI-INF/hac_upnp.xml,image/icon
 Private-Package: image,org.energy_home.jemma.ah.upnp.energyathome
 Service-Component: OSGI-INF/hac_upnp.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

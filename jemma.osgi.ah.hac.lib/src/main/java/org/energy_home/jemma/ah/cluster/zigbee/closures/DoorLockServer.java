@@ -276,7 +276,7 @@ public interface DoorLockServer {
         throws ApplianceException, ServiceClusterException
     ;
 
-    public ToggleResponse execToggle(String PINRFIDCode, IEndPointRequestContext context)
+    public ToggleResponse execToggle( String PINRFIDCode, IEndPointRequestContext context)
         throws ApplianceException, ServiceClusterException
     ;
 

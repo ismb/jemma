@@ -44,6 +44,6 @@ public class Zcl4NoksSmartPlugApplianceFactory extends DriverApplianceFactory im
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1)(zigbee.device.profile.id=260)(zigbee.device.device.id=1281))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1281))";
 	}
 }

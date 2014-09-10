@@ -4,21 +4,19 @@ Bundle-Category: Automation@Home
 Bundle-ManifestVersion: 2
 Bundle-Name: AH Apache Felix Web Console Plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-SymbolicName: jemma.osgi.ah.felix.console.web;singleton:=true
+Bundle-SymbolicName: jemma.osgi.ah.felix.console.web
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 1.0.9
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.management,javax.servlet;version="[2.5,3)",javax.s
  ervlet.http;version="[2.5,3)",org.apache.felix.webconsole;version="[3.1
- ,4)",org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",org.energy_h
- ome.jemma.ah.hac;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.l
- ib;version="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.lib.ext;version
- ="[3.4.0,3.5.0)",org.osgi.framework;version="[1.5,2)",org.slf4j;version
- ="[1.7.7,2)"
+ ,4)",org.energy_home.jemma.ah.cluster.ah,org.energy_home.jemma.ah.hac;v
+ ersion="[3.0.0,3.1.0)",org.energy_home.jemma.ah.hac.lib;version="[3.0.0
+ ,3.1.0)",org.energy_home.jemma.ah.hac.lib.ext;version="[3.4.0,3.5.0)",o
+ rg.osgi.framework;version="[1.5,2)",org.slf4j;version="[1.7.7,2)"
 Include-Resource: OSGI-INF/HacWebCommandProvider.xml=OSGI-INF/HacWebComm
  andProvider.xml
 Private-Package: org.energy_home.jemma.ah.felix.console.web
 Require-Bundle: jemma.osgi.ah.hac.lib;bundle-version="[3.1.0,3.2.0)"
 Service-Component: OSGI-INF/HacWebCommandProvider.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .

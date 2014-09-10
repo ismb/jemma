@@ -31,5 +31,3 @@ Private-Package: xml.scenarios,org.energy_home.jemma.ah.internal.hac.lib
 Service-Component: OSGI-INF/connection_admin.xml,OSGI-INF/hac.xml,OSGI-I
  NF/haclocator.xml,OSGI-INF/hacconsole.xml,OSGI-INF/cmacommands.xml
 Tool: Bnd-1.50.0
-Bundle-ClassPath: .,
- easymock-2.4.jar

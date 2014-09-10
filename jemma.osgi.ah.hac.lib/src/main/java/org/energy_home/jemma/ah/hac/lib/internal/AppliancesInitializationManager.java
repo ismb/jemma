@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.ah.hac.lib.internal;
 
+import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffServer;
 import org.energy_home.jemma.ah.cluster.zigbee.measurement.IlluminanceMeasurementServer;
@@ -29,6 +30,7 @@ import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
+//import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +107,16 @@ public class AppliancesInitializationManager {
 		subscribe(serviceCluster, OnOffServer.ATTR_OnOff_NAME, installing);
 	}	
 	
+	
+	private void initDoorLockCluster(IServiceCluster serviceCluster, boolean installing) {
+		subscribe(serviceCluster, DoorLockServer.ATTR_LockState_NAME, installing);
+	}
+	/*
+	private void initWindowsCoveringCluster(IServiceCluster serviceCluster, boolean installing) {
+		subscribe(serviceCluster, ZclWindowCoveringServer.ATTR_CurrentPositionLiftPercentage_NAME, installing);
+	}
+	*/
+	
 	private void initTemperatureMeasurementCluster(IServiceCluster serviceCluster, boolean installing) {
 		subscribe(serviceCluster, TemperatureMeasurementServer.ATTR_MeasuredValue_NAME, installing);
 	}
@@ -130,6 +142,7 @@ public class AppliancesInitializationManager {
 	}
 	
 	public void initAppliance(IAppliance appliance, boolean installing) {
+
 		IEndPoint[] eps = appliance.getEndPoints();
 		if (eps != null) {
 			IEndPoint ep;
@@ -168,6 +181,15 @@ public class AppliancesInitializationManager {
 				if (sc != null) {
 					initApplianceControlCluster(sc, installing);
 				}
+				/*Added by Marco*/
+				sc = ep.getServiceCluster(DoorLockServer.class.getName());
+				if (sc != null) {
+					initDoorLockCluster(sc, installing);
+				}
+				/*sc = ep.getServiceCluster(ZclWindowCoveringServer.class.getName());
+				if (sc != null) {
+					initWindowsCoveringCluster(sc, installing);
+				}*/
 			}			
 		}
 	}
