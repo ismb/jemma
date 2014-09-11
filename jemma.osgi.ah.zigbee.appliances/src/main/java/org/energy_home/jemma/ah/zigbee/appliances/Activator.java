@@ -61,6 +61,7 @@ public class Activator implements BundleActivator {
 		applicationFactories.add(new ZclWindowCoveringApplianceFactory());
 		//applicationFactories.add(new ZclWindowCoveringControllerApplianceFactory());
 		applicationFactories.add(new ZclDoorLockApplianceFactory());
+		applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
 		/*End Marco*/
 
 		
