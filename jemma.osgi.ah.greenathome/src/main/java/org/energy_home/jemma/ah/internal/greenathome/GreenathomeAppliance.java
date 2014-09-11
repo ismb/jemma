@@ -194,7 +194,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private boolean useReportingOnApplianceControlServer = true;
 
 	private IEndPointRequestContext context = null;
-	private IEndPointRequestContext maxAgeContext;
 
 	private static Hashtable initialConfig = new Hashtable();
 
@@ -277,10 +276,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		maxAgeContext = greenathomeEndPoint.getRequestContext(true, 120000);
 		ConfirmationNotRequiredRequestContext = greenathomeEndPoint.getRequestContext(false, 0);
 		onOffCommandContext = greenathomeEndPoint.getRequestContext(true, 20000);
-		maxAgeContext = greenathomeEndPoint.getRequestContext(true, 20000000);
 		getterContext = greenathomeEndPoint.getRequestContext(true, 5000);
 
 		try {
@@ -768,22 +765,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			if (!peerAppliance.getDescriptor().getType().equals(SMARTINFO_APP_TYPE)) {
 				if (thermostatServer != null) {
-					float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
+					float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
 					value = localTemperature + "^C";
 					if (humidityServer != null) {
-						float humididy = (float) (humidityServer.getMeasuredValue(maxAgeContext) / 100.0);
+						float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
 						value += " " + humididy + "%";
 
 					}
-				} else if (windowCoveringServer != null) {
-					Integer currentLiftPosition = windowCoveringServer.getCurrentPositionLift(maxAgeContext);
-					value = currentLiftPosition.toString();
-				}
-				 else if (doorLockServer != null) {
-						Short currentLockState = (Short)doorLockServer.getLockState(maxAgeContext);
-						value = currentLockState.toString();
-					} 
-				else {
+				} else {
 					if (!useReportingOnSimpleMetering) {
 						try {
 							double power = this.readPower(peerAppliance);
@@ -798,6 +787,12 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						}
 					}
 				}
+			} else if (windowCoveringServer != null) {
+				Integer currentLiftPosition = windowCoveringServer.getCurrentPositionLift(context);
+				value = currentLiftPosition.toString();
+			} else if (doorLockServer != null) {
+				Short currentLockState = (Short) doorLockServer.getLockState(context);
+				value = currentLockState.toString();
 			}
 
 			props.put("device_value", value);
@@ -1329,7 +1324,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 							demandFormattings.put(peerAppliance.getPid(), new Short(df));
 						}
 
-						int istantaneousDemand = simpleMeteringServer.getIstantaneousDemand(maxAgeContext);
+						int istantaneousDemand = simpleMeteringServer.getIstantaneousDemand(context);
 						double power = decodeFormatting(istantaneousDemand, demandFormatting.shortValue());
 						return power;
 					} catch (Exception e) {
@@ -1673,10 +1668,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return result;
 	}
 
+	// /é richiamato durante l'installazione nella schermata /CONF
 	public Hashtable getApplianceConfiguration(IAppliance peerAppliance, int endPointId) throws ApplianceException, ServiceClusterException {
 		int availability = 0;
 		int state = 0;
-		int status = 0;
 		boolean isStateChangable = false;
 
 		String locationPid = null;
@@ -1912,12 +1907,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (doorLockServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+			state = Unknown;
 		}
 
 		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 		if (windowCoveringServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+			state = Unknown;
 			LOG.info("******WindowCoveringServer isAvailable=" + availability);
 		}
 
@@ -1968,20 +1965,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		} else
 			return null;
 
-		props.put("device_state_avail", new Boolean(isStateChangable));
-		props.put("device_state", new Integer(state));
-		props.put("availability", new Integer(availability));
-		props.put("device_status", new Integer(status));
+		props.put("device_state_avail", new Boolean(isStateChangable));/*MARCO non è utilizzato dalle GUI*/
+		props.put("device_state", new Integer(state));/*MARCO USATO PER IDENTIFICARE LO STATO ON OFF*/
+		props.put("availability", new Integer(availability));/*MARCO CONNESSO / DISCONNESSO*/
+		
 
 		if (thermostatServer != null) {
 			availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
 			if (availability == 2) {
-				float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
+				float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
 
 				String value = localTemperature + " &degC";
 				attributeValue = new AttributeValueExtended("LocalTemperature", new AttributeValue(value));
 				if (humidityServer != null) {
-					float humididy = (float) (humidityServer.getMeasuredValue(maxAgeContext) / 100.0);
+					float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
 					value += " " + humididy + "%";
 				}
 			}
@@ -1997,8 +1994,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					power = 0;
 				}
 
-			}
-			else {
+			} else {
 				Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
 
 				if (istantaneousDemand != null) {
@@ -2008,13 +2004,19 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 			}
 		}
+		/* Added by Marco Nieddu */
 		else if ((doorLockServer != null) && (availability == 2)) {
-			
-			Short currentLock =  doorLockServer.getLockState(maxAgeContext);
-			attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(currentLock));
-			
-		}
 
+			Short currentLock = doorLockServer.getLockState(context);
+			attributeValue = new AttributeValueExtended("LockState", new AttributeValue(currentLock));
+
+		} else if ((windowCoveringServer != null) && (availability == 2)) {
+
+			Short currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
+			attributeValue = new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift));
+
+		}
+		/* End Marco Nieddu by Marco Nieddu */
 		if (attributeValue != null)
 			props.put("device_value", attributeValue);
 		return props;
@@ -2658,6 +2660,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
 		}
 
+		/* Added by Marco */
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+		if (doorLockServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+		if (windowCoveringServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		/* End by Marco */
+
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName());
 
 		if (configServer != null) {
@@ -2763,7 +2780,17 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			LOG.debug("Calculated realInstantaneousDemand: " + realInstantaneousValue);
 			props.put("device_value_2", realInstantaneousValue);
 
-		} else {
+		}
+		/* Added By Marco */
+		else if (windowCoveringServer != null) {
+			Integer currentLiftPosition = windowCoveringServer.getCurrentPositionLift(context);
+			value = currentLiftPosition.toString();
+		} else if (doorLockServer != null) {
+			Short currentLockState = (Short) doorLockServer.getLockState(context);
+			value = currentLockState.toString();
+		}
+		/* End By Marco */
+		else {
 			props.put("device_value_2", "na");
 		}
 
