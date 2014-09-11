@@ -74,6 +74,14 @@ public class ShortArrayObject {
 
 	}
 
+	public ShortArrayObject(byte[] buffer, int size) {
+		_startedFromZero = true;
+		array = new short[size];
+		System.arraycopy(buffer, 0, array, 0, size);
+		count = size;
+
+	}
+
 	/**
 	 * Adds a byte after the last currently valid one. Consequently the
 	 * {@link #count} increments by one.
