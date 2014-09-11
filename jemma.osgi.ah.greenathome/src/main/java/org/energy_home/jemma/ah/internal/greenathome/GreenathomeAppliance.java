@@ -46,6 +46,7 @@ import org.energy_home.jemma.ah.cluster.ah.ConfigClient;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockClient;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringClient;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringServer;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksClient;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
@@ -269,7 +270,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerCluster(ApplianceControlClient.class.getName());
 		/* Added by Marco */
 		greenathomeEndPoint.registerCluster(DoorLockClient.class.getName());
-		// greenathomeEndPoint.registerCluster(WindowCoveringClient.class.getName());
+		greenathomeEndPoint.registerCluster(WindowCoveringClient.class.getName());
 		/* End by Marco */
 
 		this.greenathomeEndPoint.registerServiceClustersListener(this);

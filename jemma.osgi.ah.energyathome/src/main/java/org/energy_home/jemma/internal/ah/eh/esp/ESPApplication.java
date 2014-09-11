@@ -317,7 +317,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		else if (epType.equals(IEndPointTypes.ZIGBEE_DRIMMER_SWITCH))
 			deviceType = DeviceType.Other;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_DOOR_LOCK))
-			deviceType = DeviceType.Other;
+			deviceType = DeviceType.DOOR_LOCK;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING))
 			deviceType = DeviceType.WINDOW_COVERING;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING_CONTROLLER))
