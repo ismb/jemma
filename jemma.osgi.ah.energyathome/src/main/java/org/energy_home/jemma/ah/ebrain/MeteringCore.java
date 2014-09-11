@@ -283,6 +283,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						}
 							
 						if (smartInfoProduction != appliance) {
+							//TODO: MARCO SCHIPPARE SE NON SUPPORTA IL METER CLUSTER
 							//TODO: check merge, different values in 3.3.0
 							//if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 1500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
 							if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
