@@ -767,17 +767,6 @@ Configurazione.VisElettrodomestici = function() {
 			val = "nd";
 		} else {
 			htmlStato = "<div class='StatoConnesso'>" + Msg.config["connesso"] + "</div>";
-			
-			//Codice x test
-			if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_PID] == "ah.app.3781220529323317"){
-				Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE] = {javaClass: "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended",
-																					  name: "IstantaneousDemands",
-																					  value: {javaClass: "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended",
-																						      LockState: false,
-																						      value: true}};
-
-				device_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE];
-			}
 
 			// if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE] == 1) {
 			// 		htmlStato = "<div class='StatoOn'>" + Msg.config["statoAcceso"] + "</div>";

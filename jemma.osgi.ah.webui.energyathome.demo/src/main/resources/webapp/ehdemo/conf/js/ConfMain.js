@@ -36,8 +36,6 @@ ConfMain.onLoad = function() {
 						InterfaceEnergyHome.mode = 0;
 					else if (mode == "demo")
 						InterfaceEnergyHome.mode = 1;
-					else if (mode == "noserver")
-						InterfaceEnergyHome.mode = -1;
 					else
 						InterfaceEnergyHome.mode = 2;
 				} else {

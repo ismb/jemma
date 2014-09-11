@@ -8,13 +8,14 @@ function DatiElettr() {
 	this.value = null;
 	this.icona = null;
 	this.tipo = null;
-}
+} 
 
 var InterfaceEnergyHome = {
 	jsonrpc : null,
 	MODULE : "InterfaceEnergyHome",
 	mode : 2, // 0 : simulazione, 1 : rete
 	MODE_SIMUL : 0,
+	MODE_SIMUL_NO_SERVER : -1,
 	MODE_DEMO : 1,
 	MODE_FULL : 2,
 	MODE_COST : 3,

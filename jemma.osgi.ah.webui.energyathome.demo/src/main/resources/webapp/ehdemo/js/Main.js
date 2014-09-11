@@ -182,7 +182,7 @@ Main.IdUtenteCb = function(userId, e) {
 		} else {
 			// per test
 			var qsPV = new Querystring();
-			var qstringPV = qsPV.get("fotov", "false");
+			var qstringPV = qsPV.get("fotov", "true");
 			
 			if (Main.env == 0) console.log('qstringPV = ' + qstringPV);
 			if (qstringPV == "true"){
@@ -214,12 +214,14 @@ Main.setEnablePV = function(result, e){
 		addJavaScriptinDocument('js/tinybox2/tinybox.js?201305315125');
 		addJavaScriptinDocument('js/DefineMenu.js?201305315125');
 		addJavaScriptinDocument('js/startApp.js?201305315125');
+		setDefineMenu();
 	} else {
 		Main.enablePV = false;
 		addCSSinDocument('css/CostiConsumi2.css');
 		addJavaScriptinDocument('js/CostiConsumi1.js?201305315125');
 		addJavaScriptinDocument('js/DefineMenu.js?201305315125');
 		addJavaScriptinDocument('js/startApp.js?201305315125');
+		setDefineMenu();
 	}
 }
 
@@ -276,6 +278,9 @@ Main.onLoad = function() {
 			} else if (mode == "cost"){
 				InterfaceEnergyHome.mode = 3;
 			} else if (mode == "noserver"){
+				LazyScript.load("js/DataSimulNoServer.js", function() {
+					GestDate.InitActualDate(Main.InitValue);
+				});
 				InterfaceEnergyHome.mode = -1;
 			} else {
 				InterfaceEnergyHome.mode = 2;
@@ -301,7 +306,7 @@ Main.onLoad = function() {
 
 		Main.dataMinima = new Date("January 1, 2010 00:00:00").getTime();
 
-		if (mode != "simul"){
+		if ((mode != "simul") && (mode != "noserver")){
 			GestDate.InitActualDate(Main.InitValue);
 		}
 	});

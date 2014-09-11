@@ -363,10 +363,7 @@ CostiConsumi.GetDatiPotenza = function() {
 			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiPotenzaAttuale);
 		} catch (err) {
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in FotoVoltaico.js - in CostiConsumi.GetDatiPotenza method: ',
-								err);
+				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiPotenza method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenza", err);
 		}
 	} else {
@@ -394,13 +391,10 @@ CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 
 	if (err != null) {
 		if (Main.env == 0)
-			console
-					.log(
-							'exception in FotoVoltaico.js - in CostiConsumi.DatiPotenzaAttuale method: ',
-							err);
+			console.log('exception in FotoVoltaico.js - in CostiConsumi.DatiPotenzaAttuale method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiPotenzaAttuale", err);
 	} else if (result != null) {
-		if (InterfaceEnergyHome.mode == 0) {
+		if ((InterfaceEnergyHome.mode == 0) ||(InterfaceEnergyHome.mode == -1)){
 			CostiConsumi.potenzaAttuale.value = result.value;
 		} else{
 			//prelevare dato smart info
@@ -490,11 +484,9 @@ CostiConsumi.GetDatiProduzione = function() {
 			break;
 		}
 		if (Main.env == 0)
-			console.log('FotoVoltaico.js', 'GetDatiProduzione',
-					CostiConsumi.produzioneAttuale.value);
+			console.log('FotoVoltaico.js', 'GetDatiProduzione', CostiConsumi.produzioneAttuale.value);
 
-		CostiConsumi
-				.DatiProduzioneAttuale(CostiConsumi.produzioneAttuale, null);
+		CostiConsumi.DatiProduzioneAttuale(CostiConsumi.produzioneAttuale, null);
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiProduzione', 'Esco!');
@@ -512,10 +504,7 @@ CostiConsumi.DatiProduzioneAttuale = function(result, err) {
 
 	if (err != null) {
 		if (Main.env == 0)
-			console
-					.log(
-							'exception in FotoVoltaico.js - in CostiConsumi.DatiProduzioneAttuale method: ',
-							err);
+			console.log('exception in FotoVoltaico.js - in CostiConsumi.DatiProduzioneAttuale method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiProduzioneAttuale", err);
 	} else if (result != null) {
 		CostiConsumi.produzioneAttuale.value = result.value * 10; //aggiungo un moltiplicatore 10 per la demo
@@ -550,8 +539,7 @@ CostiConsumi.GetDatiRete = function() {
 		CostiConsumi.reteAttuale.value = 0;
 	}
 
-	CostiConsumi.reteAttuale.value = CostiConsumi.produzioneAttuale.value
-			- CostiConsumi.potenzaAttuale.value;
+	CostiConsumi.reteAttuale.value = CostiConsumi.produzioneAttuale.value - CostiConsumi.potenzaAttuale.value;
 
 	if (Main.env == 0)
 		console.log(CostiConsumi.reteAttuale.value,
@@ -587,10 +575,7 @@ CostiConsumi.DatiReteAttuale = function(result, err) {
 
 	if (err != null) {
 		if (Main.env == 0)
-			console
-					.log(
-							'exception in FotoVoltaico.js - in CostiConsumi.DatiReteAttuale method: ',
-							err);
+			console.log('exception in FotoVoltaico.js - in CostiConsumi.DatiReteAttuale method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiProduzioneAttuale", err);
 	} else if (result != null) {
 		CostiConsumi.reteAttuale.value = result.value;
@@ -653,10 +638,7 @@ CostiConsumi.GetDatiEnergiaProdotta = function() {
 			if (Main.env == 0)
 				console.log(80, CostiConsumi.MODULE, err);
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in FotoVoltaico.js - in CostiConsumi.GetDatiEnergiaProdotta method: ',
-								err);
+				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiEnergiaProdotta method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiEnergiaProdotta", err);
 		}
 	} else {
@@ -699,8 +681,7 @@ CostiConsumi.DatiEnergiaProdottaGiornalieroCb = function(result, err) {
 		}
 	}
 	if (Main.env == 0)
-		console.log('FotoVoltaico.js', 'DatiEnergiaProdottaGiornalieroCb',
-				'Esco!');
+		console.log('FotoVoltaico.js', 'DatiEnergiaProdottaGiornalieroCb', 'Esco!');
 	
 	CostiConsumi.visGraficoCount--;
 	if(CostiConsumi.visGraficoCount==0)
