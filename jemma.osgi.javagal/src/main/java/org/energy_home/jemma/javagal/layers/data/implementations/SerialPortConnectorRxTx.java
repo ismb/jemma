@@ -224,33 +224,26 @@ public class SerialPortConnectorRxTx implements IConnector {
 			_caller = _parent;
 		}
 
+
+		private int mybuffsize = 2048;
+
+		private byte[] mybuff = new byte[mybuffsize];
+
 		public synchronized void serialEvent(SerialPortEvent event) {
 			try {
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-					try {
-						int pos = 0;
-						Integer data = 0;
-						short[] buffer = new short[1024];
 
-						while (in.available() > 0) {
-							try {
-								data = in.read();
-								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
-								pos = pos + 1;
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
+					int r = in.available();
+					int n;
 
-						if (!ignoreMessage) {
-
-							ShortArrayObject frame = new ShortArrayObject(buffer, pos);
+					do {
+						n = in.read(mybuff);
+						r -= n;
+						if (n > 0 && !ignoreMessage) {
+							ShortArrayObject frame = new ShortArrayObject(mybuff, n);
 							_caller.getDataLayer().notifyFrame(frame);
 						}
-					} catch (Exception e) {
-
-						LOG.error("Error on data received:" + e.getMessage());
-					}
+					} while (r > 0);
 
 				}
 			} catch (Exception e) {
@@ -258,7 +251,6 @@ public class SerialPortConnectorRxTx implements IConnector {
 				LOG.error("Error on read from serial data:" + e.getMessage());
 
 			}
-
 		}
 	}
 
