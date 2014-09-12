@@ -1,6 +1,8 @@
+var DefineMenu;
+
 function setDefineMenu(){
 	if (Main.enablePV === true){
-		var DefineMenu = [ {"Nome" : Msg.menu["home"],
+		DefineMenu = [ {"Nome" : Msg.menu["home"],
 							"Image" : Define.menu["home"],
 							"ImageSelected" : Define.menu["homeSel"],
 							"SubMenu": [{"Nome" : Msg.menu["fv"],
@@ -96,7 +98,7 @@ function setDefineMenu(){
 											 "FuncEnter" : "Trial.GestTariffa()",
 											 "FuncExit" : "Trial.ExitTariffa()"}]}];
 	} else if (Main.enablePV === false){
-		var DefineMenu = [ {"Nome" : Msg.menu["home"],
+		DefineMenu = [ {"Nome" : Msg.menu["home"],
 							"Image" : Define.menu["home"],
 							"ImageSelected" : Define.menu["homeSel"],
 							"SubMenu": [{"Nome" : Msg.menu["consumi"],

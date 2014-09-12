@@ -780,8 +780,8 @@ Configurazione.VisElettrodomestici = function() {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
 				} else if (category_value == "40") {
-					val = device_value.value.LockState;
-					if (val == true){
+					val = device_value.value.value;
+					if (val == 2){
 						val = 'open';
 						imgDisp = "lockdoor_acceso.png";
 					} else {
