@@ -68,4 +68,10 @@ public class FactoryConfigurationImpl implements Configuration {
 	public void put(Configuration configuration) {
 		this.configurations.put(configuration.getPid(), configuration);
 	}
+
+	@Override
+	public long getChangeCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
