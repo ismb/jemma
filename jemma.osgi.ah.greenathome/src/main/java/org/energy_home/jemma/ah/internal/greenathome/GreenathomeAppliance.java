@@ -46,6 +46,8 @@ import org.energy_home.jemma.ah.cluster.ah.ConfigClient;
 import org.energy_home.jemma.ah.cluster.ah.ConfigServer;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockClient;
 import org.energy_home.jemma.ah.cluster.zigbee.closures.DoorLockServer;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringClient;
+import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringServer;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksClient;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
@@ -107,8 +109,6 @@ import org.energy_home.jemma.ah.hap.client.IM2MHapService;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfig;
 import org.energy_home.jemma.ah.m2m.device.M2MDeviceConfigurator;
 import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
-import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringServer;
-import org.energy_home.jemma.ah.cluster.zigbee.closures.WindowCoveringClient;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
@@ -195,7 +195,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private boolean useReportingOnApplianceControlServer = true;
 
 	private IEndPointRequestContext context = null;
-	private IEndPointRequestContext maxAgeContext;
 
 	private static Hashtable initialConfig = new Hashtable();
 
@@ -269,21 +268,17 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerCluster(LevelControlClient.class.getName());
 		greenathomeEndPoint.registerCluster(ColorControlClient.class.getName());
 		greenathomeEndPoint.registerCluster(ApplianceControlClient.class.getName());
-		/*Added by Marco*/
+		/* Added by Marco */
 		greenathomeEndPoint.registerCluster(DoorLockClient.class.getName());
 		greenathomeEndPoint.registerCluster(WindowCoveringClient.class.getName());
-		/*End by Marco*/
-		
+		/* End by Marco */
 
 		this.greenathomeEndPoint.registerServiceClustersListener(this);
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		maxAgeContext = greenathomeEndPoint.getRequestContext(true, 120000);
 		ConfirmationNotRequiredRequestContext = greenathomeEndPoint.getRequestContext(false, 0);
 		onOffCommandContext = greenathomeEndPoint.getRequestContext(true, 20000);
-		maxAgeContext = greenathomeEndPoint.getRequestContext(true, 20000000);
-
 		getterContext = greenathomeEndPoint.getRequestContext(true, 5000);
 
 		try {
@@ -693,30 +688,31 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				isStateChangable = true;
 				availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
-			
-			
-			/*Added by Marco*/
+
+			/* Added by Marco */
 			DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 			if (doorLockServer != null) {
 				isStateChangable = true;
 				availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
-			
+
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 			if (windowCoveringServer != null) {
 				isStateChangable = true;
 				availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
-			
-			WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
-			if (windowCoveringClient != null) {
-				isStateChangable = true;
-				availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
-			}
-			
-			/*End by Marco*/
-			
-			
+
+			/*
+			 * WindowCoveringClient windowCoveringClient =
+			 * (WindowCoveringClient)
+			 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
+			 * WindowCoveringClient.class.getName()); if (windowCoveringClient
+			 * != null) { isStateChangable = true; availability =
+			 * ((IServiceCluster)
+			 * windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0; }
+			 */
+			/* End by Marco */
+
 			RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
 			if (humidityServer != null) {
 				isStateChangable = true;
@@ -768,16 +764,15 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			String value = "";
 
-			if (!peerAppliance.getDescriptor().getType()
-					.equals(SMARTINFO_APP_TYPE)) {
+			if (!peerAppliance.getDescriptor().getType().equals(SMARTINFO_APP_TYPE)) {
 				if (thermostatServer != null) {
-					float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
+					float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
 					value = localTemperature + "^C";
 					if (humidityServer != null) {
-						float humididy = (float) (humidityServer.getMeasuredValue(maxAgeContext) / 100.0);
+						float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
 						value += " " + humididy + "%";
-					}
 
+					}
 				} else {
 					if (!useReportingOnSimpleMetering) {
 						try {
@@ -793,6 +788,12 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						}
 					}
 				}
+			} else if (windowCoveringServer != null) {
+				Integer currentLiftPosition = windowCoveringServer.getCurrentPositionLift(context);
+				value = currentLiftPosition.toString();
+			} else if (doorLockServer != null) {
+				Short currentLockState = (Short) doorLockServer.getLockState(context);
+				value = currentLockState.toString();
 			}
 
 			props.put("device_value", value);
@@ -1253,29 +1254,25 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("Illuminance Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
-						
-						
-						/*Added by Marco*/
+
+						/* Added by Marco */
 						DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 						if (doorLockServer != null) {
-								((IServiceCluster) doorLockServer).setAttributeSubscription(DoorLockServer.ATTR_LockState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-							
+							((IServiceCluster) doorLockServer).setAttributeSubscription(DoorLockServer.ATTR_LockState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+
 						} else {
 							LOG.debug("Door Lock Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
-						
+
 						WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 						if (windowCoveringServer != null) {
 							((IServiceCluster) windowCoveringServer).setAttributeSubscription(WindowCoveringServer.ATTR_CurrentPositionLiftPercentage_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-						}
-						else {
+						} else {
 							LOG.debug("Window Covering Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
-						/*End Marco*/
-						
+
+						/* End Marco */
+
 					} catch (ServiceClusterException e) {
 						LOG.error("Exception on initEndPoint", e);
 					} catch (ApplianceException e) {
@@ -1328,7 +1325,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 							demandFormattings.put(peerAppliance.getPid(), new Short(df));
 						}
 
-						int istantaneousDemand = simpleMeteringServer.getIstantaneousDemand(maxAgeContext);
+						int istantaneousDemand = simpleMeteringServer.getIstantaneousDemand(context);
 						double power = decodeFormatting(istantaneousDemand, demandFormatting.shortValue());
 						return power;
 					} catch (Exception e) {
@@ -1364,19 +1361,16 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			if (attributeName.equals(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME)) {
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
-
 				Short demandFormatting = (Short) demandFormattings.get(peerAppliance.getPid());
 				if (demandFormatting == null) {
 					LOG.error("demand formatting not available for appliance " + peerAppliance.getPid());
 					return;
 				}
-
 				double power = decodeFormatting(((Number) attributeValue.getValue()).longValue(), demandFormatting.shortValue());
 				this.istantaneousDemands.put(peerAppliance.getPid(), new Double(power));
 				LOG.debug("calculated on appliance " + peerAppliance.getPid() + " power " + power);
 			} else if (attributeName.equals(SimpleMetering4NoksServer.ATTR_Power_NAME)) {
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
-
 				double power = ((Number) attributeValue.getValue()).longValue();
 				this.istantaneousDemands.put(peerAppliance.getPid(), new Double(power));
 			} else if (attributeName.equals(OccupancySensingServer.ATTR_Occupancy_NAME)) {
@@ -1675,10 +1669,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return result;
 	}
 
+	// /é richiamato durante l'installazione nella schermata /CONF
 	public Hashtable getApplianceConfiguration(IAppliance peerAppliance, int endPointId) throws ApplianceException, ServiceClusterException {
 		int availability = 0;
 		int state = 0;
-		int status = 0;
 		boolean isStateChangable = false;
 
 		String locationPid = null;
@@ -1908,31 +1902,33 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			availability = ((IServiceCluster) humidityServer).getEndPoint().isAvailable() ? 2 : 0;
 		}
 
-		/*Added by Marco*/
+		/* Added by Marco */
 		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 
 		if (doorLockServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+			state = Unknown;
 		}
-		
+
 		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 		if (windowCoveringServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
-			LOG.info("******WindowCoveringServer isAvailable="+availability);
+			state = Unknown;
+			LOG.info("******WindowCoveringServer isAvailable=" + availability);
 		}
-		
-		
-		WindowCoveringClient windowCoveringClient = (WindowCoveringClient) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringClient.class.getName());
-		if (windowCoveringClient != null) {
-			isStateChangable = true;
-			availability = ((IServiceCluster) windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
-			LOG.info("******WindowCoveringClient isAvailable="+availability);
-		}
-		
-		/*End Marco*/
-		
+
+		/*
+		 * WindowCoveringClient windowCoveringClient = (WindowCoveringClient)
+		 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
+		 * WindowCoveringClient.class.getName()); if (windowCoveringClient !=
+		 * null) { isStateChangable = true; availability = ((IServiceCluster)
+		 * windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
+		 * LOG.info("******WindowCoveringClient isAvailable="+availability); }
+		 */
+		/* End Marco */
+
 		// handle Smart Info and Smart Plugs
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
 
@@ -1970,20 +1966,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		} else
 			return null;
 
-		props.put("device_state_avail", new Boolean(isStateChangable));
-		props.put("device_state", new Integer(state));
-		props.put("availability", new Integer(availability));
-		props.put("device_status", new Integer(status));
+		props.put("device_state_avail", new Boolean(isStateChangable));/*MARCO non è utilizzato dalle GUI*/
+		props.put("device_state", new Integer(state));/*MARCO USATO PER IDENTIFICARE LO STATO ON OFF*/
+		props.put("availability", new Integer(availability));/*MARCO CONNESSO / DISCONNESSO*/
+		
 
 		if (thermostatServer != null) {
 			availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
 			if (availability == 2) {
-				float localTemperature = (float) (thermostatServer.getLocalTemperature(maxAgeContext) / 100.0);
+				float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
 
 				String value = localTemperature + " &degC";
 				attributeValue = new AttributeValueExtended("LocalTemperature", new AttributeValue(value));
 				if (humidityServer != null) {
-					float humididy = (float) (humidityServer.getMeasuredValue(maxAgeContext) / 100.0);
+					float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
 					value += " " + humididy + "%";
 				}
 			}
@@ -2009,7 +2005,19 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 			}
 		}
+		/* Added by Marco Nieddu */
+		else if ((doorLockServer != null) && (availability == 2)) {
 
+			Short currentLock = doorLockServer.getLockState(context);
+			attributeValue = new AttributeValueExtended("LockState", new AttributeValue(currentLock));
+
+		} else if ((windowCoveringServer != null) && (availability == 2)) {
+
+			Short currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
+			attributeValue = new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift));
+
+		}
+		/* End Marco Nieddu by Marco Nieddu */
 		if (attributeValue != null)
 			props.put("device_value", attributeValue);
 		return props;
@@ -2653,6 +2661,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
 		}
 
+		/* Added by Marco */
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+		if (doorLockServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+		if (windowCoveringServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		/* End by Marco */
+
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName());
 
 		if (configServer != null) {
@@ -2758,7 +2781,17 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			LOG.debug("Calculated realInstantaneousDemand: " + realInstantaneousValue);
 			props.put("device_value_2", realInstantaneousValue);
 
-		} else {
+		}
+		/* Added By Marco */
+		else if (windowCoveringServer != null) {
+			Integer currentLiftPosition = windowCoveringServer.getCurrentPositionLift(context);
+			value = currentLiftPosition.toString();
+		} else if (doorLockServer != null) {
+			Short currentLockState = (Short) doorLockServer.getLockState(context);
+			value = currentLockState.toString();
+		}
+		/* End By Marco */
+		else {
 			props.put("device_value_2", "na");
 		}
 

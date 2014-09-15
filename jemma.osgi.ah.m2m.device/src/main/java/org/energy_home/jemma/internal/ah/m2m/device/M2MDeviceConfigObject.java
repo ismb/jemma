@@ -15,7 +15,6 @@
  */
 package org.energy_home.jemma.internal.ah.m2m.device;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 //XXX TO check: seems config-related: shall we consider harmoninzing with ConfigAdmin ?
 public class M2MDeviceConfigObject implements M2MDeviceConfig {
-	private static final Logger LOG = LoggerFactory.getLogger( M2MDeviceConfigObject.class );
+	private static final Logger LOG = LoggerFactory.getLogger(M2MDeviceConfigObject.class);
 	private static final String SP_SYSTEM_PROPERTY_PREFIX = "org.energy_home.jemma.m2m.device.";
 	private static final String SP_CONNECTION_CONFIG_DIR = SP_SYSTEM_PROPERTY_PREFIX + "configDir";
 	private static final String CONFIG_FILE_NAME = SP_SYSTEM_PROPERTY_PREFIX + "config.properties";
@@ -60,19 +59,22 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 		String encKey = null;
 		try {
-			//TODO: check merge, class org.energy_home.jemma.internal.ah.m2m.device.EHSettings not in JEMMA!
+			// TODO: check merge, class
+			// org.energy_home.jemma.internal.ah.m2m.device.EHSettings not in
+			// JEMMA!
 			Class ehSettingsClass = Class.forName("org.energy_home.jemma.internal.ah.m2m.device.EHSettings");
 			Field field = ehSettingsClass.getDeclaredField("key");
 			field.setAccessible(true);
 			encKey = (String) field.get(null);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (!isNullOrEmpty(encKey))
 				enc = TripleDESEnc.getInstance(encKey);
 		} catch (Exception e) {
 			LOG.error("Problem while initializing encryption", e);
 		}
-		
+
 		String configDir = System.getProperty(SP_CONNECTION_CONFIG_DIR);
 		if (configDir != null) {
 			if (isNullOrEmpty(configDir))
@@ -83,7 +85,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 			configFilePath = null;
 		loadConfigProperties();
 	}
-	
+
 	public static boolean checkUserId(String userId) {
 		if (userId == null || userId.length() == 0)
 			return false;
@@ -91,7 +93,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 		Matcher matcher = pattern.matcher(userId);
 		return !matcher.find();
 	}
-	
+
 	private static String initConfigProperty(String key) {
 		String value = configProperties.getProperty(key);
 		if (isNullOrEmpty(value)) {
@@ -107,7 +109,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 	private static final void loadConfigProperties() {
 		configProperties = new Properties();
-		if (configFilePath != null) {
+		if ((configFilePath != null) && (new File(configFilePath).exists())) {
 			FileInputStream in = null;
 			try {
 				in = new FileInputStream(configFilePath);
@@ -124,6 +126,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 					}
 			}
 		} else {
+			LOG.warn("Configuration file does not exists - " + configFilePath);
 			initConfigProperty(DEVICE_ID_PROPERTY_KEY);
 			initConfigProperty(DEVICE_TOKEN_PROPERTY_KEY);
 		}
@@ -167,7 +170,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 					configProperties.store(out, "M2M Device configuration paramaters");
 				} catch (Exception e) {
 					LOG.error("Excp on updateConfigProperties", e);
-					if (out != null) //FIXME Why a nested try catch ?
+					if (out != null) // FIXME Why a nested try catch ?
 						try {
 							out.close();
 						} catch (IOException e1) {
@@ -186,7 +189,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	private String connectionBaseUri = null;
 	private String networkSclBaseUri = null;
 
-	private String deviceId;
+	private String deviceId = null;
 
 	private String deviceToken;
 	private String networkSclBaseToken;
@@ -196,12 +199,12 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	private void updateBaseUri() {
 		this.baseUri = M2MConstants.URL_HTTP_PREFIX + serverAddress + M2MConstants.URL_PORT_PREFIX + serverPort;
 	}
-	
+
 	public M2MDeviceConfigObject() {
 		serverAddress = configProperties.getProperty(SERVER_ADDRESS_PROPERTY_KEY);
 		serverPort = Integer.parseInt(configProperties.getProperty(SERVER_PORT_PROPERTY_KEY));
 		deviceId = configProperties.getProperty(DEVICE_ID_PROPERTY_KEY);
-		deviceToken = configProperties.getProperty(DEVICE_TOKEN_PROPERTY_KEY);			
+		deviceToken = configProperties.getProperty(DEVICE_TOKEN_PROPERTY_KEY);
 		connectionRetryTimeout = Long.parseLong(configProperties.getProperty(CONNECTION_RETRY_TIMEOUT_PROPERTY_KEY));
 		updateBaseUri();
 	}
@@ -225,7 +228,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	public String getConnectionId() {
 		return deviceId != null ? CONNECTION_ID_PREFIX + deviceId : null;
 	}
-	
+
 	public String getSclId() {
 		return deviceId != null ? NETWORK_SCL_ID_PREFIX + deviceId : null;
 	}
@@ -235,13 +238,13 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 			return deviceToken;
 		String cid = getConnectionId();
 		if (cid == null || enc == null)
-			return null;	
+			return null;
 		try {
 			return enc.hexEncrypt(cid);
 		} catch (Exception e) {
 			LOG.error("Exception on getConnectionToken", e);
 			return null;
-		}		
+		}
 	}
 
 	public String getNetworkSclBaseToken() {
@@ -255,9 +258,12 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	// *** M2MDeviceConfig interface
 
 	public boolean isLocalOnly() {
-		return deviceId.equals(M2MConstants.LOCAL_ONLY_DEVICE_ID);
+		if (deviceId != null)
+			return deviceId.equals(M2MConstants.LOCAL_ONLY_DEVICE_ID);
+		else
+			return true;
 	}
-	
+
 	public boolean isValid() {
 		return deviceId != null && !deviceId.equals("");
 	}
@@ -267,7 +273,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 		p.setProperty(SERVER_ADDRESS_PROPERTY_KEY, serverAddress);
 		p.setProperty(SERVER_PORT_PROPERTY_KEY, Integer.toString(serverPort));
 		p.setProperty(DEVICE_ID_PROPERTY_KEY, deviceId == null ? "" : deviceId);
-		p.setProperty(DEVICE_TOKEN_PROPERTY_KEY, (isNullOrEmpty(deviceToken)) ? "" : deviceToken); 
+		p.setProperty(DEVICE_TOKEN_PROPERTY_KEY, (isNullOrEmpty(deviceToken)) ? "" : deviceToken);
 		p.setProperty(CONNECTION_RETRY_TIMEOUT_PROPERTY_KEY, Long.toString(connectionRetryTimeout));
 		return p;
 	}
@@ -313,7 +319,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 	public void setConnectionRetryTimeout(long connectionRetryTimeout) {
 		this.connectionRetryTimeout = connectionRetryTimeout;
 	}
-	
+
 	private static final boolean isNullOrEmpty(String s) {
 		return (s == null || (s.length() == 0));
 	}

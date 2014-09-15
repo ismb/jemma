@@ -169,6 +169,8 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 		return value;
 	}
 	
+	
+	
 	public void subscribeIstantaneousDemand(String applianceId, long minReportingInterval, long maxReportingInterval, float deltaValue) {
 		SubscriptionParameters params = new SubscriptionParameters(minReportingInterval, maxReportingInterval, deltaValue);
 		// TODO: needs to be extended to manage multiple end points devices
