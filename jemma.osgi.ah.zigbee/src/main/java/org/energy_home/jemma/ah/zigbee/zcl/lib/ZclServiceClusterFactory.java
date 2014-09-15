@@ -73,6 +73,12 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlS
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkLevelControlServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkOnOffServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionClient;
 
 public class ZclServiceClusterFactory {
 	private static final int ZLL_PROFILE_ID = 0xc05e;
