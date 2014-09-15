@@ -264,7 +264,7 @@ public class Discovery_Freshness_ForcePing {
 	 * For any Child into the Neighbor of he parent node, start the same
 	 * Algorithm recursively
 	 */
-	private synchronized void manageChildNode(Address node, TypeFunction function, String funcionName, AssociatedDevices _AssociatedDevices, NeighborTableLis_Record x) throws Exception {
+	private void manageChildNode(Address node, TypeFunction function, String funcionName, AssociatedDevices _AssociatedDevices, NeighborTableLis_Record x) throws Exception {
 		if (x._Extended_Address == 0xFFFFFFFFFFFFFFFFL || x._Extended_Address == 0x0000000000000000L) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
 				LOG.info("Wrong IEEE found");
@@ -354,7 +354,7 @@ public class Discovery_Freshness_ForcePing {
 	/**
 	 * Manage the error on Lqi_Request or Lqi_response
 	 */
-	private synchronized void manageError(TypeFunction function, short startIndex, WrapperWSNNode __currentNodeWrapper, int _indexParent, Exception e) {
+	private  void manageError(TypeFunction function, short startIndex, WrapperWSNNode __currentNodeWrapper, int _indexParent, Exception e) {
 		/* Check if the node exist o cache or is already deleted */
 		int indexOnCache = gal.existIntoNetworkCache(__currentNodeWrapper.get_node().getAddress());
 		if (indexOnCache > -1) {
