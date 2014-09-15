@@ -30,15 +30,15 @@ public class ZigbeeWhiteGoodApplianceFactory extends DriverApplianceFactory impl
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.whitegood";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Whitegood";
 	public static final String DEVICE_TYPE = "ZigBee";
-	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, DEVICE_TYPE,
-			APPLIANCE_FRIENDLY_NAME);
+	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, DEVICE_TYPE, APPLIANCE_FRIENDLY_NAME);
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
 		return new ZigbeeWhiteGoodAppliance(pid, config);
 	}
 
 	public String deviceMatchFilterString() {
-		return "( & ( DEVICE_CATEGORY=ZigBee)(zigbee.device.eps.number=1) (| (&(zigbee.device.profile.id=49724)(zigbee.device.device.id=2560)) (&(zigbee.device.profile.id=260)(zigbee.device.device.id=82))))";	}
+		return "(&(DEVICE_CATEGORY=ZigBee)(|(zigbee.device.device.id=2560)(zigbee.device.device.id=82)))";
+	}
 
 	public IApplianceDescriptor getDescriptor() {
 		return APPLIANCE_DESCRIPTOR;

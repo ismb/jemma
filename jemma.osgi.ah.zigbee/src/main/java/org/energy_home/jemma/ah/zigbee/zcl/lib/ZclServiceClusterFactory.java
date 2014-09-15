@@ -50,6 +50,8 @@ import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffSwitchConfigurationClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffSwitchConfigurationServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
@@ -107,6 +109,8 @@ public class ZclServiceClusterFactory {
 		commonServerClusterMap.put(new Integer(ZclApplianceControlServer.CLUSTER_ID), ZclApplianceControlServer.class);
 		commonServerClusterMap.put(new Integer(ZclApplianceEventsAndAlertsServer.CLUSTER_ID),
 				ZclApplianceEventsAndAlertsServer.class);
+		commonServerClusterMap.put(new Integer(ZclPartitionServer.CLUSTER_ID), ZclPartitionServer.class);
+		
 		
 		commonServerClusterMap.put(new Integer(ZclTemperatureMeasurementServer.CLUSTER_ID), ZclTemperatureMeasurementServer.class);
 		commonServerClusterMap.put(new Integer(ZclRelativeHumidityMeasurementServer.CLUSTER_ID),
@@ -168,7 +172,7 @@ public class ZclServiceClusterFactory {
 				ZclAirQualityClient.class);
 		commonClientClusterMap.put(new Integer(ZclWindowCoveringClient.CLUSTER_ID),
 				ZclWindowCoveringClient.class);
-		
+		commonClientClusterMap.put(new Integer(ZclPartitionClient.CLUSTER_ID), ZclPartitionClient.class);
 
 		zllServerClusterMap.put(new Integer(ZclLightLinkIdentifyServer.CLUSTER_ID), ZclLightLinkIdentifyServer.class);
 		zllServerClusterMap.put(new Integer(ZclLightLinkLevelControlServer.CLUSTER_ID), ZclLightLinkLevelControlServer.class);

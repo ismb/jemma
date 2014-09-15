@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -695,6 +698,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	public synchronized void notifyFrequencyAgility(final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
+				LinkedList<GatewayDeviceEventEntry> copylist = null;
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
 						Status cstatus = null;

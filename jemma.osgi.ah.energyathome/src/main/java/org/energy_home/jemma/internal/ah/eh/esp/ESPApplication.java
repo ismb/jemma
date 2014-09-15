@@ -373,10 +373,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			LOG.debug("notifyApplianceAdded " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			IEndPoint ep = null;
+			
 			if (eps.length <= 1) {
 				LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
+			
 			for (int i = 1; i < eps.length; i++) {
 				ep = eps[i];
 				DeviceType deviceType = getDeviceType(ep);
