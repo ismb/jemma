@@ -11,9 +11,7 @@ if (InterfaceEnergyHome) {
 		}
 	}
 }
-/*if ((InterfaceEnergyHome.mode == 0) || (InterfaceEnergyHome.mode == -1)) {
-	sleepJS(15000);
-}*/
+
 if (Main.enablePV === true){
 	InterfaceEnergyHome.GetPowerLimitFotoVoltaico(Main.PowerLimitCbFotoVoltaico);
 	//InterfaceEnergyHome.GetPowerLimitRete(Main.PowerLimitCbRete);

@@ -1031,6 +1031,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	static final int On = 1;
 	static final int Unknown = 4;
 
+	//DoorLock State
+	static final int DoorLockCloseUnLock = 0;
+	static final int DoorLockClose = 1;
+	static final int DoorLockOpen = 2;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1042,6 +1047,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 
 		if (onOffServer != null) {
 			if (state == On) {
@@ -1076,6 +1082,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					return false;
 
 				applianceControlServer.execCommandExecution(commandId, null);
+			} catch (Exception e) {
+				LOG.error("execCommandExecution exception " + e.getMessage(), e);
+				return false;
+			}
+		} else if (doorLockServer != null) {
+			try {
+				if (state == DoorLockCloseUnLock) {
+					doorLockServer.execUnlockDoor("0000", ConfirmationNotRequiredRequestContext);
+				} else if (state == DoorLockClose) {
+					doorLockServer.execLockDoor("0001", ConfirmationNotRequiredRequestContext);
+				} else if (state == DoorLockOpen) {
+					doorLockServer.execUnlockDoor("0002", ConfirmationNotRequiredRequestContext);
+				} else
+					return false;
 			} catch (Exception e) {
 				LOG.error("execCommandExecution exception " + e.getMessage(), e);
 				return false;
@@ -1668,7 +1688,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return result;
 	}
 
-	// /é richiamato durante l'installazione
+	// e' richiamato durante l'installazione
 	public Hashtable getApplianceConfiguration(IAppliance peerAppliance, int endPointId) throws ApplianceException, ServiceClusterException {
 		int availability = 0;
 		int state = 0;

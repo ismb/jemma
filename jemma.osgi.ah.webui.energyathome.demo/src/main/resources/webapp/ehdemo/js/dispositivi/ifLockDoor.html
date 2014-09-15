@@ -1,14 +1,15 @@
 
-<div id=ifLockDoor>
+<div id="ifLockDoor">
     <!--<div class="row1" style="width: 100%">-->
         <div class="col" style="width: 25%;">
             <div class="left-box">
-                <div id="bg" class="bg">
-                    <img src="Resources/Images/Devices2/doorlock_open.png" />
-                </div>
+
+                <div class="icona"><img src="Resources/Images/Devices2/lampadina_on.png" class="icona-dispositivo" /></div>
+            
                 <div class="StatoElettrodomestico">
+                   
                     <div class="row">
-                        <div class="left">Consumption:</div>
+                        <div class="left">Door State:</div>
                         <div class="consumo right"></div>
                     </div>
                     <div class="row posizione">
@@ -18,33 +19,19 @@
                 </div>
             </div>
         </div>
-        <div class="col" style="width: 39%;">
+        <div class="col" style="width: 40%;">
+            <!--<div class="controlli">-->
                 <div id="OnOffControl">
-                    <div class="label inline" >Device state:</div>
+                    <div class="label inline" >Lock state:</div>
                     <div id="onoff" class="btnToggle right">&nbsp</div>
                 </div>
-               <div id="SyncControl">
-                    <div class="line">
-                    <div class="label inline" >Sync:</div>
-                    <div id="sync" class="btnSync right">&nbsp</div>
-                    </div>
-                </div>
-                <div id="LevelControl">
-                    <div class="line">
-                    	<div class="label inline" >Light intensity:</div>
-                    	<div id="lum_perc" class="dato right">100%</div>
-                    </div>
-                    <div class="line">
-                    <div id="lum" class="slider"></div>
-                    </div>
-                </div>
+                
+               
+            <!--</div>-->
         </div>
-        <div class="col lborder" style="width: 34%;">
-            <div class="line" style="width: 80%; margin-left: auto; margin-right: auto;">
-                <div class="label inline" >Color:</div>
-            </div>
-            <div id="ColorControl">
-                <div id="picker"></div>
-            </div>
+        <div class="col" style="width: 35%;">
+
         </div>
+    <!--</div>-->
+    
 </div>
