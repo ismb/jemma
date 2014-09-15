@@ -47,7 +47,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 public class RestClient {
-	private static final int SO_TIMEOUT = 10000;
+	private static final int SO_TIMEOUT = 1000;
 	private static final String HTTP_CONTENT_TYPE = "application/xml";
 
 	// private static URI resolveUri(URI baseUri, String relativeUri) {

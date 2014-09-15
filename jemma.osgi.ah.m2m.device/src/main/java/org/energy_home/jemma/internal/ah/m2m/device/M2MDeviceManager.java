@@ -406,7 +406,9 @@ public class M2MDeviceManager implements M2MDeviceConfigurator {
 				}
 				jaxbConverterFactory = HttpEntityXmlConverter.getConnectionConverter();
 				try {
+					
 					restClient = RestClient.get();
+				
 					networkConnectionUri = new URI(deviceConfig.getConnectionBaseUri());
 				} catch (URISyntaxException e) {
 					M2MUtils.mapDeviceException(LOG, e, "Invalid base uri configuration");
