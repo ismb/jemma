@@ -182,7 +182,7 @@ public class SerialPortConnectorJssc implements IConnector {
 			_caller = _parent;
 		}
 
-		public synchronized void serialEvent(SerialPortEvent event) {
+		public void serialEvent(SerialPortEvent event) {
 			try {
 				try {
 					int numberOfBytes = event.getEventValue();
