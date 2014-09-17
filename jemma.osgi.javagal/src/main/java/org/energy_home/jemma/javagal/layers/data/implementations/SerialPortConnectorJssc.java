@@ -115,7 +115,7 @@ public class SerialPortConnectorJssc implements IConnector {
 		}
 	}
 
-	private synchronized void setConnected(boolean value) {
+	private void setConnected(boolean value) {
 		connected = value;
 
 	}
@@ -123,7 +123,7 @@ public class SerialPortConnectorJssc implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ShortArrayObject buff) throws Exception {
+	public synchronized void write(ShortArrayObject buff) throws Exception {
 		if (isConnected()) {
 
 			try {
@@ -145,7 +145,7 @@ public class SerialPortConnectorJssc implements IConnector {
 	 * @inheritDoc
 	 */
 	@Override
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return connected;
 	}
 
@@ -189,7 +189,7 @@ public class SerialPortConnectorJssc implements IConnector {
 					if (numberOfBytes > 0) {
 						byte[] bufferOr = serialPort.readBytes(numberOfBytes);
 
-						if (!ignoreMessage) {
+						if (!getIgnoreMessage()) {
 							short[] buffer = new short[bufferOr.length];
 
 							for (int i = 0; i < buffer.length; i++) {
@@ -213,12 +213,12 @@ public class SerialPortConnectorJssc implements IConnector {
 		}
 	}
 
-	private synchronized void setIgnoreMessage(boolean value) {
+	private void setIgnoreMessage(boolean value) {
 		ignoreMessage = value;
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
+	private boolean getIgnoreMessage() {
 		return ignoreMessage;
 
 	}

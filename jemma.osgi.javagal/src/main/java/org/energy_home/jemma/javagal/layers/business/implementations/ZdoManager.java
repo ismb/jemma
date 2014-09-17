@@ -15,36 +15,39 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.math.BigInteger;
+
+import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
+import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.MACCapability;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
 import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
-
-import java.math.BigInteger;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
-import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
 /**
  * Manages received ZDO messages. When an ZDO indication is received it is
  * passed to this class' {@code ZDOMessageIndication} method.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
-  */
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ */
 public class ZdoManager /* implements APSMessageListener */{
 	private static final Logger LOG = LoggerFactory.getLogger(ZdoManager.class);
 
 	/**
 	 * The local {@link GalController} reference.
 	 */
-	GalController gal = null;
+	private GalController gal = null;
+
+	private GalController getGal() {
+		return gal;
+	}
 
 	/**
 	 * Creates a new instance with a Gal controller reference.
@@ -70,32 +73,32 @@ public class ZdoManager /* implements APSMessageListener */{
 
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a MGMT_LQI_Response");
 			}
 
 		}
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a MGMT_LQI_Request");
 			}
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a Node_Desc_req");
 			}
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a Node_Desc_rsp");
 			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a Leave_rsp");
 			}
 			WSNNode _nodeRemoved = new WSNNode();
@@ -104,14 +107,14 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
 				int _index = -1;
-				synchronized (gal.getNetworkcache()) {
-					if ((_index = gal.existIntoNetworkCache(_add)) != -1) {
-						gal.getNetworkcache().remove(_index);
+				synchronized (getGal().getNetworkcache()) {
+					if ((_index = getGal().existIntoNetworkCache(_add)) != -1) {
+						getGal().getNetworkcache().remove(_index);
 						Status _s = new Status();
 						_s.setCode((short) 0x00);
 						_s.setMessage("Successful - Device Removed by Leave Response");
 						try {
-							gal.get_gatewayEventManager().nodeRemoved(_s, _nodeRemoved);
+							getGal().get_gatewayEventManager().nodeRemoved(_s, _nodeRemoved);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -155,35 +158,35 @@ public class ZdoManager /* implements APSMessageListener */{
 			_Node.set_discoveryCompleted(true);
 			_Node.reset_numberOfAttempt();
 			int _index = -1;
-			synchronized (gal.getNetworkcache()) {
-				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
+			synchronized (getGal().getNetworkcache()) {
+				if ((_index = getGal().existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
 					/* id not exist */
-					if (gal.getPropertiesManager().getDebugEnabled())
+					if (getGal().getPropertiesManager().getDebugEnabled())
 						LOG.info("Adding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 
-					gal.getNetworkcache().add(_Node);
+					getGal().getNetworkcache().add(_Node);
 					if (!_Node.isSleepy()) {
-						if (gal.getPropertiesManager().getKeepAliveThreshold() > 0) {
-							_Node.setTimerFreshness(gal.getPropertiesManager().getKeepAliveThreshold());
+						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
+							_Node.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
 						}
-						if (gal.getPropertiesManager().getForcePingTimeout() > 0) {
-							_Node.setTimerForcePing(gal.getPropertiesManager().getForcePingTimeout());
+						if (getGal().getPropertiesManager().getForcePingTimeout() > 0) {
+							_Node.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
 						}
 					}
 					/* Saving the Panid in order to leave the Philips light */
-					gal.getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), gal.getNetworkPanID());
+					getGal().getManageMapPanId().setPanid(_Node.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
 					/**/
 
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
 					try {
-						gal.get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
+						getGal().get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
 					} catch (Exception e) {
 
 						LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
 
 					}
-					if (gal.getPropertiesManager().getDebugEnabled()) {
+					if (getGal().getPropertiesManager().getDebugEnabled()) {
 						LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 					}
 				}
@@ -191,8 +194,8 @@ public class ZdoManager /* implements APSMessageListener */{
 
 		}
 
-		gal.getApsManager().APSMessageIndication(message);
-		gal.getMessageManager().APSMessageIndication(message);
+		getGal().getApsManager().APSMessageIndication(message);
+		getGal().getMessageManager().APSMessageIndication(message);
 
 		// TODO ZDPMessage
 		ZDPMessage _zdpM = new ZDPMessage();
@@ -202,6 +205,6 @@ public class ZdoManager /* implements APSMessageListener */{
 		_zdpM.setRxTime(message.getRxTime());
 		_zdpM.setSourceAddress(message.getSourceAddress());
 		_zdpM.setSourceAddressMode(message.getSourceAddressMode());
-		gal.get_gatewayEventManager().notifyZDPEvent(_zdpM);
+		getGal().get_gatewayEventManager().notifyZDPEvent(_zdpM);
 	}
 }
