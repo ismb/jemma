@@ -77,12 +77,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JavaGal Controller. Only one instance of this object can exists at a
- * time. All clients can access this instance via their dedicated proxies (see
+ * JavaGal Controller. Only one instance of this object can exists at a time.
+ * All clients can access this instance via their dedicated proxies (see
  * {@link org.energy_home.jemma.zgd.GalExtenderProxy}).
  * 
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 
@@ -201,7 +202,7 @@ public class GalController {
 	/**
 	 * recovery of the GAL,
 	 */
-	public  void recoveryGAL() throws Exception {
+	public void recoveryGAL() throws Exception {
 		MyRunnable thr = new MyRunnable(this) {
 			@Override
 			public void run() {
@@ -223,7 +224,7 @@ public class GalController {
 
 					FileWriter fileWriter = new FileWriter(f, true);
 					bufferFileWriter = new BufferedWriter(fileWriter);
-					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() +  "STARTING RECOVERY");
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "STARTING RECOVERY");
 
 					/* Used for reset GAL */
 					if (DataLayer != null) {
@@ -292,7 +293,7 @@ public class GalController {
 					}
 					LOG.error("********RECOVERY DONE!");
 
-					fileWriter.append("\n\r"+new Date(System.currentTimeMillis()).toString() +  "RECOVERY DONE!");
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "RECOVERY DONE!");
 					return;
 				} catch (Exception e1) {
 					LOG.error("Error resetting GAL");
@@ -352,8 +353,11 @@ public class GalController {
 	 * @see GatewayDeviceEventEntry
 	 */
 
-	public synchronized List<GatewayDeviceEventEntry> getListGatewayEventListener() {
-		return listGatewayEventListener;
+	public List<GatewayDeviceEventEntry> getListGatewayEventListener() {
+		synchronized (listGatewayEventListener) {
+			return listGatewayEventListener;
+		}
+
 	}
 
 	/**
@@ -363,8 +367,10 @@ public class GalController {
 	 * @return the list of registered callbacks.
 	 * @see CallbackEntry
 	 */
-	public synchronized List<CallbackEntry> getCallbacks() {
-		return listCallback;
+	public List<CallbackEntry> getCallbacks() {
+		synchronized (listCallback) {
+			return listCallback;
+		}
 	}
 
 	/**
@@ -372,8 +378,10 @@ public class GalController {
 	 * 
 	 * @return the discovery manager.
 	 */
-	public synchronized Discovery_Freshness_ForcePing getDiscoveryManager() {
-		return _discoveryManager;
+	public Discovery_Freshness_ForcePing getDiscoveryManager() {
+		synchronized (_discoveryManager) {
+			return _discoveryManager;
+		}
 	}
 
 	/**
@@ -382,8 +390,10 @@ public class GalController {
 	 * @return the Aps manager.
 	 */
 	@Deprecated
-	public synchronized ApsMessageManager getApsManager() {
-		return apsManager;
+	public ApsMessageManager getApsManager() {
+		synchronized (apsManager) {
+			return apsManager;
+		}
 	}
 
 	/**
@@ -391,8 +401,11 @@ public class GalController {
 	 * 
 	 * @return the message manager.
 	 */
-	public synchronized MessageManager getMessageManager() {
-		return messageManager;
+	public MessageManager getMessageManager() {
+		synchronized (messageManager) {
+
+			return messageManager;
+		}
 	}
 
 	/**
@@ -400,8 +413,10 @@ public class GalController {
 	 * 
 	 * @return the Zdo manager.
 	 */
-	public synchronized ZdoManager getZdoManager() {
-		return zdoManager;
+	public ZdoManager getZdoManager() {
+		synchronized (zdoManager) {
+			return zdoManager;
+		}
 	}
 
 	/**
@@ -409,8 +424,11 @@ public class GalController {
 	 * 
 	 * @return the actual data layer implementation.
 	 */
-	public synchronized IDataLayer getDataLayer() {
-		return DataLayer;
+	public IDataLayer getDataLayer() {
+		synchronized (DataLayer) {
+			return DataLayer;
+		}
+
 	}
 
 	/**
@@ -2159,8 +2177,10 @@ public class GalController {
 	 * @return the gal node.
 	 * @see WrapperWSNNode
 	 */
-	public synchronized WrapperWSNNode get_GalNode() {
-		return GalNode;
+	public WrapperWSNNode get_GalNode() {
+		synchronized (GalNode) {
+			return GalNode;
+		}
 	}
 
 	/**
@@ -2197,8 +2217,11 @@ public class GalController {
 	 * 
 	 * @return the list of cached nodes.
 	 */
-	public synchronized List<WrapperWSNNode> getNetworkcache() {
-		return NetworkCache;
+	public List<WrapperWSNNode> getNetworkcache() {
+		synchronized (NetworkCache) {
+			return NetworkCache;
+		}
+
 	}
 
 	/**

@@ -103,14 +103,19 @@ public class DataFreescale implements IDataLayer {
 
 	private final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
-	private synchronized List<Short> getReceivedDataQueue() {
-		return receivedDataQueue;
+	private List<Short> getReceivedDataQueue() {
+		synchronized (receivedDataQueue) {
+			return receivedDataQueue;
+		}
 	}
 
 	private LinkedBlockingQueue<ShortArrayObject> tmpDataQueue = new LinkedBlockingQueue<ShortArrayObject>();
 
-	private synchronized LinkedBlockingQueue<ShortArrayObject> getTmpDataQueue() {
-		return tmpDataQueue;
+	private  LinkedBlockingQueue<ShortArrayObject> getTmpDataQueue() {
+		synchronized (tmpDataQueue) {
+			return tmpDataQueue;
+		}
+		
 	}
 
 	/**
