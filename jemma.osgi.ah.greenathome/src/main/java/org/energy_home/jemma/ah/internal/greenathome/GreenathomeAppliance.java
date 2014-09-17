@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -918,7 +922,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (this.hacService != null) {
 				// !!! Energy@home webui compatibility
 				String[] ids = getDeviceIds(appliancePid);
-				appliancePid = ids[0];
+				//appliancePid = ids[0];
 				IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 				this.hacService.removeAppliance(appliancePid);
 			} else
@@ -2088,7 +2092,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				try {
 					// !!! Energy@home webui compatibility
 					String[] ids = getDeviceIds(appliancePid);
-					appliancePid = ids[0];
+					//appliancePid = ids[0];
 					Integer endPointId = new Integer(ids[1]);
 					IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 					props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appliance.getDescriptor().getType());
@@ -3277,5 +3281,4 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		Date date = cal.getTime();
 		return date;
 	}
-
 }

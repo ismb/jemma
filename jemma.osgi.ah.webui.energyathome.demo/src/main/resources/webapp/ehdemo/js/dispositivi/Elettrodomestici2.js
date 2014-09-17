@@ -40,7 +40,7 @@ var Elettrodomestici = {
 //Funzione che crea un dizionario pid->nome locazione
 
 Elettrodomestici.GetLocations=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		try {
 			InterfaceEnergyHome.objService.getLocations(function(result, err) {
 					if (err != null) {
@@ -77,7 +77,7 @@ Elettrodomestici.GetLocations=function(callBack){
 //Funzione che crea un dizionario pid->nome categoria
 
 Elettrodomestici.GetCategories=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getCategoriesWithPid(function(result, err) {
 					
@@ -118,12 +118,9 @@ Elettrodomestici.GetCategories=function(callBack){
 Elettrodomestici.getCategoryIndex=function(name){
 	
 	for (var cat in Elettrodomestici.categorie) {
-		//console.log("------C: "+cat+"= "+Elettrodomestici.categorie[cat].name);
 		if (Elettrodomestici.categorie[cat].name==name) {
-			
 			return cat;
 		}
-		//code
 	}
 	return -1;
 }
@@ -240,8 +237,6 @@ Elettrodomestici.GetDevices=function(callBack){
 		}
 		callBack();
 	}
-	
-	
 }
 
 //Funzione alternativa per la lista di elettrodomestici
@@ -277,7 +272,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											var val = 50;
 										}
 										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
-									} else if (elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE){
+									} else if ((elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)){
 										//Analizzo la lockdoor (per adesso stesso codice di uno smart plug)
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
 											var val = 50;
@@ -329,7 +324,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["temperature"]=elemento["temperature"]
 											Elettrodom["humidity"]=elemento["humidity"]
 										}
-									} else if (elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) {  //LockDoor
+									} else if ((elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)) {  //LockDoor
 										Elettrodom["type"] = elemento["type"];
 										if(Elettrodom["connessione"] == 2){
 											val = Elettrodom["lockState"] = Elettrodom["device_value"] = elemento["device_value"];

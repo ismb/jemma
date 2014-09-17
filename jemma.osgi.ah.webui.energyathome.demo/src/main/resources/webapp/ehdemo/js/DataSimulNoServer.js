@@ -56,7 +56,8 @@ var EnergiaProdottaGiornalieroSimul  = {"list":[null, null, null, null, null, nu
 var EnergiaVendutaGiornalieroSimul  = {"list":[null, null, null, null, null, null, null, null, null, 260, 60, null, null, null, 1550, 800, null, null, null, null, null, null, null, null]};
 //TODO: check merge, the variable below was not present in 3.3.0
 var PrevisioneEnergiaProdotta = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.123, 0.245, 0.600, 1.224, 1.490, 1.586, 1.401, 1.172, 0.819, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-
+var ConsumoMedioSettimanale = {"list":[85, 85, 88, 89, 93, 93, 90]};
+var ForecastGiornaliero = [0,0,0,0,0,0,0.1,0.2,0.5,0.8,1.3,1.6,2,1.8,1.7,1.3,1,0.5,0.3,0,0,0,0];
 
 var PotenzaAttuale = {"value":0};
 

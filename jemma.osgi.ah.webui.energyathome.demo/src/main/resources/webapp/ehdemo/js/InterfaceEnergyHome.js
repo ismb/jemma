@@ -57,6 +57,7 @@ var InterfaceEnergyHome = {
 	//SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",
 	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug",
 	LOCKDOOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.lockdoor", 
+	LOCKDOOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.DoorLock", 
 	 
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
@@ -121,11 +122,8 @@ function bindService(name) {
 			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("http://10.38.3.25/demo/JSON-RPC");
 			InterfaceEnergyHome.jsonrpc.http_max_spare = 4;
 			JSONRpcClient.toplevel_ex_handler = function(e) {
-				//console.log(20, "JSONRpcClient", "Eccezione in JSONRpcClient: ");
-				//console.log(20, "JSONRpcClient", e);
 			};
 		} catch (err) {
-			//console.log(20, InterfaceEnergyHome.MODULE, " err = " + err);
 			InterfaceEnergyHome.GestErrorEH(null, err);
 			return null;
 		}
@@ -135,7 +133,6 @@ function bindService(name) {
 	try {
 		sReg = InterfaceEnergyHome.jsonrpc.OSGi.find(InterfaceEnergyHome.serviceName);
 	} catch (err) {
-		//console.log(20, InterfaceEnergyHome.MODULE, " err = " + err);
 		InterfaceEnergyHome.GestErrorEH(null, err);
 		return null;
 	}
@@ -147,7 +144,6 @@ function bindService(name) {
 			InterfaceEnergyHome.objService = sReg.list[0].map['service.id'];
 			return InterfaceEnergyHome.jsonrpc[InterfaceEnergyHome.objService];
 		} catch (err) {
-			//console.log(20, InterfaceEnergyHome.MODULE, " err = " + err);
 			InterfaceEnergyHome.GestErrorEH(null, err);
 		}
 		return null;
@@ -159,7 +155,7 @@ function bindService(name) {
 InterfaceEnergyHome.Init = function() {
 	InterfaceEnergyHome.errMessage = null;
 	InterfaceEnergyHome.errCode = 0;
-	if (InterfaceEnergyHome.mode > 0)
+	if ((InterfaceEnergyHome.mode > 0) != (InterfaceEnergyHome.mode == -1))
 		return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
 	else
 		return 1;

@@ -81,6 +81,35 @@ ifLockDoor.init=function(clusters, i){
                 $(myId).removeClass("OPEN");
                 ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_CLOSE_STATE);
             }
+        } else {
+        	var pid = $("#Interfaccia").data("pid");
+            if (pid == undefined)
+                return;
+            if (InterfaceEnergyHome.mode > 0){
+                InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+                  
+                    if (err!=null) {
+                        ifLockDoor.update(true);
+                    }else if (result != null) {
+                        if (result == true) {
+                            ifLockDoor.stato = ifLockDoor.DOORLOCK_OPEN_STATE;
+                            stato = "OPEN";
+        					class_stato = "OPEN";
+                            $(myId).addClass("OPEN");
+                            $(myId).removeClass("CLOSE");
+                            ifLockDoor.updateIcon(0);
+                        }
+                    }
+                    ifLockDoor.timeout_timer = new Date().getTime();
+                }, pid, ifLockDoor.DOORLOCK_OPEN_STATE);
+            } else{
+                ifLockDoor.stato = ifLockDoor.DOORLOCK_OPEN_STATE;
+                stato = "OPEN";
+				class_stato = "OPEN";
+                $(myId).addClass("OPEN");
+                $(myId).removeClass("CLOSE");
+                ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_OPEN_STATE);
+            }
         }
         
         $("#device_" + ifLockDoor.counterPositionDevice).addClass(class_stato);
@@ -163,9 +192,13 @@ ifLockDoor.update= function(now){
             class_stato="CLOSE";
             ifLockDoor.stato=1;
         } else{
+            _stato="OPEN";
+            class_stato="OPEN";
             ifLockDoor.stato=0;
         }
     } else {
+        _stato="NP";
+        class_stato="NP";
     	ifLockDoor.stato=-1;
     }
     $("#Interfaccia #OnOffControl .btnToggle").removeClass("NP");

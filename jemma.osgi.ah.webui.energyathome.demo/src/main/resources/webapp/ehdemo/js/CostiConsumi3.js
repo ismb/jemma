@@ -84,8 +84,7 @@ CostiConsumi.GestConsumi = function() {
 			// Sono in Internet Explorer 7.0
 			var conMeterDiv = document.getElementById('ConsumoAttualeMeter');
 			conMeterDiv.style.display = 'inline';
-			var graphConsOdiernoDiv = document
-					.getElementById('GraficoConsumoOdierno');
+			var graphConsOdiernoDiv = document.getElementById('GraficoConsumoOdierno');
 			graphConsOdiernoDiv.style.display = 'inline';
 		} else {
 			$("#ConsumoAttualeMeter").show();
@@ -219,7 +218,7 @@ CostiConsumi.GetElettrodomestici = function() {
 	if (Main.env == 0)
 		console.log('CostiConsumi3.js', 'GetElettrodomestici', 'Entro!');
 
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
@@ -251,10 +250,7 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 
 	if (err != null) {
 		if (Main.env == 0)
-			console
-					.log(
-							'exception in CostiConsumi3.js - in CostiConsumi.DatiElettrodomesticiCB method: ',
-							err);
+			console.log('exception in CostiConsumi3.js - in CostiConsumi.DatiElettrodomesticiCB method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiElettrodomestici", err);
 	}
 	if ((err == null) && (result != null)) {
@@ -316,8 +312,7 @@ CostiConsumi.DatiMaxElettr = function() {
 					return elettro;
 				}
 			});
-	listaFiltrata
-			.sort(function(a, b) {
+	listaFiltrata.sort(function(a, b) {
 				var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
 				var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
 				// Se uno dei due elettrodomestici in sort � una lavatrice
@@ -345,20 +340,14 @@ CostiConsumi.VisConsumoMaggiore = function() {
 
 	if (CostiConsumi.maxConsumoElettr != null) {
 		if (CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].value.value == 0) {
-			$("#DettaglioConsumoMaggiore").html(
-					"<span id='MsgConsumoMaggiore'></span>");
+			$("#DettaglioConsumoMaggiore").html("<span id='MsgConsumoMaggiore'></span>");
 			$("#MsgConsumoMaggiore").text(Msg.home["maxDisp0"]);
 		} else {
-			$("#DettaglioConsumoMaggiore")
-					.html(
-							"<span id='TestoConsumoMaggiore'></span><img id='ConsumoMaggioreImg' src=''>");
+			$("#DettaglioConsumoMaggiore").html("<span id='TestoConsumoMaggiore'></span><img id='ConsumoMaggioreImg' src=''>");
 
 			// metto immagine del device che sta consumando di piu'
-			$("#ConsumoMaggioreImg")
-					.attr(
-							"src",
-							DefinePath.imgDispPath
-									+ CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_ICON]);
+			$("#ConsumoMaggioreImg").attr("src",
+							DefinePath.imgDispPath + CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_ICON]);
 			// il consumo e' in watt
 			$("#TestoConsumoMaggiore")
 					.text(
@@ -399,7 +388,6 @@ CostiConsumi.VisConsumoMaggiore = function() {
 /*******************************************************************************
  * sezione consumi
  ******************************************************************************/
-
 
 CostiConsumi.GetDatiConsumiCC = function() {
 	if (Main.env == 0)
@@ -473,20 +461,17 @@ CostiConsumi.GetConsumoOdiernoCC = function() {
 		// solo se anche piattaforma
 		try {
 			var res = InterfaceEnergyHome.objService.getAttributeData(
-					CostiConsumi.DatiConsumoOdiernoCbCC,
-					CostiConsumi.SmartInfo["appliance.pid"],
-					InterfaceEnergyHome.CONSUMO, start, start,
-					InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
+								CostiConsumi.DatiConsumoOdiernoCbCC,
+								CostiConsumi.SmartInfo["appliance.pid"],
+								InterfaceEnergyHome.CONSUMO, start, start,
+								InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
 			if (Main.env == 0)
 				console.log(20, CostiConsumi.MODULE, "error: ");
 			if (Main.env == 0)
 				console.log(20, CostiConsumi.MODULE, err);
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in CostiConsumi3.js - in CostiConsumi.GetConsumoOdiernoCC method: ',
-								err);
+				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoOdiernoCC method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoOdiernoCC", err);
 		}
 	} else {
@@ -1342,7 +1327,7 @@ CostiConsumi.GetConsumoMediaWeek = function() {
 		}
 	} else {
 		// per test
-		var ret_finto = 12.66;
+		var ret_finto = ConsumoMedioSettimanale;
 		CostiConsumi.DatiConsumoMediaWeekCb(ret_finto, null);
 	}
 };

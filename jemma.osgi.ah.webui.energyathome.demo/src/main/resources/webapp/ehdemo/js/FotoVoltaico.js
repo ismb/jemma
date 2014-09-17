@@ -168,19 +168,8 @@ CostiConsumi.Init = function() {
 				$(this).attr('id', tmpIdChild + '2');
 			});
 		});
-
-		// var tmpHeight = $('#DettaglioGraficoConsumoOdierno').height();
-		// $('#DettaglioGraficoConsumoOdierno2').height(tmpHeight);
 	}
 
-	/*
-	 * var divMarqueeContainer = $("#MarqueeContainer"); var divMarquee =
-	 * $("#Marquee"); if (divMarquee.length == 0) { var divMarquee =
-	 * $(document.createElement('div')).attr('id', 'Marquee').show();
-	 * $(document.createElement('div')).attr('id',
-	 * 'MarqueeContainer').append(divMarquee).appendTo($("#CostoConsumoInfo")).show(); }
-	 * else { $("#Marquee").show(); $("#MarqueeContainer").show(); }
-	 */
 	Menu.OnClickMainMenu(0);
 
 	if (Main.env == 0)
@@ -248,17 +237,8 @@ CostiConsumi.GestFotoVoltaico = function() {
 		$("#ReteAttualeTitolo").text(Msg.home["titoloReteOut"]);
 		$("#CostoTConsumoMaxTitolo").text(Msg.home["consumoMaggiore"]);
 
-		// $("#CostoConsumoAttuale").css('border-bottom', '0px');
-
 		$("#CostoConsumoAttuale").removeClass('CostoConsumoAttualeCONS');
 		$("#CostoConsumoAttuale").addClass('CostoConsumoAttualePV');
-
-		// $("#IndicatoreTitolo").removeClass('IndicatoreTitoloCONS');
-		// $("#IndicatoreTitolo").addClass('IndicatoreTitoloPV');
-		//
-		// $("#Indicatore").removeClass('IndicatoreCONS');
-		// $("#Indicatore").addClass('IndicatorePV');
-		//		
 		$("#ProduzioneAttualeTitolo").show();
 		$("#ProduzioneAttuale").show();
 		$("#ReteAttualeTitolo").show();
@@ -280,15 +260,7 @@ CostiConsumi.GestFotoVoltaico = function() {
 		$("#CostoConsumoOdierno").hide();
 		$("#CostoConsumoPrevisto").hide();
 
-		// $("#IndicatoreSopra").hide();
-		// $("#IndicatoreMedia").hide();
-		// $("#IndicatoreSotto").hide();
-		// $("#IndicatorePaddingLeft").hide();
 		$("#IndicatoreTitoloPV").text(Msg.home["indicatoreIAC"]);
-		// $("#IndicatoreSopra").text(Msg.home["indicatoreSopra"]);
-		// $("#IndicatoreMedia").text(Msg.home["indicatoreMedia"]);
-		// $("#IndicatoreSotto").text(Msg.home["indicatoreSotto"]);
-
 		$("#InfoFeed").hide();
 		$("#InfoFeedTitolo").hide();
 		$("#MarqueeContainer").hide();
@@ -646,6 +618,8 @@ CostiConsumi.GetDatiEnergiaProdotta = function() {
 		hours = Main.dataAttuale.getHours();
 		val = jQuery.extend(true, {}, EnergiaProdottaGiornalieroSimul);
 		val.list = val.list.slice(0, hours);
+		
+		$.ajax();
 
 		CostiConsumi.DatiEnergiaProdottaGiornalieroCb(val, null);
 	}
@@ -713,10 +687,7 @@ CostiConsumi.GetDatiConsumi = function() {
 			if (Main.env == 0)
 				console.log(80, CostiConsumi.MODULE, err);
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in FotoVoltaico.js - in CostiConsumi.GetDatiConsumi method: ',
-								err);
+				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiConsumi method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiConsumoGiornaliero", err);
 		}
 	} else {
@@ -786,10 +757,10 @@ CostiConsumi.VisGrafico = function() {
 				dataConsumi[index] = 0;
 				dataIAC[index] = 0;
 			} else {
-				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perch� il gateway torna la somma, non il consumo
-				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perch� qui si aggiunge il *10 che se fatto prima
+				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perche' il gateway torna la somma, non il consumo
+				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perche' qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
-				dataIAC[index] = (dataIAC[index] / 1000) * 10; //inserisco un fattore di moltiplicazione 10 per la demo
+				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
 			}
 		});
 	}
@@ -1064,8 +1035,7 @@ CostiConsumi.GetDatiProduzioneIAC = function() {
 			InterfaceEnergyHome.objService.getAttributeData(
 					CostiConsumi.GetDatiVenditaIAC,
 					InterfaceEnergyHome.PID_TOTALE,
-					InterfaceEnergyHome.PRODUZIONE, start.getTime(), end
-							.getTime(), InterfaceEnergyHome.HOUR, true,
+					InterfaceEnergyHome.PRODUZIONE, start.getTime(), end.getTime(), InterfaceEnergyHome.HOUR, true,
 					InterfaceEnergyHome.DELTA);
 
 		} catch (err) {
@@ -1088,10 +1058,7 @@ CostiConsumi.GetDatiVenditaIAC = function(result, err) {
 
 	if (err != null) {
 		if (Main.env == 0)
-			console
-					.log(
-							'exception in FotoVoltaico.js - in CostiConsumi.GetDatiVenditaIAC method: ',
-							err);
+			console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiVenditaIAC method: ', err);
 		CostiConsumi.datiProduzioneIAC = null;
 		InterfaceEnergyHome.GestErrorEH("DatiProduzioneAttuale", err);
 	} else if (result != null) {
@@ -1155,28 +1122,6 @@ CostiConsumi.DatiPercIAC = function(result, err) {
 		});
 	}
 	perc = 1 - (sumDiffProdCons / sumProduzioneOraria);
-	
-//	var sumDatiProduzioneIAC = 0;
-//	var sumDatiVenditaIAC = 0;
-//	if ((CostiConsumi.datiProduzioneIAC != null)
-//			&& (CostiConsumi.datiVenditaIAC != null)) {
-//		$.each(CostiConsumi.datiProduzioneIAC, function(indexResult, element) {
-//			sumDatiProduzioneIAC += element;
-//		});
-//		$.each(CostiConsumi.datiVenditaIAC, function(indexResult, element) {
-//			sumDatiVenditaIAC += element;
-//		});
-//	} else {
-//		perc = 0;
-//	}
-//	perc = (sumDatiProduzioneIAC - sumDatiVenditaIAC);
-	// test per valori negativi
-	// perc = perc * (-1);
-//	if (sumDatiProduzioneIAC == 0) {
-//		perc = 0;
-//	} else {
-//		perc = perc / sumDatiProduzioneIAC;
-//	}
 	if (perc <= 0) {
 		perc = 0;
 	}
@@ -1451,7 +1396,8 @@ CostiConsumi.getDailyPVForecast = function() {
 		InterfaceEnergyHome.objService.getDailyPVForecast(CostiConsumi.getDailyPVForecastCB);
 		InterfaceEnergyHome.objService.getDailyPVForecastDebug();
 	} else{
-		CostiConsumi.forecastGiornaliero = new Array(0,0,0,0,0,0,0.1,0.2,0.5,0.8,1.3,1.6,2,1.8,1.7,1.3,1,0.5,0.3,0,0,0,0);
+		CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
+		CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
 	}
 }
 
