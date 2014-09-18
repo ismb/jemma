@@ -567,16 +567,16 @@ public class GalController {
 	 * 
 	 * @return the list of active nodes connected.
 	 */
-	public synchronized WSNNodeList readNodeCache() {
+	public WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
-		List<WrapperWSNNode> _list0 = getNetworkcache();
-
-		for (WrapperWSNNode x : _list0) {
-			if (x.is_discoveryCompleted())
-				_list.getWSNNode().add(x.get_node());
+		synchronized (getNetworkcache()) {
+			List<WrapperWSNNode> _list0 = getNetworkcache();
+			for (WrapperWSNNode x : _list0) {
+				if (x.is_discoveryCompleted())
+					_list.getWSNNode().add(x.get_node());
+			}
+			return SerializationUtils.clone(_list);
 		}
-
-		return SerializationUtils.clone(_list);
 	}
 
 	/**
@@ -1953,8 +1953,10 @@ public class GalController {
 	 * @return the gateway status
 	 * @see GatewayStatus
 	 */
-	public synchronized GatewayStatus getGatewayStatus() {
-		return _gatewayStatus;
+	public GatewayStatus getGatewayStatus() {
+		synchronized (_gatewayStatus) {
+			return _gatewayStatus;
+		}
 	}
 
 	/**
@@ -2208,8 +2210,10 @@ public class GalController {
 	 *            the node to set.
 	 * @see WSNNode
 	 */
-	public synchronized void set_GalNode(WrapperWSNNode _GalNode) {
-		GalNode = _GalNode;
+	public void set_GalNode(WrapperWSNNode _GalNode) {
+		synchronized (GalNode) {
+			GalNode = _GalNode;
+		}
 	}
 
 	/**
@@ -2678,7 +2682,7 @@ public class GalController {
 	 *         Listener's list or a positive number indicating its index onto
 	 *         the list otherwise
 	 */
-	public  short existIntolistGatewayEventListener(long requestIdentifier) {
+	public short existIntolistGatewayEventListener(long requestIdentifier) {
 		synchronized (getListGatewayEventListener()) {
 			short __indexOnList = -1;
 			for (GatewayDeviceEventEntry y : getListGatewayEventListener()) {
