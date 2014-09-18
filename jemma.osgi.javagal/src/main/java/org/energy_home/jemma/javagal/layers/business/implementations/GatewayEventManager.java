@@ -85,6 +85,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 */
 	public GatewayEventManager(GalController _gal) {
 		gal = _gal;
+		if (gal.getPropertiesManager().getDebugEnabled())
+			LOG.info("Creating Executor for GatewayEventManager with:" + getGal().getPropertiesManager().getNumberOfThreadForAnyPool() + " threads");
 
 		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
@@ -406,11 +408,12 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeDiscovered(final Status status, final WSNNode node) throws Exception {
+		
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : getGal().getListGatewayEventListener()) {
 					{
-
+						
 						boolean _ReportOnExistingNodes = ((gl.getDiscoveryMask() & DISCOVERY_FRESHNESS) != 0);
 						boolean _ReportAnnouncements = ((gl.getDiscoveryMask() & DISCOVERY_ANNOUNCEMENTS) != 0);
 						if (_ReportOnExistingNodes || _ReportAnnouncements) {
@@ -430,6 +433,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			}
 
 		});
+		
 
 	}
 

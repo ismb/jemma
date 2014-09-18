@@ -77,12 +77,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JavaGal Controller. Only one instance of this object can exists at a
- * time. All clients can access this instance via their dedicated proxies (see
+ * JavaGal Controller. Only one instance of this object can exists at a time.
+ * All clients can access this instance via their dedicated proxies (see
  * {@link org.energy_home.jemma.zgd.GalExtenderProxy}).
  * 
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 
@@ -201,7 +202,7 @@ public class GalController {
 	/**
 	 * recovery of the GAL,
 	 */
-	public  void recoveryGAL() throws Exception {
+	public void recoveryGAL() throws Exception {
 		MyRunnable thr = new MyRunnable(this) {
 			@Override
 			public void run() {
@@ -223,7 +224,7 @@ public class GalController {
 
 					FileWriter fileWriter = new FileWriter(f, true);
 					bufferFileWriter = new BufferedWriter(fileWriter);
-					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() +  "STARTING RECOVERY");
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "STARTING RECOVERY");
 
 					/* Used for reset GAL */
 					if (DataLayer != null) {
@@ -292,7 +293,7 @@ public class GalController {
 					}
 					LOG.error("********RECOVERY DONE!");
 
-					fileWriter.append("\n\r"+new Date(System.currentTimeMillis()).toString() +  "RECOVERY DONE!");
+					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "RECOVERY DONE!");
 					return;
 				} catch (Exception e1) {
 					LOG.error("Error resetting GAL");
@@ -352,8 +353,11 @@ public class GalController {
 	 * @see GatewayDeviceEventEntry
 	 */
 
-	public synchronized List<GatewayDeviceEventEntry> getListGatewayEventListener() {
-		return listGatewayEventListener;
+	public List<GatewayDeviceEventEntry> getListGatewayEventListener() {
+		synchronized (listGatewayEventListener) {
+			return listGatewayEventListener;
+		}
+
 	}
 
 	/**
@@ -363,8 +367,10 @@ public class GalController {
 	 * @return the list of registered callbacks.
 	 * @see CallbackEntry
 	 */
-	public synchronized List<CallbackEntry> getCallbacks() {
-		return listCallback;
+	public List<CallbackEntry> getCallbacks() {
+		synchronized (listCallback) {
+			return listCallback;
+		}
 	}
 
 	/**
@@ -372,8 +378,10 @@ public class GalController {
 	 * 
 	 * @return the discovery manager.
 	 */
-	public synchronized Discovery_Freshness_ForcePing getDiscoveryManager() {
-		return _discoveryManager;
+	public Discovery_Freshness_ForcePing getDiscoveryManager() {
+		synchronized (_discoveryManager) {
+			return _discoveryManager;
+		}
 	}
 
 	/**
@@ -382,8 +390,10 @@ public class GalController {
 	 * @return the Aps manager.
 	 */
 	@Deprecated
-	public synchronized ApsMessageManager getApsManager() {
-		return apsManager;
+	public ApsMessageManager getApsManager() {
+		synchronized (apsManager) {
+			return apsManager;
+		}
 	}
 
 	/**
@@ -391,8 +401,11 @@ public class GalController {
 	 * 
 	 * @return the message manager.
 	 */
-	public synchronized MessageManager getMessageManager() {
-		return messageManager;
+	public MessageManager getMessageManager() {
+		synchronized (messageManager) {
+
+			return messageManager;
+		}
 	}
 
 	/**
@@ -400,8 +413,10 @@ public class GalController {
 	 * 
 	 * @return the Zdo manager.
 	 */
-	public synchronized ZdoManager getZdoManager() {
-		return zdoManager;
+	public ZdoManager getZdoManager() {
+		synchronized (zdoManager) {
+			return zdoManager;
+		}
 	}
 
 	/**
@@ -409,8 +424,11 @@ public class GalController {
 	 * 
 	 * @return the actual data layer implementation.
 	 */
-	public synchronized IDataLayer getDataLayer() {
-		return DataLayer;
+	public IDataLayer getDataLayer() {
+		synchronized (DataLayer) {
+			return DataLayer;
+		}
+
 	}
 
 	/**
@@ -549,16 +567,16 @@ public class GalController {
 	 * 
 	 * @return the list of active nodes connected.
 	 */
-	public synchronized WSNNodeList readNodeCache() {
+	public WSNNodeList readNodeCache() {
 		WSNNodeList _list = new WSNNodeList();
-		List<WrapperWSNNode> _list0 = getNetworkcache();
-
-		for (WrapperWSNNode x : _list0) {
-			if (x.is_discoveryCompleted())
-				_list.getWSNNode().add(x.get_node());
+		synchronized (getNetworkcache()) {
+			List<WrapperWSNNode> _list0 = getNetworkcache();
+			for (WrapperWSNNode x : _list0) {
+				if (x.is_discoveryCompleted())
+					_list.getWSNNode().add(x.get_node());
+			}
+			return SerializationUtils.clone(_list);
 		}
-
-		return SerializationUtils.clone(_list);
 	}
 
 	/**
@@ -1935,8 +1953,10 @@ public class GalController {
 	 * @return the gateway status
 	 * @see GatewayStatus
 	 */
-	public synchronized GatewayStatus getGatewayStatus() {
-		return _gatewayStatus;
+	public GatewayStatus getGatewayStatus() {
+		synchronized (_gatewayStatus) {
+			return _gatewayStatus;
+		}
 	}
 
 	/**
@@ -2159,8 +2179,10 @@ public class GalController {
 	 * @return the gal node.
 	 * @see WrapperWSNNode
 	 */
-	public synchronized WrapperWSNNode get_GalNode() {
-		return GalNode;
+	public WrapperWSNNode get_GalNode() {
+		synchronized (GalNode) {
+			return GalNode;
+		}
 	}
 
 	/**
@@ -2188,8 +2210,8 @@ public class GalController {
 	 *            the node to set.
 	 * @see WSNNode
 	 */
-	public synchronized void set_GalNode(WrapperWSNNode _GalNode) {
-		GalNode = _GalNode;
+	public synchronized void  set_GalNode(WrapperWSNNode _GalNode) {
+			GalNode = _GalNode;
 	}
 
 	/**
@@ -2197,8 +2219,11 @@ public class GalController {
 	 * 
 	 * @return the list of cached nodes.
 	 */
-	public synchronized List<WrapperWSNNode> getNetworkcache() {
-		return NetworkCache;
+	public List<WrapperWSNNode> getNetworkcache() {
+		synchronized (NetworkCache) {
+			return NetworkCache;
+		}
+
 	}
 
 	/**
@@ -2551,41 +2576,42 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public synchronized short existIntoNetworkCache(Address address) {
-		short __indexOnCache = -1;
-		short _indexToReturn = -1;
-		String AddressStr = "";
-		List<WrapperWSNNode> _list = getNetworkcache();
-		if (getPropertiesManager().getDebugEnabled())
-			LOG.debug("[ExistIntoNetworkCache] Start Search Node ShortAddress: " + ((address.getNetworkAddress() != null) ? String.format("%04X", address.getNetworkAddress()) : "NULL") + " -- IeeeAdd: " + ((address.getIeeeAddress() != null) ? String.format("%04X", address.getIeeeAddress()) : "NULL"));
-		for (WrapperWSNNode y : _list) {
+	public short existIntoNetworkCache(Address address) {
+		synchronized (getNetworkcache()) {
+			short __indexOnCache = -1;
+			short _indexToReturn = -1;
+			String AddressStr = "";
+			List<WrapperWSNNode> _list = getNetworkcache();
 			if (getPropertiesManager().getDebugEnabled())
-				LOG.debug("[ExistIntoNetworkCache] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
-			__indexOnCache++;
-			if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && address.getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == address.getNetworkAddress().intValue()) {
-				AddressStr = String.format("%04X", y.get_node().getAddress().getNetworkAddress());
-				_indexToReturn = __indexOnCache;
-			} else if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && address.getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == address.getIeeeAddress().longValue()) {
-				AddressStr = String.format("%16X", y.get_node().getAddress().getIeeeAddress());
+				LOG.debug("[ExistIntoNetworkCache] Start Search Node ShortAddress: " + ((address.getNetworkAddress() != null) ? String.format("%04X", address.getNetworkAddress()) : "NULL") + " -- IeeeAdd: " + ((address.getIeeeAddress() != null) ? String.format("%04X", address.getIeeeAddress()) : "NULL"));
+			for (WrapperWSNNode y : _list) {
+				if (getPropertiesManager().getDebugEnabled())
+					LOG.debug("[ExistIntoNetworkCache] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
+				__indexOnCache++;
+				if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && address.getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == address.getNetworkAddress().intValue()) {
+					AddressStr = String.format("%04X", y.get_node().getAddress().getNetworkAddress());
+					_indexToReturn = __indexOnCache;
+				} else if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && address.getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == address.getIeeeAddress().longValue()) {
+					AddressStr = String.format("%16X", y.get_node().getAddress().getIeeeAddress());
 
-				_indexToReturn = __indexOnCache;
+					_indexToReturn = __indexOnCache;
+				}
+			}
+
+			if (_indexToReturn > -1) {
+				if (getPropertiesManager().getDebugEnabled())
+					LOG.debug("Found node:" + AddressStr);
+				return _indexToReturn;
+			} else {
+				if (address.getNetworkAddress() != null)
+					if (getPropertiesManager().getDebugEnabled())
+						LOG.debug("Not Found node:" + String.format("%04X", address.getNetworkAddress()));
+					else if (address.getIeeeAddress() != null)
+						if (getPropertiesManager().getDebugEnabled())
+							LOG.debug("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
+				return -1;
 			}
 		}
-
-		if (_indexToReturn > -1) {
-			if (getPropertiesManager().getDebugEnabled())
-				LOG.debug("Found node:" + AddressStr);
-			return _indexToReturn;
-		} else {
-			if (address.getNetworkAddress() != null)
-				if (getPropertiesManager().getDebugEnabled())
-					LOG.debug("Not Found node:" + String.format("%04X", address.getNetworkAddress()));
-				else if (address.getIeeeAddress() != null)
-					if (getPropertiesManager().getDebugEnabled())
-						LOG.debug("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
-			return -1;
-		}
-
 	}
 
 	/**
@@ -2597,23 +2623,24 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 * @throws GatewayException
 	 */
-	public synchronized BigInteger getIeeeAddress_FromShortAddress(Integer shortAddress) throws Exception {
-		List<WrapperWSNNode> _list = getNetworkcache();
-		if (getPropertiesManager().getDebugEnabled())
-			LOG.debug("[getIeeeAddress_FromShortAddress] Start Search Node: " + String.format("%04X", shortAddress));
-		for (WrapperWSNNode y : _list) {
+	public BigInteger getIeeeAddress_FromShortAddress(Integer shortAddress) throws Exception {
+		synchronized (getNetworkcache()) {
+			List<WrapperWSNNode> _list = getNetworkcache();
 			if (getPropertiesManager().getDebugEnabled())
-				LOG.debug("[getIeeeAddress_FromShortAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
-
-			if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue()) {
+				LOG.debug("[getIeeeAddress_FromShortAddress] Start Search Node: " + String.format("%04X", shortAddress));
+			for (WrapperWSNNode y : _list) {
 				if (getPropertiesManager().getDebugEnabled())
-					LOG.debug("[getIeeeAddress_FromShortAddress] FOUND Node: " + String.format("%04X", shortAddress));
+					LOG.debug("[getIeeeAddress_FromShortAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
 
-				return y.get_node().getAddress().getIeeeAddress();
+				if (y.is_discoveryCompleted() && y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == shortAddress.intValue()) {
+					if (getPropertiesManager().getDebugEnabled())
+						LOG.debug("[getIeeeAddress_FromShortAddress] FOUND Node: " + String.format("%04X", shortAddress));
+
+					return y.get_node().getAddress().getIeeeAddress();
+				}
 			}
+			throw new Exception("Short Address not found on GAL: " + String.format("%04X", shortAddress));
 		}
-		throw new Exception("Short Address not found on GAL: " + String.format("%04X", shortAddress));
-
 	}
 
 	/**
@@ -2625,21 +2652,23 @@ public class GalController {
 	 *         number indicating the index of the desired object
 	 * @throws GatewayException
 	 */
-	public synchronized Integer getShortAddress_FromIeeeAddress(BigInteger IeeeAddress) throws Exception {
-		List<WrapperWSNNode> _list = getNetworkcache();
-		if (getPropertiesManager().getDebugEnabled())
-			LOG.debug("[getShortAddress_FromIeeeAddress] Start Search Node: " + String.format("%016X", IeeeAddress));
-		for (WrapperWSNNode y : _list) {
+	public Integer getShortAddress_FromIeeeAddress(BigInteger IeeeAddress) throws Exception {
+		synchronized (getNetworkcache()) {
+			List<WrapperWSNNode> _list = getNetworkcache();
 			if (getPropertiesManager().getDebugEnabled())
-				LOG.debug("[getShortAddress_FromIeeeAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
-			if (y.is_discoveryCompleted() && (y.get_node() != null) && (y.get_node().getAddress() != null) && (y.get_node().getAddress().getIeeeAddress() != null) && (y.get_node().getAddress().getNetworkAddress() != null) && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue()) {
+				LOG.debug("[getShortAddress_FromIeeeAddress] Start Search Node: " + String.format("%016X", IeeeAddress));
+			for (WrapperWSNNode y : _list) {
 				if (getPropertiesManager().getDebugEnabled())
-					LOG.debug("[getShortAddress_FromIeeeAddress] FOUND Node: " + String.format("%016X", IeeeAddress));
+					LOG.debug("[getShortAddress_FromIeeeAddress] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
+				if (y.is_discoveryCompleted() && (y.get_node() != null) && (y.get_node().getAddress() != null) && (y.get_node().getAddress().getIeeeAddress() != null) && (y.get_node().getAddress().getNetworkAddress() != null) && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue()) {
+					if (getPropertiesManager().getDebugEnabled())
+						LOG.debug("[getShortAddress_FromIeeeAddress] FOUND Node: " + String.format("%016X", IeeeAddress));
 
-				return y.get_node().getAddress().getNetworkAddress();
+					return y.get_node().getAddress().getNetworkAddress();
+				}
 			}
+			throw new Exception("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));
 		}
-		throw new Exception("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));
 	}
 
 	/**
@@ -2651,15 +2680,16 @@ public class GalController {
 	 *         Listener's list or a positive number indicating its index onto
 	 *         the list otherwise
 	 */
-	public synchronized short existIntolistGatewayEventListener(long requestIdentifier) {
-		short __indexOnList = -1;
-		for (GatewayDeviceEventEntry y : listGatewayEventListener) {
-			__indexOnList++;
-			if (y.getProxyIdentifier() == requestIdentifier)
-				return __indexOnList;
-
+	public short existIntolistGatewayEventListener(long requestIdentifier) {
+		synchronized (getListGatewayEventListener()) {
+			short __indexOnList = -1;
+			for (GatewayDeviceEventEntry y : getListGatewayEventListener()) {
+				__indexOnList++;
+				if (y.getProxyIdentifier() == requestIdentifier)
+					return __indexOnList;
+			}
+			return -1;
 		}
-		return -1;
 	}
 
 }

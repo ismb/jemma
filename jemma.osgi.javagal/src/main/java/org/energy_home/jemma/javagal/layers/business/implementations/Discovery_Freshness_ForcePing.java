@@ -254,6 +254,9 @@ public class Discovery_Freshness_ForcePing {
 							if (getGal().getPropertiesManager().getDebugEnabled())
 								LOG.info("Starting nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 							getGal().get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
+							if (getGal().getPropertiesManager().getDebugEnabled())
+								LOG.info("Started nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+							
 						}
 					}
 
