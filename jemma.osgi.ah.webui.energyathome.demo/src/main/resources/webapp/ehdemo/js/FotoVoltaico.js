@@ -619,9 +619,9 @@ CostiConsumi.GetDatiEnergiaProdotta = function() {
 		val = jQuery.extend(true, {}, EnergiaProdottaGiornalieroSimul);
 		val.list = val.list.slice(0, hours);
 		
-		$.ajax();
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiEnergiaProdottaGiornalieroCb, "EnergiaProdottaGiornalieroSimul");
 
-		CostiConsumi.DatiEnergiaProdottaGiornalieroCb(val, null);
+		//CostiConsumi.DatiEnergiaProdottaGiornalieroCb(val, null);
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiConsumi', 'Esco!');

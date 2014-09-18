@@ -143,7 +143,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 	}
 
-	private synchronized void setConnected(boolean value) {
+	private void setConnected(boolean value) {
 		connected = value;
 
 	}
@@ -178,7 +178,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	@Override
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return connected;
 	}
 
@@ -224,7 +224,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 			_caller = _parent;
 		}
 
-		public synchronized void serialEvent(SerialPortEvent event) {
+		public void serialEvent(SerialPortEvent event) {
 			try {
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
@@ -242,7 +242,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 							}
 						}
 
-						if (!ignoreMessage) {
+						if (!getIgnoreMessage()) {
 
 							ShortArrayObject frame = new ShortArrayObject(buffer, pos);
 							_caller.getDataLayer().notifyFrame(frame);
@@ -262,12 +262,12 @@ public class SerialPortConnectorRxTx implements IConnector {
 		}
 	}
 
-	private synchronized void setIgnoreMessage(boolean value) {
+	private void setIgnoreMessage(boolean value) {
 		ignoreMessage = value;
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
+	private boolean getIgnoreMessage() {
 		return ignoreMessage;
 
 	}

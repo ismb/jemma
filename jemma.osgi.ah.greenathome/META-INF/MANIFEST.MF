@@ -30,11 +30,12 @@ Import-Package: javax.xml.soap,org.eclipse.core.runtime.jobs,org.energy_
  amework;version="1.3.0",org.osgi.service.device;version="[1.1,2)",org.o
  sgi.service.http;version="[1.2,2)",org.osgi.util.tracker;version="[1.4,
  2)",org.slf4j;version="[1.7.7,2)",org.w3c.dom;version="[3.0,4)"
-Include-Resource: OSGI-INF/greenathome.xml=OSGI-INF/greenathome.xml,xml/
- scenarios/EmptyConfig.xml=src/main/resources/xml/scenarios/EmptyConfig.
- xml,xml/scenarios/EnergyAtHome.xml=src/main/resources/xml/scenarios/Ene
- rgyAtHome.xml
+Include-Resource: OSGI-INF/greenathome.xml=OSGI-INF/greenathome.xml,nose
+ rver.properties=src/main/resources/noserver.properties,xml/scenarios/Em
+ ptyConfig.xml=src/main/resources/xml/scenarios/EmptyConfig.xml,xml/scen
+ arios/EnergyAtHome.xml=src/main/resources/xml/scenarios/EnergyAtHome.xm
+ l
 Private-Package: org.energy_home.jemma.ah.internal.greenathome.homemeter
- ,org.energy_home.jemma.ah.internal.greenathome,xml.scenarios
+ ,org.energy_home.jemma.ah.internal.greenathome,.,xml.scenarios
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0

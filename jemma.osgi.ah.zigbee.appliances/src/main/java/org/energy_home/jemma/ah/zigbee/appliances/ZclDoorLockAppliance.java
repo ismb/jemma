@@ -36,6 +36,8 @@ public class ZclDoorLockAppliance extends ZclAppliance{
 		//endPoint.addServiceCluster(new ZclIdentifyClient());
 		endPoint.addServiceCluster(new ZclScenesServer());
 		endPoint.addServiceCluster(new ZclGroupsServer());
+		
+		
 	}
 	
 

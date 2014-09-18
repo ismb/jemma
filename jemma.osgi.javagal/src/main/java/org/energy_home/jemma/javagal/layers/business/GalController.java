@@ -126,7 +126,7 @@ public class GalController {
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
 	 * also for the Rest Api
 	 */
-	private synchronized void initializeGAL() throws Exception {
+	private void initializeGAL() throws Exception {
 
 		if (getPropertiesManager().getDebugEnabled())
 			LOG.info("Gal Version: " + getVersion().getManufacturerVersion());
@@ -201,7 +201,7 @@ public class GalController {
 	/**
 	 * recovery of the GAL,
 	 */
-	public synchronized void recoveryGAL() throws Exception {
+	public  void recoveryGAL() throws Exception {
 		MyRunnable thr = new MyRunnable(this) {
 			@Override
 			public void run() {
@@ -567,7 +567,7 @@ public class GalController {
 	 * 
 	 * @return the list of associated nodes in the network.
 	 */
-	public synchronized Aliases listAddress() {
+	public Aliases listAddress() {
 		Aliases _list = new Aliases();
 
 		long counter = 0;

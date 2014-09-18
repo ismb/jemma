@@ -25,7 +25,5 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  service.event;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)"
  ,org.osgi.service.useradmin;version="1.1.0",org.slf4j;version="[1.7.7,2
  )"
-Include-Resource: noserver.properties=src/main/resources/noserver.proper
- ties
-Private-Package: org.energy_home.jemma.hac.adapter.http.impl,.
+Private-Package: org.energy_home.jemma.hac.adapter.http.impl
 Tool: Bnd-1.50.0

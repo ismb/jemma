@@ -135,8 +135,8 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		String result;
 		if (!endPointId.equals(AHContainerAddress.DEFAULT_END_POINT_ID)) {
 			StringBuilder sb = new StringBuilder(containerAddress.getAppliancePid());
-			sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
-			sb.append(containerAddress.getEndPointId());
+			//sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
+			//sb.append(containerAddress.getEndPointId());
 			result = sb.toString();
 		} else {
 			result = containerAddress.getAppliancePid();
@@ -317,7 +317,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		else if (epType.equals(IEndPointTypes.ZIGBEE_DRIMMER_SWITCH))
 			deviceType = DeviceType.Other;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_DOOR_LOCK))
-			deviceType = DeviceType.Other;
+			deviceType = DeviceType.DOOR_LOCK;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING))
 			deviceType = DeviceType.WINDOW_COVERING;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_WINDOW_COVERING_CONTROLLER))
@@ -373,10 +373,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			LOG.debug("notifyApplianceAdded " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			IEndPoint ep = null;
+			
 			if (eps.length <= 1) {
 				LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
+			
 			for (int i = 1; i < eps.length; i++) {
 				ep = eps[i];
 				DeviceType deviceType = getDeviceType(ep);

@@ -118,6 +118,9 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 			loadPropFile();
 		}
 
+		Servlet serviceNoParam = new ServiceNoParam(ahHttpAdapter, "", this.props);
+		this.registerResource("/noparamService", serviceNoParam);
+
 		jsonRpcBridge = JSONRPCBridge.getGlobalBridge();
 		
 		try {
@@ -162,13 +165,11 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 
 		Servlet customJsonServlet = new CustomJsonServlet(ahHttpAdapter, "");
 		Servlet jsonRPC = new JsonRPC(ahHttpAdapter, "");
-		Servlet serviceNoParam = new ServiceNoParam(ahHttpAdapter, "", this.props);
 
 		this.registerResource("/", "webapp/ehdemo");
 		this.registerResource("/gh", "webapp/gh");
 		this.registerResource("/post-json", customJsonServlet);
 		this.registerResource("/json-rpc", jsonRPC);
-		this.registerResource("/noparamService", serviceNoParam);
  		this.registerResource("/JSON-RPC", new JSONRPCServlet(){
 			public void init(ServletConfig config) throws ServletException{
 				super.init(new ServletConfigDisableGZIPWrapper(config));
