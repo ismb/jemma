@@ -111,11 +111,11 @@ public class DataFreescale implements IDataLayer {
 
 	private LinkedBlockingQueue<ShortArrayObject> tmpDataQueue = new LinkedBlockingQueue<ShortArrayObject>();
 
-	private  LinkedBlockingQueue<ShortArrayObject> getTmpDataQueue() {
+	private LinkedBlockingQueue<ShortArrayObject> getTmpDataQueue() {
 		synchronized (tmpDataQueue) {
 			return tmpDataQueue;
 		}
-		
+
 	}
 
 	/**
@@ -241,10 +241,9 @@ public class DataFreescale implements IDataLayer {
 							_currentCommandReived = getTmpDataQueue().poll();
 						}
 						if (_currentCommandReived != null) {
+							if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+								LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
 							synchronized (getReceivedDataQueue()) {
-
-								if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-									LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
 								short[] shortArray = _currentCommandReived.getShortArray();
 								for (int z = 0; z < _currentCommandReived.getCount(true); z++) {
 									getReceivedDataQueue().add(shortArray[z]);
@@ -252,7 +251,6 @@ public class DataFreescale implements IDataLayer {
 								getReceivedDataQueue().notify();
 							}
 						}
-
 					} catch (InterruptedException e) {
 
 					}
@@ -275,71 +273,70 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
-		synchronized (getReceivedDataQueue()) {
-			short toremove = 0;
-			Short _toremove = 0;
-			while (!getReceivedDataQueue().isEmpty()) {
-				if ((_toremove = getReceivedDataQueue().get(0)) != DataManipulation.SEQUENCE_START) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
-						LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(getReceivedDataQueue()));
-					}
-					getReceivedDataQueue().remove(0);
-					continue;
+		short toremove = 0;
+		Short _toremove = 0;
+		while (!getReceivedDataQueue().isEmpty()) {
+			if ((_toremove = getReceivedDataQueue().get(0)) != DataManipulation.SEQUENCE_START) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
+					LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(getReceivedDataQueue()));
 				}
-				List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
-				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-					LOG.debug("Analyzing Raw Data:" + DataManipulation.convertListShortToString(copyList));
-
-				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.debug("Error, Data received not completed, waiting new raw data...");
-					return null;
-
-				}
-
-				int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
-				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.debug("Data received not completed, waiting new raw data...");
-					return null;
-				}
-
-				short messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
-				ChecksumControl csc = new ChecksumControl();
-				csc.getCumulativeXor(copyList.get(1));
-				csc.getCumulativeXor(copyList.get(2));
-				csc.getCumulativeXor(copyList.get(3));
-				for (int i = 0; i < payloadLenght; i++)
-					csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
-
-				if (csc.getLastCalulated() != messageCfc) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", getReceivedDataQueue().get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(getReceivedDataQueue()));
-					getReceivedDataQueue().remove(0);
-					continue;
-
-				}
-
-				int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-				copyList.remove(0);
-
-				short[] toReturn = new short[messageLenght];
-				toReturn[0] = (short) (copyList.remove(0) & 0xFF);
-				toReturn[1] = (short) (copyList.remove(0) & 0xFF);
-				toReturn[2] = (short) (copyList.remove(0) & 0xFF);
-				for (int i = 0; i < payloadLenght; i++)
-					toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
-
-				copyList.remove(0);
-
-				toremove += (4 + payloadLenght + 1);
-
-				for (int z = 0; z < toremove; z++)
-					getReceivedDataQueue().remove(0);
-
-				return toReturn;
+				getReceivedDataQueue().remove(0);
+				continue;
 			}
+			List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
+			if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+				LOG.debug("Analyzing Raw Data:" + DataManipulation.convertListShortToString(copyList));
+
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+					LOG.debug("Error, Data received not completed, waiting new raw data...");
+				return null;
+
+			}
+
+			int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+					LOG.debug("Data received not completed, waiting new raw data...");
+				return null;
+			}
+
+			short messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
+			ChecksumControl csc = new ChecksumControl();
+			csc.getCumulativeXor(copyList.get(1));
+			csc.getCumulativeXor(copyList.get(2));
+			csc.getCumulativeXor(copyList.get(3));
+			for (int i = 0; i < payloadLenght; i++)
+				csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+			if (csc.getLastCalulated() != messageCfc) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+					LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", getReceivedDataQueue().get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(getReceivedDataQueue()));
+				getReceivedDataQueue().remove(0);
+				continue;
+
+			}
+
+			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+			copyList.remove(0);
+
+			short[] toReturn = new short[messageLenght];
+			toReturn[0] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[1] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[2] = (short) (copyList.remove(0) & 0xFF);
+			for (int i = 0; i < payloadLenght; i++)
+				toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
+
+			copyList.remove(0);
+
+			toremove += (4 + payloadLenght + 1);
+
+			for (int z = 0; z < toremove; z++)
+				getReceivedDataQueue().remove(0);
+
+			return toReturn;
 		}
+
 		return null;
 
 	}
