@@ -2210,10 +2210,8 @@ public class GalController {
 	 *            the node to set.
 	 * @see WSNNode
 	 */
-	public void set_GalNode(WrapperWSNNode _GalNode) {
-		synchronized (GalNode) {
+	public synchronized void  set_GalNode(WrapperWSNNode _GalNode) {
 			GalNode = _GalNode;
-		}
 	}
 
 	/**
