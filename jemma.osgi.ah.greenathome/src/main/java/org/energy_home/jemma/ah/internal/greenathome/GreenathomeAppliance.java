@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -112,6 +116,8 @@ import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +143,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	private static final String SMARTINFO_APP_TYPE = "org.energy_home.jemma.ah.zigbee.metering";
 	private static final String APPLIANCE_ID_SEPARATOR = "-";
-
+	private Properties props;
 	// Returns an array with two items: appliance pid and end point id
 	public static String[] getDeviceIds(String applianceId) {
 		String[] deviceIds = new String[2];
@@ -1025,6 +1031,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	static final int On = 1;
 	static final int Unknown = 4;
 
+	//DoorLock State
+	static final int DoorLockCloseUnLock = 0;
+	static final int DoorLockClose = 1;
+	static final int DoorLockOpen = 2;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1036,6 +1047,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 
 		if (onOffServer != null) {
 			if (state == On) {
@@ -1070,6 +1082,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					return false;
 
 				applianceControlServer.execCommandExecution(commandId, null);
+			} catch (Exception e) {
+				LOG.error("execCommandExecution exception " + e.getMessage(), e);
+				return false;
+			}
+		} else if (doorLockServer != null) {
+			try {
+				if (state == DoorLockCloseUnLock) {
+					doorLockServer.execUnlockDoor("0000", context);
+				} else if (state == DoorLockClose) {
+					doorLockServer.execLockDoor("0001", context);
+				} else if (state == DoorLockOpen) {
+					doorLockServer.execUnlockDoor("0002", context);
+				} else
+					return false;
 			} catch (Exception e) {
 				LOG.error("execCommandExecution exception " + e.getMessage(), e);
 				return false;
@@ -1662,7 +1688,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return result;
 	}
 
-	// /é richiamato durante l'installazione nella schermata /CONF
 	public Hashtable getApplianceConfiguration(IAppliance peerAppliance, int endPointId) throws ApplianceException, ServiceClusterException {
 		int availability = 0;
 		int state = 0;
@@ -2016,6 +2041,30 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return props;
 	}
 
+	private void loadPropFile(){
+
+	    String _path = "noserver.properties";
+	    
+		// Howto get a bundle context 
+	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
+	    BundleContext bc = 
+	      BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
+	         .getBundle()
+	         .getBundleContext();
+	    URL _url = bc.getBundle().getResource(_path);
+		
+		InputStream in = null;
+		try {
+			in = _url.openStream();
+			this.props = new Properties();
+			this.props.load(in);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+	
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
 			ArrayList infos = new ArrayList();
@@ -2669,6 +2718,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		/* End by Marco */
 
+		/* Added by Marco
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+		if (doorLockServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+		if (windowCoveringServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		 End by Marco */
+
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName());
 
 		if (configServer != null) {
@@ -3251,6 +3315,22 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date date = cal.getTime();
 		return date;
+	}
+	
+	public Hashtable getPropConfiguration(String lblProps){
+		
+		if (this.props == null){
+			loadPropFile();
+		}
+		Hashtable response = new Hashtable();
+		
+		if (this.props != null){
+			response.put(lblProps, this.props.getProperty(lblProps));
+		} else {
+			response.put("none", 0);
+		}
+
+		return response;
 	}
 
 }

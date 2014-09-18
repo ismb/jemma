@@ -135,8 +135,8 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		String result;
 		if (!endPointId.equals(AHContainerAddress.DEFAULT_END_POINT_ID)) {
 			StringBuilder sb = new StringBuilder(containerAddress.getAppliancePid());
-			sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
-			sb.append(containerAddress.getEndPointId());
+			//sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
+			//sb.append(containerAddress.getEndPointId());
 			result = sb.toString();
 		} else {
 			result = containerAddress.getAppliancePid();

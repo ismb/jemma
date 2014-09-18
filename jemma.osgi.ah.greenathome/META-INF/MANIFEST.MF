@@ -35,6 +35,6 @@ Include-Resource: OSGI-INF/greenathome.xml=OSGI-INF/greenathome.xml,xml/
  xml,xml/scenarios/EnergyAtHome.xml=src/main/resources/xml/scenarios/Ene
  rgyAtHome.xml
 Private-Package: org.energy_home.jemma.ah.internal.greenathome.homemeter
- ,org.energy_home.jemma.ah.internal.greenathome,xml.scenarios
+ ,org.energy_home.jemma.ah.internal.greenathome,.,xml.scenarios
 Service-Component: OSGI-INF/*.xml
 Tool: Bnd-1.50.0
