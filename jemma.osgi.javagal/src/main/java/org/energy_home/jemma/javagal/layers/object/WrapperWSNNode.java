@@ -25,9 +25,10 @@ import org.energy_home.jemma.zgd.jaxb.WSNNode;
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
  * the Algorithms Discovery, Freshness and ForcePing
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- 
+ * 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class WrapperWSNNode {
 	int _timerID = 0;
@@ -35,40 +36,53 @@ public class WrapperWSNNode {
 	private Timer _timerDiscovery;
 	private Timer _timerFreshness;
 	private Timer _timerForcePing;
-	private short _numberOfAttempt;
-	private boolean _discoveryCompleted;
+	private Short _numberOfAttempt;
+	private Boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
-
-	public synchronized Timer getTimerDiscovery() {
-		return _timerDiscovery;
-	}
-
-	public synchronized Timer getTimerFreshness() {
-		return _timerFreshness;
-	}
-
-	public synchronized Timer getTimerForcePing() {
-		return _timerForcePing;
-	}
-
-	public synchronized NodeDescriptor getNodeDescriptor() {
-		return _nodeDescriptor;
-	}
-
-	public synchronized void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
-		this._nodeDescriptor = nodeDescriptor;
-	}
-
 	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
-	private long lastDiscovered;
+	private Long lastDiscovered;
 
-	public synchronized long getLastDiscovered() {
-		return lastDiscovered;
+	public Timer getTimerDiscovery() {
+		synchronized (_timerDiscovery) {
+			return _timerDiscovery;
+		}
 	}
 
-	public synchronized void setLastDiscovered(long lastDiscovered) {
-		this.lastDiscovered = lastDiscovered;
+	public Timer getTimerFreshness() {
+		synchronized (_timerFreshness) {
+			return _timerFreshness;
+		}
+	}
+
+	public Timer getTimerForcePing() {
+		synchronized (_timerForcePing) {
+			return _timerForcePing;
+		}
+	}
+
+	public NodeDescriptor getNodeDescriptor() {
+		synchronized (_nodeDescriptor) {
+			return _nodeDescriptor;
+		}
+	}
+
+	public void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
+		synchronized (_nodeDescriptor) {
+			_nodeDescriptor = nodeDescriptor;
+		}
+	}
+
+	public long getLastDiscovered() {
+		synchronized (lastDiscovered) {
+			return lastDiscovered;
+		}
+	}
+
+	public void setLastDiscovered(long _lastDiscovered) {
+		synchronized (lastDiscovered) {
+			lastDiscovered = _lastDiscovered;
+		}
 	}
 
 	private GalController gal = null;
@@ -76,36 +90,42 @@ public class WrapperWSNNode {
 	public WrapperWSNNode(GalController _gal) {
 		gal = _gal;
 		this._numberOfAttempt = 0;
-		this.lastDiscovered = 0;
+		this.lastDiscovered = 0L;
 
 	}
 
 	/**
 	 * Check if the Node is a sleepy device
 	 */
-	public synchronized boolean isSleepy() {
-		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
-				return false;
-			else
+	public boolean isSleepy() {
+		synchronized (_node) {
+			if ((_node != null) && (_node.getCapabilityInformation() != null)) {
+				if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+					return false;
+				else
+					return true;
+			} else
 				return true;
-		} else
-			return true;
+		}
 
 	}
 
 	/**
 	 * return the WsnNode from the wrapper
 	 */
-	public synchronized WSNNode get_node() {
-		return _node;
+	public WSNNode get_node() {
+		synchronized (_node) {
+			return _node;
+		}
 	}
 
 	/**
 	 * Set the WsnNode into the Wrapper
 	 */
-	public synchronized void set_node(WSNNode _node) {
-		this._node = _node;
+	public void set_node(WSNNode node) {
+		synchronized (_node) {
+			_node = node;
+		}
 	}
 
 	/**
@@ -114,20 +134,22 @@ public class WrapperWSNNode {
 	 * @param int second --> Schedule the timer for the number of seconds passed
 	 *        how parameter
 	 */
-	public synchronized void setTimerDiscovery(int seconds) {
-		if (_timerDiscovery != null) {
-			_timerDiscovery.cancel();
-			_timerDiscovery.purge();
-		}
-		if (seconds >= 0) {
-			String name = "";
-			synchronized (this._node) {
-
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+	public void setTimerDiscovery(int seconds) {
+		synchronized (_timerDiscovery) {
+			if (_timerDiscovery != null) {
+				_timerDiscovery.cancel();
+				_timerDiscovery.purge();
 			}
-			_timerDiscovery = new Timer(name);
-			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
+			if (seconds >= 0) {
+				String name = "";
+				synchronized (this._node) {
 
+					name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+				}
+				_timerDiscovery = new Timer(name);
+				_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
+
+			}
 		}
 
 	}
@@ -138,22 +160,24 @@ public class WrapperWSNNode {
 	 * @param int second --> Schedule the timer for the number of seconds passed
 	 *        how parameter
 	 */
-	public synchronized void setTimerFreshness(int seconds) {
-		if (_timerFreshness != null) {
-			_timerFreshness.cancel();
-			_timerFreshness.purge();
-		}
-
-		if (seconds >= 0) {
-
-			String name = "";
-			synchronized (this._node) {
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-
+	public void setTimerFreshness(int seconds) {
+		synchronized (_timerFreshness) {
+			if (_timerFreshness != null) {
+				_timerFreshness.cancel();
+				_timerFreshness.purge();
 			}
 
-			_timerFreshness = new Timer(name);
-			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
+			if (seconds >= 0) {
+
+				String name = "";
+				synchronized (this._node) {
+					name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+
+				}
+
+				_timerFreshness = new Timer(name);
+				_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
+			}
 		}
 
 	}
@@ -164,68 +188,76 @@ public class WrapperWSNNode {
 	 * @param int second --> Schedule the timer for the number of seconds passed
 	 *        how parameter
 	 */
-	public synchronized void setTimerForcePing(int seconds) {
+	public void setTimerForcePing(int seconds) {
+		synchronized (_timerForcePing) {
+			if (_timerForcePing != null) {
+				_timerForcePing.cancel();
+				_timerForcePing.purge();
+			}
 
-		if (_timerForcePing != null) {
-			_timerForcePing.cancel();
-			_timerForcePing.purge();
-		}
+			if (seconds >= 0) {
+				String name = "";
 
-		if (seconds >= 0) {
-			String name = "";
+				synchronized (this._node) {
+					name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
 
-			synchronized (this._node) {
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+				}
+				_timerForcePing = new Timer(name);
+				_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
 
 			}
-			_timerForcePing = new Timer(name);
-			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
-
 		}
-
 	}
 
 	/**
 	 * return the number of fail of the (Discovery, Freshness, ForcePing)
 	 * procedures
 	 */
-	public synchronized short get_numberOfAttempt() {
-		return _numberOfAttempt;
+	public short get_numberOfAttempt() {
+		synchronized (_numberOfAttempt) {
+			return _numberOfAttempt;
+		}
 	}
 
 	/**
 	 * Increase the number of fail of the (Discovery, Freshness, ForcePing)
 	 * procedures
 	 */
-	public synchronized void set_numberOfAttempt() {
-		this._numberOfAttempt = (short) (this._numberOfAttempt + 1);
+	public void set_numberOfAttempt() {
+		synchronized (_numberOfAttempt) {
+			_numberOfAttempt = (short) (this._numberOfAttempt + 1);
+		}
 	}
 
 	/**
 	 * Cancel all timers
 	 */
-	public synchronized void abortTimers() {
+	public void abortTimers() {
+		synchronized (_timerDiscovery) {
+			if (_timerDiscovery != null) {
+				_timerDiscovery.cancel();
+				_timerDiscovery.purge();
 
-		if (_timerDiscovery != null) {
-			_timerDiscovery.cancel();
-			_timerDiscovery.purge();
+				_timerDiscovery = null;
 
-			_timerDiscovery = null;
-
+			}
 		}
 
-		if (_timerFreshness != null) {
-			_timerFreshness.cancel();
-			_timerFreshness.purge();
-			_timerFreshness = null;
+		synchronized (_timerFreshness) {
+			if (_timerFreshness != null) {
+				_timerFreshness.cancel();
+				_timerFreshness.purge();
+				_timerFreshness = null;
 
+			}
 		}
+		synchronized (_timerForcePing) {
+			if (_timerForcePing != null) {
+				_timerForcePing.cancel();
+				_timerForcePing.purge();
+				_timerForcePing = null;
 
-		if (_timerForcePing != null) {
-			_timerForcePing.cancel();
-			_timerForcePing.purge();
-			_timerForcePing = null;
-
+			}
 		}
 
 	}
@@ -234,53 +266,67 @@ public class WrapperWSNNode {
 	 * reset the number of fail of the (Discovery, Freshness, ForcePing)
 	 * procedures
 	 */
-	public synchronized void reset_numberOfAttempt() {
-		this._numberOfAttempt = 0;
+	public void reset_numberOfAttempt() {
+		synchronized (_numberOfAttempt) {
+			_numberOfAttempt = 0;
+		}
 	}
 
 	/**
 	 * Return the status of the discovery. The discovery is complited when the
 	 * node has sent the response of the LqiRequest
 	 */
-	public synchronized boolean is_discoveryCompleted() {
-		return _discoveryCompleted;
+	public boolean is_discoveryCompleted() {
+		synchronized (_discoveryCompleted) {
+			return _discoveryCompleted;
+		}
 	}
 
 	/**
 	 * Set the status of the discovery. The discovery is complited when the node
 	 * has sent the response of the LqiRequest
 	 */
-	public synchronized void set_discoveryCompleted(boolean _discoveryCompleted) {
-		this._discoveryCompleted = _discoveryCompleted;
+	public void set_discoveryCompleted(boolean discoveryCompleted) {
+		synchronized (_discoveryCompleted) {
+			_discoveryCompleted = _discoveryCompleted;
+		}
 	}
 
 	/**
 	 * return the Lqi Response Class of the node.
 	 */
-	public synchronized Mgmt_LQI_rsp get_Mgmt_LQI_rsp() {
-		return _Mgmt_LQI_rsp;
+	public Mgmt_LQI_rsp get_Mgmt_LQI_rsp() {
+		synchronized (_Mgmt_LQI_rsp) {
+			return _Mgmt_LQI_rsp;
+		}
 	}
 
 	/**
 	 * Set the Lqi Response Class of the node.
 	 */
-	public synchronized void set_Mgmt_LQI_rsp(Mgmt_LQI_rsp _Mgmt_LQI_rsp) {
-		this._Mgmt_LQI_rsp = _Mgmt_LQI_rsp;
+	public void set_Mgmt_LQI_rsp(Mgmt_LQI_rsp _Mgmt_LQI_rsp) {
+		synchronized (_Mgmt_LQI_rsp) {
+			_Mgmt_LQI_rsp = _Mgmt_LQI_rsp;
+		}
 	}
 
 	/**
 	 * return the list of the EndPoints of the node.
 	 */
-	public synchronized NodeServices get_nodeServices() {
-		return _nodeServices;
+	public NodeServices get_nodeServices() {
+		synchronized (_nodeServices) {
+			return _nodeServices;
+		}
 	}
 
 	/**
 	 * Set the list of the EndPoints of the node. Is called when is present a
 	 * response of the startnodeServices
 	 */
-	public synchronized void set_nodeServices(NodeServices _nodeServices) {
-		this._nodeServices = _nodeServices;
+	public void set_nodeServices(NodeServices _nodeServices) {
+		synchronized (_nodeServices) {
+			_nodeServices = _nodeServices;
+		}
 	}
 
 	/**
