@@ -36,7 +36,7 @@ public class WrapperWSNNode {
 	private Timer _timerDiscovery;
 	private Timer _timerFreshness;
 	private Timer _timerForcePing;
-	private Short _numberOfAttempt;
+	private Short _numberOfAttempt = 0;
 	private Boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
@@ -89,8 +89,18 @@ public class WrapperWSNNode {
 
 	public WrapperWSNNode(GalController _gal) {
 		gal = _gal;
-		this._numberOfAttempt = 0;
-		this.lastDiscovered = 0L;
+		_numberOfAttempt = 0;
+		lastDiscovered = 0L;
+		_node = new WSNNode();
+		_timerDiscovery = new Timer();
+		_timerFreshness = new Timer();
+		_timerForcePing = new Timer();
+		_discoveryCompleted = false;
+		_nodeServices = new NodeServices();
+		_nodeDescriptor = new NodeDescriptor();
+		_Mgmt_LQI_rsp = new Mgmt_LQI_rsp(null);
+		
+		
 
 	}
 
@@ -122,10 +132,11 @@ public class WrapperWSNNode {
 	/**
 	 * Set the WsnNode into the Wrapper
 	 */
-	public void set_node(WSNNode node) {
-		synchronized (_node) {
+	public synchronized void set_node(WSNNode node) {
+		
+		
 			_node = node;
-		}
+		
 	}
 
 	/**
@@ -304,10 +315,9 @@ public class WrapperWSNNode {
 	/**
 	 * Set the Lqi Response Class of the node.
 	 */
-	public void set_Mgmt_LQI_rsp(Mgmt_LQI_rsp _Mgmt_LQI_rsp) {
-		synchronized (_Mgmt_LQI_rsp) {
-			_Mgmt_LQI_rsp = _Mgmt_LQI_rsp;
-		}
+	public synchronized void set_Mgmt_LQI_rsp(Mgmt_LQI_rsp _Mgmt_LQI_rsp) {
+		 	_Mgmt_LQI_rsp = _Mgmt_LQI_rsp;
+		
 	}
 
 	/**
@@ -323,10 +333,8 @@ public class WrapperWSNNode {
 	 * Set the list of the EndPoints of the node. Is called when is present a
 	 * response of the startnodeServices
 	 */
-	public void set_nodeServices(NodeServices _nodeServices) {
-		synchronized (_nodeServices) {
+	public synchronized void set_nodeServices(NodeServices _nodeServices) {
 			_nodeServices = _nodeServices;
-		}
 	}
 
 	/**
