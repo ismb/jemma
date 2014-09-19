@@ -107,7 +107,6 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
 				int _index = -1;
-				synchronized (getGal().getNetworkcache()) {
 					if ((_index = getGal().existIntoNetworkCache(_add)) != -1) {
 						getGal().getNetworkcache().remove(_index);
 						Status _s = new Status();
@@ -120,7 +119,7 @@ public class ZdoManager /* implements APSMessageListener */{
 							e.printStackTrace();
 						}
 					}
-				}
+				
 			}
 		}
 		/* ZDP Device_announcement */

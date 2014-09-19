@@ -85,7 +85,6 @@ import org.slf4j.LoggerFactory;
 public class DataFreescale implements IDataLayer {
 	Boolean destroy = false;
 	ExecutorService executor = null;
-
 	private GalController gal = null;
 
 	private GalController getGal() {
@@ -159,7 +158,7 @@ public class DataFreescale implements IDataLayer {
 
 		INTERNAL_TIMEOUT = getGal().getPropertiesManager().getCommandTimeoutMS();
 
-		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
 
@@ -172,6 +171,7 @@ public class DataFreescale implements IDataLayer {
 			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
 
 		}
+
 	}
 
 	public void initialize() {
@@ -182,44 +182,31 @@ public class DataFreescale implements IDataLayer {
 				short[] tempArray = null;
 				while (!getDestroy()) {
 					tempArray = null;
-					try {
-						synchronized (getReceivedDataQueue()) {
-							getReceivedDataQueue().wait(timeoutLock);
-						}
-						while (getReceivedDataQueue().size() > 0) {
-							tempArray = createMessageFromRowData();
-							if (tempArray != null) {
-								try {
-									final short[] message = tempArray;
-									executor.execute(new Runnable() {
-										public void run() {
-											try {
-												processMessages(message);
-											} catch (Exception e) {
+					while ((getReceivedDataQueue().size() > 0) && (!getDestroy())) {
 
-												LOG.error("Error on processMessages: " + e.getMessage());
+						tempArray = createMessageFromRowData();
 
-											}
+						if (tempArray != null) {
+							try {
+								final short[] message = tempArray;
+								executor.execute(new Runnable() {
+									public void run() {
+										try {
+											processMessages(message);
+										} catch (Exception e) {
+
+											LOG.error("Error on processMessages: " + e.getMessage());
+
 										}
-									});
-								} catch (Exception e) {
+									}
+								});
+							} catch (Exception e) {
 
-									LOG.error("Error on processMessages: " + e.getMessage());
+								LOG.error("Error on processMessages: " + e.getMessage());
 
-								}
-
-							} else
-								break;
+							}
 						}
-
-					} catch (InterruptedException e) {
-
 					}
-
-				}
-				if (executor != null) {
-					executor.shutdown();
-					executor = null;
 				}
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-MessagesAnalizer Stopped!");
@@ -235,11 +222,10 @@ public class DataFreescale implements IDataLayer {
 			public void run() {
 				ShortArrayObject _currentCommandReived = null;
 				while (!getDestroy()) {
-					try {
-						synchronized (getTmpDataQueue()) {
-							getTmpDataQueue().wait(timeoutLock);
-							_currentCommandReived = getTmpDataQueue().poll();
-						}
+					
+					if (getTmpDataQueue().size() > 0) {
+						_currentCommandReived = getTmpDataQueue().poll();
+						// }
 						if (_currentCommandReived != null) {
 							if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 								LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
@@ -247,19 +233,12 @@ public class DataFreescale implements IDataLayer {
 							for (int z = 0; z < _currentCommandReived.getCount(true); z++) {
 								getReceivedDataQueue().add(shortArray[z]);
 							}
-							synchronized (getReceivedDataQueue()) {
-								getReceivedDataQueue().notify();
-							}
 						}
-					} catch (InterruptedException e) {
-
 					}
+					
 
 				}
-				if (executor != null) {
-					executor.shutdown();
-					executor = null;
-				}
+
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-RS232-Receiver Stopped!");
 
@@ -273,80 +252,85 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	private short[] createMessageFromRowData() {
+		if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
+			LOG.info("Length of the BufferRow:[" + getReceivedDataQueue().size() + "]");
+
+		}
 		short toremove = 0;
 		Short _toremove = 0;
-		synchronized (getReceivedDataQueue()) {
-			while (!getReceivedDataQueue().isEmpty()) {
-				if ((_toremove = getReceivedDataQueue().get(0)) != DataManipulation.SEQUENCE_START) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
-						LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(getReceivedDataQueue()));
+		while (!getReceivedDataQueue().isEmpty()) {
+			if ((_toremove = getReceivedDataQueue().get(0)) != DataManipulation.SEQUENCE_START) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
+					synchronized (getReceivedDataQueue()) {
+						LOG.info("Error on Message Received, removing wrong byte: " + String.format("%02X", _toremove) + " from:" + DataManipulation.convertListShortToString(getReceivedDataQueue()));
 					}
-					getReceivedDataQueue().remove(0);
-					continue;
 				}
-				List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
-				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-					LOG.debug("Analyzing Raw Data:" + DataManipulation.convertListShortToString(copyList));
-
-				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.debug("Error, Data received not completed, waiting new raw data...");
-					return null;
-
-				}
-
-				int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
-				if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.debug("Data received not completed, waiting new raw data...");
-					return null;
-				}
-
-				short messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
-				ChecksumControl csc = new ChecksumControl();
-				csc.getCumulativeXor(copyList.get(1));
-				csc.getCumulativeXor(copyList.get(2));
-				csc.getCumulativeXor(copyList.get(3));
-				for (int i = 0; i < payloadLenght; i++)
-					csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
-
-				if (csc.getLastCalulated() != messageCfc) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", getReceivedDataQueue().get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(getReceivedDataQueue()));
-					getReceivedDataQueue().remove(0);
-					continue;
-
-				}
-
-				int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
-				copyList.remove(0);
-
-				short[] toReturn = new short[messageLenght];
-				toReturn[0] = (short) (copyList.remove(0) & 0xFF);
-				toReturn[1] = (short) (copyList.remove(0) & 0xFF);
-				toReturn[2] = (short) (copyList.remove(0) & 0xFF);
-				for (int i = 0; i < payloadLenght; i++)
-					toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
-
-				copyList.remove(0);
-
-				toremove += (4 + payloadLenght + 1);
-
-				for (int z = 0; z < toremove; z++)
-					getReceivedDataQueue().remove(0);
-
-				return toReturn;
+				getReceivedDataQueue().remove(0);
+				continue;
 			}
+			List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
+
+			
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+					LOG.info("Error, Data received not completed, waiting new raw data...");
+				return null;
+
+			}
+
+			int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
+			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+					LOG.info("Data received not completed, waiting new raw data...");
+				return null;
+			}
+
+			short messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
+			ChecksumControl csc = new ChecksumControl();
+			csc.getCumulativeXor(copyList.get(1));
+			csc.getCumulativeXor(copyList.get(2));
+			csc.getCumulativeXor(copyList.get(3));
+			for (int i = 0; i < payloadLenght; i++)
+				csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
+
+			if (csc.getLastCalulated() != messageCfc) {
+				if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
+					synchronized (getReceivedDataQueue()) {
+						LOG.info("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", getReceivedDataQueue().get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(getReceivedDataQueue()));
+					}
+				}
+				getReceivedDataQueue().remove(0);
+				continue;
+
+			}
+
+			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
+			copyList.remove(0);
+
+			short[] toReturn = new short[messageLenght];
+			toReturn[0] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[1] = (short) (copyList.remove(0) & 0xFF);
+			toReturn[2] = (short) (copyList.remove(0) & 0xFF);
+			for (int i = 0; i < payloadLenght; i++)
+				toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
+
+			copyList.remove(0);
+
+			toremove += (4 + payloadLenght + 1);
+
+			for (int z = 0; z < toremove; z++)
+				getReceivedDataQueue().remove(0);
+
+			return toReturn;
 		}
+
 		return null;
 
 	}
 
 	public void processMessages(short[] message) throws Exception {
-
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 			LOG.info("Processing message: " + DataManipulation.convertArrayShortToString(message));
-
 		ByteBuffer bb = ByteBuffer.allocate(2);
 		bb.order(ByteOrder.BIG_ENDIAN);
 		bb.put((byte) message[0]);
@@ -2243,175 +2227,182 @@ public class DataFreescale implements IDataLayer {
 	 * @param messageEvent
 	 * @param address
 	 */
-	private synchronized boolean updateNodeIfExist(final APSMessageEvent messageEvent, Address address) {
+	private boolean updateNodeIfExist(final APSMessageEvent messageEvent, Address address) {
+		synchronized (getGal().getNetworkcache()) {
+			/* Update Source Node Data */
+			int _indexOnCache = -1;
 
-		/* Update Source Node Data */
-		int _indexOnCache = -1;
+			_indexOnCache = getGal().existIntoNetworkCache(address);
 
-		_indexOnCache = getGal().existIntoNetworkCache(address);
+			if (_indexOnCache != -1) {
 
-		if (_indexOnCache != -1) {
+				if (getGal().getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
 
-			if (getGal().getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
-
-				/* The node is already into the DB */
-				if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
-					if (!getGal().getNetworkcache().get(_indexOnCache).isSleepy()) {
-						getGal().getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
-						getGal().getNetworkcache().get(_indexOnCache).setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
-						if (getGal().getPropertiesManager().getDebugEnabled()) {
-							LOG.info("Postponing  timer Freshness for Aps.Indication for node:" + String.format("%04X", getGal().getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()));
+					/* The node is already into the DB */
+					if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
+						if (!getGal().getNetworkcache().get(_indexOnCache).isSleepy()) {
+							getGal().getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
+							getGal().getNetworkcache().get(_indexOnCache).setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+							if (getGal().getPropertiesManager().getDebugEnabled()) {
+								LOG.info("Postponing  timer Freshness for Aps.Indication for node:" + String.format("%04X", getGal().getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()));
+							}
 						}
+
 					}
 
 				}
+			} else {
+				// 0x8034 is a LeaveAnnouncement, 0x0013 is a
+				// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
 
-			}
-		} else {
-			// 0x8034 is a LeaveAnnouncement, 0x0013 is a
-			// DeviceAnnouncement, 0x8001 is a IEEE_Addr_Rsp
+				if ((getGal().getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031)))) {
 
-			if ((getGal().getPropertiesManager().getAutoDiscoveryUnknownNodes() > 0) && (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031)))) {
+					if (address.getNetworkAddress().intValue() != getGal().get_GalNode().get_node().getAddress().getNetworkAddress().intValue()) {
 
-				if (address.getNetworkAddress().intValue() != getGal().get_GalNode().get_node().getAddress().getNetworkAddress().intValue()) {
+						// Insert the node into
+						// cache,
+						// but with the
+						// discovery_completed flag
+						// a
+						// false
 
-					// Insert the node into
-					// cache,
-					// but with the
-					// discovery_completed flag
-					// a
-					// false
+						WrapperWSNNode o = new WrapperWSNNode(getGal());
+						WSNNode _newNode = new WSNNode();
+						o.set_discoveryCompleted(false);
+						_newNode.setAddress(address);
+						o.set_node(_newNode);
+						if (getGal().getPropertiesManager().getDebugEnabled())
+							LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
+						getGal().getNetworkcache().add(o);
 
-					WrapperWSNNode o = new WrapperWSNNode(getGal());
-					WSNNode _newNode = new WSNNode();
-					o.set_discoveryCompleted(false);
-					_newNode.setAddress(address);
-					o.set_node(_newNode);
-					if (getGal().getPropertiesManager().getDebugEnabled())
-						LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
-					getGal().getNetworkcache().add(o);
+						Runnable thr = new MyRunnable(address) {
+							@Override
+							public void run() {
+								Address _address = (Address) this.getParameter();
+								int _indexOnCache = -1;
+								_indexOnCache = getGal().existIntoNetworkCache(_address);
+								if (_indexOnCache > -1) {
+									if (getGal().getPropertiesManager().getDebugEnabled()) {
+										LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
+									}
 
-					Runnable thr = new MyRunnable(address) {
-						@Override
-						public void run() {
-							Address _address = (Address) this.getParameter();
-							int _indexOnCache = -1;
-							_indexOnCache = getGal().existIntoNetworkCache(_address);
-							if (_indexOnCache > -1) {
-								if (getGal().getPropertiesManager().getDebugEnabled()) {
-									LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
-								}
-
-								WrapperWSNNode _newWrapperNode = getGal().getNetworkcache().get(_indexOnCache);
-								/*
-								 * Reading the IEEEAddress of the new node
-								 */
-								int counter = 0;
-								while ((_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) && counter <= 30) {
-									try {
-										if (getGal().getPropertiesManager().getDebugEnabled())
-											LOG.info("Sending IeeeReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-
-										_newWrapperNode.get_node().getAddress().setIeeeAddress(readExtAddress(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-										if (getGal().getPropertiesManager().getDebugEnabled()) {
-											LOG.info("Readed Ieee of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Ieee: " + _newWrapperNode.get_node().getAddress().getIeeeAddress().toString());
-										}
-									} catch (Exception e) {
-
-										LOG.error("Error reading Ieee of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+									WrapperWSNNode _newWrapperNode = getGal().getNetworkcache().get(_indexOnCache);
+									/*
+									 * Reading the IEEEAddress of the new node
+									 */
+									int counter = 0;
+									while ((_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) && counter <= 30) {
 										try {
-											counter++;
-											Thread.sleep(50);
-										} catch (InterruptedException e1) {
-											counter++;
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
+											if (getGal().getPropertiesManager().getDebugEnabled())
+												LOG.info("Sending IeeeReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+
+											_newWrapperNode.get_node().getAddress().setIeeeAddress(readExtAddress(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+											if (getGal().getPropertiesManager().getDebugEnabled()) {
+												LOG.info("Readed Ieee of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Ieee: " + _newWrapperNode.get_node().getAddress().getIeeeAddress().toString());
+											}
+										} catch (Exception e) {
+
+											LOG.error("Error reading Ieee of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+											try {
+												counter++;
+												Thread.sleep(50);
+											} catch (InterruptedException e1) {
+												counter++;
+												// TODO Auto-generated catch
+												// block
+												e1.printStackTrace();
+											}
+
 										}
+									}
+									if (counter >= 30) {
+
+										_indexOnCache = getGal().existIntoNetworkCache(_address);
+										if (_indexOnCache > -1) {
+											getGal().getNetworkcache().remove(_indexOnCache);
+										}
+										return;
 
 									}
-								}
-								if (counter >= 30) {
-									getGal().getNetworkcache().remove(_indexOnCache);
-									return;
 
-								}
+									counter = 0;
 
-								counter = 0;
-
-								while (_newWrapperNode.getNodeDescriptor() == null && counter <= 30) {
-									try {
-										if (getGal().getPropertiesManager().getDebugEnabled())
-											LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-										_newWrapperNode.setNodeDescriptor(getNodeDescriptorSync(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress()));
-										_newWrapperNode.get_node().setCapabilityInformation(_newWrapperNode.getNodeDescriptor().getMACCapabilityFlag());
-
-										if (getGal().getPropertiesManager().getDebugEnabled()) {
-											LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-
-										}
-									} catch (Exception e) {
-
-										LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+									while (_newWrapperNode.getNodeDescriptor() == null && counter <= 30) {
 										try {
-											counter++;
-											Thread.sleep(50);
-										} catch (InterruptedException e1) {
-											counter++;
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
+											if (getGal().getPropertiesManager().getDebugEnabled())
+												LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+											_newWrapperNode.setNodeDescriptor(getNodeDescriptorSync(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress()));
+											_newWrapperNode.get_node().setCapabilityInformation(_newWrapperNode.getNodeDescriptor().getMACCapabilityFlag());
+
+											if (getGal().getPropertiesManager().getDebugEnabled()) {
+												LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+
+											}
+										} catch (Exception e) {
+
+											LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+											try {
+												counter++;
+												Thread.sleep(50);
+											} catch (InterruptedException e1) {
+												counter++;
+												// TODO Auto-generated catch
+												// block
+												e1.printStackTrace();
+											}
 										}
 									}
-								}
 
-								if (counter >= 30) {
-									getGal().getNetworkcache().remove(_indexOnCache);
-									return;
-
-								}
-								_newWrapperNode.reset_numberOfAttempt();
-
-								if (!_newWrapperNode.isSleepy()) {
-									_newWrapperNode.set_discoveryCompleted(false);
-									if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
-										_newWrapperNode.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
-									}
-									if (getGal().getPropertiesManager().getForcePingTimeout() > 0) {
-										/*
-										 * Starting immediately a ForcePig in
-										 * order to retrieve the LQI
-										 * informations on the new node
-										 */
-										_newWrapperNode.setTimerForcePing(1);
-									}
-								} else {
-									_newWrapperNode.set_discoveryCompleted(true);
-									Status _st = new Status();
-									_st.setCode((short) GatewayConstants.SUCCESS);
-
-									if (getGal().getPropertiesManager().getDebugEnabled())
-										LOG.info("Calling NodeDescovered  from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-
-									try {
-										getGal().get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
-									} catch (Exception e) {
-										LOG.info("Error Calling NodeDescovered from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
+									if (counter >= 30) {
+										getGal().getNetworkcache().remove(_indexOnCache);
+										return;
 
 									}
-								}
-								/*
-								 * Saving the Panid in order to leave the
-								 * Philips light
-								 */
-								getGal().getManageMapPanId().setPanid(_newWrapperNode.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
+									_newWrapperNode.reset_numberOfAttempt();
 
+									if (!_newWrapperNode.isSleepy()) {
+										_newWrapperNode.set_discoveryCompleted(false);
+										if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
+											_newWrapperNode.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+										}
+										if (getGal().getPropertiesManager().getForcePingTimeout() > 0) {
+											/*
+											 * Starting immediately a ForcePig
+											 * in order to retrieve the LQI
+											 * informations on the new node
+											 */
+											_newWrapperNode.setTimerForcePing(1);
+										}
+									} else {
+										_newWrapperNode.set_discoveryCompleted(true);
+										Status _st = new Status();
+										_st.setCode((short) GatewayConstants.SUCCESS);
+
+										if (getGal().getPropertiesManager().getDebugEnabled())
+											LOG.info("Calling NodeDescovered  from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+
+										try {
+											getGal().get_gatewayEventManager().nodeDiscovered(_st, _newWrapperNode.get_node());
+										} catch (Exception e) {
+											LOG.info("Error Calling NodeDescovered from AutodiscoveredNode Sleepy:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Error:" + e.getMessage());
+
+										}
+									}
+									/*
+									 * Saving the Panid in order to leave the
+									 * Philips light
+									 */
+									getGal().getManageMapPanId().setPanid(_newWrapperNode.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
+
+								}
 							}
-						}
-					};
+						};
 
-					Thread _thr0 = new Thread(thr);
-					_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + String.format("%04X", address.getNetworkAddress()));
-					_thr0.start();
-					return false;
+						Thread _thr0 = new Thread(thr);
+						_thr0.setName("Thread getAutoDiscoveryUnknownNodes:" + String.format("%04X", address.getNetworkAddress()));
+						_thr0.start();
+						return false;
+					}
 				}
 			}
 		}
@@ -4200,7 +4191,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public synchronized IConnector getIKeyInstance() {
+	public IConnector getIKeyInstance() {
 		return dongleRs232;
 	}
 
@@ -4211,10 +4202,10 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void notifyFrame(final ShortArrayObject frame) {
-		synchronized (getTmpDataQueue()) {
-			getTmpDataQueue().add(frame);
-			getTmpDataQueue().notify();
-		}
+		// synchronized (getTmpDataQueue()) {
+		getTmpDataQueue().add(frame);
+		// getTmpDataQueue().notify();
+		// }
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 			LOG.info("<<< Received data:" + frame.ToHexString());
 	}
@@ -4584,10 +4575,6 @@ class ChecksumControl {
 
 	public void getCumulativeXor(short i) {
 		lastCalculated ^= i;
-	}
-
-	public void resetLastCalculated() {
-		lastCalculated = 0x00;
 	}
 
 	public short getLastCalulated() {

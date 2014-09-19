@@ -116,13 +116,12 @@ public class Discovery_Freshness_ForcePing {
 				return;
 			}
 
-			synchronized (getGal().getNetworkcache()) {
 				_indexParent = getGal().existIntoNetworkCache(node);
 				if (_indexParent != -1) {
 					__currentNodeWrapper = getGal().getNetworkcache().get(_indexParent);
 				} else
 					return;
-			}
+			
 			if (function == TypeFunction.FORCEPING) {
 				if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
 					__currentNodeWrapper.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());

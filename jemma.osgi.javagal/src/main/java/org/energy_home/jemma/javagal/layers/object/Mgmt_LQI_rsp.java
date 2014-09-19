@@ -41,24 +41,22 @@ public class Mgmt_LQI_rsp {
 	private static final Logger LOG = LoggerFactory.getLogger(Mgmt_LQI_rsp.class);
 
 	public Mgmt_LQI_rsp(byte[] data) {
-		if (data != null) {
-			/* 02 00 01 00 01 */
-			_Status = data[1];
-			if (_Status == 0) {
-				_NeighborTableEntries = data[2];
-				_StartIndex = data[3];
-				_NeighborTableListCount = data[4];
-				if (_NeighborTableListCount > 0) {
-					NeighborTableList = new ArrayList<NeighborTableLis_Record>();
-					byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
-					for (int i = 0; i < _NeighborTableListCount; i++) {
-						byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i), 22 * (i + 1));
-						NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
-					}
+		/* 02 00 01 00 01 */
+		_Status = data[1];
+		if (_Status == 0) {
+			_NeighborTableEntries = data[2];
+			_StartIndex = data[3];
+			_NeighborTableListCount = data[4];
+			if (_NeighborTableListCount > 0) {
+				NeighborTableList = new ArrayList<NeighborTableLis_Record>();
+				byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
+				for (int i = 0; i < _NeighborTableListCount; i++) {
+					byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i), 22 * (i + 1));
+					NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
 				}
-			} else {
-				LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status + "\n\r");
 			}
+		} else {
+			LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status + "\n\r");
 		}
 
 	}
