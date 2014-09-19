@@ -222,10 +222,10 @@ public class DataFreescale implements IDataLayer {
 			public void run() {
 				ShortArrayObject _currentCommandReived = null;
 				while (!getDestroy()) {
-					
+
 					if (getTmpDataQueue().size() > 0) {
 						_currentCommandReived = getTmpDataQueue().poll();
-						// }
+
 						if (_currentCommandReived != null) {
 							if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 								LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
@@ -234,8 +234,15 @@ public class DataFreescale implements IDataLayer {
 								getReceivedDataQueue().add(shortArray[z]);
 							}
 						}
+					} else {
+						synchronized (getTmpDataQueue()) {
+							try {
+								getTmpDataQueue().wait(25);
+							} catch (InterruptedException e) {
+
+							}
+						}
 					}
-					
 
 				}
 
@@ -270,7 +277,6 @@ public class DataFreescale implements IDataLayer {
 			}
 			List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
 
-			
 			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info("Error, Data received not completed, waiting new raw data...");
@@ -4202,10 +4208,10 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void notifyFrame(final ShortArrayObject frame) {
-		// synchronized (getTmpDataQueue()) {
-		getTmpDataQueue().add(frame);
-		// getTmpDataQueue().notify();
-		// }
+		synchronized (getTmpDataQueue()) {
+			getTmpDataQueue().add(frame);
+			getTmpDataQueue().notify();
+		}
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 			LOG.info("<<< Received data:" + frame.ToHexString());
 	}
