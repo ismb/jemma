@@ -175,7 +175,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public void initialize() {
-		final int timeoutLock = 100;
+		final int timeoutLock = 25;
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
@@ -237,7 +237,7 @@ public class DataFreescale implements IDataLayer {
 					} else {
 						synchronized (getTmpDataQueue()) {
 							try {
-								getTmpDataQueue().wait(25);
+								getTmpDataQueue().wait(timeoutLock);
 							} catch (InterruptedException e) {
 
 							}
