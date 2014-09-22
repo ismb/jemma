@@ -224,13 +224,13 @@ thead.hwtable td {
 	font-weight:bold;
 }
 
-div.jemmahwtablesfather table.td {
+div.jemmahwtablesfather > table.td {
 	border: 1px solid black;
 	background-color: white;
 	text-align:center;
 }
 
-div.jemmahwtablesfather thead.td {
+div.jemmahwtablesfather > thead.td {
 	border: 1px solid black;
 	background-color: #C3D9FF;
 	text-align:center;
