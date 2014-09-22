@@ -39,7 +39,9 @@ public class WrapperWSNNode {
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
-
+	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
+	private long lastDiscovered;
+	
 	public synchronized Timer getTimerDiscovery() {
 		return _timerDiscovery;
 	}
@@ -60,8 +62,7 @@ public class WrapperWSNNode {
 		this._nodeDescriptor = nodeDescriptor;
 	}
 
-	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
-	private long lastDiscovered;
+	
 
 	public synchronized long getLastDiscovered() {
 		return lastDiscovered;

@@ -53,7 +53,7 @@ public class ManageMapPanId {
 		}
 	}
 
-	public synchronized Integer getPanid(BigInteger address) {
+	public Integer getPanid(BigInteger address) {
 		FileInputStream stream = null;
 		try {
 			Properties properties = new Properties();
@@ -80,7 +80,7 @@ public class ManageMapPanId {
 		}
 	}
 
-	public synchronized void setPanid(BigInteger address, String panId) {
+	public void setPanid(BigInteger address, String panId) {
 		FileInputStream stream = null;
 		OutputStream out = null;
 		try {

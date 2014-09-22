@@ -6,7 +6,7 @@ var ifBase =  {
 }
 
 ifBase.init=function(clusters){  
-
+	
         ifBase.timeout_timer=null;
         ifBase.stato=-1;
 
@@ -51,31 +51,24 @@ ifBase.init=function(clusters){
                         if (InterfaceEnergyHome.mode > 0){
                                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                                         if (err!=null) {
-                                                //console.log(" acceso?"+ result+ " "+err);
                                                 ifBase.update(true);
                                         }else if (result!=null) {
                                                 if (result==true) {
-                                                        
                                                     ifBase.stato=1;
                                                     $(myId).addClass("ON");
                                                     $(myId).removeClass("OFF");
                                                     ifBase.updateIcon(1);
-                                                    
                                                 }
                                         }
                                         ifBase.timeout_timer=new Date().getTime();
-                                        
                                 }, pid,1);
                         } else{
                                 ifBase.stato=1;
                                 $(myId).addClass("ON");
                                 $(myId).removeClass("OFF");
                                 ifBase.updateIcon(1);
-                                
                         }
                 }
-               
-                
         });
         
         
@@ -89,9 +82,7 @@ ifBase.init=function(clusters){
                   'user-select':'none'
         }).bind('selectstart', function(){ return false; });
         
-        
         ifBase.update();
-    
 };
 
 ifBase.updateIcon=function(stato){

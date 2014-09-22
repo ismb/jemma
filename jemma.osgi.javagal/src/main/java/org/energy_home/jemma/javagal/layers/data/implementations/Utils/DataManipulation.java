@@ -250,9 +250,11 @@ public class DataManipulation {
 
 	public static String convertListShortToString(List<Short> arr) {
 		StringBuilder sb = new StringBuilder();
-		for (Short s : arr) {
-			sb.append(String.format("%02X", s));
-		}
+		
+			for (Short s : arr) {
+				sb.append(String.format("%02X", s));
+			}
+		
 		return sb.toString();
 	}
 

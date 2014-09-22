@@ -42,7 +42,7 @@ public class GalExtenderProxyFactory {
 	/**
 	 * Uniquely identifies the gal proxy instance.
 	 */
-	private int proxyIdentifierSequence;
+	private Integer proxyIdentifierSequence = 0;
 
 	/**
 	 * Constructs a GalExtender Proxy Factory.
@@ -68,8 +68,12 @@ public class GalExtenderProxyFactory {
 	 *             if the {@link GalExtenderProxy} constructor fails due to some
 	 *             internal error.
 	 */
-	public synchronized GatewayInterface createGatewayInterfaceObject() throws Exception {
+	public GatewayInterface createGatewayInterfaceObject() throws Exception {
+		synchronized (proxyIdentifierSequence) {
+			
+		
 		proxyIdentifierSequence++;
+		}
 		return new GalExtenderProxy(proxyIdentifierSequence, gal);
 
 	}
@@ -80,10 +84,9 @@ public class GalExtenderProxyFactory {
 	 * @throws Exception
 	 *             if the gal controller fails to disconnect the dongle.
 	 */
-	public synchronized void destroyGal() throws Exception {
+	public  void destroyGal() throws Exception {
 		if (gal != null) {
 			gal.getDataLayer().destroy();
-			
 			gal.getDataLayer().getIKeyInstance().disconnect();
 			gal = null;
 		}
