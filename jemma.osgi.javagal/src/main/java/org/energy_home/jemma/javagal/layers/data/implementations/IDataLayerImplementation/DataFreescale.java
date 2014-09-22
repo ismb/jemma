@@ -175,17 +175,14 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public void initialize() {
-		final int timeoutLock = 25;
+		
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
 				short[] tempArray = null;
 				while (!getDestroy()) {
-					tempArray = null;
-					while ((getReceivedDataQueue().size() > 0) && (!getDestroy())) {
-
+					if (getReceivedDataQueue().size() > 0) {
 						tempArray = createMessageFromRowData();
-
 						if (tempArray != null) {
 							try {
 								final short[] message = tempArray;
@@ -194,15 +191,19 @@ public class DataFreescale implements IDataLayer {
 										try {
 											processMessages(message);
 										} catch (Exception e) {
-
 											LOG.error("Error on processMessages: " + e.getMessage());
-
 										}
 									}
 								});
 							} catch (Exception e) {
-
 								LOG.error("Error on processMessages: " + e.getMessage());
+							}
+						}
+					} else {
+						synchronized (getReceivedDataQueue()) {
+							try {
+								getReceivedDataQueue().wait(gal.getPropertiesManager().getTimeOutForWaitThread());
+							} catch (InterruptedException e) {
 
 							}
 						}
@@ -225,19 +226,17 @@ public class DataFreescale implements IDataLayer {
 
 					if (getTmpDataQueue().size() > 0) {
 						_currentCommandReived = getTmpDataQueue().poll();
-
 						if (_currentCommandReived != null) {
 							if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 								LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
 							short[] shortArray = _currentCommandReived.getShortArray();
-							for (int z = 0; z < _currentCommandReived.getCount(true); z++) {
+							for (int z = 0; z < _currentCommandReived.getCount(true); z++)
 								getReceivedDataQueue().add(shortArray[z]);
-							}
 						}
 					} else {
 						synchronized (getTmpDataQueue()) {
 							try {
-								getTmpDataQueue().wait(timeoutLock);
+								getTmpDataQueue().wait(gal.getPropertiesManager().getTimeOutForWaitThread());
 							} catch (InterruptedException e) {
 
 							}
@@ -827,7 +826,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage(mess);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 
@@ -856,7 +855,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage(mess);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 
@@ -901,7 +900,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage(mess);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 
@@ -923,7 +922,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(status);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -944,7 +943,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(status);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1073,7 +1072,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(_node);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1093,7 +1092,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse((short) message[4]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1112,7 +1111,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1132,7 +1131,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(status);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1152,7 +1151,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1174,7 +1173,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1200,7 +1199,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1226,7 +1225,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1253,7 +1252,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1278,7 +1277,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1342,7 +1341,7 @@ public class DataFreescale implements IDataLayer {
 						pl.notify();
 
 					}
-					break;
+
 				}
 			}
 		}
@@ -1369,7 +1368,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1391,7 +1390,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1410,7 +1409,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[3]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1469,7 +1468,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(_res);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1504,7 +1503,7 @@ public class DataFreescale implements IDataLayer {
 						}
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1540,7 +1539,6 @@ public class DataFreescale implements IDataLayer {
 						}
 						pl.notify();
 					}
-					break;
 				}
 			}
 		}
@@ -1569,7 +1567,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(_res);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1625,7 +1623,7 @@ public class DataFreescale implements IDataLayer {
 						pl.set_objectOfResponse(_toRes);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1671,7 +1669,6 @@ public class DataFreescale implements IDataLayer {
 							pl.set_objectOfResponse(_result);
 							pl.notify();
 						}
-						break;
 
 					}
 
@@ -1751,7 +1748,7 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setCode(message[4]);
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -1856,7 +1853,7 @@ public class DataFreescale implements IDataLayer {
 						}
 						pl.notify();
 					}
-					break;
+
 				}
 			}
 		}
@@ -2170,7 +2167,7 @@ public class DataFreescale implements IDataLayer {
 								pl.set_objectOfResponse(_res);
 								pl.notify();
 							}
-							break;
+
 						}
 					}
 				}
@@ -2321,7 +2318,7 @@ public class DataFreescale implements IDataLayer {
 
 										}
 									}
-									if (counter >= 30) {
+									if (counter > 30) {
 
 										_indexOnCache = getGal().existIntoNetworkCache(_address);
 										if (_indexOnCache > -1) {
@@ -2359,7 +2356,7 @@ public class DataFreescale implements IDataLayer {
 										}
 									}
 
-									if (counter >= 30) {
+									if (counter > 30) {
 										getGal().getNetworkcache().remove(_indexOnCache);
 										return;
 
@@ -4503,13 +4500,17 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public synchronized void destroy() {
-		destroy = true;
+	public void destroy() {
+		synchronized (destroy) {
+			destroy = true;
+		}
 	}
 
 	@Override
-	public synchronized boolean getDestroy() {
-		return destroy;
+	public boolean getDestroy() {
+		synchronized (destroy) {
+			return destroy;
+		}
 	}
 
 	@Override
