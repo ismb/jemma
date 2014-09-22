@@ -230,7 +230,7 @@ div.jemmahwtablesfather table td {
 	text-align:center;
 }
 
-.jemmahwtablesfather .header td{
+div.jemmahwtablesfather table td:first-child  {
 	border: 1px solid black;
 	background-color: #C3D9FF;
 	text-align:center;
