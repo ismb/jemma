@@ -1,4 +1,4 @@
-Auto-generated site: 201406060942
+Auto-generated site: 201409221119
 
 ##########################
 Git status
@@ -11,14 +11,41 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
+	modified:   credits.html
+	modified:   devteam.html
+	modified:   features.html
+	modified:   getrel.html
+	modified:   header.template
+	modified:   howtoc.html
+	modified:   howtos.html
+	modified:   index.html
+	modified:   license.html
+	modified:   news.html
+	modified:   resources.html
 	modified:   site-generation.log
+	modified:   stylesheets/EnergyAtHome2.css
+	modified:   supportedhw.html
 	modified:   supportedhw.md
+	modified:   techs.html
+	modified:   versions.html
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit acc411db169aaf07837be539acb943e88c9662db
+Author: riccardo <tomasi@ismb.it>
+Date:   Fri Jun 6 09:46:04 2014 +0200
+
+    note from Marco
+
+commit 45a1ec75637c4d3e1b86ba4b8492fcaa2408c9dc
+Author: riccardo <tomasi@ismb.it>
+Date:   Fri Jun 6 09:42:15 2014 +0200
+
+    added desc from RELOC
 
 commit 49b4bd1d842c3405e707304da46760d748d022f6
 Author: riccardo <tomasi@ismb.it>
@@ -37,16 +64,4 @@ Author: riccardo <tomasi@ismb.it>
 Date:   Thu May 29 18:37:52 2014 +0200
 
     hw table ported
-
-commit 63d898f0f44bd6882d9b5468b74e2f325fe8ae80
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:33:15 2014 +0200
-
-    another test
-
-commit 3d8ed8afe1590e060c4a9d92c45a488066c553b9
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:30:55 2014 +0200
-
-    another test
 

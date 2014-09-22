@@ -186,3 +186,13 @@ Initial Architectural support for IP devices is expected in [release 0.9](https:
 </table>
 
 ************** end of template -->
+
+# Just a test
+
+<div class="jemmahwtablesfather">
+
+| Name | Vendor | Description | Link | Notes |
+| :---:|:------:|:------------|:----:|:------|
+| Flexkey | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.  | [Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html) |  |
+
+</div>
