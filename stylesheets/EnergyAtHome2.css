@@ -230,7 +230,7 @@ div.jemmahwtablesfather table td {
 	text-align:center;
 }
 
-div.jemmahwtablesfather > table > tr.header > td{
+div.jemmahwtablesfather tr.header td{
 	border: 1px solid black;
 	background-color: #C3D9FF;
 	text-align:center;
