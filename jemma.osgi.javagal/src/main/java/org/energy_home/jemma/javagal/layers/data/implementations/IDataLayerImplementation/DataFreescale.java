@@ -260,6 +260,7 @@ public class DataFreescale implements IDataLayer {
 	private short[] createMessageFromRowData() {
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
 			LOG.info("Length of the BufferRow:[" + getReceivedDataQueue().size() + "]");
+			
 
 		}
 		short toremove = 0;
@@ -275,21 +276,18 @@ public class DataFreescale implements IDataLayer {
 				continue;
 			}
 			List<Short> copyList = new ArrayList<Short>(getReceivedDataQueue());
-
 			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + 1)) {
 				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info("Error, Data received not completed, waiting new raw data...");
 				return null;
 
 			}
-
 			int payloadLenght = (copyList.get(3).byteValue() & 0xFF);
 			if (copyList.size() < (DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1)) {
 				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info("Data received not completed, waiting new raw data...");
 				return null;
 			}
-
 			short messageCfc = copyList.get(DataManipulation.START_PAYLOAD_INDEX + payloadLenght).shortValue();
 			ChecksumControl csc = new ChecksumControl();
 			csc.getCumulativeXor(copyList.get(1));
@@ -311,26 +309,19 @@ public class DataFreescale implements IDataLayer {
 
 			int messageLenght = payloadLenght + DataManipulation.START_PAYLOAD_INDEX - 1;
 			copyList.remove(0);
-
 			short[] toReturn = new short[messageLenght];
 			toReturn[0] = (short) (copyList.remove(0) & 0xFF);
 			toReturn[1] = (short) (copyList.remove(0) & 0xFF);
 			toReturn[2] = (short) (copyList.remove(0) & 0xFF);
 			for (int i = 0; i < payloadLenght; i++)
 				toReturn[i + 3] = (short) (copyList.remove(0) & 0xFF);
-
 			copyList.remove(0);
-
 			toremove += (4 + payloadLenght + 1);
-
 			for (int z = 0; z < toremove; z++)
 				getReceivedDataQueue().remove(0);
-
 			return toReturn;
 		}
-
 		return null;
-
 	}
 
 	public void processMessages(short[] message) throws Exception {
@@ -842,11 +833,12 @@ public class DataFreescale implements IDataLayer {
 
 		short status = message[3];
 		String mess = "";
+		/*
 		switch (status) {
 		case 0x00:
-
 			break;
 		}
+		*/
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.CLEAR_DEVICE_KEY_PAIR_SET) {
