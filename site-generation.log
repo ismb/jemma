@@ -1,4 +1,4 @@
-Auto-generated site: 201409241856
+Auto-generated site: 201409241901
 
 ##########################
 Git status
@@ -19,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit c06ac775465de8636a5f8137e7779c03eb7e516a
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 18:56:58 2014 +0200
+
+    reordering + fixes
 
 commit 28888b0e996321166cae3ce23ed932abb66071a3
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 14:56:55 2014 +0200
 
     added IP tables
-
-commit 8e579e00c489e9b371807b7c11bd21a69d4835b5
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 14:42:20 2014 +0200
-
-    minor fix
 
