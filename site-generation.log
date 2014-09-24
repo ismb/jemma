@@ -1,4 +1,4 @@
-Auto-generated site: 201409241441
+Auto-generated site: 201409241442
 
 ##########################
 Git status
@@ -11,7 +11,6 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   images/shouldwork.png
 	modified:   site-generation.log
 	modified:   supportedhw.md
 
@@ -20,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit bd65f186941f8c0a34ecefde45bc3fb36b3fc71b
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 14:41:26 2014 +0200
+
+    minir fix
 
 commit 1e53f481a8b9387ca83f22b254c3b44943b3c766
 Author: riccardo <riccardo.to@gmail.com>
@@ -44,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 12:38:41 2014 +0200
 
     dongles ok
-
-commit 3e3c5db59d2b114432f9ea70c730cb945246c0c5
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 12:30:11 2014 +0200
-
-    rebuilding list
 

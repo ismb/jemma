@@ -5,8 +5,6 @@ Verified Hardware
 This pages provides a list of devices suitable for use with JEMMA.
 Check out [this page](https://github.com/ismb/jemma/wiki/Verified-Hardware) for instructions on how to have new hardware added to this table. A <a href="#legend">legend</a> explaining the meaning of the "status" icons is available <a href="#legend">at the bottom of the page</a>.
 
-*Note: text in these tables is provided either by vendors or by contributors which have integrated/tested HW with JEMMA*.
-
 <!-- 
 
 Template:
@@ -76,5 +74,6 @@ Here the meaning of icons on the "status" level.
 - <img src="http://ismb.github.io/jemma/images/shouldwork.png" alt="should work"> = Should work (= compliant with supported ZigBee standard or already tested with some partial component of JEMMA, but not tested with the full solution) 
 - <img src="http://ismb.github.io/jemma/images/incompatible.png" alt="incompatible"> = Incompatible (proven not to work - with link to the related issue on the [JEMMA Tracker](https://github.com/ismb/jemma/issues))
 
+*Note: text in the tables of this page has been provided either by vendors or by contributors which have integrated/tested HW with JEMMA*.
 
 </div>
