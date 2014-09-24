@@ -1,4 +1,4 @@
-Auto-generated site: 201409241239
+Auto-generated site: 201409241438
 
 ##########################
 Git status
@@ -11,13 +11,36 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
+	modified:   credits.html
+	modified:   devteam.html
+	modified:   features.html
+	modified:   getrel.html
+	modified:   header.template
+	modified:   howtoc.html
+	modified:   howtos.html
+	modified:   index.html
+	modified:   license.html
+	modified:   news.html
+	modified:   resources.html
 	modified:   site-generation.log
+	modified:   supportedhw.html
+	modified:   supportedhw.md
+	modified:   techs.html
+	modified:   trash.html
+	modified:   trash.md
+	modified:   versions.html
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 7e6f1372dfadb2e95645427d79c7ed94bb6f7b58
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 12:39:03 2014 +0200
+
+    dongles ok
 
 commit 7cf57ea36853c3ec16eeb4c5c1afd57e7473f1ca
 Author: riccardo <riccardo.to@gmail.com>
@@ -40,12 +63,6 @@ Date:   Wed Sep 24 12:07:32 2014 +0200
 commit 0179dc657a0a7995d9b98505e57d6336d62c77ea
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 10:34:51 2014 +0200
-
-    test
-
-commit 6abe2eae98cd589fb0e91e8f6fafc32eee305989
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 10:31:20 2014 +0200
 
     test
 
