@@ -93,6 +93,11 @@
               <a href="resources.html">Papers & Resources</a>
             </div>
             
+            <div class="eah-navigationitem">
+              <div class="symbol"></div>
+              <a href="supportedhw.html">Verified hardware</a>
+            </div>
+            
                        <div class="eah-navigationitem">
               <div class="symbol"></div>
               <a href="news.html">News</a>
@@ -111,11 +116,6 @@
             <div class="eah-navigationitem">
               <div class="symbol"></div>
               <a href="getrel.html">Get the latest JEMMA release</a>
-            </div>
-
-            <div class="eah-navigationitem">
-              <div class="symbol"></div>
-              <a href="supportedhw.html">Verified hardware</a>
             </div>
 
             <div class="eah-navigationitem head">
