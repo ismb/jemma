@@ -1,4 +1,4 @@
-Auto-generated site: 201409241229
+Auto-generated site: 201409241239
 
 ##########################
 Git status
@@ -12,18 +12,24 @@ Changes not staged for commit:
   (use "git checkout -- <file>..." to discard changes in working directory)
 
 	modified:   site-generation.log
-	modified:   supportedhw.md
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-	trash.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 7cf57ea36853c3ec16eeb4c5c1afd57e7473f1ca
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 12:38:41 2014 +0200
+
+    dongles ok
+
+commit 3e3c5db59d2b114432f9ea70c730cb945246c0c5
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 12:30:11 2014 +0200
+
+    rebuilding list
 
 commit 27c948c5457505621cfc2888e79fbcd7035eeb46
 Author: riccardo <riccardo.to@gmail.com>
@@ -40,18 +46,6 @@ Date:   Wed Sep 24 10:34:51 2014 +0200
 commit 6abe2eae98cd589fb0e91e8f6fafc32eee305989
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 10:31:20 2014 +0200
-
-    test
-
-commit 813780bc536c8490873dd6b29578f239c4848d22
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Sep 22 11:53:18 2014 +0200
-
-    test
-
-commit eee70a61f18c925537fa6a83d3981e9f106df495
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Sep 22 11:52:45 2014 +0200
 
     test
 
