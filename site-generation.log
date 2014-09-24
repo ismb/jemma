@@ -1,4 +1,4 @@
-Auto-generated site: 201409241508
+Auto-generated site: 201409241526
 
 ##########################
 Git status
@@ -19,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 3abaac267d5197e6df6cd1eddc28555036ae0003
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 15:08:39 2014 +0200
+
+    added raspberry
 
 commit 955f335055231a403c1a091476a32290496f6b0e
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 14:41:26 2014 +0200
 
     minir fix
-
-commit 1e53f481a8b9387ca83f22b254c3b44943b3c766
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 14:39:27 2014 +0200
-
-    index fixed
 
