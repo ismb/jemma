@@ -1,4 +1,4 @@
-Auto-generated site: 201409241439
+Auto-generated site: 201409241441
 
 ##########################
 Git status
@@ -11,14 +11,21 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   header.template
+	modified:   images/shouldwork.png
 	modified:   site-generation.log
+	modified:   supportedhw.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 1e53f481a8b9387ca83f22b254c3b44943b3c766
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 14:39:27 2014 +0200
+
+    index fixed
 
 commit 1a51954e02be8daea555e0a0f0b088136a72cdbf
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,10 +50,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 12:30:11 2014 +0200
 
     rebuilding list
-
-commit 27c948c5457505621cfc2888e79fbcd7035eeb46
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 12:07:32 2014 +0200
-
-    moving from wiki
 
