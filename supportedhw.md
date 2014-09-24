@@ -32,6 +32,7 @@ Template:
 | :---:|:------:|:------------|:----:|:------|
 | [FlexGateway](http://www.flexgrid.it/eng/prodotti/flexgateway.html) | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexGateway is a versatile Ethernet gateway that allows bridging between Ethernet and the classic HAN - Home Area Network and acting as coordinator ZigBee Home Automation in the network. | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.0.1) |  - |
 | Gemino Reference Design | [Gemino S.R.L.](http://www.gemino-srl.com/) | Application gateway for M2M applications based on theIkanos Vx185 gateway processor. | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.2) |  Press release available [here](http://www.energy-home.it/SitePages/News%20and%20Events/NewsDetail.aspx?FilterField1=ID&FilterValue1=35) |
+| [Raspberry PI](http://www.raspberrypi.org/) | [Raspberry PI](http://www.raspberrypi.org/) | Low-cost credit-card sized computer | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.0.1) |  Tutorial [here](https://github.com/ismb/jemma/wiki/RunOnRaspberryPi).  |
 
 ### Zigbee Devices
 

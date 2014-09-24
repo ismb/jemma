@@ -1,4 +1,4 @@
-Auto-generated site: 201409241457
+Auto-generated site: 201409241508
 
 ##########################
 Git status
@@ -12,12 +12,19 @@ Changes not staged for commit:
   (use "git checkout -- <file>..." to discard changes in working directory)
 
 	modified:   site-generation.log
+	modified:   supportedhw.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 955f335055231a403c1a091476a32290496f6b0e
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 14:57:29 2014 +0200
+
+    forgot to make
 
 commit 737645ef028678c90e52ac71c9cfa8f3a1c9591c
 Author: riccardo <riccardo.to@gmail.com>
@@ -42,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 14:39:27 2014 +0200
 
     index fixed
-
-commit 1a51954e02be8daea555e0a0f0b088136a72cdbf
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 14:38:39 2014 +0200
-
-    hardware list fully updated
 
