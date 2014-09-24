@@ -1,4 +1,4 @@
-Auto-generated site: 201409241526
+Auto-generated site: 201409241856
 
 ##########################
 Git status
@@ -19,6 +19,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 28888b0e996321166cae3ce23ed932abb66071a3
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 15:26:12 2014 +0200
+
+    gemino fix
 
 commit 3abaac267d5197e6df6cd1eddc28555036ae0003
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 14:42:20 2014 +0200
 
     minor fix
-
-commit bd65f186941f8c0a34ecefde45bc3fb36b3fc71b
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 14:41:26 2014 +0200
-
-    minir fix
 
