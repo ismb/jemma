@@ -2,42 +2,28 @@ Verified Hardware
 <!-- Remember: the first line always goes with the title-->
 <!-- Please use h3 headers (###) inside these files -->
 
-This pages provides a non-comprehensive list of devices verified with the JEMMA platform.
-More technical details are available in the [JEMMA Wiki](https://github.com/ismb/jemma/wiki/Verified-Hardware).
+This pages provides a list of devices suitable for use with JEMMA.
+Please contact the <a href="mailto:jemma-developers@googlegroups.com" target="_blank">JEMMA Development Team</a> to have new hardware added to this table.
+
+
+<div class="jemmahwtablesfather">
 
 ### ZigBee Dongles
 
-<table class="hwtable">
-<thead class="hwtable">
-	<tr>
-		<td >Name</td>
-		<td>Vendor</td>
-		<td>Description</td>
-		<td>Notes</td>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<td >Flexkey</td>
-		<td>[FlexGrid](http://www.flexgrid.it/home_eng.html)</td>
-		<td>FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.</td>
-		<td>[Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html)</td>
-	</tr>
-	<tr>
-		<td>MC1322x</td>
-		<td>Freescale</td>
-		<td>TODO Andrea</td>
-		<td>TODO Andrea</td>
-		<!-- http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=MC13226V -->
-	</tr>
-	<tr>
-		<td>KW2x</td>
-		<td>Freescale</td>
-		<td>TODO Andrea</td>
-		<td>Support planned from July 2014 - possible inclusion in [release 0.9](https://github.com/ismb/jemma/wiki/Milestone-0.9)</td>
-	</tr>		
-</tbody>
-</table>
+<!-- 
+
+Template:
+
+| Name | Vendor | Description | Link | Notes |
+
+-->
+
+| Name | Vendor | Description | Status | Notes |
+| :---:|:------:|:------------|:----:|:------|
+| Flexkey | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.  | [Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html) |  |
+| [MC1322x](http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=MC13226V) | Freescale | Description | Link | Notes |
+| KW2x | Freescale | Description | Link | Support planned from July 2014 - possible inclusion in [release 0.9](https://github.com/ismb/jemma/wiki/Milestone-0.9) |
+
 
 ### Gateways
 
@@ -164,35 +150,8 @@ Initial Architectural support for IP devices is expected in [release 0.9](https:
 </tbody>
 </table>
 
-<!-- ************** template
 
-<table class="hwtable">
-<thead class="hwtable">
-	<tr>
-		<td>Name</td>
-		<td>Vendor</td>
-		<td>Description</td>
-		<td>Notes</td>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<td >Name</td>
-		<td>Vendor</td>
-		<td>Description</td>
-		<td>Notes</td>
-	</tr>
-</tbody>
-</table>
 
-************** end of template -->
 
-# Just a test
-
-<div class="jemmahwtablesfather">
-
-| Name | Vendor | Description | Link | Notes |
-| :---:|:------:|:------------|:----:|:------|
-| Flexkey | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.  | [Official website](http://www.flexgrid.it/eng/prodotti/flexkey.html) |  |
 
 </div>

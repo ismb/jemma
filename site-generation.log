@@ -1,4 +1,4 @@
-Auto-generated site: 201409221119
+Auto-generated site: 201409241031
 
 ##########################
 Git status
@@ -23,7 +23,6 @@ Changes not staged for commit:
 	modified:   news.html
 	modified:   resources.html
 	modified:   site-generation.log
-	modified:   stylesheets/EnergyAtHome2.css
 	modified:   supportedhw.html
 	modified:   supportedhw.md
 	modified:   techs.html
@@ -35,33 +34,33 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
-commit acc411db169aaf07837be539acb943e88c9662db
-Author: riccardo <tomasi@ismb.it>
-Date:   Fri Jun 6 09:46:04 2014 +0200
+commit 813780bc536c8490873dd6b29578f239c4848d22
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Sep 22 11:53:18 2014 +0200
 
-    note from Marco
+    test
 
-commit 45a1ec75637c4d3e1b86ba4b8492fcaa2408c9dc
-Author: riccardo <tomasi@ismb.it>
-Date:   Fri Jun 6 09:42:15 2014 +0200
+commit eee70a61f18c925537fa6a83d3981e9f106df495
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Sep 22 11:52:45 2014 +0200
 
-    added desc from RELOC
+    test
 
-commit 49b4bd1d842c3405e707304da46760d748d022f6
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu Jun 5 12:14:52 2014 +0200
+commit 59f54f4594f7122d61c5d4d70841ee3dd6abd3d6
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Sep 22 11:52:09 2014 +0200
 
-    added inputs from Andrea
+    test
 
-commit 488ec21b93c9409072ff0b715cfb50c27b909dbd
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:40:32 2014 +0200
+commit a859d8dc771b7f7be74beb77f91e87c36026b344
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Sep 22 11:51:26 2014 +0200
 
-    minor fix
+    test
 
-commit 64fe13d932ee2a684a541786f40df8b6316a1e2f
-Author: riccardo <tomasi@ismb.it>
-Date:   Thu May 29 18:37:52 2014 +0200
+commit 026bda48b35391b70623bc87cb742b2cae384cc9
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Sep 22 11:50:25 2014 +0200
 
-    hw table ported
+    test
 
