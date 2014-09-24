@@ -1,4 +1,4 @@
-Auto-generated site: 201409241442
+Auto-generated site: 201409241457
 
 ##########################
 Git status
@@ -12,13 +12,24 @@ Changes not staged for commit:
   (use "git checkout -- <file>..." to discard changes in working directory)
 
 	modified:   site-generation.log
-	modified:   supportedhw.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 737645ef028678c90e52ac71c9cfa8f3a1c9591c
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 14:56:55 2014 +0200
+
+    added IP tables
+
+commit 8e579e00c489e9b371807b7c11bd21a69d4835b5
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 14:42:20 2014 +0200
+
+    minor fix
 
 commit bd65f186941f8c0a34ecefde45bc3fb36b3fc71b
 Author: riccardo <riccardo.to@gmail.com>
@@ -37,16 +48,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 14:38:39 2014 +0200
 
     hardware list fully updated
-
-commit 7e6f1372dfadb2e95645427d79c7ed94bb6f7b58
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 12:39:03 2014 +0200
-
-    dongles ok
-
-commit 7cf57ea36853c3ec16eeb4c5c1afd57e7473f1ca
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 12:38:41 2014 +0200
-
-    dongles ok
 
