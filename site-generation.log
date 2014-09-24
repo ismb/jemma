@@ -1,4 +1,4 @@
-Auto-generated site: 201409241031
+Auto-generated site: 201409241229
 
 ##########################
 Git status
@@ -11,28 +11,37 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   credits.html
-	modified:   devteam.html
-	modified:   features.html
-	modified:   getrel.html
-	modified:   header.template
-	modified:   howtoc.html
-	modified:   howtos.html
-	modified:   index.html
-	modified:   license.html
-	modified:   news.html
-	modified:   resources.html
 	modified:   site-generation.log
-	modified:   supportedhw.html
 	modified:   supportedhw.md
-	modified:   techs.html
-	modified:   versions.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	trash.md
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 27c948c5457505621cfc2888e79fbcd7035eeb46
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 12:07:32 2014 +0200
+
+    moving from wiki
+
+commit 0179dc657a0a7995d9b98505e57d6336d62c77ea
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 10:34:51 2014 +0200
+
+    test
+
+commit 6abe2eae98cd589fb0e91e8f6fafc32eee305989
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Wed Sep 24 10:31:20 2014 +0200
+
+    test
 
 commit 813780bc536c8490873dd6b29578f239c4848d22
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,24 +52,6 @@ Date:   Mon Sep 22 11:53:18 2014 +0200
 commit eee70a61f18c925537fa6a83d3981e9f106df495
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Sep 22 11:52:45 2014 +0200
-
-    test
-
-commit 59f54f4594f7122d61c5d4d70841ee3dd6abd3d6
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Sep 22 11:52:09 2014 +0200
-
-    test
-
-commit a859d8dc771b7f7be74beb77f91e87c36026b344
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Sep 22 11:51:26 2014 +0200
-
-    test
-
-commit 026bda48b35391b70623bc87cb742b2cae384cc9
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Sep 22 11:50:25 2014 +0200
 
     test
 
