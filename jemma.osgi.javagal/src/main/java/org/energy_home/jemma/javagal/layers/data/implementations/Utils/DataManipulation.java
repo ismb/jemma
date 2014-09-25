@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -248,7 +249,7 @@ public class DataManipulation {
 		return toReturn;
 	}
 
-	public static String convertListShortToString(List<Short> arr) {
+	public static String convertListShortToString(ArrayBlockingQueue<Short> arr) {
 		StringBuilder sb = new StringBuilder();
 		
 			for (Short s : arr) {
