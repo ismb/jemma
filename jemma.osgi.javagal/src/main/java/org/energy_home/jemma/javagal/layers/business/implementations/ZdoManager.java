@@ -125,10 +125,11 @@ public class ZdoManager /* implements APSMessageListener */{
 		/* ZDP Device_announcement */
 		else if (message.getClusterID() == 0x0013) {
 
-			WrapperWSNNode _Node = new WrapperWSNNode(gal);
-			WSNNode n = new WSNNode();
 			Address _add = new Address();
 			_add.setNetworkAddress(DataManipulation.toIntFromShort(message.getData()[2], message.getData()[1]));
+			WrapperWSNNode _Node = new WrapperWSNNode(gal, String.format("%04X", _add.getNetworkAddress()));
+			WSNNode n = new WSNNode();
+			
 			byte[] _IEEE = new byte[8];
 			_IEEE[0] = message.getData()[10];
 			_IEEE[1] = message.getData()[9];

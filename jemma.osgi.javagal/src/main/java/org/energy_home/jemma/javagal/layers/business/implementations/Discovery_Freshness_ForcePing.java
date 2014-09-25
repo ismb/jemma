@@ -282,7 +282,7 @@ public class Discovery_Freshness_ForcePing {
 			_addressChild.setNetworkAddress(x._Network_Address);
 			BigInteger bi = BigInteger.valueOf(x._Extended_Address);
 			_addressChild.setIeeeAddress(bi);
-			WrapperWSNNode newNodeWrapperChild = new WrapperWSNNode(gal);
+			WrapperWSNNode newNodeWrapperChild = new WrapperWSNNode(gal, String.format("%04X", x._Network_Address));
 			WSNNode newNodeChild = new WSNNode();
 			newNodeChild.setAddress(_addressChild);
 			MACCapability _mac = new MACCapability();

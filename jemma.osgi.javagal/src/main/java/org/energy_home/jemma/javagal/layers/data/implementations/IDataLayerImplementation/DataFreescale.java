@@ -2261,7 +2261,7 @@ public class DataFreescale implements IDataLayer {
 						// a
 						// false
 
-						WrapperWSNNode o = new WrapperWSNNode(getGal());
+						WrapperWSNNode o = new WrapperWSNNode(getGal(), String.format("%04X", address.getNetworkAddress()));
 						WSNNode _newNode = new WSNNode();
 						o.set_discoveryCompleted(false);
 						_newNode.setAddress(address);

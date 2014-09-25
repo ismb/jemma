@@ -2034,12 +2034,14 @@ public class GalController {
 
 						}
 					}
-					WrapperWSNNode galNodeWrapper = new WrapperWSNNode(((GalController) this.getParameter()));
 					WSNNode galNode = new WSNNode();
 					Address _add = new Address();
 					_add.setNetworkAddress(Integer.parseInt(_NetworkAdd, 16));
+
 					_add.setIeeeAddress(_IeeeAdd);
 					galNode.setAddress(_add);
+					WrapperWSNNode galNodeWrapper = new WrapperWSNNode(((GalController) this.getParameter()), String.format("%04X", _add.getNetworkAddress()));
+
 					galNodeWrapper.set_node(galNode);
 
 					/* Read the NodeDescriptor of the GAL */
