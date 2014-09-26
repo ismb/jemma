@@ -95,7 +95,6 @@ public class DataFreescale implements IDataLayer {
 	private IConnector dongleRs232 = null;
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataFreescale.class);
-	private final List<ParserLocker> listLocker;
 
 	public Long INTERNAL_TIMEOUT;
 
@@ -110,10 +109,10 @@ public class DataFreescale implements IDataLayer {
 	private ArrayBlockingQueue<ShortArrayObject> tmpDataQueue = new ArrayBlockingQueue<ShortArrayObject>(MAX_TO_SEND_BYTE_ARRAY);
 
 	private ArrayBlockingQueue<ShortArrayObject> getTmpDataQueue() {
-
 		return tmpDataQueue;
-
 	}
+
+	private final List<ParserLocker> listLocker;
 
 	private List<ParserLocker> getListLocker() {
 		return listLocker;
@@ -133,9 +132,7 @@ public class DataFreescale implements IDataLayer {
 		// we don't know in advance which comm library is installed into the
 		// system.
 		boolean foundSerialLib = false;
-
 		try {
-			// we try first with RxTx
 			dongleRs232 = new SerialPortConnectorJssc(getGal().getPropertiesManager().getzgdDongleUri(), getGal().getPropertiesManager().getzgdDongleSpeed(), this);
 			foundSerialLib = true;
 		} catch (NoClassDefFoundError e) {
@@ -168,11 +165,9 @@ public class DataFreescale implements IDataLayer {
 			((ThreadPoolExecutor) executor).setKeepAliveTime(getGal().getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
 			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
 		}
-
 	}
 
 	public void initialize() {
-
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
@@ -195,17 +190,14 @@ public class DataFreescale implements IDataLayer {
 							LOG.error("Error on processMessages: " + e.getMessage());
 						}
 					}
-
 				}
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-MessagesAnalizer Stopped!");
 			}
-
 		};
 		thrAnalizer.setName("TH-MessagesAnalizer");
 		thrAnalizer.setPriority(Thread.MAX_PRIORITY);
 		thrAnalizer.start();
-
 		Thread thrReceiver = new Thread() {
 			@Override
 			public void run() {
@@ -224,21 +216,16 @@ public class DataFreescale implements IDataLayer {
 							try {
 								getReceivedDataQueue().put(shortArray[z]);
 							} catch (InterruptedException e) {
-
 							}
 					}
 				}
-
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("TH-RS232-Receiver Stopped!");
-
 			}
-
 		};
 		thrReceiver.setName("TH-RS232-Receiver");
 		thrReceiver.setPriority(Thread.MAX_PRIORITY);
 		thrReceiver.start();
-
 	}
 
 	private short[] createMessageFromRowData() {
@@ -246,9 +233,11 @@ public class DataFreescale implements IDataLayer {
 		List<Short> copyList = new ArrayList<Short>();
 
 		try {
+			if (getGal().getPropertiesManager().getserialDataDebugEnabled())
+				LOG.info("Length of the BufferRow:[" + (copyList.size() + getReceivedDataQueue().size()) + "]");
+			
 			while (copyList.add(getReceivedDataQueue().take())) {
-				if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-					LOG.info("Length of the BufferRow:[" + (copyList.size() + getReceivedDataQueue().size()) + "]");
+				
 
 				if ((copyList.get(0) != DataManipulation.SEQUENCE_START)) {
 					if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
@@ -789,10 +778,12 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.CLEAR_NEIGHBOR_TABLE_ENTRY) {
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.getStatus().setMessage(mess);
-						pl.notify();
+					pl.getStatus().setCode(status);
+					pl.getStatus().setMessage(mess);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -816,10 +807,13 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.CLEAR_DEVICE_KEY_PAIR_SET) {
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.getStatus().setMessage(mess);
-						pl.notify();
+
+					pl.getStatus().setCode(status);
+					pl.getStatus().setMessage(mess);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -861,10 +855,13 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.PERMIT_JOIN) {
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.getStatus().setMessage(mess);
-						pl.notify();
+
+					pl.getStatus().setCode(status);
+					pl.getStatus().setMessage(mess);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -884,9 +881,11 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.APSME_SET) {
 
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.notify();
+					pl.getStatus().setCode(status);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -905,9 +904,11 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.NMLE_SET) {
 
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.notify();
+					pl.getStatus().setCode(status);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1033,10 +1034,13 @@ public class DataFreescale implements IDataLayer {
 				if (pl.getType() == TypeMessage.NODE_DESCRIPTOR && pl.get_Key().equalsIgnoreCase(_key)) {
 					if (getGal().getPropertiesManager().getDebugEnabled())
 						LOG.info("@Extracted ZDP-NodeDescriptor.Response: " + DataManipulation.convertArrayShortToString(message) + " -- KEY: " + _key);
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);/* Status */
-						pl.set_objectOfResponse(_node);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);/* Status */
+					pl.set_objectOfResponse(_node);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1053,10 +1057,13 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.CHANNEL_REQUEST) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.set_objectOfResponse((short) message[4]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					pl.set_objectOfResponse((short) message[4]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1073,9 +1080,12 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.WRITE_SAS) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1093,9 +1103,12 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.MODE_SELECT) {
-					synchronized (pl) {
-						pl.getStatus().setCode(status);
-						pl.notify();
+
+					pl.getStatus().setCode(status);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1113,9 +1126,12 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.CONFIGURE_END_POINT) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1135,9 +1151,12 @@ public class DataFreescale implements IDataLayer {
 					if (message[3] == 0x00) {
 						getGal().setGatewayStatus(GatewayStatus.GW_STARTED);
 					}
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1160,10 +1179,13 @@ public class DataFreescale implements IDataLayer {
 					byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
 					if (_Length >= 2)
 						_res = DataManipulation.reverseBytes(_res);
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1186,10 +1208,13 @@ public class DataFreescale implements IDataLayer {
 					byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
 					if (_Length >= 2)
 						_res = DataManipulation.reverseBytes(_res);
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1213,10 +1238,13 @@ public class DataFreescale implements IDataLayer {
 					byte[] _res = DataManipulation.subByteArray(message, 10, _Length + 9);
 					if (_Length >= 2)
 						_res = DataManipulation.reverseBytes(_res);
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1239,9 +1267,12 @@ public class DataFreescale implements IDataLayer {
 							getGal().setGatewayStatus(GatewayStatus.GW_STOPPING);
 						}
 					}
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1301,10 +1332,12 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 				/* DestAddress */
 				if ((pl.getType() == TypeMessage.ACTIVE_EP) && pl.get_Key().equalsIgnoreCase(Key)) {
-					synchronized (pl) {
-						pl.set_objectOfResponse(_toRes);
-						pl.getStatus().setCode(Status);
-						pl.notify();
+
+					pl.set_objectOfResponse(_toRes);
+					pl.getStatus().setCode(Status);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
 					}
 
@@ -1329,10 +1362,13 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS) && pl.get_Key().equalsIgnoreCase(Key)) {
-					synchronized (pl) {
-						pl.set_objectOfResponse(_bi);
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.set_objectOfResponse(_bi);
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1351,10 +1387,13 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.READ_EXT_ADDRESS)) {
-					synchronized (pl) {
-						pl.set_objectOfResponse(_bi);
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.set_objectOfResponse(_bi);
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1371,9 +1410,12 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[3]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1391,51 +1433,54 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.GET_BINDINGS)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						BindingList _res = new BindingList();
 
-						if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
-							short length = message[6];
-							int _index = 6;
-							for (int i = 0; i < length; i++) {
-								Binding _b = new Binding();
-								long src_longAddress = DataManipulation.toLong((byte) message[_index + 8], (byte) message[_index + 7], (byte) message[_index + 6], (byte) message[_index + 5], (byte) message[_index + 4], (byte) message[_index + 3], (byte) message[_index + 2], (byte) message[_index + 1]);
-								short _srcEP = message[_index + 9];
+					pl.getStatus().setCode(message[3]);
+					BindingList _res = new BindingList();
 
-								int _cluster = DataManipulation.toIntFromShort((byte) message[_index + 11], (byte) message[_index + 10]);
+					if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
+						short length = message[6];
+						int _index = 6;
+						for (int i = 0; i < length; i++) {
+							Binding _b = new Binding();
+							long src_longAddress = DataManipulation.toLong((byte) message[_index + 8], (byte) message[_index + 7], (byte) message[_index + 6], (byte) message[_index + 5], (byte) message[_index + 4], (byte) message[_index + 3], (byte) message[_index + 2], (byte) message[_index + 1]);
+							short _srcEP = message[_index + 9];
 
-								short _DestinationMode = message[_index + 12];
-								Device _dev = new Device();
+							int _cluster = DataManipulation.toIntFromShort((byte) message[_index + 11], (byte) message[_index + 10]);
 
-								if (_DestinationMode == 0x03) {
+							short _DestinationMode = message[_index + 12];
+							Device _dev = new Device();
 
-									long dst_longAddress = DataManipulation.toLong((byte) message[_index + 20], (byte) message[_index + 19], (byte) message[_index + 18], (byte) message[_index + 17], (byte) message[_index + 16], (byte) message[_index + 15], (byte) message[_index + 14], (byte) message[_index + 13]);
+							if (_DestinationMode == 0x03) {
 
-									short _dstEP = message[_index + 21];
-									_dev.setAddress(BigInteger.valueOf(dst_longAddress));
-									_dev.setEndpoint(_dstEP);
-									_index = _index + 21;
-								} else if (_DestinationMode == 0x01) {
+								long dst_longAddress = DataManipulation.toLong((byte) message[_index + 20], (byte) message[_index + 19], (byte) message[_index + 18], (byte) message[_index + 17], (byte) message[_index + 16], (byte) message[_index + 15], (byte) message[_index + 14], (byte) message[_index + 13]);
 
-									int _groupId = DataManipulation.toIntFromShort((byte) message[_index + 14], (byte) message[_index + 13]);
-									_dev.setAddress(BigInteger.valueOf(_groupId));
-									_index = _index + 10;
-								}
-								_b.setClusterID(_cluster);
-								_b.setSourceEndpoint(_srcEP);
-								_b.setSourceIEEEAddress(BigInteger.valueOf(src_longAddress));
+								short _dstEP = message[_index + 21];
+								_dev.setAddress(BigInteger.valueOf(dst_longAddress));
+								_dev.setEndpoint(_dstEP);
+								_index = _index + 21;
+							} else if (_DestinationMode == 0x01) {
 
-								_b.getDeviceDestination().add(_dev);
-								_res.getBinding().add(_b);
-
+								int _groupId = DataManipulation.toIntFromShort((byte) message[_index + 14], (byte) message[_index + 13]);
+								_dev.setAddress(BigInteger.valueOf(_groupId));
+								_index = _index + 10;
 							}
-						}
-						pl.set_objectOfResponse(_res);
-						pl.notify();
-					}
+							_b.setClusterID(_cluster);
+							_b.setSourceEndpoint(_srcEP);
+							_b.setSourceIEEEAddress(BigInteger.valueOf(src_longAddress));
 
+							_b.getDeviceDestination().add(_dev);
+							_res.getBinding().add(_b);
+
+						}
+					}
+					pl.set_objectOfResponse(_res);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
+					}
 				}
+
 			}
 		}
 	}
@@ -1450,24 +1495,27 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.REMOVE_BINDING)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						switch (pl.getStatus().getCode()) {
-						case GatewayConstants.SUCCESS:
 
-							break;
+					pl.getStatus().setCode(message[3]);
+					switch (pl.getStatus().getCode()) {
+					case GatewayConstants.SUCCESS:
 
-						case 0x84:
-							pl.getStatus().setMessage("NOT_SUPPORTED (NOT SUPPORTED)");
-							break;
-						case 0x88:
-							pl.getStatus().setMessage("No_Entry (No Entry)");
-							break;
-						case 0x8D:
-							pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED");
-							break;
-						}
-						pl.notify();
+						break;
+
+					case 0x84:
+						pl.getStatus().setMessage("NOT_SUPPORTED (NOT SUPPORTED)");
+						break;
+					case 0x88:
+						pl.getStatus().setMessage("No_Entry (No Entry)");
+						break;
+					case 0x8D:
+						pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED");
+						break;
+					}
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1485,26 +1533,30 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.ADD_BINDING)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						switch (pl.getStatus().getCode()) {
-						case GatewayConstants.SUCCESS:
 
-							break;
+					pl.getStatus().setCode(message[3]);
+					switch (pl.getStatus().getCode()) {
+					case GatewayConstants.SUCCESS:
 
-						case 0x84:
-							pl.getStatus().setMessage("NOT_SUPPORTED (NOT SUPPORTED)");
-							break;
+						break;
 
-						case 0x8C:
-							pl.getStatus().setMessage("TABLE_FULL (TABLE FULL)");
-							break;
-						case 0x8D:
-							pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED)");
-							break;
-						}
-						pl.notify();
+					case 0x84:
+						pl.getStatus().setMessage("NOT_SUPPORTED (NOT SUPPORTED)");
+						break;
+
+					case 0x8C:
+						pl.getStatus().setMessage("TABLE_FULL (TABLE FULL)");
+						break;
+					case 0x8D:
+						pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED)");
+						break;
 					}
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
+					}
+
 				}
 			}
 		}
@@ -1519,19 +1571,22 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.GET_END_POINT_LIST)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						NodeServices _res = new NodeServices();
-						if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
-							short length = message[4];
-							for (int i = 0; i < length; i++) {
-								ActiveEndpoints _ep = new ActiveEndpoints();
-								_ep.setEndPoint(message[5 + i]);
-								_res.getActiveEndpoints().add(_ep);
-							}
+
+					pl.getStatus().setCode(message[3]);
+					NodeServices _res = new NodeServices();
+					if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
+						short length = message[4];
+						for (int i = 0; i < length; i++) {
+							ActiveEndpoints _ep = new ActiveEndpoints();
+							_ep.setEndPoint(message[5 + i]);
+							_res.getActiveEndpoints().add(_ep);
 						}
-						pl.set_objectOfResponse(_res);
-						pl.notify();
+					}
+					pl.set_objectOfResponse(_res);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1559,35 +1614,37 @@ public class DataFreescale implements IDataLayer {
 
 				if ((pl.getType() == TypeMessage.GET_SIMPLE_DESCRIPTOR) && pl.get_Key().equalsIgnoreCase(Key)) {
 
-					synchronized (pl) {
-						pl.getStatus().setCode(message[3]);
-						ServiceDescriptor _toRes = new ServiceDescriptor();
-						if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
-							SimpleDescriptor _sp = new SimpleDescriptor();
-							_sp.setApplicationProfileIdentifier(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
-							_sp.setApplicationDeviceIdentifier(DataManipulation.toIntFromShort((byte) message[11], (byte) message[10]));
-							_sp.setApplicationDeviceVersion((short) message[12]);
-							int _index = 14;
-							short _numInpCluster = message[13];
-							for (int i = 0; i < _numInpCluster; i++) {
-								_sp.getApplicationInputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
-								_index = _index + 2;
-							}
-
-							short _numOutCluster = message[_index++];
-
-							for (int i = 0; i < _numOutCluster; i++) {
-								_sp.getApplicationOutputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
-								_index = _index + 2;
-							}
-
-							_toRes.setAddress(_add);
-							_toRes.setEndPoint(EndPoint);
-							_toRes.setSimpleDescriptor(_sp);
-
+					pl.getStatus().setCode(message[3]);
+					ServiceDescriptor _toRes = new ServiceDescriptor();
+					if (pl.getStatus().getCode() == GatewayConstants.SUCCESS) {
+						SimpleDescriptor _sp = new SimpleDescriptor();
+						_sp.setApplicationProfileIdentifier(DataManipulation.toIntFromShort((byte) message[9], (byte) message[8]));
+						_sp.setApplicationDeviceIdentifier(DataManipulation.toIntFromShort((byte) message[11], (byte) message[10]));
+						_sp.setApplicationDeviceVersion((short) message[12]);
+						int _index = 14;
+						short _numInpCluster = message[13];
+						for (int i = 0; i < _numInpCluster; i++) {
+							_sp.getApplicationInputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
+							_index = _index + 2;
 						}
-						pl.set_objectOfResponse(_toRes);
-						pl.notify();
+
+						short _numOutCluster = message[_index++];
+
+						for (int i = 0; i < _numOutCluster; i++) {
+							_sp.getApplicationOutputCluster().add(DataManipulation.toIntFromShort((byte) message[_index + 1], (byte) message[_index]));
+							_index = _index + 2;
+						}
+
+						_toRes.setAddress(_add);
+						_toRes.setEndPoint(EndPoint);
+						_toRes.setSimpleDescriptor(_sp);
+
+					}
+					pl.set_objectOfResponse(_toRes);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1630,10 +1687,13 @@ public class DataFreescale implements IDataLayer {
 
 							_result.getScannedChannel().add(_sc);
 						}
-						synchronized (pl) {
-							pl.getStatus().setCode(message[7]);
-							pl.set_objectOfResponse(_result);
-							pl.notify();
+
+						pl.getStatus().setCode(message[7]);
+						pl.set_objectOfResponse(_result);
+						try {
+							pl.getObjectLocker().put((byte) 0);
+						} catch (InterruptedException e) {
+
 						}
 
 					}
@@ -1710,9 +1770,12 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 
 				if ((pl.getType() == TypeMessage.INTERPAN)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[4]);
-						pl.notify();
+
+					pl.getStatus().setCode(message[4]);
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -1738,86 +1801,89 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 
 				if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
-					synchronized (pl) {
-						pl.getStatus().setCode(message[14]);
-						switch (pl.getStatus().getCode()) {
-						case 0x00:
-							pl.getStatus().setMessage("gSuccess (Success)");
-							break;
-						case 0x05:
-							pl.getStatus().setMessage("gPartialSuccess (Partial Success)");
-							break;
-						case 0x07:
-							pl.getStatus().setMessage("gSecurity_Fail (Security fail)");
-							break;
-						case 0x0A:
-							pl.getStatus().setMessage("gApsInvalidParameter_c (Security fail)");
-							break;
-						case 0x04:
-							pl.getStatus().setMessage("gZbNotOnNetwork_c (Transmitted the data frame)");
-							break;
-						case 0x01:
-							pl.getStatus().setMessage("gApsIllegalDevice_c (Transmitted the data frame)");
-							break;
-						case 0x02:
-							pl.getStatus().setMessage("gZbNoMem_c (Transmitted the data frame)");
-							break;
-						case 0xA0:
-							pl.getStatus().setMessage("gApsAsduTooLong_c (ASDU too long)");
-							break;
-						case 0xA3:
-							pl.getStatus().setMessage("gApsIllegalRequest_c (Invalid parameter)");
-							break;
-						case 0xA8:
-							pl.getStatus().setMessage("gNo_BoundDevice (No bound device)");
-							break;
-						case 0xA9:
-							pl.getStatus().setMessage("gNo_ShortAddress (No Short Address)");
-							break;
-						case 0xAE:
-							pl.getStatus().setMessage("gApsTableFull_c (Aps Table Full)");
-							break;
-						case 0xC3:
-							pl.getStatus().setMessage("INVALID_REQUEST (Not a valid request)");
-							break;
-						case 0xCC:
-							pl.getStatus().setMessage("MAX_FRM_COUNTER (Frame counter has reached maximum value for outgoing frame)");
-							break;
-						case 0xCD:
-							pl.getStatus().setMessage("NO_KEY (Key not available)");
-							break;
-						case 0xCE:
-							pl.getStatus().setMessage("BAD_CCM_OUTPUT (Security engine produced erraneous output)");
-							break;
-						case 0xF1:
-							pl.getStatus().setMessage("TRANSACTION_OVERFLOW (Transaction Overflow)");
-							break;
-						case 0xF0:
-							pl.getStatus().setMessage("TRANSACTION_EXPIRED (Transaction Expired)");
-							break;
-						case 0xE1:
-							pl.getStatus().setMessage(" CHANNEL_ACCESS_FAILURE (Key not available)");
-							break;
-						case 0xE6:
-							pl.getStatus().setMessage("INVALID_GTS (Not valid GTS)");
-							break;
-						case 0xF3:
-							pl.getStatus().setMessage("UNAVAILABLE_KEY (Key not found)");
-							break;
-						case 0xE5:
-							pl.getStatus().setMessage("FRAME_TOO_LONG (Frame too long)");
-							break;
-						case 0xE4:
-							pl.getStatus().setMessage("FAILED_SECURITY_CHECK (Failed security check)");
-							break;
-						case 0xE8:
-							pl.getStatus().setMessage("INVALID_PARAMETER (Not valid parameter)");
-							break;
-						case 0xE9:
-							pl.getStatus().setMessage("NO_ACK (Acknowledgement was not received)");
-							break;
-						}
-						pl.notify();
+
+					pl.getStatus().setCode(message[14]);
+					switch (pl.getStatus().getCode()) {
+					case 0x00:
+						pl.getStatus().setMessage("gSuccess (Success)");
+						break;
+					case 0x05:
+						pl.getStatus().setMessage("gPartialSuccess (Partial Success)");
+						break;
+					case 0x07:
+						pl.getStatus().setMessage("gSecurity_Fail (Security fail)");
+						break;
+					case 0x0A:
+						pl.getStatus().setMessage("gApsInvalidParameter_c (Security fail)");
+						break;
+					case 0x04:
+						pl.getStatus().setMessage("gZbNotOnNetwork_c (Transmitted the data frame)");
+						break;
+					case 0x01:
+						pl.getStatus().setMessage("gApsIllegalDevice_c (Transmitted the data frame)");
+						break;
+					case 0x02:
+						pl.getStatus().setMessage("gZbNoMem_c (Transmitted the data frame)");
+						break;
+					case 0xA0:
+						pl.getStatus().setMessage("gApsAsduTooLong_c (ASDU too long)");
+						break;
+					case 0xA3:
+						pl.getStatus().setMessage("gApsIllegalRequest_c (Invalid parameter)");
+						break;
+					case 0xA8:
+						pl.getStatus().setMessage("gNo_BoundDevice (No bound device)");
+						break;
+					case 0xA9:
+						pl.getStatus().setMessage("gNo_ShortAddress (No Short Address)");
+						break;
+					case 0xAE:
+						pl.getStatus().setMessage("gApsTableFull_c (Aps Table Full)");
+						break;
+					case 0xC3:
+						pl.getStatus().setMessage("INVALID_REQUEST (Not a valid request)");
+						break;
+					case 0xCC:
+						pl.getStatus().setMessage("MAX_FRM_COUNTER (Frame counter has reached maximum value for outgoing frame)");
+						break;
+					case 0xCD:
+						pl.getStatus().setMessage("NO_KEY (Key not available)");
+						break;
+					case 0xCE:
+						pl.getStatus().setMessage("BAD_CCM_OUTPUT (Security engine produced erraneous output)");
+						break;
+					case 0xF1:
+						pl.getStatus().setMessage("TRANSACTION_OVERFLOW (Transaction Overflow)");
+						break;
+					case 0xF0:
+						pl.getStatus().setMessage("TRANSACTION_EXPIRED (Transaction Expired)");
+						break;
+					case 0xE1:
+						pl.getStatus().setMessage(" CHANNEL_ACCESS_FAILURE (Key not available)");
+						break;
+					case 0xE6:
+						pl.getStatus().setMessage("INVALID_GTS (Not valid GTS)");
+						break;
+					case 0xF3:
+						pl.getStatus().setMessage("UNAVAILABLE_KEY (Key not found)");
+						break;
+					case 0xE5:
+						pl.getStatus().setMessage("FRAME_TOO_LONG (Frame too long)");
+						break;
+					case 0xE4:
+						pl.getStatus().setMessage("FAILED_SECURITY_CHECK (Failed security check)");
+						break;
+					case 0xE8:
+						pl.getStatus().setMessage("INVALID_PARAMETER (Not valid parameter)");
+						break;
+					case 0xE9:
+						pl.getStatus().setMessage("NO_ACK (Acknowledgement was not received)");
+						break;
+					}
+					try {
+						pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
+
 					}
 
 				}
@@ -2127,10 +2193,13 @@ public class DataFreescale implements IDataLayer {
 				synchronized (getListLocker()) {
 					for (ParserLocker pl : getListLocker()) {
 						if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
-							synchronized (pl) {
-								pl.getStatus().setCode((short) messageEvent.getAPSStatus());
-								pl.set_objectOfResponse(_res);
-								pl.notify();
+
+							pl.getStatus().setCode((short) messageEvent.getAPSStatus());
+							pl.set_objectOfResponse(_res);
+							try {
+								pl.getObjectLocker().put((byte) 0);
+							} catch (InterruptedException e) {
+
 							}
 
 						}
@@ -2426,17 +2495,9 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
-
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
-
 			if (getListLocker().contains(lock))
 				getListLocker().remove(lock);
 
@@ -2490,14 +2551,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -2552,15 +2607,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -2623,15 +2671,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -2687,15 +2728,8 @@ public class DataFreescale implements IDataLayer {
 				getListLocker().add(lock);
 
 				SendRs232Data(makeByteArrayFromApsMessage(message));
-				synchronized (lock) {
-					try {
-						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-							lock.wait(timeout);
-					} catch (InterruptedException e) {
-
-					}
-				}
+				if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+					lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 				status = lock.getStatus();
 
 				if (getListLocker().contains(lock))
@@ -2786,15 +2820,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -2979,15 +3006,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 
 			status = lock.getStatus();
 
@@ -3062,17 +3082,9 @@ public class DataFreescale implements IDataLayer {
 			try {
 
 				getListLocker().add(lock);
-
 				SendRs232Data(_res);
-				synchronized (lock) {
-					try {
-						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-							lock.wait(timeout);
-					} catch (InterruptedException e) {
-
-					}
-				}
+				if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+					lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 				status = lock.getStatus();
 
 				if (getListLocker().contains(lock))
@@ -3210,39 +3222,24 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.WRITE_SAS);
 		Status status = new Status();
 		try {
-
 			getListLocker().add(lock);
-
 			SendRs232Data(res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
-
 			if (getListLocker().contains(lock))
 				getListLocker().remove(lock);
-
 		} catch (Exception e) {
-
 			if (getListLocker().contains(lock))
 				getListLocker().remove(lock);
-
 		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
-
 			LOG.error("Timeout expired in write sas");
-
 			throw new GatewayException("Timeout expired in write sas");
 		} else {
 			if (status.getCode() != 0) {
-				if (getGal().getPropertiesManager().getDebugEnabled()) {
+				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("Returned Status: " + status.getCode());
-				}
 				throw new GatewayException("Error on BlackBox.WriteSAS. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			}
 			return status;
@@ -3275,15 +3272,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3348,15 +3338,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3401,15 +3384,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3461,14 +3437,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3530,15 +3500,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3600,15 +3563,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3672,7 +3628,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status clearEndpointSync(short endpoint) throws IOException, Exception, GatewayException {
+	public Status clearEndpointSync(long timeout, short endpoint) throws IOException, Exception, GatewayException {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) endpoint);/* EndPoint */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSDeRegisterEndPointRequest);/*
@@ -3686,18 +3642,10 @@ public class DataFreescale implements IDataLayer {
 		Status status = new Status();
 
 		try {
-
 			getListLocker().add(lock);
-
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3726,7 +3674,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public NodeServices getLocalServices() throws IOException, Exception, GatewayException {
+	public NodeServices getLocalServices(long timeout) throws IOException, Exception, GatewayException {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSGetEndPointIdListRequest);/*
 																								 * StartSequence
@@ -3745,15 +3693,8 @@ public class DataFreescale implements IDataLayer {
 				LOG.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString());
 			}
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3817,15 +3758,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3896,15 +3830,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -3995,14 +3922,8 @@ public class DataFreescale implements IDataLayer {
 		try {
 			getListLocker().add(lock);
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -4096,15 +4017,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -4198,14 +4112,8 @@ public class DataFreescale implements IDataLayer {
 				LOG.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString());
 			}
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -4257,14 +4165,8 @@ public class DataFreescale implements IDataLayer {
 				LOG.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 			}
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -4314,15 +4216,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 
 			status = lock.getStatus();
 
@@ -4368,14 +4263,8 @@ public class DataFreescale implements IDataLayer {
 		try {
 			getListLocker().add(lock);
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 			if (getListLocker().contains(lock))
 				getListLocker().remove(lock);
@@ -4420,15 +4309,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(makeByteArrayFromInterPANMessage(message));
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))
@@ -4496,14 +4378,8 @@ public class DataFreescale implements IDataLayer {
 			getListLocker().add(lock);
 
 			SendRs232Data(_res);
-			synchronized (lock) {
-				try {
-					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-						lock.wait(timeout);
-				} catch (InterruptedException e) {
-
-				}
-			}
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 			status = lock.getStatus();
 
 			if (getListLocker().contains(lock))

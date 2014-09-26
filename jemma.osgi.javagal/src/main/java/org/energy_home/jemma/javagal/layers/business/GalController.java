@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
@@ -508,7 +509,7 @@ public class GalController {
 	 *             if a ZGD error occurs.
 	 */
 	public NodeServices getLocalServices() throws IOException, Exception, GatewayException {
-		NodeServices result = DataLayer.getLocalServices();
+		NodeServices result = DataLayer.getLocalServices(getPropertiesManager().getCommandTimeoutMS());
 		if (GalNode != null && GalNode.get_node().getAddress() != null) {
 			result.setAddress(GalNode.get_node().getAddress());
 			synchronized (getNetworkcache()) {
@@ -869,16 +870,8 @@ public class GalController {
 						try {
 							Status _res = DataLayer.startGatewayDeviceSync(timeout, sai);
 							if (_res.getCode() == GatewayConstants.SUCCESS) {
-
-								synchronized (_lockerStartDevice) {
-									try {
-										_lockerStartDevice.setId(0);
-										_lockerStartDevice.wait(timeout);
-
-									} catch (InterruptedException e) {
-
-									}
-								}
+								_lockerStartDevice.setId(0);
+								_lockerStartDevice.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 								if (_lockerStartDevice.getId() > 0) {
 									lastSai = sai;
 									if (PropertiesManager.getDebugEnabled())
@@ -940,17 +933,8 @@ public class GalController {
 				_status = DataLayer.startGatewayDeviceSync(timeout, sai);
 
 				if (_status.getCode() == GatewayConstants.SUCCESS) {
-
-					synchronized (_lockerStartDevice) {
-						try {
-							_lockerStartDevice.setId(0);
-							_lockerStartDevice.wait(timeout);
-
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-
+					_lockerStartDevice.setId(0);
+					_lockerStartDevice.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 					if (_lockerStartDevice.getId() > 0) {
 						lastSai = sai;
 						if (PropertiesManager.getDebugEnabled())
@@ -2129,10 +2113,13 @@ public class GalController {
 					getManageMapPanId().setPanid(galNodeWrapper.get_node().getAddress().getIeeeAddress(), getNetworkPanID());
 					/**/
 
-					synchronized (_lockerStartDevice) {
 						_lockerStartDevice.setId(1);
-						_lockerStartDevice.notify();
+					try {
+						_lockerStartDevice.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e1) {
+
 					}
+					
 					_gatewayStatus = gatewayStatus;
 
 					Status _s = new Status();
@@ -2205,7 +2192,7 @@ public class GalController {
 	 *             if a ZGD error occurs.
 	 */
 	public Status clearEndpoint(short endpoint) throws IOException, Exception, GatewayException {
-		Status _s = DataLayer.clearEndpointSync(endpoint);
+		Status _s = DataLayer.clearEndpointSync(getPropertiesManager().getCommandTimeoutMS(), endpoint);
 		return SerializationUtils.clone(_s);
 	}
 
