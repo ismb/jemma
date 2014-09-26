@@ -100,13 +100,13 @@ public class DataFreescale implements IDataLayer {
 
 	public final static short MAX_TO_SEND_BYTE_ARRAY = 2048;
 
-	private final ArrayBlockingQueue<Short> receivedDataQueue = new ArrayBlockingQueue<Short>(MAX_TO_SEND_BYTE_ARRAY);
+	private ArrayBlockingQueue<Short> receivedDataQueue = new ArrayBlockingQueue<Short>(MAX_TO_SEND_BYTE_ARRAY);
 
 	private ArrayBlockingQueue<Short> getReceivedDataQueue() {
 		return receivedDataQueue;
 	}
 
-	private ArrayBlockingQueue<ShortArrayObject> tmpDataQueue = new ArrayBlockingQueue<ShortArrayObject>(MAX_TO_SEND_BYTE_ARRAY);
+	private ArrayBlockingQueue<ShortArrayObject> tmpDataQueue ;
 
 	private ArrayBlockingQueue<ShortArrayObject> getTmpDataQueue() {
 		return tmpDataQueue;
@@ -129,6 +129,8 @@ public class DataFreescale implements IDataLayer {
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
+		tmpDataQueue = new ArrayBlockingQueue<ShortArrayObject>(MAX_TO_SEND_BYTE_ARRAY);
+		receivedDataQueue = new ArrayBlockingQueue<Short>(MAX_TO_SEND_BYTE_ARRAY);
 		// we don't know in advance which comm library is installed into the
 		// system.
 		boolean foundSerialLib = false;
