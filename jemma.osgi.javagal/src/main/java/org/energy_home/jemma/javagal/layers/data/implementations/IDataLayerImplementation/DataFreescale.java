@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -98,15 +97,15 @@ public class DataFreescale implements IDataLayer {
 
 	public Long INTERNAL_TIMEOUT;
 
-	public final static short MAX_TO_SEND_BYTE_ARRAY = 2048;
+	public final static short SIZE_ARRAY = 2048;
 
-	private ArrayBlockingQueue<Short> receivedDataQueue = new ArrayBlockingQueue<Short>(MAX_TO_SEND_BYTE_ARRAY);
+	private ArrayBlockingQueue<Short> receivedDataQueue = new ArrayBlockingQueue<Short>(SIZE_ARRAY);
 
 	private ArrayBlockingQueue<Short> getReceivedDataQueue() {
 		return receivedDataQueue;
 	}
 
-	private ArrayBlockingQueue<ShortArrayObject> tmpDataQueue ;
+	private ArrayBlockingQueue<ShortArrayObject> tmpDataQueue;
 
 	private ArrayBlockingQueue<ShortArrayObject> getTmpDataQueue() {
 		return tmpDataQueue;
@@ -129,8 +128,8 @@ public class DataFreescale implements IDataLayer {
 	public DataFreescale(GalController _gal) throws Exception {
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
-		tmpDataQueue = new ArrayBlockingQueue<ShortArrayObject>(MAX_TO_SEND_BYTE_ARRAY);
-		receivedDataQueue = new ArrayBlockingQueue<Short>(MAX_TO_SEND_BYTE_ARRAY);
+		tmpDataQueue = new ArrayBlockingQueue<ShortArrayObject>(SIZE_ARRAY);
+		receivedDataQueue = new ArrayBlockingQueue<Short>(SIZE_ARRAY);
 		// we don't know in advance which comm library is installed into the
 		// system.
 		boolean foundSerialLib = false;
@@ -237,9 +236,8 @@ public class DataFreescale implements IDataLayer {
 		try {
 			if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 				LOG.info("Length of the BufferRow:[" + (copyList.size() + getReceivedDataQueue().size()) + "]");
-			
+
 			while (copyList.add(getReceivedDataQueue().take())) {
-				
 
 				if ((copyList.get(0) != DataManipulation.SEQUENCE_START)) {
 					if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
@@ -1082,14 +1080,18 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				if (pl.getType() == TypeMessage.WRITE_SAS) {
-
 					pl.getStatus().setCode(message[3]);
 					try {
+
 						pl.getObjectLocker().put((byte) 0);
+						if (getGal().getPropertiesManager().getDebugEnabled())
+							LOG.info("CALLED PUT WRITESAS LOCK");
+
 					} catch (InterruptedException e) {
+						if (getGal().getPropertiesManager().getDebugEnabled())
+							LOG.error("InterruptedException WRITESAS LOCK: " + e.getMessage());
 
 					}
-
 				}
 			}
 		}
@@ -2492,23 +2494,15 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.APSME_SET);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2548,24 +2542,16 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.APSME_GET);
 		lock.set_Key(String.format("%02X", _AttID));
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2604,24 +2590,16 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.NMLE_GET);
 		lock.set_Key(String.format("%02X", _AttID));
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2668,24 +2646,16 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.STOP_NETWORK);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -2725,24 +2695,17 @@ public class DataFreescale implements IDataLayer {
 			lock.set_Key(_key);
 
 			Status status = new Status();
-			try {
 
-				getListLocker().add(lock);
+			getListLocker().add(lock);
 
-				SendRs232Data(makeByteArrayFromApsMessage(message));
-				if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-					lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-				status = lock.getStatus();
+			SendRs232Data(makeByteArrayFromApsMessage(message));
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+			status = lock.getStatus();
 
-				if (getListLocker().contains(lock))
-					getListLocker().remove(lock);
+			if (getListLocker().contains(lock))
+				getListLocker().remove(lock);
 
-			} catch (Exception e) {
-
-				if (getListLocker().contains(lock))
-					getListLocker().remove(lock);
-
-			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
 
 				LOG.error("Timeout expired in send aps message");
@@ -2817,24 +2780,17 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CONFIGURE_END_POINT);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in Configure End Point");
@@ -3003,25 +2959,18 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.MODE_SELECT);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 
-			status = lock.getStatus();
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			throw new GatewayException("Timeout expired in SetModeReq");
@@ -3076,28 +3025,21 @@ public class DataFreescale implements IDataLayer {
 																							 * Control
 																							 */
 			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.info("Start Network command:" + _res.ToHexString());
+				LOG.info("Start Network command:" + _res.ToHexString() + " ---Timeout:" + timeout);
 			}
 			ParserLocker lock = new ParserLocker();
 			lock.setType(TypeMessage.START_NETWORK);
 			Status status = new Status();
-			try {
 
-				getListLocker().add(lock);
-				SendRs232Data(_res);
-				if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-					lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-				status = lock.getStatus();
+			getListLocker().add(lock);
+			SendRs232Data(_res);
+			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+			status = lock.getStatus();
 
-				if (getListLocker().contains(lock))
-					getListLocker().remove(lock);
+			if (getListLocker().contains(lock))
+				getListLocker().remove(lock);
 
-			} catch (Exception e) {
-
-				if (getListLocker().contains(lock))
-					getListLocker().remove(lock);
-
-			}
 			if (status.getCode() == ParserLocker.INVALID_ID) {
 
 				LOG.error("Timeout expired in startGatewayDevice");
@@ -3217,24 +3159,27 @@ public class DataFreescale implements IDataLayer {
 
 		res = Set_SequenceStart_And_FSC(res, FreescaleConstants.BlackBoxWriteSAS);
 		if (getGal().getPropertiesManager().getDebugEnabled()) {
-			LOG.info("WriteSas Command:" + res.ToHexString());
+			LOG.info("WriteSas Command:" + res.ToHexString() + " --Timeout:" + timeout);
 		}
 
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.WRITE_SAS);
 		Status status = new Status();
-		try {
-			getListLocker().add(lock);
-			SendRs232Data(res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-		} catch (Exception e) {
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		getListLocker().add(lock);
+		SendRs232Data(res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID) {
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
+				LOG.info("Waiting WriteSas confirm...");
+			}
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
+				LOG.info("Ended waiting WriteSas confirm!");
+			}
 		}
+		status = lock.getStatus();
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			LOG.error("Timeout expired in write sas");
 			throw new GatewayException("Timeout expired in write sas");
@@ -3269,24 +3214,18 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.PERMIT_JOIN);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		status = lock.getStatus();
 
-		} catch (Exception e) {
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID)
 			throw new GatewayException("Timeout expired in Permit Join");
 		else {
@@ -3335,24 +3274,17 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CHANNEL_REQUEST);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZTC-GetChannel.Request");
@@ -3381,24 +3313,17 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.READ_EXT_ADDRESS);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZTC-ReadExtAddr.Request");
@@ -3434,24 +3359,17 @@ public class DataFreescale implements IDataLayer {
 		lock.set_Key(Key);
 		lock.setType(TypeMessage.READ_IEEE_ADDRESS);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-IEEE_addr.Request");
@@ -3497,24 +3415,16 @@ public class DataFreescale implements IDataLayer {
 			LOG.info("ZDP-NodeDescriptor.Request:" + _res.ToHexString() + " -- Key: " + __Key);
 		}
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
@@ -3560,24 +3470,17 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.ACTIVE_EP);
 		lock.set_Key(String.format("%04X", aoi.getNetworkAddress()));
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-Active_EP_req.Request");
@@ -3643,22 +3546,15 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.DEREGISTER_END_POINT);
 		Status status = new Status();
 
-		try {
-			getListLocker().add(lock);
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		getListLocker().add(lock);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in Deregister End Point");
@@ -3687,27 +3583,20 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_END_POINT_LIST);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString());
-			}
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
+		if (getGal().getPropertiesManager().getDebugEnabled()) {
+			LOG.info("APS-GetEndPointIdList.Request command:" + _res.ToHexString());
 		}
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
+
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in GetEndPointIdList");
@@ -3755,24 +3644,16 @@ public class DataFreescale implements IDataLayer {
 		lock.set_Key(Key);
 		Status status = new Status();
 
-		try {
+		getListLocker().add(lock);
 
-			getListLocker().add(lock);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-SimpleDescriptor.Request");
@@ -3827,24 +3708,17 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.GET_BINDINGS);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-Mgmt_Bind.Request");
@@ -3921,22 +3795,16 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.ADD_BINDING);
 		Status status = new Status();
-		try {
-			getListLocker().add(lock);
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		getListLocker().add(lock);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-		} catch (Exception e) {
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-BIND.Response");
@@ -4014,24 +3882,17 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.REMOVE_BINDING);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZDP-UNBIND.Response");
@@ -4106,27 +3967,20 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_DEVICE_KEY_PAIR_SET);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString());
-			}
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
+		if (getGal().getPropertiesManager().getDebugEnabled()) {
+			LOG.info("APS-ClearDeviceKeyPairSet.Request command:" + _res.ToHexString());
 		}
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
+
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ClearDeviceKeyPairSet");
@@ -4159,27 +4013,20 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.CLEAR_NEIGHBOR_TABLE_ENTRY);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
-			}
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
+		if (getGal().getPropertiesManager().getDebugEnabled()) {
+			LOG.info("ZTC-ClearNeighborTableEntry.Request command:" + _res.ToHexString());
 		}
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
+
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in ZTC-ClearNeighborTableEntry.Request");
@@ -4213,25 +4060,18 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.NMLE_SET);
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 
-			status = lock.getStatus();
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in NMLE SET");
@@ -4262,19 +4102,15 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.LQI_REQ);
 		lock.set_Key(__Key);
 		Status status = new Status();
-		try {
-			getListLocker().add(lock);
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
 
-		} catch (Exception e) {
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-		}
+		getListLocker().add(lock);
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
+
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 			LOG.error("Timeout expired in ZDP-Mgmt_Lqi.Request");
 			throw new GatewayException("Timeout expired in ZDP-Mgmt_Lqi.Request");
@@ -4306,24 +4142,17 @@ public class DataFreescale implements IDataLayer {
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(makeByteArrayFromInterPANMessage(message));
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(makeByteArrayFromInterPANMessage(message));
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 
 			LOG.error("Timeout expired in send InterPANMessage");
@@ -4375,24 +4204,16 @@ public class DataFreescale implements IDataLayer {
 		lock.setType(TypeMessage.MAC_GET);
 		lock.set_Key(String.format("%02X", _AttID));
 		Status status = new Status();
-		try {
 
-			getListLocker().add(lock);
+		getListLocker().add(lock);
 
-			SendRs232Data(_res);
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+		SendRs232Data(_res);
+		if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+		status = lock.getStatus();
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		} catch (Exception e) {
-
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-		}
+		if (getListLocker().contains(lock))
+			getListLocker().remove(lock);
 
 		if (status.getCode() == ParserLocker.INVALID_ID) {
 

@@ -870,6 +870,8 @@ public class GalController {
 						try {
 							Status _res = DataLayer.startGatewayDeviceSync(timeout, sai);
 							if (_res.getCode() == GatewayConstants.SUCCESS) {
+								if (PropertiesManager.getDebugEnabled())
+									LOG.info("WriteSas completed!");
 								_lockerStartDevice.setId(0);
 								_lockerStartDevice.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
 								if (_lockerStartDevice.getId() > 0) {
@@ -885,6 +887,8 @@ public class GalController {
 									_res.setMessage("No Network Event Running received!");
 
 								}
+							} else {
+								LOG.error("*******Gateway NOT Started!");
 							}
 
 							get_gatewayEventManager().notifyGatewayStartResult(_res);
@@ -2113,13 +2117,13 @@ public class GalController {
 					getManageMapPanId().setPanid(galNodeWrapper.get_node().getAddress().getIeeeAddress(), getNetworkPanID());
 					/**/
 
-						_lockerStartDevice.setId(1);
+					_lockerStartDevice.setId(1);
 					try {
 						_lockerStartDevice.getObjectLocker().put((byte) 0);
 					} catch (InterruptedException e1) {
 
 					}
-					
+
 					_gatewayStatus = gatewayStatus;
 
 					Status _s = new Status();
