@@ -260,7 +260,13 @@ public class Discovery_Freshness_ForcePing {
 					}
 
 				}
-			} catch (Exception e) {
+			} 
+			catch(InterruptedException e)
+			{
+				
+			}
+			catch (Exception e) {
+			 
 				manageError(function, startIndex, __currentNodeWrapper, _indexParent, e);
 			}
 		}

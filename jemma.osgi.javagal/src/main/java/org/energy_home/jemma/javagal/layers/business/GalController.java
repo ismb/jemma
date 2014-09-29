@@ -1874,26 +1874,30 @@ public class GalController {
 				/* Clear the Network Cache */
 				synchronized (getNetworkcache()) {
 					for (WrapperWSNNode x : getNetworkcache()) {
-						x.abortTimers();
+						if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress())) {
+							x.abortTimers();
+							getNetworkcache().remove(x);
+						}
 					}
 				}
-				getNetworkcache().clear();
+
 				if (getPropertiesManager().getDebugEnabled())
 					LOG.info("Adding node from start Discovery: " + GalNode.get_node().getAddress().getNetworkAddress());
 
-				getNetworkcache().add(GalNode);
-				getNetworkcache().get(0).set_discoveryCompleted(false);
-				getNetworkcache().get(0).setTimerForcePing(getPropertiesManager().getForcePingTimeout());
-				getNetworkcache().get(0).setTimerFreshness(getPropertiesManager().getKeepAliveThreshold());
-				long __timeout = 0;
-				if (timeout == 0)
-					timeout = GatewayConstants.INFINITE_TIMEOUT;
-				__timeout = timeout / 1000 + ((timeout % 1000 > 0) ? 1 : 0);
 				/* Only one element (GALNode) */
+				//getNetworkcache().add(GalNode);
 				synchronized (GalNode) {
-					getNetworkcache().get(0).setTimerDiscovery(0);
+					GalNode.set_Mgmt_LQI_rsp(null);
+					GalNode.set_discoveryCompleted(false);
+					GalNode.setTimerForcePing(getPropertiesManager().getForcePingTimeout());
+					GalNode.setTimerFreshness(getPropertiesManager().getKeepAliveThreshold());
+					GalNode.setTimerDiscovery(0);
 				}
 				if (PropertiesManager.getDebugEnabled()) {
+					long __timeout = 0;
+					if (timeout == 0)
+						timeout = GatewayConstants.INFINITE_TIMEOUT;
+					__timeout = timeout / 1000 + ((timeout % 1000 > 0) ? 1 : 0);
 					LOG.info("Global Discovery Started(" + __timeout + " seconds)!");
 				}
 			} else if ((discoveryMask == GatewayConstants.DISCOVERY_STOP) || (timeout == 1)) {

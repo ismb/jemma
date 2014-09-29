@@ -16,24 +16,26 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
  * Object carrying a {@code byte[]} of fixed length. The aims of this class is
- * to provide {@code byte[]} reuse. An instance of {@link ShortArrayObject}
+ * to provide {@code byte[]} reuse. An instance of {@link ByteArrayObject}
  * contains a byte array where only the first {@link #count} bytes are to be
  * considered valid.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
-public class ShortArrayObject {
+public class ByteArrayObject {
 	/**
 	 * The maximum array dimension.
 	 */
-	public final static short MAX_ARRAY_DIMENSION = 500;
+	public final static short MAX_ARRAY_DIMENSION = 2024;
 	private final static short START = 4;
 
 	/**
@@ -41,18 +43,20 @@ public class ShortArrayObject {
 	 */
 	private boolean _startedFromZero = false;
 
-	private final short[] array;
+	private final byte[] array;
 	private int count;
 
-	/**
-	 * Creates a new empty {@code ByteArrayObject} instance.
-	 */
-	public ShortArrayObject() {
-		_startedFromZero = false;
-		array = new short[MAX_ARRAY_DIMENSION];
+	public ByteArrayObject(boolean startFromZero) {
+		if (startFromZero) {
+			_startedFromZero = true;
+			array = new byte[MAX_ARRAY_DIMENSION];
+			count = 0;
+		} else {
+			_startedFromZero = false;
+			array = new byte[MAX_ARRAY_DIMENSION];
+			count = START;
 
-		count = START;
-
+		}
 	}
 
 	/**
@@ -66,9 +70,9 @@ public class ShortArrayObject {
 	 * @param size
 	 *            the size of the valid values on the byte array.
 	 */
-	public ShortArrayObject(short[] buffer, int size) {
+	public ByteArrayObject(byte[] buffer, int size) {
 		_startedFromZero = true;
-		array = new short[size];
+		array = new byte[size];
 		System.arraycopy(buffer, 0, array, 0, size);
 		count = size;
 
@@ -82,40 +86,7 @@ public class ShortArrayObject {
 	 *            the byte to add at the end.
 	 */
 	public void addByte(byte byteToAdd) {
-		array[count++] = (short) byteToAdd;
-	}
-
-	/**
-	 * Adds the OP Group's byte to this byte array in its right position (the
-	 * second byte in sequence).
-	 * 
-	 * @param byteToAdd
-	 *            the OP Group's byte to add.
-	 */
-	public void addOPGroup(byte byteToAdd) {
-		array[1] = (short) byteToAdd;
-	}
-
-	/**
-	 * Adds the OP Codes's byte to this byte array in its right position (the
-	 * third byte in sequence).
-	 * 
-	 * @param byteToAdd
-	 *            the OP Code's byte to add.
-	 */
-	public void addOPCode(byte byteToAdd) {
-		array[2] = (short) byteToAdd;
-	}
-
-	/**
-	 * Adds lenght's byte to this byte array in its right position (the fourth
-	 * byte in sequence).
-	 * 
-	 * @param byteToAdd
-	 *            the lenght's byte to add.
-	 */
-	public void addLength(byte byteToAdd) {
-		array[3] = (short) byteToAdd;
+		array[count++] = byteToAdd;
 	}
 
 	/**
@@ -126,7 +97,40 @@ public class ShortArrayObject {
 	 *            the start sequence's byte to add.
 	 */
 	public void addStartSequance(byte byteToAdd) {
-		array[0] = (short) byteToAdd;
+		array[0] = byteToAdd;
+	}
+
+	/**
+	 * Adds the OP Group's byte to this byte array in its right position (the
+	 * second byte in sequence).
+	 * 
+	 * @param byteToAdd
+	 *            the OP Group's byte to add.
+	 */
+	public void addOPGroup(byte byteToAdd) {
+		array[1] = byteToAdd;
+	}
+
+	/**
+	 * Adds the OP Codes's byte to this byte array in its right position (the
+	 * third byte in sequence).
+	 * 
+	 * @param byteToAdd
+	 *            the OP Code's byte to add.
+	 */
+	public void addOPCode(byte byteToAdd) {
+		array[2] = byteToAdd;
+	}
+
+	/**
+	 * Adds lenght's byte to this byte array in its right position (the fourth
+	 * byte in sequence).
+	 * 
+	 * @param byteToAdd
+	 *            the lenght's byte to add.
+	 */
+	public void addLength(byte byteToAdd) {
+		array[3] = byteToAdd;
 	}
 
 	/**
@@ -141,7 +145,7 @@ public class ShortArrayObject {
 	 */
 	public void addBytesShort(short valueToAdd, int length) {
 		ByteBuffer buf = ByteBuffer.allocate(length).putShort(valueToAdd);
-		for (short x : buf.array())
+		for (byte x : buf.array())
 			array[count++] = x;
 	}
 
@@ -152,15 +156,10 @@ public class ShortArrayObject {
 	 * 
 	 * @return the byte array.
 	 */
-	public byte[] getByteArray() {
-		short[] buff = getShortArray();
-		byte[] _data = new byte[buff.length];
-		for (int i = 0; i < _data.length; i++)
-			_data[i] = ((Short) buff[i]).byteValue();
-		return _data;
+	public byte[] getArrayRealSize() {
+		return Arrays.copyOfRange(getArray(), 0, getCount(true));
+
 	}
-	
-	
 
 	/**
 	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
@@ -169,38 +168,11 @@ public class ShortArrayObject {
 	 * 
 	 * @return the byte array.
 	 */
-	public byte[] getByteArrayRealSize() {
-		short[] buff = getShortArray();
-		byte[] _data = new byte[getCount(true)];
-		for (int i = 0; i < _data.length; i++)
-			_data[i] = ((Short) buff[i]).byteValue();
-		return _data;
-	}
-	
-
-	/**
-	 * Gets the entire raw backing {@code byte[]} byte array as is. Please note
-	 * that all elements in the backing array are returned, even those after the
-	 * {@code size} value that are to be considered invalid.
-	 * 
-	 * @return the byte array.
-	 */
-	public short[] getShortArray() {
+	public byte[] getArray() {
 		return array;
 	}
 
-	/**
-	 * Gets a {@code byte[]} containing just the valid values carried by this
-	 * byte array object.
-	 * 
-	 * @return the real byte array.
-	 */
-	public byte[] getRealByteArray() {
-		byte[] _data = new byte[(_startedFromZero) ? count : (count - START)];
-		for (int i = 0; i < _data.length; i++)
-			_data[i] = getByteArray()[START + i];
-		return _data;
-	}
+	
 
 	/**
 	 * Gets the number of valid byte(s) carried by this byte array.
@@ -221,6 +193,8 @@ public class ShortArrayObject {
 			return count;
 	}
 
+	
+
 	/**
 	 * Gives the entire byte array converted as a String. Every element is
 	 * converted to its hexadecimal digit representation.
@@ -230,9 +204,9 @@ public class ShortArrayObject {
 	 */
 	public String ToHexString() {
 		StringBuffer _res = new StringBuffer();
-		short[] _vect = getShortArray();
+		byte[] _vect = getArray();
 		for (int i = 0; i < getCount(true); i++)
-			_res.append(String.format("%02X", ((Short) _vect[i]).byteValue()));
+			_res.append(String.format("%02X", _vect[i]));
 		return _res.toString();
 	}
 }

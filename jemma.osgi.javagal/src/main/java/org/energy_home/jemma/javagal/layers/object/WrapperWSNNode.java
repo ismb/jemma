@@ -238,9 +238,13 @@ public class WrapperWSNNode {
 			discoveryJob.cancel(true);
 		}
 		if (seconds >= 0) {
+			try {
+				discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
 
-			discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
-
+			}
 		}
 
 	}
@@ -257,7 +261,13 @@ public class WrapperWSNNode {
 		}
 
 		if (seconds >= 0) {
-			freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
+			try {
+				freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
+
+			}
 		}
 
 	}
@@ -275,8 +285,13 @@ public class WrapperWSNNode {
 		}
 
 		if (seconds >= 0) {
-			forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
+			try {
+				forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
 
+			}
 		}
 
 	}

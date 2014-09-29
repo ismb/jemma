@@ -18,6 +18,7 @@ package org.energy_home.jemma.javagal.layers.data.implementations.Utils;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -125,12 +126,15 @@ public class DataManipulation {
 	 *            the stop index, included
 	 * @return the converted sub array
 	 */
-	public static byte[] subByteArray(short[] array, int start, int stop) {
+	public static byte[] subByteArray(byte[] array, int start, int stop) {
 		byte[] toReturn = new byte[stop - start + 1];
 		for (int i = start; i <= stop; i++) {
 			toReturn[i - start] = (byte) array[i];
 		}
 		return toReturn;
+		
+		//return Arrays.copyOfRange(array, start,stop);
+		
 	}
 
 	/**
@@ -249,10 +253,10 @@ public class DataManipulation {
 		return toReturn;
 	}
 
-	public static String convertListShortToString(ArrayBlockingQueue<Short> arr) {
+	public static String convertListShortToString(ArrayBlockingQueue<Byte> arr) {
 		StringBuilder sb = new StringBuilder();
 		
-			for (Short s : arr) {
+			for (Byte s : arr) {
 				sb.append(String.format("%02X", s));
 			}
 		
