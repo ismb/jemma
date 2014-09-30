@@ -23,14 +23,13 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -84,10 +83,7 @@ public class LQIInformation implements Serializable {
      * 
      */
     public List<LQINode> getLQINode() {
-        if (lqiNode == null) {
-            lqiNode = new ArrayList<LQINode>();
-        }
-        return this.lqiNode;
+        return(lqiNode == null) ? new ArrayList<LQINode>() : this.lqiNode;
     }
 
 }

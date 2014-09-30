@@ -23,15 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -169,10 +164,7 @@ public class MgmtLqiResponse implements Serializable{
      * 
      */
     public List<Neighbor> getNeighborTableList() {
-        if (neighborTableList == null) {
-            neighborTableList = new ArrayList<Neighbor>();
-        }
-        return this.neighborTableList;
+        return(neighborTableList == null) ? new ArrayList<Neighbor>() : this.neighborTableList;
     }
 
 }

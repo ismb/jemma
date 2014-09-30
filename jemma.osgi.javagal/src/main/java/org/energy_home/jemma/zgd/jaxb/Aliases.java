@@ -23,15 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -114,10 +109,7 @@ public class Aliases implements Serializable {
      * 
      */
     public List<Address> getAlias() {
-        if (alias == null) {
-            alias = new ArrayList<Address>();
-        }
-        return this.alias;
+        return (alias == null) ? new ArrayList<Address>() : this.alias;
     }
 
 }
