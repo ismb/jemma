@@ -16,5 +16,4 @@
 package org.energy_home.jemma.javagal.gui;
 
 public interface HttpImplementor {
-	Object getObjectByPid(String pid);
 }

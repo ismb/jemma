@@ -15,18 +15,9 @@
  */
 package org.energy_home.jemma.javagal.json.servlet;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.google.gson.Gson;
 import org.energy_home.jemma.javagal.json.constants.Resources;
 import org.energy_home.jemma.javagal.json.util.Util;
-import org.energy_home.jemma.zgd.GalExtenderProxy;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayInterface;
 import org.energy_home.jemma.zgd.jaxb.Info;
@@ -34,7 +25,12 @@ import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
-import com.google.gson.Gson;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 public class localServicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

@@ -64,9 +64,7 @@ public class Activator implements BundleActivator {
 
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
-		ServiceReference reference;
-
-		BundleContext _context = null;
+        BundleContext _context = null;
 
 		public GatewayInterfaceFactoryTracker(BundleContext context) {
 

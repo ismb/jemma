@@ -15,29 +15,16 @@
  */
 package org.energy_home.jemma.javagal.json;
 
+import org.energy_home.jemma.javagal.json.constants.ResourcePathURIs;
+import org.energy_home.jemma.javagal.json.constants.Resources;
+import org.energy_home.jemma.javagal.json.servlet.*;
+import org.energy_home.jemma.zgd.GatewayInterface;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import org.energy_home.jemma.javagal.json.constants.ResourcePathURIs;
-import org.energy_home.jemma.javagal.json.constants.Resources;
-import org.energy_home.jemma.javagal.json.servlet.allLqiInformationsServlet;
-import org.energy_home.jemma.javagal.json.servlet.allPermitJoinServlet;
-import org.energy_home.jemma.javagal.json.servlet.channelServlet;
-import org.energy_home.jemma.javagal.json.servlet.frequencyAgilityServlet;
-import org.energy_home.jemma.javagal.json.servlet.getInfoBaseAttributesServlet;
-import org.energy_home.jemma.javagal.json.servlet.localServicesServlet;
-import org.energy_home.jemma.javagal.json.servlet.nodeDescriptorAndServicesServlet;
-import org.energy_home.jemma.javagal.json.servlet.nodeServicesServlet;
-import org.energy_home.jemma.javagal.json.servlet.resetServlet;
-import org.energy_home.jemma.javagal.json.servlet.startUpServlet;
-import org.energy_home.jemma.javagal.json.servlet.versionServlet;
-import org.energy_home.jemma.javagal.json.servlet.wsnNodesServlet;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
-import org.energy_home.jemma.zgd.GatewayInterface;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
 
 public class ServletContainer implements HttpSessionListener{
 

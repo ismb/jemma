@@ -15,20 +15,17 @@
  */
 package org.energy_home.jemma.javagal.gui;
 
-import java.util.Vector;
-
-import javax.servlet.Servlet;
-
-import org.energy_home.jemma.zgd.GatewayInterface;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+
+import java.util.Vector;
 
 public class DefaultWebApplication {
 	private String rootUrl = "";
 	private HttpService httpService = null;
 
-	Vector resources = new Vector();
-	Vector servlets = new Vector();
+	Vector<Resource> resources = new Vector<Resource>();
+	Vector<ServletResource> servlets = new Vector<ServletResource>();
 
 	private HttpContext httpContext;
 
@@ -36,19 +33,11 @@ public class DefaultWebApplication {
 		this.rootUrl = rootUrl;
 	}
 
-	public String getRootUrl() {
-		return rootUrl;
-	}
-
-	public void registerResource(String alias, String path) {
+    public void registerResource(String alias, String path) {
 		this.resources.add(new Resource(alias, path));	
 	}
 
-	public void registerResource(String alias, Servlet servlet) {
-		this.servlets.add(new ServletResource(alias, servlet));
-	}
-
-	public synchronized void bindHttpService(HttpService s) {
+    public synchronized void bindHttpService(HttpService s) {
 		this.httpService = s;
 		this.bindResources();
 
@@ -63,33 +52,29 @@ public class DefaultWebApplication {
 
 	private void bindResources() {
 		if (httpService != null) {
-			
-			for (int i = 0; i < resources.size(); i++) {
-				Resource r = (Resource) resources.get(i);
-				try {
-					httpService.registerResources(this.toAlias(this.rootUrl + r.getAlias()), r.getPath(), this.getHttpContext());
-				} catch (Throwable e) {
-					e.printStackTrace();
-					continue;
-				}
-			}
 
-			for (int i = 0; i < servlets.size(); i++) {
-				ServletResource sr = (ServletResource) servlets.get(i);
-				try {
-					httpService.registerServlet(this.toAlias(this.rootUrl + sr.getAlias()), sr.getServlet(), null, this.getHttpContext());
-				} catch (Exception e) {
-					e.printStackTrace();
-					continue;
-				}
-			}
+            for (Resource r : resources) {
+                try {
+                    httpService.registerResources(this.toAlias(this.rootUrl + r.getAlias()), r.getPath(), this.getHttpContext());
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+
+            for (Object servlet : servlets) {
+                ServletResource sr = (ServletResource) servlet;
+                try {
+                    httpService.registerServlet(this.toAlias(this.rootUrl + sr.getAlias()), sr.getServlet(), null, this.getHttpContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 
 	private String toAlias(String alias) {
 		if (alias.endsWith("/")) {
-			String a = alias.substring(0, alias.length() - 1);
-			return a;
+            return alias.substring(0, alias.length() - 1);
 		}
 
 		return alias;
@@ -97,22 +82,20 @@ public class DefaultWebApplication {
 
 	private void unbindResources() {
 		if (this.httpService != null) {
-			for (int i = 0; i < resources.size(); i++) {
-				Resource r = (Resource) resources.get(i);
-				try {
-					httpService.unregister(this.rootUrl + r.getAlias());
-				} catch (Exception e) {
-					continue;
-				}
-			}
-			for (int i = 0; i < servlets.size(); i++) {
-				ServletResource sr = (ServletResource) servlets.get(i);
-				try {
-					httpService.unregister(this.rootUrl + sr.getAlias());
-				} catch (Exception e) {
-					continue;
-				}
-			}
+            for (Resource r : resources) {
+                try {
+                    httpService.unregister(this.rootUrl + r.getAlias());
+                } catch (Exception ignored) {
+
+                }
+            }
+            for (ServletResource sr : servlets) {
+                try {
+                    httpService.unregister(this.rootUrl + sr.getAlias());
+                } catch (Exception ignored) {
+
+                }
+            }
 		}
 	}
 
