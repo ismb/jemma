@@ -18,10 +18,8 @@ package org.energy_home.jemma.javagal.json.servlet;
 import com.google.gson.Gson;
 import org.energy_home.jemma.javagal.json.constants.Resources;
 import org.energy_home.jemma.javagal.json.util.Util;
-import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayInterface;
 import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
 import javax.servlet.ServletException;
@@ -47,20 +45,15 @@ public class resetServlet extends HttpServlet {
 		Object done = session.getValue("javaGallogon.isDone");
 		if (done != null) {
 			
-			String timeoutString = null;
-			Long timeout = -1l;
-			short startModeValue = 0x00;
+			String timeoutString;
+			Long timeout;
+			short startModeValue;
 
 			Object timeoutParam = request.getParameter(Resources.URI_PARAM_TIMEOUT);
 
 			if (timeoutParam == null) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.";
+				Info info = Util.setError(error);
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
@@ -72,47 +65,30 @@ public class resetServlet extends HttpServlet {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
 
-						Info info = new Info();
-						Status _st = new Status();
-						_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-						_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
-						info.setStatus(_st);
-						Info.Detail detail = new Info.Detail();
-						info.setDetail(detail);
+						String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString;
+						Info info = Util.setError(error);
 						response.getOutputStream().print(gson.toJson(info));
 						return;
 
 					}
 				} catch (NumberFormatException nfe) {
 
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage(nfe.getMessage());
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setError(nfe.getMessage());
 					response.getOutputStream().print(gson.toJson(info));
 					return;
 
 				}
 			}
 
-			String startModeString = null;
+			String startModeString;
 
-			Object startMode = request.getParameter(Resources.URI_PARAM_START_MODE_RESET);
+            Object startMode = request.getParameter(Resources.URI_PARAM_START_MODE_RESET);
 			if (startMode != null) {
 				startModeString = startMode.toString();
 				try {
 					startModeValue = Short.decode(startModeString);
 				} catch (NumberFormatException nfe) {
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage(nfe.getMessage());
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setError(nfe.getMessage());
 					response.getOutputStream().print(gson.toJson(info));
 					return;
 
@@ -120,13 +96,7 @@ public class resetServlet extends HttpServlet {
 
 			} else {
 				// The warm start value is mandatory!!
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("The startMode param is mandatory");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				Info info = Util.setError("The startMode param is mandatory");
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
@@ -136,38 +106,18 @@ public class resetServlet extends HttpServlet {
 			try {
 
 				Status result = gatewayInterface.resetDongleSync(timeout, startModeValue);
-				
-				
-				
-				
 				Info info = new Info();
 				info.setStatus(result);
 				response.getOutputStream().print(gson.toJson(info));
-				return;
 
-			} catch (Exception e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+            } catch (Exception e) {
+				Info info =Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
-				return;
-			}
+            }
 		} else {
-			Detail detail = new Detail();
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage("User not logged");
-			info.setStatus(status);
-			info.setDetail(detail);
+			Info info = Util.setError("User not logged");
 			response.getOutputStream().print(gson.toJson(info));
-			return;
-
-		}
+        }
 
 	}
 
