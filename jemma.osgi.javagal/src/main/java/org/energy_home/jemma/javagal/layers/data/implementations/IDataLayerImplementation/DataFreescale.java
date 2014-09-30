@@ -15,22 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.business.Utils;
@@ -39,42 +23,24 @@ import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConne
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
-import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
-import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
-import org.energy_home.jemma.javagal.layers.object.MyRunnable;
-import org.energy_home.jemma.javagal.layers.object.ParserLocker;
-import org.energy_home.jemma.javagal.layers.object.TypeMessage;
-import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
+import org.energy_home.jemma.javagal.layers.object.*;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.jaxb.APSMessage;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.Binding;
-import org.energy_home.jemma.zgd.jaxb.BindingList;
-import org.energy_home.jemma.zgd.jaxb.DescriptorCapability;
-import org.energy_home.jemma.zgd.jaxb.Device;
-import org.energy_home.jemma.zgd.jaxb.EnergyScanResult;
+import org.energy_home.jemma.zgd.jaxb.*;
 import org.energy_home.jemma.zgd.jaxb.EnergyScanResult.ScannedChannel;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.LogicalType;
-import org.energy_home.jemma.zgd.jaxb.MACCapability;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.NodeServices.ActiveEndpoints;
-import org.energy_home.jemma.zgd.jaxb.SecurityStatus;
-import org.energy_home.jemma.zgd.jaxb.ServerMask;
-import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.TxOptions;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Freescale implementation of {@link IDataLayer}.
@@ -99,7 +65,7 @@ public class DataFreescale implements IDataLayer {
 
 	public final List<Short> receivedDataQueue = Collections.synchronizedList(new LinkedList<Short>());
 
-	private LinkedBlockingQueue<ShortArrayObject> tmpDataQueue = new LinkedBlockingQueue<ShortArrayObject>();
+	private final LinkedBlockingQueue<ShortArrayObject> tmpDataQueue = new LinkedBlockingQueue<ShortArrayObject>();
 
 	/**
 	 * Creates a new instance with a reference to the Gal Controller.
@@ -263,7 +229,7 @@ public class DataFreescale implements IDataLayer {
 	private short[] createMessageFromRowData() {
 		synchronized (receivedDataQueue) {
 			short toremove = 0;
-			Short _toremove = 0;
+			Short _toremove;
 			while (!receivedDataQueue.isEmpty()) {
 				if ((_toremove = receivedDataQueue.get(0)) != DataManipulation.SEQUENCE_START) {
 					if (gal.getPropertiesManager().getserialDataDebugEnabled()) {
@@ -298,9 +264,9 @@ public class DataFreescale implements IDataLayer {
 				for (int i = 0; i < payloadLenght; i++)
 					csc.getCumulativeXor(copyList.get(DataManipulation.START_PAYLOAD_INDEX + i));
 
-				if (csc.getLastCalulated() != messageCfc) {
+				if (csc.getLastCalculated() != messageCfc) {
 					if (gal.getPropertiesManager().getserialDataDebugEnabled())
-						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(receivedDataQueue));
+						LOG.error("Error CSC Control: " + csc.getLastCalculated() + "!=" + messageCfc + ", removing byte: " + String.format("%02X", receivedDataQueue.get(0).byteValue()) + " from: " + DataManipulation.convertListShortToString(receivedDataQueue));
 					receivedDataQueue.remove(0);
 					continue;
 
@@ -601,11 +567,6 @@ public class DataFreescale implements IDataLayer {
 				LOG.info("Extracted NLME-NETWORK-DISCOVERY.Request: " + DataManipulation.convertArrayShortToString(message));
 		}
 		/* MacScan.Request */
-		else if (_command == FreescaleConstants.MacScanRequest) {
-			if (gal.getPropertiesManager().getDebugEnabled())
-				LOG.info("Extracted MacScan.Request: " + DataManipulation.convertArrayShortToString(message));
-		}
-		/* NLME-NETWORK-DISCOVERY.Confirm */
 		else if (_command == FreescaleConstants.NLMENetworkDiscoveryConfirm) {
 			if (gal.getPropertiesManager().getDebugEnabled())
 				LOG.info("Extracted NLME-NETWORK-DISCOVERY.Confirm: " + DataManipulation.convertArrayShortToString(message));
@@ -976,8 +937,8 @@ public class DataFreescale implements IDataLayer {
 		default:
 			throw new Exception("LogicalType is not valid value");
 		}
-		_node.setComplexDescriptorAvailable((_ComplexDescriptorAvalilable == 1 ? true : false));
-		_node.setUserDescriptorAvailable((_UserDescriptorAvalilable == 1 ? true : false));
+		_node.setComplexDescriptorAvailable((_ComplexDescriptorAvalilable == 1));
+		_node.setUserDescriptorAvailable((_UserDescriptorAvalilable == 1));
 
 		/* Second Byte */
 		byte _second = (byte) message[7];
@@ -1011,12 +972,12 @@ public class DataFreescale implements IDataLayer {
 		// bit 4-5 reserved
 		byte _SecuritySupported = (byte) ((_MACcapabilityFlags_BYTE & 0x40) >> 6);/* Bit6 */
 		byte _AllocateAddress = (byte) ((_MACcapabilityFlags_BYTE & 0x80) >> 7);/* Bit7 */
-		_maccapability.setAlternatePanCoordinator((_AlternatePanCoordinator == 1 ? true : false));
-		_maccapability.setDeviceIsFFD((_DeviceIsFFD == 1 ? true : false));
-		_maccapability.setMainsPowered((_MainsPowered == 1 ? true : false));
-		_maccapability.setReceiverOnWhenIdle((_ReceiverOnWhenIdle == 1 ? true : false));
-		_maccapability.setSecuritySupported((_SecuritySupported == 1 ? true : false));
-		_maccapability.setAllocateAddress((_AllocateAddress == 1 ? true : false));
+		_maccapability.setAlternatePanCoordinator((_AlternatePanCoordinator == 1));
+		_maccapability.setDeviceIsFFD((_DeviceIsFFD == 1));
+		_maccapability.setMainsPowered((_MainsPowered == 1));
+		_maccapability.setReceiverOnWhenIdle((_ReceiverOnWhenIdle == 1));
+		_maccapability.setSecuritySupported((_SecuritySupported == 1));
+		_maccapability.setAllocateAddress((_AllocateAddress == 1));
 		_node.setMACCapabilityFlag(_maccapability);
 
 		/* ManufacturerCode_BYTES */
@@ -1040,12 +1001,12 @@ public class DataFreescale implements IDataLayer {
 		byte _BackupBindingTableCache = (byte) ((_ServerMask_BYTES & 0x08) >> 3);/* Bit3 */
 		byte _PrimaryDiscoveryCache = (byte) ((_ServerMask_BYTES & 0x10) >> 4);/* Bit4 */
 		byte _BackupDiscoveryCache = (byte) ((_ServerMask_BYTES & 0x20) >> 5);/* Bit5 */
-		_serverMask.setPrimaryTrustCenter((_PrimaryTrustCenter == 1 ? true : false));
-		_serverMask.setBackupTrustCenter((_BackupTrustCenter == 1 ? true : false));
-		_serverMask.setPrimaryBindingTableCache((_PrimaryBindingTableCache == 1 ? true : false));
-		_serverMask.setBackupBindingTableCache((_BackupBindingTableCache == 1 ? true : false));
-		_serverMask.setPrimaryDiscoveryCache((_PrimaryDiscoveryCache == 1 ? true : false));
-		_serverMask.setBackupDiscoveryCache((_BackupDiscoveryCache == 1 ? true : false));
+		_serverMask.setPrimaryTrustCenter((_PrimaryTrustCenter == 1));
+		_serverMask.setBackupTrustCenter((_BackupTrustCenter == 1));
+		_serverMask.setPrimaryBindingTableCache((_PrimaryBindingTableCache == 1));
+		_serverMask.setBackupBindingTableCache((_BackupBindingTableCache == 1));
+		_serverMask.setPrimaryDiscoveryCache((_PrimaryDiscoveryCache == 1));
+		_serverMask.setBackupDiscoveryCache((_BackupDiscoveryCache == 1));
 		_node.setServerMask(_serverMask);
 
 		/* MaximumOutTransferSize_BYTES */
@@ -1057,8 +1018,8 @@ public class DataFreescale implements IDataLayer {
 		DescriptorCapability _DescriptorCapability = new DescriptorCapability();
 		byte _ExtendedActiveEndpointListAvailable = (byte) (_CapabilityField_BYTES & 0x01);/* Bit0 */
 		byte _ExtendedSimpleDescriptorListAvailable = (byte) ((_CapabilityField_BYTES & 0x02) >> 1);/* Bit1 */
-		_DescriptorCapability.setExtendedActiveEndpointListAvailable((_ExtendedActiveEndpointListAvailable == 1 ? true : false));
-		_DescriptorCapability.setExtendedSimpleDescriptorListAvailable((_ExtendedSimpleDescriptorListAvailable == 1 ? true : false));
+		_DescriptorCapability.setExtendedActiveEndpointListAvailable((_ExtendedActiveEndpointListAvailable == 1));
+		_DescriptorCapability.setExtendedSimpleDescriptorListAvailable((_ExtendedSimpleDescriptorListAvailable == 1));
 		_node.setDescriptorCapabilityField(_DescriptorCapability);
 		String _key = String.format("%04X", _NWKAddressOfInterest);
 		synchronized (listLocker) {
@@ -1088,7 +1049,7 @@ public class DataFreescale implements IDataLayer {
 				if (pl.getType() == TypeMessage.CHANNEL_REQUEST) {
 					synchronized (pl) {
 						pl.getStatus().setCode(message[3]);
-						pl.set_objectOfResponse((short) message[4]);
+						pl.set_objectOfResponse(message[4]);
 						pl.notify();
 					}
 					break;
@@ -1303,7 +1264,7 @@ public class DataFreescale implements IDataLayer {
 			int _EPCount = message[6];
 
 			for (int i = 0; i < _EPCount; i++) {
-				_toRes.add((short) message[7 + i]);
+				_toRes.add(message[7 + i]);
 				ActiveEndpoints _aep = new ActiveEndpoints();
 				_aep.setEndPoint(message[7 + i]);
 				_node.getActiveEndpoints().add(_aep);
@@ -1869,7 +1830,7 @@ public class DataFreescale implements IDataLayer {
 		messageEvent.setSrcAddressMode((long) srcAddressMode);
 		messageEvent.setSrcPANID(DataManipulation.toIntFromShort((byte) message[5], (byte) message[4]));
 
-		BigInteger _ieee = null;
+		BigInteger _ieee;
 		Address address = new Address();
 
 		switch (srcAddressMode) {
@@ -1973,8 +1934,7 @@ public class DataFreescale implements IDataLayer {
 		final APSMessageEvent messageEvent = new APSMessageEvent();
 
 		messageEvent.setDestinationAddressMode((long) message[3]);
-		BigInteger _ieee = null;
-		Address destinationAddress = new Address();
+        Address destinationAddress = new Address();
 
 		switch (messageEvent.getDestinationAddressMode().shortValue()) {
 		case 0x00:
@@ -2234,7 +2194,7 @@ public class DataFreescale implements IDataLayer {
 	private synchronized boolean updateNodeIfExist(final APSMessageEvent messageEvent, Address address) {
 
 		/* Update Source Node Data */
-		int _indexOnCache = -1;
+		int _indexOnCache;
 
 		_indexOnCache = gal.existIntoNetworkCache(address);
 
@@ -2435,7 +2395,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status APSME_SETSync(long timeout, short _AttID, String _value) throws GatewayException, Exception {
+	public Status APSME_SETSync(long timeout, short _AttID, String _value) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) _AttID);/* _AttId */
 		_res.addByte((byte) 0x00);
@@ -2524,7 +2484,7 @@ public class DataFreescale implements IDataLayer {
 				try {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 						lock.wait(timeout);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -2588,7 +2548,7 @@ public class DataFreescale implements IDataLayer {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 
 						lock.wait(timeout);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -2623,7 +2583,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status stopNetworkSync(long timeout) throws Exception, GatewayException {
+	public Status stopNetworkSync(long timeout) throws Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) 0x01);/*
 								 * Stop Mode AnnounceStop (Stops after
@@ -2723,7 +2683,7 @@ public class DataFreescale implements IDataLayer {
 						if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 
 							lock.wait(timeout);
-					} catch (InterruptedException e) {
+					} catch (InterruptedException ignored) {
 
 					}
 				}
@@ -2781,7 +2741,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
+	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte(desc.getEndPoint().byteValue());/* End Point */
 		_res.addBytesShort(Short.reverseBytes(desc.getApplicationProfileIdentifier().shortValue()), 2);
@@ -2862,7 +2822,7 @@ public class DataFreescale implements IDataLayer {
 		byte dam = apsMessage.getDestinationAddressMode().byteValue();
 		_res.addByte(dam);
 		Address address = apsMessage.getDestinationAddress();
-		byte[] _reversed = null;
+		byte[] _reversed;
 		switch (dam) {
 		case GatewayConstants.ADDRESS_MODE_SHORT:
 			byte[] networkAddress = DataManipulation.toByteVect(address.getNetworkAddress(), 8);
@@ -3136,7 +3096,7 @@ public class DataFreescale implements IDataLayer {
 			return _statWriteSas;
 	}
 
-	private Status WriteSasSync(long timeout, StartupAttributeInfo sai) throws InterruptedException, Exception {
+	private Status WriteSasSync(long timeout, StartupAttributeInfo sai) throws  Exception {
 		if (sai.getChannelMask() == null)
 			sai = gal.getPropertiesManager().getSturtupAttributeInfo();
 
@@ -3340,7 +3300,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status permitJoinAllSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws IOException, Exception {
+	public Status permitJoinAllSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);/*
 																									 * Short
@@ -3414,7 +3374,7 @@ public class DataFreescale implements IDataLayer {
 				}
 				throw new GatewayException("Error on ZTC-GetChannel.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			} else
-				return ((Short) lock.get_objectOfResponse()).shortValue();
+				return (Short) lock.get_objectOfResponse();
 		}
 	}
 
@@ -3440,7 +3400,7 @@ public class DataFreescale implements IDataLayer {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 
 						lock.wait(timeout);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -3472,7 +3432,7 @@ public class DataFreescale implements IDataLayer {
 		}
 	}
 
-	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException, Exception {
+	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
 		_res.addBytesShort(Short.reverseBytes(shortAddress.shortValue()), 2);
@@ -3707,7 +3667,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status clearEndpointSync(short endpoint) throws IOException, Exception, GatewayException {
+	public Status clearEndpointSync(short endpoint) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addByte((byte) endpoint);/* EndPoint */
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSDeRegisterEndPointRequest);/*
@@ -3761,7 +3721,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public NodeServices getLocalServices() throws IOException, Exception, GatewayException {
+	public NodeServices getLocalServices() throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res = Set_SequenceStart_And_FSC(_res, FreescaleConstants.APSGetEndPointIdListRequest);/*
 																								 * StartSequence
@@ -3786,7 +3746,7 @@ public class DataFreescale implements IDataLayer {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 
 						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -3884,8 +3844,7 @@ public class DataFreescale implements IDataLayer {
 				}
 				throw new GatewayException("Error on ZDP-SimpleDescriptor.Request. Status code:" + status.getCode() + " Status Message: " + status.getMessage());
 			} else {
-				ServiceDescriptor _tores = (ServiceDescriptor) lock.get_objectOfResponse();
-				return _tores;
+                return (ServiceDescriptor) lock.get_objectOfResponse();
 			}
 		}
 	}
@@ -4178,7 +4137,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
+	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws Exception {
 		ShortArrayObject _bodyCommand = new ShortArrayObject();
 		_bodyCommand.addByte((byte) 0xFD);
 		_bodyCommand.addByte((byte) 0xFF);
@@ -4304,7 +4263,7 @@ public class DataFreescale implements IDataLayer {
 				try {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 						lock.wait(INTERNAL_TIMEOUT);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -4402,7 +4361,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	@Override
-	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException {
+	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws  Exception {
 		ShortArrayObject _res = new ShortArrayObject();
 		_res.addBytesShort(Short.reverseBytes(addrOfInterest.getNetworkAddress().shortValue()), 2);
 		_res.addByte((byte) startIndex);
@@ -4425,7 +4384,7 @@ public class DataFreescale implements IDataLayer {
 					if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 
 						lock.wait(timeout);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 
 				}
 			}
@@ -4465,12 +4424,7 @@ public class DataFreescale implements IDataLayer {
 		ParserLocker lock = new ParserLocker();
 		lock.setType(TypeMessage.INTERPAN);
 		/* DestAddress + DestEndPoint + SourceEndPoint */
-		BigInteger _DSTAdd = null;
-		if ((message.getDstAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE))
-			_DSTAdd = message.getDestinationAddress().getIeeeAddress();
-		else if ((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT))
-			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
-		else if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
+        if (((message.getDstAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 
 		Status status = new Status();
@@ -4599,11 +4553,7 @@ class ChecksumControl {
 		lastCalculated ^= i;
 	}
 
-	public void resetLastCalculated() {
-		lastCalculated = 0x00;
-	}
-
-	public short getLastCalulated() {
+    public short getLastCalculated() {
 		return lastCalculated;
 	}
 }

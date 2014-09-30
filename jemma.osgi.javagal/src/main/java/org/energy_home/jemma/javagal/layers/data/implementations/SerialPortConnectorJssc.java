@@ -165,7 +165,7 @@ public class SerialPortConnectorJssc implements IConnector {
 
 			try {
 				Thread.sleep(50);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException ignored) {
 
 			}
 		}
@@ -218,12 +218,7 @@ public class SerialPortConnectorJssc implements IConnector {
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
-		return ignoreMessage;
-
-	}
-
-	/**
+    /**
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
