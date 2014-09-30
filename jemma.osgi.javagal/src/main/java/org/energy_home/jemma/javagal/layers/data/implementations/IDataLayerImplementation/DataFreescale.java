@@ -17,8 +17,6 @@ package org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImpl
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,11 +36,11 @@ import org.energy_home.jemma.javagal.layers.data.implementations.SerialPortConne
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
+import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
 import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.javagal.layers.object.MyRunnable;
 import org.energy_home.jemma.javagal.layers.object.ParserLocker;
-import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.javagal.layers.object.TypeMessage;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
 import org.energy_home.jemma.zgd.GatewayConstants;
@@ -210,8 +208,6 @@ public class DataFreescale implements IDataLayer {
 
 					}
 					if (_currentCommandReived != null) {
-						if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-							LOG.info("***Extracted from the Queue:" + _currentCommandReived.ToHexString());
 						byte[] shortArray = _currentCommandReived.getArray();
 						for (int z = 0; z < _currentCommandReived.getCount(false); z++)
 							try {
@@ -763,7 +759,8 @@ public class DataFreescale implements IDataLayer {
 					pl.getStatus().setCode(status);
 					pl.getStatus().setMessage(mess);
 					try {
-						pl.getObjectLocker().put((byte) 0);
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
 					} catch (InterruptedException e) {
 
 					}
@@ -792,13 +789,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(status);
 					pl.getStatus().setMessage(mess);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -843,13 +838,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(status);
 					pl.getStatus().setMessage(mess);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -870,13 +863,11 @@ public class DataFreescale implements IDataLayer {
 				if ((pl.getType() == TypeMessage.APSME_SET) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(status);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -895,13 +886,11 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.NMLE_SET) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 					pl.getStatus().setCode(status);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1030,13 +1019,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(message.getArray()[3]);/* Status */
 					pl.set_objectOfResponse(_node);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1056,13 +1043,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					pl.set_objectOfResponse((short) message.getArray()[4]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1080,13 +1065,11 @@ public class DataFreescale implements IDataLayer {
 			for (ParserLocker pl : getListLocker()) {
 				if ((pl.getType() == TypeMessage.WRITE_SAS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 				}
 			}
@@ -1105,13 +1088,11 @@ public class DataFreescale implements IDataLayer {
 				if ((pl.getType() == TypeMessage.MODE_SELECT) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(status);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1131,13 +1112,11 @@ public class DataFreescale implements IDataLayer {
 				if ((pl.getType() == TypeMessage.CONFIGURE_END_POINT) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1159,13 +1138,11 @@ public class DataFreescale implements IDataLayer {
 					}
 
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1191,13 +1168,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1223,13 +1198,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1256,13 +1229,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					pl.set_objectOfResponse(DataManipulation.convertBytesToString(_res));
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1287,13 +1258,11 @@ public class DataFreescale implements IDataLayer {
 					}
 
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1356,13 +1325,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.set_objectOfResponse(_toRes);
 					pl.getStatus().setCode(Status);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1389,13 +1356,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.set_objectOfResponse(_bi);
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1417,13 +1382,11 @@ public class DataFreescale implements IDataLayer {
 
 					pl.set_objectOfResponse(_bi);
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1442,13 +1405,11 @@ public class DataFreescale implements IDataLayer {
 				if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1507,14 +1468,13 @@ public class DataFreescale implements IDataLayer {
 						}
 					}
 					pl.set_objectOfResponse(_res);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
+
 				}
 
 			}
@@ -1548,13 +1508,11 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED");
 						break;
 					}
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1590,13 +1548,11 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage("NOT_AUTHORIZED (NOT AUTHORIZED)");
 						break;
 					}
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1625,13 +1581,11 @@ public class DataFreescale implements IDataLayer {
 						}
 					}
 					pl.set_objectOfResponse(_res);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1686,13 +1640,11 @@ public class DataFreescale implements IDataLayer {
 
 					}
 					pl.set_objectOfResponse(_toRes);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1738,13 +1690,11 @@ public class DataFreescale implements IDataLayer {
 
 						pl.getStatus().setCode(message.getArray()[7]);
 						pl.set_objectOfResponse(_result);
-						synchronized (pl.getObjectLocker()) {
-							try {
-								if (pl.getObjectLocker().size() == 0)
-									pl.getObjectLocker().put((byte) 0);
-							} catch (InterruptedException e) {
+						try {
+							if (pl.getObjectLocker().size() == 0)
+								pl.getObjectLocker().put((byte) 0);
+						} catch (InterruptedException e) {
 
-							}
 						}
 
 					}
@@ -1823,13 +1773,11 @@ public class DataFreescale implements IDataLayer {
 				if ((pl.getType() == TypeMessage.INTERPAN) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[4]);
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -1934,13 +1882,11 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage("NO_ACK (Acknowledgement was not received)");
 						break;
 					}
-					synchronized (pl.getObjectLocker()) {
-						try {
-							if (pl.getObjectLocker().size() == 0)
-								pl.getObjectLocker().put((byte) 0);
-						} catch (InterruptedException e) {
+					try {
+						if (pl.getObjectLocker().size() == 0)
+							pl.getObjectLocker().put((byte) 0);
+					} catch (InterruptedException e) {
 
-						}
 					}
 
 				}
@@ -2252,13 +2198,11 @@ public class DataFreescale implements IDataLayer {
 
 							pl.getStatus().setCode((short) messageEvent.getAPSStatus());
 							pl.set_objectOfResponse(_res);
-							synchronized (pl.getObjectLocker()) {
-								try {
-									if (pl.getObjectLocker().size() == 0)
-										pl.getObjectLocker().put((byte) 0);
-								} catch (InterruptedException e) {
+							try {
+								if (pl.getObjectLocker().size() == 0)
+									pl.getObjectLocker().put((byte) 0);
+							} catch (InterruptedException e) {
 
-								}
 							}
 
 						}
