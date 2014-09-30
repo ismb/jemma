@@ -15,19 +15,15 @@
  */
 package org.energy_home.jemma.javagal.launcher;
 
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.energy_home.jemma.zgd.GatewayException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 
 /**
  * Starter class for the Javagal project.
@@ -120,17 +116,3 @@ public class main {
 
 }
 
-class JavaGalLogger extends Formatter {
-
-	int lastDotInClassName;
-	String className;
-
-	@Override
-	public String format(LogRecord record) {
-		className = record.getSourceClassName();
-		lastDotInClassName = className.lastIndexOf('.');
-		className = className.substring(lastDotInClassName + 1, className.length());
-		return "\n" + className + " " + record.getSourceMethodName() + ": " + record.getMessage();
-	}
-
-}
