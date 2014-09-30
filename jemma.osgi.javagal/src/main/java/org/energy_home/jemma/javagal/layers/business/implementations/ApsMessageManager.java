@@ -15,26 +15,18 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.SerializationUtils;
-import org.energy_home.jemma.zgd.APSMessageListener;
-import org.energy_home.jemma.zgd.MessageListener;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.Callback;
-import org.energy_home.jemma.zgd.jaxb.Filter;
-import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
-import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
-import org.energy_home.jemma.zgd.jaxb.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
+import org.energy_home.jemma.zgd.APSMessageListener;
+import org.energy_home.jemma.zgd.MessageListener;
+import org.energy_home.jemma.zgd.jaxb.*;
+import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
+import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.*;
 
 /**
  * Manages received APS messages. When an APS indication is received it is
@@ -112,12 +104,7 @@ public class ApsMessageManager {
 							boolean messageSpecificationFound = false;
 							for (MessageSpecification ms : filter.getMessageSpecification()) {
 
-								if (ms.getAPSClusterIdentifier() == null) {
-									messageSpecificationFound = true;
-									// If match we can stop the search loop.
-									break;
-
-								} else if (ms.getAPSClusterIdentifier() == message.getClusterID()) {
+								if (ms.getAPSClusterIdentifier() == null || ms.getAPSClusterIdentifier() == message.getClusterID()) {
 									messageSpecificationFound = true;
 									// If match we can stop the search loop.
 									break;
@@ -156,7 +143,7 @@ public class ApsMessageManager {
 								// Source Address
 								if (asnsa != 0xFFFF) {
 									// Source Address
-									long msam = message.getSourceAddressMode().longValue();
+									long msam = message.getSourceAddressMode();
 									Address msa = message.getSourceAddress();
 									if (msam == 0x01) {
 										// Network address, NO source end
@@ -164,13 +151,11 @@ public class ApsMessageManager {
 										int msna0x01 = msa.getNetworkAddress();
 										// Pass if the message has a
 										// broadcast Source Address
-										if (msna0x01 != 0xFFFF) {
+										if (msna0x01 != 0xFFFF && asnsa != msna0x01) {
 											// Don't pass if they differs,
 											// so we go ahead on the next
 											// iteration in the for cycle
-											if (asnsa != msna0x01) {
-												continue;
-											}
+											continue;
 										}
 									} else if (msam == 0x02) {
 										// Network address, AND source end
@@ -189,15 +174,13 @@ public class ApsMessageManager {
 												// on the next iteration in
 												// the for cycle.
 												continue;
-											} else if (msep != 0xFF) {
-												if (msep != assep) {
+											} else if (msep != 0xFF && msep != assep) {
 													// Don't pass if they
 													// differs, so we go
 													// ahead on the next
 													// iteration in the for
 													// cycle.
 													continue;
-												}
 											}
 										}
 									} else if (msam == 0x03) {
@@ -234,16 +217,8 @@ public class ApsMessageManager {
 											// Pass if the message has a
 											// broadcast Destination End
 											// Point
-											if (mdep != 0xFF) {
-												// Don't pass if they
-												// differs,
-												// so we go ahead on the
-												// next
-												// iteration in the for
-												// cycle
-												if (asdep != mdep) {
-													continue;
-												}
+											if (mdep != 0xFF && asdep != mdep) {
+												continue;
 											}
 										}
 									}
@@ -276,7 +251,7 @@ public class ApsMessageManager {
 
 						MessageListener napml = ce.getGenericDestination();
 						if (napml != null){
-							APSMessageEvent cmessage = null;
+							APSMessageEvent cmessage;
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
 							}
@@ -293,8 +268,8 @@ public class ApsMessageManager {
 				}
 			}
 		});
-		
-		
+
+
 
 	}
 }
