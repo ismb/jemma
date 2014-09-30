@@ -15,30 +15,20 @@
  */
 package org.energy_home.jemma.utils.encrypt;
 
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 public class TripleDESEnc {
     public static TripleDESEnc getInstance(String password) {
     	return new TripleDESEnc(password);
     }
-    
-    private MessageDigest md;
-    private byte[] digestOfPassword;
-    private byte[] keyBytes;
-    private SecretKey key;
-    private IvParameterSpec iv;
+
     private Cipher encryptCipher;
     private Cipher decryptCipher;
     
@@ -59,20 +49,20 @@ public class TripleDESEnc {
         
     private TripleDESEnc(String password) {
     	try {
-	        md = MessageDigest.getInstance("md5");
-	        digestOfPassword = md.digest(password.getBytes("utf-8"));
+            MessageDigest md = MessageDigest.getInstance("md5");
+            byte[] digestOfPassword = md.digest(password.getBytes("utf-8"));
 	        
 	        
 	        // Original code  
 	        //keyBytes = Arrays.copyOf(digestOfPassword, 24);
-	        
-	        keyBytes = copyOf(digestOfPassword, 24);
+
+            byte[] keyBytes = copyOf(digestOfPassword, 24);
 	        
 	        for (int j = 0, k = 16; j < 8;) {
 	                keyBytes[k++] = keyBytes[j++];
 	        }
-	        key = new SecretKeySpec(keyBytes, "DESede");
-	        iv = new IvParameterSpec(new byte[8]);	
+            SecretKey key = new SecretKeySpec(keyBytes, "DESede");
+            IvParameterSpec iv = new IvParameterSpec(new byte[8]);
 			encryptCipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
 			encryptCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			decryptCipher = Cipher.getInstance("DESede/CBC/PKCS5Padding");
@@ -91,11 +81,11 @@ public class TripleDESEnc {
     }
 
     public synchronized byte[] encrypt(String message) {       
-        byte[] plainTextBytes = null;
+        byte[] plainTextBytes;
 
 		try {
 			plainTextBytes = message.getBytes("utf-8");
-			return encryptCipher.doFinal(plainTextBytes);	 
+			return encryptCipher.doFinal(plainTextBytes);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (IllegalBlockSizeException e) {
@@ -116,7 +106,7 @@ public class TripleDESEnc {
     }
 
     public synchronized String decrypt(byte[] message) {
-        byte[] plainText = null;
+        byte[] plainText;
 		try {
 			plainText = decryptCipher.doFinal(message);
 			return new String(plainText, "UTF-8");
@@ -138,9 +128,9 @@ public class TripleDESEnc {
     
     public static void main(String[] args) throws Exception {
     	TripleDESEnc codec = TripleDESEnc.getInstance("m4ch1n3t0m4ch1n3c0nn3ct10nh0m34ut0m4t10np0rt4l3n3rgy4th0m3");
-        String encodedText = null;
-        String decodedText = null;
-        String text = "a";
+        String encodedText;
+        String decodedText;
+        String text;
         System.out.println(System.currentTimeMillis() + ": starting encoding\n\n\n");
         for (int i = 0; i < 10000; i++) {
 			if (i == 0)

@@ -15,43 +15,26 @@
  */
 package org.energy_home.jemma.utils.xml.jaxb;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.namespace.QName;
+import java.io.*;
 
 public class JaxbConverter {
-//	private static String prefixMapperProperty = "com.sun.xml.internal.bind.namespacePrefixMapper";
-	private static String prefixMapperProperty = "com.sun.xml.bind.namespacePrefixMapper";
 
-	public static final String UTF8_CHAR_ENCODING = "UTF8";
-		
-	private JAXBContext jaxbContext;
-	private Marshaller xmlMarshaller;
-	private Unmarshaller xmlUnmarshaller;
+    public static final String UTF8_CHAR_ENCODING = "UTF8";
+
+    private final Marshaller xmlMarshaller;
+	private final Unmarshaller xmlUnmarshaller;
 	private String namespace;
 
-	private XmlConverter factory;
-
-	private JAXBElement<?> getJaxbElement(Object object) {
+    private JAXBElement<?> getJaxbElement(Object object) {
 		QName qname = new QName(namespace, object.getClass().getSimpleName());
 		return new JAXBElement<Object>(qname, (Class<Object>) object.getClass(), object);
 	}
 
 	protected JaxbConverter(XmlConverter factory) throws JAXBException {
-		this.factory = factory;
-		namespace = factory.getDefaultNamespace();
-		jaxbContext = factory.createJaxbContext(factory.getContextPath());
+        namespace = factory.getDefaultNamespace();
+        JAXBContext jaxbContext = factory.createJaxbContext(factory.getContextPath());
 		xmlMarshaller = jaxbContext.createMarshaller();
 		xmlUnmarshaller = jaxbContext.createUnmarshaller();
 //		NamespacePrefixMapper nsPrefixMapper = factory.getNamespacePrefixMapper();
@@ -81,9 +64,9 @@ public class JaxbConverter {
 	}
 	
 	public final Object readObject(InputStream in) throws JAXBException, IOException {
-		InputStreamReader utf8Reader = null;
-		Object o = null;
-		synchronized (xmlUnmarshaller) {
+		InputStreamReader utf8Reader;
+		Object o;
+        synchronized (xmlUnmarshaller) {
 			utf8Reader = new InputStreamReader(in, UTF8_CHAR_ENCODING);
 			o = xmlUnmarshaller.unmarshal(utf8Reader);
 			if (o instanceof JAXBElement)
@@ -94,7 +77,7 @@ public class JaxbConverter {
 	}
 
 	public final void writeObject(Object o, OutputStream out) throws JAXBException, UnsupportedEncodingException {
-		OutputStreamWriter osw = null;
+		OutputStreamWriter osw;
 		synchronized (xmlMarshaller) {
 			osw = new OutputStreamWriter(out, UTF8_CHAR_ENCODING);
 			xmlMarshaller.marshal(getJaxbElement(o), osw);

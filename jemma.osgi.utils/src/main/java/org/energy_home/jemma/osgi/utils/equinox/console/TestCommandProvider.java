@@ -15,12 +15,12 @@
  */
 package org.energy_home.jemma.osgi.utils.equinox.console;
 
-import java.lang.reflect.Constructor;
-import java.util.Dictionary;
-
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.Bundle;
+
+import java.lang.reflect.Constructor;
+import java.util.Dictionary;
 
 public class TestCommandProvider {
 	public static Object getObjectValue(Class objectType, String stringValue) {
@@ -65,13 +65,13 @@ public class TestCommandProvider {
 		
 		public void execAllCommands() {
 			String delims = "[ ]+";
-			String[] commandLine = null;
+			String[] commandLine;
 			Class commandProviderClass= commandProvider.getClass();
 			if (commands == null)
 				throw new IllegalStateException("Null command list");
 			for (int i = 0; i < commands.length; i++)  {
 				commandLine = commands[i].split(delims);	
-				if (commandLine == null || commandLine.length < 2)
+				if (commandLine.length < 2)
 					ci.println("Invalid command " + i);
 				else {
 					ci.println("\n\n\nExecuting command: \"" + commands[i] + "\"");

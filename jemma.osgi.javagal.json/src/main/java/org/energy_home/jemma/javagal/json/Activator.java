@@ -33,11 +33,7 @@ public class Activator implements BundleActivator {
 	ServletContainer container;
 	HttpService httpService;
 
-	static BundleContext getContext() {
-		return context;
-	}
-
-	ServiceTracker serviceTracker = null;
+    ServiceTracker serviceTracker = null;
 	ServiceTracker httpserviceTracker = null;
 
 	/**

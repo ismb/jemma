@@ -15,30 +15,21 @@
  */
 package org.energy_home.jemma.utils.xml.jaxb;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
-import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
-
 public abstract class XmlConverter {	
 	public static final String XML_SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 	public static final String XML_SCHEMA_INSTANCE_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
 	
-	protected static final String getPrintableString(String xml) {
+	protected static String getPrintableString(String xml) {
 		StringBuilder sb = new StringBuilder(xml);
 		int i = 0;
 		while ((i = sb.indexOf(" ", i + 1000)) != -1) {
@@ -54,12 +45,8 @@ public abstract class XmlConverter {
 		CustomNameSpacePrefixMapper(Map<String, String> namespacesPrefixMap) {
 			this.namespacesPrefixMap = Collections.unmodifiableMap(namespacesPrefixMap);
 		}
-		
-		Map<String, String> getNamespacePreferredPrefixMap() {
-			return namespacesPrefixMap;
-		}
-		
-		public String[] getPreDeclaredNamespaceUris() {
+
+        public String[] getPreDeclaredNamespaceUris() {
 			String[] result = new String[namespacesPrefixMap.size()];
 			namespacesPrefixMap.keySet().toArray(result);
 			return result;
@@ -92,12 +79,8 @@ public abstract class XmlConverter {
 			if (currentIndex == poolMaxSize)
 				currentIndex = 0;
 		}
-		
-		int getMaxSize() {
-			return poolMaxSize;
-		}
-		
-		synchronized JaxbConverter get() throws JAXBException {	
+
+        synchronized JaxbConverter get() throws JAXBException {
 			JaxbConverter converter;
 			if (pool.size() < poolMaxSize) {
 				converter = createConverter();
@@ -160,15 +143,8 @@ public abstract class XmlConverter {
 	public String getDefaultNamespace() {
 		return this.defaultNamespace;
 	}
-	
-	public Map<String, String> getNameSpacePreferredPrefixMap() {
-		if (namespacePrefixMapper == null)
-			return null;
-		else
-			return namespacePrefixMapper.getNamespacePreferredPrefixMap();
-	}
-	
-	public byte[] getByteArray(Object o) {
+
+    public byte[] getByteArray(Object o) {
 		try {
 			return getConverter().getByteArrayOutputStream(o).toByteArray();
 		} catch (JAXBException e) {
