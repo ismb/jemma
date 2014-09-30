@@ -15,28 +15,16 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import java.math.BigInteger;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.object.GatewayStatus;
-import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
-import org.energy_home.jemma.javagal.layers.object.MyRunnable;
-import org.energy_home.jemma.javagal.layers.object.NeighborTableLis_Record;
-import org.energy_home.jemma.javagal.layers.object.TypeFunction;
-import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
+import org.energy_home.jemma.javagal.layers.object.*;
 import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.AssociatedDevices;
-import org.energy_home.jemma.zgd.jaxb.MACCapability;
-import org.energy_home.jemma.zgd.jaxb.SonNode;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
+import org.energy_home.jemma.zgd.jaxb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages received APS messages for the discovery / Freshness / ForcePing
@@ -77,7 +65,7 @@ public class Discovery_Freshness_ForcePing {
 		if (gal.getDataLayer().getDestroy())
 			return;
 
-		Mgmt_LQI_rsp _Lqi = null;
+		Mgmt_LQI_rsp _Lqi;
 		String functionName = null;
 		if (gal.getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
@@ -88,8 +76,8 @@ public class Discovery_Freshness_ForcePing {
 			else if (function == TypeFunction.FORCEPING)
 				functionName = "ForcePing";
 
-			WrapperWSNNode __currentNodeWrapper = null;
-			int _indexParent = -1;
+			WrapperWSNNode __currentNodeWrapper;
+			int _indexParent;
 
 			if (node.getNetworkAddress() == null && node.getIeeeAddress() != null)
 				try {
@@ -137,7 +125,7 @@ public class Discovery_Freshness_ForcePing {
 
 				/* Check no Response received */
 				if (_Lqi == null) {
-					manageError(function, startIndex, __currentNodeWrapper, _indexParent, new Exception("LqiReq.Response not received!"));
+					manageError(function, __currentNodeWrapper, _indexParent, new Exception("LqiReq.Response not received!"));
 				} else/* Response Received */
 				{
 					short _totalLqi = _Lqi._NeighborTableEntries;
@@ -208,8 +196,7 @@ public class Discovery_Freshness_ForcePing {
 										LOG.info("Executing Thread -- LqiReq Node:" + String.format("%04X", node.getNetworkAddress()) + " StartIndex:" + _indexLqi);
 									}
 									startLqi(node, function, _indexLqi);
-									return;
-								}
+                                }
 							};
 							Thread thr0 = new Thread(thr);
 							thr0.setName("Node:" + String.format("%04X", node.getNetworkAddress()) + " -- " + functionName + " StartIndex:" + nextStartIndex);
@@ -255,7 +242,7 @@ public class Discovery_Freshness_ForcePing {
 
 				}
 			} catch (Exception e) {
-				manageError(function, startIndex, __currentNodeWrapper, _indexParent, e);
+				manageError(function, __currentNodeWrapper, _indexParent, e);
 			}
 		}
 	}
@@ -271,7 +258,7 @@ public class Discovery_Freshness_ForcePing {
 			}
 
 		} else {
-			short indexChildOnCache = -1;
+			short indexChildOnCache;
 			Address _addressChild = new Address();
 			_addressChild.setNetworkAddress(x._Network_Address);
 			BigInteger bi = BigInteger.valueOf(x._Extended_Address);
@@ -280,7 +267,7 @@ public class Discovery_Freshness_ForcePing {
 			WSNNode newNodeChild = new WSNNode();
 			newNodeChild.setAddress(_addressChild);
 			MACCapability _mac = new MACCapability();
-			_mac.setReceiverOnWhenIdle((x._RxOnWhenIdle == 1) ? true : false);
+			_mac.setReceiverOnWhenIdle((x._RxOnWhenIdle == 1));
 			newNodeChild.setCapabilityInformation(_mac);
 			newNodeChild.setParentAddress(node);
 			newNodeChild.setStartIndex(x._Depth);
@@ -354,7 +341,7 @@ public class Discovery_Freshness_ForcePing {
 	/**
 	 * Manage the error on Lqi_Request or Lqi_response
 	 */
-	private synchronized void manageError(TypeFunction function, short startIndex, WrapperWSNNode __currentNodeWrapper, int _indexParent, Exception e) {
+	private synchronized void manageError(TypeFunction function, WrapperWSNNode __currentNodeWrapper, int _indexParent, Exception e) {
 		/* Check if the node exist o cache or is already deleted */
 		int indexOnCache = gal.existIntoNetworkCache(__currentNodeWrapper.get_node().getAddress());
 		if (indexOnCache > -1) {
@@ -373,14 +360,13 @@ public class Discovery_Freshness_ForcePing {
 					} catch (Exception e1) {
 						LOG.error("Error on recoveryGal");
 					}
-					return;
 
-				} else {
+                } else {
 					try {
 						Status _st1 = gal.getDataLayer().ClearDeviceKeyPairSet(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 						if (_st1.getCode() == GatewayConstants.SUCCESS) {
 							try {
-								Status _st0 = gal.getDataLayer().ClearNeighborTableEntry(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
+                                gal.getDataLayer().ClearNeighborTableEntry(gal.getPropertiesManager().getCommandTimeoutMS(), __currentNodeWrapper.get_node().getAddress());
 							} catch (Exception e1) {
 
 								LOG.error("Error on ClearNeighborTableEntry for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + " - Error message: " + e.getMessage() + " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
@@ -415,8 +401,7 @@ public class Discovery_Freshness_ForcePing {
 
 					}
 
-					return;
-				}
+                }
 			} else {
 				synchronized (__currentNodeWrapper) {
 					if (function == TypeFunction.DISCOVERY)

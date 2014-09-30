@@ -21,7 +21,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 import org.energy_home.jemma.zgd.jaxb.APSMessage;
 import org.energy_home.jemma.zgd.jaxb.Address;
 import org.energy_home.jemma.zgd.jaxb.Aliases;
@@ -256,7 +255,7 @@ public class GalExtenderProxy implements IGalExtender {
 		if (freshnessMask != 16 && freshnessMask != 4 && freshnessMask != 20 && freshnessMask != 0)
 			throw new GatewayException("NodeRemoval mask not valid");
 		else
-			gal.subscribeNodeRemoval(timeout, this.getProxyIdentifier(), freshnessMask);
+			gal.subscribeNodeRemoval(this.getProxyIdentifier(), freshnessMask);
 
 	}
 
@@ -380,12 +379,12 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public void permitJoinAll(long timeout, short duration) throws IOException, Exception, GatewayException {
-		gal.permitJoinAll(timeout, this.getProxyIdentifier(), duration, true);
+		gal.permitJoinAll(timeout, duration, true);
 	}
 
 	@Override
 	public Status permitJoinAllSync(long timeout, short duration) throws IOException, Exception, GatewayException {
-		return gal.permitJoinAll(timeout, this.getProxyIdentifier(), duration, false);
+		return gal.permitJoinAll(timeout, duration, false);
 	}
 
 	@Override
@@ -400,27 +399,27 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public void sendAPSMessage(APSMessage message) throws IOException, Exception, GatewayException {
-		gal.sendAPSMessage(gal.getPropertiesManager().getCommandTimeoutMS(), this.getProxyIdentifier(), message);
+		gal.sendAPSMessage(gal.getPropertiesManager().getCommandTimeoutMS(), message);
 	}
 
 	@Override
 	public void sendInterPANMessage(long timeout, InterPANMessage message) throws IOException, Exception, GatewayException {
-		gal.sendInterPANMessage(timeout, this.getProxyIdentifier(), message);
+		gal.sendInterPANMessage(timeout, message);
 	}
 
 	@Override
 	public void sendAPSMessage(long timeout, APSMessage message) throws IOException, Exception, GatewayException {
-		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), message);
+		gal.sendAPSMessage(timeout, message);
 	}
 
 	@Override
 	public void resetDongle(long timeout, short mode) throws IOException, Exception, GatewayException {
-		gal.resetDongle(timeout, this.getProxyIdentifier(), mode, true);
+		gal.resetDongle(mode, true);
 	}
 
 	@Override
 	public Status resetDongleSync(long timeout, short mode) throws IOException, Exception, GatewayException {
-		return gal.resetDongle(timeout, this.getProxyIdentifier(), mode, false);
+		return gal.resetDongle(mode, false);
 	}
 
 	@Override
@@ -471,12 +470,12 @@ public class GalExtenderProxy implements IGalExtender {
 
 	@Override
 	public void frequencyAgility(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
-		gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(), scanChannel, scanDuration, true);
+		gal.frequencyAgilitySync(timeout, scanChannel, scanDuration, true);
 	}
 
 	@Override
 	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException {
-		return gal.frequencyAgilitySync(timeout, this.getProxyIdentifier(), scanChannel, scanDuration, false);
+		return gal.frequencyAgilitySync(timeout, scanChannel, scanDuration, false);
 	}
 
 	@Override
@@ -501,7 +500,7 @@ public class GalExtenderProxy implements IGalExtender {
 		_message.setSourceEndpoint(command.getSourceEndpoint());
 		_message.setTxOptions(command.getTxOptions());
 		_message.setData(org.energy_home.jemma.javagal.layers.business.Utils.mergeBytesVect(command.getZCLHeader(), command.getZCLPayload()));
-		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), _message);
+		gal.sendAPSMessage(timeout, _message);
 
 	}
 
@@ -517,7 +516,7 @@ public class GalExtenderProxy implements IGalExtender {
 		_message.setSourceEndpoint((short) 0x00);
 		_message.setTxOptions(command.getTxOptions());
 		_message.setData(command.getCommand());
-		gal.sendAPSMessage(timeout, this.getProxyIdentifier(), _message);
+		gal.sendAPSMessage(timeout, _message);
 	}
 
 	@Override

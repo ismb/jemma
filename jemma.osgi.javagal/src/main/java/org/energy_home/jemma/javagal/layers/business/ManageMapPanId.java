@@ -15,19 +15,13 @@
  */
 package org.energy_home.jemma.javagal.layers.business;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.math.BigInteger;
 import java.util.Enumeration;
 import java.util.Properties;
-
-import org.energy_home.jemma.javagal.layers.business.implementations.Discovery_Freshness_ForcePing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
@@ -60,11 +54,7 @@ public class ManageMapPanId {
 			stream = new FileInputStream(filename);
 			properties.load(stream);
 			String _res = properties.getProperty(address.toString());
-
-			if (_res != null)
-				return Integer.parseInt(_res, 16);
-			else
-				return null;
+            return (_res != null) ? Integer.parseInt(_res, 16) : null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -88,13 +78,7 @@ public class ManageMapPanId {
 			stream = new FileInputStream(filename);
 			properties.load(stream);
 			String _oldvalue = properties.getProperty(address.toString());
-			if (_oldvalue == null) {
-				properties.setProperty(address.toString(), panId);
-				out = new FileOutputStream(filename);
-				properties.store(out, null);
-				out.flush();
-
-			} else if (!_oldvalue.toLowerCase().equals(panId.toLowerCase())) {
+			if ((_oldvalue == null) || !_oldvalue.toLowerCase().equals(panId.toLowerCase())) {
 				properties.setProperty(address.toString(), panId);
 				out = new FileOutputStream(filename);
 				properties.store(out, null);

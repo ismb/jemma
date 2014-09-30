@@ -15,21 +15,15 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
 import org.energy_home.jemma.zgd.MessageListener;
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.Callback;
-import org.energy_home.jemma.zgd.jaxb.Filter;
+import org.energy_home.jemma.zgd.jaxb.*;
 import org.energy_home.jemma.zgd.jaxb.Filter.AddressSpecification;
 import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages received APS messages. When an APS indication is received it is
@@ -87,15 +81,11 @@ public class MessageManager {
 							boolean messageSpecificationFound = false;
 							for (MessageSpecification ms : filter.getMessageSpecification()) {
 
-								if (ms.getAPSClusterIdentifier() == null) {
+								if ((ms.getAPSClusterIdentifier() == null) || (ms.getAPSClusterIdentifier() == message.getClusterID())) {
 									messageSpecificationFound = true;
 									// If match we can stop the search loop.
 									break;
 
-								} else if (ms.getAPSClusterIdentifier() == message.getClusterID()) {
-									messageSpecificationFound = true;
-									// If match we can stop the search loop.
-									break;
 								}
 							}
 							if (!messageSpecificationFound) {
@@ -139,13 +129,12 @@ public class MessageManager {
 										int msna0x01 = msa.getNetworkAddress();
 										// Pass if the message has a
 										// broadcast Source Address
-										if (msna0x01 != 0xFFFF) {
+										if (msna0x01 != 0xFFFF && asnsa != msna0x01) {
 											// Don't pass if they differs,
 											// so we go ahead on the next
 											// iteration in the for cycle
-											if (asnsa != msna0x01) {
-												continue;
-											}
+                                            continue;
+
 										}
 									} else if (msam == 0x02) {
 										// Network address, AND source end
@@ -164,15 +153,8 @@ public class MessageManager {
 												// on the next iteration in
 												// the for cycle.
 												continue;
-											} else if (msep != 0xFF) {
-												if (msep != assep) {
-													// Don't pass if they
-													// differs, so we go
-													// ahead on the next
-													// iteration in the for
-													// cycle.
-													continue;
-												}
+											} else if (msep != 0xFF && msep != assep) {
+												continue;
 											}
 										}
 									} else if (msam == 0x03) {
@@ -209,16 +191,14 @@ public class MessageManager {
 											// Pass if the message has a
 											// broadcast Destination End
 											// Point
-											if (mdep != 0xFF) {
-												// Don't pass if they
-												// differs,
-												// so we go ahead on the
-												// next
-												// iteration in the for
-												// cycle
-												if (asdep != mdep) {
-													continue;
-												}
+                                            // Don't pass if they
+                                            // differs,
+                                            // so we go ahead on the
+                                            // next
+                                            // iteration in the for
+                                            // cycle
+											if (mdep != 0xFF && asdep != mdep) {
+												continue;
 											}
 										}
 									}
@@ -248,7 +228,7 @@ public class MessageManager {
 						MessageListener napml = ce.getGenericDestination();
 						if (napml != null)
 						{
-							APSMessageEvent cmessage = null;
+							APSMessageEvent cmessage;
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
 							}
@@ -295,15 +275,11 @@ public class MessageManager {
 							boolean messageSpecificationFound = false;
 							for (MessageSpecification ms : filter.getMessageSpecification()) {
 
-								if (ms.getAPSClusterIdentifier() == null) {
+								if (ms.getAPSClusterIdentifier() == null ||ms.getAPSClusterIdentifier() == message.getClusterID() ) {
 									messageSpecificationFound = true;
 									// If match we can stop the search loop.
 									break;
 
-								} else if (ms.getAPSClusterIdentifier() == message.getClusterID()) {
-									messageSpecificationFound = true;
-									// If match we can stop the search loop.
-									break;
 								}
 							}
 							if (!messageSpecificationFound) {
@@ -320,62 +296,6 @@ public class MessageManager {
 						// address specification is present we assume that
 						// the check pass.
 						if (filter.getAddressSpecification().size() > 0) {
-							boolean addressingSpecificationFound = false;
-							for (AddressSpecification as : filter.getAddressSpecification()) {
-								// Source Address (Address Specification)
-								Address assa = as.getNWKSourceAddress();
-								int asnsa = 0xFFFF;
-								// If null, then we assume that all address
-								// match for this filter, and so we leave
-								// the initial value of 0xFFFF.
-								if (assa != null) {
-									asnsa = assa.getNetworkAddress();
-								}
-								short assep = -1;
-
-								if (as.getAPSSourceEndpoint() != null)
-									assep = as.getAPSSourceEndpoint();
-								// Pass if the callback has a broadcast
-								// Source Address
-								if (asnsa != 0xFFFF) {
-									// Source Address
-									long msam = message.getSrcAddressMode();
-									Address msa = message.getSrcAddress();
-									if (msam == 0x01) {
-										// Network address, NO source end
-										// point
-										int msna0x01 = msa.getNetworkAddress();
-										// Pass if the message has a
-										// broadcast Source Address
-										if (msna0x01 != 0xFFFF) {
-											// Don't pass if they differs,
-											// so we go ahead on the next
-											// iteration in the for cycle
-											if (asnsa != msna0x01) {
-												continue;
-											}
-										}
-									} else if (msam == 0x02) {
-										// Network address, AND source end
-										// point present.
-										int msna0x02 = msa.getNetworkAddress();
-										// Pass if the message has a
-										// broadcast Source Address.
-										if (msna0x02 != 0xFFFF) {
-											// Don't pass if they differs,
-											// so we go ahead on the
-											// next iteration in for cycle.
-											if (asnsa != msna0x02) {
-												// Don't pass if they
-												// differs, so we go ahead
-												// on the next iteration in
-												// the for cycle.
-												continue;
-											}
-										}
-									}
-								}
-							}
 
 							// If reached this point, then a matching
 							// Source Address is found for the current
@@ -388,8 +308,7 @@ public class MessageManager {
 							// means that a matching Addressing
 							// Specification is found. We can stop here
 							// the loop since one match it's enough.
-							addressingSpecificationFound = true;
-							break;
+                            break;
 						}
 
 					}
@@ -400,7 +319,7 @@ public class MessageManager {
 
 					MessageListener napml = ce.getGenericDestination();
 					if (napml != null){
-						InterPANMessageEvent cmessage = null;
+						InterPANMessageEvent cmessage;
 						synchronized (message) {
 							cmessage = SerializationUtils.clone(message);
 						}
