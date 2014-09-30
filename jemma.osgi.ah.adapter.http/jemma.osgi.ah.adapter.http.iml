@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="jemma.osgi.ah.adapter.http-2.0.2.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="jemma.osgi.ah.adapter.http" bundleVersion="2.0.2" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Bundle-ManifestVersion" value="2" />
+          <property key="Bundle-Name" value="Hac Http Service Manager" />
+          <property key="Import-Package" value="edu.emory.mathcs.backport.java.util.concurrent,org.energy_home.jemma.ah.hac,org.energy_home.jemma.ah.hac.lib,javax.servlet,javax.servlet.http,org.slf4j;version=&quot;[1.7.7,2)&quot;,org.json,org.osgi.framework;version=&quot;1.3.0&quot;,org.osgi.service.component,org.osgi.service.event,org.osgi.service.http,org.osgi.service.useradmin;version=&quot;1.1.0&quot;,,*" />
+          <property key="Export-Package" value="org.energy_home.jemma.hac.adapter.http,org.energy_home.jemma.hac.adapter.http.contexts" />
+          <property key="Bundle-Vendor" value="Telecom Italia" />
+          <property key="Bundle-Category" value="Automation@Home" />
+          <property key="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5" />
+          <property key="Bundle-ClassPath" value="" />
+          <property key="-removeheaders" value="Bnd-LastModified, Built-By, Build-Jdk" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
+
