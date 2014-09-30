@@ -1317,7 +1317,7 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 				/* DestAddress */
-				if ((pl.getType() == TypeMessage.ACTIVE_EP) && pl.get_Key().equalsIgnoreCase(Key)) {
+				if ((pl.getType() == TypeMessage.ACTIVE_EP) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 					pl.set_objectOfResponse(_toRes);
 					pl.getStatus().setCode(Status);
@@ -1347,7 +1347,7 @@ public class DataFreescale implements IDataLayer {
 		BigInteger _bi = BigInteger.valueOf(longAddress);
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS) && pl.get_Key().equalsIgnoreCase(Key)) {
+				if ((pl.getType() == TypeMessage.READ_IEEE_ADDRESS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 					pl.set_objectOfResponse(_bi);
 					pl.getStatus().setCode(message.getArray()[3]);
@@ -1372,7 +1372,7 @@ public class DataFreescale implements IDataLayer {
 		BigInteger _bi = BigInteger.valueOf(longAddress);
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.READ_EXT_ADDRESS)) {
+				if ((pl.getType() == TypeMessage.READ_EXT_ADDRESS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.set_objectOfResponse(_bi);
 					pl.getStatus().setCode(message.getArray()[3]);
@@ -1395,7 +1395,7 @@ public class DataFreescale implements IDataLayer {
 			LOG.info("Extracted APS-DeregisterEndPoint.Confirm: " + message.ToHexString());
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT)) {
+				if ((pl.getType() == TypeMessage.DEREGISTER_END_POINT) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					try {
@@ -1418,7 +1418,7 @@ public class DataFreescale implements IDataLayer {
 
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.GET_BINDINGS)) {
+				if ((pl.getType() == TypeMessage.GET_BINDINGS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					BindingList _res = new BindingList();
@@ -1480,7 +1480,7 @@ public class DataFreescale implements IDataLayer {
 
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.REMOVE_BINDING)) {
+				if ((pl.getType() == TypeMessage.REMOVE_BINDING) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					switch (pl.getStatus().getCode()) {
@@ -1518,7 +1518,7 @@ public class DataFreescale implements IDataLayer {
 
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.ADD_BINDING)) {
+				if ((pl.getType() == TypeMessage.ADD_BINDING) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					switch (pl.getStatus().getCode()) {
@@ -1556,7 +1556,7 @@ public class DataFreescale implements IDataLayer {
 			LOG.info("Extracted APS-GetEndPointIdList.Confirm: " + message.ToHexString());
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
-				if ((pl.getType() == TypeMessage.GET_END_POINT_LIST)) {
+				if ((pl.getType() == TypeMessage.GET_END_POINT_LIST) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					NodeServices _res = new NodeServices();
@@ -1598,7 +1598,7 @@ public class DataFreescale implements IDataLayer {
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.debug("ZDP-SimpleDescriptor.Response Sent Key: " + pl.get_Key() + " - Received Key: " + Key);
 
-				if ((pl.getType() == TypeMessage.GET_SIMPLE_DESCRIPTOR) && pl.get_Key().equalsIgnoreCase(Key)) {
+				if ((pl.getType() == TypeMessage.GET_SIMPLE_DESCRIPTOR) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 					pl.getStatus().setCode(message.getArray()[3]);
 					ServiceDescriptor _toRes = new ServiceDescriptor();
@@ -1755,7 +1755,7 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 
-				if ((pl.getType() == TypeMessage.INTERPAN)) {
+				if ((pl.getType() == TypeMessage.INTERPAN) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID)) {
 
 					pl.getStatus().setCode(message.getArray()[4]);
 					try {
@@ -1786,7 +1786,7 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
 
-				if ((pl.getType() == TypeMessage.APS) && pl.get_Key().equalsIgnoreCase(Key)) {
+				if ((pl.getType() == TypeMessage.APS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && pl.get_Key().equalsIgnoreCase(Key)) {
 
 					pl.getStatus().setCode(message.getArray()[14]);
 					switch (pl.getStatus().getCode()) {
@@ -2177,7 +2177,7 @@ public class DataFreescale implements IDataLayer {
 					LOG.info("Received LQI_RSP from node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + "--Index:" + String.format("%02X", _res._StartIndex));
 				synchronized (getListLocker()) {
 					for (ParserLocker pl : getListLocker()) {
-						if ((pl.getType() == TypeMessage.LQI_REQ) && __key.equalsIgnoreCase(pl.get_Key())) {
+						if ((pl.getType() == TypeMessage.LQI_REQ) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && __key.equalsIgnoreCase(pl.get_Key())) {
 
 							pl.getStatus().setCode((short) messageEvent.getAPSStatus());
 							pl.set_objectOfResponse(_res);

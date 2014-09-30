@@ -139,10 +139,12 @@ public class GalController {
 				LOG.info("Starting reset...");
 			/* Stop all timers */
 			synchronized (getNetworkcache()) {
-				for (WrapperWSNNode x : getNetworkcache())
+				for (WrapperWSNNode x : getNetworkcache()) {
 					x.abortTimers();
+					getNetworkcache().remove(x);
+				}
 			}
-			getNetworkcache().clear();
+
 			/* Stop discovery and freshness */
 
 			/* Destroy Gal Node */
@@ -235,10 +237,12 @@ public class GalController {
 							LOG.info("Starting reset...");
 						/* Stop all timers */
 						synchronized (getNetworkcache()) {
-							for (WrapperWSNNode x : getNetworkcache())
+							for (WrapperWSNNode x : getNetworkcache()) {
 								x.abortTimers();
+								getNetworkcache().remove(x);
+							}
 						}
-						getNetworkcache().clear();
+
 						/* Stop discovery and freshness */
 
 						/* Destroy Gal Node */
@@ -1885,7 +1889,7 @@ public class GalController {
 					LOG.info("Adding node from start Discovery: " + GalNode.get_node().getAddress().getNetworkAddress());
 
 				/* Only one element (GALNode) */
-				//getNetworkcache().add(GalNode);
+				// getNetworkcache().add(GalNode);
 				synchronized (GalNode) {
 					GalNode.set_Mgmt_LQI_rsp(null);
 					GalNode.set_discoveryCompleted(false);
