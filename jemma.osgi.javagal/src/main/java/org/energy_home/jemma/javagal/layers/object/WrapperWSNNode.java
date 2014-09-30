@@ -84,13 +84,7 @@ public class WrapperWSNNode {
 	 * Check if the Node is a sleepy device
 	 */
 	public synchronized boolean isSleepy() {
-		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
-				return false;
-			else
-				return true;
-		} else
-			return true;
+        return !((_node != null) && (_node.getCapabilityInformation() != null)) || !_node.getCapabilityInformation().isReceiverOnWhenIdle();
 
 	}
 
@@ -120,7 +114,7 @@ public class WrapperWSNNode {
 			_timerDiscovery.purge();
 		}
 		if (seconds >= 0) {
-			String name = "";
+			String name;
 			synchronized (this._node) {
 
 				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
@@ -172,10 +166,10 @@ public class WrapperWSNNode {
 		}
 
 		if (seconds >= 0) {
-			String name = "";
+			String name;
 
 			synchronized (this._node) {
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
+                name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
 
 			}
 			_timerForcePing = new Timer(name);

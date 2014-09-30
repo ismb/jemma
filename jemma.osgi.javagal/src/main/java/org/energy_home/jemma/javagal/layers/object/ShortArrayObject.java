@@ -16,8 +16,6 @@
 package org.energy_home.jemma.javagal.layers.object;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Object carrying a {@code byte[]} of fixed length. The aims of this class is
@@ -229,8 +227,9 @@ public class ShortArrayObject {
 	 *         array.
 	 */
 	public String ToHexString() {
-		StringBuffer _res = new StringBuffer();
-		short[] _vect = getShortArray();
+		StringBuffer _res;
+        _res = new StringBuffer();
+        short[] _vect = getShortArray();
 		for (int i = 0; i < getCount(true); i++)
 			_res.append(String.format("%02X", ((Short) _vect[i]).byteValue()));
 		return _res.toString();

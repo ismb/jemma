@@ -15,12 +15,11 @@
  */
 package org.energy_home.jemma.javagal.layers.object;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to populate the Lqi Response received
