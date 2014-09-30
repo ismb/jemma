@@ -141,10 +141,10 @@ public class GalController {
 			synchronized (getNetworkcache()) {
 				for (WrapperWSNNode x : getNetworkcache()) {
 					x.abortTimers();
-					getNetworkcache().remove(x);
+
 				}
 			}
-
+			getNetworkcache().clear();
 			/* Stop discovery and freshness */
 
 			/* Destroy Gal Node */
@@ -239,10 +239,10 @@ public class GalController {
 						synchronized (getNetworkcache()) {
 							for (WrapperWSNNode x : getNetworkcache()) {
 								x.abortTimers();
-								getNetworkcache().remove(x);
+
 							}
 						}
-
+						getNetworkcache().clear();
 						/* Stop discovery and freshness */
 
 						/* Destroy Gal Node */
@@ -1876,20 +1876,23 @@ public class GalController {
 			if (((discoveryMask & GatewayConstants.DISCOVERY_LQI) > 0) && (timeout > 1)) {
 
 				/* Clear the Network Cache */
+				LinkedList<Integer> _toremove = new LinkedList<Integer>();
+				int i = 0;
 				synchronized (getNetworkcache()) {
 					for (WrapperWSNNode x : getNetworkcache()) {
 						if (!x.get_node().getAddress().getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress())) {
 							x.abortTimers();
-							getNetworkcache().remove(x);
+							_toremove.add(i);
 						}
+						i++;
 					}
+					for (Integer x : _toremove)
+						getNetworkcache().remove(x);
+
 				}
 
-				if (getPropertiesManager().getDebugEnabled())
-					LOG.info("Adding node from start Discovery: " + GalNode.get_node().getAddress().getNetworkAddress());
-
 				/* Only one element (GALNode) */
-				// getNetworkcache().add(GalNode);
+
 				synchronized (GalNode) {
 					GalNode.set_Mgmt_LQI_rsp(null);
 					GalNode.set_discoveryCompleted(false);

@@ -97,7 +97,7 @@ public class RestMessageListener implements MessageListener {
 						info.setEventCallbackIdentifier(CalbackIdentifier);
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
-							LOG.debug("Unmarshaled" + xml);
+							LOG.info("Unmarshaled" + xml);
 						
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();

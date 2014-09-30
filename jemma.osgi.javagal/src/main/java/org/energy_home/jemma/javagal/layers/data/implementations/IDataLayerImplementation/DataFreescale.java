@@ -2091,6 +2091,7 @@ public class DataFreescale implements IDataLayer {
 		} else
 			return;
 
+		
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus(message.getArray()[lastAsdu + 1]);
