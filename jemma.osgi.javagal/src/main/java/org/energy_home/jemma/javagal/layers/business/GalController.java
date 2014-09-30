@@ -2126,10 +2126,13 @@ public class GalController {
 					/**/
 
 					_lockerStartDevice.setId(1);
-					try {
-						_lockerStartDevice.getObjectLocker().put((byte) 0);
-					} catch (InterruptedException e1) {
+					synchronized (_lockerStartDevice.getObjectLocker()) {
+						try {
+							if (_lockerStartDevice.getObjectLocker().size() == 0)
+								_lockerStartDevice.getObjectLocker().put((byte) 0);
+						} catch (InterruptedException e) {
 
+						}
 					}
 
 					_gatewayStatus = gatewayStatus;
