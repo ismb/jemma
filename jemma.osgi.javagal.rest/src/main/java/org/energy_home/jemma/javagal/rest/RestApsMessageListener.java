@@ -19,7 +19,6 @@ import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Callback;
 import org.energy_home.jemma.zgd.jaxb.Info;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -43,8 +42,7 @@ public class RestApsMessageListener implements APSMessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger( RestApsMessageListener.class );
 	private Long CalbackIdentifier = -1L;
-	private Callback callback;
-	private String urilistener;
+    private String urilistener;
 	private ClientResources clientResource;
 	private final Context context;
 	private PropertiesManager _PropertiesManager;
@@ -58,18 +56,13 @@ public class RestApsMessageListener implements APSMessageListener {
 	 * incoming notifications. In practice the clients opens an http server at
 	 * the urilistener uri where this class can {@code POST} incoming
 	 * notifications.
-	 * 
-	 * @param callback
-	 *            the callback.
-	 * @param urilistener
+	 *  @param urilistener
 	 *            the urilistener.
 	 * @param _clientResource
-	 *            the client resource.
-	 */
-	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
+     */
+	public RestApsMessageListener(String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
 		super();
-		this.callback = callback;
-		this.urilistener = urilistener;
+        this.urilistener = urilistener;
 		this.clientResource = _clientResource;
 		this.context = new Context();
 		this._PropertiesManager = __PropertiesManager;
@@ -99,9 +92,9 @@ public class RestApsMessageListener implements APSMessageListener {
 							LOG.debug("Marshaled:" +xml);
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
-						resource = null;
-						clientResource.resetCounter();
+                        clientResource.resetCounter();
 					} catch (Exception e) {
+                        LOG.error("Exception on ??", e);
 						clientResource.addToCounterException();
 
 					}
@@ -121,16 +114,7 @@ public class RestApsMessageListener implements APSMessageListener {
 		return urilistener;
 	}
 
-	/**
-	 * Gets the callback.
-	 * 
-	 * @return the callback.
-	 */
-	public Callback getCallback() {
-		return callback;
-	}
-
-	/**
+    /**
 	 * Sets the callback id.
 	 * 
 	 * @param id

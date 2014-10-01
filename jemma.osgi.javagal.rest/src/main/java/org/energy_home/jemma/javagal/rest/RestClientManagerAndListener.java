@@ -18,18 +18,7 @@ package org.energy_home.jemma.javagal.rest;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.GatewayEventListenerExtended;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.BindingList;
-import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.NodeServices;
-import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
-import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
+import org.energy_home.jemma.zgd.jaxb.*;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
@@ -698,49 +687,9 @@ public class RestClientManagerAndListener implements
 		}
 
 	}
-	
-	
-	
-	
-	public void notifyInterPANCommand(final InterPANMessageEvent message) {
 
-		if ((interPANCommandDestination  != null)
-				&& !interPANCommandDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
-				public void run() {
-					try {
-						if (_PropertiesManager.getDebugEnabled())
-							LOG.info("Connecting to:"  + interPANCommandDestination);
-	
-						ClientResource resource = new ClientResource(context,
-								interPANCommandDestination);
-						Info.Detail detail = new Info.Detail();
-						detail.setInterPANMessageEvent(message);
-						String _xml = Util.marshal(detail);
-						if (_PropertiesManager.getDebugEnabled())
-							LOG.info(_xml);
-						resource.post(_xml, MediaType.TEXT_XML);
-						resource.release();
-						resource = null;
-						clientResource.resetCounter();
-					} catch (Exception e) {
-						if (_PropertiesManager.getDebugEnabled())
-							LOG.error(e.getMessage(),e);
-	
-						clientResource.addToCounterException();
-					}
-				}
-			};
-			thr.start();
-
-		}
-
-	}
-	
-
-	public void notifyZCLCommand(final ZCLMessage message) {
+    public void notifyZCLCommand(final ZCLMessage message) {
 
 		if ((zclCommandDestination != null)
 				&& !zclCommandDestination.equals("")) {
@@ -814,114 +763,58 @@ public class RestClientManagerAndListener implements
 
 	}
 
-	public String getGatewayStopDestination() {
-		return gatewayStopDestination;
-	}
-
-	public void setGatewayStopDestination(String gatewayStopDestination) {
+    public void setGatewayStopDestination(String gatewayStopDestination) {
 		this.gatewayStopDestination = gatewayStopDestination;
 	}
 
-	public String getLeaveResultDestination() {
-		return leaveResultDestination;
-	}
-
-	public void setLeaveResultDestination(String leaveResultDestination) {
+    public void setLeaveResultDestination(String leaveResultDestination) {
 		this.leaveResultDestination = leaveResultDestination;
 	}
 
-	public String getNodeDescriptorDestination() {
-		return nodeDescriptorDestination;
-	}
-
-	public void setNodeDescriptorDestination(String nodeDescriptorDestination) {
+    public void setNodeDescriptorDestination(String nodeDescriptorDestination) {
 		this.nodeDescriptorDestination = nodeDescriptorDestination;
 	}
 
-	public String getNodeDiscoveredDestination() {
-		return nodeDiscoveredDestination;
-	}
-
-	public void setNodeDiscoveredDestination(String nodeDiscoveredDestination) {
+    public void setNodeDiscoveredDestination(String nodeDiscoveredDestination) {
 		this.nodeDiscoveredDestination = nodeDiscoveredDestination;
 	}
 
-	public String getNodeRemovedDestination() {
-		return nodeRemovedDestination;
-	}
-
-	public void setNodeRemovedDestination(String nodeRemovedDestination) {
+    public void setNodeRemovedDestination(String nodeRemovedDestination) {
 		this.nodeRemovedDestination = nodeRemovedDestination;
 	}
 
-	public String getNodeServicesDestination() {
-		return nodeServicesDestination;
-	}
-
-	public void setNodeServicesDestination(String nodeServicesDestination) {
+    public void setNodeServicesDestination(String nodeServicesDestination) {
 		this.nodeServicesDestination = nodeServicesDestination;
 	}
 
-	public String getPermitJoinDestination() {
-		return permitJoinDestination;
-	}
-
-	public void setPermitJoinDestination(String permitJoinDestination) {
+    public void setPermitJoinDestination(String permitJoinDestination) {
 		this.permitJoinDestination = permitJoinDestination;
 	}
 
-	public String getResetDestination() {
-		return resetDestination;
-	}
-
-	public void setResetDestination(String resetDestination) {
+    public void setResetDestination(String resetDestination) {
 		this.resetDestination = resetDestination;
 	}
 
-	public String getServiceDescriptorDestination() {
-		return serviceDescriptorDestination;
-	}
-
-	public void setServiceDescriptorDestination(
+    public void setServiceDescriptorDestination(
 			String serviceDescriptorDestination) {
 		this.serviceDescriptorDestination = serviceDescriptorDestination;
 	}
 
-	public String getStartGatewayDestination() {
-		return startGatewayDestination;
-	}
-
-	public void setStartGatewayDestination(String startGatewayDestination) {
+    public void setStartGatewayDestination(String startGatewayDestination) {
 		this.startGatewayDestination = startGatewayDestination;
 	}
 
-	public String getZclCommandDestination() {
-		return zclCommandDestination;
-	}
-
-	public void setZclCommandDestination(String zclCommandDestination) {
+    public void setZclCommandDestination(String zclCommandDestination) {
 		this.zclCommandDestination = zclCommandDestination;
 	}
 
-	public String getFrequencyAgilityResultDestination() {
-		return frequencyAgilityResultDestination;
-	}
-
-	public void setFrequencyAgilityResultDestination(
+    public void setFrequencyAgilityResultDestination(
 			String _frequencyAgilityResultDestination) {
 		this.frequencyAgilityResultDestination = _frequencyAgilityResultDestination;
 	}
 
-	public String getZdpCommandDestination() {
-		return zdpCommandDestination;
-	}
-	
-	
-	public String getinterPANCommandDestination() {
-		return interPANCommandDestination;
-	}
 
-	public void setZdpCommandDestination(String zdpCommandDestination) {
+    public void setZdpCommandDestination(String zdpCommandDestination) {
 		this.zdpCommandDestination = zdpCommandDestination;
 	}
 	
@@ -929,27 +822,15 @@ public class RestClientManagerAndListener implements
 		this.interPANCommandDestination = interPANCommandDestination;
 	}
 
-	public String getBindingDestination() {
-		return bindingDestination;
-	}
-
-	public void setBindingDestination(String bindingDestination) {
+    public void setBindingDestination(String bindingDestination) {
 		this.bindingDestination = bindingDestination;
 	}
 
-	public String getUnbindingDestination() {
-		return unbindingDestination;
-	}
-
-	public void setUnbindingDestination(String unbindingDestination) {
+    public void setUnbindingDestination(String unbindingDestination) {
 		this.unbindingDestination = unbindingDestination;
 	}
 
-	public String getNodeBindingDestination() {
-		return nodeBindingDestination;
-	}
-
-	public void setNodeBindingDestination(String nodeBindingDestination) {
+    public void setNodeBindingDestination(String nodeBindingDestination) {
 		this.nodeBindingDestination = nodeBindingDestination;
 	}
 

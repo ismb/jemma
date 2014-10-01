@@ -338,13 +338,4 @@ public class GalManagerRestApplication extends Application {
 		return restManager;
 	}
 
-	/**
-	 * Sets the rest manager.
-	 * 
-	 * @param restManager
-	 *            the rest manager to set.
-	 */
-	public void setRestManager(RestManager restManager) {
-		this.restManager = restManager;
-	}
 }

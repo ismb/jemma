@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="jemma.osgi.ah.hap.client-1.2.15.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="org.energy_home.jemma.osgi.ah.hap.client.HapCoreService" bundleSymbolicName="jemma.osgi.ah.hap.client" bundleVersion="1.2.15" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Bundle-ManifestVersion" value="2" />
+          <property key="Bundle-Name" value="Hap Client" />
+          <property key="Require-Bundle" value="jemma.osgi.ah.hac.lib" />
+          <property key="Import-Package" value="org.energy_home.jemma.ah.cluster.zigbee.eh;version=&quot;[3.1.0,3.2.0)&quot;,org.energy_home.jemma.ah.cluster.zigbee.general;version=&quot;[3.1.0,3.2.0)&quot;,org.energy_home.jemma.ah.cluster.zigbee.metering;version=&quot;[3.1.0,3.2.0)&quot;,org.energy_home.jemma.ah.hac;version=&quot;[3.0.2,3.1.0)&quot;,org.energy_home.jemma.ah.hac.lib.ext;version=&quot;[3.4.0,3.5.0)&quot;,org.energy_home.jemma.ah.m2m.device;version=&quot;[1.3.0,1.4.0)&quot;,org.energy_home.jemma.ah.m2m.device.lib;version=&quot;[1.3.0,1.4.0)&quot;,org.energy_home.jemma.m2m;version=&quot;[1.3.0,1.4.0)&quot;,org.energy_home.jemma.m2m.ah;version=&quot;[1.2.2,1.3.0)&quot;,org.energy_home.jemma.osgi.utils.equinox.console,org.energy_home.jemma.utils.datetime;version=&quot;[1.0.1,1.1.0)&quot;,org.energy_home.jemma.utils.xml.jaxb;version=&quot;[1.0.0,1.1.0)&quot;,org.energy_home.jemma.utils.thread;version=&quot;1.0.0&quot;,javax.servlet,javax.servlet.http,javax.servlet.resources,org.apache.commons.codec.binary,org.slf4j;version=&quot;[1.7.7,2)&quot;,org.apache.http;version=&quot;4.1.0&quot;,org.apache.http.util;version=&quot;4.1.0&quot;,org.apache.http.entity;version=&quot;4.1.0&quot;,org.apache.http.client;version=&quot;4.1.0&quot;,org.eclipse.osgi.framework.console;version=&quot;1.0.0&quot;,org.osgi.framework,org.osgi.service.component,org.osgi.service.http,*" />
+          <property key="Export-Package" value="org.energy_home.jemma.ah.hap.client;version=&quot;1.4.0&quot;,org.energy_home.jemma.ah.hap.client.lib;version=&quot;1.4.0&quot;,org.energy_home.jemma.shal,org.energy_home.jemma.shal.min" />
+          <property key="Service-Component" value="OSGI-INF/*.xml" />
+          <property key="Bundle-Vendor" value="Telecom Italia" />
+          <property key="Bundle-Category" value="Automation@Home" />
+          <property key="Bundle-RequiredExecutionEnvironment" value="J2SE-1.5" />
+          <property key="Bundle-ClassPath" value="" />
+          <property key="-removeheaders" value="Bnd-LastModified, Built-By, Build-Jdk" />
+          <property key="Include-Resource" value="OSGI-INF/hapclient.xml=$MODULE_DIR$/OSGI-INF/hapclient.xml,OSGI-INF/m2mlocal.xml=$MODULE_DIR$/OSGI-INF/m2mlocal.xml" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="jemma.osgi.ah.hac.lib" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi.services:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.ds:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi.util:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse:org.eclipse.core.jobs:3.4.100" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.util:1.0.100" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.device:1.0.100" level="project" />
+    <orderEntry type="library" name="Maven: jaxb-osgi:jaxb-osgi:2.2.7" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-service:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-api:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.confman:pax-confman-propsloader:0.2.3" level="project" />
+    <orderEntry type="module" module-name="jemma.osgi.ah.m2m.device" />
+    <orderEntry type="module" module-name="jemma.osgi.utils" />
+    <orderEntry type="library" name="Maven: org.apache.commons:org.apache.commons.codec:1.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:org.apache.httpcomponents.httpclient:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:org.apache.httpcomponents.httpcore:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.enterprise:stax-osgi:0.3.95" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.stream:stax-api:1.0-2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: woodstox:wstx-asl:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:javax.activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.jaxb-namespaceprefixmapper-interfaces:JAXBNamespacePrefixMapper:2.2.4" level="project" />
+    <orderEntry type="module" module-name="jemma.osgi.utils" />
+    <orderEntry type="library" name="Maven: org.apache.commons:org.apache.commons.httpclient:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.felix:org.apache.felix.bundlerepository:1.6.6" level="project" />
+    <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.easymock:easymock:2.4" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.http.jetty:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.http.registry:1.0.200" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.http.servlet:1.0.200" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.http.servletbridge:1.1.100" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.registry:3.4.100" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:org.mortbay.jetty.server:6.1.23" level="project" />
+    <orderEntry type="library" name="Maven: org.mortbay.jetty:org.mortbay.jetty.util:6.1.23" level="project" />
+  </component>
+</module>
+

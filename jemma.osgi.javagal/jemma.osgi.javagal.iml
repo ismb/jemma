@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="jemma.osgi.javagal-2.0.1.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="org.energy_home.jemma.javagal.layers.presentation.Activator" bundleSymbolicName="jemma.osgi.javagal;singleton:=true" bundleVersion="2.0.1" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Bundle-ManifestVersion" value="2" />
+          <property key="Bundle-Name" value="Java Gal" />
+          <property key="Bundle-Vendor" value="Telecom Italia" />
+          <property key="Bundle-RequiredExecutionEnvironment" value="JavaSE-1.6" />
+          <property key="Import-Package" value="gnu.io;version=&quot;1.0.0&quot;;resolution:=optional,org.apache.commons.lang3;version=&quot;3.3.2&quot;,jssc;resolution:=optional,org.slf4j;version=&quot;[1.7.7,2)&quot;,org.osgi.framework,org.osgi.util.tracker;version=&quot;1.4.2&quot;,*" />
+          <property key="Export-Package" value="org.energy_home.jemma.zgd;version=&quot;1.4.1&quot;,org.energy_home.jemma.zgd.jaxb;version=&quot;1.0.4&quot;" />
+          <property key="Bundle-ClassPath" value="" />
+          <property key="-removeheaders" value="Bnd-LastModified, Built-By, Build-Jdk" />
+          <property key="Include-Resource" value="mapPanId.properties=$MODULE_DIR$/src/main/resources/mapPanId.properties,config.properties=$MODULE_DIR$/src/main/resources/config.properties" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi.services:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml:javax.xml:1.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.rxtx:org.rxtx:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: jssc:jssc:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.ds:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi.util:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse:org.eclipse.core.jobs:3.4.100" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.util:1.0.100" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.equinox:org.eclipse.equinox.device:1.0.100" level="project" />
+    <orderEntry type="library" name="Maven: jaxb-osgi:jaxb-osgi:2.2.7" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-service:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.logging:pax-logging-api:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: org.ops4j.pax.confman:pax-confman-propsloader:0.2.3" level="project" />
+  </component>
+</module>
+
