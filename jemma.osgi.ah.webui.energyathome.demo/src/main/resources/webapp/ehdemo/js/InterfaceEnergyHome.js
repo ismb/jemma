@@ -51,7 +51,8 @@ var InterfaceEnergyHome = {
 	DELTA : 5,
 	PID_TOTALE : null,
 	//TODO: check merge, do these declarations need to be renamed?
-	WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
+	//WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
+	WHITEGOOD_APP_TYPE : "org.energy_home.jemma.ah.zigbee.whitegood",
 	//SMARTINFO_APP_TYPE : "it.telecomitalia.ah.zigbee.metering",
 	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering",
 	//SMARTPLUG_APP_TYPE : "it.telecomitalia.ah.zigbee.smartplug",

@@ -131,19 +131,6 @@ public class WrapperWSNNode {
 			forcePingJob.cancel(true);
 			forcePingJob = null;
 		}
-/*
-		if (freshnessTPool != null) {
-			freshnessTPool.shutdown();
-
-		}
-		if (forcePingTPool != null) {
-			forcePingTPool.shutdown();
-		}
-
-		if (discoveryTPool != null) {
-			discoveryTPool.shutdown();
-		}
-*/
 	}
 
 	/**
