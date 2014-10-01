@@ -24,6 +24,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -89,6 +93,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class GalController {
+	private ExecutorService executor = null;
 	private GatewayStatus _gatewayStatus = GatewayStatus.GW_READY_TO_START;
 	private Long CallbackIdentifier = (long) 1;
 	private List<WrapperWSNNode> NetworkCache = Collections.synchronizedList(new LinkedList<WrapperWSNNode>());
@@ -338,7 +343,19 @@ public class GalController {
 		manageMapPanId = new ManageMapPanId(this);
 		_lockerStartDevice = new ParserLocker();
 		_discoveryManager = new Discovery_Freshness_ForcePing(this);
+		executor = Executors.newFixedThreadPool(getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-GalController");
+			}
+		});
+
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+		}
 		initializeGAL();
 	}
 
@@ -755,8 +772,8 @@ public class GalController {
 
 		if (Async) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
+				
 				public void run() {
 					NodeDescriptor nodeDescriptor = new NodeDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -802,8 +819,7 @@ public class GalController {
 					}
 
 				}
-			};
-			thr.start();
+			});
 			return null;
 
 		} else {
@@ -864,8 +880,7 @@ public class GalController {
 	public Status startGatewayDevice(final long timeout, final int _requestIdentifier, final StartupAttributeInfo sai, final boolean Async) throws IOException, Exception, GatewayException {
 		// The network can start only from those two gateway status...
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 
 					if (getGatewayStatus() == GatewayStatus.GW_READY_TO_START || getGatewayStatus() == GatewayStatus.GW_STOPPED) {
@@ -930,8 +945,7 @@ public class GalController {
 
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			Status _status;
@@ -1031,8 +1045,7 @@ public class GalController {
 			PropertiesManager.getSturtupAttributeInfo().setStartupControl((short) 0x04);
 		}
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 
@@ -1050,9 +1063,7 @@ public class GalController {
 					}
 
 				}
-			};
-			thr.setName("Gateway reset Thread");
-			thr.start();
+			});
 			return null;
 		} else {
 
@@ -1086,8 +1097,7 @@ public class GalController {
 	 */
 	public Status stopNetwork(final long timeout, final int _requestIdentifier, boolean Async) throws Exception, GatewayException {
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1124,8 +1134,7 @@ public class GalController {
 
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			Status _status;
@@ -1294,8 +1303,7 @@ public class GalController {
 			aoi.setIeeeAddress(getIeeeAddress_FromShortAddress(aoi.getNetworkAddress()));
 
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					NodeServices _newNodeService = new NodeServices();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1345,9 +1353,7 @@ public class GalController {
 					}
 				}
 
-			};
-
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1513,8 +1519,7 @@ public class GalController {
 			addrOfInterest.setIeeeAddress(getIeeeAddress_FromShortAddress(addrOfInterest.getNetworkAddress()));
 
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					Status _s = null;
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1584,9 +1589,7 @@ public class GalController {
 
 				}
 
-			};
-
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1709,8 +1712,7 @@ public class GalController {
 	 */
 	public Status permitJoin(final long timeout, final int _requestIdentifier, final Address addrOfInterest, final short duration, final boolean Async) throws IOException, GatewayException, Exception {
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 
 					Status _s = new Status();
@@ -1744,9 +1746,7 @@ public class GalController {
 
 				}
 
-			};
-
-			thr.start();
+			});
 			return null;
 		} else {
 			Status _s;
@@ -1804,8 +1804,7 @@ public class GalController {
 		final Address _add = new Address();
 		_add.setNetworkAddress(0xFFFC);
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					Status _s;
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1833,9 +1832,7 @@ public class GalController {
 					}
 
 				}
-			};
-
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -2262,8 +2259,7 @@ public class GalController {
 			addrOfInterest.setIeeeAddress(getIeeeAddress_FromShortAddress(addrOfInterest.getNetworkAddress()));
 
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					ServiceDescriptor _toRes = new ServiceDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -2295,8 +2291,7 @@ public class GalController {
 						get_gatewayEventManager().notifyserviceDescriptorRetrieved(_requestIdentifier, _s, _toRes);
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -2340,8 +2335,7 @@ public class GalController {
 			aoi.setIeeeAddress(getIeeeAddress_FromShortAddress(aoi.getNetworkAddress()));
 
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					BindingList _toRes = new BindingList();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -2369,8 +2363,7 @@ public class GalController {
 						get_gatewayEventManager().notifynodeBindingsRetrieved(_requestIdentifier, _s, _toRes);
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -2409,8 +2402,7 @@ public class GalController {
 		aoi.setNetworkAddress(getShortAddress_FromIeeeAddress(aoi.getIeeeAddress()));
 
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 
@@ -2436,8 +2428,7 @@ public class GalController {
 
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING)
@@ -2475,8 +2466,7 @@ public class GalController {
 		aoi.setIeeeAddress(binding.getSourceIEEEAddress());
 		aoi.setNetworkAddress(getShortAddress_FromIeeeAddress(aoi.getIeeeAddress()));
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
@@ -2500,8 +2490,7 @@ public class GalController {
 						get_gatewayEventManager().notifyUnbindingResult(_requestIdentifier, _s);
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING)
@@ -2536,8 +2525,7 @@ public class GalController {
 	 */
 	public Status frequencyAgilitySync(final long timeout, final int _requestIdentifier, final short scanChannel, final short scanDuration, final boolean Async) throws IOException, Exception, GatewayException {
 		if (Async) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
@@ -2562,8 +2550,7 @@ public class GalController {
 
 					}
 				}
-			};
-			thr.start();
+			});
 			return null;
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {

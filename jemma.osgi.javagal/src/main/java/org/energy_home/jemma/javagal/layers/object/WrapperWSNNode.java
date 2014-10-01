@@ -131,7 +131,7 @@ public class WrapperWSNNode {
 			forcePingJob.cancel(true);
 			forcePingJob = null;
 		}
-
+/*
 		if (freshnessTPool != null) {
 			freshnessTPool.shutdown();
 
@@ -143,7 +143,7 @@ public class WrapperWSNNode {
 		if (discoveryTPool != null) {
 			discoveryTPool.shutdown();
 		}
-
+*/
 	}
 
 	/**
