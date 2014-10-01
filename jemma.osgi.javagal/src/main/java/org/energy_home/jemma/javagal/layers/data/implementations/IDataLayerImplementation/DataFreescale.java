@@ -97,12 +97,8 @@ public class DataFreescale implements IDataLayer {
 
 	public final static short SIZE_ARRAY = 2048;
 
-	private ArrayBlockingQueue<Byte> receivedDataQueue = new ArrayBlockingQueue<Byte>(SIZE_ARRAY);
-
-	private ArrayBlockingQueue<Byte> getReceivedDataQueue() {
-		return receivedDataQueue;
-	}
-
+	
+	
 	private ArrayBlockingQueue<ByteArrayObject> dataFromSerialComm;
 
 	private ArrayBlockingQueue<ByteArrayObject> getDataFromSerialComm() {
@@ -127,7 +123,6 @@ public class DataFreescale implements IDataLayer {
 		gal = _gal;
 		listLocker = Collections.synchronizedList(new LinkedList<ParserLocker>());
 		dataFromSerialComm = new ArrayBlockingQueue<ByteArrayObject>(SIZE_ARRAY);
-		receivedDataQueue = new ArrayBlockingQueue<Byte>(SIZE_ARRAY);
 		// we don't know in advance which comm library is installed into the
 		// system.
 		boolean foundSerialLib = false;
@@ -170,24 +165,13 @@ public class DataFreescale implements IDataLayer {
 		Thread thrAnalizer = new Thread() {
 			@Override
 			public void run() {
-				ByteArrayObject tempArray = null;
 				while (!getDestroy()) {
-					tempArray = createMessageFromRowData();
-					if (tempArray != null) {
-						try {
-							final ByteArrayObject message = tempArray;
-							executor.execute(new Runnable() {
-								public void run() {
-									try {
-										processMessages(message);
-									} catch (Exception e) {
-										LOG.error("Error on processMessages: " + e.getMessage());
-									}
-								}
-							});
-						} catch (Exception e) {
-							LOG.error("Error on processMessages: " + e.getMessage());
-						}
+					try {
+						processAllRaw(getDataFromSerialComm().take());
+					} catch (Exception e) {
+						LOG.error("Error on processAllRaw:" + e.getMessage() );
+						e.printStackTrace();
+
 					}
 				}
 				if (getGal().getPropertiesManager().getDebugEnabled())
@@ -197,79 +181,85 @@ public class DataFreescale implements IDataLayer {
 		thrAnalizer.setName("TH-MessagesAnalizer");
 		thrAnalizer.setPriority(Thread.MAX_PRIORITY);
 		thrAnalizer.start();
-		Thread thrReceiver = new Thread() {
-			@Override
-			public void run() {
-				ByteArrayObject _currentCommandReived = null;
-				while (!getDestroy()) {
-					try {
-						_currentCommandReived = getDataFromSerialComm().take();
-					} catch (InterruptedException e) {
 
-					}
-					if (_currentCommandReived != null) {
-						byte[] shortArray = _currentCommandReived.getArray();
-						for (int z = 0; z < _currentCommandReived.getCount(false); z++)
-							try {
-								getReceivedDataQueue().put(shortArray[z]);
-							} catch (InterruptedException e) {
-							}
-					}
-				}
-				if (getGal().getPropertiesManager().getDebugEnabled())
-					LOG.info("TH-RS232-Receiver Stopped!");
-			}
-		};
-		thrReceiver.setName("TH-RS232-Receiver");
-		thrReceiver.setPriority(Thread.MAX_PRIORITY);
-		thrReceiver.start();
 	}
 
-	private ByteArrayObject createMessageFromRowData() {
-		ByteArrayObject messageExtracted = new ByteArrayObject(true);
-		try {
-			if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-				LOG.info("Length of the BufferRow:[" + (messageExtracted.getCount(true) + getReceivedDataQueue().size() + getDataFromSerialComm().size()) + "]");
-			while (true) {
-				byte firstByte = getReceivedDataQueue().take();
-				if (firstByte != DataManipulation.SEQUENCE_START) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled()) {
-						LOG.error("Error on Message Received, removing wrong byte: " + String.format("%02X", firstByte));
+	private byte[] rawnotprocessed = new byte[0];
 
-					}
-					continue;
+	private void processAllRaw(ByteArrayObject rawdataObject) {
+
+		byte[] partialrawdata = rawdataObject.getArrayRealSize();
+		byte[] fullrawdata = new byte[partialrawdata.length + rawnotprocessed.length];
+
+		System.arraycopy(rawnotprocessed, 0, fullrawdata, 0, rawnotprocessed.length);
+		System.arraycopy(partialrawdata, 0, fullrawdata, rawnotprocessed.length, partialrawdata.length);
+
+		int offset = 0;
+		boolean foundStart;
+
+		while (fullrawdata.length > offset) {
+
+			foundStart = false;
+			for (; offset < fullrawdata.length; offset++) {
+				if (fullrawdata[offset] == DataManipulation.SEQUENCE_START) {
+					foundStart = true;
+					break;
 				}
-				messageExtracted.addByte(getReceivedDataQueue().take());// Opgroup
-				messageExtracted.addByte(getReceivedDataQueue().take());// OpCode
-				messageExtracted.addByte(getReceivedDataQueue().take());// Length
-
-				int payloadLenght = (messageExtracted.getArray()[2]);// GetLength
-				while (messageExtracted.getCount(true) < ((DataManipulation.START_PAYLOAD_INDEX - 1) + payloadLenght))
-					messageExtracted.addByte(getReceivedDataQueue().take());// Data
-
-				/* Check CFC */
-				byte messageCfc = getReceivedDataQueue().take();// CFCControl
-				ChecksumControl csc = new ChecksumControl();
-				csc.getCumulativeXor(messageExtracted.getArray()[0]);// OpGroup
-				csc.getCumulativeXor(messageExtracted.getArray()[1]);// OpCode
-				csc.getCumulativeXor(messageExtracted.getArray()[2]);// Length
-				for (int i = 0; i < payloadLenght; i++)
-					csc.getCumulativeXor(messageExtracted.getArray()[(DataManipulation.START_PAYLOAD_INDEX - 1) + i]);
-
-				if (csc.getLastCalulated() != messageCfc) {
-					if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-						LOG.error("Error CSC Control: " + csc.getLastCalulated() + "!=" + messageCfc);
-					messageExtracted = new ByteArrayObject(true);
-					continue;
-				}
-
-				/* END CFC */
-				return messageExtracted;
 			}
-		} catch (InterruptedException e) {
 
+			if (!foundStart) {
+				rawnotprocessed = new byte[0];
+				return;
+			}
+
+			if (fullrawdata.length <= offset + 3) {
+				break;
+			}
+
+			int payloadLenght = fullrawdata[offset + 3];
+			int pdulength = DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1;
+
+			if (fullrawdata.length - offset < pdulength) {
+				break;
+			}
+
+			short localCfc = fullrawdata[offset + 1];
+			localCfc ^= fullrawdata[offset + 2];
+			localCfc ^= fullrawdata[offset + 3];
+
+			for (int i = 0; i < payloadLenght; i++) {
+				localCfc ^= fullrawdata[offset + DataManipulation.START_PAYLOAD_INDEX + i];
+			}
+
+			if (localCfc == fullrawdata[offset + DataManipulation.START_PAYLOAD_INDEX + payloadLenght]) {
+				final byte[] toByteArray = new byte[pdulength - 1];
+				System.arraycopy(fullrawdata, offset + 1, toByteArray, 0, pdulength - 1);
+				final ByteArrayObject toProcess = new ByteArrayObject(toByteArray,toByteArray.length);
+				try {
+					executor.execute(new Runnable() {
+						public void run() {
+							try {
+								processMessages(toProcess);
+							} catch (Exception e) {
+								LOG.error("Error on processMessages: " + e.getMessage());
+							}
+						}
+					});
+				} catch (Exception e) {
+					LOG.error("during process", e);
+				}
+			} else {
+				LOG.info("Checksum KO! Remove all raw bytes!");
+				rawnotprocessed = new byte[0];
+				return;
+			}
+
+			offset += DataManipulation.START_PAYLOAD_INDEX + payloadLenght + 1;
 		}
-		return null;
+
+		rawnotprocessed = new byte[fullrawdata.length - offset];
+		System.arraycopy(fullrawdata, offset, rawnotprocessed, 0, fullrawdata.length - offset);
+
 	}
 
 	public void processMessages(ByteArrayObject message) throws Exception {
@@ -2091,7 +2081,6 @@ public class DataFreescale implements IDataLayer {
 		} else
 			return;
 
-		
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus(message.getArray()[lastAsdu + 1]);
@@ -3674,8 +3663,11 @@ public class DataFreescale implements IDataLayer {
 
 	@Override
 	public void clearBuffer() {
-		getReceivedDataQueue().clear();
-
+		try {
+			getDataFromSerialComm().put(new ByteArrayObject(true));
+		} catch (InterruptedException e) {
+			
+		}
 		getDataFromSerialComm().clear();
 
 	}

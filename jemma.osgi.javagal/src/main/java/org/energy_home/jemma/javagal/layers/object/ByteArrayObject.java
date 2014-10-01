@@ -77,6 +77,9 @@ public class ByteArrayObject {
 		count = size;
 
 	}
+	
+	
+	
 
 	/**
 	 * Adds a byte after the last currently valid one. Consequently the
