@@ -47,6 +47,8 @@ public interface GreenAtHomeApplianceService {
 	
 	//added for demo
 	public Vector getInfosDemo();
+	//added for read prop file for demo
+	public Hashtable getPropConfiguration(String lblProps);
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
 

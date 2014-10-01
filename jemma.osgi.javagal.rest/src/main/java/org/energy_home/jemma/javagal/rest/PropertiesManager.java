@@ -99,6 +99,27 @@ public class PropertiesManager {
 
 	}
 
+	/**
+	 * Gets NumberOfThreadForAnyPool property.
+	 * 
+	 * @return the NumberOfThreadForAnyPool value.
+	 */
+	public int getNumberOfThreadForAnyPool() {
+		String _value = props.getProperty("NumberOfThreadForAnyPool");
+		return Integer.parseInt(_value);
+
+	}
+
+	/**
+	 * Gets KeepAliveThread property.
+	 * 
+	 * @return the KeepAliveThread value.
+	 */
+	public int getKeepAliveThread() {
+		String _value = props.getProperty("KeepAliveThread");
+		return Integer.parseInt(_value);
+
+	}
 	public void setDebugEnabled(Boolean _debug) {
 		props.setProperty("debugEnabled", _debug.toString());
 

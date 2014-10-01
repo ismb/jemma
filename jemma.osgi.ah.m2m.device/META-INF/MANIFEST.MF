@@ -33,13 +33,13 @@ Import-Package: javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.
  .0,1.1.0)",org.osgi.framework;version="[1.5,2)",org.slf4j;version="[1.7
  .7,2)"
 Include-Resource: .m2m_connection_schema_xjc_flag=src/main/resources/.m2
- m_connection_schema_xjc_flag,schemas/jaxb_m2m_bindings.xml=src/main/res
- ources/schemas/jaxb_m2m_bindings.xml,schemas/m2m_connection.xsd=src/mai
- n/resources/schemas/m2m_connection.xsd,schemas/ah.xsd=src/main/resource
- s/schemas/ah.xsd,schemas/m2m.xsd=src/main/resources/schemas/m2m.xsd,sch
- emas/jaxb_m2m_connection_bindings.xml=src/main/resources/schemas/jaxb_m
- 2m_connection_bindings.xml,.m2m_schema_xjc_flag=src/main/resources/.m2m
- _schema_xjc_flag
+ m_connection_schema_xjc_flag,.m2m_schema_xjc_flag=src/main/resources/.m
+ 2m_schema_xjc_flag,schemas/ah.xsd=src/main/resources/schemas/ah.xsd,sch
+ emas/jaxb_m2m_bindings.xml=src/main/resources/schemas/jaxb_m2m_bindings
+ .xml,schemas/jaxb_m2m_connection_bindings.xml=src/main/resources/schema
+ s/jaxb_m2m_connection_bindings.xml,schemas/m2m.xsd=src/main/resources/s
+ chemas/m2m.xsd,schemas/m2m_connection.xsd=src/main/resources/schemas/m2
+ m_connection.xsd
 Private-Package: schemas,org.energy_home.jemma.internal.ah.m2m.device,or
  g.energy_home.jemma.osgi.ah.m2m.device,.
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1

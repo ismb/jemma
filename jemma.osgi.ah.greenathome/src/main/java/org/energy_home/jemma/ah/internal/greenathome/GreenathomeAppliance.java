@@ -15,6 +15,9 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -112,6 +116,8 @@ import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +143,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	private static final String SMARTINFO_APP_TYPE = "org.energy_home.jemma.ah.zigbee.metering";
 	private static final String APPLIANCE_ID_SEPARATOR = "-";
-
+	private Properties props;
 	// Returns an array with two items: appliance pid and end point id
 	public static String[] getDeviceIds(String applianceId) {
 		String[] deviceIds = new String[2];
@@ -202,11 +208,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	protected Job readInfosJob;
 
-	protected IEndPointRequestContext ConfirmationNotRequiredRequestContext;
-	protected IEndPointRequestContext onOffCommandContext;
-	protected IEndPointRequestContext infiniteMaxAge;
-	protected IEndPointRequestContext getterContext;
-
+	
 	private IHacService hacService;
 
 	// private HashMap installingAppliances = new HashMap();
@@ -277,10 +279,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		ConfirmationNotRequiredRequestContext = greenathomeEndPoint.getRequestContext(false, 0);
-		onOffCommandContext = greenathomeEndPoint.getRequestContext(true, 20000);
-		getterContext = greenathomeEndPoint.getRequestContext(true, 5000);
-
+		
 		try {
 			ahHttpAdapter = new AhHttpAdapter(this, this.applicationWebAlias);
 		} catch (Throwable e) {
@@ -649,7 +648,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				boolean onOff = false;
 
 				try {
-					onOff = onOffServer.getOnOff(onOffCommandContext);
+					onOff = onOffServer.getOnOff(context);
 					if (onOff)
 						state = On;
 					else
@@ -919,7 +918,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (this.hacService != null) {
 				// !!! Energy@home webui compatibility
 				String[] ids = getDeviceIds(appliancePid);
-				appliancePid = ids[0];
+				//appliancePid = ids[0];
 				IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 				this.hacService.removeAppliance(appliancePid);
 			} else
@@ -1032,6 +1031,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	static final int On = 1;
 	static final int Unknown = 4;
 
+	//DoorLock State
+	static final int DoorLockCloseUnLock = 0;
+	static final int DoorLockClose = 1;
+	static final int DoorLockOpen = 2;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1043,13 +1047,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 
 		if (onOffServer != null) {
 			if (state == On) {
 				try {
 					// 4Noks smart plugs require to disable default response to
 					// work!!!
-					onOffServer.execOn(ConfirmationNotRequiredRequestContext);
+					onOffServer.execOn(context);
 				} catch (Exception e) {
 					if (logEnabled)
 						LOG.debug("setDeviceState returned exception '" + e.getMessage(), e);
@@ -1059,7 +1064,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				try {
 					// 4Noks smart plugs require to disable default response to
 					// work!!!
-					onOffServer.execOff(ConfirmationNotRequiredRequestContext);
+					onOffServer.execOff(context);
 				} catch (Exception e) {
 					LOG.debug("setDeviceState returned exception '" + e.getMessage(), e);
 					return false;
@@ -1077,6 +1082,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					return false;
 
 				applianceControlServer.execCommandExecution(commandId, null);
+			} catch (Exception e) {
+				LOG.error("execCommandExecution exception " + e.getMessage(), e);
+				return false;
+			}
+		} else if (doorLockServer != null) {
+			try {
+				if (state == DoorLockCloseUnLock) {
+					doorLockServer.execUnlockDoor("0000", context);
+				} else if (state == DoorLockClose) {
+					doorLockServer.execLockDoor("0001", context);
+				} else if (state == DoorLockOpen) {
+					doorLockServer.execUnlockDoor("0002", context);
+				} else
+					return false;
 			} catch (Exception e) {
 				LOG.error("execCommandExecution exception " + e.getMessage(), e);
 				return false;
@@ -1669,7 +1688,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return result;
 	}
 
-	// /é richiamato durante l'installazione nella schermata /CONF
 	public Hashtable getApplianceConfiguration(IAppliance peerAppliance, int endPointId) throws ApplianceException, ServiceClusterException {
 		int availability = 0;
 		int state = 0;
@@ -1706,7 +1724,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				Boolean onOffValue = (Boolean) this.onOffValues.get(peerAppliance.getPid());
 				if (doReadOnOff() || (onOffValue == null)) {
 					try {
-						onOff = onOffServer.getOnOff(onOffCommandContext);
+						onOff = onOffServer.getOnOff(context);
 						this.onOffValues.put(peerAppliance.getPid(), new Boolean(onOff));
 
 					} catch (Exception e) {
@@ -1761,7 +1779,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 				Integer iasZoneTypeValue = (Integer) this.iasZoneTypeValues.get(peerAppliance.getPid());
 				if (iasZoneTypeValue == null) {
-					iasZoneType = iasZoneServer.getZoneType(onOffCommandContext);
+					iasZoneType = iasZoneServer.getZoneType(context);
 					this.iasZoneTypeValues.put(peerAppliance.getPid(), new Integer(iasZoneType));
 				} else {
 					iasZoneType = iasZoneTypeValue.intValue();
@@ -2023,6 +2041,30 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return props;
 	}
 
+	private void loadPropFile(){
+
+	    String _path = "noserver.properties";
+	    
+		// Howto get a bundle context 
+	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
+	    BundleContext bc = 
+	      BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
+	         .getBundle()
+	         .getBundleContext();
+	    URL _url = bc.getBundle().getResource(_path);
+		
+		InputStream in = null;
+		try {
+			in = _url.openStream();
+			this.props = new Properties();
+			this.props.load(in);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+	
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
 			ArrayList infos = new ArrayList();
@@ -2070,7 +2112,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				try {
 					// !!! Energy@home webui compatibility
 					String[] ids = getDeviceIds(appliancePid);
-					appliancePid = ids[0];
+					//appliancePid = ids[0];
 					Integer endPointId = new Integer(ids[1]);
 					IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 					props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appliance.getDescriptor().getType());
@@ -2257,7 +2299,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (levelControlServer != null) {
 			try {
 
-				short level = levelControlServer.getCurrentLevel(getterContext);
+				short level = levelControlServer.getCurrentLevel(context);
 				return level;
 
 			} catch (Exception e) {
@@ -2285,7 +2327,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (levelControlServer != null) {
 			try {
 
-				levelControlServer.execMoveToLevelWithOnOff(Level, TransitionTime, ConfirmationNotRequiredRequestContext);
+				levelControlServer.execMoveToLevelWithOnOff(Level, TransitionTime, context);
 				return true;
 
 			} catch (Exception e) {
@@ -2314,7 +2356,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (levelControlServer != null) {
 			try {
 
-				levelControlServer.execMoveToLevel(Level, TransitionTime, ConfirmationNotRequiredRequestContext);
+				levelControlServer.execMoveToLevel(Level, TransitionTime, context);
 				return true;
 
 			} catch (Exception e) {
@@ -2340,7 +2382,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (levelControlServer != null) {
 			try {
 
-				levelControlServer.execStopWithOnOff(ConfirmationNotRequiredRequestContext);
+				levelControlServer.execStopWithOnOff(context);
 				return true;
 
 			} catch (Exception e) {
@@ -2362,7 +2404,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (colorControlServer != null) {
 			try {
 
-				colorControlServer.execMoveToHueAndSaturation(hue, saturation, transitionTime, ConfirmationNotRequiredRequestContext);
+				colorControlServer.execMoveToHueAndSaturation(hue, saturation, transitionTime, context);
 				boolean ret = levelControlExecMoveToLevelWithOnOff(appliancePid, level, transitionTime);
 
 				return ret;
@@ -2387,7 +2429,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (colorControlServer != null) {
 			try {
 
-				colorControlServer.execMoveToHueAndSaturation(hue, saturation, transitionTime, ConfirmationNotRequiredRequestContext);
+				colorControlServer.execMoveToHueAndSaturation(hue, saturation, transitionTime, context);
 				// boolean
 				// ret=levelControlExecMoveToLevelWithOnOff(appliancePid, level,
 				// transitionTime);
@@ -2417,8 +2459,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (colorControlServer != null) {
 			try {
 
-				short hue = colorControlServer.getCurrentHue(ConfirmationNotRequiredRequestContext);
-				short sat = colorControlServer.getCurrentSaturation(ConfirmationNotRequiredRequestContext);
+				short hue = colorControlServer.getCurrentHue(context);
+				short sat = colorControlServer.getCurrentSaturation(context);
 				short level = levelControlGetCurrentValue(appliancePid);
 
 				props.put("hue", hue);
@@ -2449,8 +2491,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (colorControlServer != null) {
 			try {
 
-				short hue = colorControlServer.getCurrentHue(ConfirmationNotRequiredRequestContext);
-				short sat = colorControlServer.getCurrentSaturation(ConfirmationNotRequiredRequestContext);
+				short hue = colorControlServer.getCurrentHue(context);
+				short sat = colorControlServer.getCurrentSaturation(context);
 				// short level=levelControlGetCurrentValue(appliancePid);
 
 				props.put("hue", hue);
@@ -2477,7 +2519,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		if (colorControlServer != null) {
 			try {
-				colorControlServer.execMoveToColor(X, Y, transitionTime, ConfirmationNotRequiredRequestContext);
+				colorControlServer.execMoveToColor(X, Y, transitionTime, context);
 				boolean ret = levelControlExecMoveToLevelWithOnOff(appliancePid, level, transitionTime);
 
 				return ret;
@@ -2566,7 +2608,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			boolean onOff = false;
 
 			try {
-				onOff = onOffServer.getOnOff(onOffCommandContext);
+				onOff = onOffServer.getOnOff(context);
 				if (onOff)
 					state = On;
 				else
@@ -2626,7 +2668,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			int applianceStatus = 0;
 
 			try {
-				applianceStatus = applianceControlServer.execSignalState(getterContext).ApplianceStatus;
+				applianceStatus = applianceControlServer.execSignalState(context).ApplianceStatus;
 
 				if (logEnabled) {
 					LOG.debug("applianceStatus is " + applianceStatus);
@@ -2675,6 +2717,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 
 		/* End by Marco */
+
+		/* Added by Marco
+		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+		if (doorLockServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+		if (windowCoveringServer != null) {
+			isStateChangable = true;
+			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+
+		 End by Marco */
 
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName());
 
@@ -2747,10 +2804,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		if (thermostatServer != null) {
 
-			float localTemperature = (float) (thermostatServer.getLocalTemperature(getterContext) / 100.0);
+			float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
 			props.put("temperature", localTemperature);
 			if (humidityServer != null) {
-				float humidity = (float) (humidityServer.getMeasuredValue(getterContext) / 100.0);
+				float humidity = (float) (humidityServer.getMeasuredValue(context) / 100.0);
 				props.put("humidity", humidity);
 			}
 		}
@@ -2760,7 +2817,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), TemperatureMeasurementServer.class.getName());
 
 		if (temperatureMeasurementServer != null) {
-			int measuredValue = temperatureMeasurementServer.getMeasuredValue(getterContext);
+			int measuredValue = temperatureMeasurementServer.getMeasuredValue(context);
 			double localTemperature = ((double) measuredValue) / 100;
 			props.put("temperature", localTemperature);
 		}
@@ -2825,16 +2882,16 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		try {
 
-			res.put("currentSummation", simpleMeteringServer.getCurrentSummationReceived(getterContext));
-			res.put("currentSummationDelivered", simpleMeteringServer.getCurrentSummationDelivered(getterContext));
-			res.put("istantaneousDemand", simpleMeteringServer.getIstantaneousDemand(getterContext));
-			res.put("DemandFormatting", simpleMeteringServer.getDemandFormatting(getterContext));
-			res.put("divisor", simpleMeteringServer.getDivisor(getterContext));
-			res.put("type", simpleMeteringServer.getMeteringDeviceType(getterContext));
-			res.put("mult", simpleMeteringServer.getMultiplier(getterContext));
-			res.put("powerfactor", simpleMeteringServer.getPowerFactor(getterContext));
-			res.put("sumFormatting", simpleMeteringServer.getSummationFormatting(getterContext));
-			res.put("unit", simpleMeteringServer.getUnitOfMeasure(getterContext));
+			res.put("currentSummation", simpleMeteringServer.getCurrentSummationReceived(context));
+			res.put("currentSummationDelivered", simpleMeteringServer.getCurrentSummationDelivered(context));
+			res.put("istantaneousDemand", simpleMeteringServer.getIstantaneousDemand(context));
+			res.put("DemandFormatting", simpleMeteringServer.getDemandFormatting(context));
+			res.put("divisor", simpleMeteringServer.getDivisor(context));
+			res.put("type", simpleMeteringServer.getMeteringDeviceType(context));
+			res.put("mult", simpleMeteringServer.getMultiplier(context));
+			res.put("powerfactor", simpleMeteringServer.getPowerFactor(context));
+			res.put("sumFormatting", simpleMeteringServer.getSummationFormatting(context));
+			res.put("unit", simpleMeteringServer.getUnitOfMeasure(context));
 
 		} catch (ApplianceException e) {
 			// TODO Auto-generated catch block
@@ -2857,7 +2914,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getStartTime(getterContext);
+				ret = applianceControlServer.getStartTime(context);
 
 			} catch (ApplianceException e) {
 
@@ -2877,7 +2934,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getFinishTime(getterContext);
+				ret = applianceControlServer.getFinishTime(context);
 
 			} catch (ApplianceException e) {
 
@@ -2897,7 +2954,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getRemainingTime(getterContext);
+				ret = applianceControlServer.getRemainingTime(context);
 
 			} catch (ApplianceException e) {
 
@@ -2920,7 +2977,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			try {
 
-				sg = applianceControlServer.execSignalState(getterContext);
+				sg = applianceControlServer.execSignalState(context);
 				res = new Hashtable();
 				res.put("ApplianceStatus", sg.ApplianceStatus);
 				res.put("ApplianceStatus2", sg.ApplianceStatus2);
@@ -2945,7 +3002,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getCycleTarget0(getterContext);
+				ret = applianceControlServer.getCycleTarget0(context);
 
 			} catch (ApplianceException e) {
 
@@ -2965,7 +3022,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getCycleTarget1(getterContext);
+				ret = applianceControlServer.getCycleTarget1(context);
 
 			} catch (ApplianceException e) {
 
@@ -2985,7 +3042,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (applianceControlServer != null) {
 			try {
 
-				ret = applianceControlServer.getTemperatureTarget0(getterContext);
+				ret = applianceControlServer.getTemperatureTarget0(context);
 
 			} catch (ApplianceException e) {
 
@@ -3006,7 +3063,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			try {
 
-				ret = applianceControlServer.getTemperatureTarget1(getterContext);
+				ret = applianceControlServer.getTemperatureTarget1(context);
 
 			} catch (ApplianceException e) {
 
@@ -3258,6 +3315,22 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date date = cal.getTime();
 		return date;
+	}
+	
+	public Hashtable getPropConfiguration(String lblProps){
+		
+		if (this.props == null){
+			loadPropFile();
+		}
+		Hashtable response = new Hashtable();
+		
+		if (this.props != null){
+			response.put(lblProps, this.props.getProperty(lblProps));
+		} else {
+			response.put("none", 0);
+		}
+
+		return response;
 	}
 
 }

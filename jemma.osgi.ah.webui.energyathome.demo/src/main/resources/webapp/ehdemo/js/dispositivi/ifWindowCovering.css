@@ -1,0 +1,139 @@
+#ifWindowCovering{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    color: #808080;
+    display: block;
+}
+
+#ifWindowCovering .row1{
+    display: table-row;
+    
+}
+#ifWindowCovering .col{
+    display: block;
+    height: 100%;
+    vertical-align: top;
+    float: left;
+    
+}
+
+#ifWindowCovering .col.lborder{
+    border-left: 1px solid #000;
+}
+#ifWindowCovering .left-box{
+    position: relative;
+    height: 100%;
+    background:none;
+
+}
+
+
+#ifWindowCovering .left-box .icona, #ifThermostat .left-box .icona.NP{
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 50px;
+    min-height: 50px;
+    height: 70%;
+    width: 100%;
+/*    position: absolute;*/
+    z-index: 20;
+    top: 0px;
+    left:0px;
+    
+    background-image: none;
+    
+}
+
+
+#ifWindowCovering .left-box .icona.ON {
+    background-image: url("bg_icon_blue.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-origin: content-box;
+    
+}
+
+#ifWindowCovering .left-box .icona.OFF {
+    background-image: url("bg_icon_gray.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-origin: content-box;
+    
+}
+#ifWindowCovering .left-box .icona img{
+    margin-left: auto;
+    margin-right: auto;
+    height: 90%;
+    display: block;
+    width: auto;
+}
+
+#ifWindowCovering .left-box .maschera img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+#ifWindowCovering .StatoElettrodomestico{
+    display: block;
+    width: 100%;
+    height: 30%;           
+    filter: none;
+    background: none;
+    background-color: #000;
+    /*position: absolute;*/
+    top:70%;
+}
+
+#ifWindowCovering  .inline{
+    float: left;
+    display: block;
+}
+ #ifWindowCovering  #temperatura_value{
+    width:70px;
+    height: 22px;
+    max-height: 22px;
+    font-size: large;
+    color: #ffffff;
+}
+
+
+#ifWindowCovering  .label{
+    display: block;
+    font-size: large;
+}
+
+#ifWindowCovering  .dato{
+    display: block;
+    font-size: large;
+    font-weight: bold;
+    color: #ccc;
+}
+
+#ifWindowCovering  .right{
+    float: right;
+    
+}
+
+#ifWindowCovering  #Temperatura{
+    width: 90%;
+    height: 20%;
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+#ifWindowCovering .line{
+    display: block;
+    height: 30px;
+    width: 100%;
+    
+}

@@ -84,7 +84,7 @@
 						<Require-Bundle>jemma.osgi.ah.hac.lib</Require-Bundle>
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Automation@Home</Bundle-Category>
-						<Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Service-Component>OSGI-INF/*.xml</Service-Component>
 					</instructions>
 				</configuration>

@@ -15,8 +15,12 @@
  */
 package org.energy_home.jemma.javagal.layers.object;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
@@ -25,31 +29,55 @@ import org.energy_home.jemma.zgd.jaxb.WSNNode;
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
  * the Algorithms Discovery, Freshness and ForcePing
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- 
+ * 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class WrapperWSNNode {
 	int _timerID = 0;
 	private WSNNode _node;
-	private Timer _timerDiscovery;
-	private Timer _timerFreshness;
-	private Timer _timerForcePing;
+	ScheduledThreadPoolExecutor freshnessTPool;
+	ScheduledThreadPoolExecutor discoveryTPool;
+	ScheduledThreadPoolExecutor forcePingTPool;
+
+	ScheduledFuture<Void> freshnessJob = null;
+	ScheduledFuture<Void> forcePingJob = null;
+	ScheduledFuture<Void> discoveryJob = null;
 	private short _numberOfAttempt;
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
+	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
+	private long lastDiscovered;
+	private GalController gal = null;
 
-	public synchronized Timer getTimerDiscovery() {
-		return _timerDiscovery;
-	}
+	public WrapperWSNNode(GalController _gal, final String networkAdd) {
+		gal = _gal;
+		this._numberOfAttempt = 0;
+		this.lastDiscovered = 0;
+		freshnessTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
 
-	public synchronized Timer getTimerFreshness() {
-		return _timerFreshness;
-	}
+				return new Thread(r, "THPool-Freshness[" + networkAdd + "]");
+			}
+		});
+		discoveryTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
 
-	public synchronized Timer getTimerForcePing() {
-		return _timerForcePing;
+				return new Thread(r, "THPool-Discovery[" + networkAdd + "]");
+			}
+		});
+		forcePingTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-ForcePing[" + networkAdd + "]");
+			}
+		});
+
 	}
 
 	public synchronized NodeDescriptor getNodeDescriptor() {
@@ -60,129 +88,12 @@ public class WrapperWSNNode {
 		this._nodeDescriptor = nodeDescriptor;
 	}
 
-	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
-	private long lastDiscovered;
-
 	public synchronized long getLastDiscovered() {
 		return lastDiscovered;
 	}
 
 	public synchronized void setLastDiscovered(long lastDiscovered) {
 		this.lastDiscovered = lastDiscovered;
-	}
-
-	private GalController gal = null;
-
-	public WrapperWSNNode(GalController _gal) {
-		gal = _gal;
-		this._numberOfAttempt = 0;
-		this.lastDiscovered = 0;
-
-	}
-
-	/**
-	 * Check if the Node is a sleepy device
-	 */
-	public synchronized boolean isSleepy() {
-		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
-				return false;
-			else
-				return true;
-		} else
-			return true;
-
-	}
-
-	/**
-	 * return the WsnNode from the wrapper
-	 */
-	public synchronized WSNNode get_node() {
-		return _node;
-	}
-
-	/**
-	 * Set the WsnNode into the Wrapper
-	 */
-	public synchronized void set_node(WSNNode _node) {
-		this._node = _node;
-	}
-
-	/**
-	 * Set the Discovery Timer
-	 * 
-	 * @param int second --> Schedule the timer for the number of seconds passed
-	 *        how parameter
-	 */
-	public synchronized void setTimerDiscovery(int seconds) {
-		if (_timerDiscovery != null) {
-			_timerDiscovery.cancel();
-			_timerDiscovery.purge();
-		}
-		if (seconds >= 0) {
-			String name = "";
-			synchronized (this._node) {
-
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerDiscovery(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-			}
-			_timerDiscovery = new Timer(name);
-			_timerDiscovery.schedule(new RemindTaskDiscovery(name), seconds * 1000);
-
-		}
-
-	}
-
-	/**
-	 * Set the Freshness Timer
-	 * 
-	 * @param int second --> Schedule the timer for the number of seconds passed
-	 *        how parameter
-	 */
-	public synchronized void setTimerFreshness(int seconds) {
-		if (_timerFreshness != null) {
-			_timerFreshness.cancel();
-			_timerFreshness.purge();
-		}
-
-		if (seconds >= 0) {
-
-			String name = "";
-			synchronized (this._node) {
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerFreshness(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-
-			}
-
-			_timerFreshness = new Timer(name);
-			_timerFreshness.schedule(new RemindTaskFreshness(name), seconds * 1000);
-		}
-
-	}
-
-	/**
-	 * Set the ForcePing Timer
-	 * 
-	 * @param int second --> Schedule the timer for the number of seconds passed
-	 *        how parameter
-	 */
-	public synchronized void setTimerForcePing(int seconds) {
-
-		if (_timerForcePing != null) {
-			_timerForcePing.cancel();
-			_timerForcePing.purge();
-		}
-
-		if (seconds >= 0) {
-			String name = "";
-
-			synchronized (this._node) {
-				name = "Node: " + String.format("%04X", this._node.getAddress().getNetworkAddress()) + " -- TimerForcePing(Seconds:" + seconds + "-ID:" + ++_timerID + ")";
-
-			}
-			_timerForcePing = new Timer(name);
-			_timerForcePing.schedule(new RemindTaskForcePing(name), seconds * 1000);
-
-		}
-
 	}
 
 	/**
@@ -206,28 +117,20 @@ public class WrapperWSNNode {
 	 */
 	public synchronized void abortTimers() {
 
-		if (_timerDiscovery != null) {
-			_timerDiscovery.cancel();
-			_timerDiscovery.purge();
-
-			_timerDiscovery = null;
-
+		if (discoveryJob != null) {
+			discoveryJob.cancel(true);
+			discoveryJob = null;
 		}
 
-		if (_timerFreshness != null) {
-			_timerFreshness.cancel();
-			_timerFreshness.purge();
-			_timerFreshness = null;
-
+		if (freshnessJob != null) {
+			freshnessJob.cancel(true);
+			freshnessJob = null;
 		}
 
-		if (_timerForcePing != null) {
-			_timerForcePing.cancel();
-			_timerForcePing.purge();
-			_timerForcePing = null;
-
+		if (forcePingJob != null) {
+			forcePingJob.cancel(true);
+			forcePingJob = null;
 		}
-
 	}
 
 	/**
@@ -284,58 +187,141 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * Procedure execute when the Discovery Tiler elapsed
+	 * Check if the Node is a sleepy device
 	 */
-	class RemindTaskDiscovery extends TimerTask {
-		String _name;
+	public synchronized boolean isSleepy() {
+		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
+			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+				return false;
+			else
+				return true;
+		} else
+			return true;
 
-		RemindTaskDiscovery(String name) {
-			_name = name;
-		}
-
-		@Override
-		public void run() {
-			getTimerDiscovery().cancel();
-			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
-
-		}
 	}
 
 	/**
-	 * Procedure execute when the Freshness Tiler elapsed
+	 * return the WsnNode from the wrapper
 	 */
-	class RemindTaskFreshness extends TimerTask {
-		String _name;
+	public synchronized WSNNode get_node() {
+		return _node;
+	}
 
-		RemindTaskFreshness(String name) {
-			_name = name;
+	/**
+	 * Set the WsnNode into the Wrapper
+	 */
+	public synchronized void set_node(WSNNode _node) {
+		this._node = _node;
+	}
+
+	/**
+	 * Set the Discovery Timer
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
+	 */
+	public synchronized void setTimerDiscovery(int seconds) {
+		if (discoveryJob != null) {
+			discoveryJob.cancel(true);
+		}
+		if (seconds >= 0) {
+			try {
+				discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
+
+			}
 		}
 
-		@Override
-		public void run() {
+	}
 
-			getTimerFreshness().cancel();
+	/**
+	 * Set the Freshness Timer
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
+	 */
+	public synchronized void setTimerFreshness(int seconds) {
+		if (freshnessJob != null) {
+			freshnessJob.cancel(true);
+		}
 
+		if (seconds >= 0) {
+			try {
+				freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
+
+			}
+		}
+
+	}
+
+	/**
+	 * Set the ForcePing Timer
+	 * 
+	 * @param int second --> Schedule the timer for the number of seconds passed
+	 *        how parameter
+	 */
+	public synchronized void setTimerForcePing(int seconds) {
+
+		if (forcePingJob != null) {
+			forcePingJob.cancel(true);
+		}
+
+		if (seconds >= 0) {
+			try {
+				forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
+
+			}
+		}
+
+	}
+
+	private class FreshnessJob implements Callable<Void> {
+
+		public FreshnessJob() {
+			super();
+		}
+
+		public Void call() {
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FRESHNESS, (short) 0x00);
-
+			return null;
 		}
 	}
 
-	/**
-	 * Procedure execute when the ForcePing Tiler elapsed
-	 */
-	class RemindTaskForcePing extends TimerTask {
-		String _name;
+	private class ForcePingJob implements Callable<Void> {
 
-		RemindTaskForcePing(String name) {
-			_name = name;
+		public ForcePingJob() {
+			super();
+
 		}
 
-		@Override
-		public void run() {
-			getTimerForcePing().cancel();
+		public Void call() {
 			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.FORCEPING, (short) 0x00);
 
+			return null;
 		}
 	}
+
+	private class DiscoveryJob implements Callable<Void> {
+
+		public DiscoveryJob() {
+			super();
+
+		}
+
+		public Void call() {
+
+			gal.getDiscoveryManager().startLqi(WrapperWSNNode.this.get_node().getAddress(), TypeFunction.DISCOVERY, (short) 0x00);
+
+			return null;
+		}
+	}
+
 }
