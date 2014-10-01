@@ -16,10 +16,6 @@
 package org.energy_home.jemma.javagal.rest;
 
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.energy_home.jemma.javagal.rest.util.ClientKey;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
@@ -28,6 +24,9 @@ import org.restlet.Server;
 import org.restlet.data.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Rest manager for javagal Rest package. This class creates and stops the Rest
@@ -167,7 +166,7 @@ public class RestManager {
 		ClientKey clientKey = new ClientKey();
 
 		// ...looking for the correspondence on the map
-		ClientResources myClientToReturn = null;
+		ClientResources myClientToReturn;
 		synchronized (clientsMap) {
 			// Creating the key to look for on the map...
 			clientKey.setPort(port);
@@ -184,14 +183,13 @@ public class RestManager {
 				}
 
 			} else if (myClientToReturn == null && clientKey.getPort() == -1) {
-				for (Iterator<Entry<ClientKey, ClientResources>> it = clientsMap.entrySet().iterator(); it
-						.hasNext();) {
-					ClientKey p = (ClientKey) it.next().getKey();
-					if (p.getAddress().equals(clientKey.getAddress())) {
-						myClientToReturn = clientsMap.get(p);
-						break;
-					}
-				}
+                for (Entry<ClientKey, ClientResources> clientKeyClientResourcesEntry : clientsMap.entrySet()) {
+                    ClientKey p = clientKeyClientResourcesEntry.getKey();
+                    if (p.getAddress().equals(clientKey.getAddress())) {
+                        myClientToReturn = clientsMap.get(p);
+                        break;
+                    }
+                }
 
 			}
 

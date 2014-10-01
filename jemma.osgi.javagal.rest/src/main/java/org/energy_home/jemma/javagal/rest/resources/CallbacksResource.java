@@ -30,8 +30,6 @@ import org.energy_home.jemma.javagal.rest.util.Resources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
-import org.restlet.representation.AppendableRepresentation;
-import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
@@ -141,7 +139,7 @@ public class CallbacksResource extends ServerResource {
 			proxyGalInterface = rcmal.getGatewayInterface();
 
 			RestMessageListener listener = new RestMessageListener(
-					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
+                    urilistener, getRestManager().getPropertiesManager());
 			
 			Long id = proxyGalInterface.createCallback(callback, listener);
 

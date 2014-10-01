@@ -146,7 +146,7 @@ public class CallbacksShorthandForEndpointResource extends ServerResource {
 					getClientInfo().getAddress());
 			proxyGalInterface = rcmal.getGatewayInterface();
 			RestApsMessageListener listener = new RestApsMessageListener(
-                    urilistener,rcmal,getRestManager().getPropertiesManager());
+                    urilistener, getRestManager().getPropertiesManager());
 			Long id = proxyGalInterface.createAPSCallback(ep.shortValue(),
 					listener);
 

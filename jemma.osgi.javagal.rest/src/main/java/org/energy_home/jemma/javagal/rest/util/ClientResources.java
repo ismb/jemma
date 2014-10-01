@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.rest.Activator;
 import org.energy_home.jemma.javagal.rest.PropertiesManager;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
 import org.energy_home.jemma.javagal.rest.RestMessageListener;
@@ -99,7 +98,7 @@ public class ClientResources {
 	public void setGatewayEventListener() {
 		if (clientEventListener == null) {
 			clientEventListener = new RestClientManagerAndListener(
-					propertiesManager, this);
+					propertiesManager);
 
 			gatewayInterface.setGatewayEventListener(clientEventListener);
 			if (propertiesManager.getDebugEnabled())

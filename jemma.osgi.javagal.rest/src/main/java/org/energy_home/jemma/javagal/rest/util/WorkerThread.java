@@ -24,6 +24,8 @@ public class WorkerThread implements Runnable {
     private ZCLMessage zclMessage;
     private Context context;
     private String descriptor;
+    private long calbackIdentifier;
+    private APSMessageEvent apsMessageEvent;
     private static final Logger LOG = LoggerFactory.getLogger(WorkerThread.class);
     public WorkerThread(Context context, Status status, String descriptor) {
         this.status = status;
@@ -73,13 +75,27 @@ public class WorkerThread implements Runnable {
         this.addressOfInteres = addressOfInteres;
         this.descriptor = descriptor;
     }
-    public WorkerThread(Context context, ZCLMessage zclMessage) {
+    public WorkerThread(Context context, ZCLMessage zclMessage, String descriptor) {
         this.context = context;
         this.zclMessage = zclMessage;
+        this.descriptor = descriptor;
     }
-    public WorkerThread(Context context, ZDPMessage zdpMessage) {
+    public WorkerThread(Context context, ZDPMessage zdpMessage, String descriptor) {
         this.context = context;
         this.zdpMessage = zdpMessage;
+        this.descriptor = descriptor;
+    }
+    public WorkerThread(Context context, APSMessageEvent apsMessageEvent, long calbackIdentifier, String descriptor) {
+        this.context = context;
+        this.apsMessageEvent = apsMessageEvent;
+        this.descriptor = descriptor;
+        this.calbackIdentifier = calbackIdentifier;
+    }
+    public WorkerThread(Context context, InterPANMessageEvent interPANMessageEvent, long calbackIdentifier, String descriptor) {
+        this.context = context;
+        this.interPANMessageEvent = interPANMessageEvent;
+        this.descriptor = descriptor;
+        this.calbackIdentifier = calbackIdentifier;
     }
     @Override
     public void run() {
@@ -108,6 +124,16 @@ public class WorkerThread implements Runnable {
                 detail.setZDPMessage(zdpMessage);
             if (zclMessage != null)
                 detail.setZCLMessage(zclMessage);
+            if(apsMessageEvent != null) {
+                detail.setAPSMessageEvent(apsMessageEvent);
+                info.setDetail(detail);
+                info.setEventCallbackIdentifier(calbackIdentifier);
+            }
+            if(interPANMessageEvent != null) {
+                detail.setInterPANMessageEvent(interPANMessageEvent);
+                info.setDetail(detail);
+                info.setEventCallbackIdentifier(calbackIdentifier);
+            }
             info.setDetail(detail);
             String xml = Util.marshal(info);
             source.post(xml, MediaType.TEXT_XML);

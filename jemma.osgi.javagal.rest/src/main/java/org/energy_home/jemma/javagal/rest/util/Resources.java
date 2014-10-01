@@ -63,15 +63,10 @@ public class Resources {
 	 */
 	public final static String PARAMETER_ID = "id";
 	public final static String PARAMETER_EP = "ep";
-	public final static String PARAMETER_ENDPOINT = "endpoint";
-	public final static String PARAMETER_SERVICE = "service";
+    public final static String PARAMETER_SERVICE = "service";
 	public final static String PARAMETER_AOI = "aoi";
 	public final static String PARAMETER_ADDR = "addr";
 
 	public final static String HEX_PREFIX = "0x";
 
-	/*
-	 * Misc
-	 */
-	public final static String ZGD_NOT_READY = "ZGD not ready...";
 }
