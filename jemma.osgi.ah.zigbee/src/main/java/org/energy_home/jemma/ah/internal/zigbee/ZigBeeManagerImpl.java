@@ -311,12 +311,12 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	public ZigBeeManagerImpl()
 	{
 		
-		executor = Executors.newFixedThreadPool(5, new ThreadFactory() {
+		executor = Executors.newFixedThreadPool(15, new ThreadFactory() {
 
 			@Override
 			public Thread newThread(Runnable r) {
 
-				return new Thread(r, "THPool-GalController");
+				return new Thread(r, "THPool-NetworkManager");
 			}
 		});
 
