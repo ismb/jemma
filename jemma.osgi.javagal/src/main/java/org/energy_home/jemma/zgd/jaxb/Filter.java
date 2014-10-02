@@ -23,14 +23,13 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -149,10 +148,7 @@ public class Filter implements Serializable {
      * 
      */
     public List<Filter.AddressSpecification> getAddressSpecification() {
-        if (addressSpecification == null) {
-            addressSpecification = new ArrayList<Filter.AddressSpecification>();
-        }
-        return this.addressSpecification;
+        return(addressSpecification == null) ? new ArrayList<AddressSpecification>() : this.addressSpecification;
     }
 
     /**
@@ -178,10 +174,7 @@ public class Filter implements Serializable {
      * 
      */
     public List<Filter.MessageSpecification> getMessageSpecification() {
-        if (messageSpecification == null) {
-            messageSpecification = new ArrayList<Filter.MessageSpecification>();
-        }
-        return this.messageSpecification;
+        return (messageSpecification == null) ? new ArrayList<MessageSpecification>() : this.messageSpecification;
     }
 
 
@@ -347,10 +340,7 @@ public class Filter implements Serializable {
          * 
          */
         public List<Level> getLevel() {
-            if (level == null) {
-                level = new ArrayList<Level>();
-            }
-            return this.level;
+            return (level == null) ? new ArrayList<Level>() : this.level;
         }
 
     }

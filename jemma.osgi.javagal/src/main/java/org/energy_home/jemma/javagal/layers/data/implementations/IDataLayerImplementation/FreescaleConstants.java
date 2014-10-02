@@ -22,21 +22,12 @@ package org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImpl
  */
 public class FreescaleConstants {
 
-	static final short ZTCGetModeRequest = (short) 0xA302;
-	static final short ZTCGetModeConfirm = (short) 0xA402;
-
-	static final short ZTCGetNumOfMsgsRequest = (short) 0xA324;
-	static final short ZTCGetNumOfMsgsConfirm = (short) 0xA424;
-
-	static final short ZTCCPUResetRequest = (short) 0xA308;
+    static final short ZTCCPUResetRequest = (short) 0xA308;
 
 	static final short ZTCModeSelectRequest = (short) 0xA300;
 	static final short ZTCModeSelectConfirm = (short) 0xA400;
 
-	static final short ZTCWriteExtAddrRequest = (short) 0xA3DB;
-	static final short ZTCWriteExtAddrConfirm = (short) 0xA4DB;
-
-	static final short ZTCStopNwkExRequest = (short) 0xA3E8;
+    static final short ZTCStopNwkExRequest = (short) 0xA3E8;
 	static final short ZTCStopNwkExConfirm = (short) 0xA4E8;
 
 	static final short ZTCStartNwkExRequest = (short) 0xA3E7;
@@ -47,14 +38,10 @@ public class FreescaleConstants {
 
 	static final short ZDONetworkStateEvent = (short) 0xA0E6;
 
-	static final short ZDPNwkAddrRequest = (short) 0xA200;
-
-	static final short ZDPIeeeAddrRequest = (short) 0xA201;
+    static final short ZDPIeeeAddrRequest = (short) 0xA201;
 	static final short ZDPIeeeAddrResponse = (short) 0xA081;
 
-	static final short ZDPAPSMEProcessSecureFrameConfirm = (short) 0xA0CC;
-
-	static final short ZDPMgmtLeaveRequest = (short) 0xA234;
+    static final short ZDPMgmtLeaveRequest = (short) 0xA234;
 	static final short ZDPMgmtLeaveResponse = (short) 0xA0B4;
 
 	static final short ZDPMgmtLqiRequest = (short) 0xA231;
@@ -63,10 +50,7 @@ public class FreescaleConstants {
 	static final short ZDPNodeDescriptorRequest = (short) 0xA202;
 	static final short ZDPNodeDescriptorResponse = (short) 0xA082;
 
-	static final short ZDPPowerDescriptorRequest = (short) 0xA203;
-	static final short ZDPPowerDescriptorResponse = (short) 0xA083;
-
-	static final short ZDPSimpleDescriptorRequest = (short) 0xA204;
+    static final short ZDPSimpleDescriptorRequest = (short) 0xA204;
 	static final short ZDPSimpleDescriptorResponse = (short) 0xA084;
 
 	static final short ZDPActiveEpRequest = (short) 0xA205;
@@ -81,13 +65,7 @@ public class FreescaleConstants {
 
 	static final short ZDPMgmt_BindResponse = (short) 0xA0B3;
 
-	static final short APSMEBindRequest = (short) 0x9900;
-	static final short APSMEUnbindRequest = (short) 0x9909;
-
-	static final short APSMERemoveDeviceRequest = (short) 0x99F4;
-	static final short APSMERemoveDeviceIndication = (short) 0x98D8;
-
-	static final short APSMEGetRequest = (short) 0xA320;
+    static final short APSMEGetRequest = (short) 0xA320;
 	static final short APSMEGetConfirm = (short) 0xA420;
 
 	static final short ZDPMgmt_Permit_JoinResponse = (short) 0xA0B6;
@@ -99,9 +77,7 @@ public class FreescaleConstants {
 
 	static final short ZDPUnbindRequest = (short) 0xA222;
 
-	static final short ZDPNLMEPermitJoiningConfirm = (short) 0xA0F9;
-
-	static final short ZTCReadExtAddrRequest = (short) 0xA3D2;
+    static final short ZTCReadExtAddrRequest = (short) 0xA3D2;
 	static final short ZTCReadExtAddrConfirm = (short) 0xA4D2;
 
 	static final short InterPANDataRequest = (short) 0xA500;
@@ -117,9 +93,7 @@ public class FreescaleConstants {
 	static final short BlackBoxWriteSAS = (short) 0x5001;
 	static final short BlackBoxWriteSASConfirm = (short) 0x5004;
 
-	static final short BlackBoxReadSAS = (short) 0x5002;
-
-	static final short APSDeRegisterEndPointRequest = (short) 0xA30A;
+    static final short APSDeRegisterEndPointRequest = (short) 0xA30A;
 	static final short APSDeRegisterEndPointConfirm = (short) 0xA40A;
 
 	static final short APSRegisterEndPointRequest = (short) 0xA30B;
@@ -128,9 +102,7 @@ public class FreescaleConstants {
 	static final short APSGetEndPointIdListRequest = (short) 0xA30E;
 	static final short APSGetEndPointIdListConfirm = (short) 0xA40E;
 
-	static final short APSProcessSecureFrameReport = (short) 0x98CC;
-
-	static final short MacPollNotifyIndication = (short) 0x8414;
+    static final short MacPollNotifyIndication = (short) 0x8414;
 
 	static final short MacBeaconNotifyIndication = (short) 0x8404;
 
@@ -170,9 +142,8 @@ public class FreescaleConstants {
 	static final short NLMEGetConfirm = (short) 0xA422;
 
 	static final short NLMEPermitJoiningRequest = (short) 0xA236;
-	static final short NLMEPermitJoiningConfirm = (short) 0x9743;
 
-	static final short NLMENWKUpdateReq = (short) 0xA238;
+    static final short NLMENWKUpdateReq = (short) 0xA238;
 	static final short ZDPMgmt_Nwk_UpdateNotify = (short) 0xA2B8;
 
 	static final short NLMEClearDeviceKeyPairSet = (short) 0xA33F;
@@ -190,19 +161,11 @@ public class FreescaleConstants {
 
 	static final short NLMESTARTROUTERRequest = (short) 0x9637;
 
-	class AddressMode {
-		public static final byte Indirect = (byte) 0x00;
-		public static final byte DirectGroup = (byte) 0x01;
-		public static final byte Direct = (byte) 0x02;
-		public static final byte DirectEx = (byte) 0x03;
-	}
-
-	class DeviceType {
+    class DeviceType {
 		public static final byte Coordinator = (byte) 0xC0;
 		public static final byte Router = (byte) 0x80;
 		public static final byte EndDevice = (byte) 0x20;
-		public static final byte RxOnWhenIdleEndDevice = (byte) 0x60;
-	}
+    }
 
 	class LogicalType {
 		public static final byte Coordinator = (byte) 0x00;

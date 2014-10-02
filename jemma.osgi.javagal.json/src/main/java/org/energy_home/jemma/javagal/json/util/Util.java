@@ -1,4 +1,4 @@
-/**
+package org.energy_home.jemma.javagal.json.util; /**
  * This file is part of JEMMA - http://jemma.energy-home.org
  * (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
  *
@@ -14,37 +14,24 @@
  *
  */
 
-package org.energy_home.jemma.javagal.json.util;
-
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.zgd.GatewayConstants;
+import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.Status;
 
 public class Util {
 
-	/**
-	 * Conventional internal timeout value.
-	 */
-	public final static long INTERNAL_TIMEOUT = 5000;
+    /**
+     * Conventional internal timeout value.
+     */
+    public final static long INTERNAL_TIMEOUT;
 	private final static Long unsigned8MaxValue;
-	private final static Long unsigned16MaxValue;
-	private final static Long unsigned32MaxValue;
-	private static final String EMPTY_STRING = "";
-	/**
-	 * String representation for Unicode Transformation Format, 8 bit.
-	 */
-	public static final String UTF8_CHAR_ENCODING = "UTF-8";
-	private static Random r;
+    private final static Long unsigned32MaxValue;
 
-	private static final Logger LOG = LoggerFactory.getLogger( Util.class );
-
-	static {
-		unsigned8MaxValue = Long.decode("0xff");
-		unsigned16MaxValue = Long.decode("0xffff");
-		unsigned32MaxValue = Long.decode("0xffffffff");
-		r = new Random();
-	}
+    static {
+        unsigned8MaxValue = Long.decode("0xff");
+        unsigned32MaxValue = Long.decode("0xffffffff");
+        INTERNAL_TIMEOUT = 5000;
+    }
 
 	/**
 	 * Tells if the value contained in a candidate Long is actually an unsigned
@@ -59,20 +46,7 @@ public class Util {
 		return ((candidate >= 0) && (candidate <= unsigned8MaxValue));
 	}
 
-	/**
-	 * Tells if the value contained in a candidate Long is actually an unsigned
-	 * 16 bits value or not (2 bytes).
-	 * 
-	 * @param candidate
-	 *            the candidate Long.
-	 * @return true if the value is actually an unsigned 16 bits, false
-	 *         otherwise.
-	 */
-	synchronized public static boolean isUnsigned16(Long candidate) {
-		return ((candidate >= 0) && (candidate <= unsigned16MaxValue));
-	}
-
-	/**
+    /**
 	 * Tells if the value contained in a candidate Long is actually an unsigned
 	 * 32 bits value or not (4 bytes).
 	 * 
@@ -84,5 +58,22 @@ public class Util {
 	synchronized public static boolean isUnsigned32(Long candidate) {
 		return ((candidate >= 0) && (candidate <= unsigned32MaxValue));
 	}
+    synchronized  public static Info setError(String error) {
+        Info info = new Info();
+        Status status = new Status();
+        status.setCode((short) GatewayConstants.GENERAL_ERROR);
+        status.setMessage(error);
+        info.setStatus(status);
+        info.setDetail(new Info.Detail());
+        return info;
+    }
+    synchronized  public static Info setSuccess(Info.Detail detail){
+        Info info = new Info();
+        Status st = new Status();
+        st.setCode((short) GatewayConstants.SUCCESS);
+        info.setStatus(st);
 
+        info.setDetail(detail);
+        return info;
+    }
 }

@@ -37,11 +37,7 @@ public class ExecutorObject implements ExecutorService {
 		executorManager.addNearRealTimeOrderedTask(user, runnable);	
 	}
 
-	public ScheduledFuture<?> scheduleTask(Runnable runnable, long delay) {
-		return executorManager.scheduleTask(user, runnable, delay);
-	}
-
-	public ScheduledFuture<?> scheduleTask(Runnable runnable, long delay, long period) {
+    public ScheduledFuture<?> scheduleTask(Runnable runnable, long delay, long period) {
 		return executorManager.scheduleTask(user, runnable, delay, period);
 	}
 	

@@ -33,71 +33,20 @@ public class Utils {
 	 */
 	public static String convertByteArrayToString(byte[] array) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < array.length; i++) {
-			sb.append(String.format("%02X", (0xFF & array[i])));
-		}
+        for (byte anArray : array) {
+            sb.append(String.format("%02X", (0xFF & anArray)));
+        }
 		return sb.toString();
 	}
 
-	/**
-	 * Extracts the short representation of the byte at position n in the
-	 * provided long number.
-	 * 
-	 * @param x
-	 *            the provided long number from where the short representation
-	 *            is extracted.
-	 * @param n
-	 *            the position from where the short is to be extracted.
-	 * @return the desired short representation
-	 */
-	private static final short getByteAsInteger(final long x, final int n) {
-
-		switch (n) {
-
-		case 0:
-			return (short) (x & 0x00000000000000FFL);
-
-		case 1:
-			return (short) ((x & 0x000000000000FF00L) >> 8);
-
-		case 2:
-			return (short) ((x & 0x0000000000FF0000L) >> 16);
-
-		case 3:
-			return (short) ((x & 0x00000000FF000000L) >> 24);
-
-		case 4:
-			return (short) ((x & 0x000000FF00000000L) >> 32);
-
-		case 5:
-			return (short) ((x & 0x0000FF0000000000L) >> 40);
-
-		case 6:
-			return (short) ((x & 0x00FF000000000000L) >> 48);
-
-		case 7:
-			return (short) (((x & 0xFF00000000000000L) >> 56) & 0xFF);
-
-		default:
-
-			throw new IllegalArgumentException(
-					"long is reppresented as 8 bytes,"
-							+
-							// ASK: you probably intended to put 7 instead of 3
-							// on the message below.
-							" hence value of n must be between 0 and 3: you have tryed to use "
-							+ n);
-		}
-	}
-
-	/**
+    /**
 	 * Build a channel mask as {@code byte[]} starting from the provided short.
 	 * 
 	 * @param channel
 	 *            the channel mask contained in a short number
 	 * @return the built channel mask.
 	 */
-	public static final byte[] buildChannelMask(short channel) {
+	public static byte[] buildChannelMask(short channel) {
 		byte[] tores = null;
 		switch (channel) {
 		case 0:

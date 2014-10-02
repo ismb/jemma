@@ -15,18 +15,10 @@
  */
 package org.energy_home.jemma.utils.rest;
 
-import java.io.IOException;
-import java.net.URI;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
+import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -45,6 +37,9 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.net.URI;
 
 public class RestClient {
 	private static final int SO_TIMEOUT = 1000;
@@ -117,7 +112,7 @@ public class RestClient {
 	}
 
 	// TODO: check for multi thread access (it should be ok)
-	private HttpResponse send(HttpUriRequest uriRequest) throws ClientProtocolException, IOException {
+	private HttpResponse send(HttpUriRequest uriRequest) throws IOException {
 		uriRequest.setHeader("Accept", HTTP_CONTENT_TYPE);
 		return httpClient.execute(uriRequest, httpContext);
 	}
@@ -135,18 +130,18 @@ public class RestClient {
 		httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
 	}
 
-	public HttpResponse get(URI uri) throws ClientProtocolException, IOException {
+	public HttpResponse get(URI uri) throws  IOException {
 		HttpGet request = new HttpGet(uri);
 		return send(request);
 	}
 
-	public HttpResponse post(URI uri, HttpEntity entity) throws ClientProtocolException, IOException {
+	public HttpResponse post(URI uri, HttpEntity entity) throws  IOException {
 		HttpPost request = new HttpPost(uri);
 		request.setEntity(entity);
 		return send(request);
 	}
 
-	public HttpResponse put(URI uri, HttpEntity entity) throws ClientProtocolException, IOException {
+	public HttpResponse put(URI uri, HttpEntity entity) throws  IOException {
 		HttpPut request = new HttpPut(uri);
 		request.setEntity(entity);
 		return send(request);

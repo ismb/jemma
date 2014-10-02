@@ -15,25 +15,20 @@
  */
 package org.energy_home.jemma.javagal.json.servlet;
 
-import java.io.IOException;
+import com.google.gson.Gson;
+import org.energy_home.jemma.javagal.json.util.Util;
+import org.energy_home.jemma.zgd.GatewayException;
+import org.energy_home.jemma.zgd.GatewayInterface;
+import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.Info.Detail;
+import org.energy_home.jemma.zgd.jaxb.Version;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.energy_home.jemma.zgd.GalExtenderProxy;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
-import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.GatewayInterface;
-import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.Info.Detail;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.Version;
-
-import com.google.gson.Gson;
+import java.io.IOException;
 
 public class versionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -58,42 +53,21 @@ public class versionServlet extends HttpServlet {
 			try {
 				version = gatewayInterface.getVersion();
 			} catch (GatewayException e1) {
-				Info info = new Info();
-				Status status = new Status();
-				status.setCode((short) GatewayConstants.GENERAL_ERROR);
-				status.setMessage(e1.getMessage());
-				info.setStatus(status);
-				info.setDetail(detail);
-				response.getOutputStream().print(gson.toJson(info));
+				Info info = Util.setError(e1.getMessage());
+                response.getOutputStream().print(gson.toJson(info));
 				return;
 
 			} catch (Exception e1) {
-				Info info = new Info();
-				Status status = new Status();
-				status.setCode((short) GatewayConstants.GENERAL_ERROR);
-				status.setMessage(e1.getMessage());
-				info.setStatus(status);
-				info.setDetail(detail);
+				Info info = Util.setError(e1.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 			}
 
 			detail.setVersion(version);
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.SUCCESS);
-			info.setStatus(status);
-			info.setDetail(detail);
-
+			Info info = Util.setSuccess(detail);
 			response.getOutputStream().print(gson.toJson(info));
 		} else {
-			Detail detail = new Detail();
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage("User not logged");
-			info.setStatus(status);
-			info.setDetail(detail);
+			Info info = Util.setError("User not logged");
 			response.getOutputStream().print(gson.toJson(info));
 			return;
 

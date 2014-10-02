@@ -15,21 +15,14 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.MACCapability;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
-
-import java.math.BigInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.WrapperWSNNode;
-import org.energy_home.jemma.javagal.layers.presentation.Activator;
+import org.energy_home.jemma.zgd.jaxb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 /**
  * Manages received ZDO messages. When an ZDO indication is received it is
@@ -69,30 +62,22 @@ public class ZdoManager /* implements APSMessageListener */{
 	public void ZDOMessageIndication(APSMessageEvent message) {
 
 		/* MGMT_LQI_Response */
-		if (message.getClusterID() == 0x8031) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a MGMT_LQI_Response");
-			}
+		if (message.getClusterID() == 0x8031 && (gal.getPropertiesManager().getDebugEnabled())) {
+            LOG.debug("Extracted APS With a MGMT_LQI_Response");
 
-		}
+        }
 		/* MGMT_LQI_Request */
-		else if (message.getClusterID() == 0x0031) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a MGMT_LQI_Request");
-			}
-		}
+		else if (message.getClusterID() == 0x0031 && (gal.getPropertiesManager().getDebugEnabled())) {
+            LOG.debug("Extracted APS With a MGMT_LQI_Request");
+        }
 		/* Node_Desc_req */
-		else if (message.getClusterID() == 0x0002) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a Node_Desc_req");
-			}
-		}
+		else if (message.getClusterID() == 0x0002 && (gal.getPropertiesManager().getDebugEnabled())) {
+            LOG.debug("Extracted APS With a Node_Desc_req");
+        }
 		/* Node_Desc_rsp */
-		else if (message.getClusterID() == 0x8002) {
-			if (gal.getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a Node_Desc_rsp");
-			}
-		}
+		else if (message.getClusterID() == 0x8002 && (gal.getPropertiesManager().getDebugEnabled())) {
+            LOG.debug("Extracted APS With a Node_Desc_rsp");
+        }
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
 			if (gal.getPropertiesManager().getDebugEnabled()) {
@@ -103,7 +88,7 @@ public class ZdoManager /* implements APSMessageListener */{
 			_nodeRemoved.setAddress(_add);
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
-				int _index = -1;
+				int _index;
 				synchronized (gal.getNetworkcache()) {
 					if ((_index = gal.existIntoNetworkCache(_add)) != -1) {
 						gal.getNetworkcache().remove(_index);
@@ -128,14 +113,8 @@ public class ZdoManager /* implements APSMessageListener */{
 			Address _add = new Address();
 			_add.setNetworkAddress(DataManipulation.toIntFromShort(message.getData()[2], message.getData()[1]));
 			byte[] _IEEE = new byte[8];
-			_IEEE[0] = message.getData()[10];
-			_IEEE[1] = message.getData()[9];
-			_IEEE[2] = message.getData()[8];
-			_IEEE[3] = message.getData()[7];
-			_IEEE[4] = message.getData()[6];
-			_IEEE[5] = message.getData()[5];
-			_IEEE[6] = message.getData()[4];
-			_IEEE[7] = message.getData()[3];
+            for(int i = 0; i < _IEEE.length; i++)
+                _IEEE[i] = message.getData()[10 - i];
 			_add.setIeeeAddress(new BigInteger(_IEEE));
 			n.setAddress(_add);
 			byte _Capability = message.getData()[11];
@@ -145,18 +124,17 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _SecurityCapability = (byte) ((_Capability & 0x40) >> 6);/* bit6 */
 			byte _AllocateAddress = (byte) ((_Capability & 0x80) >> 7);/* bit7 */
 			MACCapability _mac = new MACCapability();
-			_mac.setAllocateAddress((_AllocateAddress == 1 ? true : false));
-			_mac.setAlternatePanCoordinator((_AlternatePANCoordinator == 1 ? true : false));
-			_mac.setMainsPowered((_PowerSource == 1 ? true : false));
-			_mac.setReceiverOnWhenIdle((_ReceiverOnWhenIdle == 1 ? true : false));
-			_mac.setSecuritySupported((_SecurityCapability == 1 ? true : false));
+			_mac.setAllocateAddress((_AllocateAddress == 1));
+			_mac.setAlternatePanCoordinator((_AlternatePANCoordinator == 1));
+			_mac.setMainsPowered((_PowerSource == 1));
+			_mac.setReceiverOnWhenIdle((_ReceiverOnWhenIdle == 1));
+			_mac.setSecuritySupported((_SecurityCapability == 1));
 			n.setCapabilityInformation(_mac);
 			_Node.set_node(n);
 			_Node.set_discoveryCompleted(true);
 			_Node.reset_numberOfAttempt();
-			int _index = -1;
-			synchronized (gal.getNetworkcache()) {
-				if ((_index = gal.existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
+            synchronized (gal.getNetworkcache()) {
+				if (gal.existIntoNetworkCache(_Node.get_node().getAddress()) == -1) {
 					/* id not exist */
 					if (gal.getPropertiesManager().getDebugEnabled())
 						LOG.info("Adding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());

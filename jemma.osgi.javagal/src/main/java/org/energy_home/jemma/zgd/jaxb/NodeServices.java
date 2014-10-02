@@ -23,14 +23,13 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -123,10 +122,7 @@ public class NodeServices implements Serializable{
      * 
      */
     public List<NodeServices.ActiveEndpoints> getActiveEndpoints() {
-        if (activeEndpoints == null) {
-            activeEndpoints = new ArrayList<NodeServices.ActiveEndpoints>();
-        }
-        return this.activeEndpoints;
+        return(activeEndpoints == null) ? new ArrayList<ActiveEndpoints>() : this.activeEndpoints;
     }
 
 

@@ -33,11 +33,7 @@ public class Activator implements BundleActivator {
 	ServletContainer container;
 	HttpService httpService;
 
-	static BundleContext getContext() {
-		return context;
-	}
-
-	ServiceTracker serviceTracker = null;
+    ServiceTracker serviceTracker = null;
 	ServiceTracker httpserviceTracker = null;
 
 	/**
@@ -64,9 +60,7 @@ public class Activator implements BundleActivator {
 
 	public class GatewayInterfaceFactoryTracker extends ServiceTracker {
 
-		ServiceReference reference;
-
-		BundleContext _context = null;
+        BundleContext _context = null;
 
 		public GatewayInterfaceFactoryTracker(BundleContext context) {
 

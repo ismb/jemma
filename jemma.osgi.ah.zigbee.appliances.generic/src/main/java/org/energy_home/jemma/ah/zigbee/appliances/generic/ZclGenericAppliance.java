@@ -138,7 +138,7 @@ public class ZclGenericAppliance extends ZclAppliance {
 			int[] clientClusterIds, int[] serverClusterIds) throws ApplianceException {	
 		ZclEndPoint endPoint = ZclEndPointFactory.getEndPoint(profile_id, device_id);
 		this.addEndPoint(endPoint, app_end_point_id);	
-		ZclEndPointFactory.addServiceClusters(endPoint, profile_id, device_id, clientClusterIds, serverClusterIds);
+		ZclEndPointFactory.addServiceClusters(endPoint, profile_id, clientClusterIds, serverClusterIds);
 		return endPoint;
 	}	
 	

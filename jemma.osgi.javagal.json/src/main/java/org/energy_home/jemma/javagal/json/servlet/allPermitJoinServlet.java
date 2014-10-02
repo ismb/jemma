@@ -15,26 +15,20 @@
  */
 package org.energy_home.jemma.javagal.json.servlet;
 
-import java.io.IOException;
+import com.google.gson.Gson;
+import org.energy_home.jemma.javagal.json.constants.Resources;
+import org.energy_home.jemma.javagal.json.util.Util;
+import org.energy_home.jemma.zgd.GatewayInterface;
+import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.JoiningInfo;
+import org.energy_home.jemma.zgd.jaxb.Status;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.energy_home.jemma.javagal.json.constants.Resources;
-import org.energy_home.jemma.javagal.json.util.Util;
-import org.energy_home.jemma.zgd.GalExtenderProxy;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
-import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayInterface;
-import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.Info.Detail;
-import org.energy_home.jemma.zgd.jaxb.JoiningInfo;
-import org.energy_home.jemma.zgd.jaxb.Status;
-
-import com.google.gson.Gson;
+import java.io.IOException;
 
 public class allPermitJoinServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -62,31 +56,21 @@ public class allPermitJoinServlet extends HttpServlet {
 
 				joiningInfo = gson.fromJson(sb.toString(), JoiningInfo.class);
 			} catch (Exception e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				Info info = Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
 			}
 
-			String timeoutString = null;
-			Long timeout = -1l;
+			String timeoutString;
+			Long timeout;
 
 			Object timeoutParam = request.getParameter(Resources.URI_PARAM_TIMEOUT);
 
 			if (timeoutParam == null) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+
+				String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.";
+                Info info = Util.setError(error);
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
@@ -98,26 +82,16 @@ public class allPermitJoinServlet extends HttpServlet {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
 
-						Info info = new Info();
-						Status _st = new Status();
-						_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-						_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
-						info.setStatus(_st);
-						Info.Detail detail = new Info.Detail();
-						info.setDetail(detail);
+
+						String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString;
+						Info info = Util.setError(error);
 						response.getOutputStream().print(gson.toJson(info));
 						return;
 
 					}
 				} catch (NumberFormatException nfe) {
 
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage(nfe.getMessage());
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setError(nfe.getMessage());
 					response.getOutputStream().print(gson.toJson(info));
 					return;
 
@@ -131,31 +105,16 @@ public class allPermitJoinServlet extends HttpServlet {
 				Info info = new Info();
 				info.setStatus(result);
 				response.getOutputStream().print(gson.toJson(info));
-				return;
 
-			} catch (Exception e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+            } catch (Exception e) {
+				Info info = Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
-				return;
-			}
+            }
 		} else {
-			Detail detail = new Detail();
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage("User not logged");
-			info.setStatus(status);
-			info.setDetail(detail);
+			Info info = Util.setError("User not logged");
 			response.getOutputStream().print(gson.toJson(info));
-			return;
 
-		}
+        }
 	}
 
 }

@@ -36,8 +36,7 @@ import org.slf4j.LoggerFactory;
  
  */
 public class Activator implements BundleActivator {
-	private BundleContext bc;
-	private GalExtenderProxyFactory _fac = null;
+    private GalExtenderProxyFactory _fac = null;
 	private static final Logger LOG = LoggerFactory.getLogger( Activator.class );
 	private ServiceRegistration gatewayInterfaceRegistration;
 	private ServiceRegistration gatewayFactoryRegistration;
@@ -49,13 +48,12 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		LOG.info("Starting Gal:Osgi...");
-		bc = context;
-		try {
+        try {
 			String _path = "config.properties";
 
 			LOG.info("FILE Conf: " + _path);
 
-			PropertiesManager PropertiesManager = new PropertiesManager(bc.getBundle().getResource(_path));
+			PropertiesManager PropertiesManager = new PropertiesManager(context.getBundle().getResource(_path));
 
 			if (context.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME) != null)
 				PropertiesManager.props.setProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME, context.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME));
@@ -74,10 +72,10 @@ public class Activator implements BundleActivator {
 				_fac = new GalExtenderProxyFactory(PropertiesManager);
 
 			gatewayInterfaceServiceFactory = new GatewayInterfaceServiceFactory();
-			gatewayInterfaceRegistration = bc.registerService(GatewayInterface.class.getName(), gatewayInterfaceServiceFactory, null);
+			gatewayInterfaceRegistration = context.registerService(GatewayInterface.class.getName(), gatewayInterfaceServiceFactory, null);
 
 			gatewayFactoryServiceFactory = new GatewayFactoryServiceFactory();
-			gatewayFactoryRegistration = bc.registerService(GalExtenderProxyFactory.class.getName(), gatewayFactoryServiceFactory, null);
+			gatewayFactoryRegistration = context.registerService(GalExtenderProxyFactory.class.getName(), gatewayFactoryServiceFactory, null);
 
 			LOG.info("Gal:Osgi Started!");
 		} catch (Exception e) {

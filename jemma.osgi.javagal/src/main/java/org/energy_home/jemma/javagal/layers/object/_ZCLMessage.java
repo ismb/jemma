@@ -56,10 +56,7 @@ public class _ZCLMessage {
 	 * Framecontrol Byte of a Zcl Header.
 	 */
 	public byte SetBitDefaultResponse(boolean sendDefaltResponse) {
-		if (!sendDefaltResponse)
-			return ((byte) (FrameControl | 4));
-		else
-			return ((byte) (FrameControl & ~4));
+			return(!sendDefaltResponse) ? ((byte) (FrameControl | 4)) : ((byte) (FrameControl & ~4));
 	}
 
 	/**
@@ -73,10 +70,7 @@ public class _ZCLMessage {
 	 */
 	public byte SetBitDefaultResponse(boolean sendDefaltResponse, byte _FrameControl) {
 
-		if (!sendDefaltResponse)
-			return ((byte) (_FrameControl | 4));
-		else
-			return ((byte) (_FrameControl & ~4));
+			return (!sendDefaltResponse) ? ((byte) (_FrameControl | 4)) : ((byte) (_FrameControl & ~4));
 
 	}
 
@@ -122,9 +116,9 @@ public class _ZCLMessage {
 				Payload[x++] = _Data[i];
 
 		}
-		Server_to_Client = ((FrameControl & 0x08) == 0x08) ? true : false;// Direction
+		Server_to_Client = ((FrameControl & 0x08) == 0x08);// Direction
 																			// Bit
-		Disable_DefaultResponse = ((FrameControl & 0x10) == 0x10) ? true : false;// Disable
+		Disable_DefaultResponse = ((FrameControl & 0x10) == 0x10);// Disable
 																					// Disable_DefaultResponse
 																					// Bit
 

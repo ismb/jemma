@@ -15,17 +15,10 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.energy_home.jemma.javagal.rest.util.ClientResources;
-import org.energy_home.jemma.javagal.rest.util.Util;
+import org.energy_home.jemma.javagal.rest.util.ThreadPoolManager;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.Callback;
-import org.energy_home.jemma.zgd.jaxb.Info;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.resource.ClientResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code APSMessageListener} interface for the Rest server.
@@ -41,14 +34,11 @@ import org.slf4j.LoggerFactory;
  */
 public class RestApsMessageListener implements APSMessageListener {
 
-	private static final Logger LOG = LoggerFactory.getLogger( RestApsMessageListener.class );
-	private Long CalbackIdentifier = -1L;
-	private Callback callback;
-	private String urilistener;
-	private ClientResources clientResource;
-	private final Context context;
+    private Long CalbackIdentifier = -1L;
+    private String urilistener;
+    private final Context context;
 	private PropertiesManager _PropertiesManager;
-
+    private ThreadPoolManager manager;
 	/**
 	 * Creates a new instance with a given callback, urilistener and client
 	 * resource.
@@ -58,23 +48,17 @@ public class RestApsMessageListener implements APSMessageListener {
 	 * incoming notifications. In practice the clients opens an http server at
 	 * the urilistener uri where this class can {@code POST} incoming
 	 * notifications.
-	 * 
-	 * @param callback
-	 *            the callback.
-	 * @param urilistener
-	 *            the urilistener.
-	 * @param _clientResource
-	 *            the client resource.
-	 */
-	public RestApsMessageListener(Callback callback, String urilistener, ClientResources _clientResource, PropertiesManager __PropertiesManager) {
+     * @param urilistener
+     *            the urilistener.
+     *
+     */
+	public RestApsMessageListener(String urilistener, PropertiesManager __PropertiesManager) {
 		super();
-		this.callback = callback;
-		this.urilistener = urilistener;
-		this.clientResource = _clientResource;
-		this.context = new Context();
+        this.urilistener = urilistener;
+        this.context = new Context();
 		this._PropertiesManager = __PropertiesManager;
 		context.getParameters().add("socketTimeout", ((Integer) (_PropertiesManager.getHttpOptTimeout() * 1000)).toString());
-
+        manager = ThreadPoolManager.getInstance();
 	}
 
 	/**
@@ -82,34 +66,8 @@ public class RestApsMessageListener implements APSMessageListener {
 	 */
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
 
-		if (urilistener != null) {
-			Thread thr = new Thread() {
-				@Override
-				public void run() {
-					try {
-
-						ClientResource resource = new ClientResource(context, urilistener);
-						Info info = new Info();
-						Info.Detail detail = new Info.Detail();
-						detail.setAPSMessageEvent(message);
-						info.setDetail(detail);
-						info.setEventCallbackIdentifier(CalbackIdentifier);
-						String xml = Util.marshal(info);
-						if (_PropertiesManager.getDebugEnabled())
-							LOG.debug("Marshaled:" +xml);
-						resource.post(xml, MediaType.APPLICATION_XML);
-						resource.release();
-						resource = null;
-						clientResource.resetCounter();
-					} catch (Exception e) {
-						clientResource.addToCounterException();
-
-					}
-				}
-			};
-			thr.start();
-		}
-
+		if (urilistener != null)
+            manager.notifyAPSMessage(context, message, CalbackIdentifier, urilistener);
 	}
 
 	/**
@@ -121,16 +79,7 @@ public class RestApsMessageListener implements APSMessageListener {
 		return urilistener;
 	}
 
-	/**
-	 * Gets the callback.
-	 * 
-	 * @return the callback.
-	 */
-	public Callback getCallback() {
-		return callback;
-	}
-
-	/**
+    /**
 	 * Sets the callback id.
 	 * 
 	 * @param id

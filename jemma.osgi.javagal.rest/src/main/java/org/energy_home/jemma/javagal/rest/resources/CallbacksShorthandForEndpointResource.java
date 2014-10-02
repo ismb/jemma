@@ -23,7 +23,6 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.javagal.rest.GalManagerRestApplication;
 import org.energy_home.jemma.javagal.rest.RestApsMessageListener;
-import org.energy_home.jemma.javagal.rest.RestMessageListener;
 import org.energy_home.jemma.javagal.rest.RestManager;
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.ResourcePathURIs;
@@ -31,8 +30,6 @@ import org.energy_home.jemma.javagal.rest.util.Resources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
-import org.restlet.representation.AppendableRepresentation;
-import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
@@ -149,7 +146,7 @@ public class CallbacksShorthandForEndpointResource extends ServerResource {
 					getClientInfo().getAddress());
 			proxyGalInterface = rcmal.getGatewayInterface();
 			RestApsMessageListener listener = new RestApsMessageListener(
-					callback, urilistener,rcmal,getRestManager().getPropertiesManager());
+                    urilistener, getRestManager().getPropertiesManager());
 			Long id = proxyGalInterface.createAPSCallback(ep.shortValue(),
 					listener);
 

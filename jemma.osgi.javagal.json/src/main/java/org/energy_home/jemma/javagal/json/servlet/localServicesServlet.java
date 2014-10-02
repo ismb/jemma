@@ -15,26 +15,19 @@
  */
 package org.energy_home.jemma.javagal.json.servlet;
 
-import java.io.IOException;
+import com.google.gson.Gson;
+import org.energy_home.jemma.javagal.json.constants.Resources;
+import org.energy_home.jemma.javagal.json.util.Util;
+import org.energy_home.jemma.zgd.GatewayInterface;
+import org.energy_home.jemma.zgd.jaxb.Info;
+import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.energy_home.jemma.javagal.json.constants.Resources;
-import org.energy_home.jemma.javagal.json.util.Util;
-import org.energy_home.jemma.zgd.GalExtenderProxy;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
-import org.energy_home.jemma.zgd.GatewayConstants;
-import org.energy_home.jemma.zgd.GatewayInterface;
-import org.energy_home.jemma.zgd.jaxb.Info;
-import org.energy_home.jemma.zgd.jaxb.Info.Detail;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.Status;
-
-import com.google.gson.Gson;
+import java.io.IOException;
 
 public class localServicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -53,17 +46,13 @@ public class localServicesServlet extends HttpServlet {
 
 			
 
-			String timeoutString = null;
-			Long timeout = -1l;
+			String timeoutString;
+			Long timeout;
 			Object timeoutParam = request.getParameter(Resources.URI_PARAM_TIMEOUT);
 			if (timeoutParam == null) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+
+				String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.";
+				Info info = Util.setError(error);
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 			} else {
@@ -73,24 +62,13 @@ public class localServicesServlet extends HttpServlet {
 				try {
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
-						Info info = new Info();
-						Status _st = new Status();
-						_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-						_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
-						info.setStatus(_st);
-						Info.Detail detail = new Info.Detail();
-						info.setDetail(detail);
+						String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString;
+						Info info = Util.setError(error);
 						response.getOutputStream().print(gson.toJson(info));
 						return;
 					}
 				} catch (NumberFormatException nfe) {
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage(nfe.getMessage());
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setError(nfe.getMessage());
 					response.getOutputStream().print(gson.toJson(info));
 					return;
 				}
@@ -109,56 +87,31 @@ public class localServicesServlet extends HttpServlet {
 				short endPoint = gatewayInterface.configureEndpoint(timeout, simpleDescriptor);
 				if (endPoint > 0) {
 
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.SUCCESS);
-					info.setStatus(_st);
+
 					Info.Detail detail = new Info.Detail();
 					detail.setEndpoint(endPoint);
-					info.setDetail(detail);
-					response.getOutputStream().print(gson.toJson(info));
-					return;
-
-				} else {
-
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage("Error creating end point. Not created.");
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setSuccess(detail);
 					response.getOutputStream().print(gson.toJson(info));
 
-					return;
+                } else {
 
-				}
+					String error = "Error creating end point. Not created.";
+					Info info = Util.setError(error);
+					response.getOutputStream().print(gson.toJson(info));
+
+                }
 
 			} catch (Exception e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				Info info = Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
-				return;
 
-			}
+            }
 
 		} else {
-			Detail detail = new Detail();
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage("User not logged");
-			info.setStatus(status);
-			info.setDetail(detail);
+			Info info = Util.setError("User not logged");
 			response.getOutputStream().print(gson.toJson(info));
-			return;
 
-		}
+        }
 	}
 
 }

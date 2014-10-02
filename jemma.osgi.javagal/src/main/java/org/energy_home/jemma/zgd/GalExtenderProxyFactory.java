@@ -15,12 +15,10 @@
  */
 package org.energy_home.jemma.zgd;
 
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
-
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+
+import java.math.BigInteger;
 
 /**
  * Factory class for {@link GalExtenderProxy} objects. Every object created by
@@ -92,7 +90,7 @@ public class GalExtenderProxyFactory {
 	/**
 	 * Get the ExtendedPanId of the Gal.
 	 * 
-	 * @throws Exception.
+	 * @throws java.lang.Exception
 	 */
 	public BigInteger getExtendedPanId() {
 		return gal.getPropertiesManager().getExtendedPanId();

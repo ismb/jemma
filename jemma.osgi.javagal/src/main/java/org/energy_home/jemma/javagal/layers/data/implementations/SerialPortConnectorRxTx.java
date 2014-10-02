@@ -16,14 +16,6 @@
 package org.energy_home.jemma.javagal.layers.data.implementations;
 
 import gnu.io.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.TooManyListenersException;
-
-import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
 import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
@@ -31,6 +23,11 @@ import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
 
 /**
  * RxTx implementation of the {@link IConnector}.
@@ -96,7 +93,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 				return false;
 			} else {
 				serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
-				if (serialPort instanceof SerialPort) {
+				if (serialPort != null) {
 					serialPort.setSerialPortParams(speed, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 					serialPort.enableReceiveTimeout(2000);
@@ -207,7 +204,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 			portIdentifier = null;
 			try {
 				Thread.sleep(50);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException ignored) {
 
 			}
 		}
@@ -229,7 +226,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 					try {
 						int pos = 0;
-						Integer data = 0;
+						Integer data;
 						short[] buffer = new short[1024];
 
 						while (in.available() > 0) {
@@ -267,12 +264,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
-		return ignoreMessage;
-
-	}
-
-	/**
+    /**
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {

@@ -40,7 +40,7 @@ public class Hex {
 			return "";
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (; i < data.length; i++) {
 			buf.append(toHexChar((data[i] >>> 4) & 0x0F));
 			buf.append(toHexChar(data[i] & 0x0F));
@@ -70,7 +70,7 @@ public class Hex {
 			return "";
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (; i < len; i++) {
 			buf.append(toHexChar((data[i] >>> 4) & 0x0F));
 			buf.append(toHexChar(data[i] & 0x0F));
@@ -119,8 +119,8 @@ public class Hex {
 	 * @return the desired String representation.
 	 */
 	public static String toHexString(long value, int size) {
-		StringBuffer buf = new StringBuffer();
-		long data = (long) (value);
+		StringBuilder buf = new StringBuilder();
+		long data = value;
 		for (int i = 0; i < size; i++) {
 			buf.insert(0, toHexChar(data & 0x0F));
 			buf.insert(0, toHexChar((data >>> 4) & 0x0F));

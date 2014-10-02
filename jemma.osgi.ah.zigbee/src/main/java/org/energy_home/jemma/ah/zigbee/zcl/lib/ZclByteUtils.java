@@ -17,90 +17,18 @@ package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
 public class ZclByteUtils {
 
-	public static final byte[] invert(byte abyte0[]) {
-		if (abyte0 == null || abyte0.length == 0)
-			return abyte0;
-		byte abyte1[] = new byte[abyte0.length];
-		for (int i = 0; i < abyte0.length; i++)
-			abyte1[i] = abyte0[abyte0.length - i - 1];
-
-		return abyte1;
-	}
-
-	public static final void invert(byte abyte0[], int i, byte abyte1[], int j, int k) {
-		if (abyte0 == null || abyte0.length == 0 || k == 0)
-			return;
-		int l = Math.min(abyte0.length - 1, (i + k) - 1);
-		for (int i1 = l; i1 >= i; i1--) {
-			if (j >= abyte1.length)
-				throw new ArrayIndexOutOfBoundsException("Destination array has insuffiecient length. Destination offset reached "
-						+ j + " while dest length is " + abyte1.length);
-			abyte1[j] = abyte0[i1];
-			j++;
-		}
-
-	}
-
-	public static final void _16BitsToLittleEndian(int i, byte abyte0[], int j) {
-		abyte0[j] = (byte) (0xff & i >>> 0);
+    public static void _16BitsToLittleEndian(int i, byte abyte0[], int j) {
+		abyte0[j] = (byte) (0xff & i);
 		abyte0[j + 1] = (byte) (0xff & i >>> 8);
 	}
 
-	public static final int _16BitLittleEndianToInt(byte abyte0[], int i) {
+	public static int _16BitLittleEndianToInt(byte abyte0[], int i) {
 		int j = 0xffff & abyte0[i + 1] << 8;
 		j += 0xff & abyte0[i];
 		return j;
 	}
 
-	public static final void _24BitsToLittleEndian(int i, byte abyte0[], int j) {
-		abyte0[j] = (byte) (0xff & i);
-		abyte0[j + 1] = (byte) (0xff & i >>> 8);
-		abyte0[j + 2] = (byte) (0xff & i >>> 16);
-	}
-
-	public static final int _24BitLittleEndianToInt(byte abyte0[], int i) {
-		int j = 0xffffff & abyte0[i + 2] << 16;
-		j += 0xffff & abyte0[i + 1] << 8;
-		j += 0xff & abyte0[i];
-		return j;
-	}
-
-	public static final void _32BitsToLittleEndian(int i, byte abyte0[], int j) {
-		abyte0[j] = (byte) (0xff & i);
-		abyte0[j + 1] = (byte) (0xff & i >>> 8);
-		abyte0[j + 2] = (byte) (0xff & i >>> 16);
-		abyte0[j + 3] = (byte) (0xff & i >>> 24);
-	}
-
-	public static final void _64BitsToLittleEndian(long l, byte abyte0[], int i) {
-		abyte0[i] = (byte) (int) (255L & l);
-		abyte0[i + 1] = (byte) (int) (255L & l >>> 8);
-		abyte0[i + 2] = (byte) (int) (255L & l >>> 16);
-		abyte0[i + 3] = (byte) (int) (255L & l >>> 24);
-		abyte0[i + 4] = (byte) (int) (255L & l >>> 32);
-		abyte0[i + 5] = (byte) (int) (255L & l >>> 40);
-		abyte0[i + 6] = (byte) (int) (255L & l >>> 48);
-		abyte0[i + 7] = (byte) (int) (255L & l >>> 56);
-	}
-
-	public static final int _32BitLittleEndianToInt(byte abyte0[], int i) {
-		int j = abyte0[i + 3] << 24;
-		j += 0xffffff & abyte0[i + 2] << 16;
-		j += 0xffff & abyte0[i + 1] << 8;
-		j += 0xff & abyte0[i];
-		return j;
-	}
-
-	public static final long _64BitLittleEndianToLong(byte abyte0[], int i) {
-		long l = 0L;
-		l = ((long) abyte0[i + 7] << 56) + ((long) (abyte0[i + 6] & 0xff) << 48) + ((long) (abyte0[i + 5] & 0xff) << 40)
-				+ ((long) (abyte0[i + 4] & 0xff) << 32) + ((long) (abyte0[i + 3] & 0xff) << 24)
-				+ ((long) (abyte0[i + 2] & 0xff) << 16) + ((long) (abyte0[i + 1] & 0xff) << 8)
-				+ ((long) (abyte0[i + 0] & 0xff) << 0);
-		return l;
-	}
-
-	public static final void floatToSemiPrecision(float f, byte abyte0[], int i) {
+    public static void floatToSemiPrecision(float f, byte abyte0[], int i) {
 		int j = Float.floatToIntBits(f);
 		int k = j >> 23;
 		k &= 0xff;
@@ -122,12 +50,12 @@ public class ZclByteUtils {
 		_16BitsToLittleEndian(k1, abyte0, i);
 	}
 
-	public static final float semiPrecisionToFloat(byte abyte0[], int i) {
+	public static float semiPrecisionToFloat(byte abyte0[], int i) {
 		int j = _16BitLittleEndianToInt(abyte0, i);
 		int k = (j >>> 15) << 31;
 		int l = (j << 22) >>> 9;
 		int i1 = (j << 17) >>> 27;
-		int j1 = 0;
+		int j1;
 		if (i1 == 31)
 			j1 = 255;
 		else if (i1 == 0)
@@ -136,14 +64,13 @@ public class ZclByteUtils {
 			j1 = i1 + 112;
 		j1 <<= 23;
 		int k1 = k | l | j1;
-		float f = Float.intBitsToFloat(k1);
-		return f;
+        return Float.intBitsToFloat(k1);
 	}
 
-	public static final boolean match(byte abyte0[], byte abyte1[]) {
+	public static boolean match(byte abyte0[], byte abyte1[]) {
 		if (abyte0 == abyte1)
 			return true;
-		if (abyte0 == null && abyte1 != null || abyte0 != null && abyte1 == null)
+		if (abyte0 == null || abyte1 == null)
 			return false;
 		if (abyte0.length != abyte1.length)
 			return false;
@@ -169,38 +96,4 @@ public class ZclByteUtils {
 		System.out.println(j);
 	}
 
-	public static String bytesToHexString(byte abyte0[], int i, int j) {
-		StringBuffer stringbuffer = new StringBuffer("[");
-		int k = Math.min(i + j, abyte0.length);
-		for (int l = i; l < k; l++) {
-			stringbuffer.append("0x");
-			stringbuffer.append(toHexString(0xff & abyte0[l]));
-			if (l < k - 1)
-				stringbuffer.append(", ");
-		}
-
-		stringbuffer.append("]");
-		return stringbuffer.toString();
-	}
-
-	public static String bytesToHexString(byte abyte0[]) {
-		if (abyte0 == null)
-			return "null";
-		else
-			return bytesToHexString(abyte0, 0, abyte0.length);
-	}
-
-	public static String toHexString(int i) {
-		char ac[] = new char[32];
-		int j = 32;
-		byte byte0 = 16;
-		int k = byte0 - 1;
-		do {
-			ac[--j] = HEX_DIGITS[i & k];
-			i >>>= 4;
-		} while (i != 0);
-		return new String(ac, j, 32 - j);
-	}
-
-	static final char HEX_DIGITS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 }

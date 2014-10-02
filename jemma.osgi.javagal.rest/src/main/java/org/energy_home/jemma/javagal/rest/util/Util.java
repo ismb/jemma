@@ -16,20 +16,15 @@
 
 package org.energy_home.jemma.javagal.rest.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.*;
+import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Random;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.transform.stream.StreamSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility class.
@@ -45,20 +40,14 @@ public class Util {
 	 */
 	public final static long INTERNAL_TIMEOUT = 5000;
 	private final static Long unsigned8MaxValue;
-	private final static Long unsigned16MaxValue;
-	private final static Long unsigned32MaxValue;
+    private final static Long unsigned32MaxValue;
 	private static final String EMPTY_STRING = "";
-	/**
-	 * String representation for Unicode Transformation Format, 8 bit.
-	 */
-	public static final String UTF8_CHAR_ENCODING = "UTF-8";
-	private static Random r;
+    private static Random r;
 	private static final Logger LOG = LoggerFactory.getLogger( Util.class );
 
 	static {
 		unsigned8MaxValue = Long.decode("0xff");
-		unsigned16MaxValue = Long.decode("0xffff");
-		unsigned32MaxValue = Long.decode("0xffffffff");
+        unsigned32MaxValue = Long.decode("0xffffffff");
 		r = new Random();
 	}
 
@@ -78,14 +67,12 @@ public class Util {
 			throws Exception {
 		JAXBContext jc = JAXBContext.newInstance(clasz);
 		Unmarshaller u = jc.createUnmarshaller();
-		Object o = null;
-		byte[] _res = null;
+		Object o;
+		byte[] _res;
 		_res = content.getBytes("UTF-8");
-		String __str = "";
+		String __str;
 		__str = new String(_res, "UTF-8");
-		StringBuffer xmlStr = new StringBuffer(
-				(!__str.startsWith("<") ? __str.substring(3) : __str));
-		o = u.unmarshal(new StreamSource(new StringReader(xmlStr.toString())),
+        o = u.unmarshal(new StreamSource(new StringReader((!__str.startsWith("<") ? __str.substring(3) : __str))),
 				clasz);
 		return (T) ((JAXBElement) o).getValue();
 	}
@@ -116,9 +103,8 @@ public class Util {
 			m.setProperty("com.sun.xml.internal.bind.xmlDeclaration",
 					Boolean.FALSE);
 			m.marshal(je, stringWriter);
-			String _tores = stringWriter.toString();
-			
-			return _tores;
+
+            return stringWriter.toString();
 		} catch (JAXBException e) {
 			LOG.error("Exception on marshal : ", e);
 			return EMPTY_STRING;
@@ -147,20 +133,7 @@ public class Util {
 		return ((candidate >= 0) && (candidate <= unsigned8MaxValue));
 	}
 
-	/**
-	 * Tells if the value contained in a candidate Long is actually an unsigned
-	 * 16 bits value or not (2 bytes).
-	 * 
-	 * @param candidate
-	 *            the candidate Long.
-	 * @return true if the value is actually an unsigned 16 bits, false
-	 *         otherwise.
-	 */
-	synchronized public static boolean isUnsigned16(Long candidate) {
-		return ((candidate >= 0) && (candidate <= unsigned16MaxValue));
-	}
-
-	/**
+    /**
 	 * Tells if the value contained in a candidate Long is actually an unsigned
 	 * 32 bits value or not (4 bytes).
 	 * 
@@ -181,9 +154,8 @@ public class Util {
 	 */
 	public static byte[] getRequestIdentifier() {
 
-		byte[] rid = { (byte) r.nextInt(), (byte) r.nextInt(),
-				(byte) r.nextInt(), (byte) r.nextInt() };
-		return rid;
+        return new byte[]{ (byte) r.nextInt(), (byte) r.nextInt(),
+                (byte) r.nextInt(), (byte) r.nextInt() };
 	}
 
 	/**

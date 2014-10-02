@@ -23,17 +23,12 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -177,7 +172,7 @@ public class Info implements Serializable{
      *     
      */
     public void setRequestIdentifier(byte[] value) {
-        this.requestIdentifier = ((byte[]) value);
+        this.requestIdentifier = value;
     }
 
     /**
@@ -448,10 +443,7 @@ public class Info implements Serializable{
          * 
          */
         public List<String> getValue() {
-            if (value == null) {
-                value = new ArrayList<String>();
-            }
-            return this.value;
+            return(value == null) ? new ArrayList<String>() : this.value;
         }
 
         /**
@@ -477,10 +469,7 @@ public class Info implements Serializable{
          * 
          */
         public List<LQIInformation> getLQIInformation() {
-            if (lqiInformation == null) {
-                lqiInformation = new ArrayList<LQIInformation>();
-            }
-            return this.lqiInformation;
+            return(lqiInformation == null) ? new ArrayList<LQIInformation>() : this.lqiInformation;
         }
 
         /**
@@ -1010,10 +999,7 @@ public class Info implements Serializable{
          * 
          */
         public List<NetworkDescriptorList> getNetworkDescriptors() {
-            if (networkDescriptors == null) {
-                networkDescriptors = new ArrayList<NetworkDescriptorList>();
-            }
-            return this.networkDescriptors;
+            return (networkDescriptors == null) ? new ArrayList<NetworkDescriptorList>() : this.networkDescriptors;
         }
 
         /**

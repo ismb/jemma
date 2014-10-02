@@ -15,33 +15,15 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.javagal.layers.object.GatewayDeviceEventEntry;
 import org.energy_home.jemma.zgd.GatewayEventListener;
 import org.energy_home.jemma.zgd.GatewayEventListenerExtended;
 import org.energy_home.jemma.zgd.IGatewayEventManager;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.BindingList;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.NodeServices;
-import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
-import org.energy_home.jemma.zgd.jaxb.Status;
-import org.energy_home.jemma.zgd.jaxb.WSNNode;
-import org.energy_home.jemma.zgd.jaxb.ZCLMessage;
-import org.energy_home.jemma.zgd.jaxb.ZDPMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.zgd.jaxb.*;
+
+import java.util.concurrent.*;
 
 /**
  * Dispatches Gateway Device Events to registered listeners. This class is
@@ -67,9 +49,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	final static int DISCOVERY_LEAVE = 4;
 	final static int DISCOVERY_FRESHNESS = 16;
 
-	private static final Logger LOG = LoggerFactory.getLogger(GatewayEventManager.class);
-
-	/**
+    /**
 	 * The local {@link GalController} reference.
 	 */
 	GalController gal = null;
@@ -107,7 +87,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					Status cstatus = null;
+					Status cstatus;
 					synchronized (status) {
 						cstatus = SerializationUtils.clone(status);
 					}
@@ -127,7 +107,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
 					if (gel.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -148,8 +128,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
 					if (gel.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
-						NodeServices cnodeServices = null;
+						Status cstatus;
+						NodeServices cnodeServices;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -173,7 +153,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -192,9 +172,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-							Status cstatus = null;
+					if ((gl.getProxyIdentifier() == _requestIdentifier) && (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
+							Status cstatus;
 							synchronized (status) {
 								cstatus = SerializationUtils.clone(status);
 							}
@@ -214,7 +193,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					Status cstatus = null;
+					Status cstatus;
 					synchronized (status) {
 						cstatus = SerializationUtils.clone(status);
 					}
@@ -234,7 +213,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
 					if (gel.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -252,7 +231,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
-					Status cstatus = null;
+					Status cstatus;
 					synchronized (status) {
 						cstatus = SerializationUtils.clone(status);
 					}
@@ -271,7 +250,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gel : gal.getListGatewayEventListener()) {
 					if (gel.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -292,8 +271,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
-						Status cstatus = null;
-						NodeDescriptor cnode = null;
+						Status cstatus;
+						NodeDescriptor cnode;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -318,8 +297,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier)
 						if (!(gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
-							Status cstatus = null;
-							NodeDescriptor cnode = null;
+							Status cstatus;
+							NodeDescriptor cnode;
 							synchronized (status) {
 								cstatus = SerializationUtils.clone(status);
 							}
@@ -344,9 +323,9 @@ public class GatewayEventManager implements IGatewayEventManager {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
 
-						Status cstatus = null;
-						NodeDescriptor cnode = null;
-						Address caddress = null;
+						Status cstatus;
+						NodeDescriptor cnode;
+						Address caddress;
 
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
@@ -373,11 +352,10 @@ public class GatewayEventManager implements IGatewayEventManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-							Status cstatus = null;
-							NodeDescriptor cnode = null;
-							Address caddress = null;
+					if ((gl.getProxyIdentifier() == _requestIdentifier) && (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
+							Status cstatus;
+							NodeDescriptor cnode;
+							Address caddress;
 
 							synchronized (status) {
 								cstatus = SerializationUtils.clone(status);
@@ -412,8 +390,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 						boolean _ReportAnnouncements = ((gl.getDiscoveryMask() & DISCOVERY_ANNOUNCEMENTS) != 0);
 						if (_ReportOnExistingNodes || _ReportAnnouncements) {
 
-							Status cstatus = null;
-							WSNNode cnode = null;
+							Status cstatus ;
+							WSNNode cnode ;
 							synchronized (status) {
 								cstatus = SerializationUtils.clone(status);
 							}
@@ -440,8 +418,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					boolean _ReportLeave = ((gl.getFreshnessMask() & DISCOVERY_LEAVE) != 0);
 					if (_ReportLeave) {
-						Status cstatus = null;
-						WSNNode cnode = null;
+						Status cstatus;
+						WSNNode cnode;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -465,7 +443,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -487,7 +465,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					Status cstatus = null;
+					Status cstatus;
 					synchronized (status) {
 						cstatus = SerializationUtils.clone(status);
 					}
@@ -506,11 +484,10 @@ public class GatewayEventManager implements IGatewayEventManager {
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
-					if (gl.getProxyIdentifier() == _requestIdentifier)
-						if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
+					if ((gl.getProxyIdentifier() == _requestIdentifier) && (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended)) {
 
-							Status cstatus = null;
-							Address caddress = null;
+							Status cstatus;
+							Address caddress;
 							synchronized (status) {
 								cstatus = SerializationUtils.clone(status);
 							}
@@ -535,8 +512,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-						Status cstatus = null;
-						Address caddress = null;
+						Status cstatus ;
+						Address caddress ;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -560,8 +537,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
-						ServiceDescriptor cservice = null;
+						Status cstatus ;
+						ServiceDescriptor cservice ;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -587,8 +564,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
-						BindingList cbindings = null;
+						Status cstatus;
+						BindingList cbindings;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -613,7 +590,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -635,7 +612,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getProxyIdentifier() == _requestIdentifier) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
@@ -656,7 +633,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-						ZDPMessage cmessage = null;
+						ZDPMessage cmessage;
 						synchronized (message) {
 							cmessage = SerializationUtils.clone(message);
 						}
@@ -679,7 +656,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-						ZCLMessage cmessage = null;
+						ZCLMessage cmessage;
 						synchronized (message) {
 							cmessage = SerializationUtils.clone(message);
 						}
@@ -698,10 +675,9 @@ public class GatewayEventManager implements IGatewayEventManager {
 	public synchronized void notifyFrequencyAgility(final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
-				LinkedList<GatewayDeviceEventEntry> copylist = null;
-				for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
+                for (GatewayDeviceEventEntry<?> gl : gal.getListGatewayEventListener()) {
 					if (gl.getGatewayEventListener() instanceof GatewayEventListenerExtended) {
-						Status cstatus = null;
+						Status cstatus;
 						synchronized (status) {
 							cstatus = SerializationUtils.clone(status);
 						}
