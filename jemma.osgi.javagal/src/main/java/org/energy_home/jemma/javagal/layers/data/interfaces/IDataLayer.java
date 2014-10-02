@@ -15,26 +15,14 @@
  */
 package org.energy_home.jemma.javagal.layers.data.interfaces;
 
+import org.energy_home.jemma.javagal.layers.PropertiesManager;
+import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 import org.energy_home.jemma.zgd.GatewayException;
-import org.energy_home.jemma.zgd.jaxb.APSMessage;
-import org.energy_home.jemma.zgd.jaxb.Address;
-import org.energy_home.jemma.zgd.jaxb.Binding;
-import org.energy_home.jemma.zgd.jaxb.BindingList;
-import org.energy_home.jemma.zgd.jaxb.InterPANMessage;
-import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
-import org.energy_home.jemma.zgd.jaxb.NodeServices;
-import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
-import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
-import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
-import org.energy_home.jemma.zgd.jaxb.Status;
+import org.energy_home.jemma.zgd.jaxb.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
-
-import org.energy_home.jemma.javagal.layers.PropertiesManager;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.object.Mgmt_LQI_rsp;
 
 /**
  * Data layer interface to be implemented by every vendor (Freescale, Ember and
@@ -91,7 +79,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a not ZGD error occurs.
 	 */
-	public BigInteger readExtAddressGal(long timeout) throws GatewayException, Exception;
+	public BigInteger readExtAddressGal(long timeout) throws  Exception;
 
 	/**
 	 * Reads extended Address.
@@ -106,7 +94,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a not ZGD error occurs.
 	 */
-	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws GatewayException, Exception;
+	public BigInteger readExtAddress(long timeout, Integer shortAddress) throws  Exception;
 
 	/**
 	 * Starts a service discovery function. The StartServiceDiscovery procedure
@@ -210,7 +198,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public NodeDescriptor getNodeDescriptorSync(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException;
+	public NodeDescriptor getNodeDescriptorSync(long timeout, Address addrOfInterest) throws  Exception;
 
 	/**
 	 * Gets the channel synchronously.
@@ -225,7 +213,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public short getChannelSync(long timeout) throws IOException, Exception, GatewayException;
+	public short getChannelSync(long timeout) throws  Exception;
 
 	/**
 	 * Starts the Gateway Device synchronously. You can control the start
@@ -243,7 +231,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status startGatewayDeviceSync(long timeout, StartupAttributeInfo sai) throws IOException, Exception, GatewayException;
+	public Status startGatewayDeviceSync(long timeout, StartupAttributeInfo sai) throws  Exception;
 
 	/**
 	 * Stops the network synchronously.
@@ -256,7 +244,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status stopNetworkSync(long timeout) throws Exception, GatewayException;
+	public Status stopNetworkSync(long timeout) throws Exception;
 
 	/**
 	 * Configures an end point synchronously. Configuration values are carried
@@ -289,7 +277,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException;
+	public short configureEndPointSync(long timeout, SimpleDescriptor desc) throws  Exception;
 
 	/**
 	 * Clears an end point synchronously. The ClearEndpoint procedure is invoked
@@ -315,7 +303,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status clearEndpointSync(short endpoint) throws IOException, Exception, GatewayException;
+	public Status clearEndpointSync(short endpoint) throws  Exception;
 
 	/**
 	 * Starts a PermitJoin procedure synchronously. The PermitJoin procedure is
@@ -338,7 +326,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status permitJoinSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws IOException, Exception, GatewayException;
+	public Status permitJoinSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws  Exception;
 
 	/**
 	 * Starts a PermitJoinAll procedure synchronously.
@@ -358,7 +346,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws Exception
 	 *             if a general error occurs.
 	 */
-	public Status permitJoinAllSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws IOException, Exception;
+	public Status permitJoinAllSync(long timeout, Address addrOfInterest, short duration, byte TCSignificance) throws  Exception;
 
 	/**
 	 * Starts a Leave procedure synchronously. The Leave procedure is invoked by
@@ -387,7 +375,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public NodeServices getLocalServices() throws IOException, Exception, GatewayException;
+	public NodeServices getLocalServices() throws  Exception;
 
 	/**
 	 * Starts the GetServiceDescriptor procedure. The GetServiceDescriptor
@@ -409,7 +397,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public ServiceDescriptor getServiceDescriptor(long timeout, Address addrOfInterest, short endpoint) throws IOException, Exception, GatewayException;
+	public ServiceDescriptor getServiceDescriptor(long timeout, Address addrOfInterest, short endpoint) throws  Exception;
 
 	/**
 	 * Starts the GetBindingList. The GetBindingList procedure is invoked by an
@@ -432,7 +420,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public BindingList getNodeBindings(long timeout, Address addrOfInterest, short index) throws IOException, Exception, GatewayException;
+	public BindingList getNodeBindings(long timeout, Address addrOfInterest, short index) throws  Exception;
 
 	/**
 	 * Adds a {@link Binding}.
@@ -449,7 +437,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status addBinding(long timeout, Binding binding, Address aoi) throws IOException, Exception, GatewayException;
+	public Status addBinding(long timeout, Binding binding, Address aoi) throws  Exception;
 
 	/**
 	 * Removes a {@link Binding}.
@@ -466,9 +454,9 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status removeBinding(long timeout, Binding binding, Address aoi) throws IOException, Exception, GatewayException;
+	public Status removeBinding(long timeout, Binding binding, Address aoi) throws  Exception;
 
-	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws IOException, Exception, GatewayException;
+	public Status frequencyAgilitySync(long timeout, short scanChannel, short scanDuration) throws  Exception;
 
 	/**
 	 * Tries to reset dongle's hardware.
@@ -478,9 +466,9 @@ public interface IDataLayer extends IFrameCallback {
 	 */
 	public void cpuReset() throws Exception;
 
-	public Status SetModeSelectSync(long timeout) throws IOException, Exception, GatewayException;
+	public Status SetModeSelectSync(long timeout) throws  Exception;
 
-	public Status ClearDeviceKeyPairSet(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException;
+	public Status ClearDeviceKeyPairSet(long timeout, Address addrOfInterest) throws  Exception;
 
 	/**
 	 * Clears the neighbor table entry.
@@ -497,7 +485,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status ClearNeighborTableEntry(long timeout, Address addrOfInterest) throws IOException, Exception, GatewayException;
+	public Status ClearNeighborTableEntry(long timeout, Address addrOfInterest) throws  Exception;
 
 	/**
 	 * Starts a ZDP-Mgmt_Lqi.Request procedure synchronously. The Lqi_req
@@ -507,10 +495,10 @@ public interface IDataLayer extends IFrameCallback {
 	 *            the desired timeout.
 	 * @param addrOfInterest
 	 *            the address of interest for the PermitJoin procedure.
-	 * @param startindex
+	 * @param startIndex
 	 *            the value of the table index.
 	 */
-	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws IOException, Exception, GatewayException;
+	public Mgmt_LQI_rsp Mgmt_Lqi_Request(long timeout, Address addrOfInterest, short startIndex) throws  Exception;
 
 	void clearBuffer();
 

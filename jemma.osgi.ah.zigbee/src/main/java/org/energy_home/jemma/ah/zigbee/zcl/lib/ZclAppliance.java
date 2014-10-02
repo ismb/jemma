@@ -15,9 +15,6 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
-import java.util.Dictionary;
-import java.util.List;
-
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.IHacDevice;
@@ -32,6 +29,9 @@ import org.energy_home.jemma.ah.zigbee.zcl.IZclServiceCluster;
 import org.energy_home.jemma.zgd.jaxb.ServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Dictionary;
+import java.util.List;
 
 public abstract class ZclAppliance extends DriverAppliance implements IZclAppliance, ZigBeeDeviceListener {
 
@@ -56,8 +56,8 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 	public synchronized void attach(IHacDevice device) {
 		ZigBeeDevice zclDevice = (ZigBeeDevice) device;
 		ServiceDescriptor service = zclDevice.getServiceDescriptor();
-		int deviceId = service.getSimpleDescriptor().getApplicationDeviceIdentifier().intValue();
-		int profileId = service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue();
+		int deviceId = service.getSimpleDescriptor().getApplicationDeviceIdentifier();
+		int profileId = service.getSimpleDescriptor().getApplicationProfileIdentifier();
 		int endPointId = service.getEndPoint();
 		List activeEndPointIds = zclDevice.getNodeServices().getActiveEndpoints();
 		int epsNumber = activeEndPointIds.size();
@@ -79,17 +79,16 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 		}
 		serviceEndPoint.zclSetZigBeeDevice(zclDevice);
 		String[] clusterEndPoints = serviceEndPoint.getServiceClusterNames();
-		for (int j = 0; j < clusterEndPoints.length; j++) {
-			IServiceCluster serviceCluster = serviceEndPoint.getServiceCluster(clusterEndPoints[j]);
+        for (String clusterEndPoint : clusterEndPoints) {
+            IServiceCluster serviceCluster = serviceEndPoint.getServiceCluster(clusterEndPoint);
 
-			try {
-				if (serviceCluster instanceof IZclServiceCluster)
-					((IZclServiceCluster) serviceCluster).zclAttach(zclDevice);
-			} catch (Exception e) {
-				LOG.error("attaching clusterEndPoint to device in ZclAppliance ",e);
-				continue;
-			}
-		}
+            try {
+                if (serviceCluster instanceof IZclServiceCluster)
+                    ((IZclServiceCluster) serviceCluster).zclAttach(zclDevice);
+            } catch (Exception e) {
+                LOG.error("attaching clusterEndPoint to device in ZclAppliance ", e);
+            }
+        }
 		attachedDevices++;
 		if ((!isGenericAppliance() && this.getEndPointTypes().length == attachedDevices+1) ||			
 				(isGenericAppliance() && 
@@ -108,28 +107,27 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 		attachedDevices--;
 
 		IEndPoint[] serviceEndPoints = this.getEndPoints();
-		IEndPoint serviceEndPoint = null;
-		ZigBeeDevice attachedDevice = null;
-		for (int i = 0; i < serviceEndPoints.length; i++) {
-			serviceEndPoint = serviceEndPoints[i];
-			if (serviceEndPoint instanceof ZclEndPoint &&
-					(attachedDevice = ((ZclEndPoint)serviceEndPoint).zclGetZigBeeDevice()) != null &&
-					attachedDevice.getServiceDescriptor().getEndPoint() == zclDevice.getServiceDescriptor().getEndPoint()) {
-					((ZclEndPoint)serviceEndPoint).zclSetZigBeeDevice(null);
-					String[] clusterEndPoints = serviceEndPoint.getServiceClusterNames();
-					for (int j = 0; j < clusterEndPoints.length; j++) {
-						IServiceCluster serviceCluster = serviceEndPoint.getServiceCluster(clusterEndPoints[j]);
-						try {
-							if (serviceCluster instanceof IZclServiceCluster)
-								((IZclServiceCluster) serviceCluster).zclDetach(zclDevice);
-						} catch (Exception e) {
-							LOG.error("detaching clusterEndPoint to device in ZclAppliance ",e);
-							continue;
-						}
-					}
-					break;
-			}
-		}
+		IEndPoint serviceEndPoint;
+		ZigBeeDevice attachedDevice;
+        for (IEndPoint serviceEndPoint1 : serviceEndPoints) {
+            serviceEndPoint = serviceEndPoint1;
+            if (serviceEndPoint instanceof ZclEndPoint &&
+                    (attachedDevice = ((ZclEndPoint) serviceEndPoint).zclGetZigBeeDevice()) != null &&
+                    attachedDevice.getServiceDescriptor().getEndPoint() == zclDevice.getServiceDescriptor().getEndPoint()) {
+                ((ZclEndPoint) serviceEndPoint).zclSetZigBeeDevice(null);
+                String[] clusterEndPoints = serviceEndPoint.getServiceClusterNames();
+                for (String clusterEndPoint : clusterEndPoints) {
+                    IServiceCluster serviceCluster = serviceEndPoint.getServiceCluster(clusterEndPoint);
+                    try {
+                        if (serviceCluster instanceof IZclServiceCluster)
+                            ((IZclServiceCluster) serviceCluster).zclDetach(zclDevice);
+                    } catch (Exception e) {
+                        LOG.error("detaching clusterEndPoint to device in ZclAppliance ", e);
+                    }
+                }
+                break;
+            }
+        }
 		zclDevice.removeListener(this);
 		detached();
 	}

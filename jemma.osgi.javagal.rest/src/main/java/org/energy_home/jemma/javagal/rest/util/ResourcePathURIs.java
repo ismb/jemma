@@ -24,14 +24,11 @@ package org.energy_home.jemma.javagal.rest.util;
 public interface ResourcePathURIs {
 	public static final String VERSION = "/version";
 	public static final String INFOBASE = "/ib";
-	public static final String REQUESTS = "/requests/";
-	public static final String NETWORKS = "/networks";
-	public static final String RESET = "/reset";
+    public static final String RESET = "/reset";
 	public static final String STARTUP = "/startup";
 
 	public static final String CALLBACKS = "/callbacks";
-	public static final String NEWCALLBACKS = "/newcallbacks";
-	public static final String SERVICES = "/services";
+    public static final String SERVICES = "/services";
 
 	public static final String LOCALNODE = "/localnode";
 
@@ -55,23 +52,17 @@ public interface ResourcePathURIs {
 
 	public static final String SEND_APSMESSAGE = WSNCONNECTION + APSMESSAGE;
 
-	public static final String MODE_CACHE = "mode=cache";
-	public static final String URILISTENER_PARAM = "urilistener=";
+    public static final String URILISTENER_PARAM = "urilistener=";
 	public static final String TIMEOUT_PARAM = "timeout=";
-	public static final String INFINITE_TIMEOUT = "ffffffff";
-	public static final String INDEX_PARAM = "index=";
-	public static final String RESET_START_MODE = "startMode=0x";
 
-	public static final String DISCOVERY_INQUIRY = "inquiry";
+    public static final String DISCOVERY_INQUIRY = "inquiry";
 	public static final String DISCOVERY_ANNOUNCEMENTS = "announcements";
 	public static final String DISCOVERY_LEAVE = "leave";
 	public static final String DISCOVERY_LQI = "lqi";
 	public static final String LQIINFORMATION = "/lqi";
 	public static final String DISCOVERY_FRESHNESS = "freshness";
 
-	public static final String REJOIN = "rejoin";
-	public static final String REMOVE_CHILDREN = "remove-children";
-	public final static String FREQUENCY_AGILITY = "/frequencyagility";
+    public final static String FREQUENCY_AGILITY = "/frequencyagility";
 
 	public final static String URI_FREQUENCY_AGILITY = LOCALNODE
 			+ FREQUENCY_AGILITY;

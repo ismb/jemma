@@ -30,8 +30,4 @@ public class DateTimeObject implements DateTimeService {
 		return isDateTimeOk;
 	}
 
-	public boolean isDateTimeOk(long timeInMillis) {
-		return DateUtils.isDateTimeOk(timeInMillis);
-	}
-
 }

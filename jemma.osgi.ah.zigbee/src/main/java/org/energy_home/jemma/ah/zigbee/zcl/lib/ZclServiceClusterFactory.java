@@ -15,64 +15,27 @@
  */
 package org.energy_home.jemma.ah.zigbee.zcl.lib;
 
-import java.util.HashMap;
-
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclDoorLockServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceStatisticsClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceStatisticsServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclPowerProfileClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclPowerProfileServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclAlarmsClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclAlarmsServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclDeviceTemperatureConfigurationClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclDeviceTemperatureConfigurationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclGroupsClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclGroupsServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclLevelControlServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffSwitchConfigurationClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclOnOffSwitchConfigurationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.closures.ZclWindowCoveringServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.*;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.*;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.hvac.ZclThermostatServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclIlluminanceMeasurementServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclOccupancySensingClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclOccupancySensingServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclRelativeHumidityMeasurementClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclRelativeHumidityMeasurementServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclTemperatureMeasurementClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.ZclTemperatureMeasurementServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.lube.ZclAirQualityServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.measurement.*;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.security.ZclIASZoneServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.wulian.ZclIRTransmitterClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.wulian.ZclIRTransmitterServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlClient;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkColorControlServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkIdentifyServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkLevelControlServer;
-import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.ZclLightLinkOnOffServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.zll.*;
+
+import java.util.HashMap;
 
 public class ZclServiceClusterFactory {
 	private static final int ZLL_PROFILE_ID = 0xc05e;
@@ -197,7 +160,7 @@ public class ZclServiceClusterFactory {
 		}
 
 		try {
-			Class clazz = null;
+			Class clazz;
 			switch (clusterSide) {
 			case IServiceCluster.CLIENT_SIDE:
 				if ((clazz = (Class) clientClusterMap.get(clusterId)) != null) {

@@ -23,15 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -96,10 +91,7 @@ public class EnergyScanResult implements Serializable {
      * 
      */
     public List<EnergyScanResult.ScannedChannel> getScannedChannel() {
-        if (scannedChannel == null) {
-            scannedChannel = new ArrayList<EnergyScanResult.ScannedChannel>();
-        }
-        return this.scannedChannel;
+        return(scannedChannel == null) ? new ArrayList<ScannedChannel>() : this.scannedChannel;
     }
 
 

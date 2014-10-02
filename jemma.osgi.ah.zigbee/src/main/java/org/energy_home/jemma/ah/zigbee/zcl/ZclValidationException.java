@@ -30,8 +30,5 @@ public class ZclValidationException extends ServiceClusterException {
 		super(errorDescription);
 		this.reason  = reason;
 	}
-	
-	public int getReason() {
-		return reason;
-	}
+
 }

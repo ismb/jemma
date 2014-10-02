@@ -23,15 +23,14 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -157,10 +156,7 @@ public class Binding implements Serializable{
      * 
      */
     public List<Integer> getGroupDestination() {
-        if (groupDestination == null) {
-            groupDestination = new ArrayList<Integer>();
-        }
-        return this.groupDestination;
+        return(groupDestination == null) ? new ArrayList<Integer>() : this.groupDestination;
     }
 
     /**
@@ -186,10 +182,7 @@ public class Binding implements Serializable{
      * 
      */
     public List<Device> getDeviceDestination() {
-        if (deviceDestination == null) {
-            deviceDestination = new ArrayList<Device>();
-        }
-        return this.deviceDestination;
+        return(deviceDestination == null) ? new ArrayList<Device>() : this.deviceDestination;
     }
 
 }

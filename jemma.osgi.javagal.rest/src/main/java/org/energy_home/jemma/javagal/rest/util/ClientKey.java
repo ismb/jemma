@@ -81,13 +81,10 @@ public class ClientKey {
 		if (getClass() != obj.getClass())
 			return false;
 		ClientKey other = (ClientKey) obj;
-			if (other.getPort() == this.getPort()
-					&& other.getAddress().equals(this.getAddress()))
-				return true;
+        return other.getPort() == this.getPort()
+                && other.getAddress().equals(this.getAddress());
 
 
-
-		return false;
-	}
+    }
 
 }

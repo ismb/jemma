@@ -15,13 +15,6 @@
  */
 package org.energy_home.jemma.javagal.layers;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.net.URL;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
 import org.energy_home.jemma.javagal.layers.data.implementations.Utils.DataManipulation;
 import org.energy_home.jemma.javagal.layers.object.GatewayProperties;
 import org.energy_home.jemma.zgd.jaxb.KeyType;
@@ -30,6 +23,13 @@ import org.energy_home.jemma.zgd.jaxb.SimpleDescriptor;
 import org.energy_home.jemma.zgd.jaxb.StartupAttributeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.net.URL;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Properties manager class. Loads/saves from/to a ".properties" file the
@@ -92,7 +92,7 @@ public class PropertiesManager {
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
 		
-		return (_value.equalsIgnoreCase("0")) ? false : true;
+		return (!_value.equalsIgnoreCase("0"));
 
 	}
 	
@@ -104,7 +104,7 @@ public class PropertiesManager {
 	public boolean getserialDataDebugEnabled() {
 		String _value = props.getProperty("serialDataDebugEnabled");
 		
-		return (_value.equalsIgnoreCase("0")) ? false : true;
+		return (!_value.equalsIgnoreCase("0"));
 
 	}
 	
@@ -119,8 +119,7 @@ public class PropertiesManager {
 	 * @return the NumberOfThreadForAnyPool value.
 	 */
 	public int getNumberOfThreadForAnyPool() {
-		String _value = props.getProperty("NumberOfThreadForAnyPool");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("NumberOfThreadForAnyPool"));
 
 	}
 
@@ -130,8 +129,7 @@ public class PropertiesManager {
 	 * @return the KeepAliveThread value.
 	 */
 	public int getKeepAliveThread() {
-		String _value = props.getProperty("KeepAliveThread");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("KeepAliveThread"));
 
 	}
 	
@@ -169,8 +167,7 @@ public class PropertiesManager {
 	 * @return the KeepAliveNumberOfAttempt value.
 	 */
 	public int getKeepAliveNumberOfAttempt() {
-		String _value = props.getProperty("keepAliveNumberOfAttempt");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("keepAliveNumberOfAttempt"));
 
 	}
 
@@ -180,8 +177,7 @@ public class PropertiesManager {
 	 * @return the KeepAliveThreshold value.
 	 */
 	public int getKeepAliveThreshold() {
-		String _value = props.getProperty("keepAliveThreshold");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("keepAliveThreshold"));
 
 	}
 	
@@ -191,8 +187,7 @@ public class PropertiesManager {
 	 * @return the CommandTimeout value.
 	 */
 	public long getCommandTimeoutMS() {
-		String _value = props.getProperty("CommandTimeoutMS");
-		return Long.parseLong(_value);
+		return Long.parseLong(props.getProperty("CommandTimeoutMS"));
 
 	}
 	
@@ -203,8 +198,7 @@ public class PropertiesManager {
 	 * @return the TimeForcePingErrorSeconds value.
 	 */
 	public int getTimeForcePingErrorSeconds() {
-		String _value = props.getProperty("TimeForcePingErrorSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeForcePingErrorSeconds"));
 
 	}
 	
@@ -215,8 +209,7 @@ public class PropertiesManager {
 	 * @return the TimeFreshnessErrorSeconds value.
 	 */
 	public int getTimeFreshnessErrorSeconds() {
-		String _value = props.getProperty("TimeFreshnessErrorSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeFreshnessErrorSeconds"));
 
 	}
 	
@@ -227,8 +220,7 @@ public class PropertiesManager {
 	 * @return the TimeDiscoveryErrorSeconds value.
 	 */
 	public int getTimeDiscoveryErrorSeconds() {
-		String _value = props.getProperty("TimeDiscoveryErrorSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeDiscoveryErrorSeconds"));
 
 	}
 	
@@ -238,8 +230,7 @@ public class PropertiesManager {
 	 * @return the TimeForcePingNewNodeSeconds value.
 	 */
 	public int getTimeForcePingNewNodeSeconds() {
-		String _value = props.getProperty("TimeForcePingNewNodeSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeForcePingNewNodeSeconds"));
 
 	}
 	
@@ -250,8 +241,7 @@ public class PropertiesManager {
 	 * @return the TimeDiscoveryNewNodeSeconds value.
 	 */
 	public int getTimeDiscoveryNewNodeSeconds() {
-		String _value = props.getProperty("TimeDiscoveryNewNodeSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeDiscoveryNewNodeSeconds"));
 
 	}
 	
@@ -262,8 +252,7 @@ public class PropertiesManager {
 	 * @return the TimeFreshnessNewNodeSeconds value.
 	 */
 	public int getTimeFreshnessNewNodeSeconds() {
-		String _value = props.getProperty("TimeFreshnessNewNodeSeconds");
-		return Integer.parseInt(_value);
+		return Integer.parseInt(props.getProperty("TimeFreshnessNewNodeSeconds"));
 
 	}
 	
@@ -275,8 +264,7 @@ public class PropertiesManager {
 	 * @return the ForcePingTimeout value.
 	 */
 	public int getForcePingTimeout() {
-		String _value = props.getProperty("forcePingTimeout");
-		return Integer.parseInt(_value);
+		return Integer.parseInt( props.getProperty("forcePingTimeout"));
 
 	}
 
@@ -286,8 +274,7 @@ public class PropertiesManager {
 	 * @return the AutoDiscoveryUnknownNodes value.
 	 */
 	public short getAutoDiscoveryUnknownNodes() {
-		String _value = props.getProperty("autoDiscoveryUnknownNodes");
-		return Short.parseShort(_value);
+		return Short.parseShort(props.getProperty("autoDiscoveryUnknownNodes"));
 
 	}
 
@@ -468,8 +455,7 @@ public class PropertiesManager {
 	 * @return the StartupControlMode value.
 	 */
 	public short getStartupControlMode() {
-		short startupControlMode = readShortHex("StartupControlMode");
-		return startupControlMode;
+        return readShortHex("StartupControlMode");
 	}
 
 	/**
@@ -490,8 +476,7 @@ public class PropertiesManager {
 	 */
 	public short getStartupSet() {
 
-		short startupSet = readShortHex("StartupSet");
-		return startupSet;
+        return readShortHex("StartupSet");
 	}
 
 	/**
@@ -512,8 +497,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleUri value.
 	 */
 	public String getzgdDongleUri() {
-		String uri = props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
-		return uri;
+        return props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
 	}
 
 	/* zgd.dongle.speed */
@@ -523,8 +507,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleSpeed value.
 	 */
 	public int getzgdDongleSpeed() {
-		int speed = Integer.parseInt(props.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
-		return speed;
+        return Integer.parseInt(props.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 	}
 
 	/* zgd.dongle.type */
@@ -534,8 +517,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleType value.
 	 */
 	public String getzgdDongleType() {
-		String type = props.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
-		return type;
+        return props.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
 	}
 
 	/* AutoStart */
@@ -545,8 +527,7 @@ public class PropertiesManager {
 	 * @return the AutoStart value.
 	 */
 	public short getAutoStart() {
-		short autostart = readShort("autostart");
-		return autostart;
+        return readShort("autostart");
 	}
 
 	/**
@@ -598,8 +579,7 @@ public class PropertiesManager {
 	 * @return the ExtendedPANId value.
 	 */
 	public BigInteger getExtendedPanId() {
-		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
-		return extendedPanId;
+        return new BigInteger(readByteArray("ExtendedPANId", 8));
 	}
 
 	/* Utility */

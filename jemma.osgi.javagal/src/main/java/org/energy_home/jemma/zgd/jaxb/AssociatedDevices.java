@@ -23,16 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -90,10 +84,7 @@ public class AssociatedDevices implements Serializable {
      * 
      */
     public List<SonNode> getSonNode() {
-        if (sonNode == null) {
-            sonNode = new ArrayList<SonNode>();
-        }
-        return this.sonNode;
+        return(sonNode == null) ? new ArrayList<SonNode>() : this.sonNode;
     }
 
     /**

@@ -23,15 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -131,10 +126,7 @@ public class Version implements Serializable{
      * 
      */
     public List<RPCProtocol> getRPCProtocol() {
-        if (rpcProtocol == null) {
-            rpcProtocol = new ArrayList<RPCProtocol>();
-        }
-        return this.rpcProtocol;
+        return(rpcProtocol == null) ? new ArrayList<RPCProtocol>() : this.rpcProtocol;
     }
 
     /**

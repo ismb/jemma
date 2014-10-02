@@ -15,20 +15,11 @@
  */
 package org.energy_home.jemma.internal.utils.thread;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.*;
+import java.util.concurrent.*;
 
 public class ExecutorManager {
 	private static final Log log = LogFactory.getLog(ExecutorManager.class);
@@ -45,10 +36,10 @@ public class ExecutorManager {
 	}
 	
 	private class UserTasks implements Runnable {
-		private List<Runnable> runnableList;
+		private final List<Runnable> runnableList;
 		private Future<?> lastExecutionFuture;
 		private Long maxExecutionTime;
-		private List<ScheduledUserTask> scheduledList;
+		private final List<ScheduledUserTask> scheduledList;
 		
 		UserTasks(Long maxExecutionTime) {
 			this.runnableList = new LinkedList<Runnable>();
@@ -90,7 +81,7 @@ public class ExecutorManager {
 				synchronized (scheduledList) {
 					ScheduledUserTask scheduledTask;
 					for (Iterator<ScheduledUserTask> iterator = scheduledList.iterator(); iterator.hasNext();) {
-						scheduledTask = (ScheduledUserTask) iterator.next();
+						scheduledTask = iterator.next();
 						scheduledTask.scheduledFuture.cancel(true);
 						iterator.remove();
 					}
@@ -107,7 +98,7 @@ public class ExecutorManager {
 					if (scheduledList.size() > 0) {
 						ScheduledUserTask task;
 						for (Iterator<ScheduledUserTask> iterator = scheduledList.iterator(); iterator.hasNext();) {
-							task = (ScheduledUserTask) iterator.next();
+							task = iterator.next();
 							if (task.scheduledFuture.isDone())
 								iterator.remove();					
 						}		
@@ -164,7 +155,7 @@ public class ExecutorManager {
 			if (period == null)
 				this.scheduledFuture = scheduler.schedule(this, delay, TimeUnit.MILLISECONDS);
 			else 
-				this.scheduledFuture = scheduler.scheduleWithFixedDelay(this, delay, period.longValue(), TimeUnit.MILLISECONDS);
+				this.scheduledFuture = scheduler.scheduleWithFixedDelay(this, delay, period, TimeUnit.MILLISECONDS);
 		}
 
 		ScheduledFuture<?> getScheduledFuture() {
@@ -198,7 +189,7 @@ public class ExecutorManager {
 		
 	private ScheduledExecutorService scheduler;
 	private ScheduledExecutorService canceller;
-	private Map<String, UserTasks> nearRealTimeOrderedTasksMap;
+	private final Map<String, UserTasks> nearRealTimeOrderedTasksMap;
 	private int numberOfOrderedTasks = 0;
 	private Runnable nearRealTimeOrderedTask;
 	private ScheduledFuture<?> nearRealTimeMainTaskFuture;
@@ -235,9 +226,9 @@ public class ExecutorManager {
 						}
 					}
 					if (tasksArray != null) {
-						for (int i = 0; i < tasksArray.length; i++) {
-							tasksArray[i].run();
-						}	
+                        for (UserTasks aTasksArray : tasksArray) {
+                            aTasksArray.run();
+                        }
 					}
 					synchronized (nearRealTimeOrderedTasksMap) {
 						if (numberOfOrderedTasks == 0)
@@ -295,8 +286,7 @@ public class ExecutorManager {
 		synchronized (nearRealTimeOrderedTasksMap) {
 			if (nearRealTimeOrderedTasksMap.size() == 0) {
 				stop();
-				return;
-			}
+            }
 		}
 	}
 	
@@ -328,7 +318,7 @@ public class ExecutorManager {
 			UserTasks tasks = getUserTasks(user);
 			if (tasks == null)
 				return null;
-			ScheduledUserTask scheduledTask = new ScheduledUserTask(runnable, delay, new Long(period), null);
+			ScheduledUserTask scheduledTask = new ScheduledUserTask(runnable, delay, period, null);
 			tasks.addScheduledTask(scheduledTask);
 			return scheduledTask.getScheduledFuture();
 		}	

@@ -15,20 +15,9 @@
  */
 package org.energy_home.jemma.javagal.json.servlet;
 
-import java.io.IOException;
-import java.math.BigInteger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.google.gson.Gson;
 import org.energy_home.jemma.javagal.json.constants.Resources;
 import org.energy_home.jemma.javagal.json.util.Util;
-import org.energy_home.jemma.zgd.GalExtenderProxy;
-import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
-import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.GatewayException;
 import org.energy_home.jemma.zgd.GatewayInterface;
 import org.energy_home.jemma.zgd.jaxb.Address;
@@ -36,9 +25,14 @@ import org.energy_home.jemma.zgd.jaxb.Info;
 import org.energy_home.jemma.zgd.jaxb.Info.Detail;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
-import org.energy_home.jemma.zgd.jaxb.Status;
 
-import com.google.gson.Gson;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.math.BigInteger;
 
 public class nodeDescriptorAndServicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -56,20 +50,15 @@ GatewayInterface gatewayInterface;
 		Object done = session.getValue("javaGallogon.isDone");
 		if (done != null) {
 			
-			String timeoutString = null;
+			String timeoutString;
 
-			Long timeout = -1l;
+			Long timeout;
 
 			Object timeoutParam = request.getParameter(Resources.URI_PARAM_TIMEOUT);
 
 			if (timeoutParam == null) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter missing.";
+				Info info = Util.setError(error);
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
@@ -81,26 +70,15 @@ GatewayInterface gatewayInterface;
 					timeout = Long.decode(timeoutString);
 					if (!Util.isUnsigned32(timeout)) {
 
-						Info info = new Info();
-						Status _st = new Status();
-						_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-						_st.setMessage("Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString);
-						info.setStatus(_st);
-						Info.Detail detail = new Info.Detail();
-						info.setDetail(detail);
+						String error = "Error: mandatory '" + Resources.URI_PARAM_TIMEOUT + "' parameter's value invalid. You provided: " + timeoutString;
+						Info info = Util.setError(error);
 						response.getOutputStream().print(gson.toJson(info));
 						return;
 
 					}
 				} catch (NumberFormatException nfe) {
 
-					Info info = new Info();
-					Status _st = new Status();
-					_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-					_st.setMessage(nfe.getMessage());
-					info.setStatus(_st);
-					Info.Detail detail = new Info.Detail();
-					info.setDetail(detail);
+					Info info = Util.setError(nfe.getMessage());
 					response.getOutputStream().print(gson.toJson(info));
 					return;
 
@@ -117,19 +95,13 @@ GatewayInterface gatewayInterface;
 				Integer addressInteger = Integer.parseInt(addrString, 16);
 				addressObj.setNetworkAddress(addressInteger);
 			} else {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage("Wrong Address parameter");
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+				Info info = Util.setError("Wrong address parameter");
 				response.getOutputStream().print(gson.toJson(info));
 				return;
 
 			}
 
-			NodeDescriptor nodeDescriptor = null;
+			NodeDescriptor nodeDescriptor;
 			try {
 				nodeDescriptor = gatewayInterface.getNodeDescriptorSync(timeout, addressObj);
 				NodeServices nodeServices = gatewayInterface.startServiceDiscoverySync(timeout, addressObj);
@@ -137,46 +109,20 @@ GatewayInterface gatewayInterface;
 				detail.setNodeDescriptor(nodeDescriptor);
 				detail.setNodeServices(nodeServices);
 
-				Status status = new Status();
-				status.setCode((short) GatewayConstants.SUCCESS);
-				Info info = new Info();
-				info.setStatus(status);
-				info.setDetail(detail);
+				Info info = Util.setSuccess(detail);
 				response.getOutputStream().print(gson.toJson(info));
-				return;
-			} catch (GatewayException e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+            } catch (GatewayException e) {
+				Info info = Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
-				return;
-			} catch (Exception e) {
-				Info info = new Info();
-				Status _st = new Status();
-				_st.setCode((short) GatewayConstants.GENERAL_ERROR);
-				_st.setMessage(e.getMessage());
-				info.setStatus(_st);
-				Info.Detail detail = new Info.Detail();
-				info.setDetail(detail);
+            } catch (Exception e) {
+				Info info = Util.setError(e.getMessage());
 				response.getOutputStream().print(gson.toJson(info));
-				return;
-			}
+            }
 		} else {
-			Detail detail = new Detail();
-			Info info = new Info();
-			Status status = new Status();
-			status.setCode((short) GatewayConstants.GENERAL_ERROR);
-			status.setMessage("User not logged");
-			info.setStatus(status);
-			info.setDetail(detail);
+			Info info = Util.setError("User not logged");
 			response.getOutputStream().print(gson.toJson(info));
-			return;
 
-		}
+        }
 
 	}
 

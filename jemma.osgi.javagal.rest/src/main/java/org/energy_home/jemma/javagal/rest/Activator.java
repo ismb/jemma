@@ -16,17 +16,14 @@ package org.energy_home.jemma.javagal.rest;
  *
  */
 
-import java.io.File;
-import java.math.BigInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.javagal.rest.util.Resources;
-import org.energy_home.jemma.zgd.*;
+import org.energy_home.jemma.zgd.GalExtenderProxyFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Osgi's activator for the javagal Rest package.
@@ -42,11 +39,7 @@ public class Activator implements BundleActivator {
 
 	private RestManager restManager;
 
-	static BundleContext getContext() {
-		return context;
-	}
-
-	ServiceTracker serviceTracker = null;
+    ServiceTracker serviceTracker = null;
 
 	/**
 	 * Starts the osgi's bundle.

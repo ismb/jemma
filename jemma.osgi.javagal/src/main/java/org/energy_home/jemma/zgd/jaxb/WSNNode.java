@@ -23,15 +23,10 @@
 
 package org.energy_home.jemma.zgd.jaxb;
 
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -166,10 +161,7 @@ public class WSNNode implements Serializable {
      * 
      */
     public List<AssociatedDevices> getAssociatedDevices() {
-        if (associatedDevices == null) {
-            associatedDevices = new ArrayList<AssociatedDevices>();
-        }
-        return this.associatedDevices;
+        return(associatedDevices == null) ? new ArrayList<AssociatedDevices>() : this.associatedDevices;
     }
 
     /**

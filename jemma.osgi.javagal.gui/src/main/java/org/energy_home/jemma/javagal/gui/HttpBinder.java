@@ -15,13 +15,13 @@
  */
 package org.energy_home.jemma.javagal.gui;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 public class HttpBinder implements EventHandler, HttpServletBinder {
 
@@ -46,21 +46,10 @@ public class HttpBinder implements EventHandler, HttpServletBinder {
 		return null;
 	}
 
-	@Override
-	public Object getImplementor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+    @Override
 	public void handleEvent(Event arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public Object getObjectByPid(String pid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

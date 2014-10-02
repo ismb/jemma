@@ -20,9 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Utility class with a number of data's manipulation methods.
  * 
@@ -44,9 +41,7 @@ public class DataManipulation {
 
 	// Defining array of bytes to pass later to the key
 
-	private static final Logger LOG = LoggerFactory.getLogger(DataManipulation.class);
-
-	/**
+    /**
 	 * Converts a string to an array of bytes.
 	 * 
 	 * @param s
@@ -142,7 +137,7 @@ public class DataManipulation {
 	 * @return the converted list.
 	 * @param x
 	 *            the long to convert
-	 * @return the resulting array.
+	 * @return buffer.array.
 	 */
 	private static byte[] longToBytes(long x) {
 		ByteBuffer buffer = ByteBuffer.allocate(8);

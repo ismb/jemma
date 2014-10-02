@@ -15,13 +15,13 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Properties manager class.
@@ -67,7 +67,7 @@ public class PropertiesManager {
 	 **/
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
-		return (_value.equalsIgnoreCase("0")) ? false : true;
+		return (!_value.equalsIgnoreCase("0"));
 
 	}
 
@@ -99,36 +99,11 @@ public class PropertiesManager {
 
 	}
 
-	public void setDebugEnabled(Boolean _debug) {
-		props.setProperty("debugEnabled", _debug.toString());
-
-	}
-
-	/* Debug */
+    /* Debug */
 	public int getIPPort() {
 		String _value = props.getProperty("serverPorts");
 		return Integer.parseInt(_value);
 
-	}
-
-	private short readShort(String key) {
-		return Short.parseShort(props.getProperty(key).trim());
-	}
-
-	private short readShortHex(String key) {
-		String read = props.getProperty(key);
-		read = read.trim();
-		// The read string starts with the prefix 0x that we bust ignore
-		read = read.substring(2);
-		return ((short) Integer.parseInt(read, 16));
-	}
-
-	private int readIntHex(String key) {
-		String read = props.getProperty(key);
-		read = read.trim();
-		// The read string starts with the prefix 0x that we bust ignore
-		read = read.substring(2);
-		return Integer.parseInt(read, 16);
 	}
 
 }

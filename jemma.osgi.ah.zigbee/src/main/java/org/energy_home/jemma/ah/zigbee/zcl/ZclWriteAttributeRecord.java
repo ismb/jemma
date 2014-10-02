@@ -49,35 +49,29 @@ public class ZclWriteAttributeRecord {
 			break;
 
 		case ZclTypes.ZclBooleanType: {
-			boolean v = ZclDataTypeBoolean.zclParse(zclFrame);
-			r.Data = (Object) new Boolean(v);
+            r.Data = ZclDataTypeBoolean.zclParse(zclFrame);
 			break;
 		}
 		case ZclTypes.ZclBitmap8Type: {
-			short v = ZclDataTypeBitmap8.zclParse(zclFrame);
-			r.Data = (Object) new Short(v);
+            r.Data = ZclDataTypeBitmap8.zclParse(zclFrame);
 			break;
 		}
 
 		case ZclTypes.ZclBitmap16Type: {
-			int v = ZclDataTypeBitmap16.zclParse(zclFrame);
-			r.Data = (Object) new Integer(v);
+            r.Data = ZclDataTypeBitmap16.zclParse(zclFrame);
 			break;
 		}
 		case ZclTypes.ZclBitmap24Type: {
-			int v = ZclDataTypeBitmap24.zclParse(zclFrame);
-			r.Data = (Object) new Integer(v);
+            r.Data = ZclDataTypeBitmap24.zclParse(zclFrame);
 			break;
 		}
 
 		case ZclTypes.ZclBitmap32Type: {
-			long v = ZclDataTypeBitmap32.zclParse(zclFrame);
-			r.Data = (Object) new Long(v);
+            r.Data = ZclDataTypeBitmap32.zclParse(zclFrame);
 			break;
 		}
 		case ZclTypes.ZclUInt8Type: {
-			short v = ZclDataTypeUI8.zclParse(zclFrame);
-			r.Data = (Object) new Short(v);
+            r.Data = ZclDataTypeUI8.zclParse(zclFrame);
 			break;
 		}
 
@@ -99,8 +93,7 @@ public class ZclWriteAttributeRecord {
 			break;
 		}
 		case ZclTypes.ZclStringType: {
-			String v = ZclDataTypeString.zclParse(zclFrame);
-			r.Data = v;
+            r.Data = ZclDataTypeString.zclParse(zclFrame);
 			break;
 		}
 		case ZclTypes.ZclClusterIDType:
