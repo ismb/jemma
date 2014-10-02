@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Tinwor/jemma.svg?branch=master)](https://travis-ci.org/Tinwor/jemma)
+
 
 # JEMMA - Java Energy ManageMent Application framework
 
