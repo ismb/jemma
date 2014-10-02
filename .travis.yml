@@ -1,2 +1,2 @@
 language: java
-install: mvn clean package eclise:eclipse -D eclipse.pde install
+install: mvn clean package eclipse:eclipse -D eclipse.pde install
