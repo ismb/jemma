@@ -95,30 +95,30 @@ public class ZclEndPointFactory {
 		// TODO: different profile id needs to be managed
 		String endPointType = getEndPointType(deviceId);
 		if (endPointType == null)
-			endPointType = String.format("ah.ep.zigbee.%s.%s", new Integer[]{new Integer(profileId), new Integer(deviceId)});		
+			endPointType = String.format("ah.ep.zigbee.%s.%s", new Integer[]{profileId, deviceId});
 		return new ZclEndPoint(endPointType);
 	}
 	
-	public static void addServiceClusters(ZclEndPoint endPoint, int profileId, int deviceId, final int[] clientClusterIds, final int[] serverClusterIds) throws ApplianceException {
-		ZclServiceCluster cluster = null;	
-		Integer clusterId = null;
-		for (int i = 0; i < serverClusterIds.length; i++) {
-			clusterId = new Integer(serverClusterIds[i]);
-			cluster = ZclServiceClusterFactory.getCluster(IServiceCluster.SERVER_SIDE, new Integer(profileId), clusterId);
-			if (cluster != null) {
-				endPoint.addServiceCluster(cluster);
-			} else {
-				LOG.warn("Unsupported server side cluster " + clusterId);
-			}
-		}
-		for (int i = 0; i < clientClusterIds.length; i++) {
-			clusterId = new Integer(clientClusterIds[i]);
-			cluster = ZclServiceClusterFactory.getCluster(IServiceCluster.CLIENT_SIDE, new Integer(profileId), clusterId);
-			if (cluster != null) {
-				endPoint.addServiceCluster(cluster);
-			} else {
-				LOG.warn("Unsupported client side cluster " + clusterId);
-			}	
-		}
+	public static void addServiceClusters(ZclEndPoint endPoint, int profileId, final int[] clientClusterIds, final int[] serverClusterIds) throws ApplianceException {
+		ZclServiceCluster cluster;
+		Integer clusterId;
+        for (int serverClusterId : serverClusterIds) {
+            clusterId = serverClusterId;
+            cluster = ZclServiceClusterFactory.getCluster(IServiceCluster.SERVER_SIDE, profileId, clusterId);
+            if (cluster != null) {
+                endPoint.addServiceCluster(cluster);
+            } else {
+                LOG.warn("Unsupported server side cluster " + clusterId);
+            }
+        }
+        for (int clientClusterId : clientClusterIds) {
+            clusterId = clientClusterId;
+            cluster = ZclServiceClusterFactory.getCluster(IServiceCluster.CLIENT_SIDE, profileId, clusterId);
+            if (cluster != null) {
+                endPoint.addServiceCluster(cluster);
+            } else {
+                LOG.warn("Unsupported client side cluster " + clusterId);
+            }
+        }
 	}
 }

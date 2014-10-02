@@ -26,7 +26,7 @@ public class ZclException extends Exception {
 	/**
 	 * Creates an ZclException on the specified ZCL status code
 	 * 
-	 * @param errorDescription
+	 * @param statusCode
 	 *            describes the type of error
 	 */
 	public ZclException(int statusCode) {

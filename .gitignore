@@ -58,3 +58,27 @@ com_crashlytics_export_strings.xml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+jemma.iml
+jemma.osgi.javagal.json/jemma.osgi.javagal.json.iml
+jemma.osgi.javagal.gui/jemma.osgi.javagal.gui.iml
+jemma.osgi.javagal/jemma.osgi.javagal.iml
+jemma.osgi.ah.zigbee.appliances.generic/jemma.osgi.ah.zigbee.appliances.generic.iml
+jemma.osgi.ah.zigbee.appliances/jemma.osgi.ah.zigbee.appliances.iml
+jemma.osgi.ah.zigbee/.gitignore
+jemma.osgi.ah.webui.energyathome.demo/jemma.osgi.ah.webui.energyathome.demo.iml
+jemma.osgi.ah.webui.energyathome/jemma.osgi.ah.webui.energyathome.iml
+jemma.osgi.ah.webui.base/jemma.osgi.ah.webui.base.iml
+jemma.osgi.ah.upnp.energyathome/jemma.osgi.ah.upnp.energyathome.iml
+jemma.osgi.ah.m2m.device/jemma.osgi.ah.m2m.device.iml
+jemma.osgi.ah.io/jemma.osgi.ah.io.iml
+jemma.osgi.ah.hap.client/jemma.osgi.ah.hap.client.iml
+jemma.osgi.ah.hac/jemma.osgi.ah.hac.iml
+jemma.osgi.ah.greenathome/jemma.osgi.ah.greenathome.iml
+jemma.osgi.ah.felix.console.web/jemma.osgi.ah.felix.console.web.iml
+jemma.osgi.ah.energyathome/jemma.osgi.ah.energyathome.iml
+jemma.osgi.ah.configurator/jemma.osgi.ah.configurator.iml
+jemma.osgi.ah.app/jemma.osgi.ah.app.iml
+jemma.osgi.ah.adapter.http/jemma.osgi.ah.adapter.http.iml
+jemma.launch/jemma.launch.iml
+Distribution/jemma.Distribution.iml
