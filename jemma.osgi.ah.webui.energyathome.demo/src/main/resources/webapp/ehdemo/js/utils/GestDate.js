@@ -31,9 +31,6 @@ GestDate.InitActualDate = function(callback){
 	if (InterfaceEnergyHome.mode != 0){
 		InterfaceEnergyHome.GetActualDate(GestDate.BackActualDate);
 	} else {
-   		//initDataSimul = new Date(2012,2,25,5,0);
-		//initDataSimul = new Date(2012,5,21,18,59);
-		//initDataSimul = new Date(2012,9,28,5,0);
    		initDataSimul = DataSim;
    		
    		GestDate.BackActualDate(initDataSimul.getTime());

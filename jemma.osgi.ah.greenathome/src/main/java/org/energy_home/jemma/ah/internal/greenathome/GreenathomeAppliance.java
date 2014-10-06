@@ -15,9 +15,18 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -116,6 +125,8 @@ import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.service.http.HttpService;
@@ -1048,6 +1059,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
 		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 		if (onOffServer != null) {
 			if (state == On) {
@@ -1105,11 +1117,77 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		return true;
 	}
+	
+	//WindowCovering State
+	static final int CurrentPositionLiftPercentage = 0;
+	static final int InfoInstalledOpenLimit = 1;
+	static final int InfoInstalledClosedLimit = 2;
+	static final int InfoInstalledOpenLimitTilt = 3;
+	static final int InfoInstalledClosedLimitTilt = 4;
+	static final int Stopped = 5;
+	static final int UpOpen = 6;
+	static final int DownClose = 7;
+	static final int OpenPercentage = 8;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.energy_home.jemma.ah.internal.greenathome.GreenAtHomeApplianceService
+	 * # setDeviceState(org.energy_home.jemma.ah.hac.IAppliance, int)
+	 */
+	public boolean setDeviceState(IAppliance peerAppliance, int state, short value) {
+
+		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+
+		if (windowCoveringServer != null) {  
+			try {
+				if (state == Stopped) {
+					windowCoveringServer.execStop(context);
+				} else if (state == UpOpen) {
+					windowCoveringServer.execUpOpen(context);
+				} else if (state == DownClose) {
+					windowCoveringServer.execDownClose(context);
+				} else if (state == OpenPercentage) {
+					windowCoveringServer.execGoToLiftPercentage(value, context);
+				} else
+					return false;
+			} catch (Exception e) {
+				LOG.error("execCommandExecution exception " + e.getMessage(), e);
+				return false;
+			}
+		} else
+			return false;
+
+		return true;
+	}
+
+	public int getDeviceState(IAppliance peerAppliance, int state) throws ApplianceException, ServiceClusterException {
+		synchronized (lockGatH) {
+
+			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+
+			if (windowCoveringServer != null) {
+				if (state == CurrentPositionLiftPercentage) {
+					return windowCoveringServer.getCurrentPositionLiftPercentage(context);
+				} else if (state == InfoInstalledOpenLimit) {
+					return windowCoveringServer.getInstalledOpenLimit(context);
+				} else if (state == InfoInstalledClosedLimit) {
+					return windowCoveringServer.getInstalledClosedLimit(context);
+				} else if (state == InfoInstalledOpenLimitTilt) {
+					return windowCoveringServer.getInstalledOpenLimitTilt(context);
+				} else if (state == InfoInstalledClosedLimit) {
+					return windowCoveringServer.getInstalledClosedLimitTilt(context);
+				} else
+					return Unknown;
+			} else
+				return Unknown;
+		}
+	}
 
 	public int getDeviceState(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
 			OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
-
 			ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
 
 			if (onOffServer != null) {
@@ -2044,26 +2122,94 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private void loadPropFile(){
 
 	    String _path = "noserver.properties";
+		this.props = new Properties();
 	    
 		// Howto get a bundle context 
 	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
-	    BundleContext bc = 
-	      BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
-	         .getBundle()
-	         .getBundleContext();
+	    /*BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
+	         .getBundle().getBundleContext();
 	    URL _url = bc.getBundle().getResource(_path);
 		
-		InputStream in = null;
+	    InputStream in = null;*/
 		try {
-			in = _url.openStream();
-			this.props = new Properties();
-			this.props.load(in);
+			/*in = _url.openStream();*/
+
+			InputStream stream = new FileInputStream(_path);
+			this.props.load(stream);
+			stream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}
+
+	private void storePropFile() throws IOException{
+
+	    String _path = "noserver.properties";
+	    OutputStream out = null;
+	    
+		try {
+			
+			out = new FileOutputStream(_path);
+			this.props.store(out, null);
+			out.flush();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			if (out != null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+		}
+	}
+
+	/*private void storePropFile() throws IOException{
+
+	    String _path = "noserver.properties";
+		FileOutputStream out = null;
+	    
+		// Howto get a bundle context 
+	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
+	    BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader()).getBundle().getBundleContext();
+	    URL _url = bc.getBundle().getResource(_path);
+
+		System.out.println("---------------------------------> " + _url.getPath());
+	    
+		try {
+			
+			File configFile = new File(_url.getPath());
+			if (configFile.canWrite()){
+				//PrintWriter out = new PrintWriter(configFile);
+				out = new FileOutputStream(_url.getPath());
+				this.props.store(out, null);
+				out.flush();
+			} else {
+				throw new Exception("File don't writable!"); 
+			}
+        } catch(FileNotFoundException fnfe){
+        	fnfe.printStackTrace();
+        } catch(IOException ioe){
+        	ioe.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (out != null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+		}
+	}
+	
+	*/
 	
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
@@ -2866,9 +3012,22 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	}
 
+	public boolean setDeviceState(String appliancePid, int state, short value) {
+		// TODO Auto-generated method stub
+		IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
+
+		return setDeviceState(peerAppliance, state, value);
+
+	}
+
 	public int getDeviceState(String appliancePid) throws ApplianceException, ServiceClusterException {
 		IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 		return getDeviceState(peerAppliance);
+	}
+
+	public int getDeviceState(String appliancePid, int state) throws ApplianceException, ServiceClusterException {
+		IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
+		return getDeviceState(peerAppliance, state);
 	}
 
 	public Hashtable testFunction(String appliancePid, String p1, int p2, int p3) {
@@ -3317,20 +3476,153 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return date;
 	}
 	
-	public Hashtable getPropConfiguration(String lblProps){
+	public List<String> getPropConfiguration(String lblProps){
+		
+		List<String> items = null;
+		
+		if (this.props == null){ 
+			loadPropFile();
+		}
+		
+		/*if ((lblProps.equals("EnergiaProdottaGiornalieroSimul")) || 
+				(lblProps.equals("EnergiaConsumataGiornalieroSimul")) || 
+				(lblProps.equals("PercIAC")) || 
+				(lblProps.equals("PercIAC2")) || 
+				(lblProps.equals("ActualDate")) || 
+				(lblProps.equals("ConsumoOdiernoSimul")) || 
+				(lblProps.equals("ConsumoMedio")) || 
+				(lblProps.equals("ConsumoPrevisto")) || 
+				(lblProps.equals("ProduzioneAttuale")) || 
+				(lblProps.equals("Forecast")) || 
+				(lblProps.equals("ConsumoMedioSettimanale")) || 
+				(lblProps.equals("ProdottaMedio")) || 
+				(lblProps.equals("ProdottaMedioSettimanale")) || 
+				(lblProps.equals("ConsumoAttuale"))){*/
+			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+		/*}*/
+		
+		//return null;
+	}
+	
+	public List<String> getPropStoricoConfiguration(String device, String tipoDato, String periodo){
+		/* periodo = GIORNO : 1, SETTIMANA : 2, MESE : 3, ANNO : 4 */
+		/* tipoDato = CONSUMO : "ah.eh.esp.Energy", COSTO : "ah.eh.esp.EnergyCost", PRODUZIONE : "ah.eh.esp.ProducedEnergy", */
+		/* device = SMARTINFO : 0 || null, ALTRI : 1..infinito */
+		
+		//List<String> items = null;
+		String lblProps = null;
 		
 		if (this.props == null){
 			loadPropFile();
 		}
-		Hashtable response = new Hashtable();
 		
-		if (this.props != null){
-			response.put(lblProps, this.props.getProperty(lblProps));
+		if ((device == null) || (device.equals("0"))){
+			//SmartInfo
+			lblProps = "SI";
 		} else {
-			response.put("none", 0);
+			//Device
+			lblProps = "DEV";
 		}
-
-		return response;
+		
+		if (tipoDato.equals("ah.eh.esp.Energy")){
+			lblProps += "Energy";
+		} else if (tipoDato.equals("ah.eh.esp.EnergyCost")){
+			lblProps += "Cost";
+		} else {
+			lblProps += "Production";
+		}
+		
+		if (periodo.equals("1")){
+			lblProps += "DAY";
+		} else if (periodo.equals("2")){
+			lblProps += "WEEK";
+		} else if (periodo.equals("3")){
+			lblProps += "MONTH";
+		} else {
+			lblProps += "YEAR";
+		}
+		
+		return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
 	}
-
+	
+	public Hashtable getPropConfigurationHM(String lblProps){
+		
+		Hashtable props = new Hashtable();
+		String[] lbl = null;
+		String[] stringToParseInt = null;
+		List<Integer> series = new ArrayList<Integer>();
+		int idx, idxC;
+		
+		if (this.props == null){ 
+			loadPropFile();
+		}
+		
+		if ((lblProps.equals("SuddivisioneConsumi"))){
+			
+			idx = Integer.parseInt(this.props.getProperty("SuddivisioneConsumi"));
+			for (idxC = 0; idxC < idx; idxC++){
+				lbl = this.props.getProperty("SuddivisioneConsumi"+idxC+"_el").split("\\s*,\\s*");
+				stringToParseInt = this.props.getProperty("SuddivisioneConsumi"+idxC+"_val").split("\\s*,\\s*");
+				series = new ArrayList<Integer>();
+				for(String s: stringToParseInt){
+					Integer tmpValue = Integer.parseInt(s);
+					series.add(tmpValue.intValue());
+				}
+				props.put(lbl[0], series);
+			}
+		}
+		return props;
+	}
+	
+	public Hashtable getAllPropConfiguration(){
+		
+		Hashtable props = new Hashtable();
+		String[] lbls = {"ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", 
+						 "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale",
+						 "ConsumoPrevisto", "Forecast" , "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", 
+						 "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK", "DEVEnergyMONTH", "DEVEnergyYEAR", 
+						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
+		int idx, idxC;
+		
+		if (this.props == null){ 
+			loadPropFile();
+		}
+		
+		for (String lbl : lbls){ 
+			if ((lbl.equals("SuddivisioneConsumi"))){
+				props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
+			} else {
+				props.put(lbl, getPropConfiguration(lbl));
+			}
+		}
+		
+		return props;
+	}
+	
+	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException{
+		
+		Hashtable props = new Hashtable();
+		String[] lbls = {"ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", 
+						 "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale",
+						 "ConsumoPrevisto", "Forecast" , "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", 
+						 "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK", "DEVEnergyMONTH", "DEVEnergyYEAR", 
+						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
+		int idx, idxC;
+		
+		JSONObject obj = new JSONObject(jsonVar);
+		
+		for (String lbl : lbls){ 
+			if ((lbl.equals("SuddivisioneConsumi"))){
+				//props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
+			} else {
+				String JSONProp = obj.getString(lbl);
+				this.props.setProperty(lbl, JSONProp);
+			}
+		}
+		
+		storePropFile();
+		
+		return true;
+		
+	}
 }
