@@ -40,6 +40,11 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.equinox.internal.util.timer.Timer;
 import org.eclipse.equinox.internal.util.timer.TimerListener;
@@ -301,6 +306,24 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 	private String cacheFilename = "cache.dump";
 	private File cacheFile = null;
+	private ExecutorService executor = null;
+
+	public ZigBeeManagerImpl() {
+
+		executor = Executors.newFixedThreadPool(15, new ThreadFactory() {
+
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-NetworkManager");
+			}
+		});
+
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(3, TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+		}
+	}
 
 	protected synchronized void activate(ComponentContext ctxt, Map props) {
 
@@ -480,8 +503,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 */
 	public void notifyAPSMessage(final APSMessageEvent msg) {
 
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
@@ -582,8 +604,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId() + ": leave notifyAPSMessage()");
 				}
 			}
-		};
-		thr.start();
+		});
 	}
 
 	private boolean checkGatewaySimpleDescriptor(int clusterID, IZclFrame zclFrame) {
@@ -618,8 +639,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void nodeDiscovered(final Status status, final WSNNode node) {
 
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 				log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
 				log.debug("=======> Nodo node.getAddress().getNetworkAddress() = " + node.getAddress().getNetworkAddress());
@@ -645,8 +665,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				nodeDiscovered(a);
 
 			}
-		};
-		thr.start();
+		});
 	}
 
 	private void nodeDiscovered(Address a) {
@@ -738,7 +757,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
-		
+
 		log.info(info.toString());
 	}
 
@@ -766,8 +785,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void servicesDiscovered(final Status status, final NodeServices services) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				if (status.getCode() != GatewayConstants.SUCCESS) {
@@ -846,14 +864,12 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					break;
 				}
 			}
-		};
-		thr.start();
+		});
 
 	}
 
 	public void serviceDescriptorRetrieved(final Status status, final ServiceDescriptor service) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				timerCancel(galCommandTimer);
@@ -959,8 +975,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				handleNextDiscoveredNode();
 
 			}
-		};
-		thr.start();
+		});
 	}
 
 	/**
@@ -1079,7 +1094,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_CATEGORY, "ZigBee");
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_SERIAL, ieeeAddr);
-		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr +"-"+ new Short(service.getEndPoint()));
+		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr + "-" + new Short(service.getEndPoint()));
 
 		deviceProps.put("zigbee.device.ep.id", new Short(service.getEndPoint()));
 		deviceProps.put("zigbee.device.profile.id", new Integer(profileId));
@@ -1361,8 +1376,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void gatewayStartResult(final Status status) {
 
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				if (status.getCode() == 0) {
@@ -1392,8 +1406,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 				}
 			}
-		};
-		thr.start();
+		});
 	}
 
 	public void dongleResetResult(final Status status) {
@@ -1514,8 +1527,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void permitJoinResult(final Status status) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 				synchronized (sLock) {
 					log.debug("t" + 5);
@@ -1525,8 +1537,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 				}
 			}
-		};
-		thr.start();
+		});
 	}
 
 	private void tryReconnectToJGal(int delay) {
@@ -1640,8 +1651,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeDescriptorRetrieved(final Status status, final NodeDescriptor node) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				// guess the installing device because the node descriptor
@@ -1703,8 +1713,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				}
 
 			}
-		};
-		thr.start();
+		});
 	}
 
 	protected Dictionary getConfiguration() {
@@ -1718,8 +1727,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void nodeRemoved(final Status status, final WSNNode node) {
 
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 
 				// notifies the node
@@ -1758,8 +1766,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				}
 
 			}
-		};
-		thr.start();
+		});
 	}
 
 	protected boolean isGalRunning() {
@@ -2055,8 +2062,12 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			InstallationStatus status = (InstallationStatus) devicesInstalled.get(ieee);
 			if (status == null)
 				return true;
-			else
-				return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
+			else {
+				if (status.getNodeDescriptor() != null && status.getNodeDescriptor().getMACCapabilityFlag() != null)
+					return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
+				else
+					return true;
+			}
 		}
 	}
 

@@ -86,15 +86,19 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		AHContainerAddress result = null;
 		try {
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
+			// applianceId DEVE contenere l'EndPointId come identificativo
 			switch (resolution) {
 			case ESPService.HOUR_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergy);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergy);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergy);
 				break;
 			case ESPService.DAY_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergy);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergy);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergy);
 				break;
 			case ESPService.MONTH_RESOLUTION:
-				result =  hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergy);
+				//result =  hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergy);
+				result =  hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergy);
 				break;
 			}			
 		} catch (M2MHapException e) {
@@ -109,15 +113,19 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		AHContainerAddress result = null;
 		try {
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
+			// applianceId DEVE contenere l'EndPointId come identificativo
 			switch (resolution) {
 			case ESPService.HOUR_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergy);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergy);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergy);
 				break;
 			case ESPService.DAY_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyReceivedEnergy);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyReceivedEnergy);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyReceivedEnergy);
 				break;
 			case ESPService.MONTH_RESOLUTION:
-				result =  hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyReceivedEnergy);
+				//result =  hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyReceivedEnergy);
+				result =  hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyReceivedEnergy);
 				break;
 			}			
 		} catch (M2MHapException e) {
@@ -132,15 +140,19 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		AHContainerAddress result = null;
 		try {
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
+			// applianceId DEVE contenere l'EndPointId come identificativo
 			switch (resolution) {
 				case ESPService.HOUR_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergyCost);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergyCost);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyEnergyCost);
 				break;
 			case ESPService.DAY_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergyCost);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergyCost);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_dailyEnergyCost);
 				break;
 			case ESPService.MONTH_RESOLUTION:
-				result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergyCost);
+				//result = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergyCost);
+				result = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_monthlyEnergyCost);
 				break;		
 			}
 		} catch (M2MHapException e) {
@@ -320,7 +332,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		List<Float> result = null;
 		try {
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-			AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergyForecast);
+			// applianceId DEVE contenere l'EndPointId come identificativo
+			//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergyForecast);
+			AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_hourlyReceivedEnergyForecast);
 			result = getHourlyProducedEnergyForecastWithHapCache(containerId);
 		} catch (Exception e) {
 			LOG.error("retrieveHourlyProducedEnergyForecast exception while retrieving forecast data for produced energy", e);
@@ -343,7 +357,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 		ContentInstance result = null;
 		try {
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-			AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
+			// applianceId DEVE contenere l'EndPointId come identificativo
+			//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
+			AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
 			result = hapService.getCachedLatestContentInstance(containerId);
 		} catch (Exception e) {
 			LOG.error("retrieveEnergySummation", e);
@@ -370,7 +386,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	
 	public void storeDeliveredEnergy(String applianceId, long timestamp, double energyTotal) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEnergySum);
 		Double value = new Double(energyTotal);
 		hapService.createContentInstanceBatch(containerId, timestamp, value);
 	}
@@ -400,7 +418,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			ecpi.setMinCost(cost.getMin());
 			ecpi.setMaxCost(cost.getMax());	
 			String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-			AHContainerAddress  containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEcpi);
+			// applianceId DEVE contenere l'EndPointId come identificativo
+			//AHContainerAddress  containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEcpi);
+			AHContainerAddress  containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_deliveredEcpi);
 			ContentInstance ci = hapService.createContentInstanceBatch(containerId, eci.getStartTime(), ecpi);
 			LOG.debug("EnergyCostPowerInfo:\n" + ci.toXmlFormattedString());
 		} else 
@@ -409,7 +429,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	
 	public void storeReceivedEnergy(String applianceId, long timestamp, double energyTotal) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_receivedEnergySum);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_receivedEnergySum);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_receivedEnergySum);
 		Double value = new Double(energyTotal);
 		hapService.createContentInstanceBatch(containerId, timestamp, value);		
 	}
@@ -425,13 +447,17 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	 */
 	public void storeEvent(String applianceId, long timestamp, int eventType) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_events);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_events);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_events);
 		hapService.createContentInstanceBatch(containerId, timestamp, new Integer(eventType));
 	}
 
 	public void storeApplianceStatistics(String applianceId, long timestamp, ApplianceLog applianceLog) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_appStats);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_appStats);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_appStats);
 		ContentInstance ci = hapService.createContentInstanceBatch(containerId, timestamp, applianceLog);	
 		System.out.println("ContentInstance:\n" + ci.toXmlPrintableString());
 	}
@@ -595,14 +621,18 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 	}	
 	public List<Float> getWeekDayEnergyConsumpionAverage(String applianceId, int weekDay) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
 		long startInstanceId = getHourlyDayOfWeekStartIndex(weekDay);
 		long endInstanceId = getHourlyDayOfWeekEndIndex(weekDay);
 		return toFloatValueList(getNormalizedWeekDayItems(containerId, startInstanceId, endInstanceId));
 	}
 	public List<Float> getWeekDayEnergyCostAverage(String applianceId, int weekDay) throws M2MHapException {
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress containerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
+		AHContainerAddress containerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
 		long startInstanceId = getHourlyDayOfWeekStartIndex(weekDay);
 		long endInstanceId = getHourlyDayOfWeekEndIndex(weekDay);
 		return toFloatValueList(getNormalizedWeekDayItems(containerId, startInstanceId, endInstanceId));
@@ -613,7 +643,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			throw new ESPException(ONLY_MONTH_RESOLUTION_SUPPORTED);
 		AHContainerAddress dailyContainerId = getEnergyApplianceContainerId(ESPService.DAY_RESOLUTION, applianceId);
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
+		AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyAvg);
 		Float currentMonthValue = getFloatValueMonthlyForecast(dailyContainerId, wdHourlyAvgContainerId);
 		return currentMonthValue;
 	}
@@ -622,7 +654,9 @@ public class ESPHapServiceObject extends ESPContainersDataUtils implements IClou
 			throw new ESPException(ONLY_MONTH_RESOLUTION_SUPPORTED);
 		AHContainerAddress dailyContainerId = getEnergyCostApplianceContainerId(ESPService.DAY_RESOLUTION, applianceId);
 		String[] deviceIds = ESPApplication.getDeviceIds(applianceId);
-		AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
+		// applianceId DEVE contenere l'EndPointId come identificativo
+		//AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(deviceIds[0], deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
+		AHContainerAddress wdHourlyAvgContainerId = hapService.getHagContainerAddress(applianceId, deviceIds[1], EHContainers.attrId_ah_eh_esp_wdHourlyEnergyCostAvg);
 		Float currentMonthValue = getFloatValueMonthlyForecast(dailyContainerId, wdHourlyAvgContainerId);
 		return currentMonthValue;
 	}

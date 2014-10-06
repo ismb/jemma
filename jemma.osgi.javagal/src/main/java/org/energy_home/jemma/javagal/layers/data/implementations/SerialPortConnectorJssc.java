@@ -22,7 +22,7 @@ import jssc.SerialPortException;
 
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.slf4j.Logger;
@@ -31,8 +31,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Jssc implementation of the {@link IConnector}.
  * 
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class SerialPortConnectorJssc implements IConnector {
@@ -115,7 +116,7 @@ public class SerialPortConnectorJssc implements IConnector {
 		}
 	}
 
-	private synchronized void setConnected(boolean value) {
+	private void setConnected(boolean value) {
 		connected = value;
 
 	}
@@ -123,13 +124,13 @@ public class SerialPortConnectorJssc implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ShortArrayObject buff) throws Exception {
+	public synchronized void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 
 			try {
 				if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
 					LOG.info(">>> Sending: " + buff.ToHexString());
-				serialPort.writeBytes(buff.getByteArrayRealSize());
+				serialPort.writeBytes(buff.getArrayRealSize());
 			} catch (Exception e) {
 
 				LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
@@ -145,7 +146,7 @@ public class SerialPortConnectorJssc implements IConnector {
 	 * @inheritDoc
 	 */
 	@Override
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return connected;
 	}
 
@@ -182,26 +183,16 @@ public class SerialPortConnectorJssc implements IConnector {
 			_caller = _parent;
 		}
 
-		public synchronized void serialEvent(SerialPortEvent event) {
+		public void serialEvent(SerialPortEvent event) {
 			try {
-				try {
+
+				if (event.isRXCHAR() && !getIgnoreMessage()) {
 					int numberOfBytes = event.getEventValue();
 					if (numberOfBytes > 0) {
-						byte[] bufferOr = serialPort.readBytes(numberOfBytes);
-
-						if (!ignoreMessage) {
-							short[] buffer = new short[bufferOr.length];
-
-							for (int i = 0; i < buffer.length; i++) {
-								buffer[i] = (short) (bufferOr[i] & 0xFF);
-							}
-							ShortArrayObject frame = new ShortArrayObject(buffer, numberOfBytes);
-							_caller.getDataLayer().notifyFrame(frame);
-						}
+						byte[] bufferOriginal = serialPort.readBytes(numberOfBytes);
+						ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
+						_caller.getDataLayer().notifyFrame(frame);
 					}
-				} catch (Exception e) {
-
-					LOG.error("Error on data received:" + e.getMessage());
 				}
 
 			} catch (Exception e) {
@@ -213,12 +204,12 @@ public class SerialPortConnectorJssc implements IConnector {
 		}
 	}
 
-	private synchronized void setIgnoreMessage(boolean value) {
+	private void setIgnoreMessage(boolean value) {
 		ignoreMessage = value;
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
+	private boolean getIgnoreMessage() {
 		return ignoreMessage;
 
 	}

@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.APSMessageListener;
@@ -40,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class RestApsMessageListener implements APSMessageListener {
-
+	private ExecutorService executor = null;
 	private static final Logger LOG = LoggerFactory.getLogger( RestApsMessageListener.class );
 	private Long CalbackIdentifier = -1L;
 	private Callback callback;
@@ -74,7 +80,20 @@ public class RestApsMessageListener implements APSMessageListener {
 		this.context = new Context();
 		this._PropertiesManager = __PropertiesManager;
 		context.getParameters().add("socketTimeout", ((Integer) (_PropertiesManager.getHttpOptTimeout() * 1000)).toString());
+		executor = Executors.newFixedThreadPool(_PropertiesManager.getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-ApsMessageListener");
+			}
+		});
+
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(__PropertiesManager.getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
+		}
 	}
 
 	/**
@@ -83,8 +102,7 @@ public class RestApsMessageListener implements APSMessageListener {
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
 
 		if (urilistener != null) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 
@@ -106,8 +124,7 @@ public class RestApsMessageListener implements APSMessageListener {
 
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
