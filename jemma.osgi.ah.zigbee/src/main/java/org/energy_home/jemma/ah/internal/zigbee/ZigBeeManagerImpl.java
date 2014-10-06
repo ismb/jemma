@@ -116,7 +116,7 @@ import org.slf4j.LoggerFactory;
 
 class InstallationStatus implements Serializable {
 	private static final long serialVersionUID = 3982442253260584361L;
-	
+
 	public static final int ANNOUNCEMENT_RECEIVED = 1;
 	public static final int WAITING_FOR_SERVICES = 2;
 	public static final int ACTIVE_ENDPOINTS_RETRIEVED = 3;
@@ -307,10 +307,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	private String cacheFilename = "cache.dump";
 	private File cacheFile = null;
 	private ExecutorService executor = null;
-	
-	public ZigBeeManagerImpl()
-	{
-		
+
+	public ZigBeeManagerImpl() {
+
 		executor = Executors.newFixedThreadPool(15, new ThreadFactory() {
 
 			@Override
@@ -325,6 +324,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
 		}
 	}
+
 	protected synchronized void activate(ComponentContext ctxt, Map props) {
 
 		this.ctxt = ctxt;
@@ -757,7 +757,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				info.append("\n\r" + ((InstallationStatus) iterator.next()).toString());
 			}
 		}
-		
+
 		log.info(info.toString());
 	}
 
@@ -1094,7 +1094,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_CATEGORY, "ZigBee");
 		deviceProps.put(org.osgi.service.device.Constants.DEVICE_SERIAL, ieeeAddr);
-		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr +"-"+ new Short(service.getEndPoint()));
+		deviceProps.put(org.osgi.framework.Constants.SERVICE_PID, ieeeAddr + "-" + new Short(service.getEndPoint()));
 
 		deviceProps.put("zigbee.device.ep.id", new Short(service.getEndPoint()));
 		deviceProps.put("zigbee.device.profile.id", new Integer(profileId));
@@ -2062,8 +2062,12 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			InstallationStatus status = (InstallationStatus) devicesInstalled.get(ieee);
 			if (status == null)
 				return true;
-			else
-				return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
+			else {
+				if (status.getNodeDescriptor() != null && status.getNodeDescriptor().getMACCapabilityFlag() != null)
+					return status.getNodeDescriptor().getMACCapabilityFlag().isReceiverOnWhenIdle() ? true : false;
+				else
+					return true;
+			}
 		}
 	}
 

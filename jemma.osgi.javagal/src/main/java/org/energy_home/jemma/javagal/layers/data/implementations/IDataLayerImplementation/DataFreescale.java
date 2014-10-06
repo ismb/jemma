@@ -97,8 +97,6 @@ public class DataFreescale implements IDataLayer {
 
 	public final static short SIZE_ARRAY = 2048;
 
-	
-	
 	private ArrayBlockingQueue<ByteArrayObject> dataFromSerialComm;
 
 	private ArrayBlockingQueue<ByteArrayObject> getDataFromSerialComm() {
@@ -169,7 +167,7 @@ public class DataFreescale implements IDataLayer {
 					try {
 						processAllRaw(getDataFromSerialComm().take());
 					} catch (Exception e) {
-						LOG.error("Error on processAllRaw:" + e.getMessage() );
+						LOG.error("Error on processAllRaw:" + e.getMessage());
 						e.printStackTrace();
 
 					}
@@ -187,6 +185,7 @@ public class DataFreescale implements IDataLayer {
 	private byte[] rawnotprocessed = new byte[0];
 
 	private void processAllRaw(ByteArrayObject rawdataObject) {
+		System.out.println("\n\rInto processAllRaw BufferSize[" + rawnotprocessed.length + rawdataObject.getCount(true) + "] AND Blocks to Get[" + getDataFromSerialComm().size() + "]\n\r");
 
 		byte[] partialrawdata = rawdataObject.getArrayRealSize();
 		byte[] fullrawdata = new byte[partialrawdata.length + rawnotprocessed.length];
@@ -234,7 +233,11 @@ public class DataFreescale implements IDataLayer {
 			if (localCfc == fullrawdata[offset + DataManipulation.START_PAYLOAD_INDEX + payloadLenght]) {
 				final byte[] toByteArray = new byte[pdulength - 1];
 				System.arraycopy(fullrawdata, offset + 1, toByteArray, 0, pdulength - 1);
-				final ByteArrayObject toProcess = new ByteArrayObject(toByteArray,toByteArray.length);
+				/*
+				 * for (int i = 0; i < toByteArray.length; i++) toByteArray[i] =
+				 * (byte) (toByteArray[i] & 0xFF);
+				 */
+				final ByteArrayObject toProcess = new ByteArrayObject(toByteArray, toByteArray.length);
 				try {
 					executor.execute(new Runnable() {
 						public void run() {
@@ -263,6 +266,7 @@ public class DataFreescale implements IDataLayer {
 	}
 
 	public void processMessages(ByteArrayObject message) throws Exception {
+
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
 			LOG.info("Processing message: " + message.ToHexString());
 		short _command = (short) DataManipulation.toIntFromShort(message.getArray()[0], message.getArray()[1]);
@@ -2325,23 +2329,16 @@ public class DataFreescale implements IDataLayer {
 										try {
 											if (getGal().getPropertiesManager().getDebugEnabled())
 												LOG.info("Sending IeeeReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-
-											_newWrapperNode.get_node().getAddress().setIeeeAddress(readExtAddress(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress().getNetworkAddress()));
+											BigInteger _iee = readExtAddress(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress().getNetworkAddress());
+											synchronized (_newWrapperNode) {
+												_newWrapperNode.get_node().getAddress().setIeeeAddress(_iee);
+											}
 											if (getGal().getPropertiesManager().getDebugEnabled()) {
 												LOG.info("Readed Ieee of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()) + " Ieee: " + _newWrapperNode.get_node().getAddress().getIeeeAddress().toString());
 											}
 										} catch (Exception e) {
-
 											LOG.error("Error reading Ieee of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-											try {
-												counter++;
-												Thread.sleep(50);
-											} catch (InterruptedException e1) {
-												counter++;
-												// TODO Auto-generated catch
-												// block
-												e1.printStackTrace();
-											}
+											counter++;
 
 										}
 									}
@@ -2361,25 +2358,20 @@ public class DataFreescale implements IDataLayer {
 										try {
 											if (getGal().getPropertiesManager().getDebugEnabled())
 												LOG.info("Sending NodeDescriptorReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-											_newWrapperNode.setNodeDescriptor(getNodeDescriptorSync(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress()));
-											_newWrapperNode.get_node().setCapabilityInformation(_newWrapperNode.getNodeDescriptor().getMACCapabilityFlag());
 
+											NodeDescriptor _desc = getNodeDescriptorSync(INTERNAL_TIMEOUT, _newWrapperNode.get_node().getAddress());
+
+											synchronized (_newWrapperNode) {
+												_newWrapperNode.setNodeDescriptor(_desc);
+												_newWrapperNode.get_node().setCapabilityInformation(_newWrapperNode.getNodeDescriptor().getMACCapabilityFlag());
+											}
 											if (getGal().getPropertiesManager().getDebugEnabled()) {
 												LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
 
 											}
 										} catch (Exception e) {
-
 											LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
-											try {
-												counter++;
-												Thread.sleep(50);
-											} catch (InterruptedException e1) {
-												counter++;
-												// TODO Auto-generated catch
-												// block
-												e1.printStackTrace();
-											}
+											counter++;
 										}
 									}
 
@@ -3666,7 +3658,7 @@ public class DataFreescale implements IDataLayer {
 		try {
 			getDataFromSerialComm().put(new ByteArrayObject(true));
 		} catch (InterruptedException e) {
-			
+
 		}
 		getDataFromSerialComm().clear();
 
@@ -4167,6 +4159,7 @@ public class DataFreescale implements IDataLayer {
 		synchronized (destroy) {
 			destroy = true;
 		}
+		clearBuffer();
 	}
 
 	@Override

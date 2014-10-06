@@ -616,20 +616,12 @@ public class GalController {
 		Aliases _list = new Aliases();
 
 		long counter = 0;
-		List<WrapperWSNNode> _list1 = getNetworkcache();
-		for (WrapperWSNNode x : _list1) {
-			if (x.is_discoveryCompleted()) {
-				try {
-					if (x.get_node().getAddress().getNetworkAddress() == null && x.get_node().getAddress().getIeeeAddress() != null)
-						x.get_node().getAddress().setNetworkAddress(getShortAddress_FromIeeeAddress(x.get_node().getAddress().getIeeeAddress()));
-					if (x.get_node().getAddress().getIeeeAddress() == null && x.get_node().getAddress().getNetworkAddress() != null)
-						x.get_node().getAddress().setIeeeAddress(getIeeeAddress_FromShortAddress(x.get_node().getAddress().getNetworkAddress()));
-					_list.getAlias().add(x.get_node().getAddress());
-					counter++;
-				} catch (Exception e) {
-					LOG.error(e.getMessage());
-
-				}
+		synchronized (getNetworkcache()) {
+			for (WrapperWSNNode x : getNetworkcache()) {
+				if (x.is_discoveryCompleted()) {
+						_list.getAlias().add(x.get_node().getAddress());
+						counter++;
+								}
 			}
 		}
 		_list.setNumberOfAlias(counter);
@@ -773,7 +765,7 @@ public class GalController {
 		if (Async) {
 
 			executor.execute(new Runnable() {
-				
+
 				public void run() {
 					NodeDescriptor nodeDescriptor = new NodeDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1662,7 +1654,7 @@ public class GalController {
 				scanReqCommand.setASDU(new byte[] { 0x11, 0x01, 0x00, (byte) 0xCA, (byte) 0xFE, (byte) 0xCA, (byte) 0xFE, 0x02, 0x33 });
 				sendInterPANMessage(timeout, _requestIdentifier, scanReqCommand);
 
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 
 				/* ScanRequest */
 				InterPANMessage resetCommand = new InterPANMessage();

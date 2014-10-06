@@ -21,6 +21,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
@@ -45,6 +46,8 @@ public class WrapperWSNNode {
 	ScheduledFuture<Void> forcePingJob = null;
 	ScheduledFuture<Void> discoveryJob = null;
 	private short _numberOfAttempt;
+	private boolean dead;
+
 	private boolean _discoveryCompleted;
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
@@ -56,6 +59,7 @@ public class WrapperWSNNode {
 		gal = _gal;
 		this._numberOfAttempt = 0;
 		this.lastDiscovered = 0;
+		this.dead = false;
 		freshnessTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
 			@Override
 			public Thread newThread(Runnable r) {
@@ -104,6 +108,10 @@ public class WrapperWSNNode {
 		return _numberOfAttempt;
 	}
 
+	public synchronized boolean isDead() {
+		return dead;
+	}
+
 	/**
 	 * Increase the number of fail of the (Discovery, Freshness, ForcePing)
 	 * procedures
@@ -116,20 +124,32 @@ public class WrapperWSNNode {
 	 * Cancel all timers
 	 */
 	public synchronized void abortTimers() {
-
+		this.dead = true;
 		if (discoveryJob != null) {
-			discoveryJob.cancel(true);
+			discoveryJob.cancel(false);
 			discoveryJob = null;
 		}
 
 		if (freshnessJob != null) {
-			freshnessJob.cancel(true);
+			freshnessJob.cancel(false);
 			freshnessJob = null;
 		}
 
 		if (forcePingJob != null) {
-			forcePingJob.cancel(true);
+			forcePingJob.cancel(false);
 			forcePingJob = null;
+		}
+		if (freshnessTPool != null) {
+			freshnessTPool.shutdown();
+			freshnessTPool = null;
+		}
+		if (discoveryTPool != null) {
+			discoveryTPool.shutdown();
+			discoveryTPool = null;
+		}
+		if (forcePingTPool != null) {
+			forcePingTPool.shutdown();
+			forcePingTPool = null;
 		}
 	}
 
@@ -221,16 +241,19 @@ public class WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerDiscovery(int seconds) {
-		if (discoveryJob != null) {
-			discoveryJob.cancel(true);
-		}
-		if (seconds >= 0) {
-			try {
-				discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
-			} catch (Exception e) {
-				System.out.print(e.getMessage());
-				e.printStackTrace();
 
+		if (discoveryJob != null) {
+			discoveryJob.cancel(false);
+		}
+		if (!isDead()) {
+			if (seconds >= 0) {
+				try {
+					discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
+				} catch (Exception e) {
+					System.out.print(e.getMessage());
+					e.printStackTrace();
+
+				}
 			}
 		}
 
@@ -244,16 +267,18 @@ public class WrapperWSNNode {
 	 */
 	public synchronized void setTimerFreshness(int seconds) {
 		if (freshnessJob != null) {
-			freshnessJob.cancel(true);
+			freshnessJob.cancel(false);
 		}
 
-		if (seconds >= 0) {
-			try {
-				freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
-			} catch (Exception e) {
-				System.out.print(e.getMessage());
-				e.printStackTrace();
+		if (!isDead()) {
+			if (seconds >= 0) {
+				try {
+					freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
+				} catch (Exception e) {
+					System.out.print(e.getMessage());
+					e.printStackTrace();
 
+				}
 			}
 		}
 
@@ -268,19 +293,20 @@ public class WrapperWSNNode {
 	public synchronized void setTimerForcePing(int seconds) {
 
 		if (forcePingJob != null) {
-			forcePingJob.cancel(true);
+			forcePingJob.cancel(false);
 		}
 
-		if (seconds >= 0) {
-			try {
-				forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
-			} catch (Exception e) {
-				System.out.print(e.getMessage());
-				e.printStackTrace();
+		if (!isDead()) {
+			if (seconds >= 0) {
+				try {
+					forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
+				} catch (Exception e) {
+					System.out.print(e.getMessage());
+					e.printStackTrace();
 
+				}
 			}
 		}
-
 	}
 
 	private class FreshnessJob implements Callable<Void> {
