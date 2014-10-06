@@ -81,7 +81,7 @@ public class Discovery_Freshness_ForcePing {
 	public void startLqi(Address node, TypeFunction function, short startIndex) {
 		if (getGal().getDataLayer().getDestroy())
 			return;
-		
+
 		Mgmt_LQI_rsp _Lqi = null;
 		String functionName = null;
 		WrapperWSNNode __currentNodeWrapper = null;
@@ -141,10 +141,11 @@ public class Discovery_Freshness_ForcePing {
 					synchronized (__currentNodeWrapper) {
 						__currentNodeWrapper.reset_numberOfAttempt();
 						__currentNodeWrapper.set_discoveryCompleted(true);
-						__currentNodeWrapper.get_node().getAssociatedDevices().clear();
-						__currentNodeWrapper.get_node().getAssociatedDevices().add(_AssociatedDevices);
-						__currentNodeWrapper.get_node().setAddress(node);
-
+						synchronized (__currentNodeWrapper.get_node()) {
+							__currentNodeWrapper.get_node().getAssociatedDevices().clear();
+							__currentNodeWrapper.get_node().getAssociatedDevices().add(_AssociatedDevices);
+							__currentNodeWrapper.get_node().setAddress(node);
+						}
 						if ((_indexLqi + _LqiListCount) < _totalLqi) {
 							if (_LqiListCount == 0x00) {
 								if (getGal().getPropertiesManager().getDebugEnabled()) {
@@ -248,9 +249,8 @@ public class Discovery_Freshness_ForcePing {
 			} catch (Exception e) {
 				manageError(function, startIndex, __currentNodeWrapper, _indexParent, e);
 				e.printStackTrace();
-			}
-			finally{
-				System.out.println("\n\rEnded LqiReq Node:" + String.format("%04X", node.getNetworkAddress()) + " Function:"+functionName +"StartIndex:" + startIndex + "\n\r");
+			} finally {
+				System.out.println("\n\rEnded LqiReq Node:" + String.format("%04X", node.getNetworkAddress()) + " Function:" + functionName + "StartIndex:" + startIndex + "\n\r");
 
 			}
 		}
