@@ -21,6 +21,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
@@ -241,7 +243,6 @@ public class WrapperWSNNode {
 	 *        how parameter
 	 */
 	public synchronized void setTimerDiscovery(int seconds) {
-
 		if (discoveryJob != null) {
 			discoveryJob.cancel(false);
 		}

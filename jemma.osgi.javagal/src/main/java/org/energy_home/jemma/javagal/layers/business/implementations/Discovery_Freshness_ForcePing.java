@@ -327,6 +327,8 @@ public class Discovery_Freshness_ForcePing {
 						Status _s = new Status();
 						_s.setCode((short) 0x00);
 						_s.setMessage("Successful - " + funcionName + " Algorithm");
+						System.out.println("\n\rNodeDiscovered From SetGatewayStatus:" + String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress())  + "\n\r");
+
 						getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
 						/* Saving the Panid in order to leave the Philips light */
 						getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
