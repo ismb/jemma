@@ -49,7 +49,8 @@ var InterfaceEnergyHome = {
 	AVG : 4,
 	DELTA : 5,
 	PID_TOTALE : null,
-	WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
+	//WHITEGOOD_APP_TYPE : "com.indesit.ah.app.whitegood",
+	WHITEGOOD_APP_TYPE : "org.energy_home.jemma.ah.zigbee.whitegood",
 	SMARTINFO_APP_TYPE : "org.energy_home.jemma.ah.zigbee.metering", //"it.telecomitalia.ah.zigbee.metering",
 	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug", //"it.telecomitalia.ah.zigbee.smartplug",
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 

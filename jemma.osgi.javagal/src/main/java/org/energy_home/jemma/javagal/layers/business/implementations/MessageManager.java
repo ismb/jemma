@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.SerializationUtils;
@@ -35,18 +41,19 @@ import org.energy_home.jemma.zgd.jaxb.Level;
  * Manages received APS messages. When an APS indication is received it is
  * passed to this class' {@code APSMessageIndication} method.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class MessageManager {
 
-	private static final Logger LOG = LoggerFactory.getLogger( MessageManager.class );
-
+	private static final Logger LOG = LoggerFactory.getLogger(MessageManager.class);
+	ExecutorService executor = null;
 	/**
 	 * The local {@link GalController} reference.
 	 */
-	GalController gal = null;
+	private GalController gal = null;
 
 	/**
 	 * Creates a new instance with a Gal controller reference.
@@ -56,7 +63,23 @@ public class MessageManager {
 	 */
 	public MessageManager(GalController _gal) {
 		gal = _gal;
+		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-MessageManager");
+			}
+		});
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(getGal().getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
+		}
+	}
+
+	private GalController getGal() {
+		return gal;
 	}
 
 	/**
@@ -71,14 +94,13 @@ public class MessageManager {
 	 *            the indication APSMessageEvent to process.
 	 */
 	public void APSMessageIndication(final APSMessageEvent message) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
-				if (gal.getPropertiesManager().getDebugEnabled()) {
+				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
 				}
 
-				for (CallbackEntry ce : gal.getCallbacks()) {
+				for (CallbackEntry ce : getGal().getCallbacks()) {
 
 					Callback callback = ce.getCallback();
 					Filter filter = callback.getFilter();
@@ -176,7 +198,12 @@ public class MessageManager {
 											}
 										}
 									} else if (msam == 0x03) {
-										LOG.warn("AIA"); //FIXME is this something expected or not ? maybe a better log message would also help ...
+										LOG.warn("AIA"); // FIXME is this
+															// something
+															// expected or not ?
+															// maybe a better
+															// log message would
+															// also help ...
 
 										// ASK No ieee address defined in
 										// the AddressSpecification
@@ -246,13 +273,12 @@ public class MessageManager {
 						// destination.
 
 						MessageListener napml = ce.getGenericDestination();
-						if (napml != null)
-						{
+						if (napml != null) {
 							APSMessageEvent cmessage = null;
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
 							}
-							
+
 							napml.notifyAPSMessage(cmessage);
 						}
 						// Add it to the list of already notified
@@ -262,9 +288,7 @@ public class MessageManager {
 				}
 
 			}
-		};
-		thr.setName("Thread APSMessageIndication(final APSMessageEvent message)");
-		thr.start();
+		});
 	}
 
 	/**
@@ -279,14 +303,13 @@ public class MessageManager {
 	 *            the indication APSMessageEvent to process.
 	 */
 	public void InterPANMessageIndication(final InterPANMessageEvent message) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
-				if (gal.getPropertiesManager().getDebugEnabled()) {
+				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
 				}
 
-				for (CallbackEntry ce : gal.getCallbacks()) {
+				for (CallbackEntry ce : getGal().getCallbacks()) {
 
 					Callback callback = ce.getCallback();
 					Filter filter = callback.getFilter();
@@ -399,7 +422,7 @@ public class MessageManager {
 					// destination.
 
 					MessageListener napml = ce.getGenericDestination();
-					if (napml != null){
+					if (napml != null) {
 						InterPANMessageEvent cmessage = null;
 						synchronized (message) {
 							cmessage = SerializationUtils.clone(message);
@@ -412,8 +435,6 @@ public class MessageManager {
 				}
 			}
 
-		};
-		thr.setName("Thread InterPANMessageIndication(final InterPANMessageEvent message)");
-		thr.start();
+		});
 	}
 }

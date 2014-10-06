@@ -36,9 +36,7 @@ public class Zcl4NoksSmartPlugAppliance extends ZclAppliance {
 
 	public Zcl4NoksSmartPlugAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
-
 		endPoint = this.zclAddEndPoint(ENDPOINT_TYPE);
-
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclOnOffServer());
 		endPoint.addServiceCluster(new ZclBasicServer());

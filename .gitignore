@@ -2,6 +2,7 @@
 *~
 *.svn.*
 *.orig.*
+*.orig*
 *.classpath*
 *.project
 */.settings/*

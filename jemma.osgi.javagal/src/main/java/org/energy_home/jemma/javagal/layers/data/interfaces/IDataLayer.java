@@ -315,7 +315,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public Status clearEndpointSync(short endpoint) throws IOException, Exception, GatewayException;
+	public Status clearEndpointSync(long timeout,short endpoint) throws IOException, Exception, GatewayException;
 
 	/**
 	 * Starts a PermitJoin procedure synchronously. The PermitJoin procedure is
@@ -387,7 +387,7 @@ public interface IDataLayer extends IFrameCallback {
 	 * @throws GatewayException
 	 *             if a ZGD error occurs.
 	 */
-	public NodeServices getLocalServices() throws IOException, Exception, GatewayException;
+	public NodeServices getLocalServices(long timout) throws IOException, Exception, GatewayException;
 
 	/**
 	 * Starts the GetServiceDescriptor procedure. The GetServiceDescriptor

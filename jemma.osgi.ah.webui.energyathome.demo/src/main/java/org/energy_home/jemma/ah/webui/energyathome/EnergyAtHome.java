@@ -16,9 +16,11 @@
 package org.energy_home.jemma.ah.webui.energyathome;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import javax.security.auth.login.LoginException;
@@ -34,6 +36,7 @@ import org.energy_home.jemma.hac.adapter.http.Base64;
 import org.energy_home.jemma.hac.adapter.http.CustomJsonServlet;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.hac.adapter.http.JsonRPC;
+import org.energy_home.jemma.hac.adapter.http.ServiceNoParam;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCServlet;
 import org.osgi.framework.BundleContext;
@@ -103,14 +106,23 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 	private boolean enableSecurity = true;
 	private boolean enableHttps = false;
 	private ServiceRegistryProxy registryProxy;
+	
+	public Properties props = null;
 
 	protected void activate(ComponentContext ctxt) {
 
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
 
-		jsonRpcBridge = JSONRPCBridge.getGlobalBridge();
+		if (this.props == null){
+			loadPropFile();
+		}
 
+		Servlet serviceNoParam = new ServiceNoParam(ahHttpAdapter, "", this.props);
+		this.registerResource("/noparamService", serviceNoParam);
+
+		jsonRpcBridge = JSONRPCBridge.getGlobalBridge();
+		
 		try {
 			registryProxy = new ServiceRegistryProxy(this.bc, jsonRpcBridge);
 			jsonRpcBridge.registerObject("OSGi", registryProxy);
@@ -126,6 +138,24 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 			jsonRpcBridge.unregisterObject("OSGi");
 			this.registryProxy.close();
 		}
+	}
+	
+	protected void loadPropFile(){
+		
+		
+			String _path = "noserver.properties";
+			URL _url = this.bc.getBundle().getResource(_path);
+			
+			InputStream in = null;
+			try {
+				in = _url.openStream();
+				this.props = new Properties();
+				this.props.load(in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 	}
 
 	protected synchronized void setHttpService(HttpService s) {

@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.GatewayEventListenerExtended;
@@ -43,6 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RestClientManagerAndListener implements
 		GatewayEventListenerExtended {
+	private ExecutorService executor = null;
 	private String bindingDestination;
 	private String gatewayStopDestination;
 	private String leaveResultDestination;
@@ -71,14 +78,27 @@ public class RestClientManagerAndListener implements
 		this.clientResource = _clientResorce;
 		this.context =  new Context();
 		context.getParameters().add("socketTimeout", ((Integer)(_PropertiesManager.getHttpOptTimeout()*1000)).toString());
+		executor = Executors.newFixedThreadPool(_PropertiesManager.getNumberOfThreadForAnyPool(), new ThreadFactory() {
+
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-RestClientManagerAndListener");
+			}
+		});
+
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(_PropertiesManager.getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
+		}
 	}
 
 	synchronized public void gatewayStartResult(final Status status) {
 
 		if ((startGatewayDestination != null)
 				&& !startGatewayDestination.equals("")) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -105,8 +125,7 @@ public class RestClientManagerAndListener implements
 					}
 				}
 
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -115,8 +134,7 @@ public class RestClientManagerAndListener implements
 
 		if ((nodeDiscoveredDestination != null)
 				&& !nodeDiscoveredDestination.equals("")) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -143,8 +161,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -154,8 +171,7 @@ public class RestClientManagerAndListener implements
 		if ((nodeRemovedDestination != null)
 				&& !nodeRemovedDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -182,8 +198,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -194,8 +209,7 @@ public class RestClientManagerAndListener implements
 		if ((nodeServicesDestination != null)
 				&& !nodeServicesDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -222,8 +236,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -234,8 +247,7 @@ public class RestClientManagerAndListener implements
 		if ((serviceDescriptorDestination != null)
 				&& !serviceDescriptorDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -262,8 +274,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -272,8 +283,7 @@ public class RestClientManagerAndListener implements
 
 		if ((resetDestination != null) && !resetDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -299,8 +309,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -308,9 +317,7 @@ public class RestClientManagerAndListener implements
 	public void bindingResult(final Status status) {
 
 		if ((bindingDestination != null) && !bindingDestination.equals("")) {
-
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -335,8 +342,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -346,8 +352,7 @@ public class RestClientManagerAndListener implements
 
 		if ((unbindingDestination != null) && !unbindingDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -373,8 +378,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -385,8 +389,7 @@ public class RestClientManagerAndListener implements
 		if ((nodeBindingDestination != null)
 				&& !nodeBindingDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -413,8 +416,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -424,8 +426,7 @@ public class RestClientManagerAndListener implements
 		if ((leaveResultDestination != null)
 				&& !leaveResultDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -451,8 +452,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -463,8 +463,7 @@ public class RestClientManagerAndListener implements
 		if ((permitJoinDestination != null)
 				&& !permitJoinDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -490,8 +489,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -503,8 +501,7 @@ public class RestClientManagerAndListener implements
 		if ((nodeDescriptorDestination != null)
 				&& !nodeDescriptorDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -534,8 +531,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -547,8 +543,7 @@ public class RestClientManagerAndListener implements
 		if ((nodeDescriptorDestination != null)
 				&& !nodeDescriptorDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -575,8 +570,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -586,8 +580,7 @@ public class RestClientManagerAndListener implements
 		if ((gatewayStopDestination != null)
 				&& !gatewayStopDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -613,8 +606,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -625,8 +617,7 @@ public class RestClientManagerAndListener implements
 		if ((leaveResultDestination != null)
 				&& !leaveResultDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -655,8 +646,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -667,8 +657,7 @@ public class RestClientManagerAndListener implements
 		if ((zdpCommandDestination != null)
 				&& !zdpCommandDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -692,8 +681,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -707,8 +695,7 @@ public class RestClientManagerAndListener implements
 		if ((interPANCommandDestination  != null)
 				&& !interPANCommandDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -732,8 +719,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 
 		}
 
@@ -745,8 +731,7 @@ public class RestClientManagerAndListener implements
 		if ((zclCommandDestination != null)
 				&& !zclCommandDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -770,8 +755,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -781,8 +765,7 @@ public class RestClientManagerAndListener implements
 		if ((frequencyAgilityResultDestination != null)
 				&& !frequencyAgilityResultDestination.equals("")) {
 
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 						if (_PropertiesManager.getDebugEnabled())
@@ -808,8 +791,7 @@ public class RestClientManagerAndListener implements
 						clientResource.addToCounterException();
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}

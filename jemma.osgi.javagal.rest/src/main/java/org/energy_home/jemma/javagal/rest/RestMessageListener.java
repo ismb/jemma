@@ -15,8 +15,12 @@
  */
 package org.energy_home.jemma.javagal.rest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.energy_home.jemma.javagal.rest.util.ClientResources;
 import org.energy_home.jemma.javagal.rest.util.Util;
 import org.energy_home.jemma.zgd.MessageListener;
@@ -27,6 +31,8 @@ import org.energy_home.jemma.zgd.jaxb.InterPANMessageEvent;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@code APSMessageListener} interface for the Rest server.
@@ -41,8 +47,8 @@ import org.restlet.resource.ClientResource;
  * 
  */
 public class RestMessageListener implements MessageListener {
-
-	private static final Logger LOG = LoggerFactory.getLogger( RestMessageListener.class );
+	private ExecutorService executor = null;
+	private static final Logger LOG = LoggerFactory.getLogger(RestMessageListener.class);
 	private Long CalbackIdentifier = -1L;
 	private Callback callback;
 	private String urilistener;
@@ -75,7 +81,17 @@ public class RestMessageListener implements MessageListener {
 		this.context = new Context();
 		this._PropertiesManager = __PropertiesManager;
 		context.getParameters().add("socketTimeout", ((Integer) (_PropertiesManager.getHttpOptTimeout() * 1000)).toString());
+		executor = Executors.newFixedThreadPool(__PropertiesManager.getNumberOfThreadForAnyPool(), new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
 
+				return new Thread(r, "THPool-RestMessageListener");
+			}
+		});
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(__PropertiesManager.getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+		}
 	}
 
 	/**
@@ -84,8 +100,7 @@ public class RestMessageListener implements MessageListener {
 	synchronized public void notifyAPSMessage(final APSMessageEvent message) {
 
 		if (urilistener != null) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 
@@ -97,8 +112,8 @@ public class RestMessageListener implements MessageListener {
 						info.setEventCallbackIdentifier(CalbackIdentifier);
 						String xml = Util.marshal(info);
 						if (_PropertiesManager.getDebugEnabled())
-							LOG.debug("Unmarshaled" + xml);
-						
+							LOG.info("Unmarshaled" + xml);
+
 						resource.post(xml, MediaType.APPLICATION_XML);
 						resource.release();
 						resource = null;
@@ -108,8 +123,7 @@ public class RestMessageListener implements MessageListener {
 
 					}
 				}
-			};
-			thr.start();
+			});
 		}
 
 	}
@@ -147,8 +161,7 @@ public class RestMessageListener implements MessageListener {
 	@Override
 	public void notifyInterPANMessage(final InterPANMessageEvent message) {
 		if (urilistener != null) {
-			Thread thr = new Thread() {
-				@Override
+			executor.execute(new Runnable() {
 				public void run() {
 					try {
 
@@ -170,10 +183,9 @@ public class RestMessageListener implements MessageListener {
 
 					}
 				}
-			};
-			thr.start();
+			});
 		}
-		
+
 	}
 
 }
