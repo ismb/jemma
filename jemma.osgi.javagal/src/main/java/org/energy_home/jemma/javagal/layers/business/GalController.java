@@ -619,9 +619,9 @@ public class GalController {
 		synchronized (getNetworkcache()) {
 			for (WrapperWSNNode x : getNetworkcache()) {
 				if (x.is_discoveryCompleted()) {
-						_list.getAlias().add(x.get_node().getAddress());
-						counter++;
-								}
+					_list.getAlias().add(x.get_node().getAddress());
+					counter++;
+				}
 			}
 		}
 		_list.setNumberOfAlias(counter);
@@ -772,8 +772,9 @@ public class GalController {
 						try {
 							nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
 							int _index = -1;
-							if ((_index = existIntoNetworkCache(addrOfInterest)) > -1)
+							if ((_index = existIntoNetworkCache(addrOfInterest)) > -1) 
 								getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
+							
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
 							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
@@ -1654,7 +1655,7 @@ public class GalController {
 				scanReqCommand.setASDU(new byte[] { 0x11, 0x01, 0x00, (byte) 0xCA, (byte) 0xFE, (byte) 0xCA, (byte) 0xFE, 0x02, 0x33 });
 				sendInterPANMessage(timeout, _requestIdentifier, scanReqCommand);
 
-				//Thread.sleep(1000);
+				// Thread.sleep(1000);
 
 				/* ScanRequest */
 				InterPANMessage resetCommand = new InterPANMessage();
