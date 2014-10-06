@@ -15,6 +15,12 @@
  */
 package org.energy_home.jemma.javagal.layers.business.implementations;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.SerializationUtils;
@@ -43,7 +49,7 @@ import org.energy_home.jemma.zgd.jaxb.Level;
 public class MessageManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageManager.class);
-
+	ExecutorService executor = null;
 	/**
 	 * The local {@link GalController} reference.
 	 */
@@ -57,7 +63,19 @@ public class MessageManager {
 	 */
 	public MessageManager(GalController _gal) {
 		gal = _gal;
+		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
+			@Override
+			public Thread newThread(Runnable r) {
+
+				return new Thread(r, "THPool-MessageManager");
+			}
+		});
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(getGal().getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
+		}
 	}
 
 	private GalController getGal() {
@@ -76,8 +94,7 @@ public class MessageManager {
 	 *            the indication APSMessageEvent to process.
 	 */
 	public void APSMessageIndication(final APSMessageEvent message) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
@@ -271,9 +288,7 @@ public class MessageManager {
 				}
 
 			}
-		};
-		thr.setName("Thread APSMessageIndication(final APSMessageEvent message)");
-		thr.start();
+		});
 	}
 
 	/**
@@ -288,8 +303,7 @@ public class MessageManager {
 	 *            the indication APSMessageEvent to process.
 	 */
 	public void InterPANMessageIndication(final InterPANMessageEvent message) {
-		Thread thr = new Thread() {
-			@Override
+		executor.execute(new Runnable() {
 			public void run() {
 				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
@@ -421,8 +435,6 @@ public class MessageManager {
 				}
 			}
 
-		};
-		thr.setName("Thread InterPANMessageIndication(final InterPANMessageEvent message)");
-		thr.start();
+		});
 	}
 }

@@ -107,7 +107,6 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
 				int _index = -1;
-				synchronized (getGal().getNetworkcache()) {
 					if ((_index = getGal().existIntoNetworkCache(_add)) != -1) {
 						getGal().getNetworkcache().remove(_index);
 						Status _s = new Status();
@@ -120,16 +119,17 @@ public class ZdoManager /* implements APSMessageListener */{
 							e.printStackTrace();
 						}
 					}
-				}
+				
 			}
 		}
 		/* ZDP Device_announcement */
 		else if (message.getClusterID() == 0x0013) {
 
-			WrapperWSNNode _Node = new WrapperWSNNode(gal);
-			WSNNode n = new WSNNode();
 			Address _add = new Address();
 			_add.setNetworkAddress(DataManipulation.toIntFromShort(message.getData()[2], message.getData()[1]));
+			WrapperWSNNode _Node = new WrapperWSNNode(gal, String.format("%04X", _add.getNetworkAddress()));
+			WSNNode n = new WSNNode();
+			
 			byte[] _IEEE = new byte[8];
 			_IEEE[0] = message.getData()[10];
 			_IEEE[1] = message.getData()[9];
