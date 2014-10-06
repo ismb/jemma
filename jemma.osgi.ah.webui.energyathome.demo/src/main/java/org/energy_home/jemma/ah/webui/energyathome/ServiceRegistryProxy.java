@@ -23,8 +23,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.rmi.runtime.Log;
-
 public class ServiceRegistryProxy {
 
 	private StaticJSONServiceTracker jSONServiceTracker;
