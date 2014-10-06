@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import jssc.SerialPortException;
 
-import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 
 /**
  * Interface for all serial implementation of the FlexGrid key (jssc and RxTx).
@@ -52,7 +52,7 @@ public interface IConnector {
 	 * @throws Exception
 	 *             if errors occurs in write process.
 	 */
-	public void write(ShortArrayObject buff) throws Exception;
+	public void write(ByteArrayObject buff) throws Exception;
 
 	/**
 	 * Tells if the dongle is connected or not.

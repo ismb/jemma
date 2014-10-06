@@ -26,7 +26,7 @@ import java.util.TooManyListenersException;
 import org.energy_home.jemma.javagal.layers.data.implementations.IDataLayerImplementation.DataFreescale;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IConnector;
 import org.energy_home.jemma.javagal.layers.data.interfaces.IDataLayer;
-import org.energy_home.jemma.javagal.layers.object.ShortArrayObject;
+import org.energy_home.jemma.javagal.layers.object.ByteArrayObject;
 import org.energy_home.jemma.zgd.GatewayConstants;
 import org.energy_home.jemma.zgd.jaxb.Status;
 import org.slf4j.Logger;
@@ -35,8 +35,9 @@ import org.slf4j.LoggerFactory;
 /**
  * RxTx implementation of the {@link IConnector}.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class SerialPortConnectorRxTx implements IConnector {
@@ -143,7 +144,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 	}
 
-	private synchronized void setConnected(boolean value) {
+	private void setConnected(boolean value) {
 		connected = value;
 
 	}
@@ -151,13 +152,13 @@ public class SerialPortConnectorRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	public void write(ShortArrayObject buff) throws Exception {
+	public void write(ByteArrayObject buff) throws Exception {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
 					if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
 						LOG.info(">>> Sending: " + buff.ToHexString());
-					ou.write(buff.getByteArray(), 0, buff.getCount(true));
+					ou.write(buff.getArray(), 0, buff.getCount(true));
 					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 
 				} catch (Exception e) {
@@ -178,7 +179,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	@Override
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return connected;
 	}
 
@@ -224,50 +225,33 @@ public class SerialPortConnectorRxTx implements IConnector {
 			_caller = _parent;
 		}
 
-		public synchronized void serialEvent(SerialPortEvent event) {
+		public void serialEvent(SerialPortEvent event) {
 			try {
-				if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-					try {
-						int pos = 0;
-						Integer data = 0;
-						short[] buffer = new short[1024];
 
-						while (in.available() > 0) {
-							try {
-								data = in.read();
-								buffer[pos] = (short) (data.byteValue() & 0xFFFF);
-								pos = pos + 1;
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-
-						if (!ignoreMessage) {
-
-							ShortArrayObject frame = new ShortArrayObject(buffer, pos);
-							_caller.getDataLayer().notifyFrame(frame);
-						}
-					} catch (Exception e) {
-
-						LOG.error("Error on data received:" + e.getMessage());
+				if ((event.getEventType() == SerialPortEvent.DATA_AVAILABLE) && !getIgnoreMessage()) {
+					int numberOfBytes = in.available();
+					if (numberOfBytes > 0) {
+						byte[] bufferOriginal = new byte[numberOfBytes];
+						in.read(bufferOriginal);
+						ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
+						_caller.getDataLayer().notifyFrame(frame);
 					}
-
 				}
+
 			} catch (Exception e) {
 
 				LOG.error("Error on read from serial data:" + e.getMessage());
 
 			}
-
 		}
 	}
 
-	private synchronized void setIgnoreMessage(boolean value) {
+	private void setIgnoreMessage(boolean value) {
 		ignoreMessage = value;
 
 	}
 
-	private synchronized boolean getIgnoreMessage() {
+	private boolean getIgnoreMessage() {
 		return ignoreMessage;
 
 	}

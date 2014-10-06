@@ -109,12 +109,12 @@ public class Util {
 					.getClass().getSimpleName());
 			JAXBElement<T> je = new JAXBElement<T>(_qname,
 					(Class<T>) o.getClass(), ((T) o));
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
 					new NamespacePrefixMapperImpl());
 			m.setProperty("com.sun.xml.internal.bind.xmlDeclaration",
-					Boolean.FALSE);
+					Boolean.TRUE);
 			m.marshal(je, stringWriter);
 			String _tores = stringWriter.toString();
 			

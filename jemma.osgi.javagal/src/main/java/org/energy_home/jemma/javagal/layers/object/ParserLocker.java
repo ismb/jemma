@@ -18,13 +18,14 @@ package org.energy_home.jemma.javagal.layers.object;
 import org.energy_home.jemma.zgd.jaxb.Status;
 
 import java.util.Date;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Helper class to manage synchronization's locks.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  */
 public class ParserLocker {
 
@@ -32,6 +33,7 @@ public class ParserLocker {
 	 * Conventional invalid id value.
 	 */
 	public final static short INVALID_ID = (short) -1;
+	private ArrayBlockingQueue<Byte> objectLocker;
 
 	private long id;
 	private Status status;
@@ -86,6 +88,7 @@ public class ParserLocker {
 		id = new Date().getTime();
 		status = new Status();
 		status.setCode(INVALID_ID);
+		objectLocker = new ArrayBlockingQueue<Byte>(1);
 	}
 
 	/**
@@ -143,6 +146,13 @@ public class ParserLocker {
 	 */
 	public void set_Key(String _Key) {
 		this._Key = _Key;
+	}
+
+	/**
+	 * @return the objectLocker
+	 */
+	public ArrayBlockingQueue<Byte> getObjectLocker() {
+		return objectLocker;
 	}
 
 }

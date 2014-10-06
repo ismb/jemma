@@ -25,9 +25,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Class used to populate the Lqi Response received
  * 
- * @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
- 
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * 
  * 
  * 
  */
@@ -38,7 +39,7 @@ public class Mgmt_LQI_rsp {
 	public short _NeighborTableListCount;
 	public List<NeighborTableLis_Record> NeighborTableList;
 	private static final Logger LOG = LoggerFactory.getLogger(Mgmt_LQI_rsp.class);
-	
+
 	public Mgmt_LQI_rsp(byte[] data) {
 		/* 02 00 01 00 01 */
 		_Status = data[1];
@@ -54,10 +55,8 @@ public class Mgmt_LQI_rsp {
 					NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
 				}
 			}
-		}
-		else
-		{
-				LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status +"\n\r");
+		} else {
+			LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status + "\n\r");
 		}
 
 	}

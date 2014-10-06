@@ -109,7 +109,7 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 
 	private static final void loadConfigProperties() {
 		configProperties = new Properties();
-		if ((configFilePath != null) && (new File(configFilePath).exists())) {
+		if (configFilePath != null) {
 			FileInputStream in = null;
 			try {
 				in = new FileInputStream(configFilePath);
@@ -126,7 +126,6 @@ public class M2MDeviceConfigObject implements M2MDeviceConfig {
 					}
 			}
 		} else {
-			LOG.warn("Configuration file does not exists - " + configFilePath);
 			initConfigProperty(DEVICE_ID_PROPERTY_KEY);
 			initConfigProperty(DEVICE_TOKEN_PROPERTY_KEY);
 		}

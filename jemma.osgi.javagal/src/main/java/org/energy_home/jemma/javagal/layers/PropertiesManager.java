@@ -96,6 +96,21 @@ public class PropertiesManager {
 
 	}
 	
+	
+	
+
+	/**
+	 * Gets timeoutForWaitThread.
+	 * 
+	 * @return the timeoutForThread value.
+	 */
+	public int getTimeOutForWaitThread() {
+		String _value = props.getProperty("TimeOutForWaitThread");
+		return Integer.parseInt(_value);
+	}
+	
+	
+	
 	/**
 	 * Gets serialDataDebugEnabled property.
 	 * 

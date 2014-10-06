@@ -22,6 +22,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.energy_home.jemma.javagal.layers.business.GalController;
+import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 import org.energy_home.jemma.zgd.APSMessageListener;
 import org.energy_home.jemma.zgd.MessageListener;
 import org.energy_home.jemma.zgd.jaxb.APSMessageEvent;
@@ -33,26 +35,29 @@ import org.energy_home.jemma.zgd.jaxb.Filter.MessageSpecification;
 import org.energy_home.jemma.zgd.jaxb.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.energy_home.jemma.javagal.layers.business.GalController;
-import org.energy_home.jemma.javagal.layers.object.CallbackEntry;
 
 /**
  * Manages received APS messages. When an APS indication is received it is
  * passed to this class' {@code APSMessageIndication} method.
  * 
-* @author 
- *         "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
+ * @author "Ing. Marco Nieddu <a href="mailto:marco.nieddu@consoft.it
+ *         ">marco.nieddu@consoft.it</a> or <a href="marco.niedducv@gmail.com
+ *         ">marco.niedducv@gmail.com</a> from Consoft Sistemi S.P.A.<http://www.consoft.it>, financed by EIT ICT Labs activity SecSES - Secure Energy Systems (activity id 13030)"
  * 
  */
 public class ApsMessageManager {
 	ExecutorService executor = null;
-	//FIXME mass-rename to LOG when available
-	private static final Logger LOG = LoggerFactory.getLogger( ApsMessageManager.class );
+	// FIXME mass-rename to LOG when available
+	private static final Logger LOG = LoggerFactory.getLogger(ApsMessageManager.class);
 
 	/**
 	 * The local {@link GalController} reference.
 	 */
-	GalController gal = null;
+	private GalController gal = null;
+
+	private GalController getGal() {
+		return gal;
+	}
 
 	/**
 	 * Creates a new instance with a Gal controller reference.
@@ -62,26 +67,22 @@ public class ApsMessageManager {
 	 */
 	public ApsMessageManager(GalController _gal) {
 		gal = _gal;
-	
-		executor = Executors.newFixedThreadPool(gal.getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
-			
+
+		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
+
 			@Override
 			public Thread newThread(Runnable r) {
-				
+
 				return new Thread(r, "THPool-APSMessageIndication");
 			}
 		});
-		
-		if (executor instanceof ThreadPoolExecutor)
-		{
-			((ThreadPoolExecutor)executor).setKeepAliveTime(gal.getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
-			((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
 
-			
+		if (executor instanceof ThreadPoolExecutor) {
+			((ThreadPoolExecutor) executor).setKeepAliveTime(getGal().getPropertiesManager().getKeepAliveThread(), TimeUnit.MINUTES);
+			((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
+
 		}
 
-		
-		
 	}
 
 	/**
@@ -99,11 +100,11 @@ public class ApsMessageManager {
 	public void APSMessageIndication(final APSMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
-				if (gal.getPropertiesManager().getDebugEnabled()) {
+				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.info("Aps Message Indication in process...");
 				}
 
-				for (CallbackEntry ce : gal.getCallbacks()) {
+				for (CallbackEntry ce : getGal().getCallbacks()) {
 
 					Callback callback = ce.getCallback();
 					Filter filter = callback.getFilter();
@@ -275,7 +276,7 @@ public class ApsMessageManager {
 							apml.notifyAPSMessage(message);
 
 						MessageListener napml = ce.getGenericDestination();
-						if (napml != null){
+						if (napml != null) {
 							APSMessageEvent cmessage = null;
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
@@ -287,14 +288,12 @@ public class ApsMessageManager {
 
 					}
 				}
-				
-				if (gal.getPropertiesManager().getDebugEnabled()) {
+
+				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.info("Aps Message Indication done!");
 				}
 			}
 		});
-		
-		
 
 	}
 }
