@@ -1,4 +1,4 @@
-Auto-generated site: 201410061752
+Auto-generated site: 201410061800
 
 ##########################
 Git status
@@ -9,16 +9,22 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
+#	modified:   getrel.md
 #	modified:   index.html
+#	modified:   index.md
 #	modified:   site-generation.log
-#	modified:   supportedhw.html
-#	modified:   supportedhw.md
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 8a16132557e9a1d7e1c16620242ce2b10f4045de
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Mon Oct 6 17:53:53 2014 +0200
+
+    Updated "Verified Hardware" page
 
 commit 7bdcb7e9862607b30a7f2da56b7b15c807313216
 Author: riccardo <riccardo.to@gmail.com>
@@ -43,10 +49,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 15:08:39 2014 +0200
 
     added raspberry
-
-commit 955f335055231a403c1a091476a32290496f6b0e
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 14:57:29 2014 +0200
-
-    forgot to make
 
