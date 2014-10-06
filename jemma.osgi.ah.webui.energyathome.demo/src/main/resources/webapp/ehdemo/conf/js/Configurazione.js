@@ -415,6 +415,7 @@ Configurazione.GetIcone = function() {
 	Configurazione.icone[8] = "tv.png";
 	Configurazione.icone[9] = "stufa.png";
 	Configurazione.icone[10] = "lockdoor.png";
+	Configurazione.icone[11] = "windowc.png";
 	/*Configurazione.icone[10] = "production_meter.png";
 	Configurazione.icone[11] = "secondary_meter.png";
 	Configurazione.icone[12] = "printer.png";
@@ -696,13 +697,11 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 
 Configurazione.ControllaInquiry = function() {
 	//console.log(80, Configurazione.MODULE, "Reimposto timeout");
-	InterfaceEnergyHome
-			.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
+	InterfaceEnergyHome.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
 }
 
 Configurazione.StopInquiryCb = function(res, e) {
-	InterfaceEnergyHome
-			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.StartInquiryCb = function(res, e) {
@@ -787,6 +786,15 @@ Configurazione.VisElettrodomestici = function() {
 					} else {
 						val = 'close';
 						imgDisp = "lockdoor_spento.png";
+					}
+				} else if (category_value == "41") {
+					val = device_value.value.value;
+					if (val > 0){
+						val = 'open';
+						imgDisp = "windowc_acceso.png";
+					} else {
+						val = 'close';
+						imgDisp = "windowc_spento.png";
 					}
 				} else {
 					val = parseFloat(device_value.value.value);

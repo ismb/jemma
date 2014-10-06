@@ -1,229 +1,260 @@
 var ifWindowCovering =  { 
-        timeout_timer:null,
-        clusters:{},
+        timeout_timer: null,
+        clusters: {},
         UPDATE_FREQ: 30000,
-        stato:1 //1=acceso
+        min: null,
+        max: 100,
+        liftPerc: 50,
+        isBusy: false,
+        stato:6, //6 = finestra aperta, 7 = finestra chiusa, 8 = finestra semi aperta
+        WINDOWCOVERING_CURRENTPOSITIONLIFTPERCENTAGE: 0,
+        WINDOWCOVERING_INFOINSTALLEDOPENLIMIT: 1,
+        WINDOWCOVERING_INFOINSTALLEDCLOSEDLIMIT: 2,
+        WINDOWCOVERING_INFOINSTALLEDOPENLIMITTILT: 3,
+        WINDOWCOVERING_INFOINSTALLEDCLOSEDLIMITTILT: 4,
+        WINDOWCOVERING_STOPPED: 5,
+        WINDOWCOVERING_UPOPEN: 6,
+        WINDOWCOVERING_DOWNCLOSE: 7,
+        WINDOWCOVERING_OPENPECENTAGE: 8,
+        counterPositionDevice: null,
 }
 
-ifWindowCovering.init=function(clusters){  
+ifWindowCovering.init=function(clusters, i){  
+	
+    ifWindowCovering.timeout_timer=null;
+    ifWindowCovering.stato =-1;
 
-	ifWindowCovering.timeout_timer=null;
-	ifWindowCovering.stato=-1;
-        
-	$( "#onoff" ).click(function( event ) {
-        event.preventDefault();
-        var myId= "#"+$(this).attr("id");
-        if (ifWindowCovering.stato==1) {
+    var pid = $("#Interfaccia").data("pid");
+    
+    ifWindowCovering.counterPositionDevice = i;
 
-                var pid=$("#Interfaccia").data("pid");
-                if (pid==undefined)
-                        return;
-                
-                InterfaceEnergyHome.objService.setDeviceState(function(result, err){
-                        if (err!=null) {
-                                ifWindowCovering.update(true);
-                                
-                        }else if (result!=null) {
-                                if (result==true) {
-                                        
-                                        ifWindowCovering.stato=0;
-               
-                                        $('#bg').css( "background-color","#333" );
-                                        
-                                        $(myId).addClass("OFF");
-                                        $(myId).removeClass("ON");
-                                        
-                                        $('#lum').slider("value",0);
-                                        $('#lum_perc').html(0+"%");
-                                        
-                                        //InterfaceEnergyHome.objService.getInfos(function(result, err){
-                                        //        for ( var k in result.list) {
-                                        //                console.log("->>"+k+": "+result.list[k]);
-                                        //                for ( var o in result.list[k].map) {
-                                        //                        console.log("---->> map:"+o+": "+result.list[k].map[o]);
-                                        //                }
-                                        //        }
-                                        //        
-                                        //        console.log($.param(err));     
-                                        //});
-                                }
-                                ifWindowCovering.timeout_timer=new Date().getTime();
-                        }
-                }, pid,0);
+    if (InterfaceEnergyHome.mode > 0){
+	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
+	    	if (err != null){
+	    		ifWindowCovering.max = 100;
+	    	} else {
+	        	ifWindowCovering.max = result;
+	    	}
+	    	ifWindowCovering.gestValue();
+	    }, pid, ifWindowCovering.WINDOWCOVERING_INFOINSTALLEDCLOSEDLIMIT);
+    } else {
+    	ifWindowCovering.max = 100;
+    	ifWindowCovering.gestValue();
+    }
+}
+
+ifWindowCovering.gestLiftPerc=function(){  
+
+    var pid = $("#Interfaccia").data("pid");
+
+    if (InterfaceEnergyHome.mode > 0){
+	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
+	    	if (err != null){
+	    		ifWindowCovering.liftPerc = 100;
+	    	} else {
+	        	ifWindowCovering.liftPerc = result;
+	    	}
+	    	ifWindowCovering.gestSlider();
+	    }, pid, ifWindowCovering.WINDOWCOVERING_CURRENTPOSITIONLIFTPERCENTAGE);
+    } else {
+    	ifWindowCovering.liftPerc = 100;
+    	ifWindowCovering.gestSlider();
+    }
+}
+
+ifWindowCovering.gestSlider=function(){  
+
+    var pid = $("#Interfaccia").data("pid");
+    
+    var stato;
+    var class_stato;
+    
+    $( "#lum" ).slider({
+        range: "min",
+        value: ifWindowCovering.liftPerc,
+        min: 0,
+        max: ifWindowCovering.max,
+        slide: function( event, ui ) {
             
+            if (ui.value == ifWindowCovering.max) {
+                $("#onoff").addClass("ON");
+                $("#onoff").removeClass("OFF");
+                ifWindowCovering.stato = 1;
+            }else if (ui.value == 0 ) {
+                $("#onoff").addClass("OFF");
+                $("#onoff").removeClass("ON");
+                ifWindowCovering.stato = 0;
+            }
+            ifWindowCovering.lum=ui.value;
+            $('#lum_perc').html(ifWindowCovering.lum+"%");
+        },
+        start: function(event, ui ){
+        	ifWindowCovering.isBusy=true;
+        },
+        stop: function(event, ui ){
+        	ifWindowCovering.isBusy=false;
             
-        }else if(ifWindowCovering.stato==0){
-            
-            var pid=$("#Interfaccia").data("pid");
-            if (pid==undefined)
-                    return;
-            
+            var pid = $("#Interfaccia").data("pid");
+            var value = Math.round(ifWindowCovering.lum);
+            ifWindowCovering.liftPerc = value;
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
-                    if (err!=null) {
-                            ifWindowCovering.update(true);
-                    }else if (result!=null) {
-                            if (result==true) {
-                                    
-                                    ifWindowCovering.stato=1;
-                                    ifWindowCovering.colorePercepito=ifWindowCovering.toColorePercepito(ifWindowCovering.coloreReale);
-                                    
-                                    $('#bg').css( "background-color",ifWindowCovering.colorePercepito.toHexString() );
-                                    $('#lum').slider("value",ifWindowCovering.lum);
-                                    
-                                    $(myId).addClass("ON");
-                                    $(myId).removeClass("OFF");
-                                    $('#lum_perc').html(ifWindowCovering.lum+"%");
-
-                                    ifWindowCovering.timeout_timer=new Date().getTime();
-                            }
-                    }
-                             
-            }, pid,1);
-        }
-    	
-    	$("#onoff").attr('unselectable','on')
-    		.css({'-moz-user-select':'-moz-none',
-    		      '-moz-user-select':'none',
-    		      '-o-user-select':'none',
-    		      '-khtml-user-select':'none', /* you could also put this in a class */
-    		      '-webkit-user-select':'none',/* and add the CSS class here instead */
-    		      '-ms-user-select':'none',
-    		      'user-select':'none'
-    	}).bind('selectstart', function(){ return false; });
-        
-        if( ifWindowCovering.clusters!=null){
-                /*
-                if(ifWindowCovering.clusters["org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer"]!=true )
-                        $( "#lum" ).slider("disable");
-                 */
-                
-                if(ifWindowCovering.clusters["org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer"]==true){
-                        
-                        ifWindowCovering.fb=$.farbtastic('#picker');
-                        ifWindowCovering.fb.setColor(ifWindowCovering.baseColor.toHexString());
-                        ifWindowCovering.fb.linkTo(function(color){
-                            
-                                var c=tinycolor(color);
-                                var c2=c.toHsl();
-                                var rc= ifWindowCovering.coloreReale.toHsl();
-                        
-                                if (c2.h!=0) {
-                                    rc.h=c2.h;
-                                }else{
-                                    c2.h=rc.h;
-                                }
-                                c2.l=rc.l;
-                                if (c2.s!=0) {
-                                    rc.s=c2.s;
-                                    
-                                }else{
-                                    c2.s=rc.s;
-                                }
-                                
-                                ifWindowCovering.coloreReale= tinycolor(rc);
-                                ifWindowCovering.colorePercepito=ifWindowCovering.toColorePercepito(ifWindowCovering.coloreReale);
-                                if (ifWindowCovering.stato==1) {
-                                    $('#bg').css( "background-color",ifWindowCovering.colorePercepito.toHexString() );
-                                }   
-                        });
-                        
-                        ifWindowCovering.fb.onStart(function(){
-                                ifWindowCovering.isBusy=true;
-                        });
-                        ifWindowCovering.fb.onStop(function(){
-                                        ifWindowCovering.isBusy=false;
-                                        var rc= ifWindowCovering.coloreReale.toHsl();
-                                        var h=Math.round(rc.h/360*254);
-                                        var s=Math.round( rc.s*254);
-                                        
-                                        var pid=$("#Interfaccia").data("pid");
-                                        if (pid==undefined)
-                                                return;
-                                        
-                                        InterfaceEnergyHome.objService.colorControlMoveToColorHS(function(result, err){
-                                                
-                                                if (err!=null) {
-                                                        ifWindowCovering.update(true);     
-                                                }else if (result!=null) {
-                                                        if (result==true) {
-                                                                ifWindowCovering.timeout_timer=new Date().getTime();
-                                                        }
-                                                }
-                                             
-                                        }, pid,h,s,10);
-                        });
-                        
+            	ifWindowCovering.stato = 8;
+                if (err == null) {
+                	ifWindowCovering.update(true, true);        
                 }
+                    
+            }, pid, WINDOWCOVERING_OPENPECENTAGE, value);
         }
-        ifWindowCovering.update(true);
-	});
+    });
+    
+    $("#btnCloseW").click(function( event ) {
+        event.preventDefault();
+        if (InterfaceEnergyHome.mode > 0){
+            InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+            	alert("I'm closing");
+            	ifWindowCovering.stato = 8;
+                ifWindowCovering.liftPerc = 100;
+            	ifWindowCovering.update(true, false);
+            }, pid, WINDOWCOVERING_DOWNCLOSE, null);
+        } else {
+        	alert("I'm closing");
+        	ifWindowCovering.stato = 8;
+            ifWindowCovering.liftPerc = 100;
+        	ifWindowCovering.update(true, false);
+        }
+    });
+    
+    $("#btnOpenW").click(function( event ) {
+        event.preventDefault();
+        if (InterfaceEnergyHome.mode > 0){
+            InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+            	alert("I'm opening");
+            	ifWindowCovering.stato = 6;
+                ifWindowCovering.liftPerc = 0;
+            	ifWindowCovering.update(true, false);
+            }, pid, WINDOWCOVERING_UPOPEN, null);
+        } else {
+        	alert("I'm opening");
+        	ifWindowCovering.stato = 6;
+            ifWindowCovering.liftPerc = 0;
+        	ifWindowCovering.update(true, false);
+        }
+    });
+    
+    $("#btnStopW").click(function( event ) {
+        event.preventDefault();
+        if (InterfaceEnergyHome.mode > 0){
+            InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+            	alert("I'm stopped");
+            	ifWindowCovering.stato = 7;
+                ifWindowCovering.liftPerc = null;
+            	ifWindowCovering.update(true, false);
+            }, pid, WINDOWCOVERING_STOPPED, null);
+        } else {
+        	alert("I'm stopped");
+        	ifWindowCovering.stato = 7;
+            ifWindowCovering.liftPerc = null;
+        	ifWindowCovering.update(true, false);
+        }
+    });
+    
+    ifWindowCovering.update(true, false);
 };
 
-ifWindowCovering.updateIcon=function(stato){
-        
-        if (stato!=1 && stato!=0) {
-                stato=null;
-        }
-        var i= $("#Interfaccia").data("current_index");
-        var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i],stato);
-        
-        $("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
-        
-        var class_stato="NP";
-        
-        if (stato==1) {
-                class_stato="ON";
-        }
-        else if (stato==0){
-                class_stato="OFF";
-        }
-        $("#Interfaccia .icona").removeClass("ON");
-        $("#Interfaccia .icona").removeClass("OFF");
-        $("#Interfaccia .icona").addClass(class_stato);
-        
+ifWindowCovering.updateIcon=function(){
+
+    var i= $("#Interfaccia").data("current_index");
+    var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i], ifWindowCovering.stato);
+    
+    $("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
+    $("#device_" + ifWindowCovering.counterPositionDevice + " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);
+    
+    var class_stato="NP";
+    
+    if (ifWindowCovering.stato == 7) {
+            class_stato="CLOSE";
+    } else if (ifWindowCovering.stato == 6){
+            class_stato="OPEN";
+    } else {
+            class_stato="OPEN";
+    }
+    
+    $("#Interfaccia .icona").removeClass("OPEN");
+    $("#Interfaccia .icona").removeClass("CLOSE");
+    $("#Interfaccia .icona").addClass(class_stato);
 }
 
-ifWindowCovering.update= function(now){
-	
-        var t= new Date().getTime();
-        
-        var i= $("#Interfaccia").data("current_index");
+ifWindowCovering.update = function(now, moving){
+    var t = new Date().getTime();
+    var i = $("#Interfaccia").data("current_index");
 
-        /*var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
-        if (consumo!="n.a.") {
-                consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
-        }
-        $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);*/
-        $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
-        
-        
-        
-        //Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
-        if (!now && ifWindowCovering.timeout_timer!=null) {
-                if (t - ifWindowCovering.timeout_timer < ifWindowCovering.UPDATE_FREQ) {
-                        return;
-                }
-        }
-        
-        ifWindowCovering.timeout_timer=t;
-        
-        var class_stato="NP"
-        var statoDoor="";
-        
-        if (Elettrodomestici.listaElettrodomestici[i].connessione == 2) {
-        	ifWindowCovering.stato=1;
-            statoDoor = Elettrodomestici.listaElettrodomestici[i].lockState;
-            if (statoDoor == 1){
-            	statoDoor="porta aperta";
-            } else {
-            	statoDoor="porta chiusa";
-            }
+    //ifWindowCovering.liftPerc = liftPerc = Elettrodomestici.listaElettrodomestici[i].device_value;
+    if (ifWindowCovering.liftPerc = null){
+    	//E' stato fatto stop, bisogna chiedere il nuovo valore.
+    	if (InterfaceEnergyHome.mode > 0){
+    	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
+    	    	if (err != null){
+    	    		ifWindowCovering.liftPerc = 100;
+    	    	} else {
+    	        	ifWindowCovering.liftPerc = result;
+    	    	}
+    	    	ifWindowCovering.gestSlider();
+    	    }, pid, ifWindowCovering.WINDOWCOVERING_CURRENTPOSITIONLIFTPERCENTAGE);
         } else {
-    		statoDoor="n.a.";
-            ifWindowCovering.stato=-1;
+        	ifWindowCovering.liftPerc = 100;
+        	ifWindowCovering.gestUpdate(now, moving);
         }
-        
-        $("#statodoor_value").text(statoDoor);
-        
-        ifWindowCovering.updateIcon(ifWindowCovering.stato);
+    } else {
+    	ifWindowCovering.gestUpdate(now, moving);
+    }
+}
+
+ifWindowCovering.gestUpdate = function(now, moving){
+	var liftPerc = "";
+	
+    if (ifWindowCovering.liftPerc == ifWindowCovering.max) {
+    	liftPerc = "total open";
+    } else if (ifWindowCovering.liftPerc == 0) {
+    	liftPerc = " total close";
+    } else {
+    	liftPerc = "ajar";
+    }
+    $("#Interfaccia .StatoElettrodomestico .consumo").text(liftPerc);
+    $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
+    
+    //Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
+    if (!now && ifWindowCovering.timeout_timer!=null) {
+        if (t-ifWindowCovering.timeout_timer < ifWindowCovering.UPDATE_FREQ) {
+            return;
+        }
+    }
+    
+    var class_stato=""
+    var _stato="";
+    
+    if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
+        if (Elettrodomestici.listaElettrodomestici[i].device_value == ifWindowCovering.max){
+            _stato="OPEN";
+            class_stato="OPEN";
+        } else if (Elettrodomestici.listaElettrodomestici[i].device_value == 0){
+            _stato="CLOSE";
+            class_stato="CLOSE";
+        } else{
+            _stato="OPEN";
+            class_stato="OPEN";
+        }
+    } else {
+        _stato = "NP";
+        class_stato = "NP";
+    	ifWindowCovering.stato = -1;
+    }
+    $("#Interfaccia #OnOffControl .btnToggle").removeClass("NP");
+    $("#Interfaccia #OnOffControl .btnToggle").removeClass("OPEN");
+    $("#Interfaccia #OnOffControl .btnToggle").removeClass("CLOSE");
+    $("#Interfaccia #OnOffControl .btnToggle").addClass(class_stato);
+    if (class_stato=="NP") {
+        $("#Interfaccia #OnOffControl .btnToggle").text(_stato);
+    }
+    
+    ifWindowCovering.updateIcon(ifWindowCovering.stato);
 }

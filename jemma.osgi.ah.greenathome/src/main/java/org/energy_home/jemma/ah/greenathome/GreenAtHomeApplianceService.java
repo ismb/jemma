@@ -16,6 +16,7 @@
 package org.energy_home.jemma.ah.greenathome;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -31,6 +32,7 @@ import org.energy_home.jemma.ah.hac.ICategory;
 import org.energy_home.jemma.ah.hac.ILocation;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
+import org.json.JSONException;
 
 public interface GreenAtHomeApplianceService {
 
@@ -48,7 +50,10 @@ public interface GreenAtHomeApplianceService {
 	//added for demo
 	public Vector getInfosDemo();
 	//added for read prop file for demo
-	public Hashtable getPropConfiguration(String lblProps);
+	public List<String> getPropConfiguration(String lblProps);
+	public Hashtable getPropConfigurationHM(String lblProps);
+	public Hashtable getAllPropConfiguration();
+	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException;
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
 
@@ -73,8 +78,10 @@ public interface GreenAtHomeApplianceService {
 	public void removeDevice(String appliancePid) throws ApplianceException;
 
 	public boolean setDeviceState(IAppliance peerAppliance, int state);
+	public boolean setDeviceState(IAppliance peerAppliance, int state, short value);
 
 	public int getDeviceState(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException;
+	public int getDeviceState(IAppliance peerAppliance, int state) throws ApplianceException, ServiceClusterException;
 
 	public Object getObjectByPid(String pid);
 
@@ -319,6 +326,10 @@ public interface GreenAtHomeApplianceService {
 	
 	
 	public boolean setDeviceState(String appliancePid, int state);
+	public boolean setDeviceState(String appliancePid, int state, short value);
+	
+	public int getDeviceState(String appliancePid) throws ApplianceException, ServiceClusterException;
+	public int getDeviceState(String appliancePid, int state) throws ApplianceException, ServiceClusterException;
 	
 	public Hashtable testFunction(String appliancePid, String p1, int p2, int p3);
 	
