@@ -1,4 +1,4 @@
-Auto-generated site: 201410061800
+Auto-generated site: 201410071832
 
 ##########################
 Git status
@@ -9,16 +9,34 @@ Git status
 #   (use "git add <file>..." to update what will be committed)
 #   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-#	modified:   getrel.md
+#	modified:   credits.html
+#	modified:   devteam.html
+#	modified:   features.html
+#	modified:   getrel.html
+#	modified:   howtoc.html
+#	modified:   howtos.html
 #	modified:   index.html
-#	modified:   index.md
+#	modified:   license.html
+#	modified:   news.html
+#	modified:   resources.html
 #	modified:   site-generation.log
+#	modified:   supportedhw.html
+#	modified:   supportedhw.md
+#	modified:   techs.html
+#	modified:   trash.html
+#	modified:   versions.html
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 815263fe0e506aba599279206529126807b339cb
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Mon Oct 6 18:00:40 2014 +0200
+
+    Removed tabs mis-interpreted by pandoc 1.13
 
 commit 8a16132557e9a1d7e1c16620242ce2b10f4045de
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -43,10 +61,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 15:26:12 2014 +0200
 
     gemino fix
-
-commit 3abaac267d5197e6df6cd1eddc28555036ae0003
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 15:08:39 2014 +0200
-
-    added raspberry
 
