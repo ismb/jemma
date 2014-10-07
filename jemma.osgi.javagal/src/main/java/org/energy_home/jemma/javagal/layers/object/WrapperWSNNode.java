@@ -51,6 +51,35 @@ public class WrapperWSNNode {
 	private boolean dead;
 
 	private boolean _discoveryCompleted;
+	private boolean _executingForcePing;
+
+	public synchronized boolean is_executingForcePing() {
+		return _executingForcePing;
+	}
+
+	public synchronized void set_executingForcePing(boolean _executingForcePing) {
+		this._executingForcePing = _executingForcePing;
+	}
+
+	public synchronized boolean is_executingFreshness() {
+		return _executingFreshness;
+	}
+
+	public synchronized void set_executingFreshness(boolean _executingFreshness) {
+		this._executingFreshness = _executingFreshness;
+	}
+
+	public synchronized boolean is_executingDiscovery() {
+		return _executingDiscovery;
+	}
+
+	public synchronized void set_executingDiscovery(boolean _executingDiscovery) {
+		this._executingDiscovery = _executingDiscovery;
+	}
+
+	private boolean _executingFreshness;
+	private boolean _executingDiscovery;
+
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
 	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
@@ -246,14 +275,16 @@ public class WrapperWSNNode {
 		if (discoveryJob != null) {
 			discoveryJob.cancel(false);
 		}
-		if (!isDead()) {
-			if (seconds >= 0) {
-				try {
-					discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
-				} catch (Exception e) {
-					System.out.print(e.getMessage());
-					e.printStackTrace();
+		if (!is_executingDiscovery()) {
+			if (!isDead()) {
+				if (seconds >= 0) {
+					try {
+						discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
+					} catch (Exception e) {
+						System.out.print(e.getMessage());
+						e.printStackTrace();
 
+					}
 				}
 			}
 		}
@@ -271,14 +302,15 @@ public class WrapperWSNNode {
 			freshnessJob.cancel(false);
 		}
 
-		if (!isDead()) {
-			if (seconds >= 0) {
-				try {
-					freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
-				} catch (Exception e) {
-					System.out.print(e.getMessage());
-					e.printStackTrace();
-
+		if (!is_executingFreshness()) {
+			if (!isDead()) {
+				if (seconds >= 0) {
+					try {
+						freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
+					} catch (Exception e) {
+						System.out.print(e.getMessage());
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -297,14 +329,16 @@ public class WrapperWSNNode {
 			forcePingJob.cancel(false);
 		}
 
-		if (!isDead()) {
-			if (seconds >= 0) {
-				try {
-					forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
-				} catch (Exception e) {
-					System.out.print(e.getMessage());
-					e.printStackTrace();
+		if (!is_executingForcePing()) {
+			if (!isDead()) {
+				if (seconds >= 0) {
+					try {
+						forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
+					} catch (Exception e) {
+						System.out.print(e.getMessage());
+						e.printStackTrace();
 
+					}
 				}
 			}
 		}

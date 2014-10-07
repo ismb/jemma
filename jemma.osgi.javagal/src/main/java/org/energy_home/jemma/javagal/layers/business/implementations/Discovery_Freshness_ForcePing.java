@@ -79,29 +79,36 @@ public class Discovery_Freshness_ForcePing {
 	 * Lqi_Response
 	 */
 	public void startLqi(Address node, TypeFunction function, short startIndex) {
+		WrapperWSNNode __currentNodeWrapper = null;
+		int _indexParent = -1;
+		_indexParent = getGal().existIntoNetworkCache(node);
+		if (_indexParent != -1) {
+			__currentNodeWrapper = getGal().getNetworkcache().get(_indexParent);
+		} else
+			return;
+
+		String functionName = null;
+		if (function == TypeFunction.DISCOVERY) {
+			__currentNodeWrapper.set_executingDiscovery(true);
+			functionName = "Discovery";
+		} else if (function == TypeFunction.FRESHNESS) {
+			__currentNodeWrapper.set_executingFreshness(true);
+			functionName = "Freshness";
+		} else if (function == TypeFunction.FORCEPING) {
+			__currentNodeWrapper.set_executingForcePing(true);
+
+			functionName = "ForcePing";
+		}
+
 		if (getGal().getDataLayer().getDestroy())
 			return;
 
 		Mgmt_LQI_rsp _Lqi = null;
-		String functionName = null;
-		WrapperWSNNode __currentNodeWrapper = null;
-		int _indexParent = -1;
 
 		if (getGal().getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 			try {
-				if (function == TypeFunction.DISCOVERY)
-					functionName = "Discovery";
-				else if (function == TypeFunction.FRESHNESS)
-					functionName = "Freshness";
-				else if (function == TypeFunction.FORCEPING)
-					functionName = "ForcePing";
 
 				System.out.println("\n\rExecuting LqiReq Node:" + String.format("%04X", node.getNetworkAddress()) + " Function:" + functionName + " StartIndex:" + startIndex + "\n\r");
-				_indexParent = getGal().existIntoNetworkCache(node);
-				if (_indexParent != -1) {
-					__currentNodeWrapper = getGal().getNetworkcache().get(_indexParent);
-				} else
-					return;
 
 				if (function == TypeFunction.FORCEPING) {
 					if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
@@ -152,16 +159,22 @@ public class Discovery_Freshness_ForcePing {
 									LOG.warn("patch that correct a 4-noks bug - 07-12-2011");
 								}
 								if (function == TypeFunction.FRESHNESS)
-									if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
-										__currentNodeWrapper.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+									if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
+										if (!__currentNodeWrapper.isDead()) {
+											__currentNodeWrapper.set_executingFreshness(false);
+											__currentNodeWrapper.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+										}
+									}
 								if (function == TypeFunction.FORCEPING)
-									if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
-										__currentNodeWrapper.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
-
+									if (getGal().getPropertiesManager().getForcePingTimeout() > 0) {
+										if (!__currentNodeWrapper.isDead()) {
+											__currentNodeWrapper.set_executingForcePing(false);
+											__currentNodeWrapper.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
+										}
+									}
 								if (getGal().getPropertiesManager().getDebugEnabled()) {
 									LOG.info(functionName + " completed for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 								}
-
 								return;
 							} else {
 								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && __currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList != null) {
@@ -192,7 +205,7 @@ public class Discovery_Freshness_ForcePing {
 									if (getGal().getPropertiesManager().getDebugEnabled()) {
 										LOG.info("Executing Thread -- LqiReq Node:" + String.format("%04X", node.getNetworkAddress()) + " StartIndex:" + _indexLqi);
 									}
-									startLqi(SerializationUtils.clone(node), function, _indexLqi);
+									startLqi(node, function, _indexLqi);
 									return;
 								}
 							};
@@ -203,10 +216,13 @@ public class Discovery_Freshness_ForcePing {
 						} else {
 							if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && __currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList != null) {
 								if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
-									if (startIndex == 0x00) {
-										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
+									synchronized (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList) {
+										if (startIndex == 0x00) {
+
+											__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
+										}
+										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
 									}
-									__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
 								} else
 									__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
 							} else
@@ -214,13 +230,22 @@ public class Discovery_Freshness_ForcePing {
 
 							if (function == TypeFunction.FRESHNESS)
 								if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
-									if (!__currentNodeWrapper.isDead())
+									if (!__currentNodeWrapper.isDead()) {
+										__currentNodeWrapper.set_executingFreshness(false);
 										__currentNodeWrapper.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+									}
 							if (function == TypeFunction.FORCEPING)
 								if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
-									if (!__currentNodeWrapper.isDead())
-										__currentNodeWrapper.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
+									if (!__currentNodeWrapper.isDead()) {
+										__currentNodeWrapper.set_executingForcePing(false);
 
+										__currentNodeWrapper.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
+									}
+							if (function == TypeFunction.DISCOVERY) {
+								if (!__currentNodeWrapper.isDead()) {
+								}
+								__currentNodeWrapper.set_executingDiscovery(false);
+							}
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
 								LOG.info(functionName + " completed for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 							}
@@ -236,6 +261,8 @@ public class Discovery_Freshness_ForcePing {
 							_s.setMessage("Successful - " + functionName + " Algorithm");
 							if (getGal().getPropertiesManager().getDebugEnabled())
 								LOG.info("Starting nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+							System.out.println("\n\rNodeDiscovered From LQI:" + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
+
 							getGal().get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
 							if (getGal().getPropertiesManager().getDebugEnabled())
 								LOG.info("Started nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
@@ -327,8 +354,7 @@ public class Discovery_Freshness_ForcePing {
 						Status _s = new Status();
 						_s.setCode((short) 0x00);
 						_s.setMessage("Successful - " + funcionName + " Algorithm");
-						System.out.println("\n\rNodeDiscovered From SetGatewayStatus:" + String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress())  + "\n\r");
-
+						System.out.println("\n\rNodeDiscovered From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + "\n\r");
 						getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
 						/* Saving the Panid in order to leave the Philips light */
 						getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
@@ -416,12 +442,16 @@ public class Discovery_Freshness_ForcePing {
 				}
 			} else {
 				synchronized (__currentNodeWrapper) {
-					if (function == TypeFunction.DISCOVERY)
+					if (function == TypeFunction.DISCOVERY) {
+						__currentNodeWrapper.set_executingDiscovery(false);
 						__currentNodeWrapper.setTimerDiscovery(TimeDiscoveryErrorSeconds);
-					else if (function == TypeFunction.FRESHNESS)
+					} else if (function == TypeFunction.FRESHNESS) {
+						__currentNodeWrapper.set_executingFreshness(false);
 						__currentNodeWrapper.setTimerFreshness(TimeFreshnessErrorSeconds);
-					else if (function == TypeFunction.FORCEPING)
+					} else if (function == TypeFunction.FORCEPING) {
+						__currentNodeWrapper.set_executingForcePing(false);
 						__currentNodeWrapper.setTimerForcePing(TimeForcePingErrorSeconds);
+					}
 				}
 			}
 		}

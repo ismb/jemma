@@ -67,6 +67,8 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.SignalStateResponse;
 import org.energy_home.jemma.ah.cluster.zigbee.general.BasicClient;
+import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyClient;
+import org.energy_home.jemma.ah.cluster.zigbee.general.IdentifyServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlClient;
 import org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer;
 import org.energy_home.jemma.ah.cluster.zigbee.general.OnOffClient;
@@ -262,7 +264,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		// FIXME config aspects of this bundle to be checked.
 
 		greenathomeEndPoint = (EndPoint) addEndPoint(END_POINT_TYPE);
-
+		
 		greenathomeEndPoint.registerCluster(ConfigClient.class.getName());
 		greenathomeEndPoint.registerCluster(ApplianceControlClient.class.getName(), this);
 		greenathomeEndPoint.registerCluster(OnOffClient.class.getName());

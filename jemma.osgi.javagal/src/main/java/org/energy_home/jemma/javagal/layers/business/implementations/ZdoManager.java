@@ -179,6 +179,8 @@ public class ZdoManager /* implements APSMessageListener */{
 
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
+					System.out.println("\n\rNodeDiscovered From ZDP Device_announcement:" + String.format("%04X", _Node.get_node().getAddress().getNetworkAddress()) + "\n\r");
+					
 					try {
 						getGal().get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
 					} catch (Exception e) {
