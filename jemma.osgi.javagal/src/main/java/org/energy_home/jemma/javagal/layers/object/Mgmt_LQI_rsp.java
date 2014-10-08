@@ -55,6 +55,10 @@ public class Mgmt_LQI_rsp {
 					NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
 				}
 			}
+			else
+			{
+				NeighborTableList = new ArrayList<NeighborTableLis_Record>();	
+			}
 		} else {
 			LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status + "\n\r");
 		}
