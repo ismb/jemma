@@ -278,6 +278,12 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											var val = 50;
 										}
 										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+									} else if ((elettrodom["map"]["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elettrodom["map"]["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)){
+										//Analizzo la lockdoor (per adesso stesso codice di uno smart plug)
+										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
+											var val = 50;
+										}
+										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
 									} else {
 										//Analizzo gli altri elettrodomestici
 										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
@@ -322,7 +328,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										if(Elettrodom["connessione"]==2){
 											Elettrodom["stato"]=1;
 											Elettrodom["temperature"]=elemento["temperature"]
-											Elettrodom["humidity"]=elemento["humidity"]
+											Elettrodom["humidity"]=elemento["humidity"] 
 										}
 									} else if ((elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)) {  //LockDoor
 										Elettrodom["type"] = elemento["type"];
@@ -330,15 +336,41 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											val = Elettrodom["lockState"] = Elettrodom["device_value"] = elemento["device_value"];
 											if (val == 2){
 												Elettrodom["icon"] = "lockdoor_acceso.png";
-												Elettrodom["stato"]=1; //Forzo
-											} else {
+												Elettrodom["stato"] = 2; //Forzo
+											} else if (val == 2){
 												Elettrodom["icon"] = "lockdoor_spento.png";
-												Elettrodom["stato"]=0; //Forzo
+												Elettrodom["stato"] = 1; //Forzo
+											} else {
+												Elettrodom["icon"] = "lockdoor_acceso.png";
+												Elettrodom["stato"] = 0; //Forzo
 											}
 										} else {
 											Elettrodom["icon"] = "lockdoor_disconnesso.png";
 											Elettrodom["stato"]=0; //Forzo
 										}
+										elemento["icon"] = "lockdoor.png"; //Forzo x ora
+									} else if ((elemento["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elemento["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)) {  //WindowCovering
+										Elettrodom["type"] = elemento["type"];
+										if(Elettrodom["connessione"] == 2){
+											val = Elettrodom["WindowState"] = Elettrodom["device_value"] = elemento["device_value"];
+											if ((val > 0) && (val < 65535)){
+												Elettrodom["icon"] = "windowc_acceso.png";
+												Elettrodom["stato"] = 8; //Forzo
+											} else if (val == 65535){
+												Elettrodom["icon"] = "windowc_aperta.png";
+												Elettrodom["stato"] = 6; //Forzo
+											} else if (val == 0){
+												Elettrodom["icon"] = "windowc_aperta.png";
+												Elettrodom["stato"] = 7; //Forzo
+											} else {
+												Elettrodom["icon"] = "windowc_disconnesso.png";
+												Elettrodom["stato"] = 7; //Forzo
+											}
+										} else {
+											Elettrodom["icon"] = "windowc_disconnesso.png";
+											Elettrodom["stato"] = 0; //Forzo
+										}
+										elemento["icon"] = "windowc.png"; //Forzo x ora
 									} else {
 										Elettrodom["type"] = 'smartplug';
 									}
@@ -572,8 +604,11 @@ Elettrodomestici.refreshDevices=function(){
 			var stato="--";
 			var class_stato="NONPRESENTE"
 			if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
-				if (Elettrodomestici.listaElettrodomestici[i].stato==1){
+				if (Elettrodomestici.listaElettrodomestici[i].stato == 1){
 					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){
+						stato="OPEN";
+						class_stato="ON";
+					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
 						stato="OPEN";
 						class_stato="ON";
 					} else {
@@ -581,10 +616,40 @@ Elettrodomestici.refreshDevices=function(){
 						class_stato="ON";
 					}
 				}
-				else if (Elettrodomestici.listaElettrodomestici[i].stato==0){
+				else if (Elettrodomestici.listaElettrodomestici[i].stato == 0){
 					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){
 						stato="CLOSE";
 						class_stato="ON";
+					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
+						stato="CLOSE";
+						class_stato="ON";
+					} else if (Elettrodomestici.listaElettrodomestici[i].type == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
+						stato="ON";
+						class_stato="ON";
+					} else {
+						stato="OFF";
+						class_stato="OFF";
+					}
+				} else if (Elettrodomestici.listaElettrodomestici[i].stato > 1){
+					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){
+						if (Elettrodomestici.listaElettrodomestici[i].stato == 2){
+							stato="OPEN";
+							class_stato="ON";
+						} else if (Elettrodomestici.listaElettrodomestici[i].stato == 1){
+							stato="CLOSE";
+							class_stato="ON";
+						} else {
+							stato="OPEN";
+							class_stato="ON";
+						}
+					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
+						if (Elettrodomestici.listaElettrodomestici[i].stato == 7){
+							stato="CLOSE";
+							class_stato="ON";
+						} else {
+							stato="OPEN";
+							class_stato="ON";
+						}
 					} else {
 						stato="OFF";
 						class_stato="OFF";
@@ -596,9 +661,11 @@ Elettrodomestici.refreshDevices=function(){
 			var consumo = Elettrodomestici.listaElettrodomestici[i].consumo;
 			if (consumo != "n.a.") {
 				consumo = Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
-			} else if (Elettrodomestici.listaElettrodomestici[i].categoria == "40") {
+			}/* else if (Elettrodomestici.listaElettrodomestici[i].categoria == "40") {
 				$("#plug").hide();
-			} 
+			} else if (Elettrodomestici.listaElettrodomestici[i].categoria == "44") {
+				$("#plug").hide();
+			} */
 			
 			$("#device_"+i+ " .StatoElettrodomestico .consumo").text(consumo);
 			$("#device_"+i+ " .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
@@ -756,14 +823,14 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 			var lockStateElettr;
 			if (forza_stato != null) {
 				lockStateElettr = forza_stato;
-				if (lockStateElettr == 6) {
+				if (lockStateElettr == 2) {
 					estensioneIcona = "_acceso.png";
 				} else {
 					estensioneIcona = "_spento.png";
 				}
 			} else {
 				lockStateElettr = elettrodomestico["lockState"];
-				if (lockStateElettr == 6) {
+				if (lockStateElettr == 2) {
 					estensioneIcona = "_acceso.png";
 				} else {
 					estensioneIcona = "_spento.png";
@@ -774,17 +841,23 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 			var wCoveringStateElettr;
 			if (forza_stato != null) {
 				wCoveringStateElettr = forza_stato;
-				if (wCoveringStateElettr == 2) {
-					estensioneIcona = "_acceso.png";
+				if (wCoveringStateElettr == 6) {
+					estensioneIcona = "_aperta.png";
+				} else if (wCoveringStateElettr == 7) {
+					estensioneIcona = "_chiusa.png";
 				} else {
-					estensioneIcona = "_spento.png";
+					estensioneIcona = "_acceso.png";
 				}
 			} else {
-				wCoveringStateElettr = elettrodomestico["lockState"];
-				if (wCoveringStateElettr == 2) {
+				wCoveringStateElettr = elettrodomestico["WindowState"];
+				if ((wCoveringStateElettr > 0) && (wCoveringStateElettr < 65535)){
 					estensioneIcona = "_acceso.png";
+				} else if (wCoveringStateElettr == 65535){
+					estensioneIcona = "_aperta.png";
+				} else if (wCoveringStateElettr == 0){
+					estensioneIcona = "_aperta.png";
 				} else {
-					estensioneIcona = "_spento.png";
+					estensioneIcona = "_disconnesso.png";
 				}
 			}
 			
@@ -816,11 +889,45 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 			}
 		} else if (categoriaElettr == 40) {
 			//DoorLock
-			var lockStateElettr = elettrodomestico["lockState"];
-			if (lockStateElettr == 2) {
-				estensioneIcona = "_acceso.png";
+			var lockStateElettr;
+			if (forza_stato != null) {
+				lockStateElettr = forza_stato;
+				if (lockStateElettr == 1) {
+					estensioneIcona = "_acceso.png";
+				} else {
+					estensioneIcona = "_spento.png";
+				}
 			} else {
-				estensioneIcona = "_spento.png";
+				lockStateElettr = elettrodomestico["lockState"];
+				if (lockStateElettr == 2) {
+					estensioneIcona = "_acceso.png";
+				} else {
+					estensioneIcona = "_spento.png";
+				}
+			}
+		} else if (categoriaElettr == 44) {
+			//WindowCovering
+			var wCoveringStateElettr;
+			if (forza_stato != null) {
+				wCoveringStateElettr = forza_stato;
+				if (wCoveringStateElettr == 6) {
+					estensioneIcona = "_aperta.png";
+				} else if (wCoveringStateElettr == 7) {
+					estensioneIcona = "_chiusa.png";
+				} else {
+					estensioneIcona = "_acceso.png";
+				}
+			} else {
+				wCoveringStateElettr = elettrodomestico["WindowState"];
+				if ((wCoveringStateElettr > 0) && (wCoveringStateElettr < 65535)){
+					estensioneIcona = "_acceso.png";
+				} else if (wCoveringStateElettr == 65535){
+					estensioneIcona = "_aperta.png";
+				} else if (wCoveringStateElettr == 0){
+					estensioneIcona = "_aperta.png";
+				} else {
+					estensioneIcona = "_disconnesso.png";
+				}
 			}
 		} else {
 			estensioneIcona = "_spento.png";

@@ -1061,7 +1061,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		OnOffServer onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName());
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
 		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
-		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 		if (onOffServer != null) {
 			if (state == On) {
@@ -1130,6 +1129,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	static final int UpOpen = 6;
 	static final int DownClose = 7;
 	static final int OpenPercentage = 8;
+	static final int UnknownWC = 9;
 
 	/*
 	 * (non-Javadoc)
@@ -1170,20 +1170,25 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 			if (windowCoveringServer != null) {
-				if (state == CurrentPositionLiftPercentage) {
-					return windowCoveringServer.getCurrentPositionLiftPercentage(context);
-				} else if (state == InfoInstalledOpenLimit) {
-					return windowCoveringServer.getInstalledOpenLimit(context);
-				} else if (state == InfoInstalledClosedLimit) {
-					return windowCoveringServer.getInstalledClosedLimit(context);
-				} else if (state == InfoInstalledOpenLimitTilt) {
-					return windowCoveringServer.getInstalledOpenLimitTilt(context);
-				} else if (state == InfoInstalledClosedLimit) {
-					return windowCoveringServer.getInstalledClosedLimitTilt(context);
-				} else
-					return Unknown;
+				try {
+					if (state == CurrentPositionLiftPercentage) {
+						return windowCoveringServer.getCurrentPositionLiftPercentage(context);
+					} else if (state == InfoInstalledOpenLimit) {
+						return windowCoveringServer.getInstalledOpenLimit(context);
+					} else if (state == InfoInstalledClosedLimit) {
+						return windowCoveringServer.getInstalledClosedLimit(context);
+					} else if (state == InfoInstalledOpenLimitTilt) {
+						return windowCoveringServer.getInstalledOpenLimitTilt(context);
+					} else if (state == InfoInstalledClosedLimit) {
+						return windowCoveringServer.getInstalledClosedLimitTilt(context);
+					} else
+						return UnknownWC;
+				} catch (Exception e) {
+					LOG.error("execCommandExecution exception " + e.getMessage(), e);
+					return UnknownWC;
+				}
 			} else
-				return Unknown;
+				return UnknownWC;
 		}
 	}
 
@@ -2121,54 +2126,32 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return props;
 	}
 
-	private void loadPropFile(){
+	private void loadPropFile() throws IOException{
 
-	    String _path = "noserver.properties";
-		this.props = new Properties();
-	    
-		// Howto get a bundle context 
-	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
-	    /*BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
-	         .getBundle().getBundleContext();
-	    URL _url = bc.getBundle().getResource(_path);
+	    //String _path = "noserver.properties";
+	    String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
 		
-	    InputStream in = null;*/
-		try {
-			/*in = _url.openStream();*/
+		this.props = new Properties();
 
-			InputStream stream = new FileInputStream(_path);
-			this.props.load(stream);
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		InputStream stream = new FileInputStream(_path);
+		this.props.load(stream);
+		stream.close();
 	}
 
 	private void storePropFile() throws IOException{
 
-	    String _path = "noserver.properties";
+	    //String _path = "noserver.properties";
+	    String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
 	    OutputStream out = null;
-	    
-		try {
-			
-			out = new FileOutputStream(_path);
-			this.props.store(out, null);
-			out.flush();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
 
-		} finally {
-			if (out != null)
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-		}
+		File f = new File(_path);
+		if (!f.exists())
+			f.createNewFile();
+		out = new FileOutputStream(f);
+		this.props.store(out, null);
+		out.flush();
+		if (out != null)
+			out.close();
 	}
 
 	/*private void storePropFile() throws IOException{
@@ -3478,35 +3461,24 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return date;
 	}
 	
-	public List<String> getPropConfiguration(String lblProps){
+	public List<String> getPropConfiguration(String lblProps) throws IOException{
 		
 		List<String> items = null;
 		
-		if (this.props == null){ 
-			loadPropFile();
-		}
-		
-		/*if ((lblProps.equals("EnergiaProdottaGiornalieroSimul")) || 
-				(lblProps.equals("EnergiaConsumataGiornalieroSimul")) || 
-				(lblProps.equals("PercIAC")) || 
-				(lblProps.equals("PercIAC2")) || 
-				(lblProps.equals("ActualDate")) || 
-				(lblProps.equals("ConsumoOdiernoSimul")) || 
-				(lblProps.equals("ConsumoMedio")) || 
-				(lblProps.equals("ConsumoPrevisto")) || 
-				(lblProps.equals("ProduzioneAttuale")) || 
-				(lblProps.equals("Forecast")) || 
-				(lblProps.equals("ConsumoMedioSettimanale")) || 
-				(lblProps.equals("ProdottaMedio")) || 
-				(lblProps.equals("ProdottaMedioSettimanale")) || 
-				(lblProps.equals("ConsumoAttuale"))){*/
+		try {
+			if (this.props == null){ 
+				loadPropFile();
+			}
 			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
-		/*}*/
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 		
-		//return null;
 	}
 	
-	public List<String> getPropStoricoConfiguration(String device, String tipoDato, String periodo){
+	public List<String> getPropStoricoConfiguration(String device, String tipoDato, String periodo) throws IOException{
 		/* periodo = GIORNO : 1, SETTIMANA : 2, MESE : 3, ANNO : 4 */
 		/* tipoDato = CONSUMO : "ah.eh.esp.Energy", COSTO : "ah.eh.esp.EnergyCost", PRODUZIONE : "ah.eh.esp.ProducedEnergy", */
 		/* device = SMARTINFO : 0 || null, ALTRI : 1..infinito */
@@ -3514,40 +3486,46 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		//List<String> items = null;
 		String lblProps = null;
 		
-		if (this.props == null){
-			loadPropFile();
+		try {
+			if (this.props == null){
+				loadPropFile();
+			}
+			
+			if ((device == null) || (device.equals("0"))){
+				//SmartInfo
+				lblProps = "SI";
+			} else {
+				//Device
+				lblProps = "DEV";
+			}
+			
+			if (tipoDato.equals("ah.eh.esp.Energy")){
+				lblProps += "Energy";
+			} else if (tipoDato.equals("ah.eh.esp.EnergyCost")){
+				lblProps += "Cost";
+			} else {
+				lblProps += "Production";
+			}
+			
+			if (periodo.equals("1")){
+				lblProps += "DAY";
+			} else if (periodo.equals("2")){
+				lblProps += "WEEK";
+			} else if (periodo.equals("3")){
+				lblProps += "MONTH";
+			} else {
+				lblProps += "YEAR";
+			}
+			
+			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		if ((device == null) || (device.equals("0"))){
-			//SmartInfo
-			lblProps = "SI";
-		} else {
-			//Device
-			lblProps = "DEV";
-		}
-		
-		if (tipoDato.equals("ah.eh.esp.Energy")){
-			lblProps += "Energy";
-		} else if (tipoDato.equals("ah.eh.esp.EnergyCost")){
-			lblProps += "Cost";
-		} else {
-			lblProps += "Production";
-		}
-		
-		if (periodo.equals("1")){
-			lblProps += "DAY";
-		} else if (periodo.equals("2")){
-			lblProps += "WEEK";
-		} else if (periodo.equals("3")){
-			lblProps += "MONTH";
-		} else {
-			lblProps += "YEAR";
-		}
-		
-		return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+		return null;
 	}
 	
-	public Hashtable getPropConfigurationHM(String lblProps){
+	public Hashtable getPropConfigurationHM(String lblProps) throws IOException{
 		
 		Hashtable props = new Hashtable();
 		String[] lbl = null;
@@ -3555,28 +3533,34 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		List<Integer> series = new ArrayList<Integer>();
 		int idx, idxC;
 		
-		if (this.props == null){ 
-			loadPropFile();
+		try {
+			if (this.props == null){ 
+				loadPropFile();
+			}
+			if ((lblProps.equals("SuddivisioneConsumi"))){
+				
+				idx = Integer.parseInt(this.props.getProperty("SuddivisioneConsumi"));
+				for (idxC = 0; idxC < idx; idxC++){
+					lbl = this.props.getProperty("SuddivisioneConsumi"+idxC+"_el").split("\\s*,\\s*");
+					stringToParseInt = this.props.getProperty("SuddivisioneConsumi"+idxC+"_val").split("\\s*,\\s*");
+					series = new ArrayList<Integer>();
+					for(String s: stringToParseInt){
+						Integer tmpValue = Integer.parseInt(s);
+						series.add(tmpValue.intValue());
+					}
+					props.put(lbl[0], series);
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		if ((lblProps.equals("SuddivisioneConsumi"))){
-			
-			idx = Integer.parseInt(this.props.getProperty("SuddivisioneConsumi"));
-			for (idxC = 0; idxC < idx; idxC++){
-				lbl = this.props.getProperty("SuddivisioneConsumi"+idxC+"_el").split("\\s*,\\s*");
-				stringToParseInt = this.props.getProperty("SuddivisioneConsumi"+idxC+"_val").split("\\s*,\\s*");
-				series = new ArrayList<Integer>();
-				for(String s: stringToParseInt){
-					Integer tmpValue = Integer.parseInt(s);
-					series.add(tmpValue.intValue());
-				}
-				props.put(lbl[0], series);
-			}
-		}
+		
 		return props;
 	}
 	
-	public Hashtable getAllPropConfiguration(){
+	public Hashtable getAllPropConfiguration() throws IOException{
 		
 		Hashtable props = new Hashtable();
 		String[] lbls = {"ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", 
@@ -3586,16 +3570,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
 		int idx, idxC;
 		
-		if (this.props == null){ 
-			loadPropFile();
-		}
-		
-		for (String lbl : lbls){ 
-			if ((lbl.equals("SuddivisioneConsumi"))){
-				props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
-			} else {
-				props.put(lbl, getPropConfiguration(lbl));
+		try {
+			if (this.props == null){ 
+				loadPropFile();
 			}
+			
+			for (String lbl : lbls){ 
+				if ((lbl.equals("SuddivisioneConsumi"))){
+					props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
+				} else {
+					props.put(lbl, getPropConfiguration(lbl));
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return props;
@@ -3611,18 +3600,23 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
 		int idx, idxC;
 		
-		JSONObject obj = new JSONObject(jsonVar);
+		try {
+			JSONObject obj = new JSONObject(jsonVar);
 		
-		for (String lbl : lbls){ 
-			if ((lbl.equals("SuddivisioneConsumi"))){
-				//props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
-			} else {
-				String JSONProp = obj.getString(lbl);
-				this.props.setProperty(lbl, JSONProp);
+			for (String lbl : lbls){ 
+				if ((lbl.equals("SuddivisioneConsumi"))){
+					//props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
+				} else {
+					String JSONProp = obj.getString(lbl);
+					this.props.setProperty(lbl, JSONProp);
+				}
 			}
+			
+			storePropFile();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		storePropFile();
 		
 		return true;
 		

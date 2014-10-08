@@ -50,9 +50,9 @@ public interface GreenAtHomeApplianceService {
 	//added for demo
 	public Vector getInfosDemo();
 	//added for read prop file for demo
-	public List<String> getPropConfiguration(String lblProps);
-	public Hashtable getPropConfigurationHM(String lblProps);
-	public Hashtable getAllPropConfiguration();
+	public List<String> getPropConfiguration(String lblProps) throws IOException;
+	public Hashtable getPropConfigurationHM(String lblProps) throws IOException;
+	public Hashtable getAllPropConfiguration() throws IOException;
 	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException;
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
