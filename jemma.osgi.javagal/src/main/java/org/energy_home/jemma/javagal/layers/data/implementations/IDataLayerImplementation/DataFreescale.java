@@ -233,10 +233,6 @@ public class DataFreescale implements IDataLayer {
 			if (localCfc == fullrawdata[offset + DataManipulation.START_PAYLOAD_INDEX + payloadLenght]) {
 				final byte[] toByteArray = new byte[pdulength - 1];
 				System.arraycopy(fullrawdata, offset + 1, toByteArray, 0, pdulength - 1);
-				/*
-				 * for (int i = 0; i < toByteArray.length; i++) toByteArray[i] =
-				 * (byte) (toByteArray[i] & 0xFF);
-				 */
 				final ByteArrayObject toProcess = new ByteArrayObject(toByteArray, toByteArray.length);
 				try {
 					executor.execute(new Runnable() {
@@ -1270,7 +1266,7 @@ public class DataFreescale implements IDataLayer {
 	private void zdpActiveEndPointResponse(ByteArrayObject message) {
 		if (getGal().getPropertiesManager().getDebugEnabled())
 			LOG.info("Extracted ZDP-Active_EP_rsp.response: " + message.ToHexString());
-		short Status = message.getArray()[3];
+		short Status = (short)(message.getArray()[3] & 0xFF);
 		Address _add = new Address();
 		_add.setNetworkAddress(DataManipulation.toIntFromShort(message.getArray()[5], message.getArray()[4]));
 		String Key = String.format("%04X", _add.getNetworkAddress());
@@ -1285,9 +1281,9 @@ public class DataFreescale implements IDataLayer {
 			int _EPCount = message.getArray()[6];
 
 			for (int i = 0; i < _EPCount; i++) {
-				_toRes.add((short) message.getArray()[7 + i]);
+				_toRes.add((short) (message.getArray()[7 + i] & 0xFF));
 				ActiveEndpoints _aep = new ActiveEndpoints();
-				_aep.setEndPoint(message.getArray()[7 + i]);
+				_aep.setEndPoint((short)(message.getArray()[7 + i] & 0xFF));
 				_node.getActiveEndpoints().add(_aep);
 
 			}
@@ -1570,7 +1566,7 @@ public class DataFreescale implements IDataLayer {
 						short length = message.getArray()[4];
 						for (int i = 0; i < length; i++) {
 							ActiveEndpoints _ep = new ActiveEndpoints();
-							_ep.setEndPoint(message.getArray()[5 + i]);
+							_ep.setEndPoint((short)(message.getArray()[5 + i] & 0xFF));
 							_res.getActiveEndpoints().add(_ep);
 						}
 					}
@@ -1596,7 +1592,7 @@ public class DataFreescale implements IDataLayer {
 		/* Address + EndPoint */
 		Address _add = new Address();
 		_add.setNetworkAddress(DataManipulation.toIntFromShort(message.getArray()[5], message.getArray()[4]));
-		byte EndPoint = message.getArray()[7];
+		short EndPoint = (short)(message.getArray()[7] & 0xFF);
 		String Key = String.format("%04X", _add.getNetworkAddress()) + String.format("%02X", EndPoint);
 		// Found ZDP-SimpleDescriptor.Response. Remove the lock
 		synchronized (getListLocker()) {
@@ -2475,8 +2471,8 @@ public class DataFreescale implements IDataLayer {
 
 	public ByteArrayObject Set_SequenceStart_And_FSC(ByteArrayObject x, short commandCode) {
 		byte size = (byte) x.getCount(false);
-		byte opgroup = (byte) ((commandCode >> 8) & 0xff);
-		byte opcode = (byte) (commandCode & 0xff);
+		byte opgroup = (byte) ((commandCode >> 8) & 0xFF);
+		byte opcode = (byte) (commandCode & 0xFF);
 		x.addOPGroup(opgroup);
 		x.addOPCode(opcode);
 		x.addLength(size);
