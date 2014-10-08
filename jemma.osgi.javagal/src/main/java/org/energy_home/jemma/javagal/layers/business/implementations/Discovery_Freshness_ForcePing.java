@@ -366,9 +366,21 @@ public class Discovery_Freshness_ForcePing {
 					}
 
 				} else {
-
-					if (getGal().getPropertiesManager().getDebugEnabled()) {
-						LOG.info("Found an existing Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " into NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+					/* If Sleepy EndDevice */
+					WrapperWSNNode _existingnode = gal.getNetworkcache().get(indexChildOnCache);
+					if (_existingnode.isSleepy()) {
+						Status _s = new Status();
+						_s.setCode((short) 0x00);
+						_s.setMessage("Successful - " + funcionName + " Algorithm");
+						System.out.println("\n\rNodeDiscovered Sleepy From LQI__manageChildNode:" + String.format("%04X", _existingnode.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()) + "\n\r");
+						getGal().get_gatewayEventManager().nodeDiscovered(_s, _existingnode.get_node());
+						if (getGal().getPropertiesManager().getDebugEnabled()) {
+							LOG.info(funcionName + ": Found Existing Sleepy Node:" + String.format("%04X", _existingnode.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+						}
+					} else {
+						if (getGal().getPropertiesManager().getDebugEnabled()) {
+							LOG.info("Found an existing Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " into NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+						}
 					}
 				}
 			}
