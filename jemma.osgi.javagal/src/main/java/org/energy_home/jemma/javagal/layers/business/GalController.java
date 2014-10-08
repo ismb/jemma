@@ -2130,6 +2130,8 @@ public class GalController {
 
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
+					System.out.println("\n\rNodeDiscovered From SetGatewayStatus:" + String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
+					
 					try {
 						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
 					} catch (Exception e) {
