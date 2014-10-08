@@ -178,14 +178,16 @@ public class Discovery_Freshness_ForcePing {
 								return;
 							} else {
 								if (__currentNodeWrapper.get_Mgmt_LQI_rsp() != null && __currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList != null) {
-
 									if (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.size() > 0) {
-										if (startIndex == 0x00) {
-											__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
+										synchronized (__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList) {
+											if (startIndex == 0x00) {
+												__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.clear();
+											}
+											__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
 										}
-										__currentNodeWrapper.get_Mgmt_LQI_rsp().NeighborTableList.addAll(_Lqi.NeighborTableList);
 									} else
 										__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
+
 								} else
 									__currentNodeWrapper.set_Mgmt_LQI_rsp(_Lqi);
 							}
