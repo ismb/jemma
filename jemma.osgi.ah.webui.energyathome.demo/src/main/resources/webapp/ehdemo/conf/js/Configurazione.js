@@ -787,11 +787,11 @@ Configurazione.VisElettrodomestici = function() {
 						val = 'close';
 						imgDisp = "lockdoor_spento.png";
 					}
-				} else if (category_value == "41") {
+				} else if (category_value == "44") {
 					val = device_value.value.value;
 					if (val > 0){
 						val = 'open';
-						imgDisp = "windowc_acceso.png";
+						imgDisp = "windowc_aperta.png";
 					} else {
 						val = 'close';
 						imgDisp = "windowc_spento.png";
@@ -805,7 +805,7 @@ Configurazione.VisElettrodomestici = function() {
 			}
 		}
 		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
-					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "'>"
+					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='height: 75px;width: 43px;'>"
 					+ "		<div id='StatoElettr_" + i + "'></div>"
 					+ "		<div id='NomeElettr_" + i + "' class='NomeElettr' >"
 					+ 			Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_NAME]
