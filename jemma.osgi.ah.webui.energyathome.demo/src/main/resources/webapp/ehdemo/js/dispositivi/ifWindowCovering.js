@@ -35,11 +35,12 @@ ifWindowCovering.init=function(clusters, i){
 	    	} else {
 	        	ifWindowCovering.max = result;
 	    	}
-	    	ifWindowCovering.gestValue();
+	    	ifWindowCovering.max = 255; //65535;
+	    	ifWindowCovering.gestLiftPerc();
 	    }, pid, ifWindowCovering.WINDOWCOVERING_INFOINSTALLEDCLOSEDLIMIT);
     } else {
     	ifWindowCovering.max = 100;
-    	ifWindowCovering.gestValue();
+    	ifWindowCovering.gestLiftPerc();
     }
 }
 
@@ -76,15 +77,6 @@ ifWindowCovering.gestSlider=function(){
         max: ifWindowCovering.max,
         slide: function( event, ui ) {
             
-            if (ui.value == ifWindowCovering.max) {
-                $("#onoff").addClass("ON");
-                $("#onoff").removeClass("OFF");
-                ifWindowCovering.stato = 1;
-            }else if (ui.value == 0 ) {
-                $("#onoff").addClass("OFF");
-                $("#onoff").removeClass("ON");
-                ifWindowCovering.stato = 0;
-            }
             ifWindowCovering.lum=ui.value;
             $('#lum_perc').html(ifWindowCovering.lum+"%");
         },
@@ -94,16 +86,16 @@ ifWindowCovering.gestSlider=function(){
         stop: function(event, ui ){
         	ifWindowCovering.isBusy=false;
             
-            var pid = $("#Interfaccia").data("pid");
+            /*var pid = $("#Interfaccia").data("pid");
             var value = Math.round(ifWindowCovering.lum);
             ifWindowCovering.liftPerc = value;
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
             	ifWindowCovering.stato = 8;
                 if (err == null) {
-                	ifWindowCovering.update(true, true);        
+                	ifWindowCovering.update();        
                 }
                     
-            }, pid, WINDOWCOVERING_OPENPECENTAGE, value);
+            }, pid, ifWindowCovering.WINDOWCOVERING_OPENPECENTAGE, value);*/
         }
     });
     
@@ -111,16 +103,14 @@ ifWindowCovering.gestSlider=function(){
         event.preventDefault();
         if (InterfaceEnergyHome.mode > 0){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
-            	alert("I'm closing");
-            	ifWindowCovering.stato = 8;
+            	ifWindowCovering.stato = 7;
                 ifWindowCovering.liftPerc = 100;
-            	ifWindowCovering.update(true, false);
-            }, pid, WINDOWCOVERING_DOWNCLOSE, null);
+            	ifWindowCovering.update();
+            }, pid, ifWindowCovering.WINDOWCOVERING_DOWNCLOSE, null);
         } else {
-        	alert("I'm closing");
-        	ifWindowCovering.stato = 8;
+        	ifWindowCovering.stato = 7;
             ifWindowCovering.liftPerc = 100;
-        	ifWindowCovering.update(true, false);
+        	ifWindowCovering.update();
         }
     });
     
@@ -128,16 +118,14 @@ ifWindowCovering.gestSlider=function(){
         event.preventDefault();
         if (InterfaceEnergyHome.mode > 0){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
-            	alert("I'm opening");
             	ifWindowCovering.stato = 6;
                 ifWindowCovering.liftPerc = 0;
-            	ifWindowCovering.update(true, false);
-            }, pid, WINDOWCOVERING_UPOPEN, null);
+            	ifWindowCovering.update();
+            }, pid, ifWindowCovering.WINDOWCOVERING_UPOPEN, null);
         } else {
-        	alert("I'm opening");
         	ifWindowCovering.stato = 6;
             ifWindowCovering.liftPerc = 0;
-        	ifWindowCovering.update(true, false);
+        	ifWindowCovering.update();
         }
     });
     
@@ -145,20 +133,18 @@ ifWindowCovering.gestSlider=function(){
         event.preventDefault();
         if (InterfaceEnergyHome.mode > 0){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
-            	alert("I'm stopped");
-            	ifWindowCovering.stato = 7;
+            	ifWindowCovering.stato = 5;
                 ifWindowCovering.liftPerc = null;
-            	ifWindowCovering.update(true, false);
-            }, pid, WINDOWCOVERING_STOPPED, null);
+            	ifWindowCovering.update();
+            }, pid, ifWindowCovering.WINDOWCOVERING_STOPPED, null);
         } else {
-        	alert("I'm stopped");
-        	ifWindowCovering.stato = 7;
+        	ifWindowCovering.stato = 5;
             ifWindowCovering.liftPerc = null;
-        	ifWindowCovering.update(true, false);
+        	ifWindowCovering.update();
         }
     });
     
-    ifWindowCovering.update(true, false);
+    ifWindowCovering.update();
 };
 
 ifWindowCovering.updateIcon=function(){
@@ -184,40 +170,44 @@ ifWindowCovering.updateIcon=function(){
     $("#Interfaccia .icona").addClass(class_stato);
 }
 
-ifWindowCovering.update = function(now, moving){
+ifWindowCovering.update = function(){
     var t = new Date().getTime();
     var i = $("#Interfaccia").data("current_index");
 
     //ifWindowCovering.liftPerc = liftPerc = Elettrodomestici.listaElettrodomestici[i].device_value;
-    if (ifWindowCovering.liftPerc = null){
+    if (ifWindowCovering.liftPerc == null){
     	//E' stato fatto stop, bisogna chiedere il nuovo valore.
     	if (InterfaceEnergyHome.mode > 0){
     	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
     	    	if (err != null){
-    	    		ifWindowCovering.liftPerc = 100;
+    	    		ifWindowCovering.liftPerc = ifWindowCovering.max;
     	    	} else {
-    	        	ifWindowCovering.liftPerc = result;
+    	    		if (result > ifWindowCovering.max){
+    	    			ifWindowCovering.liftPerc = ifWindowCovering.max;
+    	    		} else {
+    	    			ifWindowCovering.liftPerc = result;
+    	    		}
     	    	}
-    	    	ifWindowCovering.gestSlider();
+    	    	ifWindowCovering.gestUpdate();
     	    }, pid, ifWindowCovering.WINDOWCOVERING_CURRENTPOSITIONLIFTPERCENTAGE);
         } else {
-        	ifWindowCovering.liftPerc = 100;
-        	ifWindowCovering.gestUpdate(now, moving);
+        	ifWindowCovering.liftPerc = ifWindowCovering.max;
+        	ifWindowCovering.gestUpdate();
         }
     } else {
-    	ifWindowCovering.gestUpdate(now, moving);
+    	ifWindowCovering.gestUpdate();
     }
 }
 
-ifWindowCovering.gestUpdate = function(now, moving){
+ifWindowCovering.gestUpdate = function(){
 	var liftPerc = "";
 	
-    if (ifWindowCovering.liftPerc == ifWindowCovering.max) {
-    	liftPerc = "total open";
+    if ((ifWindowCovering.liftPerc > 0) && (ifWindowCovering.liftPerc <= ifWindowCovering.max)) {
+    	liftPerc = "OPEN";
     } else if (ifWindowCovering.liftPerc == 0) {
-    	liftPerc = " total close";
+    	liftPerc = "CLOSE";
     } else {
-    	liftPerc = "ajar";
+    	liftPerc = "CLOSE";; //"ajar";
     }
     $("#Interfaccia .StatoElettrodomestico .consumo").text(liftPerc);
     $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
@@ -233,15 +223,15 @@ ifWindowCovering.gestUpdate = function(now, moving){
     var _stato="";
     
     if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
-        if (Elettrodomestici.listaElettrodomestici[i].device_value == ifWindowCovering.max){
-            _stato="OPEN";
+    	if ((ifWindowCovering.liftPerc > 0) && (ifWindowCovering.liftPerc <= ifWindowCovering.max)) {
+            _stato = "OPEN";
             class_stato="OPEN";
-        } else if (Elettrodomestici.listaElettrodomestici[i].device_value == 0){
-            _stato="CLOSE";
-            class_stato="CLOSE";
+    	} else if (ifWindowCovering.liftPerc == 0) {
+            _stato = "CLOSE";
+            class_stato = "CLOSE";
         } else{
-            _stato="OPEN";
-            class_stato="OPEN";
+            _stato = "OPEN";
+            class_stato = "OPEN";
         }
     } else {
         _stato = "NP";
