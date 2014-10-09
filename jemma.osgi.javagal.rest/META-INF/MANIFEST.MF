@@ -5,7 +5,7 @@ Bundle-Name: Java Gal Rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.javagal.rest
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0
+Bundle-Version: 1.1
 Created-By: Apache Maven Bundle Plugin
 Embed-Dependency: org.restlet:org.restlet:2.1.6
 Export-Package: org.energy_home.jemma.javagal.rest;uses:="org.energy_hom
@@ -13,14 +13,14 @@ Export-Package: org.energy_home.jemma.javagal.rest;uses:="org.energy_hom
  mma.javagal.rest.util,org.slf4j,org.restlet.routing,org.energy_home.jem
  ma.javagal.rest.resources,org.restlet,org.energy_home.jemma.zgd.jaxb,or
  g.restlet.data,org.restlet.resource,org.restlet.representation,org.rest
- let.util";version="1.0",org.energy_home.jemma.javagal.rest.resources;us
+ let.util";version="1.1",org.energy_home.jemma.javagal.rest.resources;us
  es:="org.restlet.resource,org.restlet,org.restlet.util,org.energy_home.
  jemma.zgd.jaxb,org.restlet.data,org.energy_home.jemma.javagal.rest,org.
  energy_home.jemma.zgd,org.energy_home.jemma.javagal.rest.util,org.restl
- et.representation";version="1.0",org.energy_home.jemma.javagal.rest.uti
+ et.representation";version="1.1",org.energy_home.jemma.javagal.rest.uti
  l;uses:="org.energy_home.jemma.zgd,org.energy_home.jemma.javagal.rest,o
  rg.slf4j,com.sun.xml.internal.bind.marshaller,javax.xml.transform,javax
- .xml.transform.stream,javax.xml.bind,javax.xml.namespace";version="1.0"
+ .xml.transform.stream,javax.xml.bind,javax.xml.namespace";version="1.1"
 Import-Package: com.sun.xml.internal.bind.marshaller;resolution:=optiona
  l,javax.xml.bind,javax.xml.namespace;version="[1.3,2)",javax.xml.transf
  orm;version="[1.3,2)",javax.xml.transform.stream;version="[1.3,2)",org.
