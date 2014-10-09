@@ -83,13 +83,13 @@ public class WrapperWSNNode {
 	private NodeServices _nodeServices;
 	private NodeDescriptor _nodeDescriptor;
 	private Mgmt_LQI_rsp _Mgmt_LQI_rsp;
-	private long lastDiscovered;
+
 	private GalController gal = null;
 
 	public WrapperWSNNode(GalController _gal, final String networkAdd) {
 		gal = _gal;
 		this._numberOfAttempt = 0;
-		this.lastDiscovered = 0;
+
 		this.dead = false;
 		freshnessTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
 			@Override
@@ -115,20 +115,48 @@ public class WrapperWSNNode {
 
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof WrapperWSNNode) {
+			WrapperWSNNode node = (WrapperWSNNode) o;
+
+			if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getNetworkAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getNetworkAddress() != null) {
+				if (node.get_node().getAddress().getNetworkAddress().intValue() == this.get_node().getAddress().getNetworkAddress().intValue())
+					return true;
+				else
+					return false;
+			} else if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getIeeeAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getIeeeAddress() != null) {
+				if (node.get_node().getAddress().getIeeeAddress().longValue() == this.get_node().getAddress().getIeeeAddress().longValue())
+					return true;
+				else
+					return false;
+			} else {
+				try {
+					throw new Exception("Error in WrapperNode EQUALS");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}
+		} else {
+			try {
+				throw new Exception("Error in WrapperNode EQUALS");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+	}
+
 	public synchronized NodeDescriptor getNodeDescriptor() {
 		return _nodeDescriptor;
 	}
 
 	public synchronized void setNodeDescriptor(NodeDescriptor nodeDescriptor) {
 		this._nodeDescriptor = nodeDescriptor;
-	}
-
-	public synchronized long getLastDiscovered() {
-		return lastDiscovered;
-	}
-
-	public synchronized void setLastDiscovered(long lastDiscovered) {
-		this.lastDiscovered = lastDiscovered;
 	}
 
 	/**

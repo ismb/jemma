@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.configurator</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 	<name>A@H configurator</name>
 
 	<parent>

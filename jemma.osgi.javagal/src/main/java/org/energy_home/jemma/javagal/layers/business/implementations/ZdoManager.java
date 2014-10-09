@@ -104,11 +104,13 @@ public class ZdoManager /* implements APSMessageListener */{
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
 			_nodeRemoved.setAddress(_add);
+			WrapperWSNNode wrapNode = new WrapperWSNNode(getGal(), String.format("%04X", _add.getNetworkAddress()));
+			wrapNode.set_node(_nodeRemoved);
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
-				int _index = -1;
-					if ((_index = getGal().existIntoNetworkCache(_add)) != -1) {
-						getGal().getNetworkcache().remove(_index);
+				
+					if ((wrapNode = getGal().existIntoNetworkCache(wrapNode)) != null) {
+						getGal().getNetworkcache().remove(wrapNode);
 						Status _s = new Status();
 						_s.setCode((short) 0x00);
 						_s.setMessage("Successful - Device Removed by Leave Response");
@@ -157,9 +159,9 @@ public class ZdoManager /* implements APSMessageListener */{
 			_Node.set_node(n);
 			_Node.set_discoveryCompleted(true);
 			_Node.reset_numberOfAttempt();
-			int _index = -1;
+			
 			synchronized (getGal().getNetworkcache()) {
-				if ((_index = getGal().existIntoNetworkCache(_Node.get_node().getAddress())) == -1) {
+				if ((_Node = getGal().existIntoNetworkCache(_Node)) == null) {
 					/* id not exist */
 					if (getGal().getPropertiesManager().getDebugEnabled())
 						LOG.info("Adding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());

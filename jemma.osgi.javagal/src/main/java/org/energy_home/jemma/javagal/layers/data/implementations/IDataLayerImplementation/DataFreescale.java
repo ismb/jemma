@@ -2246,23 +2246,25 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private boolean updateNodeIfExist(final APSMessageEvent messageEvent, Address address) {
 
+		WrapperWSNNode Wrapnode = new WrapperWSNNode(getGal(), String.format("%04X", address.getNetworkAddress()));
+		WSNNode node = new WSNNode();
+		node.setAddress(address);
+		Wrapnode.set_node(node);
 		synchronized (getGal().getNetworkcache()) {
 			/* Update Source Node Data */
-			int _indexOnCache = -1;
+			
 
-			_indexOnCache = getGal().existIntoNetworkCache(address);
-
-			if (_indexOnCache != -1) {
-
-				if (getGal().getNetworkcache().get(_indexOnCache).is_discoveryCompleted()) {
+			if (getGal().existIntoNetworkCache(Wrapnode) != null) {
+				Wrapnode = getGal().existIntoNetworkCache(Wrapnode);
+				if (Wrapnode.is_discoveryCompleted()) {
 
 					/* The node is already into the DB */
 					if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
-						if (!getGal().getNetworkcache().get(_indexOnCache).isSleepy()) {
-							getGal().getNetworkcache().get(_indexOnCache).reset_numberOfAttempt();
-							getGal().getNetworkcache().get(_indexOnCache).setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+						if (!Wrapnode.isSleepy()) {
+							Wrapnode.reset_numberOfAttempt();
+							Wrapnode.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
-								LOG.info("Postponing  timer Freshness for Aps.Indication for node:" + String.format("%04X", getGal().getNetworkcache().get(_indexOnCache).get_node().getAddress().getNetworkAddress()));
+								LOG.info("Postponing  timer Freshness for Aps.Indication for node:" + String.format("%04X", Wrapnode.get_node().getAddress().getNetworkAddress()));
 							}
 						}
 
@@ -2294,18 +2296,15 @@ public class DataFreescale implements IDataLayer {
 								LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
 							getGal().getNetworkcache().add(o);
 
-							Runnable thr = new MyRunnable(address) {
+							Runnable thr = new MyRunnable(o) {
 								@Override
 								public void run() {
-									Address _address = (Address) this.getParameter();
-									int _indexOnCache = -1;
-									_indexOnCache = getGal().existIntoNetworkCache(_address);
-									if (_indexOnCache > -1) {
+									WrapperWSNNode _newWrapperNode = (WrapperWSNNode) this.getParameter();
+									if ((_newWrapperNode=getGal().existIntoNetworkCache(_newWrapperNode)) != null) {
 										if (getGal().getPropertiesManager().getDebugEnabled()) {
 											LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
 										}
 
-										WrapperWSNNode _newWrapperNode = getGal().getNetworkcache().get(_indexOnCache);
 										/*
 										 * Reading the IEEEAddress of the new
 										 * node
@@ -2330,10 +2329,8 @@ public class DataFreescale implements IDataLayer {
 										}
 										if (counter > 30) {
 
-											_indexOnCache = getGal().existIntoNetworkCache(_address);
-											if (_indexOnCache > -1) {
-												getGal().getNetworkcache().remove(_indexOnCache);
-											}
+												getGal().getNetworkcache().remove(_newWrapperNode);
+											
 											return;
 
 										}
@@ -2363,7 +2360,7 @@ public class DataFreescale implements IDataLayer {
 										}
 
 										if (counter > 30) {
-											getGal().getNetworkcache().remove(_indexOnCache);
+											getGal().getNetworkcache().remove(_newWrapperNode);
 											return;
 
 										}
@@ -2661,14 +2658,12 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-		if (_DSTAdd != null) {
+		if (_DSTAdd != null) 
+		{
 			String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 			lock.set_Key(_key);
-
 			Status status = new Status();
-
 			getListLocker().add(lock);
-
 			SendRs232Data(makeByteArrayFromApsMessage(message));
 			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
 				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
@@ -2683,15 +2678,16 @@ public class DataFreescale implements IDataLayer {
 
 				throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
 			} else {
-
 				if (status.getCode() != 0) {
-
 					LOG.error("Send aps returned Status: " + status.getCode());
-
 					// CHECK if node is a sleepy end device
-					int index = getGal().existIntoNetworkCache(message.getDestinationAddress());
-					if (index != -1) {
-						if (getGal().getNetworkcache().get(index).isSleepy()) {
+					WrapperWSNNode Wrapnode = new WrapperWSNNode(getGal(), String.format("%04X", _DSTAdd.intValue()));
+					WSNNode node = new WSNNode();
+					node.setAddress(message.getDestinationAddress());
+					Wrapnode.set_node(node);
+					Wrapnode = getGal().existIntoNetworkCache(Wrapnode);
+					if (Wrapnode != null) {
+						if (Wrapnode.isSleepy()) {
 							if (status.getCode() == 0xA7)
 								return status;
 							else
@@ -2699,7 +2695,7 @@ public class DataFreescale implements IDataLayer {
 						} else {
 							if (status.getCode() == 0xD1) {
 								// No route entry, check connections
-								getGal().getNetworkcache().get(index).setTimerForcePing(1);
+								Wrapnode.setTimerForcePing(1);
 								return status;
 							} else
 								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
