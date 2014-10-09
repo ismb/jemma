@@ -1139,47 +1139,61 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	 * # setDeviceState(org.energy_home.jemma.ah.hac.IAppliance, int)
 	 */
 	public boolean setDeviceState(IAppliance peerAppliance, int state, short value) {
-
-		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
-
-		if (windowCoveringServer != null) {  
-			try {
-				if (state == Stopped) {
-					windowCoveringServer.execStop(context);
-				} else if (state == UpOpen) {
-					windowCoveringServer.execUpOpen(context);
-				} else if (state == DownClose) {
-					windowCoveringServer.execDownClose(context);
-				} else if (state == OpenPercentage) {
-					windowCoveringServer.execGoToLiftPercentage(value, context);
-				} else
+		synchronized (lockGatH) {
+			
+			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
+			
+			if (windowCoveringServer != null) {  
+				LOG.info("================> setDeviceState WindowCovering Server Istanziato");
+				LOG.info("================> setDeviceState WindowCovering Server " + peerAppliance.getPid() + " state = " + state);
+				try {
+					if (state == Stopped) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execStop");
+						windowCoveringServer.execStop(context);
+					} else if (state == UpOpen) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execUpOpen");
+						windowCoveringServer.execUpOpen(context);
+					} else if (state == DownClose) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execDownClose");
+						windowCoveringServer.execDownClose(context);
+					} else if (state == OpenPercentage) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execGoToLiftPercentage");
+						windowCoveringServer.execGoToLiftPercentage(value, context);
+					} else
+						return false;
+				} catch (Exception e) {
+					LOG.error("execCommandExecution exception " + e.getMessage(), e);
 					return false;
-			} catch (Exception e) {
-				LOG.error("execCommandExecution exception " + e.getMessage(), e);
+				}
+			} else
 				return false;
-			}
-		} else
-			return false;
-
-		return true;
+	
+			return true;
+		}
 	}
 
 	public int getDeviceState(IAppliance peerAppliance, int state) throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
+			LOG.info("================> getDeviceState WindowCovering Server " + peerAppliance.getPid() + " state = " + state);
 
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 			if (windowCoveringServer != null) {
 				try {
 					if (state == CurrentPositionLiftPercentage) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getCurrentPositionLiftPercentage");
 						return windowCoveringServer.getCurrentPositionLiftPercentage(context);
 					} else if (state == InfoInstalledOpenLimit) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledOpenLimit");
 						return windowCoveringServer.getInstalledOpenLimit(context);
 					} else if (state == InfoInstalledClosedLimit) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledClosedLimit");
 						return windowCoveringServer.getInstalledClosedLimit(context);
 					} else if (state == InfoInstalledOpenLimitTilt) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledOpenLimitTilt");
 						return windowCoveringServer.getInstalledOpenLimitTilt(context);
 					} else if (state == InfoInstalledClosedLimit) {
+						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledClosedLimitTilt");
 						return windowCoveringServer.getInstalledClosedLimitTilt(context);
 					} else
 						return UnknownWC;

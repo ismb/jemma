@@ -301,7 +301,8 @@ CostiConsumi.DatiMaxElettr = function() {
 	var listaFiltrata = $.map(CostiConsumi.listaElettr,
 			function(elettro, index) {
 				if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
-					return elettro;
+					if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && (elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40"))
+						return elettro;
 				}
 			});
 	listaFiltrata.sort(function(a, b) {
@@ -310,12 +311,10 @@ CostiConsumi.DatiMaxElettr = function() {
 				// Se uno dei due elettrodomestici in sort � una lavatrice
 				// (whitegood) e il consumo � sotto a 1W, normalizzo a 0
 				if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-					firstElettrConsumo = (firstElettrConsumo < 1) ? 0
-							: firstElettrConsumo;
+					firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
 				}
 				if (b[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-					secondElettrConsumo = (secondElettrConsumo < 1) ? 0
-							: secondElettrConsumo;
+					secondElettrConsumo = (secondElettrConsumo < 1) ? 0 : secondElettrConsumo;
 				}
 				return secondElettrConsumo - firstElettrConsumo;
 			})
