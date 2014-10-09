@@ -5,7 +5,7 @@ Bundle-Name: ZigBee Network Manager
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.ah.zigbee;singleton:=true
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 2.1.28
+Bundle-Version: 2.1.29
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.zigbee;uses:="org.energy_home.j
  emma.zgd.jaxb,org.energy_home.jemma.ah.hac";version="3.0.0",org.energy_

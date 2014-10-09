@@ -6,7 +6,7 @@ Bundle-Name: Osgi Utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.utils
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.osgi.utils.equinox.console;uses:="
  org.eclipse.osgi.framework.console,org.osgi.framework";version="1.0.0",

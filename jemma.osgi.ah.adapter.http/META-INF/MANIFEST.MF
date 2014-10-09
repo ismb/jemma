@@ -5,17 +5,17 @@ Bundle-Name: Hac Http Service Manager
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.adapter.http
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 2.0.2
+Bundle-Version: 2.0.3
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.hac.adapter.http;uses:="org.energy
  _home.jemma.ah.hac,org.json,org.osgi.service.useradmin,org.osgi.service
  .component,org.slf4j,edu.emory.mathcs.backport.java.util.concurrent,jav
  ax.servlet,org.energy_home.jemma.hac.adapter.http.contexts,org.osgi.ser
  vice.event,org.osgi.framework,org.osgi.service.http,javax.servlet.http"
- ;version="2.0.2",org.energy_home.jemma.hac.adapter.http.contexts;uses:=
+ ;version="2.0.3",org.energy_home.jemma.hac.adapter.http.contexts;uses:=
  "javax.security.auth.login,org.energy_home.jemma.hac.adapter.http,org.o
  sgi.service.useradmin,org.osgi.service.http,javax.servlet.http";version
- ="2.0.2"
+ ="2.0.3"
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent,javax.sec
  urity.auth,javax.security.auth.callback,javax.security.auth.login,javax
  .security.auth.spi,javax.servlet;version="[2.5,3)",javax.servlet.http;v
