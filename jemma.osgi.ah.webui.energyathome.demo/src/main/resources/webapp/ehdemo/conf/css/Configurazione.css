@@ -118,6 +118,28 @@ input[type=button]:hover {
 	left: 60%;
 }
 
+#ContentForParam {
+	position: absolute;	
+	top: 20%;
+	left: 15%;
+	width: 55%;
+	height: 88%;
+	font-size: 0.8em;
+	color: #abd037;
+	border: solid 2px #abd037;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 5%;
+	padding-left: 15%;
+	overflow-y:scroll;
+	text-align: center;
+}
+
+#tblConfParam input[type=text]  {
+	width: 600px;
+}
+
 #ConfElettrDiv,#DatiUtente {
 	position: absolute;	
 	left: 15%;

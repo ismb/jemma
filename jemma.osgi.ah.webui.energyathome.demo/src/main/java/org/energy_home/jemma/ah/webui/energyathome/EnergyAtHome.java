@@ -114,13 +114,6 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 		this.ctxt = ctxt;
 		this.bc = ctxt.getBundleContext();
 
-		if (this.props == null){
-			loadPropFile();
-		}
-
-		Servlet serviceNoParam = new ServiceNoParam(ahHttpAdapter, "", this.props);
-		this.registerResource("/noparamService", serviceNoParam);
-
 		jsonRpcBridge = JSONRPCBridge.getGlobalBridge();
 		
 		try {
@@ -138,24 +131,6 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 			jsonRpcBridge.unregisterObject("OSGi");
 			this.registryProxy.close();
 		}
-	}
-	
-	protected void loadPropFile(){
-		
-		
-			String _path = "noserver.properties";
-			URL _url = this.bc.getBundle().getResource(_path);
-			
-			InputStream in = null;
-			try {
-				in = _url.openStream();
-				this.props = new Properties();
-				this.props.load(in);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
 	}
 
 	protected synchronized void setHttpService(HttpService s) {

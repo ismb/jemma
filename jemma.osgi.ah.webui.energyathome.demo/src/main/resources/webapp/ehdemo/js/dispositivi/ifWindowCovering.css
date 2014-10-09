@@ -30,7 +30,7 @@
 }
 
 
-#ifWindowCovering .left-box .icona, #ifThermostat .left-box .icona.NP{
+#ifWindowCovering .left-box .icona, #ifWindowCovering .left-box .icona.NP{
     margin-left: auto;
     margin-right: auto;
     min-width: 50px;
@@ -94,14 +94,35 @@
     float: left;
     display: block;
 }
- #ifWindowCovering  #temperatura_value{
-    width:70px;
+ #ifWindowCovering  .btnToggle{
+    width:50px;
     height: 22px;
     max-height: 22px;
-    font-size: large;
-    color: #ffffff;
+    cursor: pointer;
+}
+#ifWindowCovering  .btnToggle.ON{
+    background-image: url("toggle_on.png");
+    background-size: 100% 100%;
+}
+#ifWindowCovering  .btnToggle.OFF{
+    background-image: url("toggle_off.png");
+    background-size: 100% 100%;
+}
+#ifWindowCovering  .btnToggle.OPEN{
+    background-image: url("toggle_open.png");
+    background-size: 100% 100%;
+}
+#ifWindowCovering  .btnToggle.CLOSE{
+    background-image: url("toggle_close.png");
+    background-size: 100% 100%;
 }
 
+#ifWindowCovering  .btnToggle.NP{
+    background-image: none;
+    color: #808080;
+    font-size: large;
+    cursor: default;
+}
 
 #ifWindowCovering  .label{
     display: block;
@@ -120,7 +141,7 @@
     
 }
 
-#ifWindowCovering  #Temperatura{
+#ifWindowCovering  #OnOffControl{
     width: 90%;
     height: 20%;
     display: block;
@@ -128,12 +149,58 @@
     margin-left: auto;
     margin-right: auto;
 }
+#ifWindowCovering  #LevelControl{
+    width: 90%;
+    height: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+#ColorControl{
+    display: block;
+    width:80%;
+    height: 70%;
+    margin-left:auto;
+    margin-right: auto;
+    
+}
+#picker{
+    width: 100%;
+    height: 100%;
+}
 
+.ButtonConf,.ButtonConfSmall {
+	background-color: #94c200;
+	border: solid 1px #FFF;
+	font-weight: bold;
+	color: white;
+	padding: 2px 10px;
+}
+
+input[type=button]:hover {
+	background-color: #003300;
+}
+
+.ButtonConf {
+	font-size: 1em;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	width: 20%;
+}
+
+.ButtonConfSmall {
+	font-size: 0.8em;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	width: 6.0em;
+}
 
 #ifWindowCovering .line{
     display: block;
-    height: 30px;
+    height: 40px;
     width: 100%;
     
 }

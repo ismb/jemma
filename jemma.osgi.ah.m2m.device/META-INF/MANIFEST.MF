@@ -7,7 +7,7 @@ Bundle-Name: M2M Device
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.ah.m2m.device;singleton:=true
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.2.15
+Bundle-Version: 1.2.16
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.m2m.device;uses:="org.energy_ho
  me.jemma.m2m.connection,org.energy_home.jemma.m2m,org.apache.http";vers

@@ -615,9 +615,9 @@ CostiConsumi.GetDatiEnergiaProdotta = function() {
 		}
 	} else {
 		// per test, copio per il numero ore attuale
-		hours = Main.dataAttuale.getHours();
-		val = jQuery.extend(true, {}, EnergiaProdottaGiornalieroSimul);
-		val.list = val.list.slice(0, hours);
+		//hours = Main.dataAttuale.getHours();
+		//val = jQuery.extend(true, {}, EnergiaProdottaGiornalieroSimul);
+		//val.list = val.list.slice(0, hours);
 		
 		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiEnergiaProdottaGiornalieroCb, "EnergiaProdottaGiornalieroSimul");
 
@@ -692,11 +692,13 @@ CostiConsumi.GetDatiConsumi = function() {
 		}
 	} else {
 		// per test, copio per il numero ore attuale
-		var hours = Main.dataAttuale.getHours();
-		var val = jQuery.extend(true, {}, ConsumoGiornaliero);
-		val.list = val.list.slice(0, hours);
+		//var hours = Main.dataAttuale.getHours();
+		//var val = jQuery.extend(true, {}, ConsumoGiornaliero);
+		//val.list = val.list.slice(0, hours);
+		
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCb, "EnergiaConsumataGiornalieroSimul");
 
-		CostiConsumi.DatiConsumoGiornalieroCb(val, null);
+		//CostiConsumi.DatiConsumoGiornalieroCb(val, null);
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiConsumi', 'Esco!');
@@ -761,6 +763,14 @@ CostiConsumi.VisGrafico = function() {
 				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perche' qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
 				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
+				
+					
+				hours = Main.dataAttuale.getHours();
+				if (index >= hours){
+					dataConsumi[index] = 0;
+					dataIAC[index] = 0;
+				}
+					 
 			}
 		});
 	}
@@ -768,11 +778,9 @@ CostiConsumi.VisGrafico = function() {
 	var cat = null;
 
 	if (GestDate.DSTMarzo) {
-		cat = [ 0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-				19, 20, 21, 22, 23 ]
+		cat = [ 0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ]
 	} else if (GestDate.DSTOttobre) {
-		cat = [ 0, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-				17, 18, 19, 20, 21, 22, 23 ];
+		cat = [ 0, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ];
 	}
 
 	var serieConsumi = Msg.home['serieConsumi'];
@@ -782,43 +790,43 @@ CostiConsumi.VisGrafico = function() {
 	var maxContatoreProd = 0;
 	var maxContatoreRete = 0;
 	switch (Main.contatore) {
-	case 0:
-		maxContatore = 3.5;
-		break;
-	case 1:
-		maxContatore = 5;
-		break;
-	case 2:
-		maxContatore = 6.5;
-		break;
+		case 0:
+			maxContatore = 3.5;
+			break;
+		case 1:
+			maxContatore = 5;
+			break;
+		case 2:
+			maxContatore = 6.5;
+			break;
 	}
 	switch (Main.contatoreProd) {
-	case 0:
-		maxContatoreProd = 2;
-		break;
-	case 1:
-		maxContatoreProd = 3;
-		break;
-	case 2:
-		maxContatoreProd = 4;
-		break;
-	case 3:
-		maxContatoreRete = 5;
-		break;
-	case 4:
-		maxContatoreRete = 6;
-		break;
+		case 0:
+			maxContatoreProd = 2;
+			break;
+		case 1:
+			maxContatoreProd = 3;
+			break;
+		case 2:
+			maxContatoreProd = 4;
+			break;
+		case 3:
+			maxContatoreRete = 5;
+			break;
+		case 4:
+			maxContatoreRete = 6;
+			break;
 	}
 	switch (Main.contatoreRete) {
-	case 0:
-		maxContatoreRete = 3.5;
-		break;
-	case 1:
-		maxContatoreRete = 5;
-		break;
-	case 2:
-		maxContatoreRete = 6.5;
-		break;
+		case 0:
+			maxContatoreRete = 3.5;
+			break;
+		case 1:
+			maxContatoreRete = 5;
+			break;
+		case 2:
+			maxContatoreRete = 6.5;
+			break;
 	}
 
 	chartConsumi = new Highcharts.Chart(
@@ -1044,9 +1052,10 @@ CostiConsumi.GetDatiProduzioneIAC = function() {
 	} else {
 		// per test
 		// var ind = Math.round(Math.random() * SuddivisioneConsumi.length);
-		CostiConsumi.GetDatiVenditaIAC({
+		/*CostiConsumi.GetDatiVenditaIAC({
 			list : PERCIAC2
-		}, null);
+		}, null);*/
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.GetDatiVenditaIAC, "PercIAC2");
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiProduzioneIAC', 'Esco');
@@ -1091,9 +1100,10 @@ CostiConsumi.GetDatiVenditaIAC = function(result, err) {
 	} else {
 		// per test
 		// var ind = Math.round(Math.random() * SuddivisioneConsumi.length);
-		CostiConsumi.DatiPercIAC({
+		/*CostiConsumi.DatiPercIAC({
 			list : PERCIAC
-		}, null);
+		}, null);*/
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiPercIAC, "PercIAC");
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiVenditaIAC', 'Esco');

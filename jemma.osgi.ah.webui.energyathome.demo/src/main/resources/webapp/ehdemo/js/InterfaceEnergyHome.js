@@ -59,6 +59,8 @@ var InterfaceEnergyHome = {
 	SMARTPLUG_APP_TYPE : "org.energy_home.jemma.ah.zigbee.smartplug",
 	LOCKDOOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.lockdoor", 
 	LOCKDOOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.DoorLock", 
+	WINDOWCOVERING_APP_TYPE : "org.energy_home.jemma.ah.zigbee.windowcovering", 
+	WINDOWCOVERING_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.WindowCovering", 
 	 
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
@@ -309,7 +311,7 @@ InterfaceEnergyHome.GetElettrStorico = function(backFunc) {
 	InterfaceEnergyHome.backElettrStorico = backFunc;
 	//console.log(80, InterfaceEnergyHome.MODULE, "GetElettrStorico");
 
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackElettrStorico);
 		} catch (err) {
@@ -387,7 +389,13 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		}
 	} else {
 		// per test
-		i = new Date(dataInizio.getTime(0));
+		
+		try {
+			InterfaceEnergyHome.objService.getPropStoricoConfiguration(InterfaceEnergyHome.BackStorico, pid, param1, paramTr);
+		} catch (err) {
+			InterfaceEnergyHome.BackStorico(null, err);
+		}
+		/*i = new Date(dataInizio.getTime(0));
 		i.setHours(0);
 		i.setMinutes(0);
 		i.setSeconds(0);
@@ -402,7 +410,7 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 
 		//console.log(20, InterfaceEnergyHome.MODULE, "   diff = " + diff + "  giorni = " + g);
 		//TODO: check merge, following commented block was not in 3.3.0
-/*		if (intervallo == -1) {
+		if (intervallo == -1) {
 			if (tipo == "Costo"){
 				val = StoricoCostoO;
 			} else if (tipo == "Produzione"){
@@ -410,7 +418,7 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 			} else {
 				val = StoricoConsumoO;
 			}
-		} else if (intervallo == 0) {*/
+		} else if (intervallo == 0) {
 		if (intervallo == 0) {
 			if (tipo == "Costo"){
 				val = StoricoCostoI;
@@ -447,7 +455,7 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 				val = {"list" : StoricoConsumoA.list.slice(0, g)};
 			}
 		}
-		/**
+		
 		 * da rivedere !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 		 * if (pid !="homeauto") { 
 		 * //se e' un singolo elettrodomestico prendo una percentuale 
@@ -464,8 +472,9 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		 * 		valP.list[j] = val.list[j] * perc / 100;
 		 * InterfaceEnergyHome.BackStorico(valP, null); 
 		 * } else {}
-		 */
+		
 		InterfaceEnergyHome.BackStorico(val, null);
+		*/
 	}
 }
 
@@ -495,7 +504,11 @@ InterfaceEnergyHome.BackActualDate = function(result, err) {
 		}
 		retVal = null;
 		if ((err == null) && (result != null)){
-			retVal = result;
+			if (InterfaceEnergyHome.mode > 0) {
+				retVal = result;
+			} else {
+				retVal = Math.floor(result.list[0]);
+			}
 		}
 		//console.log(80, InterfaceEnergyHome.MODULE, "BackActualDate retVal = " + retVal);
 		InterfaceEnergyHome.backActualDate(retVal);
@@ -512,7 +525,8 @@ InterfaceEnergyHome.GetActualDate = function(backFunc) {
 		}
 	} else{
 		// per simulazione ritorno ora di sistema
-		InterfaceEnergyHome.backActualDate(new Date().getTime());
+		//InterfaceEnergyHome.backActualDate(new Date().getTime());
+		InterfaceEnergyHome.objService.getPropConfiguration(InterfaceEnergyHome.BackActualDate, "ActualDate");
 	}
 }
 

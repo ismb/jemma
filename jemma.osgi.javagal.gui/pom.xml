@@ -52,7 +52,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.javagal.gui</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>Java Gal Gui</name>
 
 	<parent>

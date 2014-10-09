@@ -415,6 +415,7 @@ Configurazione.GetIcone = function() {
 	Configurazione.icone[8] = "tv.png";
 	Configurazione.icone[9] = "stufa.png";
 	Configurazione.icone[10] = "lockdoor.png";
+	Configurazione.icone[11] = "windowc.png";
 	/*Configurazione.icone[10] = "production_meter.png";
 	Configurazione.icone[11] = "secondary_meter.png";
 	Configurazione.icone[12] = "printer.png";
@@ -696,13 +697,11 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 
 Configurazione.ControllaInquiry = function() {
 	//console.log(80, Configurazione.MODULE, "Reimposto timeout");
-	InterfaceEnergyHome
-			.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
+	InterfaceEnergyHome.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
 }
 
 Configurazione.StopInquiryCb = function(res, e) {
-	InterfaceEnergyHome
-			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.StartInquiryCb = function(res, e) {
@@ -788,6 +787,15 @@ Configurazione.VisElettrodomestici = function() {
 						val = 'close';
 						imgDisp = "lockdoor_spento.png";
 					}
+				} else if (category_value == "44") {
+					val = device_value.value.value;
+					if (val > 0){
+						val = 'open';
+						imgDisp = "windowc_aperta.png";
+					} else {
+						val = 'close';
+						imgDisp = "windowc_spento.png";
+					}
 				} else {
 					val = parseFloat(device_value.value.value);
 					val = val.toFixed(1) + " W";
@@ -797,7 +805,7 @@ Configurazione.VisElettrodomestici = function() {
 			}
 		}
 		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
-					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "'>"
+					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='height: 75px;width: 43px;'>"
 					+ "		<div id='StatoElettr_" + i + "'></div>"
 					+ "		<div id='NomeElettr_" + i + "' class='NomeElettr' >"
 					+ 			Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_NAME]
