@@ -72,12 +72,12 @@ ifWindowCovering.gestSlider=function(){
     
     $( "#lum" ).slider({
         range: "min",
-        value: ifWindowCovering.liftPerc,
+        value: ifWindowCovering.max,
         min: 0,
         max: ifWindowCovering.max,
         slide: function( event, ui ) {
             
-            ifWindowCovering.lum=ui.value;
+            ifWindowCovering.lum=Math.floor((ui.value*100)/ifWindowCovering.max);
             $('#lum_perc').html(ifWindowCovering.lum+"%");
         },
         start: function(event, ui ){
@@ -106,7 +106,7 @@ ifWindowCovering.gestSlider=function(){
             	ifWindowCovering.stato = 7;
                 ifWindowCovering.liftPerc = 100;
             	ifWindowCovering.update();
-            }, pid, ifWindowCovering.WINDOWCOVERING_DOWNCLOSE, null);
+            }, pid, ifWindowCovering.WINDOWCOVERING_DOWNCLOSE, 0);
         } else {
         	ifWindowCovering.stato = 7;
             ifWindowCovering.liftPerc = 100;
@@ -121,7 +121,7 @@ ifWindowCovering.gestSlider=function(){
             	ifWindowCovering.stato = 6;
                 ifWindowCovering.liftPerc = 0;
             	ifWindowCovering.update();
-            }, pid, ifWindowCovering.WINDOWCOVERING_UPOPEN, null);
+            }, pid, ifWindowCovering.WINDOWCOVERING_UPOPEN, 0);
         } else {
         	ifWindowCovering.stato = 6;
             ifWindowCovering.liftPerc = 0;
@@ -136,7 +136,7 @@ ifWindowCovering.gestSlider=function(){
             	ifWindowCovering.stato = 5;
                 ifWindowCovering.liftPerc = null;
             	ifWindowCovering.update();
-            }, pid, ifWindowCovering.WINDOWCOVERING_STOPPED, null);
+            }, pid, ifWindowCovering.WINDOWCOVERING_STOPPED, 0);
         } else {
         	ifWindowCovering.stato = 5;
             ifWindowCovering.liftPerc = null;
