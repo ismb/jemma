@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.2</version>
+	<version>1.0.4</version>
 	<name>ZigBee Appliances</name>
 
 	<properties>

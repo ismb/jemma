@@ -1876,7 +1876,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		if (hasJoined(installationStatus)) {
 			try {
 				log.debug("in terminateDeviceDiscovery() sending leave to node " + getIeeeAddressHex(installationStatus.getAddress()));
-				gateway.leave(100, installationStatus.getAddress());
+				gateway.leave(4000, installationStatus.getAddress());
 			} catch (Exception e) {
 				log.error("Exception", e);
 			}
@@ -1894,6 +1894,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		synchronized (inProcessNode) {
 			inProcessNode.remove(installationStatus);
 		}
+		
 	}
 
 	private boolean hasJoined(InstallationStatus installationStatus) {
