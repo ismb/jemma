@@ -502,14 +502,11 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	 * Called when a message has been received from ZigBee
 	 */
 	public void notifyAPSMessage(final APSMessageEvent msg) {
-
+		System.out.println("ZigbeeClusterManager -- ClusterID:" + msg.getClusterID());
 		executor.execute(new Runnable() {
 			public void run() {
-
-				log.debug("=======> Nodo msg.getSourceAddress().getIeeeAddress() = " + msg.getSourceAddress().getIeeeAddress());
-				log.debug("=======> Nodo msg.getSourceAddress().getNetworkAddress() = " + msg.getSourceAddress().getNetworkAddress());
-				log.debug("=======> Nodo msg.getDestinationAddress().getIeeeAddress() = " + msg.getDestinationAddress().getIeeeAddress());
-				log.debug("=======> Nodo msg.getDestinationAddress().getNetworkAddress() = " + msg.getDestinationAddress().getNetworkAddress());
+				int cluster = msg.getClusterID();
+				
 				if (enableNotifyFrameLogs)
 					printAPSMessageEvent(msg);
 
@@ -1879,7 +1876,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		if (hasJoined(installationStatus)) {
 			try {
 				log.debug("in terminateDeviceDiscovery() sending leave to node " + getIeeeAddressHex(installationStatus.getAddress()));
-				gateway.leave(100, installationStatus.getAddress());
+				gateway.leave(4000, installationStatus.getAddress());
 			} catch (Exception e) {
 				log.error("Exception", e);
 			}
@@ -1897,6 +1894,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		synchronized (inProcessNode) {
 			inProcessNode.remove(installationStatus);
 		}
+		
 	}
 
 	private boolean hasJoined(InstallationStatus installationStatus) {

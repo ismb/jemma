@@ -23,9 +23,14 @@ import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceControlServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceEventsAndAlertsServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceIdentificationServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclApplianceStatisticsServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclMeterIdentificationServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.eh.ZclPowerProfileServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionClient;
+import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPartitionServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclTimeClient;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.metering.ZclSimpleMeteringServer;
 import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclAppliance;
@@ -44,13 +49,21 @@ public class ZigbeeWhiteGoodAppliance extends ZclAppliance {
 		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_WHITE_GOODS);
 		endPoint.addServiceCluster(new ZclBasicServer());
 		endPoint.addServiceCluster(new ZclIdentifyServer());
-		endPoint.addServiceCluster(new ZclTimeClient());
-		endPoint.addServiceCluster(new ZclPowerProfileServer());
 		endPoint.addServiceCluster(new ZclApplianceIdentificationServer());
 		endPoint.addServiceCluster(new ZclApplianceControlServer());
 		endPoint.addServiceCluster(new ZclApplianceEventsAndAlertsServer());
+		endPoint.addServiceCluster(new ZclApplianceStatisticsServer());
+		endPoint.addServiceCluster(new ZclPowerProfileServer());
+		endPoint.addServiceCluster(new ZclMeterIdentificationServer());
+		endPoint.addServiceCluster(new ZclPartitionServer(new ZclPartitionClient()));
 		endPoint.addServiceCluster(new ZclSimpleMeteringServer());
+		
+		
+		endPoint.addServiceCluster(new ZclIdentifyClient());
+		endPoint.addServiceCluster(new ZclTimeClient());
+		//endPoint.addServiceCluster(new ZclPartitionClient(new Zcl));
 
+		
 	}
 
 	protected void attached() {

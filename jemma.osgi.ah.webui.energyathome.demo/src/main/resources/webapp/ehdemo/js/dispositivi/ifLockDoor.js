@@ -30,7 +30,7 @@ ifLockDoor.init=function(clusters, i){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                   
                     if (err!=null) {
-                        ifLockDoor.update(true);
+                        ifLockDoor.update(ifLockDoor.DOORLOCK_CLOSE_STATE);
                     }else if (result != null) {
                         if (result == true) {
                             ifLockDoor.stato = ifLockDoor.DOORLOCK_OPEN_STATE;
@@ -38,7 +38,7 @@ ifLockDoor.init=function(clusters, i){
         					class_stato = "OPEN";
                             $(myId).addClass("OPEN");
                             $(myId).removeClass("CLOSE");
-                            ifLockDoor.updateIcon(0);
+                            ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE); //Icon
                         }
                     }
                     ifLockDoor.timeout_timer = new Date().getTime();
@@ -49,7 +49,7 @@ ifLockDoor.init=function(clusters, i){
 				class_stato = "OPEN";
                 $(myId).addClass("OPEN");
                 $(myId).removeClass("CLOSE");
-                ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_OPEN_STATE);
+                ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE); //Icon
             }
             
         }else if (ifLockDoor.stato == ifLockDoor.DOORLOCK_OPEN_STATE){
@@ -60,7 +60,7 @@ ifLockDoor.init=function(clusters, i){
             if (InterfaceEnergyHome.mode > 0){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                     if (err!=null) {
-                        ifLockDoor.update(true);
+                        ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE);
                     }else if (result != null) {
                         if (result == true) {
                             ifLockDoor.stato = ifLockDoor.DOORLOCK_CLOSE_STATE;
@@ -68,7 +68,7 @@ ifLockDoor.init=function(clusters, i){
         					class_stato = "CLOSE";
                             $(myId).addClass("CLOSE");
                             $(myId).removeClass("OPEN");
-                            ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_CLOSE_STATE);
+                            ifLockDoor.update(ifLockDoor.DOORLOCK_CLOSE_STATE); //Icon
                         }
                     }
                     ifLockDoor.timeout_timer=new Date().getTime();
@@ -79,7 +79,7 @@ ifLockDoor.init=function(clusters, i){
 				class_stato = "CLOSE";
                 $(myId).addClass("CLOSE");
                 $(myId).removeClass("OPEN");
-                ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_CLOSE_STATE);
+                ifLockDoor.update(ifLockDoor.DOORLOCK_CLOSE_STATE); //Icon
             }
         } else {
         	var pid = $("#Interfaccia").data("pid");
@@ -89,7 +89,7 @@ ifLockDoor.init=function(clusters, i){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                   
                     if (err!=null) {
-                        ifLockDoor.update(true);
+                        ifLockDoor.update(ifLockDoor.DOORLOCK_CLOSE_STATE);
                     }else if (result != null) {
                         if (result == true) {
                             ifLockDoor.stato = ifLockDoor.DOORLOCK_OPEN_STATE;
@@ -97,7 +97,7 @@ ifLockDoor.init=function(clusters, i){
         					class_stato = "OPEN";
                             $(myId).addClass("OPEN");
                             $(myId).removeClass("CLOSE");
-                            ifLockDoor.updateIcon(0);
+                            ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE); //Icon
                         }
                     }
                     ifLockDoor.timeout_timer = new Date().getTime();
@@ -108,7 +108,7 @@ ifLockDoor.init=function(clusters, i){
 				class_stato = "OPEN";
                 $(myId).addClass("OPEN");
                 $(myId).removeClass("CLOSE");
-                ifLockDoor.updateIcon(ifLockDoor.DOORLOCK_OPEN_STATE);
+                ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE); //Icon
             }
         }
         
@@ -131,14 +131,14 @@ ifLockDoor.init=function(clusters, i){
 };
 
 ifLockDoor.updateIcon=function(stato){
-    if (stato!=1 && stato!=0) {
+    if (stato < 0 && stato > 2) {
             stato=null;
     }
     var i= $("#Interfaccia").data("current_index");
-    var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i],stato);
+    var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i], stato);
     
     $("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
-    $("#device_" + ifLockDoor.counterPositionDevice + " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);
+    $("#device_" + ifLockDoor.counterPositionDevice + " .IconaElettrodomestico .icona-dispositivo").attr("src", icona_src);
     
     var class_stato="NP";
     
@@ -158,19 +158,26 @@ ifLockDoor.updateIcon=function(stato){
 ifLockDoor.update= function(now){
     var t= new Date().getTime();
     var i= $("#Interfaccia").data("current_index");
-
-    var consumo=Elettrodomestici.listaElettrodomestici[i].device_value;
-    if (consumo == 2) {
-        consumo = "open";
-    } else if (consumo == 1) {
-        consumo = "close";
-    } else {
-        consumo = "close and unlock";
+    var device_value = Elettrodomestici.listaElettrodomestici[i].device_value;
+    var txtValue = null;
+    
+    if (now != null){
+    	if ((now != true) && (now != false))
+    		device_value = now;
     }
-    $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
+    if (device_value == 2) {
+    	txtValue = "OPEN";
+    } else if (device_value == 1) {
+    	txtValue = "CLOSE";
+    } else {
+    	txtValue = "CLOSE";
+    }
+    $("#Interfaccia .StatoElettrodomestico .consumo").text(txtValue);
     $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
     
-    //Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
+	$("#device_" + ifLockDoor.counterPositionDevice + " .StatoElettrodomestico .stato").text(txtValue);
+    
+	//Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
     if (!now && ifLockDoor.timeout_timer!=null) {
         if (t-ifLockDoor.timeout_timer < ifLockDoor.UPDATE_FREQ) {
             return;
@@ -183,11 +190,13 @@ ifLockDoor.update= function(now){
     var _stato="";
     
     if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
-        if (Elettrodomestici.listaElettrodomestici[i].device_value == 2){
+        //if (Elettrodomestici.listaElettrodomestici[i].device_value == 2){
+    	if (device_value == 2){
             _stato="OPEN";
             class_stato="OPEN";
             ifLockDoor.stato=2;
-        } else if (Elettrodomestici.listaElettrodomestici[i].device_value == 1){
+        //} else if (Elettrodomestici.listaElettrodomestici[i].device_value == 1){
+        } else if (device_value == 1){
             _stato="CLOSE";
             class_stato="CLOSE";
             ifLockDoor.stato=1;

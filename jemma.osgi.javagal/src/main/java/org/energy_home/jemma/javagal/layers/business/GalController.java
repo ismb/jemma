@@ -645,18 +645,16 @@ public class GalController {
 	public LQIInformation getLQIInformation(Address aoi) throws IOException, Exception, GatewayException {
 
 		LQIInformation _lqi = new LQIInformation();
-		WrapperWSNNode x = null;
-
-		int _index = -1;
-		_index = existIntoNetworkCache(aoi);
-		if (_index > -1)
-			x = getNetworkcache().get(_index);
+		WrapperWSNNode x = new WrapperWSNNode(this, String.format("%04X", aoi.getNetworkAddress()));
+		WSNNode node = new WSNNode();
+		node.setAddress(aoi);
+		x.set_node(node);
+		x = existIntoNetworkCache(x);
 		if (x != null) {
 			if (x.is_discoveryCompleted()) {
 				LQINode _lqinode = new LQINode();
 				Mgmt_LQI_rsp _rsp = x.get_Mgmt_LQI_rsp();
 				_lqinode.setNodeAddress(x.get_node().getAddress().getIeeeAddress());
-
 				if (_rsp != null && _rsp.NeighborTableList != null) {
 					for (NeighborTableLis_Record _n1 : _rsp.NeighborTableList) {
 						Neighbor e = new Neighbor();
@@ -764,17 +762,21 @@ public class GalController {
 
 		if (Async) {
 
-			executor.execute(new Runnable() {
+			executor.execute(new MyRunnable(this) {
 
 				public void run() {
 					NodeDescriptor nodeDescriptor = new NodeDescriptor();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 						try {
 							nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
-							int _index = -1;
-							if ((_index = existIntoNetworkCache(addrOfInterest)) > -1) 
-								getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
-							
+							WrapperWSNNode x = new WrapperWSNNode((GalController) this.getParameter(), String.format("%04X", addrOfInterest.getNetworkAddress()));
+							WSNNode node = new WSNNode();
+							node.setAddress(addrOfInterest);
+							x.set_node(node);
+							x = existIntoNetworkCache(x);
+							if (x != null)
+								x.setNodeDescriptor(nodeDescriptor);
+
 							Status _s = new Status();
 							_s.setCode((short) GatewayConstants.SUCCESS);
 							get_gatewayEventManager().notifyNodeDescriptor(_requestIdentifier, _s, nodeDescriptor);
@@ -818,9 +820,13 @@ public class GalController {
 		} else {
 			if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 				NodeDescriptor nodeDescriptor = DataLayer.getNodeDescriptorSync(timeout, addrOfInterest);
-				int _index = -1;
-				if ((_index = existIntoNetworkCache(addrOfInterest)) > -1)
-					getNetworkcache().get(_index).setNodeDescriptor(nodeDescriptor);
+				WrapperWSNNode x = new WrapperWSNNode(this, String.format("%04X", addrOfInterest.getNetworkAddress()));
+				WSNNode node = new WSNNode();
+				node.setAddress(addrOfInterest);
+				x.set_node(node);
+				x = existIntoNetworkCache(x);
+				if (x != null)
+					x.setNodeDescriptor(nodeDescriptor);
 				return SerializationUtils.clone(nodeDescriptor);
 			} else
 				throw new GatewayException("Gal is not in running state!");
@@ -1296,7 +1302,7 @@ public class GalController {
 			aoi.setIeeeAddress(getIeeeAddress_FromShortAddress(aoi.getNetworkAddress()));
 
 		if (Async) {
-			executor.execute(new Runnable() {
+			executor.execute(new MyRunnable(this) {
 				public void run() {
 					NodeServices _newNodeService = new NodeServices();
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1313,9 +1319,14 @@ public class GalController {
 								_n.setEndPoint(x);
 								_newNodeService.getActiveEndpoints().add(_n);
 							}
-							int _index = -1;
-							if ((_index = existIntoNetworkCache(aoi)) == -1) {
-								getNetworkcache().get(_index).set_nodeServices(_newNodeService);
+
+							WrapperWSNNode x = new WrapperWSNNode((GalController) this.getParameter(), String.format("%04X", aoi.getNetworkAddress()));
+							WSNNode node = new WSNNode();
+							node.setAddress(aoi);
+							x.set_node(node);
+							x = existIntoNetworkCache(x);
+							if (x != null) {
+								x.set_nodeServices(_newNodeService);
 							}
 							get_gatewayEventManager().notifyServicesDiscovered(_requestIdentifier, _ok, _newNodeService);
 						} catch (IOException e) {
@@ -1361,9 +1372,14 @@ public class GalController {
 					_n.setEndPoint(x);
 					_newNodeService.getActiveEndpoints().add(_n);
 				}
-				int _index = -1;
-				if ((_index = existIntoNetworkCache(aoi)) > -1) {
-					getNetworkcache().get(_index).set_nodeServices(_newNodeService);
+				WrapperWSNNode x = new WrapperWSNNode(this, String.format("%04X", aoi.getNetworkAddress()));
+				WSNNode node = new WSNNode();
+				node.setAddress(aoi);
+				x.set_node(node);
+				
+				x = existIntoNetworkCache(x);
+				if (x != null) {
+					x.set_nodeServices(_newNodeService);
 				}
 
 				return SerializationUtils.clone(_newNodeService);
@@ -1512,7 +1528,7 @@ public class GalController {
 			addrOfInterest.setIeeeAddress(getIeeeAddress_FromShortAddress(addrOfInterest.getNetworkAddress()));
 
 		if (Async) {
-			executor.execute(new Runnable() {
+			executor.execute(new MyRunnable(this) {
 				public void run() {
 					Status _s = null;
 					if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
@@ -1525,15 +1541,16 @@ public class GalController {
 
 								_s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 								if (_s.getCode() == GatewayConstants.SUCCESS) {
-
 									/* get the node from cache */
-									int index = existIntoNetworkCache(addrOfInterest);
-									if (index > -1) {
-										WrapperWSNNode _wrapper = getNetworkcache().get(index);
-										_wrapper.abortTimers();
-										get_gatewayEventManager().nodeRemoved(_s, _wrapper.get_node());
-										getNetworkcache().remove(index);
-
+									WrapperWSNNode x = new WrapperWSNNode((GalController) this.getParameter(), String.format("%04X", addrOfInterest.getNetworkAddress()));
+									WSNNode node = new WSNNode();
+									node.setAddress(addrOfInterest);
+									x.set_node(node);
+									x = existIntoNetworkCache(x);
+									if (x != null) {
+										x.abortTimers();
+										get_gatewayEventManager().nodeRemoved(_s, x.get_node());
+										getNetworkcache().remove(x);
 									}
 								}
 
@@ -1592,18 +1609,18 @@ public class GalController {
 
 					Status _s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 					if (_s.getCode() == GatewayConstants.SUCCESS) {
-
 						/* get the node from cache */
-						int index = existIntoNetworkCache(addrOfInterest);
-						if (index > -1) {
-							WrapperWSNNode _wrapper = getNetworkcache().get(index);
-							_wrapper.abortTimers();
-							get_gatewayEventManager().nodeRemoved(_s, _wrapper.get_node());
-							getNetworkcache().remove(index);
-
+						WrapperWSNNode x = new WrapperWSNNode(this, String.format("%04X", addrOfInterest.getNetworkAddress()));
+						WSNNode node = new WSNNode();
+						node.setAddress(addrOfInterest);
+						x.set_node(node);
+						x = existIntoNetworkCache(x);
+						if (x != null) {
+							x.abortTimers();
+							get_gatewayEventManager().nodeRemoved(_s, x.get_node());
+							getNetworkcache().remove(x);
 						}
 					}
-
 					get_gatewayEventManager().notifyleaveResult(_s);
 					get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
 					return SerializationUtils.clone(_s);
@@ -1616,21 +1633,20 @@ public class GalController {
 	}
 
 	private void leavePhilips(final long timeout, final int _requestIdentifier, final Address addrOfInterest) throws IOException, Exception, GatewayException {
-		WrapperWSNNode node = null;
 		/* Check if the device is the Philips light */
-		int _index = -1;
-		if ((_index = existIntoNetworkCache(addrOfInterest)) > -1) {
-			node = getNetworkcache().get(_index);
-		}
-
-		if (node != null) {
+		WrapperWSNNode wrapNode = new WrapperWSNNode(this, String.format("%04X", addrOfInterest.getNetworkAddress()));
+		WSNNode node = new WSNNode();
+		node.setAddress(addrOfInterest);
+		wrapNode.set_node(node);
+		wrapNode = existIntoNetworkCache(wrapNode);
+		if (wrapNode != null) {
 
 			NodeDescriptor nodeDescriptor = null;
-			if (node.getNodeDescriptor() == null)
+			if (wrapNode.getNodeDescriptor() == null)
 				nodeDescriptor = getNodeDescriptor(timeout, _requestIdentifier, addrOfInterest, false);
 
 			else
-				nodeDescriptor = node.getNodeDescriptor();
+				nodeDescriptor = wrapNode.getNodeDescriptor();
 
 			/* Philips Device Led */
 			if (nodeDescriptor.getManufacturerCode() == 4107) {
@@ -1648,7 +1664,7 @@ public class GalController {
 				scanReqCommand.setSrcPANID(Integer.parseInt(getNetworkPanID(), 16));
 				scanReqCommand.setDstAddressMode(2);
 				scanReqCommand.setDestinationAddress(broadcast);
-				scanReqCommand.setDestPANID(getManageMapPanId().getPanid(node.get_node().getAddress().getIeeeAddress()));
+				scanReqCommand.setDestPANID(getManageMapPanId().getPanid(wrapNode.get_node().getAddress().getIeeeAddress()));
 				scanReqCommand.setProfileID(49246);
 				scanReqCommand.setClusterID(4096);
 				scanReqCommand.setASDULength(9);
@@ -1664,7 +1680,7 @@ public class GalController {
 				resetCommand.setSrcPANID(Integer.parseInt(getNetworkPanID(), 16));
 				resetCommand.setDstAddressMode(2);
 				resetCommand.setDestinationAddress(broadcast);
-				resetCommand.setDestPANID(getManageMapPanId().getPanid(node.get_node().getAddress().getIeeeAddress()));
+				resetCommand.setDestPANID(getManageMapPanId().getPanid(wrapNode.get_node().getAddress().getIeeeAddress()));
 				resetCommand.setProfileID(49246);
 				resetCommand.setClusterID(4096);
 				resetCommand.setASDULength(7);
@@ -2029,39 +2045,40 @@ public class GalController {
 
 					_add.setIeeeAddress(_IeeeAdd);
 					galNode.setAddress(_add);
+					
 					WrapperWSNNode galNodeWrapper = new WrapperWSNNode(((GalController) this.getParameter()), String.format("%04X", _add.getNetworkAddress()));
-
-					galNodeWrapper.set_node(galNode);
-
+					
+					
 					/* Read the NodeDescriptor of the GAL */
 					NodeDescriptor _NodeDescriptor = null;
 					while (_NodeDescriptor == null) {
 						try {
 							_NodeDescriptor = DataLayer.getNodeDescriptorSync(PropertiesManager.getCommandTimeoutMS(), _add);
 							if (_NodeDescriptor != null) {
-								if (galNodeWrapper.get_node().getCapabilityInformation() == null)
-									galNodeWrapper.get_node().setCapabilityInformation(new MACCapability());
-								galNodeWrapper.get_node().getCapabilityInformation().setReceiverOnWhenIdle(_NodeDescriptor.getMACCapabilityFlag().isReceiverOnWhenIdle());
-								galNodeWrapper.get_node().getCapabilityInformation().setAllocateAddress(_NodeDescriptor.getMACCapabilityFlag().isAllocateAddress());
-								galNodeWrapper.get_node().getCapabilityInformation().setAlternatePanCoordinator(_NodeDescriptor.getMACCapabilityFlag().isAlternatePanCoordinator());
-								galNodeWrapper.get_node().getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
-								galNodeWrapper.get_node().getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
-								galNodeWrapper.get_node().getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
-
+								if (galNode.getCapabilityInformation() == null)
+									galNode.setCapabilityInformation(new MACCapability());
+								galNode.getCapabilityInformation().setReceiverOnWhenIdle(_NodeDescriptor.getMACCapabilityFlag().isReceiverOnWhenIdle());
+								galNode.getCapabilityInformation().setAllocateAddress(_NodeDescriptor.getMACCapabilityFlag().isAllocateAddress());
+								galNode.getCapabilityInformation().setAlternatePanCoordinator(_NodeDescriptor.getMACCapabilityFlag().isAlternatePanCoordinator());
+								galNode.getCapabilityInformation().setDeviceIsFFD(_NodeDescriptor.getMACCapabilityFlag().isDeviceIsFFD());
+								galNode.getCapabilityInformation().setMainsPowered(_NodeDescriptor.getMACCapabilityFlag().isMainsPowered());
+								galNode.getCapabilityInformation().setSecuritySupported(_NodeDescriptor.getMACCapabilityFlag().isSecuritySupported());
+								galNodeWrapper.set_node(galNode);
 								galNodeWrapper.reset_numberOfAttempt();
 								galNodeWrapper.set_discoveryCompleted(true);
-								int _index = -1;
-
+								
+								
 								/* If the Node Not Exists */
-								if ((_index = existIntoNetworkCache(_add)) == -1) {
+								if (existIntoNetworkCache(galNodeWrapper)== null) {
 									if (getPropertiesManager().getDebugEnabled())
 										LOG.info("Adding node from SetStatus: " + galNodeWrapper.get_node().getAddress().getNetworkAddress());
 									getNetworkcache().add(galNodeWrapper);
 								}
 								/* The GAl node is already present into the DB */
 								else {
-									getNetworkcache().get(_index).abortTimers();
-									getNetworkcache().get(_index).set_node(galNodeWrapper.get_node());
+									galNodeWrapper = existIntoNetworkCache(galNodeWrapper);
+									galNodeWrapper.abortTimers();
+									galNodeWrapper.set_node(galNode);
 								}
 
 							} else {
@@ -2130,6 +2147,8 @@ public class GalController {
 
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
+					System.out.println("\n\rNodeDiscovered From SetGatewayStatus:" + String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
+
 					try {
 						get_gatewayEventManager().nodeDiscovered(_s, galNodeWrapper.get_node());
 					} catch (Exception e) {
@@ -2563,42 +2582,13 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public short existIntoNetworkCache(Address address) {
-
-		short __indexOnCache = -1;
-		short _indexToReturn = -1;
-		String AddressStr = "";
-		if (getPropertiesManager().getDebugEnabled())
-			LOG.debug("[ExistIntoNetworkCache] Start Search Node ShortAddress: " + ((address.getNetworkAddress() != null) ? String.format("%04X", address.getNetworkAddress()) : "NULL") + " -- IeeeAdd: " + ((address.getIeeeAddress() != null) ? String.format("%04X", address.getIeeeAddress()) : "NULL"));
-		synchronized (getNetworkcache()) {
-			for (WrapperWSNNode y : getNetworkcache()) {
-				if (getPropertiesManager().getDebugEnabled())
-					LOG.debug("[ExistIntoNetworkCache] Short Address:" + ((y.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", y.get_node().getAddress().getNetworkAddress()) : "NULL") + " - IEEE Address:" + ((y.get_node().getAddress().getIeeeAddress() != null) ? String.format("%016X", y.get_node().getAddress().getIeeeAddress()) : "NULL") + " - - Discovery Completed:" + y.is_discoveryCompleted());
-				__indexOnCache++;
-				if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getNetworkAddress() != null && address.getNetworkAddress() != null && y.get_node().getAddress().getNetworkAddress().intValue() == address.getNetworkAddress().intValue()) {
-					AddressStr = String.format("%04X", y.get_node().getAddress().getNetworkAddress());
-					_indexToReturn = __indexOnCache;
-				} else if (y.get_node() != null && y.get_node().getAddress() != null && y.get_node().getAddress().getIeeeAddress() != null && address.getIeeeAddress() != null && y.get_node().getAddress().getIeeeAddress().longValue() == address.getIeeeAddress().longValue()) {
-					AddressStr = String.format("%16X", y.get_node().getAddress().getIeeeAddress());
-
-					_indexToReturn = __indexOnCache;
-				}
-			}
-
-			if (_indexToReturn > -1) {
-				if (getPropertiesManager().getDebugEnabled())
-					LOG.debug("Found node:" + AddressStr);
-				return _indexToReturn;
-			} else {
-				if (address.getNetworkAddress() != null)
-					if (getPropertiesManager().getDebugEnabled())
-						LOG.debug("Not Found node:" + String.format("%04X", address.getNetworkAddress()));
-					else if (address.getIeeeAddress() != null)
-						if (getPropertiesManager().getDebugEnabled())
-							LOG.debug("Not Found node:" + String.format("%16X", address.getIeeeAddress()));
-				return -1;
-			}
-		}
+	public WrapperWSNNode existIntoNetworkCache(WrapperWSNNode nodeToSearch) {
+		int index = getNetworkcache().indexOf(nodeToSearch);
+		if (index >- 1)
+			return getNetworkcache().get(index);
+		else
+			return null;
+		
 	}
 
 	/**

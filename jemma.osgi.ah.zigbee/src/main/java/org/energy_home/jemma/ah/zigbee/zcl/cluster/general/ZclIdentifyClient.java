@@ -150,7 +150,7 @@ public class ZclIdentifyClient extends ZclServiceCluster implements IdentifyClie
 
 	protected IZclFrame parseIdentifyQuery(IdentifyServer o, IZclFrame zclFrame) throws ApplianceException, ServiceClusterException {
 		IdentifyQueryResponse r = o.execIdentifyQuery(endPoint.getDefaultRequestContext());
-		if (r.Timeout > 0) {
+		if (r.Timeout >= 0) {
 			int size = ZclIdentifyQueryResponse.zclSize(r);
 			IZclFrame zclResponseFrame = zclFrame.createResponseFrame(size);
 			zclResponseFrame.setCommandId(0);

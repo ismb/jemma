@@ -65,6 +65,46 @@ ConfMain.onLoad = function() {
 			});
 }
 
+ConfMain.onLoadConfParam = function() {
+
+	$(document).ready(function() {
+				ConfMain.userAgent = navigator.userAgent;
+
+				// Parse the current page's querystring
+				var qs = new Querystring()
+				var ids = new Array();
+				var mode = qs.get("mode", "");
+				InterfaceEnergyHome.mode = 2;
+
+				InterfaceEnergyHome.Init();
+				GestDate.InitActualDate();
+				Tracing.Init(Tracing.CONFIG_HOME, ConfMain.userAgent);
+
+				InterfaceEnergyHome.addListener("service.error", Configurazione.HandleError);
+
+				Menu.Init('MainMenu', 'ContentMenu');
+				readPropFile();
+
+				ConfMain.aggiornaTimestamp();
+
+				// verifico se un id utente e' gia' stato introdotto, nel qual caso passo subito alla pagina degli elettrodomestici
+				// altrimenti aspetto che mi venga inserito e disabilito la configurazione degli elettrodomestici
+				// InterfaceEnergyHome.getHapConnectionId(Configurazione.IdUtenteCb);
+
+				hideSpinner();
+
+				// ogni minuto aggiorno data
+				timerTimeout = setInterval(function() {
+					ConfMain.aggiornaTimestamp();
+				}, 60000);
+			});
+	
+	$("#ContentMain").hide();
+	$("#Content").hide();
+	$("#MainMenu").hide();
+	$("#ContentMenu").hide();
+}
+
 ConfMain.onUnload = function() {
 	if (GestDate.timerDate != null)
 		clearTimeout(GestDate.timerDate);

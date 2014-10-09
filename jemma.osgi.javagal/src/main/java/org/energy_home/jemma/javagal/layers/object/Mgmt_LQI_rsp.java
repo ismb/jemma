@@ -44,9 +44,9 @@ public class Mgmt_LQI_rsp {
 		/* 02 00 01 00 01 */
 		_Status = data[1];
 		if (_Status == 0) {
-			_NeighborTableEntries = data[2];
-			_StartIndex = data[3];
-			_NeighborTableListCount = data[4];
+			_NeighborTableEntries = (short) (data[2] & 0xFF);
+			_StartIndex = (short) (data[3] & 0xFF);
+			_NeighborTableListCount = (short) (data[4] & 0xFF);
 			if (_NeighborTableListCount > 0) {
 				NeighborTableList = new ArrayList<NeighborTableLis_Record>();
 				byte[] _newData = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(data, 5, data.length);
@@ -54,6 +54,8 @@ public class Mgmt_LQI_rsp {
 					byte[] _newData_i = org.energy_home.jemma.javagal.layers.business.Utils.copyOfRange(_newData, (22 * i), 22 * (i + 1));
 					NeighborTableList.add(new NeighborTableLis_Record(_newData_i));
 				}
+			} else {
+				NeighborTableList = new ArrayList<NeighborTableLis_Record>();
 			}
 		} else {
 			LOG.debug("\n\rReceived a not Success status from the LQI Req Status value:" + _Status + "\n\r");
