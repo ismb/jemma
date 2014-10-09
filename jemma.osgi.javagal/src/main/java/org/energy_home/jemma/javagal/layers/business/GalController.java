@@ -1376,7 +1376,7 @@ public class GalController {
 				WSNNode node = new WSNNode();
 				node.setAddress(aoi);
 				x.set_node(node);
-				
+
 				x = existIntoNetworkCache(x);
 				if (x != null) {
 					x.set_nodeServices(_newNodeService);
@@ -2045,10 +2045,9 @@ public class GalController {
 
 					_add.setIeeeAddress(_IeeeAdd);
 					galNode.setAddress(_add);
-					
+
 					WrapperWSNNode galNodeWrapper = new WrapperWSNNode(((GalController) this.getParameter()), String.format("%04X", _add.getNetworkAddress()));
-					
-					
+
 					/* Read the NodeDescriptor of the GAL */
 					NodeDescriptor _NodeDescriptor = null;
 					while (_NodeDescriptor == null) {
@@ -2066,10 +2065,9 @@ public class GalController {
 								galNodeWrapper.set_node(galNode);
 								galNodeWrapper.reset_numberOfAttempt();
 								galNodeWrapper.set_discoveryCompleted(true);
-								
-								
+
 								/* If the Node Not Exists */
-								if (existIntoNetworkCache(galNodeWrapper)== null) {
+								if (existIntoNetworkCache(galNodeWrapper) == null) {
 									if (getPropertiesManager().getDebugEnabled())
 										LOG.info("Adding node from SetStatus: " + galNodeWrapper.get_node().getAddress().getNetworkAddress());
 									getNetworkcache().add(galNodeWrapper);
@@ -2584,11 +2582,11 @@ public class GalController {
 	 */
 	public WrapperWSNNode existIntoNetworkCache(WrapperWSNNode nodeToSearch) {
 		int index = getNetworkcache().indexOf(nodeToSearch);
-		if (index >- 1)
+		if (index > -1)
 			return getNetworkcache().get(index);
 		else
 			return null;
-		
+
 	}
 
 	/**
@@ -2612,7 +2610,10 @@ public class GalController {
 					if (getPropertiesManager().getDebugEnabled())
 						LOG.debug("[getIeeeAddress_FromShortAddress] FOUND Node: " + String.format("%04X", shortAddress));
 
-					return y.get_node().getAddress().getIeeeAddress();
+					if (y.get_node().getAddress().getIeeeAddress() == null)
+						throw new Exception("Iee Null on GAL: " + String.format("%04X", shortAddress));
+					else
+						return y.get_node().getAddress().getIeeeAddress();
 				}
 			}
 			throw new Exception("Short Address not found on GAL: " + String.format("%04X", shortAddress));
@@ -2638,7 +2639,11 @@ public class GalController {
 				if (y.is_discoveryCompleted() && (y.get_node() != null) && (y.get_node().getAddress() != null) && (y.get_node().getAddress().getIeeeAddress() != null) && (y.get_node().getAddress().getNetworkAddress() != null) && y.get_node().getAddress().getIeeeAddress().longValue() == IeeeAddress.longValue()) {
 					if (getPropertiesManager().getDebugEnabled())
 						LOG.debug("[getShortAddress_FromIeeeAddress] FOUND Node: " + String.format("%016X", IeeeAddress));
-					return y.get_node().getAddress().getNetworkAddress();
+
+					if (y.get_node().getAddress().getNetworkAddress() == null)
+						throw new Exception("Shoort Address null on GAL: " + String.format("%016X", IeeeAddress));
+					else
+						return y.get_node().getAddress().getNetworkAddress();
 				}
 			}
 			throw new Exception("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));

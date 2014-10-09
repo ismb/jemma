@@ -261,17 +261,19 @@ public class Discovery_Freshness_ForcePing {
 					}
 
 					if ((function == TypeFunction.FORCEPING) || (function == TypeFunction.DISCOVERY)) {
-						Status _s = new Status();
-						_s.setCode((short) 0x00);
-						_s.setMessage("Successful - " + functionName + " Algorithm");
-						if (getGal().getPropertiesManager().getDebugEnabled())
-							LOG.info("Starting nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
-						System.out.println("\n\rNodeDiscovered From LQI:" + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
+						if (__currentNodeWrapper.get_node().getAddress().getIeeeAddress() != null) {
+							Status _s = new Status();
+							_s.setCode((short) 0x00);
+							_s.setMessage("Successful - " + functionName + " Algorithm");
+							if (getGal().getPropertiesManager().getDebugEnabled())
+								LOG.info("Starting nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+							System.out.println("\n\rNodeDiscovered From LQI:" + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
 
-						getGal().get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
-						if (getGal().getPropertiesManager().getDebugEnabled())
-							LOG.info("Started nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+							getGal().get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
+							if (getGal().getPropertiesManager().getDebugEnabled())
+								LOG.info("Started nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 
+						}
 					}
 
 				}
@@ -319,115 +321,127 @@ public class Discovery_Freshness_ForcePing {
 			if (getGal().existIntoNetworkCache(newNodeWrapperChild) == null) {
 				newNodeWrapperChild.set_discoveryCompleted(false);
 				getGal().getNetworkcache().add(newNodeWrapperChild);
-				/*
-				 * node child not exists
-				 */
+				synchronized (newNodeWrapperChild) {
+					/*
+					 * node child not exists
+					 */
 
-				/* Bug Philips */
-				int counter = 0;
+					/* Bug Philips */
+					int counter = 0;
 
-				while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= 30) {
-					try {
-						if (getGal().getPropertiesManager().getDebugEnabled())
-							LOG.info("LQI DISCOVERY:Sending NodeDescriptorReq to:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
+					while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= 30) {
+						try {
+							if (getGal().getPropertiesManager().getDebugEnabled())
+								LOG.info("LQI DISCOVERY:Sending NodeDescriptorReq to:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
 
-						NodeDescriptor _desc = getGal().getDataLayer().getNodeDescriptorSync(getGal().getPropertiesManager().getCommandTimeoutMS(), newNodeWrapperChild.get_node().getAddress());
+							NodeDescriptor _desc = getGal().getDataLayer().getNodeDescriptorSync(getGal().getPropertiesManager().getCommandTimeoutMS(), newNodeWrapperChild.get_node().getAddress());
 
-						synchronized (newNodeWrapperChild) {
-							newNodeWrapperChild.setNodeDescriptor(_desc);
-							newNodeWrapperChild.get_node().setCapabilityInformation(newNodeWrapperChild.getNodeDescriptor().getMACCapabilityFlag());
+							synchronized (newNodeWrapperChild) {
+								newNodeWrapperChild.setNodeDescriptor(_desc);
+								newNodeWrapperChild.get_node().setCapabilityInformation(newNodeWrapperChild.getNodeDescriptor().getMACCapabilityFlag());
+							}
+							if (getGal().getPropertiesManager().getDebugEnabled()) {
+								LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
+
+							}
+						} catch (Exception e) {
+							LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
+							counter++;
+
 						}
-						if (getGal().getPropertiesManager().getDebugEnabled()) {
-							LOG.info("Readed NodeDescriptor of the new node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
+					}
 
+					if (counter > 30) {
+						gal.getNetworkcache().remove(newNodeWrapperChild);
+						return;
+
+					}
+
+					if (getGal().getPropertiesManager().getDebugEnabled())
+						LOG.info("Adding node from Discovery Child: " + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " -- " + String.format("%016X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()));
+					if (!newNodeWrapperChild.isSleepy()) {
+						newNodeWrapperChild.set_discoveryCompleted(true);
+						if (function == TypeFunction.DISCOVERY) {
+							if (getGal().getPropertiesManager().getDebugEnabled()) {
+								LOG.info("Scheduling Discovery for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
+							}
+							newNodeWrapperChild.setTimerDiscovery(TimeDiscoveryNewNodeSeconds);
+							if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
+								newNodeWrapperChild.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
+							if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
+								newNodeWrapperChild.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
 						}
-					} catch (Exception e) {
-						LOG.error("Error reading Node Descriptor of node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
-						counter++;
 
+						else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING) {
+							if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
+								newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
+							if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
+								newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
+						}
+
+						newNodeWrapperChild.set_discoveryCompleted(true);
+
+						if (newNodeWrapperChild.get_node().getAddress().getIeeeAddress() != null) {
+
+							Status _s = new Status();
+							_s.setCode((short) 0x00);
+							_s.setMessage("Successful - " + funcionName + " Algorithm");
+							System.out.println("\n\rNodeDiscovered From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + "\n\r");
+							getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
+							/*
+							 * Saving the Panid in order to leave the Philips
+							 * light
+							 */
+							getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
+
+							if (getGal().getPropertiesManager().getDebugEnabled()) {
+								LOG.info(funcionName + ": Found new Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+							}
+						}
+
+					} else {
+						/* If Sleepy EndDevice */
+
+						if (newNodeWrapperChild.get_node().getAddress().getIeeeAddress() != null) {
+
+							newNodeWrapperChild.set_discoveryCompleted(true);
+							Status _s = new Status();
+							_s.setCode((short) 0x00);
+							_s.setMessage("Successful - " + funcionName + " Algorithm");
+							System.out.println("\n\rNodeDiscovered From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + "\n\r");
+							getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
+							/*
+							 * Saving the Panid in order to leave the Philips
+							 * light
+							 */
+							getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
+							if (getGal().getPropertiesManager().getDebugEnabled()) {
+								LOG.info(funcionName + ": Found new Sleepy Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+							}
+						}
 					}
 				}
-
-				if (counter > 30) {
-					gal.getNetworkcache().remove(newNodeWrapperChild);
-					return;
-
-				}
-
-				if (getGal().getPropertiesManager().getDebugEnabled())
-					LOG.info("Adding node from Discovery Child: " + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " -- " + String.format("%016X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()));
-				if (!newNodeWrapperChild.isSleepy()) {
-					newNodeWrapperChild.set_discoveryCompleted(true);
-					if (function == TypeFunction.DISCOVERY) {
-						if (getGal().getPropertiesManager().getDebugEnabled()) {
-							LOG.info("Scheduling Discovery for node:" + newNodeWrapperChild.get_node().getAddress().getNetworkAddress());
-						}
-						newNodeWrapperChild.setTimerDiscovery(TimeDiscoveryNewNodeSeconds);
-						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
-							newNodeWrapperChild.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
-						if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
-							newNodeWrapperChild.setTimerForcePing(getGal().getPropertiesManager().getForcePingTimeout());
-					}
-
-					else if (function == TypeFunction.FRESHNESS || function == TypeFunction.FORCEPING) {
-						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0)
-							newNodeWrapperChild.setTimerFreshness(TimeFreshnessNewNodeSeconds);
-						if (getGal().getPropertiesManager().getForcePingTimeout() > 0)
-							newNodeWrapperChild.setTimerForcePing(TimeForcePingNewNodeSeconds);
-					}
-
-					newNodeWrapperChild.set_discoveryCompleted(true);
-					Status _s = new Status();
-					_s.setCode((short) 0x00);
-					_s.setMessage("Successful - " + funcionName + " Algorithm");
-					System.out.println("\n\rNodeDiscovered From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + "\n\r");
-					getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
-					/* Saving the Panid in order to leave the Philips light */
-					getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
-					
-					if (getGal().getPropertiesManager().getDebugEnabled()) {
-						LOG.info(funcionName + ": Found new Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
-					}
-					
-					
-					
-					
-					
-
-				} else {
-					/* If Sleepy EndDevice */
-					newNodeWrapperChild.set_discoveryCompleted(true);
-					Status _s = new Status();
-					_s.setCode((short) 0x00);
-					_s.setMessage("Successful - " + funcionName + " Algorithm");
-					System.out.println("\n\rNodeDiscovered From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + "\n\r");
-					getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
-					/* Saving the Panid in order to leave the Philips light */
-					getGal().getManageMapPanId().setPanid(newNodeWrapperChild.get_node().getAddress().getIeeeAddress(), getGal().getNetworkPanID());
-					if (getGal().getPropertiesManager().getDebugEnabled()) {
-						LOG.info(funcionName + ": Found new Sleepy Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
-					}
-				}
-
 			} else {
-				WrapperWSNNode _copyOfNodeIntoTheList = getGal().existIntoNetworkCache(newNodeWrapperChild);
-				_copyOfNodeIntoTheList = newNodeWrapperChild;
-				if (newNodeWrapperChild.isSleepy()) {
-					Status _s = new Status();
-					_s.setCode((short) 0x00);
-					_s.setMessage("Successful - " + funcionName + " Algorithm");
-					System.out.println("\n\rNodeDiscovered Sleepy From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()) + "\n\r");
-					getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
-					if (getGal().getPropertiesManager().getDebugEnabled()) {
-						LOG.info(funcionName + ": Found Existing Sleepy Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+				newNodeWrapperChild = getGal().existIntoNetworkCache(newNodeWrapperChild);
+				if (newNodeWrapperChild.get_node().getAddress().getIeeeAddress() != null) {
+
+					if (newNodeWrapperChild.isSleepy()) {
+						Status _s = new Status();
+						_s.setCode((short) 0x00);
+						_s.setMessage("Successful - " + funcionName + " Algorithm");
+						System.out.println("\n\rNodeDiscovered Sleepy From LQI__manageChildNode:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()) + "\n\r");
+						getGal().get_gatewayEventManager().nodeDiscovered(_s, newNodeWrapperChild.get_node());
+						if (getGal().getPropertiesManager().getDebugEnabled()) {
+							LOG.info(funcionName + ": Found Existing Sleepy Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " from NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
+						}
 					}
 				} else {
 					if (getGal().getPropertiesManager().getDebugEnabled()) {
 						LOG.info("Found an existing Node:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) + " into NeighborTableListCount of:" + String.format("%04X", node.getNetworkAddress()));
 					}
 				}
-			}
 
+			}
 		}
 	}
 

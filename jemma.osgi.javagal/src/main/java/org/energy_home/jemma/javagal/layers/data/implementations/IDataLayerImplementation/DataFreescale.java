@@ -2158,6 +2158,45 @@ public class DataFreescale implements IDataLayer {
 			messageEvent.getSourceAddress().setNetworkAddress(_short);
 
 		}
+		
+
+		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getSourceAddress().getIeeeAddress() == null)) {
+			BigInteger _iee = null;
+			try {
+				_iee = getGal().getIeeeAddress_FromShortAddress(messageEvent.getSourceAddress().getNetworkAddress());
+			} catch (Exception e) {
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+
+					LOG.error("Message discarded Ieee source address not found, related ShortAddress:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
+			}
+
+			messageEvent.getSourceAddress().setIeeeAddress(_iee);
+
+		}
+		if ((messageEvent.getSourceAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE) && (messageEvent.getSourceAddress().getNetworkAddress() == null)) {
+
+			Integer _short = null;
+			try {
+				_short = getGal().getShortAddress_FromIeeeAddress(messageEvent.getSourceAddress().getIeeeAddress());
+			} catch (Exception e) {
+				if (!(messageEvent.getProfileID() == 0x0000 && (messageEvent.getClusterID() == 0x0013 || messageEvent.getClusterID() == 0x8034 || messageEvent.getClusterID() == 0x8001 || messageEvent.getClusterID() == 0x8031))) {
+
+					LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
+			}
+
+			messageEvent.getSourceAddress().setNetworkAddress(_short);
+
+		}
+		
+		
+
+		if (messageEvent.getSourceAddress().getIeeeAddress() == null) {
+			LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+		}
 
 		if (messageEvent.getProfileID().equals(0)) {/*
 													 * // profileid == 0 ZDO
@@ -2252,7 +2291,6 @@ public class DataFreescale implements IDataLayer {
 		Wrapnode.set_node(node);
 		synchronized (getGal().getNetworkcache()) {
 			/* Update Source Node Data */
-			
 
 			if (getGal().existIntoNetworkCache(Wrapnode) != null) {
 				Wrapnode = getGal().existIntoNetworkCache(Wrapnode);
@@ -2300,7 +2338,7 @@ public class DataFreescale implements IDataLayer {
 								@Override
 								public void run() {
 									WrapperWSNNode _newWrapperNode = (WrapperWSNNode) this.getParameter();
-									if ((_newWrapperNode=getGal().existIntoNetworkCache(_newWrapperNode)) != null) {
+									if ((_newWrapperNode = getGal().existIntoNetworkCache(_newWrapperNode)) != null) {
 										if (getGal().getPropertiesManager().getDebugEnabled()) {
 											LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
 										}
@@ -2329,8 +2367,8 @@ public class DataFreescale implements IDataLayer {
 										}
 										if (counter > 30) {
 
-												getGal().getNetworkcache().remove(_newWrapperNode);
-											
+											getGal().getNetworkcache().remove(_newWrapperNode);
+
 											return;
 
 										}
@@ -2658,8 +2696,7 @@ public class DataFreescale implements IDataLayer {
 			_DSTAdd = BigInteger.valueOf(message.getDestinationAddress().getNetworkAddress());
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
-		if (_DSTAdd != null) 
-		{
+		if (_DSTAdd != null) {
 			String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
 			lock.set_Key(_key);
 			Status status = new Status();
