@@ -649,7 +649,7 @@ public class GalController {
 		WSNNode node = new WSNNode();
 		node.setAddress(aoi);
 		x.set_node(node);
-		x = existIntoNetworkCache(x);
+		x = getFromNetworkCache(x);
 		if (x != null) {
 			if (x.is_discoveryCompleted()) {
 				LQINode _lqinode = new LQINode();
@@ -773,7 +773,7 @@ public class GalController {
 							WSNNode node = new WSNNode();
 							node.setAddress(addrOfInterest);
 							x.set_node(node);
-							x = existIntoNetworkCache(x);
+							x = getFromNetworkCache(x);
 							if (x != null)
 								x.setNodeDescriptor(nodeDescriptor);
 
@@ -824,7 +824,7 @@ public class GalController {
 				WSNNode node = new WSNNode();
 				node.setAddress(addrOfInterest);
 				x.set_node(node);
-				x = existIntoNetworkCache(x);
+				x = getFromNetworkCache(x);
 				if (x != null)
 					x.setNodeDescriptor(nodeDescriptor);
 				return SerializationUtils.clone(nodeDescriptor);
@@ -1324,7 +1324,7 @@ public class GalController {
 							WSNNode node = new WSNNode();
 							node.setAddress(aoi);
 							x.set_node(node);
-							x = existIntoNetworkCache(x);
+							x = getFromNetworkCache(x);
 							if (x != null) {
 								x.set_nodeServices(_newNodeService);
 							}
@@ -1377,7 +1377,7 @@ public class GalController {
 				node.setAddress(aoi);
 				x.set_node(node);
 
-				x = existIntoNetworkCache(x);
+				x = getFromNetworkCache(x);
 				if (x != null) {
 					x.set_nodeServices(_newNodeService);
 				}
@@ -1467,10 +1467,12 @@ public class GalController {
 	 */
 	public void sendAPSMessage(long timeout, long _requestIdentifier, APSMessage message) throws IOException, Exception, GatewayException {
 		if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
+			/*
 			if (message.getDestinationAddress().getNetworkAddress() == null && message.getDestinationAddress().getIeeeAddress() != null)
 				message.getDestinationAddress().setNetworkAddress(getShortAddress_FromIeeeAddress(message.getDestinationAddress().getIeeeAddress()));
 			if (message.getDestinationAddress().getIeeeAddress() == null && message.getDestinationAddress().getNetworkAddress() != null)
 				message.getDestinationAddress().setIeeeAddress(getIeeeAddress_FromShortAddress(message.getDestinationAddress().getNetworkAddress()));
+			*/
 			DataLayer.sendApsSync(timeout, message);
 		} else
 			throw new GatewayException("Gal is not in running state!");
@@ -1546,7 +1548,7 @@ public class GalController {
 									WSNNode node = new WSNNode();
 									node.setAddress(addrOfInterest);
 									x.set_node(node);
-									x = existIntoNetworkCache(x);
+									x = getFromNetworkCache(x);
 									if (x != null) {
 										x.abortTimers();
 										get_gatewayEventManager().nodeRemoved(_s, x.get_node());
@@ -1614,7 +1616,7 @@ public class GalController {
 						WSNNode node = new WSNNode();
 						node.setAddress(addrOfInterest);
 						x.set_node(node);
-						x = existIntoNetworkCache(x);
+						x = getFromNetworkCache(x);
 						if (x != null) {
 							x.abortTimers();
 							get_gatewayEventManager().nodeRemoved(_s, x.get_node());
@@ -1638,7 +1640,7 @@ public class GalController {
 		WSNNode node = new WSNNode();
 		node.setAddress(addrOfInterest);
 		wrapNode.set_node(node);
-		wrapNode = existIntoNetworkCache(wrapNode);
+		wrapNode = getFromNetworkCache(wrapNode);
 		if (wrapNode != null) {
 
 			NodeDescriptor nodeDescriptor = null;
@@ -2067,14 +2069,18 @@ public class GalController {
 								galNodeWrapper.set_discoveryCompleted(true);
 
 								/* If the Node Not Exists */
-								if (existIntoNetworkCache(galNodeWrapper) == null) {
-									if (getPropertiesManager().getDebugEnabled())
-										LOG.info("Adding node from SetStatus: " + galNodeWrapper.get_node().getAddress().getNetworkAddress());
+								if (getFromNetworkCache(galNodeWrapper) == null) {
+									if (getPropertiesManager().getDebugEnabled()){
+										String shortAdd = (galNodeWrapper.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress()): "NULL";
+										String IeeeAdd = (galNodeWrapper.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", galNodeWrapper.get_node().getAddress().getIeeeAddress()): "NULL";
+										
+										LOG.info("Adding node from [SetNetworkStatus Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
+									}
 									getNetworkcache().add(galNodeWrapper);
 								}
 								/* The GAl node is already present into the DB */
 								else {
-									galNodeWrapper = existIntoNetworkCache(galNodeWrapper);
+									galNodeWrapper = getFromNetworkCache(galNodeWrapper);
 									galNodeWrapper.abortTimers();
 									galNodeWrapper.set_node(galNode);
 								}
@@ -2580,12 +2586,14 @@ public class GalController {
 	 *         number indicating the index of the object on network cache
 	 *         otherwise
 	 */
-	public WrapperWSNNode existIntoNetworkCache(WrapperWSNNode nodeToSearch) {
-		int index = getNetworkcache().indexOf(nodeToSearch);
-		if (index > -1)
-			return getNetworkcache().get(index);
-		else
-			return null;
+	public WrapperWSNNode getFromNetworkCache(WrapperWSNNode nodeToSearch) {
+		synchronized (getNetworkcache()) {
+			int index = getNetworkcache().indexOf(nodeToSearch);
+			if (index > -1)
+				return getNetworkcache().get(index);
+			else
+				return null;
+		}
 
 	}
 

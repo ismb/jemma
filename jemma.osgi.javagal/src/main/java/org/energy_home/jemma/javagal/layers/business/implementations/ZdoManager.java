@@ -109,7 +109,7 @@ public class ZdoManager /* implements APSMessageListener */{
 			byte _status = message.getData()[0];
 			if (_status == 0x00) {
 				
-					if ((wrapNode = getGal().existIntoNetworkCache(wrapNode)) != null) {
+					if ((wrapNode = getGal().getFromNetworkCache(wrapNode)) != null) {
 						getGal().getNetworkcache().remove(wrapNode);
 						Status _s = new Status();
 						_s.setCode((short) 0x00);
@@ -161,11 +161,14 @@ public class ZdoManager /* implements APSMessageListener */{
 			_Node.reset_numberOfAttempt();
 			
 			synchronized (getGal().getNetworkcache()) {
-				if ((_Node = getGal().existIntoNetworkCache(_Node)) == null) {
+				if ((getGal().getFromNetworkCache(_Node)) == null) {
 					/* id not exist */
-					if (getGal().getPropertiesManager().getDebugEnabled())
-						LOG.info("Adding node from Node Announcement: " + _Node.get_node().getAddress().getNetworkAddress());
-
+					if (getGal().getPropertiesManager().getDebugEnabled()){
+						String shortAdd = (_Node.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", _Node.get_node().getAddress().getNetworkAddress()): "NULL";
+						String IeeeAdd = (_Node.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", _Node.get_node().getAddress().getIeeeAddress()): "NULL";
+						
+						LOG.info("Adding node from [ZDP Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
+					}
 					getGal().getNetworkcache().add(_Node);
 					if (!_Node.isSleepy()) {
 						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {

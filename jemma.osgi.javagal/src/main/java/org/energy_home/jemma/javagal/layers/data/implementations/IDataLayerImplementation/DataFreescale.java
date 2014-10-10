@@ -185,7 +185,6 @@ public class DataFreescale implements IDataLayer {
 	private byte[] rawnotprocessed = new byte[0];
 
 	private void processAllRaw(ByteArrayObject rawdataObject) {
-		System.out.println("\n\rInto processAllRaw BufferSize[" + rawnotprocessed.length + rawdataObject.getCount(true) + "] AND Blocks to Get[" + getDataFromSerialComm().size() + "]\n\r");
 
 		byte[] partialrawdata = rawdataObject.getArrayRealSize();
 		byte[] fullrawdata = new byte[partialrawdata.length + rawnotprocessed.length];
@@ -248,7 +247,7 @@ public class DataFreescale implements IDataLayer {
 					LOG.error("during process", e);
 				}
 			} else {
-				LOG.info("Checksum KO! Remove all raw bytes!");
+				LOG.error("Checksum KO! Remove all raw bytes!");
 				rawnotprocessed = new byte[0];
 				return;
 			}
@@ -336,10 +335,19 @@ public class DataFreescale implements IDataLayer {
 
 		/* APS-ZDP-Mgmt_Lqi.Response */
 		else if (_command == FreescaleConstants.ZDPMgmtLqiResponse) {
-			if (getGal().getPropertiesManager().getDebugEnabled())
-				LOG.info("Extracted ZDP-Mgmt_Lqi.Response... waiting the related Indication ZDO: " + message.ToHexString());
-
+			short status = ((short) (message.getArray()[3] & 0xFF));
+			if (status == GatewayConstants.SUCCESS) {
+				if (getGal().getPropertiesManager().getDebugEnabled())
+					LOG.info("Extracted ZDP-Mgmt_Lqi.Response with status[" + status + "] ...waiting the related Indication ZDO: " + message.ToHexString());
+			}
+			else
+			{
+				LOG.error("Extracted ZDP-Mgmt_Lqi.Response with wrong status[" + status + "] " + message.ToHexString());
+				
+				
+			}
 		}
+
 		/* ZTC-ReadExtAddr.Confirm */
 		else if (_command == FreescaleConstants.ZTCReadExtAddrConfirm) {
 			ztcReadExtAddrConfirm(message);
@@ -1997,8 +2005,6 @@ public class DataFreescale implements IDataLayer {
 	 */
 	private void apsdeDataIndication(ByteArrayObject message) {
 		final APSMessageEvent messageEvent = new APSMessageEvent();
-		LOG.info("Message INDICATION:" + message.ToHexString());
-
 		messageEvent.setDestinationAddressMode((long) (message.getArray()[3] & 0xFF));
 		BigInteger _ieee = null;
 		Address destinationAddress = new Address();
@@ -2158,7 +2164,6 @@ public class DataFreescale implements IDataLayer {
 			messageEvent.getSourceAddress().setNetworkAddress(_short);
 
 		}
-		
 
 		if ((messageEvent.getSourceAddressMode() == GatewayConstants.ADDRESS_MODE_SHORT) && (messageEvent.getSourceAddress().getIeeeAddress() == null)) {
 			BigInteger _iee = null;
@@ -2191,8 +2196,6 @@ public class DataFreescale implements IDataLayer {
 			messageEvent.getSourceAddress().setNetworkAddress(_short);
 
 		}
-		
-		
 
 		if (messageEvent.getSourceAddress().getIeeeAddress() == null) {
 			LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
@@ -2292,8 +2295,8 @@ public class DataFreescale implements IDataLayer {
 		synchronized (getGal().getNetworkcache()) {
 			/* Update Source Node Data */
 
-			if (getGal().existIntoNetworkCache(Wrapnode) != null) {
-				Wrapnode = getGal().existIntoNetworkCache(Wrapnode);
+			if (getGal().getFromNetworkCache(Wrapnode) != null) {
+				Wrapnode = getGal().getFromNetworkCache(Wrapnode);
 				if (Wrapnode.is_discoveryCompleted()) {
 
 					/* The node is already into the DB */
@@ -2330,15 +2333,19 @@ public class DataFreescale implements IDataLayer {
 							o.set_discoveryCompleted(false);
 							_newNode.setAddress(address);
 							o.set_node(_newNode);
-							if (getGal().getPropertiesManager().getDebugEnabled())
-								LOG.debug("Adding node from AutoDyscoveryNode: " + String.format("%04X", o.get_node().getAddress().getNetworkAddress()));
+							if (getPropertiesManager().getDebugEnabled()) {
+								String shortAdd = (o.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", o.get_node().getAddress().getNetworkAddress()) : "NULL";
+								String IeeeAdd = (o.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", o.get_node().getAddress().getIeeeAddress()) : "NULL";
+
+								LOG.info("Adding node from [AutoDiscovery Nodes] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd);
+							}
 							getGal().getNetworkcache().add(o);
 
 							Runnable thr = new MyRunnable(o) {
 								@Override
 								public void run() {
 									WrapperWSNNode _newWrapperNode = (WrapperWSNNode) this.getParameter();
-									if ((_newWrapperNode = getGal().existIntoNetworkCache(_newWrapperNode)) != null) {
+									if ((_newWrapperNode = getGal().getFromNetworkCache(_newWrapperNode)) != null) {
 										if (getGal().getPropertiesManager().getDebugEnabled()) {
 											LOG.info("AutoDiscoveryUnknownNodes procedure of Node:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()));
 										}
@@ -2722,7 +2729,7 @@ public class DataFreescale implements IDataLayer {
 					WSNNode node = new WSNNode();
 					node.setAddress(message.getDestinationAddress());
 					Wrapnode.set_node(node);
-					Wrapnode = getGal().existIntoNetworkCache(Wrapnode);
+					Wrapnode = getGal().getFromNetworkCache(Wrapnode);
 					if (Wrapnode != null) {
 						if (Wrapnode.isSleepy()) {
 							if (status.getCode() == 0xA7)

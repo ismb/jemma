@@ -57,13 +57,8 @@ public class ZigbeeWhiteGoodAppliance extends ZclAppliance {
 		endPoint.addServiceCluster(new ZclMeterIdentificationServer());
 		endPoint.addServiceCluster(new ZclPartitionServer(new ZclPartitionClient()));
 		endPoint.addServiceCluster(new ZclSimpleMeteringServer());
-		
-		
 		endPoint.addServiceCluster(new ZclIdentifyClient());
 		endPoint.addServiceCluster(new ZclTimeClient());
-		//endPoint.addServiceCluster(new ZclPartitionClient(new Zcl));
-
-		
 	}
 
 	protected void attached() {
