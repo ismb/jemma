@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.hap.client</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.2.16</version>
+	<version>1.2.15</version>
 	<name>Hap Client</name>
 
 	<properties>
