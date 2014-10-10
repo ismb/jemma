@@ -2118,7 +2118,7 @@ public class GalController {
 
 					}
 
-					if (!galNodeWrapper.isSleepy()) {
+					if (!galNodeWrapper.isSleepyOrEndDevice()) {
 						/* If the Node is NOT a sleepyEndDevice */
 
 						if (PropertiesManager.getKeepAliveThreshold() > 0) {

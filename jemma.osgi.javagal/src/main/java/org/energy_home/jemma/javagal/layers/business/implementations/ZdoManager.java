@@ -170,7 +170,7 @@ public class ZdoManager /* implements APSMessageListener */{
 						LOG.info("Adding node from [ZDP Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
 					}
 					getGal().getNetworkcache().add(_Node);
-					if (!_Node.isSleepy()) {
+					if (!_Node.isSleepyOrEndDevice()) {
 						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
 						}

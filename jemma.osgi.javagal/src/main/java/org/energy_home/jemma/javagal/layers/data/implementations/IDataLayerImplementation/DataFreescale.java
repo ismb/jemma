@@ -2301,7 +2301,7 @@ public class DataFreescale implements IDataLayer {
 
 					/* The node is already into the DB */
 					if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
-						if (!Wrapnode.isSleepy()) {
+						if (!Wrapnode.isSleepyOrEndDevice()) {
 							Wrapnode.reset_numberOfAttempt();
 							Wrapnode.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
@@ -2411,7 +2411,7 @@ public class DataFreescale implements IDataLayer {
 										}
 										_newWrapperNode.reset_numberOfAttempt();
 
-										if (!_newWrapperNode.isSleepy()) {
+										if (!_newWrapperNode.isSleepyOrEndDevice()) {
 											_newWrapperNode.set_discoveryCompleted(false);
 											if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
 												_newWrapperNode.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
@@ -2731,7 +2731,7 @@ public class DataFreescale implements IDataLayer {
 					Wrapnode.set_node(node);
 					Wrapnode = getGal().getFromNetworkCache(Wrapnode);
 					if (Wrapnode != null) {
-						if (Wrapnode.isSleepy()) {
+						if (Wrapnode.isSleepyOrEndDevice()) {
 							if (status.getCode() == 0xA7)
 								return status;
 							else

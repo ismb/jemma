@@ -354,7 +354,7 @@ public class Discovery_Freshness_ForcePing {
 				return;
 			}
 
-			if (!newNodeWrapperChild.isSleepy()) {
+			if (!newNodeWrapperChild.isSleepyOrEndDevice()) {
 
 				if (function == TypeFunction.DISCOVERY) {
 					if (getGal().getPropertiesManager().getDebugEnabled())
@@ -397,7 +397,7 @@ public class Discovery_Freshness_ForcePing {
 		/* NodeChild is present into the cache */
 		else {
 			newNodeWrapperChild = getGal().getFromNetworkCache(newNodeWrapperChild);
-			if (newNodeWrapperChild.isSleepy() && newNodeWrapperChild.is_discoveryCompleted()) {
+			if (newNodeWrapperChild.isSleepyOrEndDevice() && newNodeWrapperChild.is_discoveryCompleted()) {
 				Status _s = new Status();
 				_s.setCode((short) 0x00);
 				_s.setMessage("Successful - " + funcionName + " Algorithm");
