@@ -408,6 +408,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeDiscovered(final Status status, final WSNNode node) throws Exception {
+		
+		
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : getGal().getListGatewayEventListener()) {

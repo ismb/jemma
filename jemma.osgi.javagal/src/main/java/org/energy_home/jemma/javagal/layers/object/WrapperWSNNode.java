@@ -131,22 +131,12 @@ public class WrapperWSNNode {
 				else
 					return false;
 			} else {
-				try {
-					throw new Exception("Error in WrapperNode EQUALS");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return false;
-				}
+				return false;
+				
 			}
 		} else {
-			try {
-				throw new Exception("Error in WrapperNode EQUALS");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
-			}
+			
+			return false;
 		}
 
 	}
