@@ -5,7 +5,7 @@ Bundle-Name: A@H configurator
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.configurator
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.7
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.configurator;version="1.0.1"
 Import-Package: javax.xml.parsers;version="[1.3,2)",org.apache.xml.seria

@@ -6,7 +6,7 @@ Bundle-Name: ZigBee Appliances
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.zigbee.appliances
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.4
 Created-By: Apache Maven Bundle Plugin
 Import-Package: org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",or
  g.energy_home.jemma.ah.cluster.zigbee.general;version="[3.1,4)",org.ene
