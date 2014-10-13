@@ -363,7 +363,6 @@ ifLampadaMac.update= function(now){
         $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[device.location]);
         
-                
         //Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
         if (!now && ifLampadaMac.timeout_timer!=null) {
                 if (t-ifLampadaMac.timeout_timer < ifLampadaMac.UPDATE_FREQ) {
@@ -412,6 +411,9 @@ ifLampadaMac.update= function(now){
         }else{
                 ifLampadaMac.stato=-1;
         }
+        
+    	$("#device_" + i + " .StatoElettrodomestico .stato").text(_stato);
+    	
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("ON");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("OFF");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("NP");

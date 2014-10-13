@@ -346,6 +346,9 @@ ifLampada.update= function(now){
         }else{
                 ifLampada.stato=-1;
         }
+        
+    	$("#device_" + i + " .StatoElettrodomestico .stato").text(_stato);
+    	
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("ON");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("OFF");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("NP");

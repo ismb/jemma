@@ -3538,7 +3538,7 @@ public class DataFreescale implements IDataLayer {
 		Status _st0 = ClearDeviceKeyPairSet(timeout, addrOfInterest);
 		Status _st1 = ClearNeighborTableEntry(timeout, addrOfInterest);
 		Status status = new Status();
-		status.setCode((short) (_st0.getCode() & _st1.getCode()));
+		status.setCode((short) GatewayConstants.SUCCESS);
 
 		return status;
 	}
