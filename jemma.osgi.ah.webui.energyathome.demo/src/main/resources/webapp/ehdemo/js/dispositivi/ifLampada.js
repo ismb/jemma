@@ -114,6 +114,7 @@ ifLampada.init=function(_clusters){
         $( "#onoff" ).click(function( event ) {
                 event.preventDefault();
                 var myId= "#"+$(this).attr("id");
+                var i = $("#Interfaccia").data("current_index");
                 if (ifLampada.stato==1) {
    
                         var pid=$("#Interfaccia").data("pid");
@@ -136,6 +137,13 @@ ifLampada.init=function(_clusters){
                                                 
                                                 $('#lum').slider("value",0);
                                                 $('#lum_perc').html(0+"%");
+                                                
+                                            	$("#device_" + i + " .StatoElettrodomestico .stato").text("OFF");
+                                            	
+                                                $("#device_" + i).removeClass("ONOFF");
+                                                $("#device_" + i).removeClass("OFF");
+                                                $("#device_" + i).removeClass("ON");
+                                                $("#device_" + i).addClass("ONOFF");
                                                 
                                                 //InterfaceEnergyHome.objService.getInfos(function(result, err){
                                                 //        for ( var k in result.list) {
@@ -176,6 +184,13 @@ ifLampada.init=function(_clusters){
                                             $('#lum_perc').html(ifLampada.lum+"%");
 
                                             ifLampada.timeout_timer=new Date().getTime();
+                                            
+                                        	$("#device_" + i + " .StatoElettrodomestico .stato").text("ON");
+                                        	
+                                            $("#device_" + i).removeClass("ONOFF");
+                                            $("#device_" + i).removeClass("OFF");
+                                            $("#device_" + i).removeClass("ON");
+                                            $("#device_" + i).addClass("ON");
                                     }
                             }
                                      
@@ -264,7 +279,7 @@ ifLampada.init=function(_clusters){
                 }
         }
         ifLampada.update(true);
-    
+        ifLampada.sync();
 };
 
 ifLampada.toColorePercepito=function(color){
@@ -346,8 +361,6 @@ ifLampada.update= function(now){
         }else{
                 ifLampada.stato=-1;
         }
-        
-    	$("#device_" + i + " .StatoElettrodomestico .stato").text(_stato);
     	
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("ON");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("OFF");
