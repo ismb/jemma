@@ -672,7 +672,7 @@ Elettrodomestici.refreshDevices=function(){
 						}
 					} else {
 						stato = "OFF";
-						class_stato = "OFF";
+						class_stato = "ONOFF";
 					}
 				} else if (Elettrodomestici.listaElettrodomestici[i].stato > 1){
 					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){
@@ -723,7 +723,7 @@ Elettrodomestici.refreshDevices=function(){
 						}
 					} else {
 						stato = "OFF";
-						class_stato = "OFF";
+						class_stato = "ONOFF";
 					}
 				}
 
@@ -948,8 +948,12 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 			estensioneIcona = "_acceso.png";
 
 		} else {
-			//Altrimenti lo visualizzo spento
-			estensioneIcona = "_spento.png";
+			if (connessioneElettr == 2){
+				estensioneIcona = "_acceso.png";
+			} else {
+				//Se il dispositivo e' una lavatrice ed NON e' connesso
+				estensioneIcona = "_spento.png";
+			}
 
 		}
 	} else {
