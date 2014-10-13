@@ -4,7 +4,7 @@ Bundle-Name: Java Gal Gui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.javagal.gui
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.1
+Bundle-Version: 1.1.1.qualifier
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
  ",javax.servlet.http;version="[2.5,3)",org.osgi.framework;version="[1.5

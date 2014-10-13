@@ -263,8 +263,8 @@ ifLampada.init=function(_clusters){
                         
                 }
         }
+        ifLampada.sync();
         ifLampada.update(true);
-    
 };
 
 ifLampada.toColorePercepito=function(color){
