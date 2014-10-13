@@ -256,11 +256,11 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * Check if the Node is a sleepy device
+	 * Check if the Node is a sleepy end device or end device
 	 */
-	public synchronized boolean isSleepy() {
+	public synchronized boolean isSleepyOrEndDevice() {
 		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+			if (_node.getCapabilityInformation().isDeviceIsFFD())
 				return false;
 			else
 				return true;

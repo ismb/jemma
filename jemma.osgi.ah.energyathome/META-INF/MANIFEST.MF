@@ -5,18 +5,18 @@ Bundle-Name: Energyathome
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.energyathome;singleton:=true
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 2.2.26
+Bundle-Version: 2.2.25
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.ebrain;uses:="org.energy_home.j
  emma.ah.ebrain.algo,org.energy_home.jemma.m2m.ah,org.energy_home.jemma.
  shal,org.slf4j,org.energy_home.jemma.m2m,org.energy_home.jemma.ah.ebrai
  n.old,org.energy_home.jemma.ah.cluster.zigbee.eh,org.energy_home.jemma.
- ah.hap.client";version="2.2.26",org.energy_home.jemma.ah.ebrain.algo;us
+ ah.hap.client";version="2.2.25",org.energy_home.jemma.ah.ebrain.algo;us
  es:="org.energy_home.jemma.ah.ebrain,org.energy_home.jemma.ah.ebrain.ol
- d,org.energy_home.jemma.ah.cluster.zigbee.eh,org.slf4j";version="2.2.26
+ d,org.energy_home.jemma.ah.cluster.zigbee.eh,org.slf4j";version="2.2.25
  ",org.energy_home.jemma.ah.ebrain.old;uses:="org.energy_home.jemma.ah.c
  luster.zigbee.eh,org.energy_home.jemma.m2m.ah,org.energy_home.jemma.ah.
- ebrain,org.energy_home.jemma.ah.ebrain.algo,org.slf4j";version="2.2.26"
+ ebrain,org.energy_home.jemma.ah.ebrain.algo,org.slf4j";version="2.2.25"
  ,org.energy_home.jemma.ah.eh.esp;version="2.2.4"
 Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
  on="[2.5,3)",org.apache.http;version="[4.1,5)",org.apache.http.util;ver

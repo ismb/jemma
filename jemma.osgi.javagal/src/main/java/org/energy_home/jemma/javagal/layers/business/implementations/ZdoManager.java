@@ -145,11 +145,13 @@ public class ZdoManager /* implements APSMessageListener */{
 			n.setAddress(_add);
 			byte _Capability = message.getData()[11];
 			byte _AlternatePANCoordinator = (byte) (_Capability & 0x01);/* bit0 */
+			byte _DeviceIsFFD = (byte) ((_Capability & 0x02) >> 1);/* Bit1 */
 			byte _PowerSource = (byte) ((_Capability & 0x04) >> 2);/* bit2 */
 			byte _ReceiverOnWhenIdle = (byte) ((_Capability & 0x08) >> 3);/* bit3 */
 			byte _SecurityCapability = (byte) ((_Capability & 0x40) >> 6);/* bit6 */
 			byte _AllocateAddress = (byte) ((_Capability & 0x80) >> 7);/* bit7 */
 			MACCapability _mac = new MACCapability();
+			_mac.setDeviceIsFFD((_DeviceIsFFD == 1 ? true : false));
 			_mac.setAllocateAddress((_AllocateAddress == 1 ? true : false));
 			_mac.setAlternatePanCoordinator((_AlternatePANCoordinator == 1 ? true : false));
 			_mac.setMainsPowered((_PowerSource == 1 ? true : false));
@@ -170,7 +172,7 @@ public class ZdoManager /* implements APSMessageListener */{
 						LOG.info("Adding node from [ZDP Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
 					}
 					getGal().getNetworkcache().add(_Node);
-					if (!_Node.isSleepy()) {
+					if (!_Node.isSleepyOrEndDevice()) {
 						if (getGal().getPropertiesManager().getKeepAliveThreshold() > 0) {
 							_Node.setTimerFreshness(getGal().getPropertiesManager().getKeepAliveThreshold());
 						}

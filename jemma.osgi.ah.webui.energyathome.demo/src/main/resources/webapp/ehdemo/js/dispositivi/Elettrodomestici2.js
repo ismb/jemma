@@ -615,7 +615,7 @@ Elettrodomestici.refreshDevices=function(){
 					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
 						stato = "OPEN";
 						class_stato = "ON";
-					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 35){
+					} else if ((Elettrodomestici.listaElettrodomestici[i].categoria == 35) || (Elettrodomestici.listaElettrodomestici[i].categoria == 34)){
 						stato = "ON";
 						class_stato = "ON";
 					} else if (Elettrodomestici.listaElettrodomestici[i].type == 'whitegood'){
@@ -648,7 +648,7 @@ Elettrodomestici.refreshDevices=function(){
 					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
 						stato = "CLOSE";
 						class_stato = "ON";
-					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 35){
+					} else if ((Elettrodomestici.listaElettrodomestici[i].categoria == 35) || (Elettrodomestici.listaElettrodomestici[i].categoria == 34)){
 						stato = "OFF";
 						class_stato = "ONOFF";
 					} else if (Elettrodomestici.listaElettrodomestici[i].type == 'whitegood'){
@@ -694,7 +694,7 @@ Elettrodomestici.refreshDevices=function(){
 							stato = "OPEN";
 							class_stato = "ON";
 						}
-					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 35){
+					} else if ((Elettrodomestici.listaElettrodomestici[i].categoria == 35) || (Elettrodomestici.listaElettrodomestici[i].categoria == 34)){
 						if (Elettrodomestici.listaElettrodomestici[i].stato == 1){
 							stato = "ON";
 							class_stato = "ON";
@@ -935,7 +935,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 					estensioneIcona = "_disconnesso.png";
 				}
 			}
-		} else if ((typeElettr == 'whitegood') || (categoriaElettr == 35)){
+		} else if ((typeElettr == 'whitegood') || (categoriaElettr == 34) || (categoriaElettr == 35)){
 			//Se il dispositivo e' una lavatrice ed e' connesso
 			if (connessioneElettr == 2){
 				estensioneIcona = "_acceso.png";
@@ -954,7 +954,7 @@ Elettrodomestici.getIcon=function(elettrodomestico, forza_stato){
 		}
 	} else {
 		//whitegood
-		if ((typeElettr == 'whitegood') || (categoriaElettr == 35)){
+		if ((typeElettr == 'whitegood') || (categoriaElettr == 34) || (categoriaElettr == 35)){
 			/*//Se il dispositivo e' una lavatrice ed e' in standby
 			if (consumoElettr <= 0){
 				//Il device whitegood consuma 0W, quindi spento

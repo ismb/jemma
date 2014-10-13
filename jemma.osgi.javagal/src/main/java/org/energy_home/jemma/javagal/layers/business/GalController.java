@@ -1540,7 +1540,6 @@ public class GalController {
 							try {
 
 								leavePhilips(timeout, _requestIdentifier, addrOfInterest);
-
 								_s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 								if (_s.getCode() == GatewayConstants.SUCCESS) {
 									/* get the node from cache */
@@ -1553,11 +1552,11 @@ public class GalController {
 										x.abortTimers();
 										get_gatewayEventManager().nodeRemoved(_s, x.get_node());
 										getNetworkcache().remove(x);
+										get_gatewayEventManager().notifyleaveResult(_s);
+										get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
 									}
 								}
 
-								get_gatewayEventManager().notifyleaveResult(_s);
-								get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
 
 							} catch (IOException e) {
 								Status _s1 = new Status();
@@ -1608,7 +1607,6 @@ public class GalController {
 
 				if (!addrOfInterest.getNetworkAddress().equals(GalNode.get_node().getAddress().getNetworkAddress())) {
 					leavePhilips(timeout, _requestIdentifier, addrOfInterest);
-
 					Status _s = DataLayer.leaveSync(timeout, addrOfInterest, mask);
 					if (_s.getCode() == GatewayConstants.SUCCESS) {
 						/* get the node from cache */
@@ -1621,10 +1619,11 @@ public class GalController {
 							x.abortTimers();
 							get_gatewayEventManager().nodeRemoved(_s, x.get_node());
 							getNetworkcache().remove(x);
+							get_gatewayEventManager().notifyleaveResult(_s);
+							get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
 						}
 					}
-					get_gatewayEventManager().notifyleaveResult(_s);
-					get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
+					
 					return SerializationUtils.clone(_s);
 				} else
 					throw new GatewayException("Is not possible Leave the GAL!");
@@ -2118,7 +2117,7 @@ public class GalController {
 
 					}
 
-					if (!galNodeWrapper.isSleepy()) {
+					if (!galNodeWrapper.isSleepyOrEndDevice()) {
 						/* If the Node is NOT a sleepyEndDevice */
 
 						if (PropertiesManager.getKeepAliveThreshold() > 0) {

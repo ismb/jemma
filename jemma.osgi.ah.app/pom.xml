@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.app</artifactId>
 	<packaging>bundle</packaging>
-	<version>3.3.1</version>
+	<version>3.3.0</version>
 	<name>Energy@Home application infos</name>
 	<properties>
 		<main.dir>${project.parent.basedir}</main.dir>

@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.utils</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.7</version>
+	<version>1.0.6</version>
 	<name>Osgi Utils</name>
 
 	<parent>

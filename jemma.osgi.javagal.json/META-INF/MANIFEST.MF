@@ -5,17 +5,17 @@ Bundle-Name: Java Gal json
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.javagal.json
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.1
+Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.javagal.json;uses:="org.energy_hom
  e.jemma.zgd,org.osgi.util.tracker,org.osgi.framework,org.osgi.service.h
  ttp,org.slf4j,javax.servlet,org.energy_home.jemma.javagal.json.constant
  s,javax.servlet.http,org.energy_home.jemma.javagal.json.servlet";versio
- n="1.1",org.energy_home.jemma.javagal.json.constants;version="1.1",org.
+ n="1.0",org.energy_home.jemma.javagal.json.constants;version="1.0",org.
  energy_home.jemma.javagal.json.servlet;uses:="javax.servlet,org.energy_
  home.jemma.zgd.jaxb,org.energy_home.jemma.zgd,com.google.gson,javax.ser
- vlet.http,org.energy_home.jemma.javagal.json.util";version="1.1",org.en
- ergy_home.jemma.javagal.json.util;uses:="org.slf4j";version="1.1"
+ vlet.http,org.energy_home.jemma.javagal.json.util";version="1.0",org.en
+ ergy_home.jemma.javagal.json.util;uses:="org.slf4j";version="1.0"
 Import-Package: com.google.gson;version="[2.2,3)",javax.servlet;version=
  "[2.5,3)",javax.servlet.http;version="[2.5,3)",org.energy_home.jemma.zg
  d;version="1.4.1",org.energy_home.jemma.zgd.jaxb;version="[1.0,2)",org.

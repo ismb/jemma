@@ -299,6 +299,17 @@ public class Discovery_Freshness_ForcePing {
 		newNodeChild.setAddress(_addressChild);
 		MACCapability _mac = new MACCapability();
 		_mac.setReceiverOnWhenIdle((x._RxOnWhenIdle == 1) ? true : false);
+		/*
+		 * 0x0 = ZigBee coordinator 0x1 = ZigBee router 0x2 = ZigBee end device
+		 */
+		switch (((short) x._Device_Type & 0xFF)) {
+		case 0x00:
+		case 0x01:
+			_mac.setDeviceIsFFD(true);
+			break;
+		case 0x02:
+			_mac.setDeviceIsFFD(false);
+		}
 		newNodeChild.setCapabilityInformation(_mac);
 		newNodeChild.setParentAddress(node);
 		newNodeChild.setStartIndex(x._Depth);
@@ -312,12 +323,12 @@ public class Discovery_Freshness_ForcePing {
 
 		if (getGal().getFromNetworkCache(newNodeWrapperChild) == null) {
 			newNodeWrapperChild.set_discoveryCompleted(false);
-			
-			if (getGal().getPropertiesManager().getDebugEnabled()){
-				String shortAdd = (newNodeWrapperChild.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()): "NULL";
-				String IeeeAdd = (newNodeWrapperChild.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()): "NULL";
-				
-				LOG.info("Adding node from [DiscoveryChild] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
+
+			if (getGal().getPropertiesManager().getDebugEnabled()) {
+				String shortAdd = (newNodeWrapperChild.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()) : "NULL";
+				String IeeeAdd = (newNodeWrapperChild.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", newNodeWrapperChild.get_node().getAddress().getIeeeAddress()) : "NULL";
+
+				LOG.info("Adding node from [DiscoveryChild] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd);
 			}
 			getGal().getNetworkcache().add(newNodeWrapperChild);
 
@@ -354,7 +365,7 @@ public class Discovery_Freshness_ForcePing {
 				return;
 			}
 
-			if (!newNodeWrapperChild.isSleepy()) {
+			if (!newNodeWrapperChild.isSleepyOrEndDevice()) {
 
 				if (function == TypeFunction.DISCOVERY) {
 					if (getGal().getPropertiesManager().getDebugEnabled())
@@ -397,7 +408,7 @@ public class Discovery_Freshness_ForcePing {
 		/* NodeChild is present into the cache */
 		else {
 			newNodeWrapperChild = getGal().getFromNetworkCache(newNodeWrapperChild);
-			if (newNodeWrapperChild.isSleepy() && newNodeWrapperChild.is_discoveryCompleted()) {
+			if (newNodeWrapperChild.isSleepyOrEndDevice() && newNodeWrapperChild.is_discoveryCompleted()) {
 				Status _s = new Status();
 				_s.setCode((short) 0x00);
 				_s.setMessage("Successful - " + funcionName + " Algorithm");
