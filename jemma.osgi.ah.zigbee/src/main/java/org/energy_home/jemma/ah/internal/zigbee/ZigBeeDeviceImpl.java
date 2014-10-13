@@ -206,8 +206,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
 			if (!res) {
 				pendingReplies.remove(key);
-
-				throw new ZigBeeException("error sending message to ZigBee device");
+				throw new ZigBeeException("error sending message to ZigBee device Ieee:" + this.getIeeeAddress() + " -- ProfileId:" + profileId +  " -- ClusterID:" + clusterId);
 			}
 		}
 		try {
