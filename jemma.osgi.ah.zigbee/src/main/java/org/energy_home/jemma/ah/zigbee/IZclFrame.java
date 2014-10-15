@@ -30,9 +30,9 @@ public interface IZclFrame {
 
 	public void disableDefaultResponse(boolean disableDefaultResponse);
 
-	public byte getFrameControlField();
+	public short getFrameControlField();
 
-	public byte getSequenceNumber();
+	public short getSequenceNumber();
 
 	public int getManufacturerCode() throws ZigBeeException;
 

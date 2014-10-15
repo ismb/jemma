@@ -1495,10 +1495,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							if (enableAllClusters) {
 								inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 							}
-							/*
-							 * Ho cambiato il valore di timeout perch� grave;
-							 * 100ms &egrave; troppo poco [Marco Nieddu]
-							 */
+							
 							localEndpoint = gateway.configureEndpoint(10000, sd);
 							// start discovery announcement
 							gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
@@ -1791,6 +1788,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				this.terminateDeviceDiscoveryForJoinedDevices();
 				this.handleNextDiscoveredNode();
 			} else {
+				
 				timerCancel(permitJoinAllTimer);
 				this.postEvent("ah/zigbee/OPEN_NETWORK", null);
 				timerStart(permitJoinAllTimer, duration);
@@ -2329,6 +2327,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void openNetwork(int duration) throws Exception {
 		permitJoin((short) duration);
+	
 		lastOpenRequestTimestamp = System.currentTimeMillis();
 	}
 
