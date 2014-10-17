@@ -293,6 +293,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
+		context.setMaxAgeForAttributeValues(25000);//In order to read from the cache
 
 		try {
 			ahHttpAdapter = new AhHttpAdapter(this, this.applicationWebAlias);
@@ -1767,8 +1768,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		int availability = 0;
 		int state = 0;
 		boolean isStateChangable = false;
-
 		String locationPid = null;
+
 		String categoryPid = null;
 
 		Hashtable props = new Hashtable();
