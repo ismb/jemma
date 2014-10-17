@@ -339,12 +339,9 @@ public class DataFreescale implements IDataLayer {
 			if (status == GatewayConstants.SUCCESS) {
 				if (getGal().getPropertiesManager().getDebugEnabled())
 					LOG.info("Extracted ZDP-Mgmt_Lqi.Response with status[" + status + "] ...waiting the related Indication ZDO: " + message.ToHexString());
-			}
-			else
-			{
+			} else {
 				LOG.error("Extracted ZDP-Mgmt_Lqi.Response with wrong status[" + status + "] " + message.ToHexString());
-				
-				
+
 			}
 		}
 
@@ -3535,8 +3532,20 @@ public class DataFreescale implements IDataLayer {
 		}
 
 		SendRs232Data(_res);
-		Status _st0 = ClearDeviceKeyPairSet(timeout, addrOfInterest);
-		Status _st1 = ClearNeighborTableEntry(timeout, addrOfInterest);
+
+		
+		/*In order to skip error during these commands*/
+		try {
+			Status _st0 = ClearDeviceKeyPairSet(timeout, addrOfInterest);
+		} catch (Exception e) {
+		}
+
+		try {
+			Status _st1 = ClearNeighborTableEntry(timeout, addrOfInterest);
+		} catch (Exception e) {
+		}
+
+		/*Always success to up layers*/
 		Status status = new Status();
 		status.setCode((short) GatewayConstants.SUCCESS);
 
