@@ -608,6 +608,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return greenathomeEndPoint.getPeerAppliances();
 	}
 
+	/*
 	public synchronized Vector getInfos() {
 
 		Vector infos = new Vector();
@@ -674,27 +675,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 			}
 
-			/*
-			 * if (readApplianceStatus) { ApplianceControlServer
-			 * applianceControlServer = (ApplianceControlServer)
-			 * greenathomeEndPoint.getPeerServiceCluster(
-			 * peerAppliance.getPid(), ApplianceControlServer.class.getName());
-			 * if (applianceControlServer != null) { isStateChangable = true;
-			 * availability = ((IServiceCluster)
-			 * applianceControlServer).getEndPoint().isAvailable() ? 2 : 0;
-			 * 
-			 * int applianceStatus = 0;
-			 * 
-			 * try { applianceStatus =
-			 * applianceControlServer.getApplianceStatus(null);
-			 * 
-			 * if (logEnabled) log.debug("applianceStatus is " +
-			 * applianceStatus);
-			 * 
-			 * if (applianceStatus < 0x03) { state = Off; } else { state = On; }
-			 * } catch (Exception e) { state = Unknown; // availability = 0; } }
-			 * }
-			 */
 			ThermostatServer thermostatServer = (ThermostatServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ThermostatServer.class.getName());
 
 			if (thermostatServer != null) {
@@ -702,7 +682,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
 
-			/* Added by Marco */
+			// Added by Marco
 			DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 			if (doorLockServer != null) {
 				isStateChangable = true;
@@ -714,17 +694,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				isStateChangable = true;
 				availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
-
-			/*
-			 * WindowCoveringClient windowCoveringClient =
-			 * (WindowCoveringClient)
-			 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
-			 * WindowCoveringClient.class.getName()); if (windowCoveringClient
-			 * != null) { isStateChangable = true; availability =
-			 * ((IServiceCluster)
-			 * windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0; }
-			 */
-			/* End by Marco */
 
 			RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
 			if (humidityServer != null) {
@@ -821,7 +790,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		}
 		return props;
-	}
+	}*/
 
 	public ICategory[] getCategories(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
@@ -940,13 +909,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 	}
 
-	/*
+	/*TOLTA PER MANCATO UTILIZZO!!
 	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * org.energy_home.jemma.ah.internal.greenathome.GreenAtHomeApplianceService
 	 * # getInfosNew()
-	 */
+	 
 	public synchronized Dictionary getInfosNew() {
 		Vector activeDevices = new Vector();
 		Vector notActiveDevices = new Vector();
@@ -1039,7 +1008,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 		return null;
 
-	}
+	}*/
 
 	static final int Off = 0;
 	static final int On = 1;
@@ -1066,8 +1035,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (onOffServer != null) {
 			if (state == On) {
 				try {
-					// 4Noks smart plugs require to disable default response to
-					// work!!!
+					// 4Noks smart plugs require to disable default response to work!!!
 					onOffServer.execOn(context);
 				} catch (Exception e) {
 					if (logEnabled)
@@ -1076,8 +1044,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 			} else if (state == Off) {
 				try {
-					// 4Noks smart plugs require to disable default response to
-					// work!!!
+					// 4Noks smart plugs require to disable default response to work!!!
 					onOffServer.execOff(context);
 				} catch (Exception e) {
 					LOG.debug("setDeviceState returned exception '" + e.getMessage(), e);
@@ -1145,25 +1112,18 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 			if (windowCoveringServer != null) {
-				LOG.info("================> setDeviceState WindowCovering Server Istanziato");
-				LOG.info("================> setDeviceState WindowCovering Server " + peerAppliance.getPid() + " state = " + state);
 				try {
 					if (state == Stopped) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execStop");
 						windowCoveringServer.execStop(context);
 					} else if (state == UpOpen) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execUpOpen");
 						windowCoveringServer.execUpOpen(context);
 					} else if (state == DownClose) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execDownClose");
 						windowCoveringServer.execDownClose(context);
 					} else if (state == OpenPercentage) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.execGoToLiftPercentage");
 						windowCoveringServer.execGoToLiftPercentage(value, context);
 					} else
 						return false;
 				} catch (Exception e) {
-					LOG.error("execCommandExecution exception " + e.getMessage(), e);
 					return false;
 				}
 			} else
@@ -1175,31 +1135,24 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	public int getDeviceState(IAppliance peerAppliance, int state) throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
-			LOG.info("================> getDeviceState WindowCovering Server " + peerAppliance.getPid() + " state = " + state);
 
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
 
 			if (windowCoveringServer != null) {
 				try {
 					if (state == CurrentPositionLiftPercentage) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getCurrentPositionLiftPercentage");
 						return windowCoveringServer.getCurrentPositionLiftPercentage(context);
 					} else if (state == InfoInstalledOpenLimit) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledOpenLimit");
 						return windowCoveringServer.getInstalledOpenLimit(context);
 					} else if (state == InfoInstalledClosedLimit) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledClosedLimit");
 						return windowCoveringServer.getInstalledClosedLimit(context);
 					} else if (state == InfoInstalledOpenLimitTilt) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledOpenLimitTilt");
 						return windowCoveringServer.getInstalledOpenLimitTilt(context);
 					} else if (state == InfoInstalledClosedLimit) {
-						LOG.info("================> getDeviceState WindowCovering Server windowCoveringServer.getInstalledClosedLimitTilt");
 						return windowCoveringServer.getInstalledClosedLimitTilt(context);
 					} else
 						return UnknownWC;
 				} catch (Exception e) {
-					LOG.error("execCommandExecution exception " + e.getMessage(), e);
 					return UnknownWC;
 				}
 			} else
