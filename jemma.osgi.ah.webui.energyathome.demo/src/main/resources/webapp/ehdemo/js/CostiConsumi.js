@@ -884,11 +884,11 @@ CostiConsumi.GestConsumi = function() {
 CostiConsumi.ExitConsumi = function() {
 	Log.alert(80, CostiConsumi.MODULE, "CostiConsumi.ExitConsumi");
 	if (CostiConsumi.timerPotenza != null) {
-		clearTimeout(CostiConsumi.timerPotenza);
+		clearInterval(CostiConsumi.timerPotenza);
 		CostiConsumi.timerPotenza = null;
 	}
 	if (CostiConsumi.timerConsumi != null) {
-		clearTimeout(CostiConsumi.timerConsumi);
+		clearInterval(CostiConsumi.timerConsumi);
 		CostiConsumi.timerConsumi = null;
 	}
 	InterfaceEnergyHome.Abort();

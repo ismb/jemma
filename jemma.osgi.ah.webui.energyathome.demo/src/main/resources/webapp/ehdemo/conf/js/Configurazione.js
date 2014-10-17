@@ -183,7 +183,7 @@ Configurazione.HandleServiceEvent = function(status) {
 
 Configurazione.cancelTimeouts = function() {
 	if (Configurazione.timerStato != null) {
-		clearTimeout(Configurazione.timerStato);
+		clearInterval(Configurazione.timerStato);
 		Configurazione.timerStato = null;
 	}
 	if (Configurazione.timerVis != null) {
@@ -731,7 +731,7 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 	} else {
 		// fermo la ricerca
 		if (Configurazione.timerInquiry != null) {
-			clearTimeout(Configurazione.timerInquiry);
+			clearInterval(Configurazione.timerInquiry);
 			Configurazione.timerInquiry = null;
 		}
 
