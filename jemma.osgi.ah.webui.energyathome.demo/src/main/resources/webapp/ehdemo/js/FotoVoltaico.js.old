@@ -330,19 +330,19 @@ CostiConsumi.ExitFotoVoltaico = function() {
 	if (Main.env == 0) console.log('FotoVoltaico.js', 'ExitFotoVoltaico', 'Entro!');
 
 	if (CostiConsumi.timerPotenza != null) {
-		clearTimeout(CostiConsumi.timerPotenza); 
+		clearInterval(CostiConsumi.timerPotenza); 
 	  	CostiConsumi.timerPotenza = null; 
 	} 
 	if (CostiConsumi.timerPowerMeter != null) {
-		clearTimeout(CostiConsumi.timerPowerMeter); 
+		clearInterval(CostiConsumi.timerPowerMeter); 
 	  	CostiConsumi.timerPowerMeter = null; 
 	}
 	if (CostiConsumi.timerConsumi != null) {
-		clearTimeout(CostiConsumi.timerConsumi); 
+		clearInterval(CostiConsumi.timerConsumi); 
 	  	CostiConsumi.timerConsumi = null; 
 	}
 	if (CostiConsumi.timerBlink != null) {
-		clearTimeout(CostiConsumi.timerBlink); 
+		clearInterval(CostiConsumi.timerBlink); 
 	  	CostiConsumi.timerBlink = null; 
 	}
 	CostiConsumi.consumoGiornaliero = null;
@@ -700,7 +700,7 @@ CostiConsumi.VisGrafico = function() {
 	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
 	var dataVenduta = new Array();
 	var dataAcquistata = new Array();
-	var newdataConsumi = new Array(); //Questa mi serve per visualizzare nel grafico il dato del consumo - l'energia comprata (così il totale visualizzato è il totale dell'energia consumata)
+	var newdataConsumi = new Array(); //Questa mi serve per visualizzare nel grafico il dato del consumo - l'energia comprata (cosÔøΩ il totale visualizzato ÔøΩ il totale dell'energia consumata)
 	
 	if (Main.env == 0) console.log('dataConsumi', dataConsumi);
 	if (Main.env == 0) console.log('dataIAC', dataIAC);
@@ -728,7 +728,7 @@ CostiConsumi.VisGrafico = function() {
 			
 			tmpAcquistata = tmp - dataIAC[index];
 			if (tmpAcquistata < 0){
-				//Ho prodotto di più di quanto ho consumato
+				//Ho prodotto di piÔøΩ di quanto ho consumato
 				dataVenduta[index] = Math.abs(tmpAcquistata);
 				dataAcquistata[index] = 0;
 			} else {
@@ -1646,12 +1646,12 @@ CostiConsumi.changeGestTimer = function(){
 	//  e visualizzare un messaggio all'utente.
 	CostiConsumi.timerPotenza = setInterval("CostiConsumi.GetDatiPotenza()", CostiConsumi.TIMER_CHANGE_TIMER);
 	var err = {};
-	err.msg = "L'aggiornamento verrà effettuato ogni 15', per ripristinare l'aggiornamento al minuto, aggiornare la pagina.";
+	err.msg = "L'aggiornamento verrÔøΩ effettuato ogni 15', per ripristinare l'aggiornamento al minuto, aggiornare la pagina.";
 	InterfaceEnergyHome.GestErrorEH("changeGestTimer", err);
 }
 */
 
-/* Vecchio grafico che può tornare utile
+/* Vecchio grafico che puÔøΩ tornare utile
    Visualizza solo il consumo e la produzione
 
 chartConsumi = new Highcharts.Chart({
