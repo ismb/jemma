@@ -26,11 +26,11 @@ public class ZclFrame implements IZclFrame {
 	public ZclFrame(int fcf, int payloadSize) {
 		this((byte) fcf, payloadSize);
 	}
-	
+
 	public ZclFrame(int fcf) {
 		this((byte) fcf, 0);
 	}
-	
+
 	public ZclFrame(byte fcf, int payloadSize) {
 
 		if ((fcf & MANUFACTURER_SPECIFIC_MASK) > 0) {
@@ -86,15 +86,15 @@ public class ZclFrame implements IZclFrame {
 		return data;
 	}
 
-	public byte getFrameControlField() {
-		return data[0];
+	public short getFrameControlField() {
+		return (short) (data[0] & 0xFF);
 	}
 
-	public byte getSequenceNumber() {
+	public short getSequenceNumber() {
 		if (isManufacturerSpecific())
-			return data[3];
+			return (short) (data[3] & 0xFF);
 		else
-			return data[1];
+			return (short) (data[1] & 0xFF);
 	}
 
 	public boolean isClientToServer() {
@@ -102,11 +102,11 @@ public class ZclFrame implements IZclFrame {
 	}
 
 	public boolean isServerToClient() {
-		return ((data[0] & DIRECTION_MASK) > 0);
+		return (((data[0] & 0xFF) & DIRECTION_MASK) > 0);
 	}
 
 	public boolean isDefaultResponseDisabled() {
-		return (data[0] & DISABLE_DEFAULT_RESPONSE_MASK) > 0;
+		return ((data[0] & 0xFF) & DISABLE_DEFAULT_RESPONSE_MASK) > 0;
 	}
 
 	public void setDirection(byte direction) {
@@ -146,7 +146,7 @@ public class ZclFrame implements IZclFrame {
 	}
 
 	public boolean isManufacturerSpecific() {
-		return (data[0] & MANUFACTURER_SPECIFIC_MASK) > 0;
+		return ((data[0] & 0xFF) & MANUFACTURER_SPECIFIC_MASK) > 0;
 	}
 
 	public void appendULongWithSize(long l, int size) {
@@ -203,7 +203,7 @@ public class ZclFrame implements IZclFrame {
 			appendUInt8((short) 0xFF); // invalid value
 			return;
 		}
-		
+
 		appendUInt8((short) octets.length);
 		for (int i = 0; i < octets.length; i++) {
 			data[pos++] = octets[i];
@@ -216,14 +216,14 @@ public class ZclFrame implements IZclFrame {
 			appendUInt8((short) 0xFF); // invalid value
 			return;
 		}
-		
+
 		int len = s.length();
-		
+
 		// FIXME: check if this check is correct!!!
 		if (len > size) {
 			throw new ZigBeeException();
 		}
-		
+
 		appendUInt8((short) s.length());
 		byte[] c = s.getBytes();
 		for (int i = 0; i < len; i++) {
@@ -281,7 +281,7 @@ public class ZclFrame implements IZclFrame {
 		}
 		return d;
 	}
-	
+
 	public String parseString() {
 		int len = parseUInt8();
 		if (len == 0xff) {
@@ -299,9 +299,9 @@ public class ZclFrame implements IZclFrame {
 			appendUInt8((short) 0xFF); // invalid value
 			return;
 		}
-		
+
 		int len = value.length();
-		
+
 		appendUInt8((short) value.length());
 		byte[] c = value.getBytes();
 		for (int i = 0; i < len; i++) {
@@ -398,19 +398,18 @@ public class ZclFrame implements IZclFrame {
 	public void setFrameType(byte frameType) {
 		data[0] = (byte) ((data[0] & ~FRAME_TYPE_MASK) | (frameType & FRAME_TYPE_MASK));
 	}
-	
+
 	public void appendArray(byte[] array) {
 		System.arraycopy(array, 0, this.data, pos, array.length);
 	}
-	
+
 	public void appendArray(byte[] array, boolean swap) {
 		if (swap) {
 			int j = pos + array.length - 1;
 			for (int i = 0; i < array.length; i++) {
 				data[j--] = array[i];
 			}
-		}
-		else
+		} else
 			System.arraycopy(array, 0, this.data, pos, array.length);
 	}
 
@@ -420,11 +419,11 @@ public class ZclFrame implements IZclFrame {
 
 	public byte[] parseArray(int len) {
 		byte[] array = new byte[len];
-		System.arraycopy(this.data, pos, array,0 , len);
+		System.arraycopy(this.data, pos, array, 0, len);
 		pos += len;
 		return array;
 	}
-	
+
 	public byte[] parseArray(int len, boolean swap) {
 		if (swap) {
 			byte[] array = new byte[len];
@@ -434,8 +433,7 @@ public class ZclFrame implements IZclFrame {
 				array[i] = data[j--];
 			}
 			return array;
-		}
-		else 
+		} else
 			return parseArray(len);
 	}
 }

@@ -335,38 +335,26 @@
 													}
 												}
 											}
-											var strNetworkAddress = padLeft(4,
-													nObj.address.networkAddress
-															.toString(16));
-											var strIeeeAddress = padLeft(16,
-													nObj.address.ieeeAddress
-															.toString(16));
-
+											var strNetworkAddress = padLeft(4, nObj.address.networkAddress.toString(16));
+											var strIeeeAddress = padLeft(16, nObj.address.ieeeAddress.toString(16));
+											
 											if (nObj.capabilityInformation=='undefined')
 												vLogical = "No capability information";
 											else if (strNetworkAddress == 0)
 												vLogical = "Coordinator";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
-													&& nObj.capabilityInformation.deviceIsFFD == false)
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == false && nObj.capabilityInformation.deviceIsFFD == false && nObj.capabilityInformation.mainsPowered == false)
 												vLogical = "Sleepy EndDevice";
-											else if (nObj.capabilityInformation.receiverOnWhenIdle == false
-													&& nObj.capabilityInformation.deviceIsFFD == true)
+											else if (nObj.capabilityInformation.receiverOnWhenIdle == true && nObj.capabilityInformation.deviceIsFFD == false)
 												vLogical = "End Device";
 											else if (nObj.capabilityInformation.receiverOnWhenIdle == true)
 												vLogical = "Router";
 											else
-												vLogical = "RxOnIdle="
-														+ nObj.capabilityInformation.receiverOnWhenIdle
-														+ "/IsFFD="
-														+ nObj.capabilityInformation.deviceIsFFD;
+												vLogical = "RxOnIdle=" + nObj.capabilityInformation.receiverOnWhenIdle
+														+ "/IsFFD=" + nObj.capabilityInformation.deviceIsFFD;
 											
 											var currentNode = {
-												nAdd : '0x'
-														+ strNetworkAddress
-																.toUpperCase(),
-												iAdd : '0x'
-														+ strIeeeAddress
-																.toUpperCase(),
+												nAdd : '0x' + strNetworkAddress.toUpperCase(),
+												iAdd : '0x' + strIeeeAddress.toUpperCase(),
 												logical : vLogical,
 												start : nObj.startIndex,
 												devices : associatedString,

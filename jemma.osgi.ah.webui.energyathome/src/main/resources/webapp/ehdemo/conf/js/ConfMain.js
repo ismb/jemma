@@ -67,7 +67,7 @@ ConfMain.onLoad = function() {
 
 ConfMain.onUnload = function() {
 	if (GestDate.timerDate != null)
-		clearTimeout(GestDate.timerDate);
+		clearInterval(GestDate.timerDate);
 
 	InterfaceEnergyHome.removeListener("service.error", Configurazione.HandleError);
 
