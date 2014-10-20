@@ -172,6 +172,19 @@ public class Discovery_Freshness_ForcePing {
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
 								LOG.info(functionName + " completed for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 							}
+							
+							/* Executing the NodeDiscovered */
+							if ((function == TypeFunction.FORCEPING) || (function == TypeFunction.DISCOVERY)) {
+								Status _s = new Status();
+								_s.setCode((short) 0x00);
+								_s.setMessage("Successful - " + functionName + " Algorithm");
+								if (getGal().getPropertiesManager().getDebugEnabled())
+									LOG.info("Starting nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+								System.out.println("\n\rNodeDiscovered From LQI:" + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()) + "\n\r");
+								getGal().get_gatewayEventManager().nodeDiscovered(_s, __currentNodeWrapper.get_node());
+								if (getGal().getPropertiesManager().getDebugEnabled())
+									LOG.info("Started nodeDiscovered from function: " + functionName + " Node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
+							}
 							return;
 						}
 						/* _LqiListCount != 0 */
