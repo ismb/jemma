@@ -5,7 +5,7 @@ Bundle-Name: Energy@Home Web Application Demo
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.ah.webui.energyathome.demo
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0.45
+Bundle-Version: 1.0.44
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.security.auth.login,javax.servlet;version="[2.5,3)
  ",javax.servlet.http;version="[2.5,3)",org.apache.commons.logging;versi

@@ -119,19 +119,19 @@ CostiConsumi.ExitConsumi = function() {
 	if (Main.env == 0) console.log('CostiConsumi3.js', 'ExitConsumi', 'Entro!');
 
 	if (CostiConsumi.timerPotenzaCC != null) {
-		clearTimeout(CostiConsumi.timerPotenzaCC); 
+		clearInterval(CostiConsumi.timerPotenzaCC); 
 	 	CostiConsumi.timerPotenzaCC = null; 
 	} 
 	if (CostiConsumi.timerPowerMeter != null) {
-		clearTimeout(CostiConsumi.timerPowerMeter); 
+		clearInterval(CostiConsumi.timerPowerMeter); 
 	  	CostiConsumi.timerPowerMeter = null; 
 	}
 	if (CostiConsumi.timerConsumi != null) {
-		clearTimeout(CostiConsumi.timerConsumi); 
+		clearInterval(CostiConsumi.timerConsumi); 
 	  	CostiConsumi.timerConsumi = null; 
 	}
 	if (CostiConsumi.timerBlink != null) {
-		clearTimeout(CostiConsumi.timerBlink); 
+		clearInterval(CostiConsumi.timerBlink); 
 	  	CostiConsumi.timerBlink = null; 
 	}
 	  

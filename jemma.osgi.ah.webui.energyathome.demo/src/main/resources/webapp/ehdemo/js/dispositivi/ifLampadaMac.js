@@ -72,6 +72,8 @@ ifLampadaMac.init=function(_clusters){
                 var value=Math.round(ifLampadaMac.lum/100*254);
                 var time=10;
                 InterfaceEnergyHome.objService.levelControlExecMoveToLevelWithOnOff(function(result, err){
+                    Elettrodomestici.removeSpinner("#Interfaccia");
+                    $("#ifLampadaMac").show();
                         
                         if (err!=null) {
                                 ifLampadaMac.update(true);        
@@ -82,6 +84,8 @@ ifLampadaMac.init=function(_clusters){
                         }
                         
                 },pid,value,time);
+                Elettrodomestici.addSpinner("#Interfaccia","none");
+                $("#ifLampadaMac").hide();
                 
             }
         });
@@ -90,6 +94,7 @@ ifLampadaMac.init=function(_clusters){
         $( "#onoff" ).click(function( event ) {
                 event.preventDefault();
                 var myId= "#"+$(this).attr("id");
+                var i = $("#Interfaccia").data("current_index");
                 if (ifLampadaMac.stato==1) {
    
                         var pid=$("#Interfaccia").data("pid");
@@ -97,6 +102,8 @@ ifLampadaMac.init=function(_clusters){
                                 return;
                         
                         InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+                            Elettrodomestici.removeSpinner("#Interfaccia");
+                            $("#ifLampadaMac").show();
                                 if (err!=null) {
                                         ifLampadaMac.update(true);
                                         
@@ -113,6 +120,13 @@ ifLampadaMac.init=function(_clusters){
                                                 $('#lum').slider("value",0);
                                                 $('#lum_perc').html(0+"%");
                                                 
+                                            	$("#device_" + i + " .StatoElettrodomestico .stato").text("OFF");
+                                            	
+                                                $("#device_" + i).removeClass("ONOFF");
+                                                $("#device_" + i).removeClass("OFF");
+                                                $("#device_" + i).removeClass("ON");
+                                                $("#device_" + i).addClass("ONOFF");
+                                                
                                                 //InterfaceEnergyHome.objService.getInfos(function(result, err){
                                                 //        for ( var k in result.list) {
                                                 //                console.log("->>"+k+": "+result.list[k]);
@@ -127,6 +141,8 @@ ifLampadaMac.init=function(_clusters){
                                         ifLampadaMac.timeout_timer=new Date().getTime();
                                 }
                         }, pid,0);
+                        Elettrodomestici.addSpinner("#Interfaccia","none");
+                        $("#ifLampadaMac").hide();
                     
                     
                 }else if(ifLampadaMac.stato==0){
@@ -136,6 +152,8 @@ ifLampadaMac.init=function(_clusters){
                             return;
                     
                     InterfaceEnergyHome.objService.setDeviceState(function(result, err){
+                        Elettrodomestici.removeSpinner("#Interfaccia");
+                        $("#ifLampadaMac").show();
                             if (err!=null) {
                                     ifLampadaMac.update(true);
                             }else if (result!=null) {
@@ -153,10 +171,19 @@ ifLampadaMac.init=function(_clusters){
                                         $('#lum_perc').html(ifLampadaMac.lum+"%");
 
                                         ifLampadaMac.timeout_timer=new Date().getTime();
+                                        
+                                    	$("#device_" + i + " .StatoElettrodomestico .stato").text("ON");
+                                    	
+                                        $("#device_" + i).removeClass("ONOFF");
+                                        $("#device_" + i).removeClass("OFF");
+                                        $("#device_" + i).removeClass("ON");
+                                        $("#device_" + i).addClass("ON");
                                     }
                             }
                                      
                     }, pid,1);
+                    Elettrodomestici.addSpinner("#Interfaccia","none");
+                    $("#ifLampadaMac").hide();
                 }
                
                 
@@ -229,6 +256,8 @@ ifLampadaMac.init=function(_clusters){
                                                 return;
                                         
                                         InterfaceEnergyHome.objService.colorControlMoveToColorHS(function(result, err){
+                                        	Elettrodomestici.removeSpinner("#Interfaccia");
+                                            $("#ifLampadaMac").show();
                                                 
                                                 if (err!=null) {
                                                         ifLampadaMac.update(true);     
@@ -243,6 +272,8 @@ ifLampadaMac.init=function(_clusters){
                                                 }
                                              
                                         }, pid,h,s,10);
+                                        Elettrodomestici.addSpinner("#Interfaccia","none");
+                                        $("#ifLampadaMac").hide();
                         });
                         
                         
@@ -263,20 +294,24 @@ ifLampadaMac.init=function(_clusters){
                                         var h=Math.round(tc.h/360*254);
                                         var s=0;//Math.round( rc.s*254);
                                         InterfaceEnergyHome.objService.colorControlMoveToColorHS(function(result, err){
+                                        	Elettrodomestici.removeSpinner("#Interfaccia");
+                                            $("#ifLampadaMac").show();
                                                 if (err!=null) {
                                                         ifLampadaMac.update(true);
                                                         
                                                 }else if (result!=null) {
-                                                        if (result==true) {
+                                                        //if (result==true) {
                                                                                                 
                                                                 $(myId).addClass("OFF");
                                                                 $(myId).removeClass("ON");
                                                                 ifLampadaMac.stato_colore=0;
-                                                        }
+                                                        //}
                                                         ifLampadaMac.timeout_timer=new Date().getTime();
                                                         
                                                 }
                                         }, pid,h,s,10);
+                                        Elettrodomestici.addSpinner("#Interfaccia","none");
+                                        $("#ifLampadaMac").hide();
                                     
                                     
                                 }else if(ifLampadaMac.stato_colore==0){
@@ -288,21 +323,25 @@ ifLampadaMac.init=function(_clusters){
                                         var h=Math.round(tc.h/360*254);
                                         var s=254;//Math.round( rc.s*254);
                                         InterfaceEnergyHome.objService.colorControlMoveToColorHS(function(result, err){
+                                        	Elettrodomestici.removeSpinner("#Interfaccia");
+                                            $("#ifLampadaMac").show();
                                                 if (err!=null) {
                                                         ifLampadaMac.update(true);
                                                         
                                                 }else if (result!=null) {
-                                                        if (result==true) {
+                                                        //if (result==true) {
                                                                                                 
                                                                 $(myId).addClass("ON");
                                                                 $(myId).removeClass("OFF");
                                                                 ifLampadaMac.stato_colore=1;
                                                                 
                                 
-                                                        }
+                                                        //}
                                                         ifLampadaMac.timeout_timer=new Date().getTime();
                                                 }
                                         }, pid,h,s,10);
+                                        Elettrodomestici.addSpinner("#Interfaccia","none");
+                                        $("#ifLampadaMac").hide();
                                 }
                                
                                 
@@ -314,7 +353,6 @@ ifLampadaMac.init=function(_clusters){
                 }
         }
         ifLampadaMac.update(true);
-    
 };
 
 ifLampadaMac.getWhiteColor=function(){
@@ -363,7 +401,6 @@ ifLampadaMac.update= function(now){
         $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[device.location]);
         
-                
         //Non aggiorno oltre l'interfaccia se passa troppo poco tempo dall'ultimo comando
         if (!now && ifLampadaMac.timeout_timer!=null) {
                 if (t-ifLampadaMac.timeout_timer < ifLampadaMac.UPDATE_FREQ) {
@@ -412,6 +449,7 @@ ifLampadaMac.update= function(now){
         }else{
                 ifLampadaMac.stato=-1;
         }
+    	
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("ON");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("OFF");
         $("#Interfaccia #OnOffControl .btnToggle").removeClass("NP");
@@ -460,6 +498,8 @@ ifLampadaMac.update= function(now){
                 }
                 
                 InterfaceEnergyHome.objService.levelControlGetCurrentValue(function(result, err){
+                    Elettrodomestici.removeSpinner("#Interfaccia");
+                    $("#ifLampadaMac").show();
                         if (err!=null) {
                                 code
                                 
@@ -474,7 +514,9 @@ ifLampadaMac.update= function(now){
                                 }
                                
                         }
-                }, pid);     
+                }, pid);  
+                Elettrodomestici.addSpinner("#Interfaccia","none");
+                $("#ifLampadaMac").hide();   
         
         }
         
@@ -484,6 +526,8 @@ ifLampadaMac.update= function(now){
                 Elettrodomestici.addSpinner("#Interfaccia", "#0a0a0a");
                 
                 InterfaceEnergyHome.objService.colorControlGetColorHS(function(result, err){
+                    Elettrodomestici.removeSpinner("#Interfaccia");
+                    $("#ifLampadaMac").show();
                         
                         Elettrodomestici.removeSpinner("#Interfaccia");
                         
@@ -529,6 +573,8 @@ ifLampadaMac.update= function(now){
                                 }
                         }
                 }, pid);  
+                Elettrodomestici.addSpinner("#Interfaccia","none");
+                $("#ifLampadaMac").hide();
         
         }
         
