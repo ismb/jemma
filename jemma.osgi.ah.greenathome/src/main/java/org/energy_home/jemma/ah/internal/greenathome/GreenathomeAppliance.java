@@ -293,7 +293,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		context.setMaxAgeForAttributeValues(25000);//In order to read from the cache
+		context.setMaxAgeForAttributeValues(120000);//In order to read from the cache
 
 		try {
 			ahHttpAdapter = new AhHttpAdapter(this, this.applicationWebAlias);
