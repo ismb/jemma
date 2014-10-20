@@ -9,6 +9,16 @@ Welcome to the home page of **JEMMA** - **J**ava **E**nergy **M**anage**M**ent *
 
 <table>
 <tr>
+<div align="center" id="demo-container" style="background-color: rgb(255,255,255); width:100%; margin-bottom: 5px" >
+<div id="demo" style="background-color: #FFF799; border: 2px solid rgb(14, 82, 3); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
+<span style="text-align:center; font-size: x-large"><b>Participate to the <a href="http://gnammo.com/events/1657/smart-home-hackathon">SmartHome Hackaton</a>!</b><br>
+Torino, November 21-23 2014<br/> 
+<span style="font-size:large">Click <a href="https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis">here</a> to learn in advance how to <a href="https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis">build your app with JEMMA APIs</a><br/>
+</div>
+</div>
+
+</tr>
+<tr>
 <td>
 <div align="center" id="demo-container" style="background-color: rgb(255,255,255); width:160px;" >
 <div id="demo" style="background-color: rgb(240, 255, 214); border: 2px solid rgb(14, 82, 3); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
