@@ -118,6 +118,7 @@ import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ext.ApplianceConfiguration;
 import org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminService;
 import org.energy_home.jemma.ah.hac.lib.ext.IHacService;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerServiceClusterProxy;
 import org.energy_home.jemma.ah.hap.client.AHContainerAddress;
 import org.energy_home.jemma.ah.hap.client.AHContainers;
 import org.energy_home.jemma.ah.hap.client.IM2MHapService;
@@ -157,6 +158,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private static final String SMARTINFO_APP_TYPE = "org.energy_home.jemma.ah.zigbee.metering";
 	private static final String APPLIANCE_ID_SEPARATOR = "-";
 	private Properties props;
+
 	// Returns an array with two items: appliance pid and end point id
 	public static String[] getDeviceIds(String applianceId) {
 		String[] deviceIds = new String[2];
@@ -221,7 +223,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	protected Job readInfosJob;
 
-	
 	private IHacService hacService;
 
 	// private HashMap installingAppliances = new HashMap();
@@ -264,7 +265,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		// FIXME config aspects of this bundle to be checked.
 
 		greenathomeEndPoint = (EndPoint) addEndPoint(END_POINT_TYPE);
-		
+
 		greenathomeEndPoint.registerCluster(ConfigClient.class.getName());
 		greenathomeEndPoint.registerCluster(ApplianceControlClient.class.getName(), this);
 		greenathomeEndPoint.registerCluster(OnOffClient.class.getName());
@@ -292,7 +293,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		
+		context.setMaxAgeForAttributeValues(25000);//In order to read from the cache
+
 		try {
 			ahHttpAdapter = new AhHttpAdapter(this, this.applicationWebAlias);
 		} catch (Throwable e) {
@@ -931,7 +933,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (this.hacService != null) {
 				// !!! Energy@home webui compatibility
 				String[] ids = getDeviceIds(appliancePid);
-				//appliancePid = ids[0];
+				// appliancePid = ids[0];
 				IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 				this.hacService.removeAppliance(appliancePid);
 			} else
@@ -1044,7 +1046,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	static final int On = 1;
 	static final int Unknown = 4;
 
-	//DoorLock State
+	// DoorLock State
 	static final int DoorLockCloseUnLock = 0;
 	static final int DoorLockClose = 1;
 	static final int DoorLockOpen = 2;
@@ -1118,8 +1120,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		return true;
 	}
-	
-	//WindowCovering State
+
+	// WindowCovering State
 	static final int CurrentPositionLiftPercentage = 0;
 	static final int InfoInstalledOpenLimit = 1;
 	static final int InfoInstalledClosedLimit = 2;
@@ -1140,10 +1142,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	 */
 	public boolean setDeviceState(IAppliance peerAppliance, int state, short value) {
 		synchronized (lockGatH) {
-			
+
 			WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
-			
-			if (windowCoveringServer != null) {  
+
+			if (windowCoveringServer != null) {
 				LOG.info("================> setDeviceState WindowCovering Server Istanziato");
 				LOG.info("================> setDeviceState WindowCovering Server " + peerAppliance.getPid() + " state = " + state);
 				try {
@@ -1167,7 +1169,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 			} else
 				return false;
-	
+
 			return true;
 		}
 	}
@@ -1311,27 +1313,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
 						}
-
-						// if (applianceControlServer != null) {
-						// if (useReportingOnApplianceControlServer) {
-						// ((IServiceCluster)
-						// applianceControlServer).setAttributeSubscription(
-						// ApplianceControlServer.ATTR_CycleTarget0_NAME, new
-						// SubscriptionParameters(2, 50, 1), null);
-						// ((IServiceCluster)
-						// applianceControlServer).setAttributeSubscription(
-						// ApplianceControlServer.ATTR_TemperatureTarget0_NAME,
-						// new SubscriptionParameters(2, 50, 1),
-						// null);
-						// ((IServiceCluster)
-						// applianceControlServer).setAttributeSubscription(
-						// ApplianceControlServer.ATTR_Spin_NAME, new
-						// SubscriptionParameters(2, 50, 1), null);
-						// }
-						// } else {
-						// log.debug("ApplianceControl Server Cluster missing on appliance "
-						// + peerAppliancePid);
-						// }
 
 						SimpleMetering4NoksServer simpleMetering4NoksServer = (SimpleMetering4NoksServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, SimpleMetering4NoksServer.class.getName());
 
@@ -1767,10 +1748,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 	}
 
-	private boolean doReadOnOff() {
-		return (count % 4) == 0;
-	}
-
 	private int count = 0;
 
 	private String encodeGenericApplianceType(String appType, String endPointType) {
@@ -1791,8 +1768,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		int availability = 0;
 		int state = 0;
 		boolean isStateChangable = false;
-
 		String locationPid = null;
+
 		String categoryPid = null;
 
 		Hashtable props = new Hashtable();
@@ -1821,13 +1798,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			if (availability == 2) {
 				Boolean onOffValue = (Boolean) this.onOffValues.get(peerAppliance.getPid());
-				if (doReadOnOff() || (onOffValue == null)) {
+				if (onOffValue == null) {
 					try {
 						onOff = onOffServer.getOnOff(context);
 						this.onOffValues.put(peerAppliance.getPid(), new Boolean(onOff));
 
 					} catch (Exception e) {
-						// availability = 0;
+
 						state = Unknown;
 					}
 				} else {
@@ -1843,26 +1820,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				state = Unknown;
 			}
 		}
-
-		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName(), endPointId);
-
-		/*
-		 * if (applianceControlServer != null) { availability =
-		 * ((IServiceCluster)
-		 * applianceControlServer).getEndPoint().isAvailable() ? 2 : 0; if
-		 * (readApplianceStatus) { isStateChangable = true;
-		 * 
-		 * int applianceStatus = 0;
-		 * 
-		 * try { applianceStatus =
-		 * applianceControlServer.getApplianceStatus(null);
-		 * 
-		 * if (logEnabled) log.debug("applianceStatus is " + applianceStatus);
-		 * 
-		 * if (applianceStatus < 0x03) { state = Off; } else { state = On; } }
-		 * catch (Exception e) { state = Unknown; } } else { state = Unknown; }
-		 * }
-		 */
 
 		IASZoneServer iasZoneServer = (IASZoneServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), IASZoneServer.class.getName(), endPointId);
 
@@ -2012,11 +1969,32 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (thermostatServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
+
+			if (availability == 2) {
+				float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
+				String value = localTemperature + " &degC";
+				attributeValue = new AttributeValueExtended("LocalTemperature", new AttributeValue(value));
+				if (attributeValue != null)
+					props.put("device_value", attributeValue);
+			}
+
 		}
+
 		RelativeHumidityMeasurementServer humidityServer = (RelativeHumidityMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), RelativeHumidityMeasurementServer.class.getName());
 		if (humidityServer != null) {
 			isStateChangable = true;
 			availability = ((IServiceCluster) humidityServer).getEndPoint().isAvailable() ? 2 : 0;
+			if (availability == 2) {
+				String value = "";
+				float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
+				value += " " + humididy + "%";
+				attributeValue = new AttributeValueExtended("LocalHumidity", new AttributeValue(value));
+
+				System.out.println("Humidity:" + value);
+				if (attributeValue != null)
+					props.put("device_value", attributeValue);
+			}
+
 		}
 
 		/* Added by Marco */
@@ -2026,6 +2004,12 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			isStateChangable = true;
 			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
 			state = Unknown;
+			if (availability == 2) {
+				Short currentLock = doorLockServer.getLockState(context);
+				attributeValue = new AttributeValueExtended("LockState", new AttributeValue(currentLock));
+				if (attributeValue != null)
+					props.put("device_value", attributeValue);
+			}
 		}
 
 		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
@@ -2033,28 +2017,46 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			isStateChangable = true;
 			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
 			state = Unknown;
-			LOG.info("******WindowCoveringServer isAvailable=" + availability);
+			if (availability == 2) {
+				Short currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
+				attributeValue = new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift));
+				if (attributeValue != null)
+					props.put("device_value", attributeValue);
+			}
+
 		}
 
-		/*
-		 * WindowCoveringClient windowCoveringClient = (WindowCoveringClient)
-		 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
-		 * WindowCoveringClient.class.getName()); if (windowCoveringClient !=
-		 * null) { isStateChangable = true; availability = ((IServiceCluster)
-		 * windowCoveringClient).getEndPoint().isAvailable() ? 2 : 0;
-		 * LOG.info("******WindowCoveringClient isAvailable="+availability); }
-		 */
-		/* End Marco */
-
-		// handle Smart Info and Smart Plugs
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
+		if (simpleMeteringServer != null) {
+			if (onOffServer == null) {
+				availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+			}
 
-		if (onOffServer == null && simpleMeteringServer != null) {
-			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+			if (!useReportingOnSimpleMetering) {
+				double power;
+				try {
+					power = this.readPower(peerAppliance);
+					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power));
+
+				} catch (Exception e) {
+					power = 0;
+				}
+
+			} else {
+				Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
+
+				if (istantaneousDemand != null) {
+					attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(istantaneousDemand.doubleValue()));
+				} else if (this.fakeMode) {
+					attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(123.1));
+				}
+			}
+			if (attributeValue != null)
+				props.put("device_value", attributeValue);
 		}
 
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName(), endPointId);
-
 		if (configServer != null) {
 			locationPid = configServer.getLocationPid(null);
 
@@ -2080,71 +2082,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			} catch (Exception e) {
 				props.put(IAppliance.APPLIANCE_ICON_PROPERTY, "plug.png");
 			}
-		} else
-			return null;
-
-		props.put("device_state_avail", new Boolean(isStateChangable));/*MARCO non è utilizzato dalle GUI*/
-		props.put("device_state", new Integer(state));/*MARCO USATO PER IDENTIFICARE LO STATO ON OFF*/
-		props.put("availability", new Integer(availability));/*MARCO CONNESSO / DISCONNESSO*/
-		
-
-		if (thermostatServer != null) {
-			availability = ((IServiceCluster) thermostatServer).getEndPoint().isAvailable() ? 2 : 0;
-			if (availability == 2) {
-				float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
-
-				String value = localTemperature + " &degC";
-				attributeValue = new AttributeValueExtended("LocalTemperature", new AttributeValue(value));
-				if (humidityServer != null) {
-					float humididy = (float) (humidityServer.getMeasuredValue(context) / 100.0);
-					value += " " + humididy + "%";
-				}
-			}
-		} else if (simpleMeteringServer != null) {
-			if (!useReportingOnSimpleMetering) {
-				double power;
-				try {
-					power = this.readPower(peerAppliance);
-					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
-						attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power));
-
-				} catch (Exception e) {
-					power = 0;
-				}
-
-			} else {
-				Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
-
-				if (istantaneousDemand != null) {
-					attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(istantaneousDemand.doubleValue()));
-				} else if (this.fakeMode) {
-					attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(123.1));
-				}
-			}
 		}
-		/* Added by Marco Nieddu */
-		else if ((doorLockServer != null) && (availability == 2)) {
 
-			Short currentLock = doorLockServer.getLockState(context);
-			attributeValue = new AttributeValueExtended("LockState", new AttributeValue(currentLock));
+		props.put("device_state_avail", new Boolean(isStateChangable));
+		props.put("device_state", new Integer(state));
+		props.put("availability", new Integer(availability));
 
-		} else if ((windowCoveringServer != null) && (availability == 2)) {
-
-			Short currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
-			attributeValue = new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift));
-
-		}
-		/* End Marco Nieddu by Marco Nieddu */
-		if (attributeValue != null)
-			props.put("device_value", attributeValue);
+		System.out.println("Props:" + props.toString());
 		return props;
 	}
 
-	private void loadPropFile() throws IOException{
+	private void loadPropFile() throws IOException {
 
-	    //String _path = "noserver.properties";
-	    String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
-		
+		// String _path = "noserver.properties";
+		String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
+
 		this.props = new Properties();
 
 		InputStream stream = new FileInputStream(_path);
@@ -2152,11 +2104,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		stream.close();
 	}
 
-	private void storePropFile() throws IOException{
+	private void storePropFile() throws IOException {
 
-	    //String _path = "noserver.properties";
-	    String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
-	    OutputStream out = null;
+		// String _path = "noserver.properties";
+		String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
+		OutputStream out = null;
 
 		File f = new File(_path);
 		if (!f.exists())
@@ -2168,48 +2120,35 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			out.close();
 	}
 
-	/*private void storePropFile() throws IOException{
+	/*
+	 * private void storePropFile() throws IOException{
+	 * 
+	 * String _path = "noserver.properties"; FileOutputStream out = null;
+	 * 
+	 * // Howto get a bundle context //
+	 * http://tux2323.blogspot.it/2011/10/osgi-how
+	 * -to-get-bundle-context-in-java.html BundleContext bc =
+	 * BundleReference.class
+	 * .cast(GreenathomeAppliance.class.getClassLoader()).getBundle
+	 * ().getBundleContext(); URL _url = bc.getBundle().getResource(_path);
+	 * 
+	 * System.out.println("---------------------------------> " +
+	 * _url.getPath());
+	 * 
+	 * try {
+	 * 
+	 * File configFile = new File(_url.getPath()); if (configFile.canWrite()){
+	 * //PrintWriter out = new PrintWriter(configFile); out = new
+	 * FileOutputStream(_url.getPath()); this.props.store(out, null);
+	 * out.flush(); } else { throw new Exception("File don't writable!"); } }
+	 * catch(FileNotFoundException fnfe){ fnfe.printStackTrace(); }
+	 * catch(IOException ioe){ ioe.printStackTrace(); } catch (Exception e) {
+	 * e.printStackTrace(); } finally { if (out != null) try { out.close(); }
+	 * catch (IOException e) { e.printStackTrace(); }
+	 * 
+	 * } }
+	 */
 
-	    String _path = "noserver.properties";
-		FileOutputStream out = null;
-	    
-		// Howto get a bundle context 
-	    // http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html
-	    BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader()).getBundle().getBundleContext();
-	    URL _url = bc.getBundle().getResource(_path);
-
-		System.out.println("---------------------------------> " + _url.getPath());
-	    
-		try {
-			
-			File configFile = new File(_url.getPath());
-			if (configFile.canWrite()){
-				//PrintWriter out = new PrintWriter(configFile);
-				out = new FileOutputStream(_url.getPath());
-				this.props.store(out, null);
-				out.flush();
-			} else {
-				throw new Exception("File don't writable!"); 
-			}
-        } catch(FileNotFoundException fnfe){
-        	fnfe.printStackTrace();
-        } catch(IOException ioe){
-        	ioe.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (out != null)
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-		}
-	}
-	
-	*/
-	
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException {
 		synchronized (lockGatH) {
 			ArrayList infos = new ArrayList();
@@ -2222,23 +2161,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 				Hashtable props = null;
 				IEndPoint[] endPoints = peerAppliance.getEndPoints();
+
 				for (int j = 1; j < endPoints.length; j++) {
 					try {
-						props = this.getApplianceConfiguration(peerAppliance, j);
 						// skip ESP and core appliance
-						if (peerAppliance.getDescriptor().getType().equals("ah.app.EnergyServicePortal") || peerAppliance.getPid().equals("ah.app.core")) {
+						if (peerAppliance.getDescriptor().getType().equals("ah.app.EnergyServicePortal") || peerAppliance.getPid().equals("ah.app.core"))
 							continue;
-						}
+						props = this.getApplianceConfiguration(peerAppliance, j);
+						if (props != null)
+							infos.add(props);
 					} catch (ApplianceException e) {
 						continue;
 					} catch (ServiceClusterException e) {
 						continue;
 					}
 
-					if (props == null)
-						continue;
-
-					infos.add(props);
 				}
 			}
 			count++;
@@ -2257,7 +2194,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				try {
 					// !!! Energy@home webui compatibility
 					String[] ids = getDeviceIds(appliancePid);
-					//appliancePid = ids[0];
+					// appliancePid = ids[0];
 					Integer endPointId = new Integer(ids[1]);
 					IAppliance appliance = greenathomeEndPoint.getPeerAppliance(appliancePid);
 					props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appliance.getDescriptor().getType());
@@ -2733,6 +2670,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		int status = 0;
 		boolean isStateChangable = false;
 
+		AttributeValueExtended attributeValue = null;
+
 		String locationPid = null;
 		String categoryPid = null;
 		String value = "";
@@ -2751,57 +2690,25 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			isStateChangable = true;
 			availability = ((IServiceCluster) onOffServer).getEndPoint().isAvailable() ? 2 : 0;
 			boolean onOff = false;
+			if (availability == 2) {
+				try {
+					onOff = onOffServer.getOnOff(context);
+					if (onOff)
+						state = On;
+					else
+						state = Off;
 
-			try {
-				onOff = onOffServer.getOnOff(context);
-				if (onOff)
-					state = On;
-				else
-					state = Off;
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				// availability = 0;
-				value = e.getMessage();
+				} catch (Exception e) {
+					value = e.getMessage();
+					state = Unknown;
+				}
+			}
+			else {
 				state = Unknown;
 			}
 		}
 
-		// OnOffServer onOffServer = null;
-		// onOffServer = (OnOffServer)
-		// greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
-		// OnOffServer.class.getName());
-		// if (onOffServer != null) {
-		// isStateChangable = true;
-		// availability = ((IServiceCluster)
-		// onOffServer).getEndPoint().isAvailable() ? 2 : 0;
-		// boolean onOff = false;
-		//
-		// if (availability == 2) {
-		// Boolean onOffValue = (Boolean)
-		// this.onOffValues.get(peerAppliance.getPid());
-		// if (doReadOnOff() || (onOffValue == null)) {
-		// try {
-		// onOff = onOffServer.getOnOff(getterContext);
-		// this.onOffValues.put(peerAppliance.getPid(), new Boolean(onOff));
-		//
-		// } catch (Exception e) {
-		// // availability = 0;
-		// state = Unknown;
-		// }
-		// } else {
-		// onOff = onOffValue.booleanValue();
-		// }
-		//
-		// if (onOff)
-		// state = On;
-		// else
-		// state = Off;
-		// } else {
-		// this.onOffValues.remove(peerAppliance.getPid());
-		// state = Unknown;
-		// }
-		// }
+		
 
 		ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
 
@@ -2843,9 +2750,28 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		// handle Smart Info and Smart Plugs
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName());
-
 		if (onOffServer == null && simpleMeteringServer != null) {
 			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+		}
+		if (!useReportingOnSimpleMetering) {
+			double power;
+			try {
+				power = this.readPower(peerAppliance);
+				if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+					attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power));
+
+			} catch (Exception e) {
+				power = 0;
+			}
+
+		} else {
+			Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
+
+			if (istantaneousDemand != null) {
+				attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(istantaneousDemand.doubleValue()));
+			} else if (this.fakeMode) {
+				attributeValue = new AttributeValueExtended("IstantaneousDemands", new AttributeValue(123.1));
+			}
 		}
 
 		/* Added by Marco */
@@ -2863,20 +2789,21 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		/* End by Marco */
 
-		/* Added by Marco
-		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
-		if (doorLockServer != null) {
-			isStateChangable = true;
-			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
-		}
-
-		WindowCoveringServer windowCoveringServer = (WindowCoveringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), WindowCoveringServer.class.getName());
-		if (windowCoveringServer != null) {
-			isStateChangable = true;
-			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
-		}
-
-		 End by Marco */
+		/*
+		 * Added by Marco DoorLockServer doorLockServer = (DoorLockServer)
+		 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
+		 * DoorLockServer.class.getName()); if (doorLockServer != null) {
+		 * isStateChangable = true; availability = ((IServiceCluster)
+		 * doorLockServer).getEndPoint().isAvailable() ? 2 : 0; }
+		 * 
+		 * WindowCoveringServer windowCoveringServer = (WindowCoveringServer)
+		 * greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(),
+		 * WindowCoveringServer.class.getName()); if (windowCoveringServer !=
+		 * null) { isStateChangable = true; availability = ((IServiceCluster)
+		 * windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0; }
+		 * 
+		 * End by Marco
+		 */
 
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName());
 
@@ -2956,8 +2883,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				props.put("humidity", humidity);
 			}
 		}
-
-		AttributeValueExtended attributeValue = null;
 
 		TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), TemperatureMeasurementServer.class.getName());
 
@@ -3474,13 +3399,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		Date date = cal.getTime();
 		return date;
 	}
-	
-	public List<String> getPropConfiguration(String lblProps) throws IOException{
-		
+
+	public List<String> getPropConfiguration(String lblProps) throws IOException {
+
 		List<String> items = null;
-		
+
 		try {
-			if (this.props == null){ 
+			if (this.props == null) {
 				loadPropFile();
 			}
 			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
@@ -3489,48 +3414,51 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
-	
-	public List<String> getPropStoricoConfiguration(String device, String tipoDato, String periodo) throws IOException{
+
+	public List<String> getPropStoricoConfiguration(String device, String tipoDato, String periodo) throws IOException {
 		/* periodo = GIORNO : 1, SETTIMANA : 2, MESE : 3, ANNO : 4 */
-		/* tipoDato = CONSUMO : "ah.eh.esp.Energy", COSTO : "ah.eh.esp.EnergyCost", PRODUZIONE : "ah.eh.esp.ProducedEnergy", */
+		/*
+		 * tipoDato = CONSUMO : "ah.eh.esp.Energy", COSTO :
+		 * "ah.eh.esp.EnergyCost", PRODUZIONE : "ah.eh.esp.ProducedEnergy",
+		 */
 		/* device = SMARTINFO : 0 || null, ALTRI : 1..infinito */
-		
-		//List<String> items = null;
+
+		// List<String> items = null;
 		String lblProps = null;
-		
+
 		try {
-			if (this.props == null){
+			if (this.props == null) {
 				loadPropFile();
 			}
-			
-			if ((device == null) || (device.equals("0"))){
-				//SmartInfo
+
+			if ((device == null) || (device.equals("0"))) {
+				// SmartInfo
 				lblProps = "SI";
 			} else {
-				//Device
+				// Device
 				lblProps = "DEV";
 			}
-			
-			if (tipoDato.equals("ah.eh.esp.Energy")){
+
+			if (tipoDato.equals("ah.eh.esp.Energy")) {
 				lblProps += "Energy";
-			} else if (tipoDato.equals("ah.eh.esp.EnergyCost")){
+			} else if (tipoDato.equals("ah.eh.esp.EnergyCost")) {
 				lblProps += "Cost";
 			} else {
 				lblProps += "Production";
 			}
-			
-			if (periodo.equals("1")){
+
+			if (periodo.equals("1")) {
 				lblProps += "DAY";
-			} else if (periodo.equals("2")){
+			} else if (periodo.equals("2")) {
 				lblProps += "WEEK";
-			} else if (periodo.equals("3")){
+			} else if (periodo.equals("3")) {
 				lblProps += "MONTH";
 			} else {
 				lblProps += "YEAR";
 			}
-			
+
 			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3538,27 +3466,27 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 		return null;
 	}
-	
-	public Hashtable getPropConfigurationHM(String lblProps) throws IOException{
-		
+
+	public Hashtable getPropConfigurationHM(String lblProps) throws IOException {
+
 		Hashtable props = new Hashtable();
 		String[] lbl = null;
 		String[] stringToParseInt = null;
 		List<Integer> series = new ArrayList<Integer>();
 		int idx, idxC;
-		
+
 		try {
-			if (this.props == null){ 
+			if (this.props == null) {
 				loadPropFile();
 			}
-			if ((lblProps.equals("SuddivisioneConsumi"))){
-				
+			if ((lblProps.equals("SuddivisioneConsumi"))) {
+
 				idx = Integer.parseInt(this.props.getProperty("SuddivisioneConsumi"));
-				for (idxC = 0; idxC < idx; idxC++){
-					lbl = this.props.getProperty("SuddivisioneConsumi"+idxC+"_el").split("\\s*,\\s*");
-					stringToParseInt = this.props.getProperty("SuddivisioneConsumi"+idxC+"_val").split("\\s*,\\s*");
+				for (idxC = 0; idxC < idx; idxC++) {
+					lbl = this.props.getProperty("SuddivisioneConsumi" + idxC + "_el").split("\\s*,\\s*");
+					stringToParseInt = this.props.getProperty("SuddivisioneConsumi" + idxC + "_val").split("\\s*,\\s*");
 					series = new ArrayList<Integer>();
-					for(String s: stringToParseInt){
+					for (String s : stringToParseInt) {
 						Integer tmpValue = Integer.parseInt(s);
 						series.add(tmpValue.intValue());
 					}
@@ -3569,28 +3497,24 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		return props;
 	}
-	
-	public Hashtable getAllPropConfiguration() throws IOException{
-		
+
+	public Hashtable getAllPropConfiguration() throws IOException {
+
 		Hashtable props = new Hashtable();
-		String[] lbls = {"ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", 
-						 "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale",
-						 "ConsumoPrevisto", "Forecast" , "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", 
-						 "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK", "DEVEnergyMONTH", "DEVEnergyYEAR", 
-						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
+		String[] lbls = { "ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale", "ConsumoPrevisto", "Forecast", "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK",
+				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR" };
 		int idx, idxC;
-		
+
 		try {
-			if (this.props == null){ 
+			if (this.props == null) {
 				loadPropFile();
 			}
-			
-			for (String lbl : lbls){ 
-				if ((lbl.equals("SuddivisioneConsumi"))){
+
+			for (String lbl : lbls) {
+				if ((lbl.equals("SuddivisioneConsumi"))) {
 					props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
 				} else {
 					props.put(lbl, getPropConfiguration(lbl));
@@ -3600,39 +3524,37 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return props;
 	}
-	
-	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException{
-		
+
+	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException {
+
 		Hashtable props = new Hashtable();
-		String[] lbls = {"ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", 
-						 "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale",
-						 "ConsumoPrevisto", "Forecast" , "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", 
-						 "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK", "DEVEnergyMONTH", "DEVEnergyYEAR", 
-						 "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR"};
+		String[] lbls = { "ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale", "ConsumoPrevisto", "Forecast", "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK",
+				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR" };
 		int idx, idxC;
-		
+
 		try {
 			JSONObject obj = new JSONObject(jsonVar);
-		
-			for (String lbl : lbls){ 
-				if ((lbl.equals("SuddivisioneConsumi"))){
-					//props.put("SuddivisioneConsumi", getPropConfigurationHM("SuddivisioneConsumi"));
+
+			for (String lbl : lbls) {
+				if ((lbl.equals("SuddivisioneConsumi"))) {
+					// props.put("SuddivisioneConsumi",
+					// getPropConfigurationHM("SuddivisioneConsumi"));
 				} else {
 					String JSONProp = obj.getString(lbl);
 					this.props.setProperty(lbl, JSONProp);
 				}
 			}
-			
+
 			storePropFile();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return true;
-		
+
 	}
 }

@@ -6,7 +6,7 @@ Bundle-Name: AH Apache Felix Web Console Plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.felix.console.web
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 1.0.10
+Bundle-Version: 1.0.9
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.management,javax.servlet;version="[2.5,3)",javax.s
  ervlet.http;version="[2.5,3)",org.apache.felix.webconsole;version="[3.1

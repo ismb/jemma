@@ -307,7 +307,7 @@ Main.onLoad = function() {
 
 Main.onUnload = function() {
 	if (GestDate.timerDate != null)
-		clearTimeout(GestDate.timerDate);
+		clearInterval(GestDate.timerDate);
 	if (Main.env == 0) console.log(20, Main.Module, "Main.onUnload");
 	// faccio out da sezione attuale
 	Tracing.Trace(null, Tracing.OUT, null, null);

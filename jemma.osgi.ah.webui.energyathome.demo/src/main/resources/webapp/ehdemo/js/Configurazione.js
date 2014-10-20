@@ -169,7 +169,7 @@ Configurazione.HandleServiceEvent = function(status) {
 
 Configurazione.cancelTimeouts = function() {
 	if (Configurazione.timerStato != null) {
-		clearTimeout(Configurazione.timerStato);
+		clearInterval(Configurazione.timerStato);
 		Configurazione.timerStato = null;
 	}
 	if (Configurazione.timerVis != null) {
