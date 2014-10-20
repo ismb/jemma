@@ -1,27 +1,43 @@
-Auto-generated site: 201410201015
+Auto-generated site: 201410201037
 
 ##########################
 Git status
 ##########################
 
-# On branch gh-pages
-# Changes not staged for commit:
-#   (use "git add <file>..." to update what will be committed)
-#   (use "git checkout -- <file>..." to discard changes in working directory)
-#
-#	modified:   index.html
-#	modified:   index.md
-#	modified:   site-generation.log
-#
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
-#
-#	.index.md.swp
+On branch gh-pages
+Your branch is up-to-date with 'origin/gh-pages'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   credits.html
+	modified:   devteam.html
+	modified:   features.html
+	modified:   getrel.html
+	modified:   howtoc.html
+	modified:   howtos.html
+	modified:   index.html
+	modified:   index.md
+	modified:   license.html
+	modified:   news.html
+	modified:   resources.html
+	modified:   site-generation.log
+	modified:   supportedhw.html
+	modified:   techs.html
+	modified:   versions.html
+
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 3660da94783f75442606b3e8872242637a0dd98b
+Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
+Date:   Mon Oct 20 10:16:53 2014 +0200
+
+    Added Hackathon references to index
 
 commit 83cd92852cb5b4ee677a2127188be04044e3e70b
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -46,10 +62,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Wed Sep 24 19:01:55 2014 +0200
 
     added kquickset
-
-commit c06ac775465de8636a5f8137e7779c03eb7e516a
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Wed Sep 24 18:56:58 2014 +0200
-
-    reordering + fixes
 
