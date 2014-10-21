@@ -169,7 +169,7 @@ Configurazione.HandleServiceEvent = function(status) {
 
 Configurazione.cancelTimeouts = function() {
 	if (Configurazione.timerStato != null) {
-		clearTimeout(Configurazione.timerStato);
+		clearInterval(Configurazione.timerStato);
 		Configurazione.timerStato = null;
 	}
 	if (Configurazione.timerVis != null) {
@@ -686,7 +686,7 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 	} else {
 		// fermo la ricerca
 		if (Configurazione.timerInquiry != null) {
-			clearTimeout(Configurazione.timerInquiry);
+			clearInterval(Configurazione.timerInquiry);
 			Configurazione.timerInquiry = null;
 		}
 
@@ -775,6 +775,8 @@ Configurazione.VisElettrodomestici = function() {
 			// 		htmlStato = "<div class='StatoOff'>" + Msg.config["statoAcceso"] + "</div>";
 			// }
 
+			var hDimIcon = 'height: 75px;';
+			var wDimIcon = '';
 			if (device_value != undefined) {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
@@ -796,6 +798,7 @@ Configurazione.VisElettrodomestici = function() {
 						val = 'close';
 						imgDisp = "windowc_spento.png";
 					}
+					wDimIcon = 'width: 43px;';
 				} else {
 					val = parseFloat(device_value.value.value);
 					val = val.toFixed(1) + " W";
@@ -805,7 +808,7 @@ Configurazione.VisElettrodomestici = function() {
 			}
 		}
 		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
-					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='height: 75px;width: 43px;'>"
+					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='"+hDimIcon+" "+wDimIcon+"'>"
 					+ "		<div id='StatoElettr_" + i + "'></div>"
 					+ "		<div id='NomeElettr_" + i + "' class='NomeElettr' >"
 					+ 			Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_NAME]

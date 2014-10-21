@@ -341,7 +341,7 @@ public class ZclPartitionServerImpl extends ZclPartitionClient implements Runnab
 	protected IZclFrame parseTransferPartitionedFrame(PartitionServer o, IZclFrame zclFrame) throws ApplianceException,
 			ServiceClusterException, ZclException {
 		synchronized (lock) {
-			State rcvrState = this.getState(zclFrame.getSequenceNumber());
+			State rcvrState = this.getState((byte)zclFrame.getSequenceNumber());
 
 			if (rcvrState == null) {
 				throw new ZclException("Unexpected PartitionedFrame received", ZCL.FAILURE);

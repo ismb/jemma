@@ -288,19 +288,19 @@ CostiConsumi.ExitFotoVoltaico = function() {
 		console.log('FotoVoltaico.js', 'ExitFotoVoltaico', 'Entro!');
 
 	if (CostiConsumi.timerPotenza != null) {
-		clearTimeout(CostiConsumi.timerPotenza);
+		clearInterval(CostiConsumi.timerPotenza);
 		CostiConsumi.timerPotenza = null;
 	}
 	if (CostiConsumi.timerPowerMeter != null) {
-		clearTimeout(CostiConsumi.timerPowerMeter);
+		clearInterval(CostiConsumi.timerPowerMeter);
 		CostiConsumi.timerPowerMeter = null;
 	}
 	if (CostiConsumi.timerConsumi != null) {
-		clearTimeout(CostiConsumi.timerConsumi);
+		clearInterval(CostiConsumi.timerConsumi);
 		CostiConsumi.timerConsumi = null;
 	}
 	if (CostiConsumi.timerBlink != null) {
-		clearTimeout(CostiConsumi.timerBlink);
+		clearInterval(CostiConsumi.timerBlink);
 		CostiConsumi.timerBlink = null;
 	}
 	CostiConsumi.consumoGiornaliero = null;

@@ -186,15 +186,18 @@ ifIndesitWM.update= function(now){
 		//Temperatura
 		InterfaceEnergyHome.objService.applianceControlGetTemperatureTarget0(function(result, err){
                         
-                        var msg="--";
-                        if (err!=null) {
-                                ifIndesitWM.update(true);
+                        var msg = "--";
+                        if (err != null) {
+                        	ifIndesitWM.update(true);
                                 
-                        }else if (result!=null) {
-                                ifIndesitWM.temperature=result;
-				msg=""+result+"&deg;C";
-				
-				
+                        }else if (result != null) {
+                        	if (result < 0){
+                            	ifIndesitWM.temperature = 0;
+                            	msg = "ERRORE";
+                        	} else {
+                            	ifIndesitWM.temperature = result;
+                            	msg = "" + result + "&deg;C";
+                        	}
                         }
 			
 			$(".val_temperature").html(msg);

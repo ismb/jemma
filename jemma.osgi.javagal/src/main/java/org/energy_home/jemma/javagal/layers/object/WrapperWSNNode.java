@@ -119,36 +119,22 @@ public class WrapperWSNNode {
 	public boolean equals(Object o) {
 		if (o instanceof WrapperWSNNode) {
 			WrapperWSNNode node = (WrapperWSNNode) o;
-
-			if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getNetworkAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getNetworkAddress() != null) {
-				if (node.get_node().getAddress().getNetworkAddress().intValue() == this.get_node().getAddress().getNetworkAddress().intValue())
-					return true;
-				else
-					return false;
-			} else if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getIeeeAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getIeeeAddress() != null) {
+			if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getIeeeAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getIeeeAddress() != null) {
 				if (node.get_node().getAddress().getIeeeAddress().longValue() == this.get_node().getAddress().getIeeeAddress().longValue())
 					return true;
 				else
 					return false;
-			} else {
-				try {
-					throw new Exception("Error in WrapperNode EQUALS");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			} else if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getNetworkAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getNetworkAddress() != null) {
+				if (node.get_node().getAddress().getNetworkAddress().intValue() == this.get_node().getAddress().getNetworkAddress().intValue())
+					return true;
+				else
 					return false;
-				}
-			}
-		} else {
-			try {
-				throw new Exception("Error in WrapperNode EQUALS");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} else {
 				return false;
 			}
+		} else {
+			return false;
 		}
-
 	}
 
 	public synchronized NodeDescriptor getNodeDescriptor() {
@@ -266,11 +252,11 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * Check if the Node is a sleepy device
+	 * Check if the Node is a sleepy end device or end device
 	 */
-	public synchronized boolean isSleepy() {
+	public synchronized boolean isSleepyOrEndDevice() {
 		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+			if (_node.getCapabilityInformation().isDeviceIsFFD())
 				return false;
 			else
 				return true;

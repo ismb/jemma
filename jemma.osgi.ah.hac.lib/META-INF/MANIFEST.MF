@@ -5,7 +5,7 @@ Bundle-Name: Home Automation Core Service libs
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: jemma.osgi.ah.hac.lib;singleton:=true
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 3.1.5
+Bundle-Version: 3.1.4
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.cluster.ah;uses:="org.energy_ho
  me.jemma.ah.hac";version="3.0.1",org.energy_home.jemma.ah.cluster.zigbe

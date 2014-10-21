@@ -13,6 +13,7 @@ ifBase.init=function(clusters){
         $( "#onoff" ).click(function( event ) {
                 event.preventDefault();
                 var myId= "#"+$(this).attr("id");
+                var i = $("#Interfaccia").data("current_index");
                 if (ifBase.stato==1) {
                     
                     
@@ -31,6 +32,11 @@ ifBase.init=function(clusters){
                                                 $(myId).addClass("OFF");
                                                 $(myId).removeClass("ON");
                                                 ifBase.updateIcon(0);
+                                                $("#device_" + i + " .StatoElettrodomestico .stato").text("OFF");
+                                                $("#device_" + i).removeClass("ON");
+                                                $("#device_" + i).removeClass("OFF");
+                                                $("#device_" + i).removeClass("ONOFF");
+                                                $("#device_" + i).addClass("ONOFF");
                                             }
                                     }
                                     ifBase.timeout_timer=new Date().getTime();
@@ -58,6 +64,11 @@ ifBase.init=function(clusters){
                                                     $(myId).addClass("ON");
                                                     $(myId).removeClass("OFF");
                                                     ifBase.updateIcon(1);
+                                                    $("#device_" + i + " .StatoElettrodomestico .stato").text("ON");
+                                                    $("#device_" + i).removeClass("ONOFF");
+                                                    $("#device_" + i).removeClass("OFF");
+                                                    $("#device_" + i).removeClass("ON");
+                                                    $("#device_" + i).addClass("ON");
                                                 }
                                         }
                                         ifBase.timeout_timer=new Date().getTime();
