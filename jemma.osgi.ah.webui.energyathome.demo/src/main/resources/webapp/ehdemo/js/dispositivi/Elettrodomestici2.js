@@ -4,6 +4,7 @@ var Elettrodomestici = {
 	listaElettrodomestici : [],
 	lista1ricevuta : {},
 	SmartInfo : null,
+	SmartInfoPV : null,
 	locazioni : [],
 	categorie: [],
 	timerElettr : null,
@@ -29,16 +30,7 @@ var Elettrodomestici = {
 
 };
 
-/*
- *
- *
- *
- *
- *
- */
-
 //Funzione che crea un dizionario pid->nome locazione
-
 Elettrodomestici.GetLocations=function(callBack){
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		try {
@@ -71,11 +63,9 @@ Elettrodomestici.GetLocations=function(callBack){
 		}
 		callBack();
 	}
-	
 }
 
 //Funzione che crea un dizionario pid->nome categoria
-
 Elettrodomestici.GetCategories=function(callBack){
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
@@ -109,10 +99,8 @@ Elettrodomestici.GetCategories=function(callBack){
 			console.log("Err: "+err);
 		}
 	} else {
-		
 		callBack();
 	}
-	
 }
 
 Elettrodomestici.getCategoryIndex=function(name){
@@ -125,125 +113,11 @@ Elettrodomestici.getCategoryIndex=function(name){
 	return -1;
 }
 
-//Funzione che legge la lista di dispositivi presenti e il loro stato. NON USATO QUI
-Elettrodomestici.GetDevices=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
-		try {
-			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurations(function(result, err, req) {
-				if (Elettrodomestici.requestCB == result.id){
-					Elettrodomestici.requestCB = null;
-					hideSpinnerElettro();
-					if (err != null)
-						InterfaceEnergyHome.GestErrorEH("DatiElettrodomestici", err);
-					if ((err == null) && (result != null)) {
-						$.each(result.list,
-								function(indice, elettrodom) {
-									if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
-										//Analizzo lo SmartInfo
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
-										} else {
-											var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
-										}
-										Elettrodomestici.SmartInfo = elettrodom["map"];
-									} else if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
-										//Analizzo la lavatrice whitegood (per adesso stesso codice di uno smart plug)
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
-										} else {
-											var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
-										}
-										
-										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
-									} else {
-										//Analizzo gli altri elettrodomestici quindi elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTPLUG_APP_TYPE
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
-										} else {
-											var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-											elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
-										}
-										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
-									}
-								});
-					}
-				
-					Elettrodomestici.listaElettrodomestici = [];
-					Elettrodomestici.consumoTotale = 0;
-					Elettrodomestici.altroConsumo = 0;
-				
-					$.each(Elettrodomestici.lista1ricevuta,
-								function(index, elemento) {
-				
-									var Elettrodom = {};
-									Elettrodom["id"] = elemento[InterfaceEnergyHome.ATTR_APP_PID];
-									Elettrodom["nome"] = elemento[InterfaceEnergyHome.ATTR_APP_NAME];
-									Elettrodom["categoria"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
-									if (Elettrodom["consumo"] = elemento[InterfaceEnergyHome.ATTR_APP_VALUE]["value"]["value"] == "NaN") {
-										Elettrodom["consumo"] = Msg.NA;
-									} else {
-										Elettrodom["consumo"] = elemento[InterfaceEnergyHome.ATTR_APP_VALUE]["value"]["value"];
-									}
-									Elettrodom["location"] = elemento[InterfaceEnergyHome.ATTR_APP_LOCATION];
-			
-									Elettrodom["stato"] = elemento[InterfaceEnergyHome.ATTR_APP_STATE];
-									Elettrodom["connessione"] = elemento[InterfaceEnergyHome.ATTR_APP_AVAIL];
-									
-									if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
-										Elettrodom["type"] = 'whitegood';
-									} else {
-										Elettrodom["type"] = 'smartplug';
-									}
-				
-									Elettrodomestici.consumoTotale += Elettrodom["consumo"];
-				
-									var str = elemento[InterfaceEnergyHome.ATTR_APP_ICON];
-				
-									Elettrodom["icona"] = str.replace(".png", "");
-									Elettrodomestici.listaElettrodomestici.push(Elettrodom);
-								});
-				
-					if (Elettrodomestici.SmartInfo != null) {
-						var Elettrodom = {};
-						Elettrodom["icona"] = "plug";
-						Elettrodom["nome"] = "Altri consumi";
-						Elettrodom["categoria"] = 12;
-						Elettrodomestici.altroConsumo = Elettrodomestici.potenzaAttuale.value - Elettrodomestici.consumoTotale;
-						Elettrodomestici.altroConsumo = Elettrodomestici.altroConsumo > 0 ? Elettrodomestici.altroConsumo : 0;
-						Elettrodom["consumo"] = Elettrodomestici.altroConsumo;
-						Elettrodom["location"] = 10;
-						Elettrodom["stato"] = 1;
-						Elettrodom["connessione"] = 2;
-						Elettrodomestici.listaElettrodomestici.push(Elettrodom);
-					}
-					Elettrodomestici.numDispositivi = Elettrodomestici.listaElettrodomestici.length;
-					callBack();
-				}
-			});
-		} catch (err) {
-			InterfaceEnergyHome.GestErrorEH("Dispositivi", err);
-		}
-	} else {
-		// per test
-		if (indLista == 0) {
-			val = ListaElettr1;
-			indLista = 1;
-		} else {
-			val = ListaElettr1;
-			indLista = 0;
-		}
-		callBack();
-	}
-}
-
 //Funzione alternativa per la lista di elettrodomestici
 Elettrodomestici.GetDevicesInfos=function(callBack){
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
-			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getInfosDemo(function(result, err, req) {
+			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurations(function(result, err, req) {   //getInfosDemo(function(result, err, req) {
 				if (Elettrodomestici.requestCB == result.id){
 					Elettrodomestici.requestCB = null;
 					hideSpinnerElettro();
@@ -256,40 +130,20 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 								function(indice, elettrodom) {
 									if (elettrodom["map"]["type"] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
 										//Analizzo lo SmartInfo
-										if(elettrodom["map"]["category"]["name"]=="Meter"){
-											//It is the Smart Info
-											if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined) {
-												var val = 50;
-											}
+										if (elettrodom["map"]["category"]["name"] == "Meter"){
 											Elettrodomestici.SmartInfo = elettrodom["map"];
 										}else{
 											//it may be the PV meter... skip it
-											console.log("Skipped PV meter");
+											Elettrodomestici.SmartInfoPV = elettrodom["map"];
 										}
 									} else if (elettrodom["map"]["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
-										//Analizzo la lavatrice whitegood (per adesso stesso codice di uno smart plug)
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
-											var val = 50;
-										}
-										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else if ((elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elettrodom["map"]["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)){
-										//Analizzo la lockdoor (per adesso stesso codice di uno smart plug)
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
-											var val = 50;
-										}
-										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else if ((elettrodom["map"]["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elettrodom["map"]["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)){
-										//Analizzo la lockdoor (per adesso stesso codice di uno smart plug)
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
-											var val = 50;
-										}
-										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else {
-										//Analizzo gli altri elettrodomestici
-										if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] != undefined){
-											var val = 50;
-										}
-										Elettrodomestici.lista1ricevuta[elettrodom["map"].pid] = elettrodom["map"];
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									}
 								});
 					}
@@ -301,44 +155,73 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 					$.each(Elettrodomestici.lista1ricevuta,
 								function(index, elemento) {
 									var Elettrodom = {};
-									Elettrodom["id"] = elemento["pid"];
-									Elettrodom["nome"] = elemento["name"];
-									var catIndex=Elettrodomestici.getCategoryIndex( elemento["category"].name);
-									var catPid= Elettrodomestici.categorie[catIndex].pid;
-									Elettrodom["categoria"] = catPid;
-									var pot=elemento["device_value_2"];
-									if (isNaN(pot)) {
-										Elettrodom["consumo"]="n.a.";
-										Elettrodom["consumo_value"]=pot;
-									}else{
-										Elettrodom["consumo"] = parseFloat(pot);
-										Elettrodom["consumo_value"] = Elettrodom["consumo"];
-										Elettrodomestici.consumoTotale += Elettrodom["consumo"];
-									}
-									Elettrodom["location"] = elemento["location_pid"];
-			
-									Elettrodom["stato"] = elemento[InterfaceEnergyHome.ATTR_APP_STATE];
+									Elettrodom["id"] = elemento[InterfaceEnergyHome.ATTR_APP_PID];
+									Elettrodom["nome"] = elemento[InterfaceEnergyHome.ATTR_APP_NAME];
+									//Elettrodom["categoryObj"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
+									//var catIndex = Elettrodomestici.getCategoryIndex(Elettrodom["categoryObj"].name);
+									Elettrodom["categoria"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
+									var values = elemento["device_value"];
+									Elettrodom["measure"] = {label: null, name: null};
+									Elettrodom["stato"] = 0;
+									
+									$.each(values.list, function(idx, el) {
+										if (el.name == "IstantaneousDemands"){
+											Elettrodom["consumo"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: "W", label: "Consumption", name: "watt"};
+											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
+										} else if (el.name == "OnOffState"){
+											Elettrodom["stato"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: "W", label: "State", name: ""};
+										} else if (el.name == "LocalHumidity"){
+											Elettrodom["humidity"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity", name: "relative humidity"};
+										} else if (el.name == "ZoneStatus"){
+											Elettrodom["zonestatus"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+										} else if (el.name == "Illuminance"){
+											Elettrodom["illuminance"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+										} else if (el.name == "Occupancy"){
+											Elettrodom["occupancy"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+										} else if (el.name == "Temperature"){
+											Elettrodom["temperature"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: "°C", label: "Temperature", name: "celsius"};
+										} else if (el.name == "LocalTemperature"){
+											Elettrodom["temperature"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: "°C", label: "Temperature", name: "celsius"};
+										} else if (el.name == "LockState"){
+											Elettrodom["lockState"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+										} else if (el.name == "CurrentPositionLiftPercentage"){
+											Elettrodom["WindowState"] = el.value.value;
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+										}
+									});
+									
+									Elettrodom["location"] = elemento[InterfaceEnergyHome.ATTR_APP_LOCATION];
 									Elettrodom["connessione"] = elemento[InterfaceEnergyHome.ATTR_APP_AVAIL];
 									
-									if (elemento["type"] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
+									if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
 										Elettrodom["type"] = 'whitegood';
 										if(Elettrodom["connessione"] == 2){
-											//if (Elettrodom["stato"] != 4){
-												Elettrodom["stato"] = 1;
-											//}
-										}
+											Elettrodom["stato"] = 1;
+										} 
 									}
-									else if (elemento["type"]=="org.energy_home.jemma.ah.zigbee.thermostat") {
-										Elettrodom["type"]="thermostat";
+									else if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE) { //"org.energy_home.jemma.ah.zigbee.thermostat"
+										Elettrodom["type"] = "thermostat";
 										if(Elettrodom["connessione"] == 2){
 											Elettrodom["stato"] = 1;
-											Elettrodom["temperature"] = elemento["temperature"]
-											Elettrodom["humidity"] = elemento["humidity"] 
 										}
-									} else if ((elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elemento["type"] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)) {  //LockDoor
-										Elettrodom["type"] = elemento["type"];
+									} else if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE) {
+										Elettrodom["type"] = "thermostat";
 										if(Elettrodom["connessione"] == 2){
-											val = Elettrodom["lockState"] = Elettrodom["device_value"] = elemento["device_value"];
+											Elettrodom["stato"] = 1;
+										}
+									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)) {  //LockDoor
+										Elettrodom["type"] = elemento[InterfaceEnergyHome.ATTR_APP_TYPE];
+										if(Elettrodom["connessione"] == 2){
+											val = Elettrodom["lockState"];
 											if (val == 2){
 												Elettrodom["icon"] = "lockdoor_acceso.png";
 												Elettrodom["stato"] = 2; //Forzo
@@ -354,8 +237,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["stato"] = 0; //Forzo
 										}
 										elemento["icon"] = "lockdoor.png"; //Forzo x ora
-									} else if ((elemento["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elemento["type"] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)) {  //WindowCovering
-										Elettrodom["type"] = elemento["type"];
+									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)) {  //WindowCovering
+										Elettrodom["type"] = elemento[InterfaceEnergyHome.ATTR_APP_TYPE];
 										if(Elettrodom["connessione"] == 2){
 											val = Elettrodom["WindowState"] = Elettrodom["device_value"] = elemento["device_value"];
 											if ((val > 0) && (val < 65535)){
@@ -378,8 +261,11 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										elemento["icon"] = "windowc.png"; //Forzo x ora
 									} else {
 										Elettrodom["type"] = 'smartplug';
+										if(Elettrodom["connessione"] == 2){
+											//Elettrodom["stato"] = 1;
+										}
 									}
-									var str = elemento["icon"];
+									var str = elemento[InterfaceEnergyHome.ATTR_APP_ICON];
 				
 									Elettrodom["icona"] = str.replace(".png", "");
 									Elettrodomestici.listaElettrodomestici.push(Elettrodom);
@@ -393,7 +279,6 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 						Elettrodomestici.altroConsumo = Elettrodomestici.potenzaAttuale.value - Elettrodomestici.consumoTotale;
 						Elettrodomestici.altroConsumo = Elettrodomestici.altroConsumo > 0 ? Elettrodomestici.altroConsumo : 0;
 						Elettrodom["consumo"] = Elettrodomestici.altroConsumo;
-						Elettrodom["consumo_value"]=Elettrodom["consumo"];
 						Elettrodom["location"] = 10;
 						Elettrodom["stato"] = 1;
 						Elettrodom["connessione"] = 2;
@@ -421,7 +306,6 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 			Elettrodom["categoria"] = 3;
 			var pot = "1" + i;
 			Elettrodom["consumo"] = parseFloat(pot);
-			Elettrodom["consumo_value"] = Elettrodom["consumo"];
 			Elettrodom["location"] = 3;
 			Elettrodom["stato"] = stati[i];
 			Elettrodom["connessione"] = 2;
@@ -609,13 +493,13 @@ Elettrodomestici.refreshDevices=function(){
 			var class_stato="NONPRESENTE"
 			if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
 				if (Elettrodomestici.listaElettrodomestici[i].stato == 1){
-					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){
+					if (Elettrodomestici.listaElettrodomestici[i].categoria == 40){ //doorlock
 						stato = "OPEN";
 						class_stato = "ON";
-					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){
+					} else if (Elettrodomestici.listaElettrodomestici[i].categoria == 44){ //windowcovering
 						stato = "OPEN";
 						class_stato = "ON";
-					} else if ((Elettrodomestici.listaElettrodomestici[i].categoria == 35) || (Elettrodomestici.listaElettrodomestici[i].categoria == 34)){
+					} else if ((Elettrodomestici.listaElettrodomestici[i].categoria == 35) || (Elettrodomestici.listaElettrodomestici[i].categoria == 34)){  //
 						stato = "ON";
 						class_stato = "ON";
 					} else if (Elettrodomestici.listaElettrodomestici[i].type == 'whitegood'){
@@ -733,16 +617,10 @@ Elettrodomestici.refreshDevices=function(){
 			}
 			$("#device_" + i).addClass(class_stato);
 			$("#device_" + i + " .StatoElettrodomestico .stato").text(stato);
-			var consumo = Elettrodomestici.listaElettrodomestici[i].consumo;
-			if (consumo != "n.a.") {
-				consumo = Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
-			}/* else if (Elettrodomestici.listaElettrodomestici[i].categoria == "40") {
-				$("#plug").hide();
-			} else if (Elettrodomestici.listaElettrodomestici[i].categoria == "44") {
-				$("#plug").hide();
-			} */
-			
-			$("#device_"+i+ " .StatoElettrodomestico .consumo").text(consumo);
+			//Elettrodom["measure"] = {value: el.value.value, unity: "&#176;C", label: "Celsius", name: "celsius"};
+
+			$("#device_"+i+ " .StatoElettrodomestico .lblFirstValue").text(Elettrodomestici.listaElettrodomestici[i]["measure"].label);
+			$("#device_"+i+ " .StatoElettrodomestico .lblMeasure").text(Elettrodomestici.listaElettrodomestici[i]["measure"].value + " " + Elettrodomestici.listaElettrodomestici[i]["measure"].unity);
 			$("#device_"+i+ " .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
 			var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i]);
 			$("#device_"+i+ " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);

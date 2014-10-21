@@ -37,26 +37,14 @@ public class ZclURMETTemeratureHumidityApplianceFactory extends DriverApplianceF
 	}
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
-		return new ZclURMETTemperatureHumidityAppliance(pid, config);
+		return new ZclTemperatureHumidityAppliance(pid, config);
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1022)(zigbee.device.manufacturer.id=0))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1022))";
 
 	}
-/*
-	{zigbee.device.eps.number=1, 
-			zigbee.device.device.id=1022, 
-			zigbee.device.eps=[260.1022.1], 
-			service.pid=5149012977647065, 
-			zigbee.device.ep.id=1, 
-			DEVICE_SERIAL=5149012977647065, 
-			DEVICE_CATEGORY=ZigBee, 
-			zigbee.device.profile.id=260, 
-			
-			zigbee.device.manufacturer.id=0, service.id=114}
-	
-	*/
+
 
 }
 
