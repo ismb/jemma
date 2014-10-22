@@ -24,7 +24,7 @@ import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
 import org.osgi.service.device.Driver;
 
-public class ZclURMETTemeratureHumidityApplianceFactory extends DriverApplianceFactory implements Driver {
+public class ZclURMETTemperatureHumidityApplianceFactory extends DriverApplianceFactory implements Driver {
 	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.urmet.temperature_humidity";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Temperature and humidity sensor";
 	public static final String DEVICE_TYPE = "ZigBee";
