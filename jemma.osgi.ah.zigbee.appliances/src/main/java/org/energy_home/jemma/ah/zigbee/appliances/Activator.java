@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
 		 */		
 		applicationFactories.add(new ZclBitronhomeSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclBitronhomeRemoteControlApplianceFactory());
-		applicationFactories.add(new ZclURMETTemeratureHumidityApplianceFactory());
+		applicationFactories.add(new ZclURMETTemperatureHumidityApplianceFactory());
 		/*Marco da inserire LDAP corretto*/
 		//applicationFactories.add(new ZclURMETSmokeDetectorSirenApplianceFactory());
 		/**
@@ -62,7 +62,7 @@ public class Activator implements BundleActivator {
 		//applicationFactories.add(new ZclWindowCoveringControllerApplianceFactory());
 		applicationFactories.add(new ZclDoorLockApplianceFactory());
 		applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
-		applicationFactories.add(new ZclWulianTemeratureHumidityApplianceFactory());
+		applicationFactories.add(new ZclWulianTemperatureHumidityApplianceFactory());
 		
 		/*End Marco*/
 
