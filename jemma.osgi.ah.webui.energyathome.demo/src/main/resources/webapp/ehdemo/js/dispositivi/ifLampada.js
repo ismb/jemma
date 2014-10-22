@@ -22,21 +22,17 @@ ifLampada.init=function(_clusters){
         $("#ifLampada #bg").width($("#ifLampada #bg").height());
         
         
-        ifLampada.baseColor=tinycolor("#9cc31c");
-        ifLampada.bckhsl=ifLampada.baseColor.toHsl();
-        ifLampada.coloreReale=ifLampada.baseColor;
+        ifLampada.baseColor = tinycolor("#9cc31c");
+        ifLampada.bckhsl = ifLampada.baseColor.toHsl();
+        ifLampada.coloreReale = ifLampada.baseColor;
         
-        $('#bg').css( "background-color",ifLampada.baseColor.toHexString() );
+        $('#bg').css("background-color", ifLampada.baseColor.toHexString() );
         
-        
-        
-        ifLampada.max=100;
-        ifLampada.lum=ifLampada.max;
-        ifLampada.timeout_timer=new Date().getTime();
-        ifLampada.stato=-1;
-        ifLampada.clusters=_clusters;
-        
-        
+        ifLampada.max = 100;
+        ifLampada.lum = ifLampada.max;
+        ifLampada.timeout_timer = new Date().getTime();
+        ifLampada.stato = -1;
+        ifLampada.clusters = _clusters;
         
         $( "#lum" ).slider({
             range: "min",
@@ -48,7 +44,7 @@ ifLampada.init=function(_clusters){
                 if (ifLampada.coloreReale==null) {
                         return;
                 }
-                var tc=ifLampada.coloreReale;//tinycolor(c);
+                var tc=ifLampada.coloreReale; //tinycolor(c);
                 var hsl=tc.toHsl();
                 hsl.l=ui.value/100;
                 if (hsl.l>=1) {
@@ -61,11 +57,8 @@ ifLampada.init=function(_clusters){
                 
                 //hsl.h=ifLampada.bckhsl.h;
                 //hsl.s=ifLampada.bckhsl.s;
-                ifLampada.coloreReale= tinycolor(hsl);
-                ifLampada.colorePercepito=ifLampada.toColorePercepito(ifLampada.coloreReale);
-                
-
-                
+                ifLampada.coloreReale = tinycolor(hsl);
+                ifLampada.colorePercepito = ifLampada.toColorePercepito(ifLampada.coloreReale);
 
                 if (ui.value>0 ) {
                     $("#onoff").addClass("ON");
