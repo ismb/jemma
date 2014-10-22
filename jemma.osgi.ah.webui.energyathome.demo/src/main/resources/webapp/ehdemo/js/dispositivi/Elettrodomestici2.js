@@ -206,12 +206,12 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["stato"] = 1;
 										} 
 									}
-									else if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE) { //"org.energy_home.jemma.ah.zigbee.thermostat"
+									else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE_2)) {
 										Elettrodom["type"] = "thermostat";
 										if(Elettrodom["connessione"] == 2){
 											Elettrodom["stato"] = 1;
 										}
-									} else if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE) {
+									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE_2)) {
 										Elettrodom["type"] = "thermostat";
 										if(Elettrodom["connessione"] == 2){
 											Elettrodom["stato"] = 1;

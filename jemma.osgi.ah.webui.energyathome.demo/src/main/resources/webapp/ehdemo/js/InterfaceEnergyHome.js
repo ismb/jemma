@@ -61,7 +61,10 @@ var InterfaceEnergyHome = {
 	LOCKDOOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.DoorLock", 
 	WINDOWCOVERING_APP_TYPE : "org.energy_home.jemma.ah.zigbee.windowcovering", 
 	WINDOWCOVERING_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.WindowCovering", 
-	TEMPERATURE_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.TemperatureSensor",
+	TEMPERATURE_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.wulian.temperature_humidity",
+	TEMPERATURE_SENSOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.TemperatureSensor",
+	THERMOSTAT_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.thermostat",
+	THERMOSTAT_SENSOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.thermostat",
 	 
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
