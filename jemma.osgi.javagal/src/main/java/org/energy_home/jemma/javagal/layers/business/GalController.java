@@ -508,7 +508,7 @@ public class GalController {
 	 */
 	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 
-		if ((desc.getApplicationInputCluster().size() + desc.getApplicationOutputCluster().size()) > 30) {
+		if ((desc.getApplicationInputCluster().size() + desc.getApplicationOutputCluster().size()) > 30/*60Bytes*/) {
 			throw new Exception("Simple Descriptor Out Of Memory");
 		} else {
 			short result = DataLayer.configureEndPointSync(timeout, desc);

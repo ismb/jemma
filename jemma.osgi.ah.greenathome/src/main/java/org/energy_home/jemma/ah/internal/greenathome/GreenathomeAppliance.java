@@ -215,7 +215,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	private ESPService espService;
 
-	private boolean useReportingOnSimpleMetering = false;
 	private boolean useReportingOnApplianceControlServer = true;
 
 	private IEndPointRequestContext context = null;
@@ -452,7 +451,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 	}
 
-	public AttributeValue getAttribute(String peerAppliancePid, String name) throws Exception {
+	/*public AttributeValue getAttribute(String peerAppliancePid, String name) throws Exception {
 		synchronized (lockGatH) {
 			IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
 
@@ -502,7 +501,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 
 		return null;
-	}
+	}*/
 	 
 	public AttributeValue getAttribute(String name) throws Exception {
 		AttributeValue value = null;
@@ -1195,18 +1194,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	 * # notifyPeerApplianceConnected(java.lang.String)
 	 */
 	public void notifyPeerApplianceConnected(String peerAppliancePid) {
-		initEndPoint(peerAppliancePid);
+		initEndPoint(new String(peerAppliancePid));
 	}
 
 	public void notifyPeerApplianceDisconnected(String peerAppliancePid) {
 	}
 
 	public void notifyPeerApplianceUpdated(String peerAppliancePid) {
-		initEndPoint(peerAppliancePid);
+		initEndPoint(new String(peerAppliancePid));
 	}
 
 	private void initEndPoint(String peerAppliancePid) {
 		synchronized (lockGatH) {
+
+			System.out.println("initEndPoint for Appliance:" + peerAppliancePid);
 			IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
 			IEndPoint[] peerEndPoints = null;
 
@@ -1218,7 +1219,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					try {
 						SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, SimpleMeteringServer.class.getName());
 
-						ApplianceControlServer applianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, ApplianceControlServer.class.getName());
+						// ApplianceControlServer applianceControlServer =
+						// (ApplianceControlServer)
+						// greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid,
+						// ApplianceControlServer.class.getName());
 
 						OccupancySensingServer occupancySensingServer = (OccupancySensingServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, OccupancySensingServer.class.getName());
 
@@ -1235,9 +1239,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 									demandFormattings.put(peerAppliance.getPid(), new Short(df));
 								}
 
-								if (useReportingOnSimpleMetering) {
-									((IServiceCluster) simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-								}
+								((IServiceCluster) simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+								System.out.println("initEndPoint setAttributeSubscription SimpleMeetering Appliance:" + peerAppliancePid);
 							}
 						} else {
 							LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
@@ -1246,11 +1249,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						SimpleMetering4NoksServer simpleMetering4NoksServer = (SimpleMetering4NoksServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, SimpleMetering4NoksServer.class.getName());
 
 						if (simpleMetering4NoksServer != null) {
-							if (useReportingOnSimpleMetering) {
-								((IServiceCluster) simpleMetering4NoksServer).setAttributeSubscription(SimpleMetering4NoksServer.ATTR_Power_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 
-								((IServiceCluster) simpleMetering4NoksServer).setAttributeSubscription(SimpleMetering4NoksServer.ATTR_Energy_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-							}
+							((IServiceCluster) simpleMetering4NoksServer).setAttributeSubscription(SimpleMetering4NoksServer.ATTR_Power_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+
+							((IServiceCluster) simpleMetering4NoksServer).setAttributeSubscription(SimpleMetering4NoksServer.ATTR_Energy_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+							System.out.println("initEndPoint setAttributeSubscription SimpleMeetering4Noks Appliance:" + peerAppliancePid);
 
 						} else {
 							LOG.debug("SimpleMetering Server Cluster missing on appliance " + peerAppliancePid);
@@ -1267,18 +1270,16 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						TemperatureMeasurementServer temperatureMeasurementServer = (TemperatureMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, TemperatureMeasurementServer.class.getName());
 
 						if (temperatureMeasurementServer != null) {
-							if (useReportingOnApplianceControlServer) {
-								((IServiceCluster) temperatureMeasurementServer).setAttributeSubscription(TemperatureMeasurementServer.ATTR_MeasuredValue_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-							}
+							((IServiceCluster) temperatureMeasurementServer).setAttributeSubscription(TemperatureMeasurementServer.ATTR_MeasuredValue_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 						} else {
 							LOG.debug("Temperature Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						IlluminanceMeasurementServer illuminanceMeasurementServer = (IlluminanceMeasurementServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliancePid, IlluminanceMeasurementServer.class.getName());
 						if (illuminanceMeasurementServer != null) {
-							if (useReportingOnApplianceControlServer) {
-								((IServiceCluster) illuminanceMeasurementServer).setAttributeSubscription(IlluminanceMeasurementServer.ATTR_MeasuredValue_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-							}
+
+							((IServiceCluster) illuminanceMeasurementServer).setAttributeSubscription(IlluminanceMeasurementServer.ATTR_MeasuredValue_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+
 						} else {
 							LOG.debug("Illuminance Measurement Server Cluster missing on appliance " + peerAppliancePid);
 						}
@@ -1394,14 +1395,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					return;
 				}
 				double power = decodeFormatting(((Number) attributeValue.getValue()).longValue(), demandFormatting.shortValue());
-				this.istantaneousDemands.put(peerAppliance.getPid(), new Double(power));
+				this.istantaneousDemands.put(peerAppliance.getPid(), new AttributeValue(power));
 				LOG.debug("calculated on appliance " + peerAppliance.getPid() + " power " + power);
 			}
 			/* Simple Meter 4Noks */
 			else if ((clusterName.equals(SimpleMetering4NoksServer.class.getName())) && (attributeName.equals(SimpleMetering4NoksServer.ATTR_Power_NAME))) {
 				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
 				double power = ((Number) attributeValue.getValue()).longValue();
-				this.istantaneousDemands.put(peerAppliance.getPid(), new Double(power));
+				this.istantaneousDemands.put(peerAppliance.getPid(), new AttributeValue(power));
 			}
 			/* Occupancy */
 			else if ((clusterName.equals(OccupancySensingServer.class.getName())) && (attributeName.equals(OccupancySensingServer.ATTR_Occupancy_NAME))) {
@@ -1740,7 +1741,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		String categoryPid = null;
 
-		Hashtable props = new Hashtable();
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
 
 		List<AttributeValueExtended> attributeValues = new LinkedList<AttributeValueExtended>();
 
@@ -1754,6 +1755,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		appType = encodeGenericApplianceType(appType, endPointType);
 
+		props.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, peerAppliance.getEndPointTypes());
 		props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appType);
 		props.put(IAppliance.APPLIANCE_PID, appliancePid);
 
@@ -1989,7 +1991,9 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
 			}
 
-			if (!useReportingOnSimpleMetering) {
+			IAttributeValue currentvalue = (IAttributeValue) this.istantaneousDemands.get(peerAppliance.getPid());
+
+			if (currentvalue == null) {
 				double power;
 				try {
 					power = this.readPower(peerAppliance);
@@ -2001,7 +2005,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				}
 
 			} else {
-				Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
+				Double istantaneousDemand = (Double) currentvalue.getValue();
 
 				if (istantaneousDemand != null) {
 					attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(istantaneousDemand.doubleValue())));

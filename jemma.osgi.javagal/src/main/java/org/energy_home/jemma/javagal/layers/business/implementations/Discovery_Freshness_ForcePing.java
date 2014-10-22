@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Discovery_Freshness_ForcePing {
 	private GalController gal = null;
-
+	private final int NUMBEROFRETRY = 5;
 	private GalController getGal() {
 		return gal;
 	}
@@ -352,7 +352,7 @@ public class Discovery_Freshness_ForcePing {
 			/* Bug Philips */
 			int counter = 0;
 
-			while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= 30) {
+			while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= NUMBEROFRETRY) {
 				try {
 					if (getGal().getPropertiesManager().getDebugEnabled())
 						LOG.info("LQI DISCOVERY:Sending NodeDescriptorReq to:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));

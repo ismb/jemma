@@ -654,7 +654,7 @@ Configurazione.ConfiguraElettr = function(elem) {
 	$("#NomeElettr").val(elem.map[InterfaceEnergyHome.ATTR_APP_NAME]);
 	
 	//Configurazione.categorieGroup;
-	var catToView = Configurazione.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY]); 
+	var catToView = Configurazione.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_EPS_TYPE]); 
 	//$("#CategoriaElettr").html(Configurazione.optionsCategorie);
 	$("#CategoriaElettr").html(catToView);
 	catPid = elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
