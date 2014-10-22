@@ -90,13 +90,11 @@ Elettrodomestici.GetCategories=function(callBack){
 						// ritorna dizionario pid-nome
 						if (result != null) {
 							for (i = 0; i < result.list.length; i++) {
-								//console.log("------Cat:"+result[i][InterfaceEnergyHome.ATTR_CATEGORY_NAME]);
-								pid = result.list[i]["map"]["pid"];//result[i][InterfaceEnergyHome.ATTR_CATEGORY_PID];
+								pid = result.list[i]["map"]["pid"];
 								name = result.list[i]["map"][InterfaceEnergyHome.ATTR_CATEGORY_NAME];
 								icona = result.list[i]["map"]["icon"];
 								
 								Elettrodomestici.categorie[i]={"name":name ,"icon": icona, "pid": pid};
-								//Elettrodomestici.categorie[pid].icon = icon;
 							}
 						}
 						
@@ -109,7 +107,6 @@ Elettrodomestici.GetCategories=function(callBack){
 			console.log("Err: "+err);
 		}
 	} else {
-		
 		callBack();
 	}
 	
