@@ -324,6 +324,10 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			deviceType = DeviceType.Other;
 		else if (epType.equals(IEndPointTypes.ZIGBEE_SMART_PLUG))
 			deviceType = DeviceType.SmartPlug;
+		else if (epType.equals(IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR))
+			deviceType = DeviceType.TemperatureSensor;
+		else if (epType.equals(IEndPointTypes.ZIGBEE_THERMOSTAT))
+			deviceType = DeviceType.Termostat;
 		else {
 			LOG.warn("ESP unmanaged appliance type " + epType);
 			return null;

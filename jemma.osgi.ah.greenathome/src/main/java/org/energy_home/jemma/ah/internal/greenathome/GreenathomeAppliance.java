@@ -254,6 +254,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private HashMap measuredTemperatureValues = new HashMap();
 	private HashMap measuredHumidityValues = new HashMap();
 	private HashMap lockDoorValues = new HashMap();
+	private HashMap windowCoveringPositionValues = new HashMap();
 
 	private HashMap iasZoneTypeValues = new HashMap();
 
@@ -451,58 +452,40 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 	}
 
-	public AttributeValue getAttribute(String peerAppliancePid, String name) throws Exception {
-		synchronized (lockGatH) {
-			IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
-
-			if (name.equals("12.Power")) {
-				if (!useReportingOnSimpleMetering) {
-					double power = this.readPower(peerAppliance);
-					if (power == ESPService.INVALID_INSTANTANEOUS_POWER_VALUE) {
-						return null;
-					}
-					return new AttributeValue(power / 1000.0);
-				} else {
-					Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
-					if (istantaneousDemand != null) {
-						return new AttributeValue(istantaneousDemand);
-					}
-				}
-			} else {
-				// ApplianceControlServer applianceControlServer =
-				// (ApplianceControlServer)
-				// greenathomeEndPoint.getPeerServiceCluster(
-				// peerAppliancePid, ApplianceControlServer.class.getName());
-				// if (applianceControlServer != null) {
-				// if (name.equals("2561.Spin")) {
-				// int spin = applianceControlServer.getSpin(maxAgeContext);
-				// return new AttributeValue(spin);
-				// } else if (name.equals("2561.CycleTarget0")) {
-				// int cycleTarget0 =
-				// applianceControlServer.getCycleTarget0(maxAgeContext);
-				// return new AttributeValue(cycleTarget0);
-				// } else if (name.equals("2561.CycleDuration")) {
-				// return new AttributeValue(0);
-				// } else if (name.equals("2561.TemperatureTarget0")) {
-				// int temperatureTarget0 =
-				// applianceControlServer.getTemperatureTarget0(maxAgeContext);
-				// return new AttributeValue(temperatureTarget0);
-				// } else if (name.equals("CycleType")) {
-				// return new AttributeValue(0);
-				// } else {
-				// throw new ApplianceException("Attribute '" + name +
-				// "' not found");
-				// }
-				// } else {
-				// throw new
-				// ApplianceException("Unable to retrieve ApplianceControlServer cluster");
-				// }
-			}
-		}
-
-		return null;
-	}
-
+	/*
+	 * public AttributeValue getAttribute(String peerAppliancePid, String name)
+	 * throws Exception { synchronized (lockGatH) { IAppliance peerAppliance =
+	 * greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
+	 * 
+	 * if (name.equals("12.Power")) { if (!useReportingOnSimpleMetering) {
+	 * double power = this.readPower(peerAppliance); if (power ==
+	 * ESPService.INVALID_INSTANTANEOUS_POWER_VALUE) { return null; } return new
+	 * AttributeValue(power / 1000.0); } else { Double istantaneousDemand =
+	 * (Double) istantaneousDemands.get(peerAppliance.getPid()); if
+	 * (istantaneousDemand != null) { return new
+	 * AttributeValue(istantaneousDemand); } } } else { //
+	 * ApplianceControlServer applianceControlServer = //
+	 * (ApplianceControlServer) // greenathomeEndPoint.getPeerServiceCluster( //
+	 * peerAppliancePid, ApplianceControlServer.class.getName()); // if
+	 * (applianceControlServer != null) { // if (name.equals("2561.Spin")) { //
+	 * int spin = applianceControlServer.getSpin(maxAgeContext); // return new
+	 * AttributeValue(spin); // } else if (name.equals("2561.CycleTarget0")) {
+	 * // int cycleTarget0 = //
+	 * applianceControlServer.getCycleTarget0(maxAgeContext); // return new
+	 * AttributeValue(cycleTarget0); // } else if
+	 * (name.equals("2561.CycleDuration")) { // return new AttributeValue(0); //
+	 * } else if (name.equals("2561.TemperatureTarget0")) { // int
+	 * temperatureTarget0 = //
+	 * applianceControlServer.getTemperatureTarget0(maxAgeContext); // return
+	 * new AttributeValue(temperatureTarget0); // } else if
+	 * (name.equals("CycleType")) { // return new AttributeValue(0); // } else {
+	 * // throw new ApplianceException("Attribute '" + name + // "' not found");
+	 * // } // } else { // throw new //
+	 * ApplianceException("Unable to retrieve ApplianceControlServer cluster");
+	 * // } } }
+	 * 
+	 * return null; }
+	 */
 	public AttributeValue getAttribute(String name) throws Exception {
 		AttributeValue value = null;
 
@@ -1448,6 +1431,15 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				this.lockDoorValues.put(peerAppliance.getPid(), attributeValue);
 			}
 
+			/* WindowCovering */
+			else if ((clusterName.equals(WindowCoveringServer.class.getName())) && (attributeName.equals(WindowCoveringServer.ATTR_CurrentPositionLiftPercentage_NAME))) {
+				IAppliance peerAppliance = endPointRequestContext.getPeerEndPoint().getAppliance();
+				if (logEnabled) {
+					LOG.debug("arrived attribute " + attributeName + " with value " + attributeValue.getValue().toString());
+				}
+				this.windowCoveringPositionValues.put(peerAppliance.getPid(), attributeValue);
+			}
+
 		}
 	}
 
@@ -1939,7 +1931,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		}
 
-		/* DOORLOCK Marco OK*/
+		/* DOORLOCK Marco OK */
 		DoorLockServer doorLockServer = (DoorLockServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), DoorLockServer.class.getName());
 		if (doorLockServer != null) {
 			availability = ((IServiceCluster) doorLockServer).getEndPoint().isAvailable() ? 2 : 0;
@@ -1960,7 +1952,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		if (windowCoveringServer != null) {
 			availability = ((IServiceCluster) windowCoveringServer).getEndPoint().isAvailable() ? 2 : 0;
 			if (availability == 2) {
-				Short currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
+				IAttributeValue currentPosition = (IAttributeValue) this.windowCoveringPositionValues.get(peerAppliance.getPid());
+				Short currentLift;
+				if (currentPosition == null) {
+					currentLift = windowCoveringServer.getCurrentPositionLiftPercentage(context);
+				} else {
+					currentLift = (Short) currentPosition.getValue();
+				}
 				attributeValues.add(new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift)));
 			}
 

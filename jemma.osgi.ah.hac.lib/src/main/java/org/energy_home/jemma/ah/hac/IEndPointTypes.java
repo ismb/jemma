@@ -22,7 +22,6 @@ public interface IEndPointTypes {
 	public static final String ZIGBEE_WHITE_GOODS = "ah.ep.zigbee.WhiteGoods";
 	public static final String ZIGBEE_ENERGY_SERVICE_PORTAL = "ah.ep.zigbee.EnergyServicePortal";
 	public static final String ZIGBEE_ON_OFF_SWITCH_DEVICE = "ah.ep.zigbee.OnOffSwitchDevice";
-	public static final String ZIGBEE_TEMPERATURE_SENSOR = "ah.ep.zigbee.TemperatureSensor";
 	public static final String ZIGBEE_DIMMABLE_LIGHT = "ah.ep.zigbee.DimmableLight";
 	
 	
@@ -39,5 +38,7 @@ public interface IEndPointTypes {
 	
 	public static final String ZIGBEE_SMART_PLUG = "ah.ep.zigbee.SmartPlug";	//@Changed by AndreaRanalli: to be verifies if this is correct!
 	public static final String ZIGBEE_DRIMMER_SWITCH = "ah.ep.zigbee.DrimmerSwitch";	//@Changed by MarcoNieddu: to be verifies if this is correct!
+
+	public static final String ZIGBEE_TEMPERATURE_SENSOR = "ah.ep.zigbee.TemperatureSensor";	//@Changed by AndreaRanalli: to be verifies if this is correct!
 
 }

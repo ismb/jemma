@@ -36,9 +36,10 @@ import org.json.JSONException;
 
 public interface GreenAtHomeApplianceService {
 
+	/*
 	public AttributeValue getAttribute(String peerAppliancePid, String name) throws ApplianceException, ServiceClusterException,
 			Exception;
-
+*/
 	public AttributeValue getAttribute(String name) throws Exception;
 
 	public void setAttribute(String name, Object value) throws Exception;

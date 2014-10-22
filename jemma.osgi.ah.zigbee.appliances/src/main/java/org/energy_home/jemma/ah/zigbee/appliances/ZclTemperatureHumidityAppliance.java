@@ -38,7 +38,8 @@ public class ZclTemperatureHumidityAppliance extends ZclAppliance {
 
 	public ZclTemperatureHumidityAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
-		endPoint = this.zclAddEndPoint(ENDPOINT_TYPE);
+		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR);
+
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclBasicServer());
 		endPoint.addServiceCluster(new ZclIdentifyServer());
