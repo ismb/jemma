@@ -46,6 +46,19 @@ var Configurazione = {
 	hDivIcona : null,
 	wDivIcona : null,
 	isFirstTime : true,
+	/*categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
+					 "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
+					 "ah.ep.zigbee.MeteringDevice": [12, 14, 15],
+					 "ah.ep.zigbee.WhiteGoods": [37, 38, 39],
+					 "ah.ep.zigbee.ColorLight": [43, 34, 35],
+					 "ah.ep.zigbee.OnOffLight": [43, 34, 35],
+					 "ah.ep.zigbee.DimmableLight": [42],
+					 "ah.ep.zigbee.LightSensor": [43, 34, 35],
+					 "ah.ep.zigbee.DoorLock": [40],
+					 "ah.ep.zigbee.WindowCovering": [44],
+					 "ah.ep.zigbee.WindowCoveringController": [45],
+					 "ah.ep.zigbee.Thermostat": [36, 41],
+					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},*/
 	categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
 					 "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
 					 "ah.ep.zigbee.MeteringDevice": [12, 14, 15],
@@ -641,7 +654,7 @@ Configurazione.ConfiguraElettr = function(elem) {
 	$("#NomeElettr").val(elem.map[InterfaceEnergyHome.ATTR_APP_NAME]);
 	
 	//Configurazione.categorieGroup;
-	var catToView = Configurazione.selectCategorie(elem.map['ah.app.eps.types']);
+	var catToView = Configurazione.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY]); 
 	//$("#CategoriaElettr").html(Configurazione.optionsCategorie);
 	$("#CategoriaElettr").html(catToView);
 	catPid = elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY];

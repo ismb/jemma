@@ -53,6 +53,8 @@ Elettrodomestici.GetLocations=function(callBack){
 				});
 			
 		} catch (err) {
+			console.log("ERRORE:");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH("GetLocations", err);
 		}
 	} else {
@@ -93,8 +95,9 @@ Elettrodomestici.GetCategories=function(callBack){
 				});
 			
 		} catch (err) {
+			console.log("ERRORE:");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH("GetCategories", err);
-			console.log("Err: "+err);
 		}
 	} else {
 		callBack();
@@ -288,6 +291,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 				}
 			});
 		} catch (err) {
+			console.log("ERRORE:");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH("Dispositivi", err);
 		}
 	} else {
@@ -338,7 +343,8 @@ Elettrodomestici.ReadCurrentProduction=function(callBack){
 				callBack();
 			}, InterfaceEnergyHome.PRODUZIONE_TOTALE);
 		} catch (err) {
-			if (Main.env == 0) console.log('exception in Elettrodomestici.js - in Elettrodomestici.GetDatiPotenzaElettr method: ', err);
+			console.log("ERRORE:");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenzaElettr", err);
 		}
 	}else {
@@ -363,7 +369,8 @@ Elettrodomestici.ReadCurrentPower=function(callBack){
 					
 				}, InterfaceEnergyHome.POTENZA_TOTALE);
 		} catch (err) {
-			if (Main.env == 0) console.log('exception in Elettrodomestici.js - in Elettrodomestici.GetDatiPotenzaElettr method: ', err);
+			console.log("ERRORE:");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenzaElettr", err);
 		}
 	} else {
