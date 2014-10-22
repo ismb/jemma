@@ -51,6 +51,7 @@ var InterfaceEnergyHome = {
 	// costanti per nome attributi
 	ATTR_APP_NAME : "ah.app.name",
 	ATTR_APP_TYPE : "ah.app.type",
+	ATTR_APP_EPS_TYPE : "ah.app.eps.types",
 	ATTR_APP_PID : "appliance.pid",
 	ATTR_APP_ICON : "ah.icon",
 	ATTR_APP_LOCATION: "ah.location.pid",

@@ -451,40 +451,58 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		}
 	}
 
-	/*
-	 * public AttributeValue getAttribute(String peerAppliancePid, String name)
-	 * throws Exception { synchronized (lockGatH) { IAppliance peerAppliance =
-	 * greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
-	 * 
-	 * if (name.equals("12.Power")) { if (!useReportingOnSimpleMetering) {
-	 * double power = this.readPower(peerAppliance); if (power ==
-	 * ESPService.INVALID_INSTANTANEOUS_POWER_VALUE) { return null; } return new
-	 * AttributeValue(power / 1000.0); } else { Double istantaneousDemand =
-	 * (Double) istantaneousDemands.get(peerAppliance.getPid()); if
-	 * (istantaneousDemand != null) { return new
-	 * AttributeValue(istantaneousDemand); } } } else { //
-	 * ApplianceControlServer applianceControlServer = //
-	 * (ApplianceControlServer) // greenathomeEndPoint.getPeerServiceCluster( //
-	 * peerAppliancePid, ApplianceControlServer.class.getName()); // if
-	 * (applianceControlServer != null) { // if (name.equals("2561.Spin")) { //
-	 * int spin = applianceControlServer.getSpin(maxAgeContext); // return new
-	 * AttributeValue(spin); // } else if (name.equals("2561.CycleTarget0")) {
-	 * // int cycleTarget0 = //
-	 * applianceControlServer.getCycleTarget0(maxAgeContext); // return new
-	 * AttributeValue(cycleTarget0); // } else if
-	 * (name.equals("2561.CycleDuration")) { // return new AttributeValue(0); //
-	 * } else if (name.equals("2561.TemperatureTarget0")) { // int
-	 * temperatureTarget0 = //
-	 * applianceControlServer.getTemperatureTarget0(maxAgeContext); // return
-	 * new AttributeValue(temperatureTarget0); // } else if
-	 * (name.equals("CycleType")) { // return new AttributeValue(0); // } else {
-	 * // throw new ApplianceException("Attribute '" + name + // "' not found");
-	 * // } // } else { // throw new //
-	 * ApplianceException("Unable to retrieve ApplianceControlServer cluster");
-	 * // } } }
-	 * 
-	 * return null; }
-	 */
+	/*public AttributeValue getAttribute(String peerAppliancePid, String name) throws Exception {
+		synchronized (lockGatH) {
+			IAppliance peerAppliance = greenathomeEndPoint.getPeerAppliance(peerAppliancePid);
+
+			if (name.equals("12.Power")) {
+				if (!useReportingOnSimpleMetering) {
+					double power = this.readPower(peerAppliance);
+					if (power == ESPService.INVALID_INSTANTANEOUS_POWER_VALUE) {
+						return null;
+					}
+					return new AttributeValue(power / 1000.0);
+				} else {
+					Double istantaneousDemand = (Double) istantaneousDemands.get(peerAppliance.getPid());
+					if (istantaneousDemand != null) {
+						return new AttributeValue(istantaneousDemand);
+					}
+				}
+			} else {
+				// ApplianceControlServer applianceControlServer =
+				// (ApplianceControlServer)
+				// greenathomeEndPoint.getPeerServiceCluster(
+				// peerAppliancePid, ApplianceControlServer.class.getName());
+				// if (applianceControlServer != null) {
+				// if (name.equals("2561.Spin")) {
+				// int spin = applianceControlServer.getSpin(maxAgeContext);
+				// return new AttributeValue(spin);
+				// } else if (name.equals("2561.CycleTarget0")) {
+				// int cycleTarget0 =
+				// applianceControlServer.getCycleTarget0(maxAgeContext);
+				// return new AttributeValue(cycleTarget0);
+				// } else if (name.equals("2561.CycleDuration")) {
+				// return new AttributeValue(0);
+				// } else if (name.equals("2561.TemperatureTarget0")) {
+				// int temperatureTarget0 =
+				// applianceControlServer.getTemperatureTarget0(maxAgeContext);
+				// return new AttributeValue(temperatureTarget0);
+				// } else if (name.equals("CycleType")) {
+				// return new AttributeValue(0);
+				// } else {
+				// throw new ApplianceException("Attribute '" + name +
+				// "' not found");
+				// }
+				// } else {
+				// throw new
+				// ApplianceException("Unable to retrieve ApplianceControlServer cluster");
+				// }
+			}
+		}
+
+		return null;
+	}*/
+	 
 	public AttributeValue getAttribute(String name) throws Exception {
 		AttributeValue value = null;
 
@@ -1723,7 +1741,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		String categoryPid = null;
 
-		Hashtable props = new Hashtable();
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
 
 		List<AttributeValueExtended> attributeValues = new LinkedList<AttributeValueExtended>();
 
@@ -1737,6 +1755,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		appType = encodeGenericApplianceType(appType, endPointType);
 
+		props.put(IAppliance.APPLIANCE_EPS_TYPES_PROPERTY, peerAppliance.getEndPointTypes());
 		props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appType);
 		props.put(IAppliance.APPLIANCE_PID, appliancePid);
 
