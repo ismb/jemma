@@ -5,7 +5,7 @@ Bundle-Name: Greenathome Appliance
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.ah.greenathome
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 2.1.20
+Bundle-Version: 2.1.19
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.ah.greenathome;uses:="org.energy_h
  ome.jemma.ah.hac,org.json,org.energy_home.jemma.ah.hac.lib";version="2.

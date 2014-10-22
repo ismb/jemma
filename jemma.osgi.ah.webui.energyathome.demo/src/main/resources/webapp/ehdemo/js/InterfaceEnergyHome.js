@@ -61,7 +61,10 @@ var InterfaceEnergyHome = {
 	LOCKDOOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.DoorLock", 
 	WINDOWCOVERING_APP_TYPE : "org.energy_home.jemma.ah.zigbee.windowcovering", 
 	WINDOWCOVERING_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.WindowCovering", 
-	TEMPERATURE_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.TemperatureSensor",
+	TEMPERATURE_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.temperature_humidity",
+	TEMPERATURE_SENSOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.temperature_humidity",
+	THERMOSTAT_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.thermostat", 
+	THERMOSTAT_SENSOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.thermostat",
 	 
 	POTENZA_TOTALE : "TotalPower", //potenza totale consumata in casa 
 	PRODUZIONE_TOTALE : "ProducedPower", //potenza istantanea generata
@@ -128,6 +131,8 @@ function bindService(name) {
 			JSONRpcClient.toplevel_ex_handler = function(e) {
 			};
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH(null, err);
 			return null;
 		}
@@ -137,6 +142,8 @@ function bindService(name) {
 	try {
 		sReg = InterfaceEnergyHome.jsonrpc.OSGi.find(InterfaceEnergyHome.serviceName);
 	} catch (err) {
+		console.log("ERRORE! => ");
+		console.log(err);
 		InterfaceEnergyHome.GestErrorEH(null, err);
 		return null;
 	}
@@ -148,6 +155,8 @@ function bindService(name) {
 			InterfaceEnergyHome.objService = sReg.list[0].map['service.id'];
 			return InterfaceEnergyHome.jsonrpc[InterfaceEnergyHome.objService];
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.GestErrorEH(null, err);
 		}
 		return null;
@@ -241,7 +250,10 @@ InterfaceEnergyHome.GestErrorEH = function(func, err) {
 	// fare trace perche' non riesco a contattare l'AG
 	if (func != null){
 		Tracing.Trace(null, Tracing.ERR, Tracing.ERR_GENERIC, tmpMsg);
-	}
+	} 
+	
+	console.log("ERRORE! => ");
+	console.log(err);
 	
 	// visualizzo l'errore
 	Main.VisError(InterfaceEnergyHome.visError);
@@ -276,6 +288,8 @@ InterfaceEnergyHome.GetLocazioni = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getLocations(InterfaceEnergyHome.BackGetLocazioni);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackGetLocazioni(null, err);
 		}
 	} else {
@@ -316,6 +330,8 @@ InterfaceEnergyHome.GetElettrStorico = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackElettrStorico);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackElettrStorico(null, err);
 		}
 	} else {
@@ -386,6 +402,8 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 															dataInizio.getTime(), dataFine.getTime(), param2, 
 															true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackStorico(null, err);
 		}
 	} else {
@@ -394,6 +412,8 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		try {
 			InterfaceEnergyHome.objService.getPropStoricoConfiguration(InterfaceEnergyHome.BackStorico, pid, param1, paramTr);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackStorico(null, err);
 		}
 		/*i = new Date(dataInizio.getTime(0));
@@ -490,6 +510,8 @@ InterfaceEnergyHome.SendGuiLog = function(logText) {
 		try {
 			InterfaceEnergyHome.objService.sendGuiLog(InterfaceEnergyHome.BackSendGuiLog, logText);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			//console.log(80, InterfaceEnergyHome.MODULE, "SendGuiLog: " + logText);
 		}
 	}
@@ -522,6 +544,8 @@ InterfaceEnergyHome.GetActualDate = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.currentTimeMillis(InterfaceEnergyHome.BackActualDate);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackActualDate(null, err);
 		}
 	} else{
@@ -538,6 +562,8 @@ InterfaceEnergyHome.GetPowerLimitFotoVoltaico = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPowerLimitFotoVoltaico, InterfaceEnergyHome.PRESENZA_PRODUZIONE);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackPowerLimitFotoVoltaico(null, err);
 		}
 	} else {
@@ -568,6 +594,8 @@ InterfaceEnergyHome.GetPowerLimitRete = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPowerLimitRete, InterfaceEnergyHome.LIMITI);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackPowerLimitRete(null, err);
 		}
 	} else {
@@ -598,6 +626,8 @@ InterfaceEnergyHome.GetPowerLimit = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPowerLimit, InterfaceEnergyHome.LIMITI);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackPowerLimit(null, err);
 		}
 	} else {
@@ -640,6 +670,8 @@ InterfaceEnergyHome.GetInitialTime = function(backFunc) {
 		try {
 			InterfaceEnergyHome.objService.getInitialConfigurationTime(InterfaceEnergyHome.BackInitialTime);
 		} catch (err) {
+			console.log("ERRORE! => ");
+			console.log(err);
 			InterfaceEnergyHome.BackInitialTime(null, err);
 		}
 	} else

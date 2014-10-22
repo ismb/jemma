@@ -39,12 +39,26 @@ var Configurazione = {
 	popUp : null,
 	categorie : null,
 	optionsCategorie : null,
+	categorieConf: null,
 	locazioni : null,
 	optionslocazioni : null,
 	icone : null,
 	hDivIcona : null,
 	wDivIcona : null,
 	isFirstTime : true,
+	categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
+					 "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
+					 "ah.ep.zigbee.MeteringDevice": [12, 14, 15],
+					 "ah.ep.zigbee.WhiteGoods": [37, 38, 39],
+					 "ah.ep.zigbee.ColorLight": [43, 34, 35],
+					 "ah.ep.zigbee.OnOffLight": [43, 34, 35],
+					 "ah.ep.zigbee.DimmableLight": [42],
+					 "ah.ep.zigbee.LightSensor": [43, 34, 35],
+					 "ah.ep.zigbee.DoorLock": [40],
+					 "ah.ep.zigbee.WindowCovering": [44],
+					 "ah.ep.zigbee.WindowCoveringController": [45],
+					 "ah.ep.zigbee.Thermostat": [36, 41],
+					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},
 	calcNumIcone : [[ 0, 0 ], 
 	                [ 1, 1 ], [ 1, 2 ], 
 	                [ 2, 2 ], [ 2, 2 ], [ 2, 3 ], [ 2, 3 ], 
@@ -361,18 +375,15 @@ Configurazione.ExitElettrodomestici = function() {
 Configurazione.DatiCategorie = function(lista) {
 	if (lista != null) {
 		Configurazione.categorie = lista;
-		//Configurazione.categorie = Lang.Convert(lista, Msg.dispositivi);
 		Configurazione.optionsCategorie = "";
+		Configurazione.categorieConf = new Array();
 		for (val in lista) {
 			//console.log(90, Configurazione.MODULE, "DatiLocazioni : id = " + val + " nome = " + Configurazione.categorie[val]);
 			//DT Qui effettuo la traduzione
 			Configurazione.categorie[val] = Msg.dispositivi[val];
 			Configurazione.optionsCategorie += "<option value='" + val + "' class='OptionConf'>" + Configurazione.categorie[val] + "</option>";
+			Configurazione.categorieConf[val] = "<option value='" + val + "' class='OptionConf'>" + Configurazione.categorie[val] + "</option>";
 		}
-		/**
-		 * for (i = 0; i < Configurazione.categorie.length; i++)
-		 * 		Configurazione.optionsCategorie += "<option value='" + Configurazione.categorie[i][InterfaceEnergyHome.ATTR_CATEGORY_PID] + "' class='OptionConf'>" + Configurazione.categorie[i][InterfaceEnergyHome.ATTR_CATEGORY_NAME] + "</option>";
-		 */
 	}
 	// presenta pagina di configurazione, diversa per configurazione o modifica (visivamente uguale ma cambia da dove predne i dati e cosa fa dopo)
 	if (Configurazione.nuovoDispositivo != null){
@@ -590,6 +601,36 @@ Configurazione.EliminaElettr = function(ind) {
 					});
 }
 
+//selezioni le categorie da visualizzare sulla base dell'array passato come parametro
+/*
+ * esempio di types: ah.app.eps.types: Array[2]
+ *						0: "ah.ep.common"
+ *						1: "ah.ep.zigbee.MeteringDevice"
+ * 
+ * 
+ */
+Configurazione.selectCategorie = function(types) {
+	var returnList = '';
+	var typeAlreadyUsed = new Array();
+	var catArray, indexCC = null;
+	
+	for (t in types){
+		var tp = types[t];
+		for (confT in Configurazione.categorieGroup){
+			if ((tp == confT) && ($.inArray(confT, typeAlreadyUsed) == -1)){
+				catArray = Configurazione.categorieGroup[confT];
+				for (var iC = 0; iC <= catArray.length; iC++){
+					indexCC = catArray[iC];
+					returnList += Configurazione.categorieConf[indexCC];
+				}
+				
+				typeAlreadyUsed.push(confT);
+			}
+		}
+	}
+	return returnList;
+}
+
 // richiamato su modifica di un dispositivo esistente o su inserimento di nuovo
 // dispositivo
 Configurazione.ConfiguraElettr = function(elem) {
@@ -598,7 +639,11 @@ Configurazione.ConfiguraElettr = function(elem) {
 
 	// Assegna valori ai campi
 	$("#NomeElettr").val(elem.map[InterfaceEnergyHome.ATTR_APP_NAME]);
-	$("#CategoriaElettr").html(Configurazione.optionsCategorie);
+	
+	//Configurazione.categorieGroup;
+	var catToView = Configurazione.selectCategorie(elem.map['ah.app.eps.types']);
+	//$("#CategoriaElettr").html(Configurazione.optionsCategorie);
+	$("#CategoriaElettr").html(catToView);
 	catPid = elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 	//console.log(80, Configurazione.MODULE, "ConfiguraElettr catPid = " + catPid);
 	if (catPid != undefined) {
@@ -777,7 +822,53 @@ Configurazione.VisElettrodomestici = function() {
 
 			var hDimIcon = 'height: 75px;';
 			var wDimIcon = '';
-			if (device_value != undefined) {
+			var consumo = null;
+			var stato = null;
+			var humidity = null;
+			var zonestatus = null;
+			var illuminance = null;
+			var occupancy = null;
+			var temperature = null;
+			var lockState = null;
+			var WindowState = null;
+			var Measure = {value: null, unity: null, label: null, name: null};
+			
+			$.each(device_value.list, function(idx, el) {
+				if (el.name == "IstantaneousDemands"){
+					consumo = el.value.value;
+					measure = {value: consumo.toFixed(1), unity: "W", label: "Consumption", name: "watt"};
+				} else if (el.name == "OnOffState"){
+					stato = el.value.value;
+					measure = {value: stato, unity: "W", label: "State", name: ""};
+				} else if (el.name == "LocalHumidity"){
+					humidity = el.value.value;
+					measure = {value: humidity, unity: "% RH", label: "Umidity", name: "relative humidity"};
+				} else if (el.name == "ZoneStatus"){
+					zonestatus = el.value.value;
+					measure = {value: zonestatus, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Illuminance"){
+					illuminance = el.value.value;
+					measure = {value: illuminance, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Occupancy"){
+					occupancy = el.value.value;
+					measure = {value: occupancy, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Temperature"){
+					temperature = el.value.value;
+					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+				} else if (el.name == "LocalTemperature"){
+					temperature = el.value.value;
+					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+				} else if (el.name == "LockState"){
+					lockState = el.value.value;
+					measure = {value: lockState, unity: " ", label: "State", name: ""};
+				} else if (el.name == "CurrentPositionLiftPercentage"){
+					WindowState = el.value.value;
+					measure = {value: WindowState, unity: " ", label: "State", name: ""};
+				}
+			});
+			val = measure.value + " " + measure.unity;
+			
+			/*if (device_value != undefined) {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
 				} else if (category_value == "40") {
@@ -805,7 +896,7 @@ Configurazione.VisElettrodomestici = function() {
 				}
 			} else {
 				val = Msg.config["nd"];
-			}
+			}*/
 		}
 		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
 					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='"+hDimIcon+" "+wDimIcon+"'>"
