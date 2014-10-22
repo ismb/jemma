@@ -822,7 +822,53 @@ Configurazione.VisElettrodomestici = function() {
 
 			var hDimIcon = 'height: 75px;';
 			var wDimIcon = '';
-			if (device_value != undefined) {
+			var consumo = null;
+			var stato = null;
+			var humidity = null;
+			var zonestatus = null;
+			var illuminance = null;
+			var occupancy = null;
+			var temperature = null;
+			var lockState = null;
+			var WindowState = null;
+			var Measure = {value: null, unity: null, label: null, name: null};
+			
+			$.each(device_value.list, function(idx, el) {
+				if (el.name == "IstantaneousDemands"){
+					consumo = el.value.value;
+					measure = {value: consumo.toFixed(1), unity: "W", label: "Consumption", name: "watt"};
+				} else if (el.name == "OnOffState"){
+					stato = el.value.value;
+					measure = {value: stato, unity: "W", label: "State", name: ""};
+				} else if (el.name == "LocalHumidity"){
+					humidity = el.value.value;
+					measure = {value: humidity, unity: "% RH", label: "Umidity", name: "relative humidity"};
+				} else if (el.name == "ZoneStatus"){
+					zonestatus = el.value.value;
+					measure = {value: zonestatus, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Illuminance"){
+					illuminance = el.value.value;
+					measure = {value: illuminance, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Occupancy"){
+					occupancy = el.value.value;
+					measure = {value: occupancy, unity: " ", label: "State", name: ""};
+				} else if (el.name == "Temperature"){
+					temperature = el.value.value;
+					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+				} else if (el.name == "LocalTemperature"){
+					temperature = el.value.value;
+					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+				} else if (el.name == "LockState"){
+					lockState = el.value.value;
+					measure = {value: lockState, unity: " ", label: "State", name: ""};
+				} else if (el.name == "CurrentPositionLiftPercentage"){
+					WindowState = el.value.value;
+					measure = {value: WindowState, unity: " ", label: "State", name: ""};
+				}
+			});
+			val = measure.value + " " + measure.unity;
+			
+			/*if (device_value != undefined) {
 				if (typeof (device_value.value.value) == "string") {
 					val = device_value.value.value;
 				} else if (category_value == "40") {
@@ -850,7 +896,7 @@ Configurazione.VisElettrodomestici = function() {
 				}
 			} else {
 				val = Msg.config["nd"];
-			}
+			}*/
 		}
 		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
 					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='"+hDimIcon+" "+wDimIcon+"'>"
