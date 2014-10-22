@@ -15,6 +15,7 @@
  */
 package org.energy_home.jemma.shal.min;
 
+import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.shal.DeviceConfiguration;
 import org.energy_home.jemma.shal.DeviceDescriptor;
 import org.energy_home.jemma.shal.DeviceInfo;
@@ -25,12 +26,14 @@ public class DeviceInfoImpl implements DeviceInfo {
 	private String persistentId;
 	private DeviceDescriptor descriptor;
 	private DeviceConfiguration configuration;
+	private IAppliance peerAppliance;
 
-	public DeviceInfoImpl(String endPointId, String persistentId, DeviceDescriptor descriptor, DeviceConfiguration configuration) {
+	public DeviceInfoImpl(String endPointId, String persistentId, DeviceDescriptor descriptor, DeviceConfiguration configuration, IAppliance peer) {
 		this.endPointId = endPointId;
 		this.persistentId = persistentId;
 		this.descriptor = descriptor;
 		this.configuration = configuration;
+		this.peerAppliance = peer;
 	}
 	
 	public String getEndPointId() {
@@ -39,6 +42,10 @@ public class DeviceInfoImpl implements DeviceInfo {
 
 	public String getPersistentId() {
 		return persistentId;
+	}
+	
+	public IAppliance getIAppliance() {
+		return peerAppliance;
 	}
 
 	public DeviceDescriptor getDescriptor() {

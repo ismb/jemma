@@ -84,6 +84,7 @@ public class DataFreescale implements IDataLayer {
 	Boolean destroy = false;
 	ExecutorService executor = null;
 	private GalController gal = null;
+	private final int NUMBEROFRETRY = 5;
 
 	private GalController getGal() {
 		return gal;
@@ -2352,7 +2353,7 @@ public class DataFreescale implements IDataLayer {
 										 * node
 										 */
 										int counter = 0;
-										while ((_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) && counter <= 30) {
+										while ((_newWrapperNode.get_node().getAddress().getIeeeAddress() == null) && counter <= NUMBEROFRETRY) {
 											try {
 												if (getGal().getPropertiesManager().getDebugEnabled())
 													LOG.info("AUTODISCOVERY:Sending IeeeReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
@@ -2369,7 +2370,7 @@ public class DataFreescale implements IDataLayer {
 
 											}
 										}
-										if (counter > 30) {
+										if (counter > NUMBEROFRETRY) {
 
 											getGal().getNetworkcache().remove(_newWrapperNode);
 
@@ -2379,7 +2380,7 @@ public class DataFreescale implements IDataLayer {
 
 										counter = 0;
 
-										while (_newWrapperNode.getNodeDescriptor() == null && counter <= 30) {
+										while (_newWrapperNode.getNodeDescriptor() == null && counter <= NUMBEROFRETRY) {
 											try {
 												if (getGal().getPropertiesManager().getDebugEnabled())
 													LOG.info("AUTODISCOVERY:Sending NodeDescriptorReq to:" + String.format("%04X", _newWrapperNode.get_node().getAddress().getNetworkAddress()));
@@ -2401,7 +2402,7 @@ public class DataFreescale implements IDataLayer {
 											}
 										}
 
-										if (counter > 30) {
+										if (counter > NUMBEROFRETRY) {
 											getGal().getNetworkcache().remove(_newWrapperNode);
 											return;
 

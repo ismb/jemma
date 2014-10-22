@@ -21,10 +21,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
 import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
+import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringClient;
+import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringServer;
 import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener.OverloadStatus;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
+import org.energy_home.jemma.ah.hac.IAppliance;
+import org.energy_home.jemma.ah.hac.IEndPoint;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
+import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
@@ -286,28 +292,33 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						}
 
 						if (smartInfoProduction != appliance) {
-							// TODO: ADDED BY MARCO -- SALTARE QUESTO PASSO SE L APPLIANCE NON SUPPORTA IL METER CLUSTER, MEGLIO SE SI ESEGUE UN CONTROLLO SULLA PRESENZA DEL CLUSTER METERING 0x0702
-							if ((appliance.getApplianceType() == DeviceType.WINDOW_COVERING) || (appliance.getApplianceType() == DeviceType.DOOR_LOCK))
-								return;
-
 							
-							// TODO: check merge, different values in 3.3.0
-							// if (System.currentTimeMillis() -
-							// appliance.getAccumulatedEnergyTime() > 1500 *
-							// DEFAULT_SUMMATION_MAX_INTERVAL) {
-							if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
-								LOG.warn(String.format("Periodic task - invalid current summation delivered subscription for appliance %s", appliance.getApplianceId()));
-								refreshCurrentSummationDeliveredSubscription(appliance);
-							}
+							for (IEndPoint x : appliance.deviceInfo.getIAppliance().getEndPoints())
+								if ((x.getServiceCluster(SimpleMetering4NoksServer.class.getName()) != null) || (x.getServiceCluster(SimpleMeteringServer.class.getName()) != null)) {
 
-							// TODO: check merge, different values in 3.3.0
-							// if (System.currentTimeMillis() -
-							// appliance.getIstantaneousPowerTime() > 1500 *
-							// DEFAULT_INST_DEMAND_MAX_INTERVAL) {
-							if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 2500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
-								LOG.warn(String.format("Periodic task - invalid instantaneous demand subscription for appliance %s", appliance.getApplianceId()));
-								refreshInstantaneousDemandSubscription(appliance);
-							}
+									// TODO: check merge, different values in
+									// 3.3.0
+									// if (System.currentTimeMillis() -
+									// appliance.getAccumulatedEnergyTime() >
+									// 1500 *
+									// DEFAULT_SUMMATION_MAX_INTERVAL) {
+									if (System.currentTimeMillis() - appliance.getAccumulatedEnergyTime() > 2500 * DEFAULT_SUMMATION_MAX_INTERVAL) {
+										LOG.warn(String.format("Periodic task - invalid current summation delivered subscription for appliance %s", appliance.getApplianceId()));
+										refreshCurrentSummationDeliveredSubscription(appliance);
+									}
+
+									// TODO: check merge, different values in
+									// 3.3.0
+									// if (System.currentTimeMillis() -
+									// appliance.getIstantaneousPowerTime() >
+									// 1500 *
+									// DEFAULT_INST_DEMAND_MAX_INTERVAL) {
+									if (System.currentTimeMillis() - appliance.getIstantaneousPowerTime() > 2500 * DEFAULT_INST_DEMAND_MAX_INTERVAL) {
+										LOG.warn(String.format("Periodic task - invalid instantaneous demand subscription for appliance %s", appliance.getApplianceId()));
+										refreshInstantaneousDemandSubscription(appliance);
+									}
+									break;
+								}
 						}
 
 					} catch (Exception e) {
@@ -724,7 +735,9 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 		appliance.setAvailable(isAvailable);
 		if (appliance.isAvailable()) {
 			if (appliance != smartInfoProduction) {
-				// TODO: ADDED BY MARCO -- SALTARE QUESTO PASSO SE L APPLIANCE NON SUPPORTA IL METER CLUSTER, MEGLIO SE SI ESEGUE UN CONTROLLO SULLA PRESENZA DEL CLUSTER METERING 0x0702
+				// TODO: ADDED BY MARCO -- SALTARE QUESTO PASSO SE L APPLIANCE
+				// NON SUPPORTA IL METER CLUSTER, MEGLIO SE SI ESEGUE UN
+				// CONTROLLO SULLA PRESENZA DEL CLUSTER METERING 0x0702
 				if ((appliance.getApplianceType() == DeviceType.DOOR_LOCK) || (appliance.getApplianceType() == DeviceType.WINDOW_COVERING))
 					return;
 				refreshCurrentSummationDeliveredSubscription(appliance);

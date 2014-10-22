@@ -135,8 +135,8 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		String result;
 		if (!endPointId.equals(AHContainerAddress.DEFAULT_END_POINT_ID)) {
 			StringBuilder sb = new StringBuilder(containerAddress.getAppliancePid());
-			//sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
-			//sb.append(containerAddress.getEndPointId());
+			// sb.append(ESPApplication.APPLIANCE_ID_SEPARATOR);
+			// sb.append(containerAddress.getEndPointId());
 			result = sb.toString();
 		} else {
 			result = containerAddress.getAppliancePid();
@@ -213,7 +213,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 		try {
 			long startTime = System.currentTimeMillis();
 			LOG.debug(String.format("Periodic task execution -> START %s", startTime));
-				energyBrain.periodicTask();
+			energyBrain.periodicTask();
 			notifyOverloadStatusUpdate(currentOverloadStatus);
 			LOG.debug(String.format("Periodic task execution -> END %s", System.currentTimeMillis()));
 		} catch (Exception e) {
@@ -377,12 +377,12 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			LOG.debug("notifyApplianceAdded " + appliancePid);
 			IEndPoint[] eps = appliance.getEndPoints();
 			IEndPoint ep = null;
-			
+
 			if (eps.length <= 1) {
 				LOG.warn("notifyApplianceAdded error: invalid end point list");
 				return;
 			}
-			
+
 			for (int i = 1; i < eps.length; i++) {
 				ep = eps[i];
 				DeviceType deviceType = getDeviceType(ep);
@@ -400,7 +400,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 				// TODO: check for enum order in the xml file
 				config = new DeviceConfigurationImpl(nickname, (categoryPid == null || (DeviceCategory.values().length < categoryPid.intValue())) ? null : DeviceCategory.values()[categoryPid.intValue() - 1], null);
 				String applianceId = getApplianceId(appliancePid, ep.getId());
-				DeviceInfo info = new DeviceInfoImpl(applianceId, applianceId, descriptor, config);
+				DeviceInfo info = new DeviceInfoImpl(applianceId, applianceId, descriptor, config, appliance);
 				DeviceProxy applianceProxy = new DeviceProxy(applicationEndPoint, ep, info);
 				deviceProxyList.addDeviceProxy(applianceProxy);
 				energyBrain.notifyDeviceAdded(info);
