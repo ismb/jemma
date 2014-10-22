@@ -18,6 +18,7 @@ package org.energy_home.jemma.ah.zigbee.appliances;
 import java.util.Dictionary;
 
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
@@ -33,7 +34,7 @@ public class ZclTemperatureHumidityAppliance extends ZclAppliance {
 
 	private static final Logger LOG = LoggerFactory.getLogger( ZclTemperatureHumidityAppliance.class );
 
-	public static final String ENDPOINT_TYPE = "Sensor Temperature & Humidity";
+	public static final String ENDPOINT_TYPE = IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR; //"Sensor Temperature & Humidity";//
 
 	public ZclTemperatureHumidityAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
