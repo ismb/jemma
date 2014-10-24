@@ -300,7 +300,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		greenathomeEndPoint.registerPeerAppliancesListener(this);
 
 		context = greenathomeEndPoint.getDefaultRequestContext();
-		context.setMaxAgeForAttributeValues(120000);// In order to read from the
+		context.setMaxAgeForAttributeValues(125000);// In order to read from the
 													// cache
 
 		try {
@@ -998,6 +998,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					// 4Noks smart plugs require to disable default response to
 					// work!!!
 					onOffServer.execOn(context);
+					this.onOffValues.put(peerAppliance.getPid(), new Boolean(true));
 				} catch (Exception e) {
 					if (logEnabled)
 						LOG.debug("setDeviceState returned exception '" + e.getMessage(), e);
@@ -1008,6 +1009,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					// 4Noks smart plugs require to disable default response to
 					// work!!!
 					onOffServer.execOff(context);
+					this.onOffValues.put(peerAppliance.getPid(), new Boolean(false));
 				} catch (Exception e) {
 					LOG.debug("setDeviceState returned exception '" + e.getMessage(), e);
 					return false;
@@ -1771,12 +1773,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 					try {
 						onOff = onOffServer.getOnOff(context);
 						this.onOffValues.put(peerAppliance.getPid(), new Boolean(onOff));
-
+						System.out.println("OnOff Status From Context: " + onOff);
 					} catch (Exception e) {
 
 					}
 				} else {
 					onOff = onOffValue.booleanValue();
+					System.out.println("OnOff Status From Cache: " + onOff);
 				}
 
 			} else {

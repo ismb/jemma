@@ -132,7 +132,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
 										//Analizzo lo SmartInfo
 										if (elettrodom["map"]["category"]["name"] == "Meter"){
-											Elettrodomestici.SmartInfo = elettrodom["map"];   
+											Elettrodomestici.SmartInfo = elettrodom["map"];
 										}else{
 											//it may be the PV meter... skip it
 											Elettrodomestici.SmartInfoPV = elettrodom["map"];
@@ -191,10 +191,10 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
 											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
@@ -389,6 +389,8 @@ Elettrodomestici.GestElettrodomestici = function(){
 
 Elettrodomestici.init=function(){
 	Elettrodomestici.indexElettrodomestico = 0;
+	Elettrodomestici.interfaccia = null;
+	
 	var divElettro = $("#Elettrodomestici");
 
 	if (divElettro.length == 0) {

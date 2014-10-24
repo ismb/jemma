@@ -69,7 +69,7 @@ var Configurazione = {
 					 "ah.ep.zigbee.LightSensor": [43, 34, 35],
 					 "ah.ep.zigbee.DoorLock": [40],
 					 "ah.ep.zigbee.WindowCovering": [44],
-					 "ah.ep.zigbee.WindowCoveringController": [45],
+					 "ah.ep.zigbee.WindowCoveringController": [45], 
 					 "ah.ep.zigbee.Thermostat": [36, 41],
 					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},
 	calcNumIcone : [[ 0, 0 ], 
@@ -867,10 +867,10 @@ Configurazione.VisElettrodomestici = function() {
 					measure = {value: occupancy, unity: " ", label: "State", name: ""};
 				} else if (el.name == "Temperature"){
 					temperature = el.value.value;
-					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+					measure = {value: temperature.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
 				} else if (el.name == "LocalTemperature"){
 					temperature = el.value.value;
-					measure = {value: temperature.toFixed(1), unity: "°C", label: "Temperature", name: "celsius"};
+					measure = {value: temperature.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
 				} else if (el.name == "LockState"){
 					lockState = el.value.value;
 					measure = {value: lockState, unity: " ", label: "State", name: ""};
