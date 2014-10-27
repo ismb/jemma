@@ -376,7 +376,7 @@ CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 						CostiConsumi.SmartInfo = elettrodom["map"];
 						device_value = CostiConsumi.SmartInfo.device_value;
 						if (device_value != undefined) {
-							CostiConsumi.potenzaAttuale.value = device_value.value.value;
+							CostiConsumi.potenzaAttuale.value = device_value.list[0].value.value;
 						}
 					}
 					if (Main.env == 0)
