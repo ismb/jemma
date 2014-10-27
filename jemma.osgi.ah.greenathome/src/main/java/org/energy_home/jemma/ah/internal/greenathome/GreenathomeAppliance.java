@@ -1947,7 +1947,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			availability = ((IServiceCluster) levelControlServer).getEndPoint().isAvailable() ? 2 : 0;
 			short currentlevel = 0;
 			if (availability == 2) {
-				currentlevel = levelControlServer.getOnLevel(context);
+				currentlevel = levelControlServer.getCurrentLevel(context);
 			}
 			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
 

@@ -172,7 +172,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 										} else if (el.name == "CurrentLevel"){
 											Elettrodom["stato"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: "% ", label: "Level", name: ""};
+											Elettrodom["measure"] = {value: (el.value.value*100)/255, unity: "% ", label: "Level", name: ""};
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
 											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
