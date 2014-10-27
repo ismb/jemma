@@ -73,12 +73,14 @@ public class ZclOnOffServer extends ZclServiceCluster implements OnOffServer, Zi
 		ZclFrame zclFrame = new ZclFrame(1);
 		zclFrame.setCommandId(0);
 		issueExec(zclFrame, 11, context);
+		setCachedAttributeObject(0, new Boolean(false));
 	}
 
 	public void execOn(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		ZclFrame zclFrame = new ZclFrame(1);
 		zclFrame.setCommandId(1);
 		issueExec(zclFrame, 11, context);
+		setCachedAttributeObject(0, new Boolean(true));
 	}
 
 	public void execToggle(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {

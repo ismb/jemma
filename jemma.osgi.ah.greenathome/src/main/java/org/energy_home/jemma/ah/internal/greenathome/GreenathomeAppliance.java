@@ -1294,17 +1294,23 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 							LOG.debug("ColorControl Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
-						
 						/*
-						ApplianceControlServer appllianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
-						if (appllianceControlServer != null) {
-							((IServiceCluster) appllianceControlServer).setAttributeSubscription(ApplianceControlServer..ATTR_CurrentSaturation_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-						} else {
-							LOG.debug("ColorControl Server Cluster missing on appliance " + peerAppliancePid);
-						}
-					 	*/
-						
-						
+						 * ApplianceControlServer appllianceControlServer =
+						 * (ApplianceControlServer)
+						 * greenathomeEndPoint.getPeerServiceCluster
+						 * (peerAppliance.getPid(),
+						 * ApplianceControlServer.class.getName()); if
+						 * (appllianceControlServer != null) {
+						 * ((IServiceCluster)
+						 * appllianceControlServer).setAttributeSubscription
+						 * (ApplianceControlServer..ATTR_CurrentSaturation_NAME,
+						 * ISubscriptionParameters
+						 * .DEFAULT_SUBSCRIPTION_PARAMETERS, null); } else {
+						 * LOG.
+						 * debug("ColorControl Server Cluster missing on appliance "
+						 * + peerAppliancePid); }
+						 */
+
 						/* End Marco */
 
 					} catch (ServiceClusterException e) {
@@ -1798,12 +1804,12 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		/* ONOFF */
 		OnOffServer onOffServer = null;
 		onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName(), endPointId);
+
 		if (onOffServer != null) {
 			availability = ((IServiceCluster) onOffServer).getEndPoint().isAvailable() ? 2 : 0;
 			boolean onOff = false;
 			if (availability == 2) {
 				onOff = onOffServer.getOnOff(context);
-				System.out.println("OnOff Status From Context: " + onOff);
 			}
 			attributeValues.add(new AttributeValueExtended("OnOffState", new AttributeValue(onOff)));
 
@@ -1941,7 +1947,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			attributeValues.add(new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift)));
 
 		}
-		
+
 		LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
 		if (levelControlServer != null) {
 			availability = ((IServiceCluster) levelControlServer).getEndPoint().isAvailable() ? 2 : 0;
@@ -1949,10 +1955,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (availability == 2) {
 				currentlevel = levelControlServer.getCurrentLevel(context);
 			}
+			System.out.println("Level From Context: " + currentlevel);
+			
 			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
 
 		}
-		
 
 		/* METER */
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
@@ -1987,22 +1994,18 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				if (category != null)
 					props.put("category", category);
 			}
-
 			props.put(IAppliance.APPLIANCE_CATEGORY_PID_PROPERTY, categoryPid);
-
 			try {
 				props.put(IAppliance.APPLIANCE_NAME_PROPERTY, configServer.getName(null));
 			} catch (Exception e) {
 				props.put(IAppliance.APPLIANCE_NAME_PROPERTY, peerAppliance.getPid());
 			}
-
 			try {
 				props.put(IAppliance.APPLIANCE_ICON_PROPERTY, configServer.getIconName(null));
 			} catch (Exception e) {
 				props.put(IAppliance.APPLIANCE_ICON_PROPERTY, "plug.png");
 			}
 		}
-
 		props.put("availability", new Integer(availability));
 		props.put("device_value", attributeValues);
 		System.out.println("Props:" + props.toString());
