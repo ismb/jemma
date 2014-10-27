@@ -1272,34 +1272,39 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("Window Covering Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
-						
+
 						IASZoneServer iasZoneServer = (IASZoneServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), IASZoneServer.class.getName());
 						if (iasZoneServer != null) {
 							((IServiceCluster) iasZoneServer).setAttributeSubscription(IASZoneServer.ATTR_ZoneState_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 						} else {
 							LOG.debug("IASZone Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
+
 						LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
 						if (levelControlServer != null) {
-							((IServiceCluster) iasZoneServer).setAttributeSubscription(LevelControlServer.ATTR_CurrentLevel_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+							((IServiceCluster) levelControlServer).setAttributeSubscription(LevelControlServer.ATTR_CurrentLevel_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 						} else {
 							LOG.debug("LevelControl Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
 
 						ColorControlServer colorControlServer = (ColorControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ColorControlServer.class.getName());
 						if (colorControlServer != null) {
-							((IServiceCluster) iasZoneServer).setAttributeSubscription(ColorControlServer.ATTR_CurrentSaturation_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+							((IServiceCluster) colorControlServer).setAttributeSubscription(ColorControlServer.ATTR_CurrentSaturation_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
 						} else {
 							LOG.debug("ColorControl Server Cluster missing on appliance " + peerAppliancePid);
 						}
 
 						
+						/*
+						ApplianceControlServer appllianceControlServer = (ApplianceControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ApplianceControlServer.class.getName());
+						if (appllianceControlServer != null) {
+							((IServiceCluster) appllianceControlServer).setAttributeSubscription(ApplianceControlServer..ATTR_CurrentSaturation_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+						} else {
+							LOG.debug("ColorControl Server Cluster missing on appliance " + peerAppliancePid);
+						}
+					 	*/
 						
 						
-
 						/* End Marco */
 
 					} catch (ServiceClusterException e) {
@@ -1936,25 +1941,31 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			attributeValues.add(new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift)));
 
 		}
+		
+		LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
+		if (levelControlServer != null) {
+			availability = ((IServiceCluster) levelControlServer).getEndPoint().isAvailable() ? 2 : 0;
+			short currentlevel = 0;
+			if (availability == 2) {
+				currentlevel = levelControlServer.getOnLevel(context);
+			}
+			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
+
+		}
+		
 
 		/* METER */
 		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
 		if (simpleMeteringServer != null) {
-			if (onOffServer == null) {
-				availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+			if (availability == 2) {
+				double power;
+				try {
+					power = this.readPower(peerAppliance);
+					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
 
-				if (availability == 2) {
-
-					double power;
-					try {
-						power = this.readPower(peerAppliance);
-						if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
-							attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
-
-					} catch (Exception e) {
-						power = 0;
-					}
-
+				} catch (Exception e) {
 				}
 			}
 		}
