@@ -193,6 +193,8 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		// check if the message contains requires a default answer
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
+
+		System.out.println("Sending a ZCLFrame with Key:" + hash + " -- for CLuster:" + clusterId);
 		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
@@ -206,7 +208,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			boolean res = zigbeeManager.post(this, profileId, clusterId, zclFrame);
 			if (!res) {
 				pendingReplies.remove(key);
-				throw new ZigBeeException("error sending message to ZigBee device Ieee:" + this.getIeeeAddress() + " -- ProfileId:" + profileId +  " -- ClusterID:" + clusterId);
+				throw new ZigBeeException("error sending message to ZigBee device Ieee:" + this.getIeeeAddress() + " -- ProfileId:" + profileId + " -- ClusterID:" + clusterId);
 			}
 		}
 		try {
@@ -229,8 +231,8 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 					}
 				}
 				pendingReplies.remove(new Long(hash));
-				throw new ZigBeeException("No response from ZigBee device Ieee:" + this.getIeeeAddress() + " -- ProfileId:" + profileId +  " -- ClusterID:" + clusterId);
-				
+				throw new ZigBeeException("No response from ZigBee device Ieee:" + this.getIeeeAddress() + " -- ProfileId:" + profileId + " -- ClusterID:" + clusterId);
+
 			}
 
 			if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
@@ -269,6 +271,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 
+		System.out.println("Received a ZCLFrame with Key:" + hash + " for clusterId: " + clusterId + " --- Data:" + zclFrame.toString());
 		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(false, hash, (short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
 
@@ -300,7 +303,6 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 		} else {
 			SynchronousQueue sq = null;
 			sq = (SynchronousQueue) pendingReplies.remove(new Long(hash));
-
 			if (sq == null) {
 				// simply sends the message to the upper layer. If any
 				// exception
@@ -493,9 +495,9 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 	}
 
 	private long calculateTxRxHash(short clusterId, IZclFrame zclFrame) {
-		long hash = clusterId;
-		hash = hash << 8;
-		return zclFrame.getSequenceNumber() & 0xFF | hash;
+		String Key = String.format("%04X%02X", clusterId, zclFrame.getSequenceNumber());
+		long hash = Long.parseLong(Key, 16);
+		return hash;
 	}
 
 	protected void announce() {

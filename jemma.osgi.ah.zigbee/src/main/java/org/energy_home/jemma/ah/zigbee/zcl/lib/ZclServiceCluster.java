@@ -68,7 +68,16 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 
 	protected ZigBeeDevice device;
 
-	protected int sequence = 30; // Zcl Frame sequence number
+	private int seqNumber = 30; // Zcl Frame sequence number
+	
+	private int getSequenceNumber(){
+		if (seqNumber + 1 < 254)
+			seqNumber++;
+		else
+			seqNumber = 0;
+			return seqNumber;
+		
+	}
 	private static final Logger LOG = LoggerFactory.getLogger( ZclServiceCluster.class );
 
 	private boolean checkDirection = false;
@@ -163,9 +172,8 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 	}
 
 	protected IZclFrame readAttributes(short clusterId, int[] attrIds) {
-		int sequence = 0;
 		IZclFrame zclFrame = new ZclFrame((byte) 0x00, attrIds.length * 2);
-		zclFrame.setSequence(sequence);
+		zclFrame.setSequence(getSequenceNumber());
 
 		zclFrame.appendUInt8(ZCL.ZclReadAttrs);
 
@@ -229,7 +237,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		else
 			zclFrame.setDirection(IZclFrame.CLIENT_TO_SERVER_DIRECTION);
 
-		zclFrame.setSequence(sequence++);
+		zclFrame.setSequence(getSequenceNumber());
 		zclFrame.setCommandId(commandId);
 		return zclFrame;
 	}
@@ -999,7 +1007,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 			throw new ApplianceException("Not attached");
 		}
 
-		zclFrame.setSequence(sequence++);
+		zclFrame.setSequence(getSequenceNumber());
 		zclFrame.setCommandId(ZCL.ZclWriteAttrs);
 
 		if (sync) {
@@ -1055,7 +1063,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		if (device == null)
 			throw new ApplianceException("Not attached");
 
-		zclFrame.setSequence(sequence++);
+		zclFrame.setSequence(getSequenceNumber());
 
 		if ((context != null) && (!context.isConfirmationRequired())) {
 			zclFrame.disableDefaultResponse(true);
@@ -1102,7 +1110,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		if (device == null)
 			throw new ApplianceException("Not attached");
 
-		zclFrame.setSequence(sequence++);
+		zclFrame.setSequence(getSequenceNumber());
 
 		if ((context != null) && (!context.isConfirmationRequired())) {
 			zclFrame.disableDefaultResponse(true);

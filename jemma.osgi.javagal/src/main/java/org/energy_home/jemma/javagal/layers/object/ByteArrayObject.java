@@ -77,9 +77,6 @@ public class ByteArrayObject {
 		count = size;
 
 	}
-	
-	
-	
 
 	/**
 	 * Adds a byte after the last currently valid one. Consequently the
@@ -175,8 +172,6 @@ public class ByteArrayObject {
 		return array;
 	}
 
-	
-
 	/**
 	 * Gets the number of valid byte(s) carried by this byte array.
 	 * 
@@ -196,7 +191,13 @@ public class ByteArrayObject {
 			return count;
 	}
 
-	
+	public static char toHexChar(long i) {
+		if ((0 <= i) && (i <= 9)) {
+			return (char) ('0' + i);
+		} else {
+			return (char) ('A' + (i - 10));
+		}
+	}
 
 	/**
 	 * Gives the entire byte array converted as a String. Every element is
@@ -208,8 +209,10 @@ public class ByteArrayObject {
 	public String ToHexString() {
 		StringBuffer _res = new StringBuffer();
 		byte[] _vect = getArray();
-		for (int i = 0; i < getCount(true); i++)
-			_res.append(String.format("%02X", _vect[i]));
+		for (int i = 0; i < getCount(true); i++) {
+			_res.append(toHexChar((_vect[i] >>> 4) & 0x0F));
+			_res.append(toHexChar(_vect[i] & 0x0F));
+		}
 		return _res.toString();
 	}
 }

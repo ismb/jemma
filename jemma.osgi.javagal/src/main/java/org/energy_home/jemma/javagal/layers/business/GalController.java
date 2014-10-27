@@ -508,7 +508,10 @@ public class GalController {
 	 */
 	public short configureEndpoint(long timeout, SimpleDescriptor desc) throws IOException, Exception, GatewayException {
 
-		if ((desc.getApplicationInputCluster().size() + desc.getApplicationOutputCluster().size()) > 30/*60Bytes*/) {
+		if ((desc.getApplicationInputCluster().size() + desc.getApplicationOutputCluster().size()) > 30/*
+																										 * 60
+																										 * Bytes
+																										 */) {
 			throw new Exception("Simple Descriptor Out Of Memory");
 		} else {
 			short result = DataLayer.configureEndPointSync(timeout, desc);
@@ -1425,19 +1428,40 @@ public class GalController {
 	 */
 	public void setGatewayEventListener(GatewayEventListener listener, int proxyIdentifier) {
 		boolean _listenerFound = false;
-		for (int i = 0; i < getListGatewayEventListener().size(); i++) {
-			if (getListGatewayEventListener().get(i).getProxyIdentifier() == proxyIdentifier) {
-				if (listener == null) {
-					getListGatewayEventListener().remove(i);
-					if (getPropertiesManager().getDebugEnabled())
-						LOG.info("Removing Listener for: " + proxyIdentifier);
-					return;
-				} else {
-					_listenerFound = true;
-					break;
-				}
-			}
+		synchronized (getListGatewayEventListener()) {
 
+			for (int i = 0; i < getListGatewayEventListener().size(); i++) {
+				if (getListGatewayEventListener().get(i).getProxyIdentifier() == proxyIdentifier) {
+					if (listener == null) {
+						getListGatewayEventListener().remove(i);
+
+						synchronized (getCallbacks()) {
+							for (CallbackEntry x : getCallbacks()) {
+								if (x.getProxyIdentifier() == proxyIdentifier)
+									try {
+										deleteCallback(x.getCallbackIdentifier());
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (GatewayException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+							}
+						}
+						if (getPropertiesManager().getDebugEnabled())
+							LOG.info("Removing Listener for: " + proxyIdentifier);
+						return;
+					} else {
+						_listenerFound = true;
+						break;
+					}
+				}
+
+			}
 		}
 
 		if ((!_listenerFound) && (listener != null)) {
@@ -1468,11 +1492,17 @@ public class GalController {
 	public void sendAPSMessage(long timeout, long _requestIdentifier, APSMessage message) throws IOException, Exception, GatewayException {
 		if (getGatewayStatus() == GatewayStatus.GW_RUNNING) {
 			/*
-			if (message.getDestinationAddress().getNetworkAddress() == null && message.getDestinationAddress().getIeeeAddress() != null)
-				message.getDestinationAddress().setNetworkAddress(getShortAddress_FromIeeeAddress(message.getDestinationAddress().getIeeeAddress()));
-			if (message.getDestinationAddress().getIeeeAddress() == null && message.getDestinationAddress().getNetworkAddress() != null)
-				message.getDestinationAddress().setIeeeAddress(getIeeeAddress_FromShortAddress(message.getDestinationAddress().getNetworkAddress()));
-			*/
+			 * if (message.getDestinationAddress().getNetworkAddress() == null
+			 * && message.getDestinationAddress().getIeeeAddress() != null)
+			 * message.getDestinationAddress().setNetworkAddress(
+			 * getShortAddress_FromIeeeAddress
+			 * (message.getDestinationAddress().getIeeeAddress())); if
+			 * (message.getDestinationAddress().getIeeeAddress() == null &&
+			 * message.getDestinationAddress().getNetworkAddress() != null)
+			 * message.getDestinationAddress().setIeeeAddress(
+			 * getIeeeAddress_FromShortAddress
+			 * (message.getDestinationAddress().getNetworkAddress()));
+			 */
 			DataLayer.sendApsSync(timeout, message);
 		} else
 			throw new GatewayException("Gal is not in running state!");
@@ -1557,7 +1587,6 @@ public class GalController {
 									}
 								}
 
-
 							} catch (IOException e) {
 								Status _s1 = new Status();
 								_s1.setCode((short) GatewayConstants.GENERAL_ERROR);
@@ -1623,7 +1652,7 @@ public class GalController {
 							get_gatewayEventManager().notifyleaveResultExtended(_s, addrOfInterest);
 						}
 					}
-					
+
 					return SerializationUtils.clone(_s);
 				} else
 					throw new GatewayException("Is not possible Leave the GAL!");
@@ -2069,11 +2098,11 @@ public class GalController {
 
 								/* If the Node Not Exists */
 								if (getFromNetworkCache(galNodeWrapper) == null) {
-									if (getPropertiesManager().getDebugEnabled()){
-										String shortAdd = (galNodeWrapper.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress()): "NULL";
-										String IeeeAdd = (galNodeWrapper.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", galNodeWrapper.get_node().getAddress().getIeeeAddress()): "NULL";
-										
-										LOG.info("Adding node from [SetNetworkStatus Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
+									if (getPropertiesManager().getDebugEnabled()) {
+										String shortAdd = (galNodeWrapper.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", galNodeWrapper.get_node().getAddress().getNetworkAddress()) : "NULL";
+										String IeeeAdd = (galNodeWrapper.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", galNodeWrapper.get_node().getAddress().getIeeeAddress()) : "NULL";
+
+										LOG.info("Adding node from [SetNetworkStatus Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd);
 									}
 									getNetworkcache().add(galNodeWrapper);
 								}
@@ -2586,13 +2615,13 @@ public class GalController {
 	 *         otherwise
 	 */
 	public WrapperWSNNode getFromNetworkCache(WrapperWSNNode nodeToSearch) {
-		synchronized (getNetworkcache()) {
-			int index = getNetworkcache().indexOf(nodeToSearch);
-			if (index > -1)
-				return getNetworkcache().get(index);
-			else
-				return null;
-		}
+		 synchronized (getNetworkcache()) {
+		int index = getNetworkcache().indexOf(nodeToSearch);
+		if (index > -1)
+			return getNetworkcache().get(index);
+		else
+			return null;
+		 }
 
 	}
 
