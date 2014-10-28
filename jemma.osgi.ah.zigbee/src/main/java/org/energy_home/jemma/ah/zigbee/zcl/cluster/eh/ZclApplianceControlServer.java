@@ -63,6 +63,8 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 				ATTR_TemperatureTarget0_NAME, new ZclDataTypeI16(), null, true, 1));
 		attributesMapByName.put(ATTR_TemperatureTarget1_NAME, new ZclAttributeDescriptor(7,
 				ATTR_TemperatureTarget1_NAME, new ZclDataTypeI16(), null, true, 1));
+		attributesMapByName.put(ATTR_Spin_NAME, new ZclAttributeDescriptor(10, //spin attribute id: 0x000a
+				ATTR_Spin_NAME, new ZclDataTypeI16(), null, true, 1));
 	}
 
 	public ZclApplianceControlServer() throws ApplianceException {
@@ -288,6 +290,22 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 		int v = ZclDataTypeI16.zclParse(zclFrame);
 		setCachedAttributeObject(7, new Integer(v));
 		return v;
+	}
+
+	@Override
+	public short getSpin(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+		if (context != null) {
+			Short objectResult = null;
+			objectResult = ((Short) getValidCachedAttributeObject(10 //spin attribute ID: 0x000a
+					, context.getMaxAgeForAttributeValues()));
+			if (objectResult != null) {
+				return objectResult.shortValue();
+			}
+		}
+		IZclFrame zclFrame = readAttribute(10, context);//spin attribute ID: 0x000a
+		Integer v = ZclDataTypeUI16.zclParse(zclFrame);
+		setCachedAttributeObject(10, v.shortValue());
+		return v.shortValue();
 	}
 
 }
