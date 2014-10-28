@@ -1286,6 +1286,14 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("LevelControl Server Cluster missing on appliance " + peerAppliancePid);
 						}
+						
+						
+						ThermostatServer thermostatServer = (ThermostatServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ThermostatServer.class.getName());
+						if (thermostatServer != null) {
+							((IServiceCluster) thermostatServer).setAttributeSubscription(ThermostatServer.ATTR_LocalTemperature_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+						} else {
+							LOG.debug("ThermostatServer Server Cluster missing on appliance " + peerAppliancePid);
+						}
 
 						ColorControlServer colorControlServer = (ColorControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ColorControlServer.class.getName());
 						if (colorControlServer != null) {
