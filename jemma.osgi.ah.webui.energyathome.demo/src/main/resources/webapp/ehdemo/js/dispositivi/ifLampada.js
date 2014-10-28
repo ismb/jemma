@@ -7,13 +7,14 @@ var ifLampada =  {
         max: null,
         lum:null,
         timeout_timer:null,
+        counterPositionDevice:null,
         clusters:{},
         fb:null, //farbtastic color picker
         UPDATE_FREQ: 30000,
         stato:1 //1=acceso;0=spento;-1=disconesso
 }
 
-ifLampada.init=function(_clusters){
+ifLampada.init=function(_clusters, i){  
         
         
         //fiz immagine lampadina
@@ -33,6 +34,8 @@ ifLampada.init=function(_clusters){
         ifLampada.timeout_timer = new Date().getTime();
         ifLampada.stato = -1;
         ifLampada.clusters = _clusters;
+        
+        ifLampada.counterPositionDevice = i;
         
         $( "#lum" ).slider({
             range: "min",
@@ -90,6 +93,7 @@ ifLampada.init=function(_clusters){
                         }else if (result!=null) {
                                 if (result==true) {
                                         ifLampada.timeout_timer=new Date().getTime();
+                                        $("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
                                 }
                         }
                         
@@ -302,8 +306,11 @@ ifLampada.update= function(now){
         var device= Elettrodomestici.listaElettrodomestici[i];
         var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
         if (consumo!="n.a.") {
-                consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
+                //consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
         }
+        
+        $("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
+        
         $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[device.location]);
         
