@@ -29,6 +29,7 @@ public interface ApplianceControlServer {
 	final static String ATTR_CycleTarget1_NAME = "CycleTarget1";
 	final static String ATTR_TemperatureTarget0_NAME = "TemperatureTarget0";
 	final static String ATTR_TemperatureTarget1_NAME = "TemperatureTarget1";
+	final static String ATTR_Spin_NAME = "Spin";
 	final static String CMD_CommandExecution_NAME = "CommandExecution";
 	final static String CMD_SignalState_NAME = "SignalState";
 	final static String CMD_WriteFunctions_NAME = "WriteFunctions";
@@ -64,5 +65,7 @@ public interface ApplianceControlServer {
 
 	public void execOverloadWarning(short WarningEvent, IEndPointRequestContext context) throws ApplianceException,
 			ServiceClusterException;
+	
+	public short getSpin(IEndPointRequestContext context) throws ApplianceException,ServiceClusterException;
 
 }
