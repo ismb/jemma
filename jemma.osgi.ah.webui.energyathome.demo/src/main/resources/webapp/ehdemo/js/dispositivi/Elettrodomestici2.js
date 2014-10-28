@@ -172,35 +172,35 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									$.each(values.list, function(idx, el) {
 										if (el.name == "IstantaneousDemands"){
 											Elettrodom["consumo"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption", name: "watt"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption: ", name: "watt"};
 											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "LocalHumidity"){
 											Elettrodom["humidity"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity", name: "relative humidity"};
+											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity: ", name: "relative humidity"};
 										} else if (el.name == "ZoneStatus"){
 											Elettrodom["zonestatus"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Illuminance"){
 											Elettrodom["illuminance"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Occupancy"){
 											Elettrodom["occupancy"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "Door: ", name: ""};
 										} else if (el.name == "CurrentPositionLiftPercentage"){
 											Elettrodom["WindowState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "Window: ", name: ""};
 										}
 									});
 									

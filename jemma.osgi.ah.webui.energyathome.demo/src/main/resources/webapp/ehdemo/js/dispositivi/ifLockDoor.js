@@ -158,7 +158,7 @@ ifLockDoor.updateIcon=function(stato){
 ifLockDoor.update= function(now){
     var t= new Date().getTime();
     var i= $("#Interfaccia").data("current_index");
-    var device_value = Elettrodomestici.listaElettrodomestici[i].device_value;
+    var device_value = Elettrodomestici.listaElettrodomestici[i].lockState;
     var txtValue = null;
     
     if (now != null){
