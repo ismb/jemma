@@ -250,6 +250,12 @@ public class PowerAndControlClusterProxySimpleTest extends PowerAndControlCluste
 				// TODO Auto-generated method stub
 				return 0;
 			}
+
+			@Override
+			public short getSpin(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}		
 		};
 	}
 	
