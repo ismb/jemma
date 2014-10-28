@@ -761,6 +761,8 @@ JSONRpcClient._getCharsetFromHeaders = function (http)
   }
   catch (e)
   {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
   }
   return "UTF-8"; // default
 };
@@ -795,6 +797,8 @@ JSONRpcClient._async_handler = function ()
     }
     catch(e)
     {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
       JSONRpcClient.toplevel_ex_handler(e);
     }
   }
@@ -925,6 +929,8 @@ JSONRpcClient._sendRequest = function (client,req)
   }
   catch(e)
   {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
   }
 
   /* Construct call back if we have one */
@@ -954,6 +960,8 @@ JSONRpcClient._sendRequest = function (client,req)
         }
         catch(e)
         {
+      	  console.log("=============ERRORE JSON RPC============");
+    	  console.log(e);
           res.ex = e;
         }
         if (!JSONRpcClient.async_inflight[req.requestId].canceled)
@@ -985,6 +993,8 @@ JSONRpcClient._sendRequest = function (client,req)
   }
   catch(e)
   {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
     JSONRpcClient.poolReturnHTTPRequest(http);
     JSONRpcClient.num_req_active--;
     throw new JSONRpcClient.Exception(
@@ -1032,6 +1042,8 @@ JSONRpcClient.prototype._handleResponse = function (http)
       alert (e.name + ": " + e.message);
     }
 */
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
     JSONRpcClient.poolReturnHTTPRequest(http);
     JSONRpcClient.num_req_active--;
     JSONRpcClient.kick_async();
@@ -1181,6 +1193,8 @@ JSONRpcClient.prototype.unmarshallResponse=function(data)
   }
   catch(e)
   {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
     throw new JSONRpcClient.Exception({ code: 550, message: "error parsing result" });
   } 
   if (obj.error)
@@ -1314,6 +1328,8 @@ JSONRpcClient.getHTTPRequest = function ()
   }
   catch(e)
   {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
   }
 
   /* Microsoft MSXML ActiveX for IE versions < 7 */
@@ -1326,6 +1342,8 @@ JSONRpcClient.getHTTPRequest = function ()
     }
     catch (e)
     {
+	  console.log("=============ERRORE JSON RPC============");
+	  console.log(e);
     }
   }
 

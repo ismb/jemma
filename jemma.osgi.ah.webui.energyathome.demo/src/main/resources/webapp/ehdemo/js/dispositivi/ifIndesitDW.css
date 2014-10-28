@@ -1,0 +1,198 @@
+#ifIndesitDW{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    color: #808080;
+    display: block;
+}
+
+#ifIndesitDW .row1{
+    display: table-row;
+    
+}
+#ifIndesitDW .col{
+    display: block;
+    height: 100%;
+    vertical-align: top;
+    float: left;
+    
+}
+
+#ifIndesitDW .col.lborder{
+    border-left: 1px solid #000;
+}
+#ifIndesitDW .left-box{
+    position: relative;
+    height: 100%;
+    background:none;
+
+}
+
+
+#ifIndesitDW .left-box .icona, #ifIndesitDW .left-box .icona.NP{
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 50px;
+    min-height: 50px;
+    height: 70%;
+    width: 100%;
+/*    position: absolute;*/
+    z-index: 20;
+    top: 0px;
+    left:0px;
+    
+    background-image: none;
+    
+}
+
+
+#ifIndesitDW .left-box .icona.ON {
+    background-image: url("bg_icon_blue.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-origin: content-box;
+    
+}
+
+#ifIndesitDW .left-box .icona.OFF {
+    background-image: url("bg_icon_gray.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-origin: content-box;
+    
+}
+#ifIndesitDW .left-box .icona img{
+    margin-left: auto;
+    margin-right: auto;
+    height: 90%;
+    display: block;
+    width: auto;
+}
+
+#ifIndesitDW .left-box .maschera img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+#ifIndesitDW .StatoElettrodomestico{
+    display: block;
+    width: 100%;
+    height: 30%;           
+    filter: none;
+    background: none;
+    background-color: #000;
+    /*position: absolute;*/
+    top:70%;
+    /*display: none;*/
+}
+
+#ifIndesitDW  .inline{
+    float: left;
+    display: block;
+}
+ #ifIndesitDW  .btnToggle{
+    width:50px;
+    height: 22px;
+    max-height: 22px;
+    cursor: pointer;
+}
+#ifIndesitDW  .btnToggle.ON{
+    background-image: url("toggle_on.png");
+    background-size: 100% 100%;
+}
+#ifIndesitDW  .btnToggle.OFF{
+    background-image: url("toggle_off.png");
+    background-size: 100% 100%;
+}
+
+#ifIndesitDW  .btnToggle.NP{
+    background-image: none;
+    color: #808080;
+    font-size: large;
+    cursor: default;
+}
+
+#ifIndesitDW  .label{
+    display: block;
+    font-size: large;
+}
+
+#ifIndesitDW  .dato{
+    display: block;
+    font-size: large;
+    font-weight: bold;
+    color: #ccc;
+}
+
+#ifIndesitDW  .right{
+    float: right;
+    
+}
+
+#ifIndesitDW  #OnOffControl{
+    width: 90%;
+    height: 20%;
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+#ifIndesitDW  #LevelControl{
+    width: 90%;
+    height: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#ColorControl{
+    display: block;
+    width:80%;
+    height: 70%;
+    margin-left:auto;
+    margin-right: auto;
+    
+}
+#picker{
+    width: 100%;
+    height: 100%;
+}
+
+#ifIndesitDW .icona_row{
+    text-align: center;
+    
+}
+
+#ifIndesitDW .icona_row img{
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+#ifIndesitDW .line{
+    display: block;
+    height: 30px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+#ifIndesitDW .value{
+    color: #fff;
+    text-align: right;
+    
+}
+
+#ifIndesitDW .green{
+    font-size: 24px;
+    color: #9cc31c;
+    /*margin-top: 20px;*/
+    /*margin-bottom: 20px;*/
+    
+}

@@ -139,6 +139,10 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										}
 									} else if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
 										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
+									} else if ((elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE) || (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE_2)){
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
+									} else if ((elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE) || (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.THERMOSTAT_SENSOR_APP_TYPE_2)){
+										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else if ((elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)){
 										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else if ((elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)){
@@ -168,39 +172,57 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									$.each(values.list, function(idx, el) {
 										if (el.name == "IstantaneousDemands"){
 											Elettrodom["consumo"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption", name: "watt"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption: ", name: "watt"};
 											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 										} else if (el.name == "CurrentLevel"){
 											Elettrodom["level"] = el.value.value;
-											var val = Math.round(ifLampada.lum/100*254);
+											var val = Math.round((el.value.value/254)*100);
 											Elettrodom["measure"] = {value: val, unity: "% ", label: "Level", name: ""};
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "LocalHumidity"){
 											Elettrodom["humidity"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity", name: "relative humidity"};
+											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity: ", name: "relative humidity"};
 										} else if (el.name == "ZoneStatus"){
 											Elettrodom["zonestatus"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Illuminance"){
 											Elettrodom["illuminance"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Occupancy"){
 											Elettrodom["occupancy"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											var val = null;
+											if (Elettrodom["lockState"] == 2){
+												val = "OPEN";
+											} else if (Elettrodom["lockState"] == 1){
+												val = "CLOSE";
+											} else {
+												val = "NP";
+											}
+											Elettrodom["measure"] = {value: val, unity: " ", label: "Door: ", name: ""};
+											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
 										} else if (el.name == "CurrentPositionLiftPercentage"){
 											Elettrodom["WindowState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State", name: ""};
+											var val = null;
+											if (Elettrodom["WindowState"] > 0){
+												val = "OPEN";
+											} else if (Elettrodom["WindowState"] == 0){
+												val = "CLOSE";
+											} else {
+												val = "NP";
+											}
+											Elettrodom["measure"] = {value: val, unity: " ", label: "Window: ", name: ""};
+											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
 										}
 										
 									});
@@ -246,11 +268,11 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)) {  //WindowCovering
 										Elettrodom["type"] = elemento[InterfaceEnergyHome.ATTR_APP_TYPE];
 										if(Elettrodom["connessione"] == 2){
-											val = Elettrodom["WindowState"] = Elettrodom["device_value"] = elemento["device_value"];
-											if ((val > 0) && (val < 65535)){
+											val = Elettrodom["WindowState"];
+											if ((val > 0) && (val < 254)){
 												Elettrodom["icon"] = "windowc_acceso.png";
 												Elettrodom["stato"] = 8; //Forzo
-											} else if (val == 65535){
+											} else if (val == 255){
 												Elettrodom["icon"] = "windowc_aperta.png";
 												Elettrodom["stato"] = 6; //Forzo
 											} else if (val == 0){

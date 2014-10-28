@@ -17,7 +17,7 @@ var CostiConsumi = {
 
 	// consumo
 
-	consumoOdierno : null,
+	consumoOdierno : 0,
 	consumoMedio : null,
 	consumoPrevMese : null,
 	consumoGiornaliero : null,
@@ -262,7 +262,7 @@ CostiConsumi.ExitConsumi = function() {
 	  	CostiConsumi.timerBlink = null; 
 	}
 	
-	CostiConsumi.consumoGiornaliero = null;
+	CostiConsumi.consumoGiornaliero = 0;
 
 	Main.ResetError();
 	$("#CostiConsumi").hide();
@@ -360,8 +360,8 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
 				} else {
-					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
 				}
 				CostiConsumi.SmartInfo = elettrodom["map"];
 				Main.appIdSmartInfo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
@@ -371,8 +371,8 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
 				} else {
-					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
 				}
 				CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 				//if (Main.env == 0) console.log('COSTICONSUMI1', 'Eldo - ');
@@ -395,8 +395,8 @@ CostiConsumi.DatiMaxElettr = function() {
 																return elettro;
 															}});
 	listaFiltrata.sort(function(a, b) {
-		var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
-		var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
+		var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
+		var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
 		//Se uno dei due elettrodomestici in sort � una lavatrice (whitegood) e il consumo � sotto a 1W, normalizzo a 0
 		if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
 			firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
@@ -416,7 +416,7 @@ CostiConsumi.VisConsumoMaggiore = function() {
 	if (Main.env == 0) console.log('CostiConsumi1.js', 'VisConsumoMaggiore', 'Entro!');
 
 	if (CostiConsumi.maxConsumoElettr != null) {
-		if (CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].value.value == 0) {
+		if (CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value == 0) {
 			$("#DettaglioConsumoMaggiore").html("<span id='MsgConsumoMaggiore'></span>");
 			$("#MsgConsumoMaggiore").text(Msg.home["maxDisp0"]);
 		} else {
@@ -425,7 +425,7 @@ CostiConsumi.VisConsumoMaggiore = function() {
 			// metto immagine del device che sta consumando di piu'
 			$("#ConsumoMaggioreImg").attr("src",DefinePath.imgDispPath + CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_ICON]);
 			// il consumo e' in watt
-			$("#TestoConsumoMaggiore").text(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_NAME] + " (" + Math.round(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].value.value) + " W)");
+			$("#TestoConsumoMaggiore").text(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_NAME] + " (" + Math.round(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value) + " W)");
 			if (CostiConsumi.dimMaxDispImg == -1) {
 				wDiv = $("#ConsumoMaggioreImg").width();
 				hDiv = $("#ConsumoMaggioreImg").height();
@@ -495,9 +495,11 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 	if (err != null){
 		InterfaceEnergyHome.GestErrorEH("DatiConsumoGiornaliero", err);
 	}
-	CostiConsumi.consumoGiornaliero = null;
+	//CostiConsumi.consumoGiornaliero = null;
 	if ((err == null) && (result != null)){
 		CostiConsumi.consumoGiornaliero = result.list;
+	} else {
+		CostiConsumi.consumoGiornaliero = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	}
 	if (Main.env == 0) console.log('CostiConsumi.consumoGiornaliero', CostiConsumi.consumoGiornaliero);
 
@@ -679,11 +681,11 @@ CostiConsumi.DatiConsumoOdiernoCb = function(result, err) {
 			CostiConsumi.consumoOdierno = (result.list[0] / 1000).toFixed(1);
 			$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ":<br><br> <b>" + CostiConsumi.consumoOdierno + " KWh </b>");
 		} else {
-			CostiConsumi.consumoOdierno = null;
+			CostiConsumi.consumoOdierno = 0;
 			$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ":<br><br> <b>" + Msg.home["datoNonDisponibile"] + " </b>");
 		}
 	} else {
-		CostiConsumi.consumoOdierno = null;
+		CostiConsumi.consumoOdierno = 0;
 		$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ":<br><br> <b>" + Msg.home["datoNonDisponibile"] + " </b>");
 	}
 
@@ -730,6 +732,8 @@ CostiConsumi.DatiConsumoMedioCb = function(result, err) {
 
 	if ((err == null) && (result != null)) {
 		CostiConsumi.consumoMedio = result.list;
+	} else {
+		CostiConsumi.consumoMedio = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	}
 
 	CostiConsumi.VisIndicatoreConsumi();
@@ -1042,6 +1046,50 @@ CostiConsumi.caricafeed = function() {
  ******************************************************************************/
 
 CostiConsumi.InitfeedSim = function() {
+	var NotizieSimul = [
+{	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
+	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
+	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
+},
+{	description : "Un volumetto scaricabile online ricco di consigli utili per risparmiare dai 700 ai 1000 euro all'anno in bolletta con piccoli ...",
+	link : "http://gogreen.virgilio.it/news/green-trends/eco-risparmio-arriva-manuale-ridurre-costi-acqua-luce-gas_6274.html?pmk=rss",
+	title : "Eco risparmio: arriva il manuale per ridurre i costi di acqua, luce e gas"
+},
+{	description : "In piazza le associazioni delle rinnovabili. hanno chiesto al governo, come un appello pubblicato sui giornali, di rivedere il ...",
+	link : "http://gogreen.virgilio.it/news/green-economy/rinnovabili-mobilitazione-durera_6273.html?pmk=rss",
+	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durer&agrave;"
+},
+{	description : "L'appuntamento &egrave; il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale &egrave; quello di ottenere pi&ugrave; sicurezza per i ...",
+	link : "http://gogreen.virgilio.it/eventi/salvaciclisti_6272.html?pmk=rss",
+	title : "Salvaciclisti"
+},
+{	description : "A ridosso della decisione itaiana di prorogare o meno la sospensione dell'impiego di alcuni tipi di agrofarmaci, si pubblica la ...",
+	link : "http://gogreen.virgilio.it/news/ambiente-energia/pesticidi-api-governo-decide-sospensioni_6271.html?pmk=rss",
+	title : "Pesticidi e api: il governo decide sulla sospensione degli agrofarmaci"
+},
+{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile &egrave; caro, genera piccoli sismi ...",
+	link : "http://gogreen.virgilio.it/news/ambiente-energia/terremoti-locali-estrazione-scisto_6270.html?pmk=rss",
+	title : "Terremoti: a generare quelli locali &egrave; pure l'estrazione dello scisto"
+},
+{	description : "Confermato il taglio degli incentivi del 32-36% e il registro obbligatorio per gli impianti di potenza superiore ai 12 ...",
+	link : "http://gogreen.virgilio.it/news/ambiente-energia/quinto-conto-energia-testo-decreto.html?pmk=rss",
+	title : "Quinto conto energia, il testo del decreto"
+},
+{	description : "Lanciata dalla Philips Usa, fa luce per 60 watt consumando da 10 e tende a durare due decadi. Il prodotto rivoluzionario ...",
+	link : "http://gogreen.virgilio.it/news/green-design/lampadina-eco-rivoluzionaria-dura-20-anni-costa-46-euro_6267.html?pmk=rss",
+	title : "Lampadina eco: dura 20 anni e consuma poco, ma per ora costa 46 euro"
+},
+{
+	description : "A fronte di una sensibile contrazione del mercato dell'automotive - soprattutto nel comparto delle auto di lusso - aumentano ...",
+	link : "http://gogreen.virgilio.it/news/ambiente-energia/ferrari-maserati-garage-25mln-italiani-bici.html?pmk=rss",
+	title : "Ferrari e Maserati in garage e 25mln di italiani passano alla bici"
+},
+{
+	description : "Il ministro dell'ambiente ha presentato il piano nazionale antiemissioni di Co2. Carbon tax, 55%, smart grid e smart cities tra ...",
+	link : "http://gogreen.virgilio.it/news/green-economy/bonus-55-esteso-2020-piano-clini-presentato-cipe_6263.html?pmk=rss",
+	title : "Bonus 55% esteso al 2020. Ecco il piano di Clini presentato al Cipe"
+},
+];
 
 	CostiConsumi.notizie = NotizieSimul;
 	CostiConsumi.caricafeed();
