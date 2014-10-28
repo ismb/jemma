@@ -162,7 +162,7 @@ ifLockDoor.update= function(now){
     var txtValue = null;
     
     if (now != null){
-    	if ((now != true) && (now != false))
+    	if ((now !== true) && (now !== false))
     		device_value = now;
     }
     if (device_value == 2) {

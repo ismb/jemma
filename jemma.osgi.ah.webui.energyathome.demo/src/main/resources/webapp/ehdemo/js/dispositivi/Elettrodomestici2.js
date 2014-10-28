@@ -176,7 +176,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 										} else if (el.name == "CurrentLevel"){
 											Elettrodom["level"] = el.value.value;
-											var val = Math.round(ifLampada.lum/100*254);
+											var val = Math.round((el.value.value/254)*100);
 											Elettrodom["measure"] = {value: val, unity: "% ", label: "Level", name: ""};
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
@@ -201,10 +201,28 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "Door: ", name: ""};
+											var val = null;
+											if (Elettrodom["lockState"] == 2){
+												val = "OPEN";
+											} else if (Elettrodom["lockState"] == 1){
+												val = "CLOSE";
+											} else {
+												val = "NP";
+											}
+											Elettrodom["measure"] = {value: val, unity: " ", label: "Door: ", name: ""};
+											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
 										} else if (el.name == "CurrentPositionLiftPercentage"){
 											Elettrodom["WindowState"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "Window: ", name: ""};
+											var val = null;
+											if (Elettrodom["WindowState"] > 0){
+												val = "OPEN";
+											} else if (Elettrodom["WindowState"] == 0){
+												val = "CLOSE";
+											} else {
+												val = "NP";
+											}
+											Elettrodom["measure"] = {value: val, unity: " ", label: "Window: ", name: ""};
+											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
 										}
 										
 									});
@@ -250,11 +268,11 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WINDOWCOVERING_APP_TYPE_2)) {  //WindowCovering
 										Elettrodom["type"] = elemento[InterfaceEnergyHome.ATTR_APP_TYPE];
 										if(Elettrodom["connessione"] == 2){
-											val = Elettrodom["WindowState"] = Elettrodom["device_value"] = elemento["device_value"];
-											if ((val > 0) && (val < 65535)){
+											val = Elettrodom["WindowState"];
+											if ((val > 0) && (val < 254)){
 												Elettrodom["icon"] = "windowc_acceso.png";
 												Elettrodom["stato"] = 8; //Forzo
-											} else if (val == 65535){
+											} else if (val == 255){
 												Elettrodom["icon"] = "windowc_aperta.png";
 												Elettrodom["stato"] = 6; //Forzo
 											} else if (val == 0){

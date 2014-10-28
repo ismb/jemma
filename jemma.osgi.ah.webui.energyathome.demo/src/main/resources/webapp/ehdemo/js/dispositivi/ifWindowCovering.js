@@ -203,12 +203,10 @@ ifWindowCovering.gestUpdate = function(){
 	var liftPerc = "";
     var i = $("#Interfaccia").data("current_index");
 	
-    if ((ifWindowCovering.liftPerc > 0) && (ifWindowCovering.liftPerc <= ifWindowCovering.max)) {
-    	liftPerc = "CLOSE"; //"OPEN";
-    } else if (ifWindowCovering.liftPerc == 0) {
-    	liftPerc = "OPEN"; //"CLOSE";
+    if (ifWindowCovering.liftPerc > 0) {
+    	liftPerc = "OPEN";
     } else {
-    	liftPerc = "CLOSE"; //"ajar";
+    	liftPerc = "CLOSE";
     }
     $("#Interfaccia .StatoElettrodomestico .consumo").text(liftPerc);
     $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
@@ -226,15 +224,12 @@ ifWindowCovering.gestUpdate = function(){
     var _stato="";
     
     if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
-    	if ((ifWindowCovering.liftPerc > 0) && (ifWindowCovering.liftPerc <= ifWindowCovering.max)) {
+    	if (ifWindowCovering.liftPerc > 0){
             _stato = "OPEN";
             class_stato="OPEN";
-    	} else if (ifWindowCovering.liftPerc == 0) {
-            _stato = "CLOSE";
-            class_stato = "CLOSE";
         } else{
-            _stato = "OPEN";
-            class_stato = "OPEN";
+        	_stato = "CLOSE";
+            class_stato = "CLOSE";
         }
     } else {
         _stato = "NP";
