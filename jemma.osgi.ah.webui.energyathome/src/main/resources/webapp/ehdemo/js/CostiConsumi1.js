@@ -109,9 +109,11 @@ CostiConsumi.Init = function() {
 
 	/** ***** Caricamento parti Consumi ******* */
 
+	$('#ConsumoIndicatoreImg').gauge();
 	$('#ConsumoIndicatoreImg').gauge({
 		max : 2.0
 	});
+	$('#CostoIndicatoreImg').gauge();
 	$('#CostoIndicatoreImg').gauge({
 		max : 2.0,
 		color : 'yellow'

@@ -1809,10 +1809,26 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		props.put(IAppliance.APPLIANCE_TYPE_PROPERTY, appType);
 		props.put(IAppliance.APPLIANCE_PID, appliancePid);
 
+		/* METER */
+		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
+		if (simpleMeteringServer != null) {
+			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
+			if (availability == 2) {
+				double power;
+				try {
+					power = this.readPower(peerAppliance);
+					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
+
+				} catch (Exception e) {
+				}
+			}
+		}
+		
+		
 		/* ONOFF */
 		OnOffServer onOffServer = null;
 		onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName(), endPointId);
-
 		if (onOffServer != null) {
 			availability = ((IServiceCluster) onOffServer).getEndPoint().isAvailable() ? 2 : 0;
 			boolean onOff = false;
@@ -1820,7 +1836,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				onOff = onOffServer.getOnOff(context);
 			}
 			attributeValues.add(new AttributeValueExtended("OnOffState", new AttributeValue(onOff)));
-
 		}
 
 		/* IASZONE */
@@ -1969,21 +1984,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		}
 
-		/* METER */
-		SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
-		if (simpleMeteringServer != null) {
-			availability = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable() ? 2 : 0;
-			if (availability == 2) {
-				double power;
-				try {
-					power = this.readPower(peerAppliance);
-					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
-						attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
-
-				} catch (Exception e) {
-				}
-			}
-		}
+		
 
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName(), endPointId);
 		if (configServer != null) {
@@ -2082,7 +2083,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			ArrayList infos = new ArrayList();
 
 			IAppliance[] peerAppliances = greenathomeEndPoint.getPeerAppliances();
-
 			for (int i = 0; i < peerAppliances.length; i++) {
 
 				IAppliance peerAppliance = peerAppliances[i];

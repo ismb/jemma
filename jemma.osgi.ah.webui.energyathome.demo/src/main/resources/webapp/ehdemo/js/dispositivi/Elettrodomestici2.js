@@ -180,7 +180,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["measure"] = {value: val, unity: "% ", label: "Level", name: ""};
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
+											if (Elettrodom["measure"].label == null && Elettrodom["measure"].name == null)
+												Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "LocalHumidity"){
 											Elettrodom["humidity"] = el.value.value;
 											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity: ", name: "relative humidity"};
@@ -195,10 +196,10 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "°C", label: "Temperature: ", name: "celsius"};
+											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "ï¿½C", label: "Temperature: ", name: "celsius"};
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
 											var val = null;

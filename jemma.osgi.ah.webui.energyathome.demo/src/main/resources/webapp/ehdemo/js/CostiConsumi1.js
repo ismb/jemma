@@ -112,6 +112,7 @@ CostiConsumi.Init = function() {
 	$('#ConsumoIndicatoreImg').gauge({
 		max : 2.0
 	});
+	$('#CostoIndicatoreImg').gauge();
 	$('#CostoIndicatoreImg').gauge({
 		max : 2.0,
 		color : 'yellow'
