@@ -142,9 +142,9 @@ input[type=button]:hover {
 
 #ConfElettrDiv,#DatiUtente {
 	position: absolute;	
-	left: 15%;
-	width: 55%;
-	height: 88%;
+	left: 5%;
+	width: 75%;
+	height: 80%;
 }
 
 #ConfElettrDiv {
@@ -287,17 +287,19 @@ input[type=button]:hover {
 
 #ElencoElettr {
 	position: absolute;
-	top: 22%;
+	top: 25%;
 	left: 0%;
 	width: 100%;
-	height: 85%;
+	height: 65%;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 .ElettrVis {
 	position: absolute;
 	top: 0%;
 	height: 80%;
-	width: 6em;
+	width: 7em;
 }
 
 .NomeElettr {
@@ -351,10 +353,10 @@ input[type=button]:hover {
 
 .ValueElettr {
 	color: #abd037;
-	font-size: 1.2em;
+	font-size: 1em;
 	font-weight: bold;
 	line-height: 1.2em;
-	margin: 12px auto 13px auto;
+	margin: 20px auto 15px auto;
 }
 
 .IdElettr {
