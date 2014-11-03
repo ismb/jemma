@@ -392,21 +392,50 @@ CostiConsumi.DatiMaxElettr = function() {
 	if (Main.env == 0) console.log('CostiConsumi1.js', 'DatiMaxElettr', 'Entro!');
 
 	// eventuale trascodifica dato cerco l'elettrodomestico con consumo istantaneo maggiore, escluso smart info
-	var listaFiltrata = $.map(CostiConsumi.listaElettr,function(elettro, index) {
-															if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
-																return elettro;
-															}});
+	var listaFiltrata = $.map(CostiConsumi.listaElettr, function(elettro, index) {
+		if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
+			if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34"))
+				return elettro;
+		}
+	});
 	listaFiltrata.sort(function(a, b) {
-		var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
-		var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
-		//Se uno dei due elettrodomestici in sort � una lavatrice (whitegood) e il consumo � sotto a 1W, normalizzo a 0
-		if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-			firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
+		//var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
+		//var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
+		
+		var firstElettrConsumo = 0;
+		var secondElettrConsumo = 0;
+		
+		// Se uno dei due elettrodomestici in sort � una lavatrice
+		// (whitegood) e il consumo � sotto a 1W, normalizzo a 0
+		var aRslt = false;
+		var bRslt = false;
+		
+		for (var iCounter = 0; iCounter < a[InterfaceEnergyHome.ATTR_APP_VALUE].list.length; iCounter++){
+			if (a[InterfaceEnergyHome.ATTR_APP_VALUE].list[iCounter].name == "IstantaneousDemands"){
+				aRslt = true;
+				firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[iCounter].value.value;
+			}
 		}
-		if (b[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-			secondElettrConsumo = (secondElettrConsumo < 1) ? 0 : secondElettrConsumo;
+		for (var jCounter = 0; jCounter < b[InterfaceEnergyHome.ATTR_APP_VALUE].list.length; jCounter++){
+			if (b[InterfaceEnergyHome.ATTR_APP_VALUE].list[jCounter].name == "IstantaneousDemands"){
+				bRslt = true;
+				secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[jCounter].value.value;
+			}
 		}
-		return secondElettrConsumo - firstElettrConsumo;
+		if ((aRslt) && (bRslt)){
+			if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
+				firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
+			}
+			if (b[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
+				secondElettrConsumo = (secondElettrConsumo < 1) ? 0 : secondElettrConsumo;
+			}
+			return secondElettrConsumo - firstElettrConsumo;
+		} else {
+			return 0;
+		}
 	})
 	CostiConsumi.maxConsumoElettr = listaFiltrata[0];
 	CostiConsumi.VisConsumoMaggiore();
