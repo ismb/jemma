@@ -358,8 +358,8 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 		$.each(result.list,function(indice, elettrodom) {
 			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
 				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
-					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {value : 0};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.push({value: {value : 0}});
 				} else {
 					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
@@ -370,7 +370,8 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 				//if (Main.env == 0) console.log(CostiConsumi.SmartInfo);
 			} else {
 				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
-					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = 0;
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.push({value: {value : 0}});
 				} else {
 					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;

@@ -166,40 +166,56 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									//var catIndex = Elettrodomestici.getCategoryIndex(Elettrodom["categoryObj"].name);
 									Elettrodom["categoria"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 									var values = elemento["device_value"];
-									Elettrodom["measure"] = {label: null, name: null};
+									Elettrodom["measure"] = {principal: null};
 									Elettrodom["stato"] = 0;
 									
 									$.each(values.list, function(idx, el) {
 										if (el.name == "IstantaneousDemands"){
 											Elettrodom["consumo"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption: ", name: "watt"};
+											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(0), unity: "W", label: "Consumption: ", name: "watt", type: el.name};
+											Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 											Elettrodomestici.consumoTotale += Elettrodom["consumo"];
 										} else if (el.name == "CurrentLevel"){
 											Elettrodom["level"] = el.value.value;
 											var val = Math.round((el.value.value/254)*100);
-											Elettrodom["measure"] = {value: val, unity: "% ", label: "Level", name: ""};
+											Elettrodom["measure"][el.name] = {value: val, unity: "% ", label: "Level", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "OnOffState"){
 											Elettrodom["stato"] = el.value.value;
-											if (Elettrodom["measure"].label == null && Elettrodom["measure"].name == null)
-												Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
+											Elettrodom["measure"][el.name] = {value: el.value.value, unity: " ", label: "State: ", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "LocalHumidity"){
 											Elettrodom["humidity"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: "% RH", label: "Umidity: ", name: "relative humidity"};
+											Elettrodom["measure"][el.name] = {value: el.value.value, unity: "% RH", label: "Umidity: ", name: "relative humidity", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "ZoneStatus"){
 											Elettrodom["zonestatus"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
+											Elettrodom["measure"][el.name] = {value: el.value.value, unity: " ", label: "State: ", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "Illuminance"){
 											Elettrodom["illuminance"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
+											Elettrodom["measure"][el.name] = {value: el.value.value, unity: " ", label: "State: ", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "Occupancy"){
 											Elettrodom["occupancy"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value, unity: " ", label: "State: ", name: ""};
+											Elettrodom["measure"][el.name] = {value: el.value.value, unity: " ", label: "State: ", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius"};
+											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius"};
+											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "LockState"){
 											Elettrodom["lockState"] = el.value.value;
 											var val = null;
@@ -210,8 +226,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											} else {
 												val = "NP";
 											}
-											Elettrodom["measure"] = {value: val, unity: " ", label: "Door: ", name: ""};
-											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
+											Elettrodom["measure"][el.name] = {value: val, unity: " ", label: "Door: ", name: "", type: el.name};
+											Elettrodom["measure"][el.name] = {value: " ", unity: " ", label: " ", name: "", type: el.name};
 										} else if (el.name == "CurrentPositionLiftPercentage"){
 											Elettrodom["WindowState"] = el.value.value;
 											var val = null;
@@ -222,8 +238,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											} else {
 												val = "NP";
 											}
-											Elettrodom["measure"] = {value: val, unity: " ", label: "Window: ", name: ""};
-											Elettrodom["measure"] = {value: " ", unity: " ", label: " ", name: ""};
+											Elettrodom["measure"][el.name] = {value: val, unity: " ", label: "Window: ", name: "", type: el.name};
+											Elettrodom["measure"][el.name] = {value: " ", unity: " ", label: " ", name: ""};
 										}
 										
 									});
@@ -652,10 +668,9 @@ Elettrodomestici.refreshDevices=function(){
 			}
 			$("#device_" + i).addClass(class_stato);
 			$("#device_" + i + " .StatoElettrodomestico .stato").text(stato);
-			//Elettrodom["measure"] = {value: el.value.value, unity: "&#176;C", label: "Celsius", name: "celsius"};
-
-			$("#device_"+i+ " .StatoElettrodomestico .lblFirstValue").text(Elettrodomestici.listaElettrodomestici[i]["measure"].label);
-			$("#device_"+i+ " .StatoElettrodomestico .lblMeasure").text(Elettrodomestici.listaElettrodomestici[i]["measure"].value + " " + Elettrodomestici.listaElettrodomestici[i]["measure"].unity);
+			
+			$("#device_"+i+ " .StatoElettrodomestico .lblFirstValue").text(Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].label);
+			$("#device_"+i+ " .StatoElettrodomestico .lblMeasure").text(Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].value + " " + Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].unity);
 			$("#device_"+i+ " .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
 			var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i]);
 			$("#device_"+i+ " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);

@@ -97,7 +97,8 @@
 
 .Elettrodomestico{
     height: 100%;
-    width: 12.5%;
+    /*width: 12.5%;*/
+    width: 15%;
     float: left;
     
 }

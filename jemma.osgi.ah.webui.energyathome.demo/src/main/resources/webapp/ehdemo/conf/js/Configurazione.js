@@ -824,6 +824,7 @@ Configurazione.VisElettrodomestici = function() {
 			val = "nd";
 		} else {
 			htmlStato = "<div class='StatoConnesso'>" + Msg.config["connesso"] + "</div>";
+			val = "";
 
 			// if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE] == 1) {
 			// 		htmlStato = "<div class='StatoOn'>" + Msg.config["statoAcceso"] + "</div>";
@@ -844,42 +845,51 @@ Configurazione.VisElettrodomestici = function() {
 			var temperature = null;
 			var lockState = null;
 			var WindowState = null;
-			var Measure = {value: null, unity: null, label: null, name: null};
+			var Measure = {};
 			
 			$.each(device_value.list, function(idx, el) {
 				if (el.name == "IstantaneousDemands"){
 					consumo = el.value.value;
-					measure = {value: consumo.toFixed(1), unity: "W", label: "Consumption", name: "watt"};
+					Measure[el.name] = {value: consumo.toFixed(1), unity: "W", label: "Cons.", name: "watt", type: el.name};
 				} else if (el.name == "OnOffState"){
 					stato = el.value.value;
-					measure = {value: stato, unity: "W", label: "State", name: ""};
+					
+					Measure[el.name] = {value: stato, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "LocalHumidity"){
 					humidity = el.value.value;
-					measure = {value: humidity, unity: "% RH", label: "Umidity", name: "relative humidity"};
+					Measure[el.name] = {value: humidity, unity: "% RH", label: "Umidity", name: "Humid.", type: el.name};
 				} else if (el.name == "ZoneStatus"){
 					zonestatus = el.value.value;
-					measure = {value: zonestatus, unity: " ", label: "State", name: ""};
+					Measure[el.name] = {value: zonestatus, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "Illuminance"){
 					illuminance = el.value.value;
-					measure = {value: illuminance, unity: " ", label: "State", name: ""};
+					Measure[el.name] = {value: illuminance, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "Occupancy"){
 					occupancy = el.value.value;
-					measure = {value: occupancy, unity: " ", label: "State", name: ""};
+					Measure[el.name] = {value: occupancy, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "Temperature"){
 					temperature = el.value.value;
-					measure = {value: temperature.toFixed(1), unity: "�C", label: "Temperature", name: "celsius"};
+					Measure[el.name] = {value: temperature.toFixed(1), unity: "�C", label: "Temp.", name: "celsius", type: el.name};
 				} else if (el.name == "LocalTemperature"){
 					temperature = el.value.value;
-					measure = {value: temperature.toFixed(1), unity: "�C", label: "Temperature", name: "celsius"};
+					Measure[el.name] = {value: temperature.toFixed(1), unity: "�C", label: "Temp.", name: "celsius", type: el.name};
 				} else if (el.name == "LockState"){
 					lockState = el.value.value;
-					measure = {value: lockState, unity: " ", label: "State", name: ""};
+					Measure[el.name] = {value: lockState, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "CurrentPositionLiftPercentage"){
 					WindowState = el.value.value;
-					measure = {value: WindowState, unity: " ", label: "State", name: ""};
+					Measure[el.name] = {value: WindowState, unity: " ", label: "State", name: "", type: el.name};
 				}
 			});
-			val = measure.value + " " + measure.unity;
+
+			for (lbl in Measure){
+				if (Measure[lbl] != "undefined"){
+					if (val != "")
+						val += "</br>" + Measure[lbl].label + ": " + Measure[lbl].value + " " + Measure[lbl].unity;
+					else 
+						val += Measure[lbl].label + ": " + Measure[lbl].value + " " + Measure[lbl].unity;
+				}
+			}
 			
 			/*if (device_value != undefined) {
 				if (typeof (device_value.value.value) == "string") {
@@ -936,6 +946,7 @@ Configurazione.VisElettrodomestici = function() {
 	wT = $("#ElencoElettr").width();
 	wD = $(".ElettrVis").width();
 	dist = Math.round((wT - (wD * (Configurazione.numDisp + 1))) / (Configurazione.numDisp + 1));
+	dist = 100;
 	left = dist + wD / 2;
 	// wIcona = $(".ElettrIcona").width();
 	//console.log(80, Configurazione.MODULE, "VisElettrodomestici wT = " + wT + " wD = " + wD + " dist = " + dist);
