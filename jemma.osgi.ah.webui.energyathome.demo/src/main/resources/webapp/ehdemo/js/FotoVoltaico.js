@@ -2,6 +2,7 @@ var potenza = {
 	value : null
 };
 
+
 var CostiConsumi = {
 	MODULE : "CostiConsumi",
 	CONSUMI : 1,

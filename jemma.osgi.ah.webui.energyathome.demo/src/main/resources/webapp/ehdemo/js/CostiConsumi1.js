@@ -108,11 +108,11 @@ CostiConsumi.Init = function() {
 	$("#InfoFeedTitolo").append(Msg.home["suggerimenti"]);
 
 	/** ***** Caricamento parti Consumi ******* */
-	$('#ConsumoIndicatoreImg').gauge();
+	//$("#ConsumoIndicatoreImg").html("<span>" + Msg.home["consumi"] + "</span>");
+	
 	$('#ConsumoIndicatoreImg').gauge({
-		max : 2.0
+		max : 2.0 
 	});
-	$('#CostoIndicatoreImg').gauge();
 	$('#CostoIndicatoreImg').gauge({
 		max : 2.0,
 		color : 'yellow'
