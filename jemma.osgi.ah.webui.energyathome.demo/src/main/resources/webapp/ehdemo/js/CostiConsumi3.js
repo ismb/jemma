@@ -247,43 +247,32 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 	}
 	if ((err == null) && (result != null)) {
 		$.each(result.list,function(indice, elettrodom) {
-							if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
-								if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
-									elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-									elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {
-										value : 0
-									};
-								} else {
-									var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-									elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
-								}
-								if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
-									CostiConsumi.SmartInfo = elettrodom["map"];
-									device_value = CostiConsumi.SmartInfo.device_value;
-									if (device_value != undefined) {
-										CostiConsumi.potenzaAttuale.value = device_value.value.value;
-									}
-								}
-								if (Main.env == 0)
-									console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
-							} else {
-								if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
-										elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {};
-										elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value = {
-										value : 0
-									};
-								} else {
-									var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value);
-									elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].value.value = val;
-								}
-								CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
-								if (Main.env == 0){
-									console.log('COSTICONSUMI1', 'Eldo - ');
-									console.log(CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]]);
-									console.log(elettrodom["map"]);
-								}
-							}
-						});
+			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined) {
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.push({value: {value : 0}});
+				} else {
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
+				}
+				CostiConsumi.SmartInfo = elettrodom["map"];
+				Main.appIdSmartInfo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
+				//if (Main.env == 0) console.log('COSTICONSUMI3', 'SmartInfo - ');
+				//if (Main.env == 0) console.log(CostiConsumi.SmartInfo);
+			} else {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.push({value: {value : 0}});
+				} else {
+					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
+				}
+				CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
+				//if (Main.env == 0) console.log('COSTICONSUMI3', 'Eldo - ');
+				//if (Main.env == 0) console.log(CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]]);
+				//if (Main.env == 0) console.log(elettrodom["map"]);
+			}
+		});
 	}
 
 	CostiConsumi.DatiMaxElettr();
@@ -298,26 +287,51 @@ CostiConsumi.DatiMaxElettr = function() {
 
 	// eventuale trascodifica dato cerco l'elettrodomestico con consumo
 	// istantaneo maggiore, escluso smart info
-	var listaFiltrata = $.map(CostiConsumi.listaElettr,
-			function(elettro, index) {
-				if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
-					if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && (elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40"))
-						return elettro;
-				}
-			});
+	var listaFiltrata = $.map(CostiConsumi.listaElettr, function(elettro, index) {
+		if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
+			if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34"))
+				return elettro;
+		}
+	});
 	listaFiltrata.sort(function(a, b) {
-				var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
-				var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].value.value;
-				// Se uno dei due elettrodomestici in sort � una lavatrice
-				// (whitegood) e il consumo � sotto a 1W, normalizzo a 0
-				if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-					firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
-				}
-				if (b[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
-					secondElettrConsumo = (secondElettrConsumo < 1) ? 0 : secondElettrConsumo;
-				}
-				return secondElettrConsumo - firstElettrConsumo;
-			})
+		//var firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
+		//var secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value;
+		
+		var firstElettrConsumo = 0;
+		var secondElettrConsumo = 0;
+		
+		// Se uno dei due elettrodomestici in sort � una lavatrice
+		// (whitegood) e il consumo � sotto a 1W, normalizzo a 0
+		var aRslt = false;
+		var bRslt = false;
+		
+		for (var iCounter = 0; iCounter < a[InterfaceEnergyHome.ATTR_APP_VALUE].list.length; iCounter++){
+			if (a[InterfaceEnergyHome.ATTR_APP_VALUE].list[iCounter].name == "IstantaneousDemands"){
+				aRslt = true;
+				firstElettrConsumo = a[InterfaceEnergyHome.ATTR_APP_VALUE].list[iCounter].value.value;
+			}
+		}
+		for (var jCounter = 0; jCounter < b[InterfaceEnergyHome.ATTR_APP_VALUE].list.length; jCounter++){
+			if (b[InterfaceEnergyHome.ATTR_APP_VALUE].list[jCounter].name == "IstantaneousDemands"){
+				bRslt = true;
+				secondElettrConsumo = b[InterfaceEnergyHome.ATTR_APP_VALUE].list[jCounter].value.value;
+			}
+		}
+		if ((aRslt) && (bRslt)){
+			if (a[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
+				firstElettrConsumo = (firstElettrConsumo < 1) ? 0 : firstElettrConsumo;
+			}
+			if (b[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE) {
+				secondElettrConsumo = (secondElettrConsumo < 1) ? 0 : secondElettrConsumo;
+			}
+			return secondElettrConsumo - firstElettrConsumo;
+		} else {
+			return 0;
+		}
+	})
 	CostiConsumi.maxConsumoElettr = listaFiltrata[0];
 	CostiConsumi.VisConsumoMaggiore();
 	if (Main.env == 0)
@@ -330,7 +344,7 @@ CostiConsumi.VisConsumoMaggiore = function() {
 		console.log('CostiConsumi3.js', 'VisConsumoMaggiore', 'Entro!');
 
 	if (CostiConsumi.maxConsumoElettr != null) {
-		if (CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].value.value == 0) {
+		if (CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value == 0) {
 			$("#DettaglioConsumoMaggiore").html("<span id='MsgConsumoMaggiore'></span>");
 			$("#MsgConsumoMaggiore").text(Msg.home["maxDisp0"]);
 		} else {
@@ -345,7 +359,7 @@ CostiConsumi.VisConsumoMaggiore = function() {
 							CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_NAME]
 									+ " ("
 									+ Math
-											.round(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].value.value)
+											.round(CostiConsumi.maxConsumoElettr[InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value)
 									+ " W)");
 			if (CostiConsumi.dimMaxDispImg == -1) {
 				wDiv = $("#ConsumoMaggioreImg").width();

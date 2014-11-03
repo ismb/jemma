@@ -116,7 +116,7 @@ var Msg = {
 		"noMaxDisp" : "N.D.",
 		"maxDisp0" : "Nessun elettrodomestico ha un consumo significativo",
 		"datoNonDisponibile" : "N.D.",
-		"consumoMaggiore" : "COSA STA CONSUMANDO DI PIU'",
+		"consumoMaggiore" : "CONSUMO MAGGIORE",
 		"titoloDispositivi" : "CONTROLLO DISPOSITIVI",
 		"titoloConsumoDisp" : "Sta consumando",
 		"titoloLocDisp" : "Dove si trova",
