@@ -1825,6 +1825,19 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			}
 		}
 		
+		/* LevelControl */
+		LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
+		if (levelControlServer != null) {
+			availability = ((IServiceCluster) levelControlServer).getEndPoint().isAvailable() ? 2 : 0;
+			short currentlevel = 0;
+			if (availability == 2) {
+				currentlevel = levelControlServer.getCurrentLevel(context);
+			}
+			System.out.println("Level From Context: " + currentlevel);
+			
+			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
+
+		}
 		
 		/* ONOFF */
 		OnOffServer onOffServer = null;
@@ -1971,18 +1984,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		}
 
-		LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
-		if (levelControlServer != null) {
-			availability = ((IServiceCluster) levelControlServer).getEndPoint().isAvailable() ? 2 : 0;
-			short currentlevel = 0;
-			if (availability == 2) {
-				currentlevel = levelControlServer.getCurrentLevel(context);
-			}
-			System.out.println("Level From Context: " + currentlevel);
-			
-			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
-
-		}
+	
 
 		
 

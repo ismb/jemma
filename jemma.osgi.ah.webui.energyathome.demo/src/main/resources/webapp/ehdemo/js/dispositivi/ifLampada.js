@@ -309,8 +309,8 @@ ifLampada.update= function(now){
                 //consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
         }
         
-        if (ifLampada.lum != device.measure.value){
-        	ifLampada.lum = device.measure.value;
+        if (ifLampada.lum != device.measure.CurrentLevel.value){
+        	ifLampada.lum = device.measure.CurrentLevel.value;
         }
         
         $("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
