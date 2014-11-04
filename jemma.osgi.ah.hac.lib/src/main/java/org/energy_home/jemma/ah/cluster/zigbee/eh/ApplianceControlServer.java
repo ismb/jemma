@@ -36,6 +36,10 @@ public interface ApplianceControlServer {
 	final static String CMD_OverloadPauseResume_NAME = "OverloadPauseResume";
 	final static String CMD_OverloadPause_NAME = "OverloadPause";
 	final static String CMD_OverloadWarning_NAME = "OverloadWarning";
+	
+	final static short CMD_Start_ID=1;
+	final static short CMD_Stop_ID=2;
+	final static short CMD_Pause_ID=3;
 
 	public int getStartTime(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException;
 
