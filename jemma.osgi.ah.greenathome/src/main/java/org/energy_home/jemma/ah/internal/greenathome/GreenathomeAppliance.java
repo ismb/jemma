@@ -1286,8 +1286,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("LevelControl Server Cluster missing on appliance " + peerAppliancePid);
 						}
-						
-						
+
 						ThermostatServer thermostatServer = (ThermostatServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ThermostatServer.class.getName());
 						if (thermostatServer != null) {
 							((IServiceCluster) thermostatServer).setAttributeSubscription(ThermostatServer.ATTR_LocalTemperature_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
@@ -1404,6 +1403,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	public void notifyAttributeValue(String clusterName, String attributeName, IAttributeValue attributeValue, IEndPointRequestContext endPointRequestContext) throws ServiceClusterException, ApplianceException {
 		synchronized (lockGatH) {
 			LOG.info("Arrived attribute reporting for cluster: " + clusterName + " - Attribute name: " + attributeName + " - with value " + attributeValue.getValue().toString());
+			System.out.println("Arrived attribute reporting for cluster: " + clusterName + " - Attribute name: " + attributeName + " - with value " + attributeValue.getValue().toString());
 
 			/*
 			 * Simple Meter if
@@ -1817,14 +1817,20 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				double power;
 				try {
 					power = this.readPower(peerAppliance);
-					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
-						attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
+					if (power != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE) {
+						System.out.println("METER From Context: " + power);
 
+						attributeValues.add(new AttributeValueExtended("IstantaneousDemands", new AttributeValue(power)));
+					} else {
+						System.out.println("METER VALUE PROBLEM: " + ESPService.INVALID_INSTANTANEOUS_POWER_VALUE);
+
+					}
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		/* LevelControl */
 		LevelControlServer levelControlServer = (LevelControlServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), LevelControlServer.class.getName());
 		if (levelControlServer != null) {
@@ -1834,11 +1840,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				currentlevel = levelControlServer.getCurrentLevel(context);
 			}
 			System.out.println("Level From Context: " + currentlevel);
-			
+
 			attributeValues.add(new AttributeValueExtended("CurrentLevel", new AttributeValue(currentlevel)));
 
 		}
-		
+
 		/* ONOFF */
 		OnOffServer onOffServer = null;
 		onOffServer = (OnOffServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), OnOffServer.class.getName(), endPointId);
@@ -1983,10 +1989,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			attributeValues.add(new AttributeValueExtended("CurrentPositionLiftPercentage", new AttributeValue(currentLift)));
 
 		}
-
-	
-
-		
 
 		ConfigServer configServer = (ConfigServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), ConfigServer.class.getName(), endPointId);
 		if (configServer != null) {
