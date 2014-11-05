@@ -298,6 +298,7 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 	}
 	
 	public void notifyDeviceAdded(DeviceInfo info) {
+		
 		String applianceId = info.getPersistentId();
 		ApplianceInfo appliance = appliances.get(applianceId);
 		if (appliance == null) {
