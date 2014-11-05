@@ -15,8 +15,6 @@
  */
 package org.energy_home.jemma.shal;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-
 public interface DeviceInfo {	
 	public String getEndPointId();
 	
@@ -26,8 +24,5 @@ public interface DeviceInfo {
 	public DeviceDescriptor getDescriptor();
 	
 	public DeviceConfiguration getConfiguration();
-	
-	public IAppliance getIAppliance();
-	
 
 }

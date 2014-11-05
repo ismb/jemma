@@ -505,40 +505,40 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		executor.execute(new Runnable() {
 			public void run() {
 
-				
-					int cluster = msg.getClusterID();
+				int cluster = msg.getClusterID();
 
-					if (enableNotifyFrameLogs)
-						printAPSMessageEvent(msg);
+				if (enableNotifyFrameLogs)
+					printAPSMessageEvent(msg);
 
-					// forward the message to the peer device
-					Address srcAddress = msg.getSourceAddress();
-					String nodePid = getNodePid(srcAddress);
+				// forward the message to the peer device
+				Address srcAddress = msg.getSourceAddress();
+				String nodePid = getNodePid(srcAddress);
 
-					if (nodePid == null) {
-						log.debug("message discarded because the src node ieee address is not present");
-						return;
-					}
+				if (nodePid == null) {
+					log.debug("message discarded because the src node ieee address is not present");
+					return;
+				}
 
-					if ((log != null) && (enableNotifyFrameLogs)) {
-						log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
-					}
+				if ((log != null) && (enableNotifyFrameLogs)) {
+					log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
+				}
 
-					if (msg.getDestinationEndpoint() == 0xFF) {
-						handleBroadcastMessages(msg);
-						return;
-					}
+				if (msg.getDestinationEndpoint() == 0xFF) {
+					handleBroadcastMessages(msg);
+					return;
+				}
 
-					// Drop messages that doesn't belong to the exported
-					// clusters
-					if (enableNotifyFrameLogs)
-						printAPSMessageEvent(msg);
+				// Drop messages that doesn't belong to the exported
+				// clusters
+				if (enableNotifyFrameLogs)
+					printAPSMessageEvent(msg);
 
-					Vector devices = (Vector) ieee2devices.get(nodePid);
+				Vector devices = (Vector) ieee2devices.get(nodePid);
 
-					ZclFrame zclFrame = new ZclFrame(msg.getData());
+				ZclFrame zclFrame = new ZclFrame(msg.getData());
 
-					int clusterID = msg.getClusterID();
+				int clusterID = msg.getClusterID();
+				if (msg.getProfileID() > 0) {
 					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
 						// FIXME: qui dovremmo dare un errore differente a
 						// seconda se il
@@ -548,61 +548,62 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 						post(msg, zclResponseFrame);
 						return;
 					}
+				}
 
-					if (devices != null) {
-						Iterator it = devices.iterator();
-						boolean epFound = false;
-						while (it.hasNext()) {
-							ZigBeeDeviceImpl device = (ZigBeeDeviceImpl) it.next();
-							if (device.getEp() == msg.getSourceEndpoint()) {
-								if (enableNotifyFrameLogs) {
-									log.debug("notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
-								}
-								try {
-									device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
-								} catch (ZclException e) {
-									// TODO: check merge, following if was
-									// commented in
-									// 3.3.0
-									// if
-									// (!zclFrame.isDefaultResponseDisabled()) {
-									IZclFrame zclResponseFrame = getDefaultResponse(zclFrame, e.getStatusCode());
-									post(msg, zclResponseFrame);
-									log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
-									// }
-
-								}
-
-								if (enableNotifyFrameLogs) {
-									log.debug("after notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
-								}
-								epFound = true;
-
-								break;
+				if (devices != null) {
+					Iterator it = devices.iterator();
+					boolean epFound = false;
+					while (it.hasNext()) {
+						ZigBeeDeviceImpl device = (ZigBeeDeviceImpl) it.next();
+						if (device.getEp() == msg.getSourceEndpoint()) {
+							if (enableNotifyFrameLogs) {
+								log.debug("notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
 							}
-						}
-						if (!epFound && log.isDebugEnabled())
-							log.error("not found any matching ep for the incoming message");
+							try {
+								device.notifyZclFrame((short) msg.getClusterID(), zclFrame);
+							} catch (ZclException e) {
+								// TODO: check merge, following if was
+								// commented in
+								// 3.3.0
+								// if
+								// (!zclFrame.isDefaultResponseDisabled()) {
+								IZclFrame zclResponseFrame = getDefaultResponse(zclFrame, e.getStatusCode());
+								post(msg, zclResponseFrame);
+								log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
+								// }
 
+							}
+
+							if (enableNotifyFrameLogs) {
+								log.debug("after notifyZclFrame() : Thr " + Thread.currentThread().getId() + " " + msg.getClusterID() + " message to ep " + device.getEp());
+							}
+							epFound = true;
+
+							break;
+						}
+					}
+					if (!epFound && log.isDebugEnabled())
+						log.error("not found any matching ep for the incoming message");
+
+				} else {
+					IZclFrame zclResponseFrame;
+					InstallationStatus installationStatus = getInstallingDevice(srcAddress);
+					if (installationStatus != null) {
+						log.error(getIeeeAddressHex(srcAddress) + ": received a message from a node that is not installed. Reply with TIMEOUT");
+						zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
 					} else {
-						IZclFrame zclResponseFrame;
-						InstallationStatus installationStatus = getInstallingDevice(srcAddress);
-						if (installationStatus != null) {
-							log.error(getIeeeAddressHex(srcAddress) + ": received a message from a node that is not installed. Reply with TIMEOUT");
-							zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
-						} else {
-							log.error("received a message from an unknown node " + getIeeeAddressHex(srcAddress) + " . Reply with TIMEOUT");
+						log.error("received a message from an unknown node " + getIeeeAddressHex(srcAddress) + " . Reply with TIMEOUT");
 
-							zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
-						}
-
-						post(msg, zclResponseFrame);
+						zclResponseFrame = getDefaultResponse(zclFrame, 0x94);
 					}
 
-					if (enableNotifyFrameLogs) {
-						log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId() + ": leave notifyAPSMessage()");
-					}
-				
+					post(msg, zclResponseFrame);
+				}
+
+				if (enableNotifyFrameLogs) {
+					log.debug(getIeeeAddressHex(msg.getSourceAddress()) + ": " + " Thr " + Thread.currentThread().getId() + ": leave notifyAPSMessage()");
+				}
+
 			}
 		});
 	}
@@ -639,7 +640,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void nodeDiscovered(final Status status, final WSNNode node) {
 
-		
 		executor.execute(new Runnable() {
 			public void run() {
 				log.debug("=======> Nodo node.getAddress().getIeeeAddress() = " + node.getAddress().getIeeeAddress());
@@ -786,7 +786,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void servicesDiscovered(final Status status, final NodeServices services) {
-		
 
 		executor.execute(new Runnable() {
 			public void run() {
@@ -873,7 +872,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void serviceDescriptorRetrieved(final Status status, final ServiceDescriptor service) {
 
-		
 		executor.execute(new Runnable() {
 			public void run() {
 
@@ -1495,7 +1493,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							if (enableAllClusters) {
 								inputClusters.add(new Integer(ZclOnOffServer.CLUSTER_ID));
 							}
-							
+
 							localEndpoint = gateway.configureEndpoint(10000, sd);
 							// start discovery announcement
 							gateway.startNodeDiscovery(0, GatewayConstants.DISCOVERY_ANNOUNCEMENTS);
@@ -1729,7 +1727,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	}
 
 	public void nodeRemoved(final Status status, final WSNNode node) {
-		
+
 		executor.execute(new Runnable() {
 			public void run() {
 
@@ -1788,7 +1786,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				this.terminateDeviceDiscoveryForJoinedDevices();
 				this.handleNextDiscoveredNode();
 			} else {
-				
+
 				timerCancel(permitJoinAllTimer);
 				this.postEvent("ah/zigbee/OPEN_NETWORK", null);
 				timerStart(permitJoinAllTimer, duration);
@@ -2327,7 +2325,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 	public void openNetwork(int duration) throws Exception {
 		permitJoin((short) duration);
-	
+
 		lastOpenRequestTimestamp = System.currentTimeMillis();
 	}
 

@@ -946,7 +946,7 @@ Configurazione.VisElettrodomestici = function() {
 	wT = $("#ElencoElettr").width();
 	wD = $(".ElettrVis").width();
 	dist = Math.round((wT - (wD * (Configurazione.numDisp + 1))) / (Configurazione.numDisp + 1));
-	dist = 100;
+	dist = 30;
 	left = dist + wD / 2;
 	// wIcona = $(".ElettrIcona").width();
 	//console.log(80, Configurazione.MODULE, "VisElettrodomestici wT = " + wT + " wD = " + wD + " dist = " + dist);

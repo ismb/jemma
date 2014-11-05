@@ -1205,6 +1205,11 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 								}
 
 								((IServiceCluster) simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+								
+								
+								
+								//((IServiceCluster) simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
+
 								System.out.println("initEndPoint setAttributeSubscription SimpleMeetering Appliance:" + peerAppliancePid);
 							}
 						} else {

@@ -228,6 +228,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											}
 											Elettrodom["measure"][el.name] = {value: val, unity: " ", label: "Door: ", name: "", type: el.name};
 											Elettrodom["measure"][el.name] = {value: " ", unity: " ", label: " ", name: "", type: el.name};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "CurrentPositionLiftPercentage"){
 											Elettrodom["WindowState"] = el.value.value;
 											var val = null;
@@ -240,6 +242,8 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											}
 											Elettrodom["measure"][el.name] = {value: val, unity: " ", label: "Window: ", name: "", type: el.name};
 											Elettrodom["measure"][el.name] = {value: " ", unity: " ", label: " ", name: ""};
+											if (Elettrodom["measure"]["principal"] == null)
+												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										}
 										
 									});
