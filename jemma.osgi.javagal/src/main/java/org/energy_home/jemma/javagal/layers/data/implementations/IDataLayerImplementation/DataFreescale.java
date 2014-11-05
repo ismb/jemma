@@ -166,7 +166,10 @@ public class DataFreescale implements IDataLayer {
 			public void run() {
 				while (!getDestroy()) {
 					try {
-						processAllRaw(getDataFromSerialComm().take());
+						ByteArrayObject z = null;
+						z = getDataFromSerialComm().take();
+						if (z.getArray() != null)
+							processAllRaw(z);
 					} catch (Exception e) {
 						LOG.error("Error on processAllRaw:" + e.getMessage());
 						e.printStackTrace();
@@ -3699,7 +3702,7 @@ public class DataFreescale implements IDataLayer {
 	@Override
 	public void clearBuffer() {
 		try {
-			getDataFromSerialComm().put(new ByteArrayObject(true));
+			getDataFromSerialComm().put(new ByteArrayObject(null, 0));
 		} catch (InterruptedException e) {
 
 		}

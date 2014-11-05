@@ -73,7 +73,9 @@ public class ByteArrayObject {
 	public ByteArrayObject(byte[] buffer, int size) {
 		_startedFromZero = true;
 		array = new byte[size];
-		System.arraycopy(buffer, 0, array, 0, size);
+		if (buffer != null) {
+			System.arraycopy(buffer, 0, array, 0, size);
+		}
 		count = size;
 
 	}
