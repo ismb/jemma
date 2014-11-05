@@ -194,7 +194,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 
-		System.out.println("Sending a ZCLFrame with Key:" + hash + " -- for CLuster:" + clusterId);
+		System.out.println("Sending a ZCLFrame with Key:" + hash + " -- for CLuster:" + clusterId + " --- TO:" + this.getIeeeAddress());
 		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
