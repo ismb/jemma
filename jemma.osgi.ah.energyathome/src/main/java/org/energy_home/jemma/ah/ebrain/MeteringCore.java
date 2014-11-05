@@ -19,18 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.cluster.zigbee.custom.SimpleMetering4NoksServer;
-import org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer;
-import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringClient;
 import org.energy_home.jemma.ah.cluster.zigbee.metering.SimpleMeteringServer;
 import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener.OverloadStatus;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
-import org.energy_home.jemma.ah.hac.IAppliance;
 import org.energy_home.jemma.ah.hac.IEndPoint;
-import org.energy_home.jemma.ah.hac.lib.EndPoint;
-import org.energy_home.jemma.ah.hac.lib.ext.PeerAppliance;
 import org.energy_home.jemma.ah.hap.client.M2MHapException;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.energy_home.jemma.m2m.ah.ApplianceLog;
@@ -40,6 +33,8 @@ import org.energy_home.jemma.shal.DeviceDescriptor.DeviceType;
 import org.energy_home.jemma.shal.DeviceInfo;
 import org.energy_home.jemma.shal.DeviceListener;
 import org.energy_home.jemma.shal.DeviceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MeteringCore implements IMeteringListener, DeviceListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MeteringCore.class);
@@ -292,7 +287,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						}
 
 						if (smartInfoProduction != appliance) {
-							
+
 							for (IEndPoint x : appliance.deviceInfo.getIAppliance().getEndPoints())
 								if ((x.getServiceCluster(SimpleMetering4NoksServer.class.getName()) != null) || (x.getServiceCluster(SimpleMeteringServer.class.getName()) != null)) {
 
