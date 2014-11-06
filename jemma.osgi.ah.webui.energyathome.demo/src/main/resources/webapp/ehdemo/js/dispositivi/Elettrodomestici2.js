@@ -208,12 +208,12 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "Temperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius", type: el.name};
+											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "C", label: "Temperature: ", name: "celsius", type: el.name};
 											if (Elettrodom["measure"]["principal"] == null)
 												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "LocalTemperature"){
 											Elettrodom["temperature"] = el.value.value;
-											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "�C", label: "Temperature: ", name: "celsius", type: el.name};
+											Elettrodom["measure"][el.name] = {value: el.value.value.toFixed(1), unity: "C", label: "Temperature: ", name: "celsius", type: el.name};
 											if (Elettrodom["measure"]["principal"] == null)
 												Elettrodom["measure"]["principal"] = Elettrodom["measure"][el.name];
 										} else if (el.name == "LockState"){

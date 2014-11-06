@@ -1208,7 +1208,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 								}
 
 								((IServiceCluster) simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_IstantaneousDemand_NAME, ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS, null);
-								
+
 								// ((IServiceCluster)
 								// simpleMeteringServer).setAttributeSubscription(SimpleMeteringServer.ATTR_CurrentSummationReceived_NAME,
 								// ISubscriptionParameters.DEFAULT_SUBSCRIPTION_PARAMETERS,
@@ -1333,8 +1333,6 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 						} else {
 							LOG.debug("ApplianceControlServer Server Cluster missing on appliance " + peerAppliancePid);
 						}
-
-						
 
 					} catch (ServiceClusterException e) {
 						LOG.error("Exception on initEndPoint", e);
@@ -1970,8 +1968,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 			if (availability == 2) {
 				float localTemperature = (float) (thermostatServer.getLocalTemperature(context) / 100.0);
-				String value = localTemperature + " &degC";
-				attributeValues.add(new AttributeValueExtended("LocalTemperature", new AttributeValue(value)));
+				attributeValues.add(new AttributeValueExtended("LocalTemperature", new AttributeValue(localTemperature)));
 			}
 
 		}

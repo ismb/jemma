@@ -45,11 +45,11 @@ ifThermostat.update= function(now){
         
         var i= $("#Interfaccia").data("current_index");
 
-        var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
-        if (consumo!="n.a.") {
-                consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
-        }
-        $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
+        //var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
+        //if (consumo!="n.a.") {
+        //        consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
+        //}
+        //$("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
         
         
@@ -72,7 +72,7 @@ ifThermostat.update= function(now){
                 
                 ifThermostat.stato=1;
                 if (Elettrodomestici.listaElettrodomestici[i].temperature != undefined)
-                	t_value=Elettrodomestici.listaElettrodomestici[i].temperature+" °";
+                	t_value=Elettrodomestici.listaElettrodomestici[i].temperature+" C";
                 if (Elettrodomestici.listaElettrodomestici[i].humidity != undefined)
                 	h_value=Elettrodomestici.listaElettrodomestici[i].humidity+" %"
         }

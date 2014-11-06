@@ -70,7 +70,8 @@ var Configurazione = {
 					 "ah.ep.zigbee.DoorLock": [40],
 					 "ah.ep.zigbee.WindowCovering": [44],
 					 "ah.ep.zigbee.WindowCoveringController": [45], 
-					 "ah.ep.zigbee.Thermostat": [36, 41],
+					 "ah.ep.zigbee.Thermostat": [36, 41], 
+					 "Generic Thermostat": [36, 41], //TO FIX!!!!
 					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},
 	calcNumIcone : [[ 0, 0 ], 
 	                [ 1, 1 ], [ 1, 2 ], 
@@ -869,10 +870,10 @@ Configurazione.VisElettrodomestici = function() {
 					Measure[el.name] = {value: occupancy, unity: " ", label: "State", name: "", type: el.name};
 				} else if (el.name == "Temperature"){
 					temperature = el.value.value;
-					Measure[el.name] = {value: temperature.toFixed(1), unity: "�C", label: "Temp.", name: "celsius", type: el.name};
+					Measure[el.name] = {value: temperature.toFixed(1), unity: "C", label: "Temp.", name: "celsius", type: el.name};
 				} else if (el.name == "LocalTemperature"){
 					temperature = el.value.value;
-					Measure[el.name] = {value: temperature.toFixed(1), unity: "�C", label: "Temp.", name: "celsius", type: el.name};
+					Measure[el.name] = {value: temperature.toFixed(1), unity: "C", label: "Temp.", name: "celsius", type: el.name};
 				} else if (el.name == "LockState"){
 					lockState = el.value.value;
 					Measure[el.name] = {value: lockState, unity: " ", label: "State", name: "", type: el.name};
