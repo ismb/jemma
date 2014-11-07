@@ -26,7 +26,7 @@ var Elettrodomestici = {
 	numPagine:0,
 	pagina:0,
 	lock:false,
-	perPagina:8
+	perPagina:6
 
 };
 
