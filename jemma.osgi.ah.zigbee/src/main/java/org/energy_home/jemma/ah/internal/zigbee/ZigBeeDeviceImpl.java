@@ -313,12 +313,12 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 			} else {
 				try {
 					LOG.debug("THID: " + Thread.currentThread().getId() + " before sq.put(zclFrame) Hash:" + String.format("%04X", hash));
-
+						
 					sq.put(zclFrame);
 
 					LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
 
-				} catch (InterruptedException e) {
+				} catch (Exception e) { //changed: it was InterruptedException but an UNAUTHORIZED message was thrown, that was incorrect
 					LOG.error("exception", e);
 
 					return false;
