@@ -97,7 +97,7 @@ public class MessageManager {
 		executor.execute(new Runnable() {
 			public void run() {
 
-				System.out.println("Aps Message Indication in process...");
+				System.out.println("GAL -- Aps Message Indication in process...");
 
 				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
