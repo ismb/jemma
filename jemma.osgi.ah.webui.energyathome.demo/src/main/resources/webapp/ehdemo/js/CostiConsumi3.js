@@ -845,6 +845,7 @@ CostiConsumi.GetSuddivisioneConsumi = function() {
 					InterfaceEnergyHome.CONSUMO, start.getTime(),
 					end.getTime(), InterfaceEnergyHome.DAY, true,
 					InterfaceEnergyHome.DELTA);
+			hideSpinner();
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetSuddivisioneConsumi", err);
 		}
