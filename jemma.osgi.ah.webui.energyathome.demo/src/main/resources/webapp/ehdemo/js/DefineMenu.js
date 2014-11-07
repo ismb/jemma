@@ -21,7 +21,7 @@ function setDefineMenu(){
 										 "Image" : Define.menu["dispositivi"],
 										 "ImageSelected" : Define.menu["dispositiviSel"],
 										 "Section": Tracing.APPLIANCES,
-										 "FuncEnter" : "LazyScript.load('js/dispositivi/Elettrodomestici2.js?201305315125',function(){ Elettrodomestici.GestElettrodomestici();})",
+										 "FuncEnter" : "LazyScript.load('js/dispositivi/Elettrodomestici2.js?"+Math.random()+"',function(){ Elettrodomestici.GestElettrodomestici();})",
 										 "FuncExit": "Elettrodomestici.ExitElettrodomestici()" },
 										{"Nome" : Msg.menu["storico"],
 										 "Image" : Define.menu["storico"],

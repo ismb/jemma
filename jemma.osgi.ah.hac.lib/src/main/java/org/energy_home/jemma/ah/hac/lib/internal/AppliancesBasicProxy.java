@@ -621,6 +621,8 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		}
 		applianceConfigurationMap.put(appliancePid, savedProps);
 		if (installing) {
+			System.out.println("Appliance not yet installed installing" + appliancePid);
+			
 			LOG.debug("Appliance not yet installed " + appliancePid);
 			ManagedApplianceStatus proxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_INSTALLING);
 			if (appliance.isAvailable())

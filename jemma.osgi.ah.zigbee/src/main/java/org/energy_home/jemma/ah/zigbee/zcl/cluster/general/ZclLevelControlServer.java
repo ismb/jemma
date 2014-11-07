@@ -126,6 +126,7 @@ public class ZclLevelControlServer extends ZclServiceCluster implements LevelCon
 		ZclDataTypeUI8.zclSerialize(zclFrame, Level);
 		ZclDataTypeUI16.zclSerialize(zclFrame, TransitionTime);
 		issueExec(zclFrame, 11, context);
+		setCachedAttributeObject(0, new Short(Level));
 	}
 
 	public void execMoveWithOnOff(short MoveMode, short Rate, IEndPointRequestContext context) throws ApplianceException,
@@ -138,6 +139,7 @@ public class ZclLevelControlServer extends ZclServiceCluster implements LevelCon
 		ZclDataTypeEnum8.zclSerialize(zclFrame, MoveMode);
 		ZclDataTypeUI8.zclSerialize(zclFrame, Rate);
 		issueExec(zclFrame, 11, context);
+		
 	}
 
 	public void execStepWithOnOff(short StepMode, short StepSize, int TransitionTime, IEndPointRequestContext context)

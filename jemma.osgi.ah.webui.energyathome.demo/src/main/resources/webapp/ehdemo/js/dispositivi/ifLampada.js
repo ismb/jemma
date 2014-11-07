@@ -7,13 +7,14 @@ var ifLampada =  {
         max: null,
         lum:null,
         timeout_timer:null,
+        counterPositionDevice:null,
         clusters:{},
         fb:null, //farbtastic color picker
         UPDATE_FREQ: 30000,
         stato:1 //1=acceso;0=spento;-1=disconesso
 }
 
-ifLampada.init=function(_clusters){
+ifLampada.init=function(_clusters, i){  
         
         
         //fiz immagine lampadina
@@ -22,21 +23,19 @@ ifLampada.init=function(_clusters){
         $("#ifLampada #bg").width($("#ifLampada #bg").height());
         
         
-        ifLampada.baseColor=tinycolor("#9cc31c");
-        ifLampada.bckhsl=ifLampada.baseColor.toHsl();
-        ifLampada.coloreReale=ifLampada.baseColor;
+        ifLampada.baseColor = tinycolor("#9cc31c");
+        ifLampada.bckhsl = ifLampada.baseColor.toHsl();
+        ifLampada.coloreReale = ifLampada.baseColor;
         
-        $('#bg').css( "background-color",ifLampada.baseColor.toHexString() );
+        $('#bg').css("background-color", ifLampada.baseColor.toHexString() );
         
+        ifLampada.max = 100;
+        ifLampada.lum = ifLampada.max;
+        ifLampada.timeout_timer = new Date().getTime();
+        ifLampada.stato = -1;
+        ifLampada.clusters = _clusters;
         
-        
-        ifLampada.max=100;
-        ifLampada.lum=ifLampada.max;
-        ifLampada.timeout_timer=new Date().getTime();
-        ifLampada.stato=-1;
-        ifLampada.clusters=_clusters;
-        
-        
+        ifLampada.counterPositionDevice = i;
         
         $( "#lum" ).slider({
             range: "min",
@@ -48,7 +47,7 @@ ifLampada.init=function(_clusters){
                 if (ifLampada.coloreReale==null) {
                         return;
                 }
-                var tc=ifLampada.coloreReale;//tinycolor(c);
+                var tc=ifLampada.coloreReale; //tinycolor(c);
                 var hsl=tc.toHsl();
                 hsl.l=ui.value/100;
                 if (hsl.l>=1) {
@@ -61,11 +60,8 @@ ifLampada.init=function(_clusters){
                 
                 //hsl.h=ifLampada.bckhsl.h;
                 //hsl.s=ifLampada.bckhsl.s;
-                ifLampada.coloreReale= tinycolor(hsl);
-                ifLampada.colorePercepito=ifLampada.toColorePercepito(ifLampada.coloreReale);
-                
-
-                
+                ifLampada.coloreReale = tinycolor(hsl);
+                ifLampada.colorePercepito = ifLampada.toColorePercepito(ifLampada.coloreReale);
 
                 if (ui.value>0 ) {
                     $("#onoff").addClass("ON");
@@ -97,6 +93,7 @@ ifLampada.init=function(_clusters){
                         }else if (result!=null) {
                                 if (result==true) {
                                         ifLampada.timeout_timer=new Date().getTime();
+                                        $("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
                                 }
                         }
                         
@@ -309,8 +306,15 @@ ifLampada.update= function(now){
         var device= Elettrodomestici.listaElettrodomestici[i];
         var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
         if (consumo!="n.a.") {
-                consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
+                //consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
         }
+        
+        if (ifLampada.lum != device.measure.CurrentLevel.value){
+        	ifLampada.lum = device.measure.CurrentLevel.value;
+        }
+        
+        $("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
+        
         $("#Interfaccia .StatoElettrodomestico .consumo").text(consumo);
         $("#Interfaccia .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[device.location]);
         

@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Discovery_Freshness_ForcePing {
 	private GalController gal = null;
+	private final int NUMBEROFRETRY = 5;
 
 	private GalController getGal() {
 		return gal;
@@ -172,7 +173,7 @@ public class Discovery_Freshness_ForcePing {
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
 								LOG.info(functionName + " completed for node: " + String.format("%04X", __currentNodeWrapper.get_node().getAddress().getNetworkAddress()));
 							}
-							
+
 							/* Executing the NodeDiscovered */
 							if ((function == TypeFunction.FORCEPING) || (function == TypeFunction.DISCOVERY)) {
 								Status _s = new Status();
@@ -352,13 +353,15 @@ public class Discovery_Freshness_ForcePing {
 			/* Bug Philips */
 			int counter = 0;
 
-			while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= 30) {
+			while (newNodeWrapperChild.getNodeDescriptor() == null && counter <= NUMBEROFRETRY) {
 				try {
 					if (getGal().getPropertiesManager().getDebugEnabled())
 						LOG.info("LQI DISCOVERY:Sending NodeDescriptorReq to:" + String.format("%04X", newNodeWrapperChild.get_node().getAddress().getNetworkAddress()));
 					/* Executing NodeDescriptor Request */
 					NodeDescriptor _desc = getGal().getDataLayer().getNodeDescriptorSync(getGal().getPropertiesManager().getCommandTimeoutMS(), newNodeWrapperChild.get_node().getAddress());
-					newNodeWrapperChild.setNodeDescriptor(_desc);
+					synchronized (newNodeWrapperChild) {
+						newNodeWrapperChild.setNodeDescriptor(_desc);
+					}
 					synchronized (newNodeWrapperChild.get_node()) {
 						newNodeWrapperChild.get_node().setCapabilityInformation(newNodeWrapperChild.getNodeDescriptor().getMACCapabilityFlag());
 					}

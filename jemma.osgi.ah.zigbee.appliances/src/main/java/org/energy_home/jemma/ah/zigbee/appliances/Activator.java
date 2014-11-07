@@ -28,14 +28,9 @@ public class Activator implements BundleActivator {
 	private Vector applicationFactories = new Vector();
 
 	public void start(BundleContext bc) throws Exception {
-		
-		/**
-		 * @brief adding Appliance Factory here
-		 * bitronhome SMART-PLUG and Remote COntrol  by ISMB-Pert   
-		 */		
 		applicationFactories.add(new ZclBitronhomeSmartPlugApplianceFactory());
 		applicationFactories.add(new ZclBitronhomeRemoteControlApplianceFactory());
-		applicationFactories.add(new ZclURMETTemeratureHumidityApplianceFactory());
+		applicationFactories.add(new ZclURMETTemperatureHumidityApplianceFactory());
 		/*Marco da inserire LDAP corretto*/
 		//applicationFactories.add(new ZclURMETSmokeDetectorSirenApplianceFactory());
 		/**
@@ -62,6 +57,8 @@ public class Activator implements BundleActivator {
 		//applicationFactories.add(new ZclWindowCoveringControllerApplianceFactory());
 		applicationFactories.add(new ZclDoorLockApplianceFactory());
 		applicationFactories.add(new ZigbeeWhiteGoodApplianceFactory());
+		applicationFactories.add(new ZclWulianTemperatureHumidityApplianceFactory());
+		
 		/*End Marco*/
 
 		

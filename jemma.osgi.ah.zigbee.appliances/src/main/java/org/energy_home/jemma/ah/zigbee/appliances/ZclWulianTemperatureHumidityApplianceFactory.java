@@ -24,11 +24,10 @@ import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
 import org.energy_home.jemma.ah.hac.lib.DriverApplianceFactory;
 import org.osgi.service.device.Driver;
 
-public class ZclURMETTemeratureHumidityApplianceFactory extends DriverApplianceFactory implements Driver {
-	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.urmet.temperature_humidity";
+public class ZclWulianTemperatureHumidityApplianceFactory extends DriverApplianceFactory implements Driver {
+	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.temperature_humidity";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Temperature and humidity sensor";
-	public static final String DEVICE_TYPE = "ZigBee";
-
+	
 	public static final IApplianceDescriptor APPLIANCE_DESCRIPTOR = new ApplianceDescriptor(APPLIANCE_TYPE, null,
 			APPLIANCE_FRIENDLY_NAME);
 
@@ -37,26 +36,14 @@ public class ZclURMETTemeratureHumidityApplianceFactory extends DriverApplianceF
 	}
 
 	public Appliance getInstance(String pid, Dictionary config) throws ApplianceException {
-		return new ZclURMETTemperatureHumidityAppliance(pid, config);
+		return new ZclTemperatureHumidityAppliance(pid, config);
 	}
 
 	public String deviceMatchFilterString() {
-		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=1022)(zigbee.device.manufacturer.id=0))";
+		return "(&(DEVICE_CATEGORY=ZigBee)(zigbee.device.device.id=770))";
 
 	}
-/*
-	{zigbee.device.eps.number=1, 
-			zigbee.device.device.id=1022, 
-			zigbee.device.eps=[260.1022.1], 
-			service.pid=5149012977647065, 
-			zigbee.device.ep.id=1, 
-			DEVICE_SERIAL=5149012977647065, 
-			DEVICE_CATEGORY=ZigBee, 
-			zigbee.device.profile.id=260, 
-			
-			zigbee.device.manufacturer.id=0, service.id=114}
-	
-	*/
+
 
 }
 

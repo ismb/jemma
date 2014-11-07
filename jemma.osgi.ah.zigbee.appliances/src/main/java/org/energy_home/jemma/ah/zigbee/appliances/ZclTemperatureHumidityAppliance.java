@@ -18,6 +18,7 @@ package org.energy_home.jemma.ah.zigbee.appliances;
 import java.util.Dictionary;
 
 import org.energy_home.jemma.ah.hac.ApplianceException;
+import org.energy_home.jemma.ah.hac.IEndPointTypes;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclBasicServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclIdentifyServer;
 import org.energy_home.jemma.ah.zigbee.zcl.cluster.general.ZclPowerConfigurationServer;
@@ -28,17 +29,12 @@ import org.energy_home.jemma.ah.zigbee.zcl.lib.ZclEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZclURMETTemperatureHumidityAppliance extends ZclAppliance {
+public class ZclTemperatureHumidityAppliance extends ZclAppliance {
 	private ZclEndPoint endPoint = null;
-
-	private static final Logger LOG = LoggerFactory.getLogger( ZclURMETTemperatureHumidityAppliance.class );
-
-	public static final String ENDPOINT_TYPE = "URMET-Temperature & Humidity";
-
-	public ZclURMETTemperatureHumidityAppliance(String pid, Dictionary config) throws ApplianceException {
+	private static final Logger LOG = LoggerFactory.getLogger( ZclTemperatureHumidityAppliance.class );
+	public ZclTemperatureHumidityAppliance(String pid, Dictionary config) throws ApplianceException {
 		super(pid, config);
-
-		endPoint = this.zclAddEndPoint(ENDPOINT_TYPE);
+		endPoint = this.zclAddEndPoint(IEndPointTypes.ZIGBEE_TEMPERATURE_SENSOR);
 
 		// Server Clusters
 		endPoint.addServiceCluster(new ZclBasicServer());
@@ -49,10 +45,10 @@ public class ZclURMETTemperatureHumidityAppliance extends ZclAppliance {
 	}
 
 	protected void attached() {
-		LOG.debug("ZclURMETTemperatureHumidityAppliance attached");
+		LOG.debug("ZclTemperatureHumidityAppliance attached");
 	}
 
 	protected void detached() {
-		LOG.debug("ZclURMETTemperatureHumidityAppliance detached");
+		LOG.debug("ZclTemperatureHumidityAppliance detached");
 	}
 }

@@ -544,7 +544,9 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 			// + result);
 			return result;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ESPException("ESPService - Invalid appliance pid");
+			
 		}
 
 	}
