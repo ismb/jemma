@@ -505,6 +505,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		executor.execute(new Runnable() {
 			public void run() {
 
+				System.out.println("Ah.Zigbee -- notifyAPSMessage");
+
 				int cluster = msg.getClusterID();
 
 				if (enableNotifyFrameLogs)

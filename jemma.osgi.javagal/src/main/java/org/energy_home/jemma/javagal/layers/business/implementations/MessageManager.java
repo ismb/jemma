@@ -96,8 +96,9 @@ public class MessageManager {
 	public void APSMessageIndication(final APSMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
-				
-				
+
+				System.out.println("Aps Message Indication in process...");
+
 				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.debug("Aps Message Indication in process...");
 				}
@@ -245,8 +246,8 @@ public class MessageManager {
 												// next
 												// iteration in the for
 												// cycle
-												if ((asdep != mdep) && (mdep != ((byte)0xFF))) {
-													
+												if ((asdep != mdep) && (mdep != ((byte) 0xFF))) {
+
 													continue;
 												}
 											}
@@ -282,7 +283,7 @@ public class MessageManager {
 								cmessage = SerializationUtils.clone(message);
 							}
 							if (getGal().getPropertiesManager().getDebugEnabled()) {
-								LOG.info("READY to CallBack NotifyApsMessage:" + ((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X",cmessage.getDestinationAddress().getNetworkAddress()):"") );
+								LOG.info("READY to CallBack NotifyApsMessage:" + ((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X", cmessage.getDestinationAddress().getNetworkAddress()) : ""));
 							}
 							napml.notifyAPSMessage(cmessage);
 						}

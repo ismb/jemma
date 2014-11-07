@@ -2005,6 +2005,8 @@ public class DataFreescale implements IDataLayer {
 	 * @param message
 	 */
 	private void apsdeDataIndication(ByteArrayObject message) {
+		System.out.println("GAL-Received a apsdeDataIndication:" + message.ToHexString());
+
 		final APSMessageEvent messageEvent = new APSMessageEvent();
 		messageEvent.setDestinationAddressMode((long) (message.getArray()[3] & 0xFF));
 		BigInteger _ieee = null;

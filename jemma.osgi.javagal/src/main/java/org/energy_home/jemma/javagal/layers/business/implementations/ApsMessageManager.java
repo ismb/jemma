@@ -101,7 +101,7 @@ public class ApsMessageManager {
 		executor.execute(new Runnable() {
 			public void run() {
 
-				
+				System.out.println("Aps Message Indication in process...");
 
 				if (getGal().getPropertiesManager().getDebugEnabled()) {
 					LOG.info("Aps Message Indication in process...");
@@ -245,9 +245,9 @@ public class ApsMessageManager {
 												// next
 												// iteration in the for
 												// cycle
-												if ((asdep != mdep) && (mdep != ((byte)0xFF))) {
-													
-														continue;
+												if ((asdep != mdep) && (mdep != ((byte) 0xFF))) {
+
+													continue;
 												}
 											}
 										}
