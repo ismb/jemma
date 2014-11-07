@@ -451,7 +451,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		s += getIeeeAddressHex(msg.getSourceAddress()) + ":" + " Thr " + Thread.currentThread().getId() + ": notifyAPSMessage()" + " " + msg.getClusterID() + " ";
 		s += Hex.byteToHex(msg.getData(), 0);
 		log.debug(s);
-		System.out.println(s);
 	}
 
 	private boolean trackNode;
@@ -508,7 +507,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 
 				int cluster = msg.getClusterID();
 
-				printAPSMessageEvent(msg);
+				if (enableNotifyFrameLogs)
+					printAPSMessageEvent(msg);
 
 				// forward the message to the peer device
 				Address srcAddress = msg.getSourceAddress();
@@ -538,10 +538,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				ZclFrame zclFrame = new ZclFrame(msg.getData());
 
 				int clusterID = msg.getClusterID();
-				int profileID = msg.getProfileID();
-
-				/*Discard the ZDO message from the simple descriptor check*/
-				if (profileID > 0) {
+				if (msg.getProfileID() > 0) {
 					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
 						// FIXME: qui dovremmo dare un errore differente a
 						// seconda se il
@@ -573,8 +570,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 								IZclFrame zclResponseFrame = getDefaultResponse(zclFrame, e.getStatusCode());
 								post(msg, zclResponseFrame);
 								log.error(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
-								System.out.println(getIeeeAddressHex(srcAddress) + ": messageReceived(): Sent to device a default response with status code " + e.getStatusCode());
-								
 								// }
 
 							}

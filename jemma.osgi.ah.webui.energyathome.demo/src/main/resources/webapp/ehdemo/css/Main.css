@@ -240,9 +240,9 @@ span {
     overflow:hidden;
     background-color: transparent;
     text-align: center;
-	font-size: 1.0em;
+	font-size: 0.5em;
 	font-weight: bold;
-	color: red;
+	color: rgb(124, 124, 124);
 	z-index: 1000;
 }
 

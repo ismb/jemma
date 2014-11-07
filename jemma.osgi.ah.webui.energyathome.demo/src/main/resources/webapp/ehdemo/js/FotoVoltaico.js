@@ -37,7 +37,9 @@ var CostiConsumi = {
 	TIMER_BLINK : 500, // Ogni mezzo secondo
 	TIMER_SEMAPHORO : 5000, // Ogni mezzo secondo
 	TIMER_CHANGE_TIMER : 900000, // Ogni 15'
-
+	 
+	MOLTFORDEMO: 10, //Moltiplicatore della produzione di energia per Demo 
+ 
 	// costi
 	costoOdierno : null,
 	costoMedio : null,
@@ -105,22 +107,22 @@ CostiConsumi.Init = function() {
 
 	/** ***** Caricamento parti Consumi ******* */
 
-	$('#PVConsumoIACIndicatoreImg').gauge({
+	$('#PVConsumoIACIndicatoreImg').gaugePV({
 		max : 2.0,
 		mode : 'IAC'
 	});
-	$('#ConsumoIACIndicatoreImg').gauge({
+	$('#ConsumoIACIndicatoreImg').gaugePV({
 		max : 2.0,
 		mode : 'IAC'
 	});
 
 	$("#ConsumoIndicatoreImg").html("<span>" + Msg.home["consumi"] + "</span>");
-	$('#ConsumoIndicatoreImg').gauge({
+	$('#ConsumoIndicatoreImg').gaugePV({
 		max : 2.0
 	});
 
 	$("#CostoIndicatoreImg").html("<span>" + Msg.home["costi"] + "</span>");
-	$('#CostoIndicatoreImg').gauge({
+	$('#CostoIndicatoreImg').gaugePV({
 		max : 2.0,
 		color : 'yellow'
 	});
@@ -480,7 +482,7 @@ CostiConsumi.DatiProduzioneAttuale = function(result, err) {
 			console.log('exception in FotoVoltaico.js - in CostiConsumi.DatiProduzioneAttuale method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiProduzioneAttuale", err);
 	} else if (result != null) {
-		CostiConsumi.produzioneAttuale.value = result.value * 10; //aggiungo un moltiplicatore 10 per la demo
+		CostiConsumi.produzioneAttuale.value = result.value * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
 	} else {
 		CostiConsumi.produzioneAttuale.value = null;
 	}
@@ -743,7 +745,14 @@ CostiConsumi.VisGrafico = function() {
 
 	var dataConsumi = CostiConsumi.consumoGiornaliero;
 	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
-	var dataForecast = CostiConsumi.forecastGiornaliero;
+	var dataForecast = CostiConsumi.forecastGiornaliero.slice(0);
+	for (var index = 0; index < dataForecast.length; ++index) {
+	    if(dataForecast[index] == null){
+	    	dataForecast[index] = 0;
+	    } else {
+	    	dataForecast[index] = dataForecast[index] * CostiConsumi.MOLTFORDEMO;
+	    }
+	}
 	var dataVenduta = new Array();
 	var dataAcquistata = new Array();
 
@@ -1133,6 +1142,9 @@ CostiConsumi.DatiPercIAC = function(result, err) {
 		});
 	}
 	perc = 1 - (sumDiffProdCons / sumProduzioneOraria);
+	if (isNaN(perc)) {
+		perc = 0;
+	}
 	if (perc <= 0) {
 		perc = 0;
 	}
@@ -1140,7 +1152,7 @@ CostiConsumi.DatiPercIAC = function(result, err) {
 		perc = 1;
 	}
 
-	$('#PVConsumoIACIndicatoreImg').gauge("valueIAC", perc * 2);
+	$('#PVConsumoIACIndicatoreImg').gaugePV("valueIAC", perc * 2);
 
 	if ($('#percIAC').length == 0) {
 		$(document.createElement('div')).attr('id', 'percIAC').html(

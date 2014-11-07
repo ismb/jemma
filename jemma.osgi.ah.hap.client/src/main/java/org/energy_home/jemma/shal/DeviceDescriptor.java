@@ -17,7 +17,7 @@ package org.energy_home.jemma.shal;
 
 public interface DeviceDescriptor {	
 	public enum DeviceType {
-		Other, SmartPlug, Meter, WhiteGood, EnergyManagementSystem, WINDOW_COVERING, DOOR_LOCK, TemperatureSensor, Termostat		
+		Other, SmartPlug, Meter, WhiteGood, EnergyManagementSystem, WINDOW_COVERING, DOOR_LOCK		
 	}
 
 	public enum NetworkType {
