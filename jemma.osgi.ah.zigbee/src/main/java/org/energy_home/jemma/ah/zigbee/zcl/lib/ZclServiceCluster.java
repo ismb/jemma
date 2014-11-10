@@ -36,6 +36,7 @@ import org.energy_home.jemma.ah.hac.ReadOnlyAttributeException;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterAttributeException;
 import org.energy_home.jemma.ah.hac.UnsupportedClusterOperationException;
+import org.energy_home.jemma.ah.hac.UnsupportedGeneralCommandException;
 import org.energy_home.jemma.ah.hac.lib.AttributeValue;
 import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.hac.lib.ServiceCluster;
@@ -302,6 +303,8 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				sync = false;
 			}
 
+			System.out.println("Sending Configure reporting: " + zclFrame.toString() + " -- TO:" + device.getIeeeAddress() + " -- Cluster: " + clusterId + " -- Attribute: " + attrName);
+
 			if (sync) {
 				IZclFrame zclResponseFrame = deviceInvoke((short) clusterId, zclFrame);
 				if (zclResponseFrame == null)
@@ -313,7 +316,20 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 					if (status != ZCL.SUCCESS)
 						this.raiseServiceClusterException(status);
 				} else if (zclResponseFrame.getCommandId() == ZCL.ZclDefaultRsp) {
-					short status = ZclDataTypeUI8.zclParse(zclResponseFrame);
+					short commandId = 0;
+					try {
+						commandId = ZclDataTypeUI8.zclParse(zclResponseFrame);
+					} catch (ZclValidationException e1) {
+						this.raiseServiceClusterException(ZCL.MALFORMED_COMMAND);
+					}
+
+					short status = 0;
+					try {
+						status = ZclDataTypeUI8.zclParse(zclResponseFrame);
+					} catch (ZclValidationException e) {
+						this.raiseServiceClusterException(ZCL.MALFORMED_COMMAND);
+					}
+
 					if (status != ZCL.SUCCESS) {
 						this.raiseServiceClusterException(status);
 					}
@@ -386,6 +402,9 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 
 		case ZCL.MALFORMED_COMMAND:
 			throw new MalformedMessageException();
+
+		case ZCL.UNSUP_GENERAL_COMMAND:
+			throw new UnsupportedGeneralCommandException();
 
 		default:
 		}
@@ -584,10 +603,20 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 		try {
 			sps = configureReportings(getClusterId(), new String[] { attributeName }, new ISubscriptionParameters[] { parameters }, endPointRequestContext);
 			result = sps[0];
+		} catch (UnsupportedClusterOperationException e0) {
+			LOG.warn("Error while subscribing attribute " + attributeName + " for driver appliance " + this.getEndPoint().getAppliance().getPid() + ". Unreportable Attribute!", e0);
+			sps = new ISubscriptionParameters[] { null };
+		} catch (UnsupportedClusterAttributeException e1) {
+			LOG.warn("Error while subscribing attribute " + attributeName + " for driver appliance " + this.getEndPoint().getAppliance().getPid() + ". Unsupported Attribute!", e1);
+			sps = new ISubscriptionParameters[] { null };
+		} catch (UnsupportedGeneralCommandException e2) {
+			LOG.warn("Error while subscribing attribute " + attributeName + " for driver appliance " + this.getEndPoint().getAppliance().getPid() + ". Unsupported General Command!", e2);
+			sps = new ISubscriptionParameters[] { null };
 		} catch (Exception e) {
 			LOG.warn("Error while subscribing attribute " + attributeName + " for driver appliance " + this.getEndPoint().getAppliance().getPid() + ". Maybe this is a sleeping end device!", e);
 			sps = new ISubscriptionParameters[] { parameters };
 		}
+
 		updateAllSubscriptionMap(attributeName, sps[0], endPointRequestContext);
 		// A null value is returned if configure reportings command fails
 		return result;
@@ -1213,7 +1242,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 	protected Object getValidCachedAttributeObject(int attributeId, long maxAge) {
 		AttributeValue attributeValue = (AttributeValue) this.cachedAttributeValues.get(new Integer(attributeId));
 		if (attributeValue != null && attributeValue.getTimestamp() + maxAge >= System.currentTimeMillis()) {
-			
+
 			return attributeValue.getValue();
 		}
 		return null;

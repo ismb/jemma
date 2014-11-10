@@ -11,7 +11,7 @@ import org.osgi.service.device.Driver;
 
 public class ZclDoorLockApplianceFactory extends DriverApplianceFactory implements Driver {
 
-	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.lockdoor";
+	public static final String APPLIANCE_TYPE = "org.energy_home.jemma.ah.zigbee.doorlock";
 	public static final String APPLIANCE_FRIENDLY_NAME = "Door Lock";
 	public static final String DEVICE_TYPE = "ZigBee";
 
