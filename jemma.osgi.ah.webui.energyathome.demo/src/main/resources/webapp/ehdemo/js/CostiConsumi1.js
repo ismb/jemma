@@ -396,6 +396,9 @@ CostiConsumi.DatiMaxElettr = function() {
 		if (elettro[InterfaceEnergyHome.ATTR_APP_AVAIL] == 2) {
 			if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
 				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
+				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
 				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
 				(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34"))
 				return elettro;
