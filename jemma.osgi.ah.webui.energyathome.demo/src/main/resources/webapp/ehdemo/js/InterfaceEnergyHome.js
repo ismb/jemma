@@ -61,6 +61,7 @@ var InterfaceEnergyHome = {
 	WINDOWCOVERING_APP_TYPE : "org.energy_home.jemma.ah.zigbee.windowcovering", 
 	TEMPERATURE_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.temperature_humidity",
 	THERMOSTAT_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.thermostat", 
+	TEMPERATURE_URMET_SENSOR_APP_TYPE : "org.energy_home.jemma.ah.zigbee.urmet.temperature_humidity"
 	//To verify
 	THERMOSTAT_SENSOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.thermostat",
 	LOCKDOOR_APP_TYPE_2 : "org.energy_home.jemma.ah.zigbee.generic-ah.ep.zigbee.DoorLock", 

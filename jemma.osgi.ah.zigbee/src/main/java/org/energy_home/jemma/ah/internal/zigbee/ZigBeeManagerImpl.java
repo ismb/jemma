@@ -540,6 +540,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				ZclFrame zclFrame = new ZclFrame(msg.getData());
 
 				int clusterID = msg.getClusterID();
+				//If profileID == 0 or Default responce received
+				
 				if (msg.getProfileID() > 0 && zclFrame.getCommandId() != 0x0b) {
 					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
 						// FIXME: qui dovremmo dare un errore differente a
