@@ -856,6 +856,7 @@ public class DataFreescale implements IDataLayer {
 	private void apsmeSetConfirm(ByteArrayObject message) {
 		if (getGal().getPropertiesManager().getDebugEnabled())
 			LOG.info("Extracted APSME-SET.Confirm: " + message.ToHexString());
+
 		short status = (short) (message.getArray()[3] & 0xFF);
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
@@ -872,6 +873,7 @@ public class DataFreescale implements IDataLayer {
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -1157,6 +1159,7 @@ public class DataFreescale implements IDataLayer {
 		if (getGal().getPropertiesManager().getDebugEnabled())
 			LOG.info("Extracted APSME_GET.Confirm: " + message.ToHexString());
 		String _Key = String.format("%02X", (short) (message.getArray()[4]) & 0xFF);
+		
 		// Found APSME_GET-DATA.Confirm. Remove the lock
 		synchronized (getListLocker()) {
 			for (ParserLocker pl : getListLocker()) {
@@ -1790,20 +1793,21 @@ public class DataFreescale implements IDataLayer {
 	 * @param message
 	 */
 	private void apsdeDataConfirm(ByteArrayObject message) {
-		if (getGal().getPropertiesManager().getDebugEnabled())
-			LOG.info("Extracted APSDE-DATA.Confirm: " + message.ToHexString());
 
+		
 		/* DestAddress + DestEndPoint + SourceEndPoint */
+		/*Marco Removed in order to increase the performance*/
+		
 		long destAddress = DataManipulation.toLong(message.getArray()[11], message.getArray()[10], message.getArray()[9], message.getArray()[8], message.getArray()[7], message.getArray()[6], message.getArray()[5], message.getArray()[4]);
 		short destEndPoint = ((short) (message.getArray()[12] & 0xFF));
 		short sourceEndPoint = ((short) (message.getArray()[13] & 0xFF));
 		String Key = String.format("%016X", destAddress) + String.format("%02X", destEndPoint) + String.format("%02X", sourceEndPoint);
-
+		ParserLocker pl = new ParserLocker();
 		// Found APSDE-DATA.Confirm. Remove the lock
-		synchronized (getListLocker()) {
-			for (ParserLocker pl : getListLocker()) {
+		//synchronized (getListLocker()) {
+			//for (ParserLocker pl : getListLocker()) {
 
-				if ((pl.getType() == TypeMessage.APS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && (pl.get_Key().equalsIgnoreCase(Key))) {
+				//if ((pl.getType() == TypeMessage.APS) && (pl.getStatus().getCode() == ParserLocker.INVALID_ID) && (pl.get_Key().equalsIgnoreCase(Key))) {
 
 					pl.getStatus().setCode((short) (message.getArray()[14] & 0xFF));
 					switch (pl.getStatus().getCode()) {
@@ -1883,16 +1887,20 @@ public class DataFreescale implements IDataLayer {
 						pl.getStatus().setMessage("NO_ACK (Acknowledgement was not received)");
 						break;
 					}
-					try {
-						if (pl.getObjectLocker().size() == 0)
-							pl.getObjectLocker().put((byte) 0);
-					} catch (InterruptedException e) {
+					
+					if (getGal().getPropertiesManager().getDebugEnabled())
+						LOG.info("Extracted APSDE-DATA.Confirm: " + message.ToHexString() + " --- Status: " + pl.getStatus().getMessage() + " --- Key: " + Key);
 
-					}
+					//try {
+					//	if (pl.getObjectLocker().size() == 0)
+					//		pl.getObjectLocker().put((byte) 0);
+					//} catch (InterruptedException e) {
 
-				}
-			}
-		}
+					//}
+
+				//}
+			//}
+//		}
 	}
 
 	/**
@@ -2005,6 +2013,8 @@ public class DataFreescale implements IDataLayer {
 	 * @param message
 	 */
 	private void apsdeDataIndication(ByteArrayObject message) {
+		System.out.println("GAL-Received a apsdeDataIndication:" + message.ToHexString());
+
 		final APSMessageEvent messageEvent = new APSMessageEvent();
 		messageEvent.setDestinationAddressMode((long) (message.getArray()[3] & 0xFF));
 		BigInteger _ieee = null;
@@ -2698,8 +2708,8 @@ public class DataFreescale implements IDataLayer {
 		if (getGal().getPropertiesManager().getDebugEnabled()) {
 			LOG.info("Data_FreeScale.send_aps");
 		}
-		ParserLocker lock = new ParserLocker();
-		lock.setType(TypeMessage.APS);
+		// ParserLocker lock = new ParserLocker();
+		// lock.setType(TypeMessage.APS);
 		/* DestAddress + DestEndPoint + SourceEndPoint */
 		BigInteger _DSTAdd = null;
 		if ((message.getDestinationAddressMode() == GatewayConstants.EXTENDED_ADDRESS_MODE))
@@ -2709,54 +2719,54 @@ public class DataFreescale implements IDataLayer {
 		else if (((message.getDestinationAddressMode() == GatewayConstants.ADDRESS_MODE_ALIAS)))
 			throw new Exception("The DestinationAddressMode == ADDRESS_MODE_ALIAS is not implemented!!");
 		if (_DSTAdd != null) {
-			String _key = String.format("%016X", _DSTAdd.longValue()) + String.format("%02X", message.getDestinationEndpoint()) + String.format("%02X", message.getSourceEndpoint());
-			lock.set_Key(_key);
+			// String _key = String.format("%016X", _DSTAdd.longValue()) +
+			// String.format("%02X", message.getDestinationEndpoint()) +
+			// String.format("%02X", message.getSourceEndpoint());
+			// lock.set_Key(_key);
 			Status status = new Status();
-			getListLocker().add(lock);
+			// getListLocker().add(lock);
 			SendRs232Data(makeByteArrayFromApsMessage(message));
-			if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
-				lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
-			status = lock.getStatus();
+			/*
+			 * if (lock.getStatus().getCode() == ParserLocker.INVALID_ID)
+			 * lock.getObjectLocker().poll(timeout, TimeUnit.MILLISECONDS);
+			 * status = lock.getStatus();
+			 * 
+			 * if (getListLocker().contains(lock)) getListLocker().remove(lock);
+			 * 
+			 * if (status.getCode() == ParserLocker.INVALID_ID) {
+			 * 
+			 * LOG.error("Timeout expired in send aps message");
+			 * 
+			 * throw new GatewayException(
+			 * "Timeout expired in send aps message. No Confirm Received."); }
+			 * else { if (status.getCode() != 0) {
+			 * LOG.error("Send aps returned Status: " + status.getCode()); //
+			 * CHECK if node is a sleepy end device WrapperWSNNode Wrapnode =
+			 * new WrapperWSNNode(getGal(), String.format("%04X",
+			 * _DSTAdd.intValue())); WSNNode node = new WSNNode();
+			 * node.setAddress(message.getDestinationAddress());
+			 * Wrapnode.set_node(node); Wrapnode =
+			 * getGal().getFromNetworkCache(Wrapnode); if (Wrapnode != null) {
+			 * if (Wrapnode.isSleepyOrEndDevice()) { if (status.getCode() ==
+			 * 0xA7) return status; else throw new GatewayException(
+			 * "Error on  APSDE-DATA.Request.Request. The destination node is Unreachable:"
+			 * + String.format("%02X", status.getCode()) + " Status Message: " +
+			 * status.getMessage()); } else { if (status.getCode() == 0xD1) { //
+			 * No route entry, check connections Wrapnode.setTimerForcePing(1);
+			 * return status; } else throw new
+			 * GatewayException("Error on  APSDE-DATA.Request.Request. Status code:"
+			 * + String.format("%02X", status.getCode()) + " Status Message: " +
+			 * status.getMessage()); }
+			 * 
+			 * } else { throw new GatewayException(
+			 * "Error on APSDE-DATA.Request.Request. The destination node is Unknown"
+			 * );
+			 * 
+			 * } } else return status; }
+			 */
+			status.setCode((short) GatewayConstants.SUCCESS);
+			return status;
 
-			if (getListLocker().contains(lock))
-				getListLocker().remove(lock);
-
-			if (status.getCode() == ParserLocker.INVALID_ID) {
-
-				LOG.error("Timeout expired in send aps message");
-
-				throw new GatewayException("Timeout expired in send aps message. No Confirm Received.");
-			} else {
-				if (status.getCode() != 0) {
-					LOG.error("Send aps returned Status: " + status.getCode());
-					// CHECK if node is a sleepy end device
-					WrapperWSNNode Wrapnode = new WrapperWSNNode(getGal(), String.format("%04X", _DSTAdd.intValue()));
-					WSNNode node = new WSNNode();
-					node.setAddress(message.getDestinationAddress());
-					Wrapnode.set_node(node);
-					Wrapnode = getGal().getFromNetworkCache(Wrapnode);
-					if (Wrapnode != null) {
-						if (Wrapnode.isSleepyOrEndDevice()) {
-							if (status.getCode() == 0xA7)
-								return status;
-							else
-								throw new GatewayException("Error on  APSDE-DATA.Request.Request. The destination node is Unreachable:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
-						} else {
-							if (status.getCode() == 0xD1) {
-								// No route entry, check connections
-								Wrapnode.setTimerForcePing(1);
-								return status;
-							} else
-								throw new GatewayException("Error on  APSDE-DATA.Request.Request. Status code:" + String.format("%02X", status.getCode()) + " Status Message: " + status.getMessage());
-						}
-
-					} else {
-						throw new GatewayException("Error on APSDE-DATA.Request.Request. The destination node is Unknown");
-
-					}
-				} else
-					return status;
-			}
 		} else {
 			throw new GatewayException("Error on APSDE-DATA.Request.Request. Destination address is null");
 

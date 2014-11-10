@@ -413,7 +413,7 @@ CostiConsumi.GetDatiProduzione = function() {
 	if (InterfaceEnergyHome.visError != InterfaceEnergyHome.ERR_CONN_SERVER) {
 		// Main.ResetError();
 	}
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			// Cosa mettere al posto di Total Power?
 			InterfaceEnergyHome.objService.getAttribute(

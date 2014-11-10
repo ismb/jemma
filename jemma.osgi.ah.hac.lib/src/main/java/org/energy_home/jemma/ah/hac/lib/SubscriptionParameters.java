@@ -27,7 +27,7 @@ public class SubscriptionParameters implements ISubscriptionParameters {
 	long minReportingInterval = 0;
 	long maxReportingInterval = 0;
 
-	double reportableChange = 0;
+	double reportableChange = 0.0;
 
 	/**
 	 * This constructor initializes all the subscription parameters with {@code

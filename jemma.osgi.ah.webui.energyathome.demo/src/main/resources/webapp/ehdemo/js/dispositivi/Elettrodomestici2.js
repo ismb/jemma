@@ -267,6 +267,11 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 										if(Elettrodom["connessione"] == 2){
 											Elettrodom["stato"] = 1;
 										}
+									} else if (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_URMET_SENSOR_APP_TYPE) {
+										Elettrodom["type"] = "thermostat";
+										if(Elettrodom["connessione"] == 2){
+											Elettrodom["stato"] = 1;
+										}
 									} else if ((elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE) || (elemento[InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.LOCKDOOR_APP_TYPE_2)) {  //LockDoor
 										Elettrodom["type"] = elemento[InterfaceEnergyHome.ATTR_APP_TYPE];
 										if(Elettrodom["connessione"] == 2){

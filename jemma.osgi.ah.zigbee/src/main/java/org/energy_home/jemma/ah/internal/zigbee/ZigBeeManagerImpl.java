@@ -505,6 +505,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		executor.execute(new Runnable() {
 			public void run() {
 
+				System.out.println("Ah.Zigbee -- notifyAPSMessage");
+
 				int cluster = msg.getClusterID();
 
 				if (enableNotifyFrameLogs)
@@ -538,10 +540,9 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				ZclFrame zclFrame = new ZclFrame(msg.getData());
 
 				int clusterID = msg.getClusterID();
+				//If profileID == 0 or Default responce received
 				
-				if (msg.getProfileID() > 0 && 
-						zclFrame.getCommandId()!=0x0b)//in order to skip a response when a default response is enabled into the Frame Control Byte 
-				{
+				if (msg.getProfileID() > 0 && zclFrame.getCommandId() != 0x0b) {
 					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
 						// FIXME: qui dovremmo dare un errore differente a
 						// seconda se il
