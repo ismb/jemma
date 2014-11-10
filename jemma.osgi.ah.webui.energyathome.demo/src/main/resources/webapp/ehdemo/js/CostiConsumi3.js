@@ -883,13 +883,13 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 			if (indexResult != CostiConsumi.SmartInfo[InterfaceEnergyHome.ATTR_APP_PID]) {
 
 				if (CostiConsumi.listaElettr[indexResult]) {
-					if ((elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
-						(elettro[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34")){
+					if ((CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
+						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34")){
 						if (element.list.length > 0) {
 							var sum = 0;
 							for ( var i = 0; i < element.list.length; i++) {
