@@ -71,8 +71,11 @@ var Configurazione = {
 					 "ah.ep.zigbee.WindowCovering": [44],
 					 "ah.ep.zigbee.WindowCoveringController": [45], 
 					 "ah.ep.zigbee.Thermostat": [36, 41], 
-					 "Generic Thermostat": [36, 41], //TO FIX!!!!
-					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},
+					 "Generic Thermostat": [36, 41], //TO FIX!!!!,
+					 "URMET-Temperature & Humidity": [36, 41], //TO FIX!!!!,
+					 "ah.ep.zigbee.TemperatureSensor": [36, 41],
+					 				 
+	},
 	calcNumIcone : [[ 0, 0 ], 
 	                [ 1, 1 ], [ 1, 2 ], 
 	                [ 2, 2 ], [ 2, 2 ], [ 2, 3 ], [ 2, 3 ], 

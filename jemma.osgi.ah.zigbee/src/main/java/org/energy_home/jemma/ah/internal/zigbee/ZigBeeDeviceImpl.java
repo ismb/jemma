@@ -239,8 +239,8 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 				this.logZclMessage(false, hash, profileId, clusterId, zclFrame);
 
 			return zclResponseFrame;
-		} catch (InterruptedException e) {
-			throw new ZigBeeException("interrupted system call during post");
+		} catch (Exception e) {
+			throw new ZigBeeException("Exception during post: " + e.getMessage());
 		}
 
 	}
@@ -318,7 +318,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 					LOG.debug("THID: " + Thread.currentThread().getId() + " after sq.put(zclFrame)");
 
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					LOG.error("exception", e);
 
 					return false;

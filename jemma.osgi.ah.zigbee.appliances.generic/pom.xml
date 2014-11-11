@@ -71,6 +71,14 @@
 
 	
 	<dependencies>
+	<!-- zigbee.Appliances bundle must be activated before Appliances.Generic 
+		otherwise a device is matched to a GenericDevice instead of a specific Appliance -->
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
+			<version>1.0.2</version>
+			<type>bundle</type>
+		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
@@ -97,5 +105,6 @@
 		    <artifactId>slf4j-api</artifactId>
 		    <version>${org.slf4j.version}</version>
 		</dependency>
+	
 	</dependencies>
 </project>

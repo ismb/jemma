@@ -34,7 +34,7 @@ import org.energy_home.jemma.ah.hac.lib.SubscriptionParameters;
  */
 public interface ISubscriptionParameters {
 
-	public static final ISubscriptionParameters DEFAULT_SUBSCRIPTION_PARAMETERS = new SubscriptionParameters(2, 120, 0);
+	public static final ISubscriptionParameters DEFAULT_SUBSCRIPTION_PARAMETERS = new SubscriptionParameters(2, 120, 0.0);
 	/**
 	 * Returns the minimum reporting interval parameter
 	 * 
