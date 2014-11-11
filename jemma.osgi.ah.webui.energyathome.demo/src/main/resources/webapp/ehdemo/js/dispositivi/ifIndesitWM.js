@@ -168,7 +168,7 @@ ifIndesitWM.update = function(now) {
 					msg = "ERRORE";
 				} else {
 					ifIndesitWM.temperature = result;
-					msg = "" + result + "°C";
+					msg = "" + result + " &deg; C";
 				}
 			}
 			$(".val_temperature").html(msg);

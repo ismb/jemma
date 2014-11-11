@@ -26,7 +26,7 @@ ifLockDoor.init=function(clusters, i){
             var pid = $("#Interfaccia").data("pid");
             if (pid == undefined)
                 return;
-            if (InterfaceEnergyHome.mode > 0){
+            if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                   
                     if (err!=null) {
@@ -57,7 +57,7 @@ ifLockDoor.init=function(clusters, i){
             var pid = $("#Interfaccia").data("pid");
             if (pid == undefined)
                     return;
-            if (InterfaceEnergyHome.mode > 0){
+            if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                     if (err!=null) {
                         ifLockDoor.update(ifLockDoor.DOORLOCK_OPEN_STATE);
@@ -85,7 +85,7 @@ ifLockDoor.init=function(clusters, i){
         	var pid = $("#Interfaccia").data("pid");
             if (pid == undefined)
                 return;
-            if (InterfaceEnergyHome.mode > 0){
+            if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                   
                     if (err!=null) {

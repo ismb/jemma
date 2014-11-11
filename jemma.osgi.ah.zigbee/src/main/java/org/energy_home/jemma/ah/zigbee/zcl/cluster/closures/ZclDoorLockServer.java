@@ -197,7 +197,7 @@ public class ZclDoorLockServer extends ZclServiceCluster implements DoorLockServ
 		zclFrame.setCommandId(1);
 		ZclDataTypeString.zclSerialize(zclFrame, PINRFIDCode);
 		IZclFrame zclResponseFrame = issueExec(zclFrame, 1, context);
-		setCachedAttributeObject(0, new Short((short) 0));
+		setCachedAttributeObject(0, new Short((short) 2));
 		return (ZclUnlockDoorResponse.zclParse(zclResponseFrame));
 	}
 

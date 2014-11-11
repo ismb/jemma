@@ -105,7 +105,8 @@ public class ZclSimpleMeteringServer extends ZclServiceCluster implements Simple
 	public long getCurrentSummationReceived(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
 		if (context != null) {
 			Long objectResult = null;
-			objectResult = ((Long) getValidCachedAttributeObject(1, context.getMaxAgeForAttributeValues()));
+			//objectResult = ((Long) getValidCachedAttributeObject(1, context.getMaxAgeForAttributeValues()));
+			objectResult = ((Long) getValidCachedAttributeObject(1, 0));
 			if (objectResult != null) {
 				return objectResult.longValue();
 			}

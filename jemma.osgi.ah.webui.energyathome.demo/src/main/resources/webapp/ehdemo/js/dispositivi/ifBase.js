@@ -20,7 +20,7 @@ ifBase.init=function(clusters){
                         var pid=$("#Interfaccia").data("pid");
                         if (pid==undefined)
                             return;
-                        if (InterfaceEnergyHome.mode > 0){
+                        if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
                             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                               
                                     if (err!=null) {
@@ -54,7 +54,7 @@ ifBase.init=function(clusters){
                         var pid=$("#Interfaccia").data("pid");
                         if (pid==undefined)
                                 return;
-                        if (InterfaceEnergyHome.mode > 0){
+                        if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
                                 InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                                         if (err!=null) {
                                                 ifBase.update(true);
