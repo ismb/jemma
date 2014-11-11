@@ -70,6 +70,8 @@
 						<Bundle-Category>Automation@Home</Bundle-Category>
 						<Bundle-Activator>org.energy_home.jemma.osgi.utils.Activator</Bundle-Activator>
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
+						<Embed-Dependency>JAXBNamespacePrefixMapper,!*</Embed-Dependency>
+						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 					</instructions>
 				</configuration>
 			</plugin>

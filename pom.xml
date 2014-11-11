@@ -79,7 +79,8 @@
 		<commons.jabsorb.version>1.3.1</commons.jabsorb.version>
 		<maven.license.plugin.version>2.5</maven.license.plugin.version>
 		<maven.clean.plugin.version>2.5</maven.clean.plugin.version>
-		<felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version>
+		<!-- <felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version> -->
+		<felix.bundle.plugin.version>2.5.3</felix.bundle.plugin.version>
 		
 		<!-- Internal dependencies version properties -->
 		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.4</org.energy-home.jemma.osgi.ah.hac.lib.version>
