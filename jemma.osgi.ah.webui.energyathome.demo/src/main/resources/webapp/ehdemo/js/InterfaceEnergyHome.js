@@ -311,11 +311,22 @@ InterfaceEnergyHome.BackElettrStorico = function(result, err) {
 			// trascodifica dato : ritorno coppie ["nome", "pid"]
 			retVal = new Array();
 			if (result != null) {
+				var j = 0;
 				for (i = 0; i < result.list.length; i++) {
-					retVal[i] = new Object();
-					retVal[i].nome = result.list[i].map[InterfaceEnergyHome.ATTR_APP_NAME];
-					retVal[i].pid = result.list[i].map[InterfaceEnergyHome.ATTR_APP_PID];
-					retVal[i].tipo = result.list[i].map[InterfaceEnergyHome.ATTR_APP_TYPE];
+					if ((result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
+						(result.list[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34")){
+						
+						retVal[j] = new Object();
+						retVal[j].nome = result.list[i].map[InterfaceEnergyHome.ATTR_APP_NAME];
+						retVal[j].pid = result.list[i].map[InterfaceEnergyHome.ATTR_APP_PID];
+						retVal[j].tipo = result.list[i].map[InterfaceEnergyHome.ATTR_APP_TYPE];
+						j++;
+					}
 				}
 			}
 		}

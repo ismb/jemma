@@ -168,7 +168,7 @@ ifIndesitWM.update = function(now) {
 					msg = "ERRORE";
 				} else {
 					ifIndesitWM.temperature = result;
-					msg = "" + result + "°C";
+					msg = "" + result + " &deg; C";
 				}
 			}
 			$(".val_temperature").html(msg);
@@ -181,6 +181,12 @@ ifIndesitWM.update = function(now) {
 				ifIndesitWM.update(true);
 			} else if (result != null) {
 				ifIndesitWM.appliance_status = result["map"].ApplianceStatus;
+				msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
+				if (ifIndesitWM.appliance_status > 0) {
+					msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
+				}
+			} else {
+				ifIndesitWM.appliance_status = 1;
 				msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
 				if (ifIndesitWM.appliance_status > 0) {
 					msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
