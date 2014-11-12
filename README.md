@@ -17,6 +17,8 @@ JEMMA can also be controlled through REST/WebSocket APIs relying on OSGi Device 
 * [The DAL adapter for JEMMA](https://github.com/ivangrimaldi/jemma.osgi.dal): it registers DAL services for JEMMA devices
 * [The DAL web APIs](https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis)
 
+Take a look at [this wiki page](https://github.com/ismb/jemma/wiki/JEMMA-DAL-APIs-functions) to discover functionalities that can be exposed by JEMMA devices
+
 ## License
 
 The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which holds the Copyright on the original code base.
