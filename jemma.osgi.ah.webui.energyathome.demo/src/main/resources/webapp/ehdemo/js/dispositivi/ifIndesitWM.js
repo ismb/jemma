@@ -185,6 +185,12 @@ ifIndesitWM.update = function(now) {
 				if (ifIndesitWM.appliance_status > 0) {
 					msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
 				}
+			} else {
+				ifIndesitWM.appliance_status = 1;
+				msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
+				if (ifIndesitWM.appliance_status > 0) {
+					msg = ifIndesitWM.stati[ifIndesitWM.appliance_status];
+				}
 			}
 
 			$(".val_status").text(msg);
