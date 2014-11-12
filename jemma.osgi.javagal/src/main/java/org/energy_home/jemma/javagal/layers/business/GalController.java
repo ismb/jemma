@@ -2649,7 +2649,7 @@ public class GalController {
 					if (y.get_node().getAddress().getIeeeAddress() == null)
 						throw new Exception("Iee Null on GAL: " + String.format("%04X", shortAddress));
 					else
-						return y.get_node().getAddress().getIeeeAddress();
+						return BigInteger.valueOf(y.get_node().getAddress().getIeeeAddress().longValue());
 				}
 			}
 			throw new Exception("Short Address not found on GAL: " + String.format("%04X", shortAddress));
@@ -2679,7 +2679,7 @@ public class GalController {
 					if (y.get_node().getAddress().getNetworkAddress() == null)
 						throw new Exception("Shoort Address null on GAL: " + String.format("%016X", IeeeAddress));
 					else
-						return y.get_node().getAddress().getNetworkAddress();
+						return new Integer(y.get_node().getAddress().getNetworkAddress());
 				}
 			}
 			throw new Exception("Ieee Address not found on GAL: " + String.format("%016X", IeeeAddress));
