@@ -506,16 +506,25 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 			public void run() {
 
 				System.out.println("Ah.Zigbee -- notifyAPSMessage");
-
-				int cluster = msg.getClusterID();
-
 				if (enableNotifyFrameLogs)
 					printAPSMessageEvent(msg);
+				
+				
+				if (msg.getDestinationEndpoint() == 0xFF) {
+					System.out.println("Ah.Zigbee -- notifyAPSMessage BROADCAST");
+					handleBroadcastMessages(msg);
+					return;
+				}
+				
+				int cluster = msg.getClusterID();
+
+				
 
 				// forward the message to the peer device
 				Address srcAddress = msg.getSourceAddress();
 				String nodePid = getNodePid(srcAddress);
-
+				
+				
 				if (nodePid == null) {
 					log.debug("message discarded because the src node ieee address is not present");
 					return;
@@ -525,10 +534,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
 				}
 
-				if (msg.getDestinationEndpoint() == 0xFF) {
-					handleBroadcastMessages(msg);
-					return;
-				}
+				
 
 				// Drop messages that doesn't belong to the exported
 				// clusters
@@ -1978,6 +1984,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				zclResponseFrame = zclFrame.createResponseFrame(size);
 				zclResponseFrame.setCommandId(0);
 				ZclIdentifyQueryResponse.zclSerialize(zclResponseFrame, r);
+				System.out.println("Sending Identify Query response");
 			} catch (ZclValidationException e) {
 				log.error("Exception", e);
 			}
