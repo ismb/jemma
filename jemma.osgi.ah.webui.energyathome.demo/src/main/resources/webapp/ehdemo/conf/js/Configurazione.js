@@ -11,26 +11,25 @@ var Configurazione = {
 	CONN_SERVER_ERR : 1,
 	CONN_AG_ERR : 2,
 	DEFAULT_ICON : Define.config["defaultIcona"],
-	statoImages : [ Define.config["statoVerde"], 
-	                Define.config["statoGiallo"],
-	                Define.config["statoRosso"] ],
-	TIMEOUT_INQUIRY : 180, 			// (sercondi) parametro timeout inquiryDevices
-	INQUIRY_GUARD : 20, 			// (secondi) parametro timeout dopo il quale si smette
-									// di fare polling sui nuovi dispositivi deve essere
-									// maggiore di TIMEOUT_INQUIRY
-	INTERVALLO_CONTROLLO : 10000, 	// (ms) intervallo con il quale controllo se
-									// sono stati rilevati dei dispositivi
-	TIMER_UPDATE_ELETTR : 4000, 	// intervallo con cui si rileggono i dispositivi
-	MAX_LAST_UPDATE_DELAY : 1200, 	// massimo scarto del last update time
-									// rispetto all'ora attuale in sec (20 min)
-	incrControllo : 0, 				// quante volte ho controllato, dopo MAX_CONTROLLO
-									// segnalo errore
+	statoImages : [ Define.config["statoVerde"], Define.config["statoGiallo"],
+			Define.config["statoRosso"] ],
+	TIMEOUT_INQUIRY : 180, // (sercondi) parametro timeout inquiryDevices
+	INQUIRY_GUARD : 20, // (secondi) parametro timeout dopo il quale si smette
+	// di fare polling sui nuovi dispositivi deve essere
+	// maggiore di TIMEOUT_INQUIRY
+	INTERVALLO_CONTROLLO : 10000, // (ms) intervallo con il quale controllo se
+	// sono stati rilevati dei dispositivi
+	TIMER_UPDATE_ELETTR : 4000, // intervallo con cui si rileggono i dispositivi
+	MAX_LAST_UPDATE_DELAY : 1200, // massimo scarto del last update time
+	// rispetto all'ora attuale in sec (20 min)
+	incrControllo : 0, // quante volte ho controllato, dopo MAX_CONTROLLO
+	// segnalo errore
 	timerInquiry : null,
 	timerVis : null,
 	infoDisp : [],
 	numDisp : 0,
 	indSel : 0,
-	nuovoDispositivo : null, 		// nuovo dispositivo trovato
+	nuovoDispositivo : null, // nuovo dispositivo trovato
 	idUtente : null,
 	limit : null,
 	limitProduction : null,
@@ -39,132 +38,163 @@ var Configurazione = {
 	popUp : null,
 	categorie : null,
 	optionsCategorie : null,
-	categorieConf: null,
+	categorieConf : null,
 	locazioni : null,
 	optionslocazioni : null,
 	icone : null,
 	hDivIcona : null,
 	wDivIcona : null,
 	isFirstTime : true,
-	/*categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
-					 "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
-					 "ah.ep.zigbee.MeteringDevice": [12, 14, 15],
-					 "ah.ep.zigbee.WhiteGoods": [37, 38, 39],
-					 "ah.ep.zigbee.ColorLight": [43, 34, 35],
-					 "ah.ep.zigbee.OnOffLight": [43, 34, 35],
-					 "ah.ep.zigbee.DimmableLight": [42],
-					 "ah.ep.zigbee.LightSensor": [43, 34, 35],
-					 "ah.ep.zigbee.DoorLock": [40],
-					 "ah.ep.zigbee.WindowCovering": [44],
-					 "ah.ep.zigbee.WindowCoveringController": [45],
-					 "ah.ep.zigbee.Thermostat": [36, 41],
-					 "ah.ep.zigbee.TemperatureSensor": [36, 41]},*/
-	categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
-					 "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
-					 "ah.ep.zigbee.MeteringDevice": [12, 14, 15],
-					 "ah.ep.zigbee.WhiteGoods": [37, 38, 39],
-					 "ah.ep.zigbee.ColorLight": [43, 34, 35],
-					 "ah.ep.zigbee.OnOffLight": [43, 34, 35],
-					 "ah.ep.zigbee.DimmableLight": [42],
-					 "ah.ep.zigbee.LightSensor": [43, 34, 35],
-					 "ah.ep.zigbee.DoorLock": [40],
-					 "ah.ep.zigbee.WindowCovering": [44],
-					 "ah.ep.zigbee.WindowCoveringController": [45], 
-					 "ah.ep.zigbee.Thermostat": [36, 41], 
-					 "Generic Thermostat": [36, 41], //TO FIX!!!!,
-					 "URMET-Temperature & Humidity": [36, 41], //TO FIX!!!!,
-					 "ah.ep.zigbee.TemperatureSensor": [36, 41],
-					 				 
-	},
-	calcNumIcone : [[ 0, 0 ], 
-	                [ 1, 1 ], [ 1, 2 ], 
-	                [ 2, 2 ], [ 2, 2 ], [ 2, 3 ], [ 2, 3 ], 
-	                [ 3, 3 ], [ 3, 3 ], [ 3, 3 ], 
-	                [ 4, 3 ], [ 4, 3 ], [ 4, 3 ], 
-	                [ 5, 3 ], [ 5, 3 ], [ 5, 3 ], 
-	                [ 6, 3 ], [ 6, 3 ], [ 6, 3 ] ], // num righe, colonne
-	                
-	htmlUtente :  "<div id='ConfPopUp' style='display:none'></div>"
-				+ "<div id='StatoConnessione'>"
-				+ "		<div id='TitoloStato'>" + Msg.config["titoloStato"] + "</div>"
-				+ "		<img id='ImgStato' src=''>"
-				+ "		<div id='Autenticazione'></div>"
-				+ "		<div id='LastUpdate'></div>"
-				+ "</div>"
-				+ "<div id='TitoloConfUtente'>" + Msg.config["titoloUtente"] + "</div>"
-				+ "<div id='DatiUtente' class='Form'>"
-				+ "		<div>"
-				+ "			<label>" + Msg.config["txtUtente"] + ": </label>"
-				+ "			<input type='text' id='NomeUtente'>"
-				+ "			<div style='clear:both'></div>"
-				+ "		</div>"
-				+ "		<div>"
-				+ "			<label>" + Msg.config["maxPotenza"] + ": </label>"
-				+ "			<select id='MaxPower'>"
-				+ "				<option value='3000'>3 kW (fondo scala 4kW)</option>"
-				+ "				<option value='4500'>4.5 kW (fondo scala 6kW)</option>"
-				+ "				<option value='6000'>6 kW (fondo scala 8kW)</option>"
-				+ "			</select>"
-				+ "			<div style='clear:both'></div>"
-				+ "		</div>"
-				+ "		<div>"
-				+ "			<label>" + Msg.config["maxProduzione"] + ": </label>"
-				+ "			<select id='MaxProduction'>"		
-				+ "			</select>"
-				+ "			<div style='clear:both'></div>"
-				+ "		</div>"
-				+ "</div>"
-				+ "<input type='button' class='ButtonConf' id='ButtonSalvaUtente' name='SalvaUtente' value='" + Msg.config["Salva"] + "'>"
-				+ "<input type='button' class='ButtonConf' id='ButtonAnnullaUtente' name='AnnullaUtente' value='" + Msg.config["Annulla"] + "'>",
-				
-	htmlConfElettr :  "<div id='StatoConnessione'>"
-					+ "		<div id='TitoloStato'>" + Msg.config["titoloStato"] + "</div>"
-					+ "		<img id='ImgStato' src=''>"
-					+ "		<div id='Autenticazione'></div>"
-					+ "		<div id='LastUpdate'></div>"
-					+ "</div>"
-					+ "<div id='TitoloConfElettr'>" + Msg.config["titoloDisp"] + "</div>"
-					+ "<div id='ConfPopUp' style='display:none'></div>"
-					+ "<div id='ConfElettrDiv'></div>",
+	/*
+	 * categorieGroup: {"ah.ep.zigbee.SmartPlug": [1, 2, 3, 4, 5, 6, 7, 8, 9,
+	 * 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+	 * 31, 32, 33], "ah.ep.zigbee.Generic": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+	 * 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+	 * 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
+	 * "ah.ep.zigbee.MeteringDevice": [12, 14, 15], "ah.ep.zigbee.WhiteGoods":
+	 * [37, 38, 39], "ah.ep.zigbee.ColorLight": [43, 34, 35],
+	 * "ah.ep.zigbee.OnOffLight": [43, 34, 35], "ah.ep.zigbee.DimmableLight":
+	 * [42], "ah.ep.zigbee.LightSensor": [43, 34, 35], "ah.ep.zigbee.DoorLock":
+	 * [40], "ah.ep.zigbee.WindowCovering": [44],
+	 * "ah.ep.zigbee.WindowCoveringController": [45], "ah.ep.zigbee.Thermostat":
+	 * [36, 41], "ah.ep.zigbee.TemperatureSensor": [36, 41]},
+	 */
+	categorieGroup : {
+		"ah.ep.zigbee.SmartPlug" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16,
+				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+				33 ],
+		"ah.ep.zigbee.Generic" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+				14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+				30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ],
+		"ah.ep.zigbee.MeteringDevice" : [ 12, 14, 15 ],
+		"ah.ep.zigbee.WhiteGoods" : [ 37, 38, 39 ],
+		"ah.ep.zigbee.ColorLight" : [ 43, 34, 35 ],
+		"ah.ep.zigbee.OnOffLight" : [ 43, 34, 35 ],
+		"ah.ep.zigbee.DimmableLight" : [ 42 ],
+		"ah.ep.zigbee.LightSensor" : [ 43, 34, 35 ],
+		"ah.ep.zigbee.DoorLock" : [ 40 ],
+		"ah.ep.zigbee.WindowCovering" : [ 44 ],
+		"ah.ep.zigbee.WindowCoveringController" : [ 45 ],
+		"ah.ep.zigbee.Thermostat" : [ 36, 41 ],
+		"Generic Thermostat" : [ 36, 41 ], // TO FIX!!!!,
+		"URMET-Temperature & Humidity" : [ 36, 41 ], // TO FIX!!!!,
+		"ah.ep.zigbee.TemperatureSensor" : [ 36, 41 ],
+		"org.energy_home.jemma.ah.zigbee.bitronhome.remotecontrol": [ ]
 
-	htmlConfIns :   "<input type='button' class='ButtonConf' id='ButtonAggiungiElettr' name='AggiungiElettr' value='" + Msg.config["buttonAggiungi"] + "'>"
-				  + "<div id='ElencoElettr'></div>",
-				  
-	htmlConfDati :    "<div id='ScegliIconaDiv'></div>"
-					+ "<div id='DatiPlug' class='Form'>" 
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtNome"] + "</label>"
-					+ "			<input type='text' id='NomeElettr'>"
-					+ "			<div style='clear:both'></div>"
-					+ "		</div>"
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtCategoria"] + "</label>"
-					+ "			<select id='CategoriaElettr'></select>"
-					+ "			<div style='clear:both'></div>"
-					+ "		</div>"
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtLocazione"] + "</label>"
-					+ "			<select id='LocazioneElettr'></select>"
-					+ " 		<div style='clear:both'></div>"
-					+ "		</div>"
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtIcona"] + "</label>"
-					+ "			<img id='IconaElettr' src=''><div style='clear:both'></div>"
-					//+ " <input type='button' class='ButtonConfSmall' style='vertical-align:top;' id='ButtonScegliIcona' value='" + Msg.config["Modifica"] + "'>"
-					+ "		</div>"
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtTipo"] + "</label>"
-					+ "			<span id='TextTipoElettr'></span>"
-					+ "			<div style='clear:both'></div>"
-					+ "		</div>"
-					+ "		<div>"
-					+ "			<label>" + Msg.config["txtId"] + "</label>"
-					+ "			<span id='TextIdElettr'></span>"
-					+ "			<div style='clear:both'></div>"
-					+ "		</div>"
-					+ "		<input type='button' class='ButtonConf' id='ButtonSalvaDati' name='SalvaDati' value='" + Msg.config["Salva"] + "'>"
-					+ "		<input type='button' class='ButtonConf' id='ButtonAnnullaDati' name='AnnullaDati' value='" + Msg.config["Annulla"] + "'>" 
-					+ "</div>"
+	},
+	calcNumIcone : [ [ 0, 0 ], [ 1, 1 ], [ 1, 2 ], [ 2, 2 ], [ 2, 2 ],
+			[ 2, 3 ], [ 2, 3 ], [ 3, 3 ], [ 3, 3 ], [ 3, 3 ], [ 4, 3 ],
+			[ 4, 3 ], [ 4, 3 ], [ 5, 3 ], [ 5, 3 ], [ 5, 3 ], [ 6, 3 ],
+			[ 6, 3 ], [ 6, 3 ] ], // num righe, colonne
+
+	htmlUtente : "<div id='ConfPopUp' style='display:none'></div>"
+			+ "<div id='StatoConnessione'>" + "		<div id='TitoloStato'>"
+			+ Msg.config["titoloStato"]
+			+ "</div>"
+			+ "		<img id='ImgStato' src=''>"
+			+ "		<div id='Autenticazione'></div>"
+			+ "		<div id='LastUpdate'></div>"
+			+ "</div>"
+			+ "<div id='TitoloConfUtente'>"
+			+ Msg.config["titoloUtente"]
+			+ "</div>"
+			+ "<div id='DatiUtente' class='Form'>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtUtente"]
+			+ ": </label>"
+			+ "			<input type='text' id='NomeUtente'>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["maxPotenza"]
+			+ ": </label>"
+			+ "			<select id='MaxPower'>"
+			+ "				<option value='3000'>3 kW (fondo scala 4kW)</option>"
+			+ "				<option value='4500'>4.5 kW (fondo scala 6kW)</option>"
+			+ "				<option value='6000'>6 kW (fondo scala 8kW)</option>"
+			+ "			</select>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["maxProduzione"]
+			+ ": </label>"
+			+ "			<select id='MaxProduction'>"
+			+ "			</select>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "</div>"
+			+ "<input type='button' class='ButtonConf' id='ButtonSalvaUtente' name='SalvaUtente' value='"
+			+ Msg.config["Salva"]
+			+ "'>"
+			+ "<input type='button' class='ButtonConf' id='ButtonAnnullaUtente' name='AnnullaUtente' value='"
+			+ Msg.config["Annulla"] + "'>",
+
+	htmlConfElettr : "<div id='StatoConnessione'>" + "		<div id='TitoloStato'>"
+			+ Msg.config["titoloStato"] + "</div>"
+			+ "		<img id='ImgStato' src=''>"
+			+ "		<div id='Autenticazione'></div>"
+			+ "		<div id='LastUpdate'></div>" + "</div>"
+			+ "<div id='TitoloConfElettr'>" + Msg.config["titoloDisp"]
+			+ "</div>" + "<div id='ConfPopUp' style='display:none'></div>"
+			+ "<div id='ConfElettrDiv'></div>",
+
+	htmlConfIns : "<input type='button' class='ButtonConf' id='ButtonAggiungiElettr' name='AggiungiElettr' value='"
+			+ Msg.config["buttonAggiungi"]
+			+ "'>"
+			+ "<div id='ElencoElettr'></div>",
+
+	htmlConfDati : "<div id='ScegliIconaDiv'></div>"
+			+ "<div id='DatiPlug' class='Form'>" + "		<div>" + "			<label>"
+			+ Msg.config["txtNome"]
+			+ "</label>"
+			+ "			<input type='text' id='NomeElettr'>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtCategoria"]
+			+ "</label>"
+			+ "			<select id='CategoriaElettr'></select>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtLocazione"]
+			+ "</label>"
+			+ "			<select id='LocazioneElettr'></select>"
+			+ " 		<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtIcona"]
+			+ "</label>"
+			+ "			<img id='IconaElettr' src=''><div style='clear:both'></div>"
+			// + " <input type='button' class='ButtonConfSmall'
+			// style='vertical-align:top;' id='ButtonScegliIcona' value='" +
+			// Msg.config["Modifica"] + "'>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtTipo"]
+			+ "</label>"
+			+ "			<span id='TextTipoElettr'></span>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<div>"
+			+ "			<label>"
+			+ Msg.config["txtId"]
+			+ "</label>"
+			+ "			<span id='TextIdElettr'></span>"
+			+ "			<div style='clear:both'></div>"
+			+ "		</div>"
+			+ "		<input type='button' class='ButtonConf' id='ButtonSalvaDati' name='SalvaDati' value='"
+			+ Msg.config["Salva"]
+			+ "'>"
+			+ "		<input type='button' class='ButtonConf' id='ButtonAnnullaDati' name='AnnullaDati' value='"
+			+ Msg.config["Annulla"] + "'>" + "</div>"
 };
 
 Configurazione.HandleError = function(e) {
@@ -214,11 +244,11 @@ Configurazione.cancelTimeouts = function() {
 }
 
 Configurazione.ExitUtente = function() {
-	//console.log(90, Configurazione.MODULE, "ExitUtente ");
+	// console.log(90, Configurazione.MODULE, "ExitUtente ");
 }
 
 Configurazione.AnnullaUtente = function() {
-	//console.log(80, Configurazione.MODULE, "AnnullaUtente ");
+	// console.log(80, Configurazione.MODULE, "AnnullaUtente ");
 }
 
 Configurazione.getPowerLimitCb = function(attributeValue, e) {
@@ -246,11 +276,13 @@ Configurazione.IdUtenteCb = function(userId, e) {
 	}
 
 	if (userId == null) {
-		// deve essere inserito un nome utente prima di accedere alla configurazione degli elettrodomestici
+		// deve essere inserito un nome utente prima di accedere alla
+		// configurazione degli elettrodomestici
 		$("#el0Content1").addClass("PopUpInvisible");
-		//console.log(80, ConfMain.MODULE, "Occorre inserire un Id Utente");
+		// console.log(80, ConfMain.MODULE, "Occorre inserire un Id Utente");
 	} else {
-		// e' gia' stato impostato un id se ho appena rinfrescato la pagina vado in Dispositivi
+		// e' gia' stato impostato un id se ho appena rinfrescato la pagina vado
+		// in Dispositivi
 		if (Configurazione.isFirstTime) {
 			Configurazione.isFirstTime = false;
 			Configurazione.idUtente = userId;
@@ -262,69 +294,78 @@ Configurazione.IdUtenteCb = function(userId, e) {
 Configurazione.setHapConnectionIdCb = function(result, e) {
 	hideSpinner();
 	if (e == null) {
-		//console.log(80, Configurazione.MODULE, "Utente inserito correttamente");
-		// abilito configurazione simulando il click del mouse sul bottone 'Dispositivi'
+		// console.log(80, Configurazione.MODULE, "Utente inserito
+		// correttamente");
+		// abilito configurazione simulando il click del mouse sul bottone
+		// 'Dispositivi'
 		Menu.OnClickContentMenu(0, 1);
 
 	} else {
-		//console.log(80, Configurazione.MODULE, "Id utente errato");
-		$.dialog(Msg.config["errorIdUtente"], {'buttons' : [ Msg.config["Chiudi"] ]});
+		// console.log(80, Configurazione.MODULE, "Id utente errato");
+		$.dialog(Msg.config["errorIdUtente"], {
+			'buttons' : [ Msg.config["Chiudi"] ]
+		});
 	}
 }
 
 Configurazione.setAttributeCbPV = function(result, e) {
 	if (e != null) {
-		//KO!
-		InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCb, "PeakProducedPower", 0);
+		// KO!
+		InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCb,
+				"PeakProducedPower", 0);
 	} else {
-		//ok registro i cookie
-		InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCb, "PeakProducedPower", Configurazione.limitProduction);
+		// ok registro i cookie
+		InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCb,
+				"PeakProducedPower", Configurazione.limitProduction);
 	}
 }
 
 Configurazione.setAttributeCb = function(result, e) {
 	if (e != null) {
-		//KO!
+		// KO!
 	}
 
-	InterfaceEnergyHome.setHapConnectionId(Configurazione.setHapConnectionIdCb, Configurazione.idUtente);
+	InterfaceEnergyHome.setHapConnectionId(Configurazione.setHapConnectionIdCb,
+			Configurazione.idUtente);
 }
 
 Configurazione.SalvaUtente = function() {
 	Configurazione.idUtente = $("#NomeUtente").val();
 	Configurazione.limit = $("#MaxPower").val();
 	Configurazione.limitProduction = $("#MaxProduction").val();
-	
 
 	// elimina spazi
 	Configurazione.idUtente = Configurazione.idUtente.replace(/ /gi, "");
 	$("#NomeUtente").val(Configurazione.idUtente);
-	//console.log(80, Configurazione.MODULE, "SalvaUtente id = " + Configurazione.idUtente);
+	// console.log(80, Configurazione.MODULE, "SalvaUtente id = " +
+	// Configurazione.idUtente);
 	showSpinner();
 
-	InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCbPV, "InstantaneousPowerLimit", Configurazione.limit);
+	InterfaceEnergyHome.setAttribute(Configurazione.setAttributeCbPV,
+			"InstantaneousPowerLimit", Configurazione.limit);
 }
 
 Configurazione.GestUtente = function() {
-	//console.log(90, Configurazione.MODULE, "GestUtente ");
+	// console.log(90, Configurazione.MODULE, "GestUtente ");
 	// se sono gia' in configurazione utente non faccio niente
 	if (Configurazione.modAttuale == Configurazione.UTENTE)
 		return;
 
 	Configurazione.modAttuale = Configurazione.UTENTE;
 	$("#Content").html(Configurazione.htmlUtente); // Configurazione.htmlConfElettr
-	
-	InterfaceEnergyHome.getAttribute(Configurazione.GestConfigurazione, "PeakProducedPower");
+
+	InterfaceEnergyHome.getAttribute(Configurazione.GestConfigurazione,
+			"PeakProducedPower");
 }
 
 Configurazione.GestConfigurazione = function(result, e) {
-	
+
 	if (e != null) {
-		//KO!
+		// KO!
 	}
-	
+
 	var maxPowerProductionCookie = result.value;
-	
+
 	var opt0 = "<option value='0'>0 kW (o assenza di impianto fotovoltaico)</option>";
 	var opt1 = "<option value='1000'>1 kW (fondo scala 1.5 kW)</option>";
 	var opt2 = "<option value='2000'>2 kW (fondo scala 2.5 kW)</option>";
@@ -333,40 +374,34 @@ Configurazione.GestConfigurazione = function(result, e) {
 	var opt5 = "<option value='5000'>5 kW (fondo scala 5.5 kW)</option>";
 	var opt6 = "<option value='6000'>6 kW (fondo scala 6.5 kW)</option>";
 	var opt11 = "<option value='11000'>11 kW (fondo scala 12.5 kW)</option>";
-	if ((maxPowerProductionCookie == null) || (maxPowerProductionCookie == 0)){
+	if ((maxPowerProductionCookie == null) || (maxPowerProductionCookie == 0)) {
 		opt0 = "<option value='0' selected='selected'>0 kW (o assenza di impianto fotovoltaico)</option>";
 	}
-	if (maxPowerProductionCookie == 1000){
+	if (maxPowerProductionCookie == 1000) {
 		opt1 = "<option value='1000' selected='selected'>1 kW (fondo scala 1.5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 2000){
+	if (maxPowerProductionCookie == 2000) {
 		opt2 = "<option value='2000' selected='selected'>2 kW (fondo scala 2.5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 3000){
+	if (maxPowerProductionCookie == 3000) {
 		opt3 = "<option value='3000' selected='selected'>3 kW (fondo scala 3.5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 4000){
+	if (maxPowerProductionCookie == 4000) {
 		opt4 = "<option value='4000' selected='selected'>4 kW (fondo scala 5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 5000){
+	if (maxPowerProductionCookie == 5000) {
 		opt5 = "<option value='5000' selected='selected'>5 kW (fondo scala 5.5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 6000){
+	if (maxPowerProductionCookie == 6000) {
 		opt6 = "<option value='6000' selected='selected'>6 kW (fondo scala 6.5 kW)</option>";
 	}
-	if (maxPowerProductionCookie == 11000){
+	if (maxPowerProductionCookie == 11000) {
 		opt11 = "<option value='11000' selected='selected'>11 kW (fondo scala 12.5 kW)</option>";
 	}
-	
-	$('#MaxProduction').append(opt0)
-					   .append(opt1)
-					   .append(opt2)
-					   .append(opt3)
-					   .append(opt4)
-					   .append(opt5)
-					   .append(opt6)
-					   .append(opt11);
-	
+
+	$('#MaxProduction').append(opt0).append(opt1).append(opt2).append(opt3)
+			.append(opt4).append(opt5).append(opt6).append(opt11);
+
 	Configurazione.refreshHapStatus();
 
 	$("#ButtonSalvaUtente").click(Configurazione.SalvaUtente);
@@ -380,13 +415,15 @@ Configurazione.GestConfigurazione = function(result, e) {
 
 	showSpinner();
 
-	InterfaceEnergyHome.getAttribute(Configurazione.getPowerLimitCb, "InstantaneousPowerLimit");
+	InterfaceEnergyHome.getAttribute(Configurazione.getPowerLimitCb,
+			"InstantaneousPowerLimit");
 }
 
 Configurazione.ExitElettrodomestici = function() {
-	InterfaceEnergyHome.removeListener("service.connection", Configurazione.HandleServiceEvent);
+	InterfaceEnergyHome.removeListener("service.connection",
+			Configurazione.HandleServiceEvent);
 	Configurazione.cancelTimeouts();
-	//console.log(90, Configurazione.MODULE, "ExitElettrodomestici");
+	// console.log(90, Configurazione.MODULE, "ExitElettrodomestici");
 }
 
 Configurazione.DatiCategorie = function(lista) {
@@ -395,36 +432,49 @@ Configurazione.DatiCategorie = function(lista) {
 		Configurazione.optionsCategorie = "";
 		Configurazione.categorieConf = new Array();
 		for (val in lista) {
-			//console.log(90, Configurazione.MODULE, "DatiLocazioni : id = " + val + " nome = " + Configurazione.categorie[val]);
-			//DT Qui effettuo la traduzione
+			// console.log(90, Configurazione.MODULE, "DatiLocazioni : id = " +
+			// val + " nome = " + Configurazione.categorie[val]);
+			// DT Qui effettuo la traduzione
 			Configurazione.categorie[val] = Msg.dispositivi[val];
-			Configurazione.optionsCategorie += "<option value='" + val + "' class='OptionConf'>" + Configurazione.categorie[val] + "</option>";
-			Configurazione.categorieConf[val] = "<option value='" + val + "' class='OptionConf'>" + Configurazione.categorie[val] + "</option>";
+			Configurazione.optionsCategorie += "<option value='" + val
+					+ "' class='OptionConf'>" + Configurazione.categorie[val]
+					+ "</option>";
+			Configurazione.categorieConf[val] = "<option value='" + val
+					+ "' class='OptionConf'>" + Configurazione.categorie[val]
+					+ "</option>";
 		}
 	}
-	// presenta pagina di configurazione, diversa per configurazione o modifica (visivamente uguale ma cambia da dove predne i dati e cosa fa dopo)
-	if (Configurazione.nuovoDispositivo != null){
+	// presenta pagina di configurazione, diversa per configurazione o modifica
+	// (visivamente uguale ma cambia da dove predne i dati e cosa fa dopo)
+	if (Configurazione.nuovoDispositivo != null) {
 		Configurazione.ConfiguraElettr(Configurazione.nuovoDispositivo);
 	} else {
-		Configurazione.ConfiguraElettr(Configurazione.infoDisp[Configurazione.indSel]);
+		Configurazione
+				.ConfiguraElettr(Configurazione.infoDisp[Configurazione.indSel]);
 	}
 }
 
 Configurazione.GetLocazioniCb = function(lista) {
-	//console.log(80, Configurazione.MODULE, "DatiLocazioni");
+	// console.log(80, Configurazione.MODULE, "DatiLocazioni");
 	if (lista != null) {
 		Configurazione.locazioni = lista;
-		//Configurazione.locazioni = Lang.Convert(lista, Msg.locazioni);
+		// Configurazione.locazioni = Lang.Convert(lista, Msg.locazioni);
 		Configurazione.optionsLocazioni = "";
 		for (val in lista) {
-			//console.log(90, Configurazione.MODULE, "DatiLocazioni : id = " + val + " nome = " + Configurazione.locazioni[val]);
-			//DT Qui effettuo la traduzione
+			// console.log(90, Configurazione.MODULE, "DatiLocazioni : id = " +
+			// val + " nome = " + Configurazione.locazioni[val]);
+			// DT Qui effettuo la traduzione
 			Configurazione.locazioni[val] = Msg.stanze[val];
-			Configurazione.optionsLocazioni += "<option value='" + val + "' class='OptionConf'>" + Configurazione.locazioni[val] + "</option>";
+			Configurazione.optionsLocazioni += "<option value='" + val
+					+ "' class='OptionConf'>" + Configurazione.locazioni[val]
+					+ "</option>";
 		}
 		/**
 		 * for (i = 0; i < Configurazione.locazioni.length; i++)
-		 * 		Configurazione.optionsLocazioni += "<option value='" + Configurazione.locazioni[i][InterfaceEnergyHome.ATTR_LOCATION_PID] + "' class='OptionConf'>" + Configurazione.locazioni[i][InterfaceEnergyHome.ATTR_LOCATION_NAME] + "</option>";
+		 * Configurazione.optionsLocazioni += "<option value='" +
+		 * Configurazione.locazioni[i][InterfaceEnergyHome.ATTR_LOCATION_PID] + "'
+		 * class='OptionConf'>" +
+		 * Configurazione.locazioni[i][InterfaceEnergyHome.ATTR_LOCATION_NAME] + "</option>";
 		 */
 	}
 	Configurazione.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
@@ -444,74 +494,84 @@ Configurazione.GetIcone = function() {
 	Configurazione.icone[9] = "stufa.png";
 	Configurazione.icone[10] = "lockdoor.png";
 	Configurazione.icone[11] = "windowc.png";
-	/*Configurazione.icone[10] = "production_meter.png";
-	Configurazione.icone[11] = "secondary_meter.png";
-	Configurazione.icone[12] = "printer.png";
-	Configurazione.icone[13] = "modem-router.png";
-	Configurazione.icone[14] = "decoder-recorder-player.png";
-	Configurazione.icone[15] = "home_theatre-stereo.png";
-	Configurazione.icone[16] = "play_station.png";
-	Configurazione.icone[17] = "media_center.png";		
-	Configurazione.icone[18] = "freezer.png";	
-	Configurazione.icone[19] = "washer_dryer.png";
-	Configurazione.icone[20] = "vacuum_cleaner.png";
-	Configurazione.icone[21] = "hair_dryer.png";
-	Configurazione.icone[22] = "bread_machine.png";
-	Configurazione.icone[23] = "coffee_machine.png";
-	Configurazione.icone[24] = "toaster.png";
-	Configurazione.icone[25] = "food_robot.png";
-	Configurazione.icone[26] = "water_purifier.png";
-	Configurazione.icone[27] = "hob.png";	
-	Configurazione.icone[28] = "electric_heater.png";
-	Configurazione.icone[29] = "swimming_pool_pump.png";*/
+	/*
+	 * Configurazione.icone[10] = "production_meter.png";
+	 * Configurazione.icone[11] = "secondary_meter.png";
+	 * Configurazione.icone[12] = "printer.png"; Configurazione.icone[13] =
+	 * "modem-router.png"; Configurazione.icone[14] =
+	 * "decoder-recorder-player.png"; Configurazione.icone[15] =
+	 * "home_theatre-stereo.png"; Configurazione.icone[16] = "play_station.png";
+	 * Configurazione.icone[17] = "media_center.png"; Configurazione.icone[18] =
+	 * "freezer.png"; Configurazione.icone[19] = "washer_dryer.png";
+	 * Configurazione.icone[20] = "vacuum_cleaner.png"; Configurazione.icone[21] =
+	 * "hair_dryer.png"; Configurazione.icone[22] = "bread_machine.png";
+	 * Configurazione.icone[23] = "coffee_machine.png"; Configurazione.icone[24] =
+	 * "toaster.png"; Configurazione.icone[25] = "food_robot.png";
+	 * Configurazione.icone[26] = "water_purifier.png"; Configurazione.icone[27] =
+	 * "hob.png"; Configurazione.icone[28] = "electric_heater.png";
+	 * Configurazione.icone[29] = "swimming_pool_pump.png";
+	 */
 }
 
 Configurazione.ScegliIcona = function() {
 	var nRow, nCol, num, top, distTop, left, distLeft, dim, dimH, dimW;
 
-	//console.log(80, Configurazione.MODULE, "Configurazione.ScegliIcona");
+	// console.log(80, Configurazione.MODULE, "Configurazione.ScegliIcona");
 
 	$("#ScegliIconaDiv").html("");
 
-	// TODO: da notare che non e' assolutamnte necessario che hDivIcona, wDivIcona
+	// TODO: da notare che non e' assolutamnte necessario che hDivIcona,
+	// wDivIcona
 	// siano delle variabili di Configurazione. Possono essere locali.
 
 	// TODO: non ho ben capito a cosa serve la variable calcNumIcone!
 	// Apparentemente serve a stabilire la struttura della matrice di icone
 	// in base al loro numero (attenzione agli arrotondamenti). Es:
 	// if (n <= 9)
-	// 		nCol = sqr(n);
+	// nCol = sqr(n);
 	// else
-	// 		nCol = 3;
+	// nCol = 3;
 	//	
 	// nRow = n / nCol
 	// magari fare swap di righe e colonne a seconda del rapporto di forma.
 
 	if (true) {
 		num = Configurazione.icone.length;
-		// metto icone nel div in base al numero di icone disponibili (max 3 per riga) max totale 15
+		// metto icone nel div in base al numero di icone disponibili (max 3 per
+		// riga) max totale 15
 		nRow = Configurazione.calcNumIcone[num][0];
 		nCol = Configurazione.calcNumIcone[num][1];
-		//console.log(80, Configurazione.MODULE, "num icone = " + num + " nRow = " + nRow + " nCol = " + nCol);
+		// console.log(80, Configurazione.MODULE, "num icone = " + num + " nRow
+		// = " + nRow + " nCol = " + nCol);
 
 		dimW = Math.round($(window).width() * 0.5 / (nRow + 2));
 		dimH = Math.round($(window).height() * 0.5 / (nCol + 2));
 
-		if (dimH > dimW){
+		if (dimH > dimW) {
 			dim = dimW;
-		} else { 
+		} else {
 			dim = dimH;
 		}
 
 		Configurazione.hDivIcona = dim * (nRow + 2);
 		Configurazione.wDivIcona = dim * (nCol + 2);
-		top = distTop = Math.round((Configurazione.hDivIcona - (dim * nRow)) / (nRow + 1));
-		left = distLeft = Math.round((Configurazione.wDivIcona - (dim * nCol)) / (nCol + 1));
+		top = distTop = Math.round((Configurazione.hDivIcona - (dim * nRow))
+				/ (nRow + 1));
+		left = distLeft = Math.round((Configurazione.wDivIcona - (dim * nCol))
+				/ (nCol + 1));
 
 		for (i = 0; i < num;) {
-			var img = jQuery('<img>', {'class' : 'ImgIcona',
-										'id' : 'Icona_' + i,
-										'src' : DefinePath.imgDispPath + Configurazione.icone[i]}).css({'position' : 'absolute', 'top' : top, 'left' : left, 'width' : dim, 'height' : dim});
+			var img = jQuery('<img>', {
+				'class' : 'ImgIcona',
+				'id' : 'Icona_' + i,
+				'src' : DefinePath.imgDispPath + Configurazione.icone[i]
+			}).css({
+				'position' : 'absolute',
+				'top' : top,
+				'left' : left,
+				'width' : dim,
+				'height' : dim
+			});
 
 			img.appendTo("#ScegliIconaDiv");
 
@@ -537,12 +597,17 @@ Configurazione.ScegliIcona = function() {
 
 Configurazione.InseritoDispositivoCb = function(val) {
 	if (val == 0) {
-		//console.log(80, Configurazione.MODULE, "Dispositivo installato correttamente");
-		//console.log(80, Configurazione.MODULE, "Errore in StartInquiry");
-		$.dialog(Msg.config["insOk"], { });
+		// console.log(80, Configurazione.MODULE, "Dispositivo installato
+		// correttamente");
+		// console.log(80, Configurazione.MODULE, "Errore in StartInquiry");
+		$.dialog(Msg.config["insOk"], {});
 	} else {
-		//console.log(80, Configurazione.MODULE, "Errore in installazione dispositivo");
-		$.dialog(Msg.config["errorInsDisp"], {'title' : 'Title', 'buttons' : [ Msg.config["Chiudi"] ]});
+		// console.log(80, Configurazione.MODULE, "Errore in installazione
+		// dispositivo");
+		$.dialog(Msg.config["errorInsDisp"], {
+			'title' : 'Title',
+			'buttons' : [ Msg.config["Chiudi"] ]
+		});
 	}
 
 	Configurazione.VisElettrodomestici();
@@ -550,37 +615,44 @@ Configurazione.InseritoDispositivoCb = function(val) {
 
 Configurazione.InserisciDispositivo = function() {
 	// potrebbero essere necessari dei controlli
-	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_NAME] = $("#NomeElettr").val();
+	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_NAME] = $(
+			"#NomeElettr").val();
 	catPid = $("#CategoriaElettr option:selected").val();
 	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_CATEGORY] = catPid;
 	locPid = $("#LocazioneElettr option:selected").val();
-	//console.log(80, Configurazione.MODULE, "InserisciDispositivo: loc = " + locPid + " cat = " + catPid);
+	// console.log(80, Configurazione.MODULE, "InserisciDispositivo: loc = " +
+	// locPid + " cat = " + catPid);
 	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_LOCATION] = locPid;
 	var tmp = $("#IconaElettr").attr("src");
 	var j = tmp.lastIndexOf("/");
-	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp.substr(j + 1);
+	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp
+			.substr(j + 1);
 
-	InterfaceEnergyHome.InstallAppliance(Configurazione.InseritoDispositivoCb, Configurazione.nuovoDispositivo);
+	InterfaceEnergyHome.InstallAppliance(Configurazione.InseritoDispositivoCb,
+			Configurazione.nuovoDispositivo);
 	Configurazione.scheduleGetListaAppliances();
 }
 
 Configurazione.ModificaDispositivoCb = function() {
-	//console.log(80, Configurazione.MODULE, "Dispositivo Modificato");
+	// console.log(80, Configurazione.MODULE, "Dispositivo Modificato");
 	Configurazione.VisElettrodomestici();
 	Configurazione.scheduleGetListaAppliances();
 }
 
 Configurazione.ModificaDispositivo = function() {
-	//console.log(80, Configurazione.MODULE, "ModificaDispositivo");
-	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_NAME] = $("#NomeElettr").val();
+	// console.log(80, Configurazione.MODULE, "ModificaDispositivo");
+	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_NAME] = $(
+			"#NomeElettr").val();
 	catPid = $("#CategoriaElettr option:selected").val();
 	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] = catPid;
 	locPid = $("#LocazioneElettr option:selected").val();
-	//console.log(80, Configurazione.MODULE, "InserisciDispositivo: loc = " + locPid + " cat = " + catPid);
+	// console.log(80, Configurazione.MODULE, "InserisciDispositivo: loc = " +
+	// locPid + " cat = " + catPid);
 	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_LOCATION] = locPid;
 	var tmp = $("#IconaElettr").attr("src");
 	var j = tmp.lastIndexOf("/");
-	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp.substr(j + 1);
+	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp
+			.substr(j + 1);
 
 	var newConfig = {
 		'javaClass' : Configurazione.infoDisp[Configurazione.indSel].javaClass,
@@ -596,33 +668,41 @@ Configurazione.ModificaDispositivo = function() {
 	newConfig.map["appliance.pid"] = Configurazione.infoDisp[Configurazione.indSel].map["appliance.pid"];
 	newConfig.map["ah.app.type"] = Configurazione.infoDisp[Configurazione.indSel].map["ah.app.type"];
 
-	InterfaceEnergyHome.ModificaDispositivo(Configurazione.ModificaDispositivoCb, newConfig);
+	InterfaceEnergyHome.ModificaDispositivo(
+			Configurazione.ModificaDispositivoCb, newConfig);
 }
 
 Configurazione.EliminatoDispositivo = function(e) {
-	//console.log(80, Configurazione.MODULE, "EliminatoDispositivo");
-	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	// console.log(80, Configurazione.MODULE, "EliminatoDispositivo");
+	InterfaceEnergyHome
+			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.EliminaElettr = function(ind) {
-	$.dialog(Msg.config["confermaCanc"],{
+	$
+			.dialog(
+					Msg.config["confermaCanc"],
+					{
 						'buttons' : [ Msg.config["OK"], Msg.config["Annulla"] ],
 						'exit' : function(value) {
 							if (value == Msg.config["OK"]) {
-								InterfaceEnergyHome.EliminaDispositivo( Configurazione.EliminatoDispositivo,
-																		Configurazione.infoDisp[ind].map[InterfaceEnergyHome.ATTR_APP_PID]);
+								InterfaceEnergyHome
+										.EliminaDispositivo(
+												Configurazione.EliminatoDispositivo,
+												Configurazione.infoDisp[ind].map[InterfaceEnergyHome.ATTR_APP_PID]);
 							} else if (value == Msg.config["Annulla"]) {
-								InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+								InterfaceEnergyHome
+										.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 							}
 						}
 					});
 }
 
-//selezioni le categorie da visualizzare sulla base dell'array passato come parametro
+// selezioni le categorie da visualizzare sulla base dell'array passato come
+// parametro
 /*
- * esempio di types: ah.app.eps.types: Array[2]
- *						0: "ah.ep.common"
- *						1: "ah.ep.zigbee.MeteringDevice"
+ * esempio di types: ah.app.eps.types: Array[2] 0: "ah.ep.common" 1:
+ * "ah.ep.zigbee.MeteringDevice"
  * 
  * 
  */
@@ -630,20 +710,28 @@ Configurazione.selectCategorie = function(types) {
 	var returnList = '';
 	var typeAlreadyUsed = new Array();
 	var catArray, indexCC = null;
-	
-	for (t in types){
+
+	for (t in types) {
 		var tp = types[t];
-		for (confT in Configurazione.categorieGroup){
-			if ((tp == confT) && ($.inArray(confT, typeAlreadyUsed) == -1)){
+		for (confT in Configurazione.categorieGroup) {
+			if ((tp == confT) && ($.inArray(confT, typeAlreadyUsed) == -1)) {
 				catArray = Configurazione.categorieGroup[confT];
-				for (var iC = 0; iC <= catArray.length; iC++){
+				for (var iC = 0; iC <= catArray.length; iC++) {
 					indexCC = catArray[iC];
 					returnList += Configurazione.categorieConf[indexCC];
 				}
-				
 				typeAlreadyUsed.push(confT);
 			}
 		}
+
+	}
+	if (returnList == '') {
+		catArray = Configurazione.categorieGroup['ah.ep.zigbee.Generic'];
+		for (var iC = 0; iC <= catArray.length; iC++) {
+			indexCC = catArray[iC];
+			returnList += Configurazione.categorieConf[indexCC];
+		}
+		
 	}
 	return returnList;
 }
@@ -651,29 +739,34 @@ Configurazione.selectCategorie = function(types) {
 // richiamato su modifica di un dispositivo esistente o su inserimento di nuovo
 // dispositivo
 Configurazione.ConfiguraElettr = function(elem) {
-	//console.log(80, Configurazione.MODULE, "Configuro");
+	// console.log(80, Configurazione.MODULE, "Configuro");
 	$("#ConfElettrDiv").html(Configurazione.htmlConfDati);
 
 	// Assegna valori ai campi
 	$("#NomeElettr").val(elem.map[InterfaceEnergyHome.ATTR_APP_NAME]);
-	
-	//Configurazione.categorieGroup;
-	var catToView = Configurazione.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_EPS_TYPE]); 
-	//$("#CategoriaElettr").html(Configurazione.optionsCategorie);
+
+	// Configurazione.categorieGroup;
+	var catToView = Configurazione
+			.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_EPS_TYPE]);
+	// $("#CategoriaElettr").html(Configurazione.optionsCategorie);
 	$("#CategoriaElettr").html(catToView);
 	catPid = elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
-	//console.log(80, Configurazione.MODULE, "ConfiguraElettr catPid = " + catPid);
+	// console.log(80, Configurazione.MODULE, "ConfiguraElettr catPid = " +
+	// catPid);
 	if (catPid != undefined) {
 		// tmp = $("#CategoriaElettr option[value=" + catPid + "]").text();
-		$("#CategoriaElettr option[value=" + catPid + "]").attr("selected", "selected");
+		$("#CategoriaElettr option[value=" + catPid + "]").attr("selected",
+				"selected");
 	}
 
 	$("#LocazioneElettr").html(Configurazione.optionsLocazioni);
 	locPid = elem.map[InterfaceEnergyHome.ATTR_APP_LOCATION];
-	//console.log(80, Configurazione.MODULE, "InstallaElettr locPid = " + locPid);
+	// console.log(80, Configurazione.MODULE, "InstallaElettr locPid = " +
+	// locPid);
 	if (locPid != undefined) {
 		// tmp = $("#LocazioneElettr option[value=" + locPid + "]").text();
-		$("#LocazioneElettr option[value=" + locPid + "]").attr("selected", "selected");
+		$("#LocazioneElettr option[value=" + locPid + "]").attr("selected",
+				"selected");
 	}
 	tmpIcon = elem.map[InterfaceEnergyHome.ATTR_APP_ICON];
 	if ((tmpIcon == undefined) || (tmpIcon == null))
@@ -712,17 +805,23 @@ Configurazione.ConfiguraElettr = function(elem) {
 }
 
 Configurazione.TrovatoPlug = function() {
-	//console.log(80, Configurazione.MODULE, "Trovato Plug");
+	// console.log(80, Configurazione.MODULE, "Trovato Plug");
 
-	$.dialog(Msg.config["trovatoPlug"],{
-						'buttons' : [ Msg.config["buttonConfigura"], Msg.config["Annulla"] ],
+	$
+			.dialog(
+					Msg.config["trovatoPlug"],
+					{
+						'buttons' : [ Msg.config["buttonConfigura"],
+								Msg.config["Annulla"] ],
 						'exit' : function(value) {
 							if (value == Msg.config["buttonConfigura"]) {
-								InterfaceEnergyHome.GetCategorie(Configurazione.DatiCategorie,
-																 Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_PID]);
+								InterfaceEnergyHome
+										.GetCategorie(
+												Configurazione.DatiCategorie,
+												Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_PID]);
 							}
-						}}
-	);
+						}
+					});
 }
 
 // controlla se sono stati rilevati dei dispositivi
@@ -733,17 +832,23 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 		// non devo fare stop perche' la startInquiry finisce per conto suo
 		Configurazione.incrControllo += Configurazione.INTERVALLO_CONTROLLO;
 		if (Configurazione.incrControllo > (Configurazione.TIMEOUT_INQUIRY + Configurazione.INQUIRY_GUARD) * 1000) {
-			//console.log(80, Configurazione.MODULE, "Nessun device trovato");
+			// console.log(80, Configurazione.MODULE, "Nessun device trovato");
 			Configurazione.timerInquiry = null;
 
-			$.dialog(Msg.config["noPlug"],{
+			$
+					.dialog(
+							Msg.config["noPlug"],
+							{
 								'buttons' : [ Msg.config["OK"] ],
 								'exit' : function(value) {
-									InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
-								}});
+									InterfaceEnergyHome
+											.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+								}
+							});
 		} else {
-			Configurazione.timerInquiry = setTimeout(Configurazione.ControllaInquiry,
-													 Configurazione.INTERVALLO_CONTROLLO);
+			Configurazione.timerInquiry = setTimeout(
+					Configurazione.ControllaInquiry,
+					Configurazione.INTERVALLO_CONTROLLO);
 		}
 	} else {
 		// fermo la ricerca
@@ -758,19 +863,24 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 }
 
 Configurazione.ControllaInquiry = function() {
-	//console.log(80, Configurazione.MODULE, "Reimposto timeout");
-	InterfaceEnergyHome.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
+	// console.log(80, Configurazione.MODULE, "Reimposto timeout");
+	InterfaceEnergyHome
+			.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
 }
 
 Configurazione.StopInquiryCb = function(res, e) {
-	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome
+			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.StartInquiryCb = function(res, e) {
 	hideSpinner();
 	if (e == null) {
-		// la prima volta aspetto poco (al fine di rendere piu' veloce la simulazione)
-		Configurazione.timerInquiry = setTimeout(Configurazione.ControllaInquiry, Configurazione.INTERVALLO_CONTROLLO / 4);
+		// la prima volta aspetto poco (al fine di rendere piu' veloce la
+		// simulazione)
+		Configurazione.timerInquiry = setTimeout(
+				Configurazione.ControllaInquiry,
+				Configurazione.INTERVALLO_CONTROLLO / 4);
 		$.dialog(Msg.config["insPlug"], {
 			'buttons' : [ Msg.config["Annulla"] ],
 			'exit' : function(value) {
@@ -782,13 +892,15 @@ Configurazione.StartInquiryCb = function(res, e) {
 			}
 		});
 	} else {
-		//console.log(80, Configurazione.MODULE, "Errore in StartInquiry");
-		$.dialog(Msg.config["errorInitRic"], {'buttons' : [ Msg.config["Chiudi"] ]});
+		// console.log(80, Configurazione.MODULE, "Errore in StartInquiry");
+		$.dialog(Msg.config["errorInitRic"], {
+			'buttons' : [ Msg.config["Chiudi"] ]
+		});
 	}
 }
 
 Configurazione.AggiungiElettrodomestico = function() {
-	//console.log(80, Configurazione.MODULE, "AggiungiElettrodomestico");
+	// console.log(80, Configurazione.MODULE, "AggiungiElettrodomestico");
 	if (Configurazione.timerVis != null) {
 		clearTimeout(Configurazione.timerVis);
 		Configurazione.timerVis = null;
@@ -800,12 +912,13 @@ Configurazione.AggiungiElettrodomestico = function() {
 	Configurazione.incrControllo = 0;
 
 	showSpinner();
-	InterfaceEnergyHome.startInquiry(Configurazione.StartInquiryCb, Configurazione.TIMEOUT_INQUIRY);
+	InterfaceEnergyHome.startInquiry(Configurazione.StartInquiryCb,
+			Configurazione.TIMEOUT_INQUIRY);
 }
 
 Configurazione.VisElettrodomestici = function() {
 	var htmlElettr;
-	//console.log(20, Configurazione.MODULE, "VisElettrodomestici");
+	// console.log(20, Configurazione.MODULE, "VisElettrodomestici");
 	$("#ConfElettrDiv").html(Configurazione.htmlConfIns);
 	$("#ButtonAggiungiElettr").click(Configurazione.AggiungiElettrodomestico);
 
@@ -815,27 +928,36 @@ Configurazione.VisElettrodomestici = function() {
 
 		// imgDisp = Configurazione.infoDisp[i].icona;
 		imgDisp = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_ICON];
-		if (typeof(imgDisp) === 'undefined'){
+		if (typeof (imgDisp) === 'undefined') {
 			imgDisp = Configurazione.icone[5];
 		}
-			
+
 		availability = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_AVAIL];
 		device_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_VALUE];
 		category_value = Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 
 		if ((availability == undefined) || (availability != 2)) {
-			htmlStato = "<div class='StatoDisconnesso'>" + Msg.config["disconnesso"] + "</div>";
+			htmlStato = "<div class='StatoDisconnesso'>"
+					+ Msg.config["disconnesso"] + "</div>";
 			val = "nd";
 		} else {
-			htmlStato = "<div class='StatoConnesso'>" + Msg.config["connesso"] + "</div>";
+			htmlStato = "<div class='StatoConnesso'>" + Msg.config["connesso"]
+					+ "</div>";
 			val = "";
 
-			// if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE] == 1) {
-			// 		htmlStato = "<div class='StatoOn'>" + Msg.config["statoAcceso"] + "</div>";
-			// } else if (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE] == 0) {
-			// 		htmlStato = "<div class='StatoOff'>" + Msg.config["statoSpento"] + "</div>";
+			// if
+			// (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE]
+			// == 1) {
+			// htmlStato = "<div class='StatoOn'>" + Msg.config["statoAcceso"] +
+			// "</div>";
+			// } else if
+			// (Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_STATE]
+			// == 0) {
+			// htmlStato = "<div class='StatoOff'>" + Msg.config["statoSpento"]
+			// + "</div>";
 			// } else {
-			// 		htmlStato = "<div class='StatoOff'>" + Msg.config["statoAcceso"] + "</div>";
+			// htmlStato = "<div class='StatoOff'>" + Msg.config["statoAcceso"]
+			// + "</div>";
 			// }
 
 			var hDimIcon = 'height: 75px;';
@@ -850,131 +972,208 @@ Configurazione.VisElettrodomestici = function() {
 			var lockState = null;
 			var WindowState = null;
 			var Measure = {};
-			
+
 			$.each(device_value.list, function(idx, el) {
-				if (el.name == "IstantaneousDemands"){
+				if (el.name == "IstantaneousDemands") {
 					consumo = el.value.value;
-					Measure[el.name] = {value: consumo.toFixed(1), unity: "W", label: "Cons.", name: "watt", type: el.name};
-				} else if (el.name == "OnOffState"){
+					Measure[el.name] = {
+						value : consumo.toFixed(1),
+						unity : "W",
+						label : "Cons.",
+						name : "watt",
+						type : el.name
+					};
+				} else if (el.name == "OnOffState") {
 					stato = el.value.value;
-					
-					Measure[el.name] = {value: stato, unity: " ", label: "State", name: "", type: el.name};
-				} else if (el.name == "LocalHumidity"){
+
+					Measure[el.name] = {
+						value : stato,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
+				} else if (el.name == "LocalHumidity") {
 					humidity = el.value.value;
-					Measure[el.name] = {value: humidity, unity: "% RH", label: "Umidity", name: "Humid.", type: el.name};
-				} else if (el.name == "ZoneStatus"){
+					Measure[el.name] = {
+						value : humidity,
+						unity : "% RH",
+						label : "Umidity",
+						name : "Humid.",
+						type : el.name
+					};
+				} else if (el.name == "ZoneStatus") {
 					zonestatus = el.value.value;
-					Measure[el.name] = {value: zonestatus, unity: " ", label: "State", name: "", type: el.name};
-				} else if (el.name == "Illuminance"){
+					Measure[el.name] = {
+						value : zonestatus,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
+				} else if (el.name == "Illuminance") {
 					illuminance = el.value.value;
-					Measure[el.name] = {value: illuminance, unity: " ", label: "State", name: "", type: el.name};
-				} else if (el.name == "Occupancy"){
+					Measure[el.name] = {
+						value : illuminance,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
+				} else if (el.name == "Occupancy") {
 					occupancy = el.value.value;
-					Measure[el.name] = {value: occupancy, unity: " ", label: "State", name: "", type: el.name};
-				} else if (el.name == "Temperature"){
+					Measure[el.name] = {
+						value : occupancy,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
+				} else if (el.name == "Temperature") {
 					temperature = el.value.value;
-					Measure[el.name] = {value: temperature.toFixed(1), unity: "C", label: "Temp.", name: "celsius", type: el.name};
-				} else if (el.name == "LocalTemperature"){
+					Measure[el.name] = {
+						value : temperature.toFixed(1),
+						unity : "C",
+						label : "Temp.",
+						name : "celsius",
+						type : el.name
+					};
+				} else if (el.name == "LocalTemperature") {
 					temperature = el.value.value;
-					Measure[el.name] = {value: temperature.toFixed(1), unity: "C", label: "Temp.", name: "celsius", type: el.name};
-				} else if (el.name == "LockState"){
+					Measure[el.name] = {
+						value : temperature.toFixed(1),
+						unity : "C",
+						label : "Temp.",
+						name : "celsius",
+						type : el.name
+					};
+				} else if (el.name == "LockState") {
 					lockState = el.value.value;
-					Measure[el.name] = {value: lockState, unity: " ", label: "State", name: "", type: el.name};
-				} else if (el.name == "CurrentPositionLiftPercentage"){
+					Measure[el.name] = {
+						value : lockState,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
+				} else if (el.name == "CurrentPositionLiftPercentage") {
 					WindowState = el.value.value;
-					Measure[el.name] = {value: WindowState, unity: " ", label: "State", name: "", type: el.name};
+					Measure[el.name] = {
+						value : WindowState,
+						unity : " ",
+						label : "State",
+						name : "",
+						type : el.name
+					};
 				}
 			});
 
-			for (lbl in Measure){
-				if (Measure[lbl] != "undefined"){
+			for (lbl in Measure) {
+				if (Measure[lbl] != "undefined") {
 					if (val != "")
-						val += "</br>" + Measure[lbl].label + ": " + Measure[lbl].value + " " + Measure[lbl].unity;
-					else 
-						val += Measure[lbl].label + ": " + Measure[lbl].value + " " + Measure[lbl].unity;
+						val += "</br>" + Measure[lbl].label + ": "
+								+ Measure[lbl].value + " " + Measure[lbl].unity;
+					else
+						val += Measure[lbl].label + ": " + Measure[lbl].value
+								+ " " + Measure[lbl].unity;
 				}
 			}
-			
-			/*if (device_value != undefined) {
-				if (typeof (device_value.value.value) == "string") {
-					val = device_value.value.value;
-				} else if (category_value == "40") {
-					val = device_value.value.value;
-					if (val == 2){
-						val = 'open';
-						imgDisp = "lockdoor_acceso.png";
-					} else {
-						val = 'close';
-						imgDisp = "lockdoor_spento.png";
-					}
-				} else if (category_value == "44") {
-					val = device_value.value.value;
-					if (val > 0){
-						val = 'open';
-						imgDisp = "windowc_aperta.png";
-					} else {
-						val = 'close';
-						imgDisp = "windowc_spento.png";
-					}
-					wDimIcon = 'width: 43px;';
-				} else {
-					val = parseFloat(device_value.value.value);
-					val = val.toFixed(1) + " W";
-				}
-			} else {
-				val = Msg.config["nd"];
-			}*/
+
+			/*
+			 * if (device_value != undefined) { if (typeof
+			 * (device_value.value.value) == "string") { val =
+			 * device_value.value.value; } else if (category_value == "40") {
+			 * val = device_value.value.value; if (val == 2){ val = 'open';
+			 * imgDisp = "lockdoor_acceso.png"; } else { val = 'close'; imgDisp =
+			 * "lockdoor_spento.png"; } } else if (category_value == "44") { val =
+			 * device_value.value.value; if (val > 0){ val = 'open'; imgDisp =
+			 * "windowc_aperta.png"; } else { val = 'close'; imgDisp =
+			 * "windowc_spento.png"; } wDimIcon = 'width: 43px;'; } else { val =
+			 * parseFloat(device_value.value.value); val = val.toFixed(1) + "
+			 * W"; } } else { val = Msg.config["nd"]; }
+			 */
 		}
-		htmlElettr += "<div id='Elettr_" + i + "' class='ElettrVis'>"
-					+ "		<img class='ElettrIcona' id='ElettrIcona_" + i + "' src='" + DefinePath.imgDispPath + imgDisp + "' style='"+hDimIcon+" "+wDimIcon+"'>"
-					+ "		<div id='StatoElettr_" + i + "'></div>"
-					+ "		<div id='NomeElettr_" + i + "' class='NomeElettr' >"
-					+ 			Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_NAME]
-					+ "		</div>"
-					+ "		<div class='ValueElettr' id='ValueElettr_" + i + "'>" + val + "</div>"
-					+ 		htmlStato
-					// + "<div class='IdElettr' id='IdElettr_" + i + "'>"
-					// + Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_PID]
-					// + "</div>"
-					+ "		<input type='button' class='ButtonConfSmall ButtonConfModifica' id='ButtonModificaElettr_" + i + "' value='" + Msg.config["Modifica"] + "'>"
-					+ "		<input type='button' class='ButtonConfSmall ButtonConfElimina'  id='ButtonEliminaElettr_" + i + "' value='" + Msg.config["Elimina"] + "'>"
-					+ "</div>";
-		
+		htmlElettr += "<div id='Elettr_"
+				+ i
+				+ "' class='ElettrVis'>"
+				+ "		<img class='ElettrIcona' id='ElettrIcona_"
+				+ i
+				+ "' src='"
+				+ DefinePath.imgDispPath
+				+ imgDisp
+				+ "' style='"
+				+ hDimIcon
+				+ " "
+				+ wDimIcon
+				+ "'>"
+				+ "		<div id='StatoElettr_"
+				+ i
+				+ "'></div>"
+				+ "		<div id='NomeElettr_"
+				+ i
+				+ "' class='NomeElettr' >"
+				+ Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_NAME]
+				+ "		</div>"
+				+ "		<div class='ValueElettr' id='ValueElettr_"
+				+ i
+				+ "'>"
+				+ val
+				+ "</div>"
+				+ htmlStato
+				// + "<div class='IdElettr' id='IdElettr_" + i + "'>"
+				// +
+				// Configurazione.infoDisp[i].map[InterfaceEnergyHome.ATTR_APP_PID]
+				// + "</div>"
+				+ "		<input type='button' class='ButtonConfSmall ButtonConfModifica' id='ButtonModificaElettr_"
+				+ i
+				+ "' value='"
+				+ Msg.config["Modifica"]
+				+ "'>"
+				+ "		<input type='button' class='ButtonConfSmall ButtonConfElimina'  id='ButtonEliminaElettr_"
+				+ i + "' value='" + Msg.config["Elimina"] + "'>" + "</div>";
+
 	}
 
-	////console.log(80, Configurazione.MODULE, "VisElettrodomestici html = " + htmlElettr);
+	// //console.log(80, Configurazione.MODULE, "VisElettrodomestici html = " +
+	// htmlElettr);
 	$("#ElencoElettr").html(htmlElettr);
 
 	// devo scrivere prima l'html per poterne legegre le proprieta'
 	// calcolo distanza tra i dispositivi in base al numero di dispositivi
 	wT = $("#ElencoElettr").width();
 	wD = $(".ElettrVis").width();
-	dist = Math.round((wT - (wD * (Configurazione.numDisp + 1))) / (Configurazione.numDisp + 1));
+	dist = Math.round((wT - (wD * (Configurazione.numDisp + 1)))
+			/ (Configurazione.numDisp + 1));
 	dist = 30;
 	left = dist + wD / 2;
 	// wIcona = $(".ElettrIcona").width();
-	//console.log(80, Configurazione.MODULE, "VisElettrodomestici wT = " + wT + " wD = " + wD + " dist = " + dist);
+	// console.log(80, Configurazione.MODULE, "VisElettrodomestici wT = " + wT +
+	// " wD = " + wD + " dist = " + dist);
 
 	for (i = 0; i < Configurazione.numDisp; i++) {
 		$('ElettrIcona_' + i).width($('ElettrIcona_' + i).height());
 		// coords = Utils.ResizeImg("ElettrIcona_" + i, null, true, 1, 9);
 		$("#Elettr_" + i).css("left", left + "px");
 
-		$("#ButtonModificaElettr_" + i).click(function() {
+		$("#ButtonModificaElettr_" + i)
+				.click(
+						function() {
 							if (Configurazione.timerVis != null) {
 								clearTimeout(Configurazione.timerVis);
 								Configurazione.timerVis = null;
 							}
 							nomeDisp = $(this).attr("id");
-							indDisp = nomeDisp.substr(nomeDisp.indexOf("_") + 1);
+							indDisp = nomeDisp
+									.substr(nomeDisp.indexOf("_") + 1);
 							Configurazione.nuovoDispositivo = null;
 
 							// legge le categorie per il dispositivo selezionato
 							Configurazione.indSel = parseInt(indDisp);
-							InterfaceEnergyHome.GetCategorie(Configurazione.DatiCategorie,
-															 Configurazione.infoDisp[Configurazione.indSel]
-																		   .map[InterfaceEnergyHome.ATTR_APP_PID]);
-		});
+							InterfaceEnergyHome
+									.GetCategorie(
+											Configurazione.DatiCategorie,
+											Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_PID]);
+						});
 
 		$("#ButtonEliminaElettr_" + i).click(function() {
 			if (Configurazione.timerVis != null) {
@@ -994,16 +1193,18 @@ Configurazione.VisElettrodomestici = function() {
  * Legge le informazioni sui devices e le visualizza
  ******************************************************************************/
 Configurazione.GetListaAppliances = function() {
-	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome
+			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.DatiElettrodomesticiCb = function(lista) {
 	if (lista != null) {
 		Configurazione.infoDisp = lista;
-		//console.log(20, Configurazione.MODULE, "-------Trovati " + lista.length + " dispositivi");
+		// console.log(20, Configurazione.MODULE, "-------Trovati " +
+		// lista.length + " dispositivi");
 		Configurazione.numDisp = lista.length;
 	} else {
-		//console.log(80, Configurazione.MODULE, "Nessun device trovato");
+		// console.log(80, Configurazione.MODULE, "Nessun device trovato");
 		Configurazione.infoDisp = [];
 		Configurazione.numDisp = 0;
 	}
@@ -1019,7 +1220,8 @@ Configurazione.scheduleGetListaAppliances = function() {
 		Configurazione.timerVis = null;
 	}
 
-	Configurazione.timerVis = setTimeout("Configurazione.GetListaAppliances()", Configurazione.TIMER_UPDATE_ELETTR);
+	Configurazione.timerVis = setTimeout("Configurazione.GetListaAppliances()",
+			Configurazione.TIMER_UPDATE_ELETTR);
 }
 
 Configurazione.refreshHapStatus = function() {
@@ -1028,11 +1230,12 @@ Configurazione.refreshHapStatus = function() {
 	now = GestDate.GetActualDate().getTime();
 	if (Configurazione.lastUpdateTime != null) {
 		diff = Math.abs((now - Configurazione.lastUpdateTime)) / 1000;
-		//console.log(80, Configurazione.MODULE, "LastUpdate = " + Configurazione.lastUpdateTime.toString() + "  diff = " + diff);
+		// console.log(80, Configurazione.MODULE, "LastUpdate = " +
+		// Configurazione.lastUpdateTime.toString() + " diff = " + diff);
 	} else {
 		diff = Configurazione.MAX_LAST_UPDATE_DELAY;
 	}
-	
+
 	if (diff < Configurazione.MAX_LAST_UPDATE_DELAY)
 		statoUpdate = true;
 	else
@@ -1047,14 +1250,17 @@ Configurazione.refreshHapStatus = function() {
 		$("#Autenticazione").html(Msg.config["autenticazioneFallita"]);
 	}
 
-	if ((Configurazione.lastUpdateTime != null) && (Configurazione.lastUpdateTime > 0)) {
+	if ((Configurazione.lastUpdateTime != null)
+			&& (Configurazione.lastUpdateTime > 0)) {
 		lastDate = new Date(Configurazione.lastUpdateTime);
 		m = lastDate.getMinutes();
 		m = (m < 10) ? "0" + m : m;
 		s = lastDate.getSeconds();
 		s = (s < 10) ? "0" + s : s;
-		visTime = lastDate.getDate() + "-" + (lastDate.getMonth() + 1) + "-" + (lastDate.getFullYear()) + " " + lastDate.getHours() + ":" + m + ":" + s;
-	} else{
+		visTime = lastDate.getDate() + "-" + (lastDate.getMonth() + 1) + "-"
+				+ (lastDate.getFullYear()) + " " + lastDate.getHours() + ":"
+				+ m + ":" + s;
+	} else {
 		visTime = "";
 	}
 
@@ -1073,17 +1279,20 @@ Configurazione.getHapLastUploadTimeCb = function(timestamp, err) {
 
 	Configurazione.refreshHapStatus();
 	if (Configurazione.timerStato == null)
-		Configurazione.timerStato = setInterval("InterfaceEnergyHome.GetStatoConnessione(Configurazione.StatoConnessioneCb)",Configurazione.TIMOUT_STATO);
+		Configurazione.timerStato = setInterval(
+				"InterfaceEnergyHome.GetStatoConnessione(Configurazione.StatoConnessioneCb)",
+				Configurazione.TIMOUT_STATO);
 }
 
 // leggo stato della connessione
 Configurazione.StatoConnessioneCb = function(status) {
-	//console.log(80, Configurazione.MODULE, "Stato Connessione = " + status);
+	// console.log(80, Configurazione.MODULE, "Stato Connessione = " + status);
 	if (status)
 		Configurazione.autenticazione = status;
 
 	// leggo timestamp ultimo aggiornamento del server
-	InterfaceEnergyHome.getHapLastUploadTime(Configurazione.getHapLastUploadTimeCb);
+	InterfaceEnergyHome
+			.getHapLastUploadTime(Configurazione.getHapLastUploadTimeCb);
 }
 
 Configurazione.StartPolling = function() {
@@ -1099,11 +1308,13 @@ Configurazione.GestElettrodomestici = function() {
 	if (Configurazione.modAttuale == Configurazione.ELETTRODOMESTICI)
 		return;
 
-	InterfaceEnergyHome.addListener("service.connection", Configurazione.HandleServiceEvent);
+	InterfaceEnergyHome.addListener("service.connection",
+			Configurazione.HandleServiceEvent);
 
 	Configurazione.modAttuale = Configurazione.ELETTRODOMESTICI;
 
-	//console.log(80, Configurazione.MODULE, "Configurazione.GestElettrodomestici");
+	// console.log(80, Configurazione.MODULE,
+	// "Configurazione.GestElettrodomestici");
 	$("#Content").html(Configurazione.htmlConfElettr);
 
 	if (Configurazione.icone == null)
