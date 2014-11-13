@@ -166,7 +166,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									//var catIndex = Elettrodomestici.getCategoryIndex(Elettrodom["categoryObj"].name);
 									Elettrodom["categoria"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 									var values = elemento["device_value"];
-									Elettrodom["measure"] = {principal: null};
+									Elettrodom["measure"] = {principal: {value: null, unity: " ", label: " ", name: " ", type: ""}};
 									Elettrodom["stato"] = 0;
 									
 									$.each(values.list, function(idx, el) {
@@ -377,7 +377,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 }
 
 Elettrodomestici.ReadCurrentProduction=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getAttribute( function(result2, err2){
 				if (err2 != null){
@@ -406,7 +406,7 @@ Elettrodomestici.ReadCurrentProduction=function(callBack){
 };
 
 Elettrodomestici.ReadCurrentPower=function(callBack){
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getAttribute( function(result, err){
 					if (err != null){
@@ -780,7 +780,7 @@ Elettrodomestici.loadInterfaccia=function(nome,pid, cat_id, index,interfaccia_sr
 }
 
 Elettrodomestici.getDeviceClusters=function(pid,callBack){
-	if (InterfaceEnergyHome.mode > 0){
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		InterfaceEnergyHome.objService.getDeviceClusters(function(clusters, err){
 			if (err != null) {
 				console.log("err:" + err);

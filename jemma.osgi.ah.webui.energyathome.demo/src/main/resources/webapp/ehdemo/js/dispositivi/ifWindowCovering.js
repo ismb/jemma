@@ -28,7 +28,7 @@ ifWindowCovering.init=function(clusters, i){
     
     ifWindowCovering.counterPositionDevice = i;
 
-    if (InterfaceEnergyHome.mode > 0){
+    if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
 	    	if (err != null){
 	    		ifWindowCovering.max = 100;
@@ -48,7 +48,7 @@ ifWindowCovering.gestLiftPerc=function(){
 
     var pid = $("#Interfaccia").data("pid");
 
-    if (InterfaceEnergyHome.mode > 0){
+    if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
 	    	if (err != null){
 	    		ifWindowCovering.liftPerc = 100;
@@ -101,7 +101,7 @@ ifWindowCovering.gestSlider=function(){
     
     $("#btnCloseW").click(function( event ) {
         event.preventDefault();
-        if (InterfaceEnergyHome.mode > 0){
+        if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
             	ifWindowCovering.stato = 7;
                 ifWindowCovering.liftPerc = 100;
@@ -116,7 +116,7 @@ ifWindowCovering.gestSlider=function(){
     
     $("#btnOpenW").click(function( event ) {
         event.preventDefault();
-        if (InterfaceEnergyHome.mode > 0){
+        if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
             	ifWindowCovering.stato = 6;
                 ifWindowCovering.liftPerc = 0;
@@ -131,7 +131,7 @@ ifWindowCovering.gestSlider=function(){
     
     $("#btnStopW").click(function( event ) {
         event.preventDefault();
-        if (InterfaceEnergyHome.mode > 0){
+        if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
             InterfaceEnergyHome.objService.setDeviceState(function(result, err){
             	ifWindowCovering.stato = 5;
                 ifWindowCovering.liftPerc = null;
@@ -177,7 +177,7 @@ ifWindowCovering.update = function(){
     //ifWindowCovering.liftPerc = liftPerc = Elettrodomestici.listaElettrodomestici[i].device_value;
     if (ifWindowCovering.liftPerc == null){
     	//E' stato fatto stop, bisogna chiedere il nuovo valore.
-    	if (InterfaceEnergyHome.mode > 0){
+    	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
     	    InterfaceEnergyHome.objService.getDeviceState(function(result, err){
     	    	if (err != null){
     	    		ifWindowCovering.liftPerc = ifWindowCovering.max;

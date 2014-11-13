@@ -421,10 +421,7 @@ CostiConsumi.GetDatiProduzione = function() {
 					InterfaceEnergyHome.PRODUZIONE_TOTALE);
 		} catch (err) {
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ',
-								err);
+				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
 		}
 	} else {
