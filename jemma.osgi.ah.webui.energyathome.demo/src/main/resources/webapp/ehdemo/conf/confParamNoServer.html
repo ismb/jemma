@@ -91,7 +91,7 @@
 						 'ConsumoAttuale': null, 'ProduzioneAttuale': null, 'ConsumoPrevisto': null, 'Forecast': null , 'SuddivisioneConsumi': null, 'SIEnergyDAY': null, 
 						 'SIEnergyWEEK': null, 'SIEnergyMONTH': null, 'SIEnergyYEAR': null, 'SICostDAY': null, 'SICostWEEK': null, 'SICostMONTH': null, 
 						 'SICostYEAR': null, 'SIProductionDAY': null, 'SIProductionWEEK': null, 'SIProductionMONTH': null, 'SIProductionYEAR': null, 'DEVEnergyDAY': null, 
-						 'DEVEnergyWEEK': null, 'DEVEnergyMONTH': null, 'DEVEnergyYEAR': null, 'DEVCostDAY': null, 'DEVCostWEEK': null, 'DEVCostMONTH': null, 'DEVCostYEAR': null};
+						 'DEVEnergyWEEK': null, 'DEVEnergyMONTH': null, 'DEVEnergyYEAR': null, 'DEVCostDAY': null, 'DEVCostWEEK': null, 'DEVCostMONTH': null, 'DEVCostYEAR': null, 'ProducedPower': null};
 		function gestDataPropFile(result, err){
 			var paramList = result.map;
 			$.each(paramList, function( index, value ) {
@@ -172,6 +172,7 @@
 			<tr><td id="DEVCostWEEKIdx">DEVCostWEEK</td><td id="DEVCostWEEKVal"><input type="text" name="DEVCostWEEKTxtF" id="DEVCostWEEKID"></td></tr>
 			<tr><td id="DEVCostMONTHIdx">DEVCostMONTH</td><td id="DEVCostMONTHVal"><input type="text" name="DEVCostMONTHTxtF" id="DEVCostMONTHID"></td></tr>
 			<tr><td id="DEVCostYEARIdx">DEVCostYEAR</td><td id="DEVCostYEARVal"><input type="text" name="DEVCostYEARTxtF" id="DEVCostYEARID"></td></tr>
+			<tr><td id="ProducedPowerIdx">ProducedPower</td><td id="ProducedPowerVal"><input type="text" name="ProducedPowerTxtF" id="ProducedPowerID"></td></tr>
 			<tr><td colspan="2"><input type="button" class="ButtonConf ButtonConfModifica" id="ButtonModificaConfParam" value="Modifica"></td></tr>
 		</table>
 	</div>
