@@ -166,7 +166,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 									//var catIndex = Elettrodomestici.getCategoryIndex(Elettrodom["categoryObj"].name);
 									Elettrodom["categoria"] = elemento[InterfaceEnergyHome.ATTR_APP_CATEGORY];
 									var values = elemento["device_value"];
-									Elettrodom["measure"] = {principal: {value: null, unity: " ", label: " ", name: " ", type: ""}};
+									Elettrodom["measure"] = {principal: {value: " ", unity: " ", label: " ", name: " ", type: ""}};
 									Elettrodom["stato"] = 0;
 									
 									$.each(values.list, function(idx, el) {

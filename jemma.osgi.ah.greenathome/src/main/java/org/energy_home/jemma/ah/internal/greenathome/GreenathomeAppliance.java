@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -121,6 +122,8 @@ import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,6 +150,13 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private static final String SMARTINFO_APP_TYPE = "org.energy_home.jemma.ah.zigbee.metering";
 	private static final String APPLIANCE_ID_SEPARATOR = "-";
 	private Properties props;
+
+	private long lastValidProducedEnergyTime = 0;
+	private double lastProducedEnergy = 0;
+	
+	private static final int MILLISECONDS_IN_MINUTE_GH = 60 * 1000;
+	private static final int MILLISECONDS_IN_HOUR_GH = MILLISECONDS_IN_MINUTE_GH * 60;
+	private static long VALID_TIME_NOTIFICATION_INTERVAL_GH = 12 * 60 * 60 * 1000; // 12 hours
 
 	// Returns an array with two items: appliance pid and end point id
 	public static String[] getDeviceIds(String applianceId) {
@@ -194,7 +204,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	private String applicationWebAlias = "/";
 
 	// protected Vector peerAppliances = new Vector();
-	protected Hashtable demandFormattings = new Hashtable();
+	protected Hashtable<String, Short> demandFormattings = new Hashtable();
 	// protected Hashtable istantaneousDemands = new Hashtable();
 
 	DecimalFormat OutputPower = new DecimalFormat("#0.000 kW");
@@ -1424,6 +1434,60 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	 * org.energy_home.jemma.ah.internal.greenathome.GreenAtHomeApplianceService
 	 * # readPower(org.energy_home.jemma.ah.hac.IAppliance)
 	 */
+	public double readProducedPower(IAppliance peerAppliance) throws Exception {
+		
+		long newTime = System.currentTimeMillis();
+
+		if (peerAppliance.getDescriptor().getType().equals(SMARTINFO_APP_TYPE)) {
+			// this is not the SmartInfo
+			SimpleMeteringServer simpleMeteringServer = (SimpleMeteringServer) this.greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName());
+
+			if (simpleMeteringServer != null) {
+				boolean avail = ((IServiceCluster) simpleMeteringServer).getEndPoint().isAvailable();
+				if (avail) {
+					try {
+						Short demandFormatting = (Short) demandFormattings.get(peerAppliance.getPid());
+						if (demandFormatting == null) {
+
+							short df = simpleMeteringServer.getDemandFormatting(context);
+							demandFormatting = new Short(df);
+							if (logEnabled) {
+								LOG.debug("read demand formatting with value " + df);
+							}
+							demandFormattings.put(peerAppliance.getPid(), new Short(df));
+						}
+
+						//long istantaneousDemand = simpleMeteringServer.getCurrentSummationReceived(context);
+						//double newEnergy = decodeFormatting(istantaneousDemand, demandFormatting.shortValue());
+						double newEnergy = simpleMeteringServer.getCurrentSummationReceived(context);
+						//To Fix
+						newEnergy = 4 * newEnergy;
+						long elapsedTime = newTime - lastValidProducedEnergyTime;
+						double energyDelta = newEnergy - lastProducedEnergy;
+						if (energyDelta < 0) energyDelta = 0;
+						if ((elapsedTime > MILLISECONDS_IN_MINUTE_GH) || (lastProducedEnergy == 0)) {
+							lastValidProducedEnergyTime = newTime;
+							lastProducedEnergy = newEnergy;
+						}
+						float meanPower = (float)(MILLISECONDS_IN_MINUTE_GH * energyDelta / elapsedTime);
+						return meanPower;
+					} catch (Exception e) {
+						LOG.error("Error while calling while trying to invoke getCurrentSummationReceived command", e);
+					}
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.energy_home.jemma.ah.internal.greenathome.GreenAtHomeApplianceService
+	 * # readPower(org.energy_home.jemma.ah.hac.IAppliance)
+	 */
 	public double readPower(IAppliance peerAppliance) throws Exception {
 		synchronized (lockEsp) {
 			if (espService != null) {
@@ -2126,6 +2190,24 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				props.put(IAppliance.APPLIANCE_ICON_PROPERTY, "plug.png");
 			}
 		}
+		
+		/* PRODUCTION FOR DEMO */
+		SimpleMeteringServer simpleMeteringProdServer = (SimpleMeteringServer) greenathomeEndPoint.getPeerServiceCluster(peerAppliance.getPid(), SimpleMeteringServer.class.getName(), endPointId);
+		if ((configServer != null) && (simpleMeteringProdServer != null)) {
+			if (categoryPid.equals("14")) {
+				double producedpower;
+				try {
+					producedpower = this.readProducedPower(peerAppliance);
+					if (producedpower != ESPService.INVALID_INSTANTANEOUS_POWER_VALUE)
+						attributeValues.add(new AttributeValueExtended("ProducedPower", new AttributeValue(producedpower)));
+
+				} catch (Exception e) {
+					attributeValues.add(new AttributeValueExtended("ProducedPower", new AttributeValue(-1)));
+
+				}
+			}
+		}
+		
 		props.put("availability", new Integer(availability));
 		props.put("device_value", attributeValues);
 		System.out.println("Props:" + props.toString());
@@ -2136,12 +2218,31 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		// String _path = "noserver.properties";
 		String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
+		String _path_recovery = "noserver.properties"; 
+		File f = new File(_path);
+		File f_recovery = new File(_path_recovery);
+		if (!f.exists()){
+			//f.createNewFile();
+			BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader())
+				         .getBundle()
+				         .getBundleContext();
+			URL _url = bc.getBundle().getResource(_path_recovery);
+			File configFile = new File(_url.getPath());
+			
+			this.props = new Properties();
+			
+			InputStream stream = new FileInputStream(configFile.getPath());
+			this.props.load(stream);
+			stream.close();
+			
+		} else {
 
-		this.props = new Properties();
-
-		InputStream stream = new FileInputStream(_path);
-		this.props.load(stream);
-		stream.close();
+			this.props = new Properties();
+	
+			InputStream stream = new FileInputStream(_path);
+			this.props.load(stream);
+			stream.close();
+		}
 	}
 
 	private void storePropFile() throws IOException {
@@ -2166,10 +2267,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 	 * String _path = "noserver.properties"; FileOutputStream out = null;
 	 * 
 	 * // Howto get a bundle context //
-	 * http://tux2323.blogspot.it/2011/10/osgi-how
-	 * -to-get-bundle-context-in-java.html BundleContext bc =
-	 * BundleReference.class
-	 * .cast(GreenathomeAppliance.class.getClassLoader()).getBundle
+	 * http://tux2323.blogspot.it/2011/10/osgi-how-to-get-bundle-context-in-java.html 
+	 * BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader()).getBundle
 	 * ().getBundleContext(); URL _url = bc.getBundle().getResource(_path);
 	 * 
 	 * System.out.println("---------------------------------> " +
@@ -3364,7 +3463,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (this.props == null) {
 				loadPropFile();
 			}
-			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+			List<String> rtrn = Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+			return rtrn;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3461,7 +3561,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		Hashtable props = new Hashtable();
 		String[] lbls = { "ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale", "ConsumoPrevisto", "Forecast", "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK",
-				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR" };
+				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR", "ProducedPower" };
 		int idx, idxC;
 
 		try {
@@ -3488,7 +3588,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		Hashtable props = new Hashtable();
 		String[] lbls = { "ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale", "ConsumoPrevisto", "Forecast", "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK",
-				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR" };
+				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR", "ProducedPower" };
 		int idx, idxC;
 
 		try {
