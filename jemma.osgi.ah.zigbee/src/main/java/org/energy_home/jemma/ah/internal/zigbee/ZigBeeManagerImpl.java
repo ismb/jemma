@@ -508,23 +508,20 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				System.out.println("Ah.Zigbee -- notifyAPSMessage");
 				if (enableNotifyFrameLogs)
 					printAPSMessageEvent(msg);
-				
-				
+
 				if (msg.getDestinationEndpoint() == 0xFF) {
+
 					System.out.println("Ah.Zigbee -- notifyAPSMessage BROADCAST");
 					handleBroadcastMessages(msg);
 					return;
 				}
-				
-				int cluster = msg.getClusterID();
 
-				
+				int cluster = msg.getClusterID();
 
 				// forward the message to the peer device
 				Address srcAddress = msg.getSourceAddress();
 				String nodePid = getNodePid(srcAddress);
-				
-				
+
 				if (nodePid == null) {
 					log.debug("message discarded because the src node ieee address is not present");
 					return;
@@ -533,8 +530,6 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				if ((log != null) && (enableNotifyFrameLogs)) {
 					log.debug(getIeeeAddressHex(srcAddress) + ": Thr " + Thread.currentThread().getId() + ": messageReceived()");
 				}
-
-				
 
 				// Drop messages that doesn't belong to the exported
 				// clusters
@@ -546,8 +541,8 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				ZclFrame zclFrame = new ZclFrame(msg.getData());
 
 				int clusterID = msg.getClusterID();
-				//If profileID == 0 or Default responce received
-				
+				// If profileID == 0 or Default responce received
+
 				if (msg.getProfileID() > 0 && zclFrame.getCommandId() != 0x0b) {
 					if (!checkGatewaySimpleDescriptor(clusterID, zclFrame)) {
 						// FIXME: qui dovremmo dare un errore differente a
