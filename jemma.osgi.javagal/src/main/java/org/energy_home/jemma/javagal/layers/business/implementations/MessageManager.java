@@ -96,7 +96,6 @@ public class MessageManager {
 	public void APSMessageIndication(final APSMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
-				int message1 = message.getDestinationEndpoint();
 				System.out.println("GAL -- Aps Message Indication in process...");
 
 				if (getGal().getPropertiesManager().getDebugEnabled()) {

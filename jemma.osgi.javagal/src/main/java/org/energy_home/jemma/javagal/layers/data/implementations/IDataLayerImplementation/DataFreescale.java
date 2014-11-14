@@ -2096,6 +2096,7 @@ public class DataFreescale implements IDataLayer {
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus((message.getArray()[lastAsdu + 1] & 0xFF));
+		boolean wasBroadcast = ((message.getArray()[lastAsdu + 2] & 0xFF) == 0x01) ? true : false;
 		// ASK Jump WasBroadcast
 		// Security Status
 		switch ((short) (message.getArray()[lastAsdu + 3] & 0xFF)) {
@@ -2124,11 +2125,8 @@ public class DataFreescale implements IDataLayer {
 			LOG.info("Extracted APSDE-DATA.Indication: " + message.ToHexString());
 		if ((getGal().getGatewayStatus() == GatewayStatus.GW_RUNNING) && getGal().get_GalNode() != null) {
 
-			//if (messageEvent.getDestinationAddress().getNetworkAddress() != null && messageEvent.getDestinationAddress().getNetworkAddress() == GatewayConstants.BROADCAST_ADDRESS) {
-			if (messageEvent.getDestinationEndpoint() == 0xFF) {
-			
-			System.out.println("BROADCAST MESSAGE");
-
+			if (wasBroadcast) {
+				System.out.println("BROADCAST MESSAGE");
 			} else {
 
 				if ((node = updateNodeIfExist(messageEvent, messageEvent.getSourceAddress())) == null)
