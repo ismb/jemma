@@ -42,7 +42,7 @@ public interface GatewayConstants {
 	public static final short RESET_COMMISSIONING_SILENTSTART = 2;
 	
 	
-	public final  int BROADCAST_ADDRESS = 0xffffffff;
+	public final  int BROADCAST_ADDRESS = 0xffff;
 	public final int ROUTER_BROADCAST_ADDRESS = 0xfffc;
 	public final long INFINITE_TIMEOUT = 0xffffffffL;
 	
