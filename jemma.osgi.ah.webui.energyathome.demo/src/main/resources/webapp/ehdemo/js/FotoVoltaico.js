@@ -772,6 +772,8 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 CostiConsumi.VisGrafico = function() {
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'VisGrafico', 'Entro!');
+	
+	var ifDataNull = true;
 
 	var dataConsumi = CostiConsumi.consumoGiornaliero;
 	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
@@ -799,6 +801,7 @@ CostiConsumi.VisGrafico = function() {
 				dataConsumi[index] = 0;
 				dataIAC[index] = 0;
 			} else {
+				ifDataNull = false;
 				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perche' il gateway torna la somma, non il consumo
 				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perche' qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
@@ -868,98 +871,105 @@ CostiConsumi.VisGrafico = function() {
 			maxContatoreRete = 6.5;
 			break;
 	}
-
-	chartConsumi = new Highcharts.Chart(
-			{
-				chart : {
-					renderTo : 'DettaglioGraficoConsumoOdierno',
-					type : 'column',
-					spacingBottom : 10,
-					style : {
-						fontSize : '1.0em'
-					},
-					plotBackgroundColor : '#ECECEC ',
-					plotShadow : true,
-					plotBorderWidth : 1
-				},
-				credits : false,
-				title : {
-					text : Msg.home["consumoOdierno"],
-					margin : 30,
-					style : {
-						fontFamily : 'Arial,sans-serif',
-						fontWeight : "bold",
-						color : 'green',
-						fontSize : "1.1em"
-					}
-				},
-				xAxis : {
-					tickInterval : 2,
-					min : 0,
-					max : GestDate.DSTOttobre ? 24 : 23,
-					title : {
-						align : 'high',
-						offset : 0,
-						text : 'H',
-						rotation : 0,
-						offset : 15,
+	
+	if (ifDataNull) {
+		if (Main.env == 0) console.log(40, CostiConsumi.MODULE, "VisGrafico : nessun dato");
+		$("#DettaglioGraficoConsumoOdierno").html("<div id='ConsumoOdiernoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+		hideSpinner();
+	} else {
+		chartConsumi = new Highcharts.Chart({
+					chart : {
+						renderTo : 'DettaglioGraficoConsumoOdierno',
+						type : 'column',
+						spacingBottom : 10,
 						style : {
-							color : "black"
+							fontSize : '1.0em'
+						},
+						plotBackgroundColor : '#ECECEC ',
+						plotShadow : true,
+						plotBorderWidth : 1
+					},
+					credits : false,
+					title : {
+						text : Msg.home["consumoOdierno"],
+						margin : 30,
+						style : {
+							fontFamily : 'Arial,sans-serif',
+							fontWeight : "bold",
+							color : 'green',
+							fontSize : "1.1em"
 						}
 					},
-					categories : cat
-				},
-				yAxis : {
-					min : 0,
-					title : {
-						align : 'high',
-						offset : 0,
-						text : ' KWh',
-						rotation : 0,
-						y : -10,
-						style : {
-							color : "black"
+					xAxis : {
+						tickInterval : 2,
+						min : 0,
+						max : GestDate.DSTOttobre ? 24 : 23,
+						title : {
+							align : 'high',
+							offset : 0,
+							text : 'H',
+							rotation : 0,
+							offset : 15,
+							style : {
+								color : "black"
+							}
+						},
+						categories : cat
+					},
+					yAxis : {
+						min : 0,
+						title : {
+							align : 'high',
+							offset : 0,
+							text : ' KWh',
+							rotation : 0,
+							y : -10,
+							style : {
+								color : "black"
+							}
+						},
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value, 2);
+							}
 						}
 					},
-					labels : {
+					legend : {
+						enabled : true,
+						align : 'right',
+						x : 0,
+						verticalAlign : 'top',
+						y : 20,
+						floating : true,
+						backgroundColor : (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid)
+								|| 'white',
+						borderColor : '#CCC',
+						borderWidth : 1,
+						shadow : true
+					},
+					tooltip : {
 						formatter : function() {
-							return Highcharts.numberFormat(this.value, 2);
+							var txt = '<b>' + this.series.name + '</b>: '
+									+ Highcharts.numberFormat(this.y, 1)
+									+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
+							return txt;
 						}
-					}
-				},
-				legend : {
-					enabled : true,
-					align : 'right',
-					x : 0,
-					verticalAlign : 'top',
-					y : 20,
-					floating : true,
-					backgroundColor : (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid)
-							|| 'white',
-					borderColor : '#CCC',
-					borderWidth : 1,
-					shadow : true
-				},
-				tooltip : {
-					formatter : function() {
-						var txt = '<b>' + this.series.name + '</b>: '
-								+ Highcharts.numberFormat(this.y, 1)
-								+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
-						return txt;
-					}
-				},
-				series : [ {
-					name : serieConsumi,
-					data : dataConsumi,
-					pointWidth : 10,
-					color : "#3066f0"
-				}, {
-					name : serieIAC,
-					data : dataIAC,
-					pointWidth : 10,
-					color : "#21e700"
-				} ]
-			});
+					},
+					series : [ {
+						name : serieConsumi,
+						data : dataConsumi,
+						pointWidth : 10,
+						color : "#3066f0"
+					}, {
+						name : serieIAC,
+						data : dataIAC,
+						pointWidth : 10,
+						color : "#21e700"
+					} ]
+				});
+	}
+
+	
 
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'VisGrafico', 'dataVenduta');
