@@ -78,6 +78,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			return null;
 		}
 
+
 	};
 
 	// TODO: check merge, different values in 3.3.0
@@ -184,7 +185,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			}
 		}
 	}
-
+	
 	private void refreshCurrentSummationReceivedSubscription(ApplianceInfo appliance) {
 		float formatting = getOrRetrieveSummationFormatting(appliance);
 		if (formatting != IMeteringProxy.INVALID_FORMATTING_VALUE) {
@@ -350,6 +351,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 			throw new IllegalArgumentException("The argument cannot be null.");
 		meteringProxy = proxy;
 	}
+
 
 	public IOnOffProxy getOnOffProxy() {
 		return onOffProxy;

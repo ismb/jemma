@@ -17,5 +17,6 @@ Import-Package: org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",or
  i.framework;version="1.3.0",org.osgi.service.cm;version="[1.2,2)",org.o
  sgi.service.device;version="1.1.0",org.slf4j;version="[1.7.7,2)"
 Private-Package: org.energy_home.jemma.ah.zigbee.appliances.generic
-Require-Bundle: jemma.osgi.ah.hac.lib
+Require-Bundle: jemma.osgi.ah.hac.lib,
+ jemma.osgi.ah.zigbee.appliances;bundle-version="1.0.2"
 Tool: Bnd-1.50.0

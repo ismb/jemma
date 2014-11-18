@@ -127,6 +127,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 						console.log("err:"+err);
 					}
 					if ((err == null) && (result != null)) {
+						Elettrodomestici.lista1ricevuta = {};
 						$.each(result.list,
 								function(indice, elettrodom) {
 									if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
@@ -138,6 +139,7 @@ Elettrodomestici.GetDevicesInfos=function(callBack){
 											Elettrodomestici.SmartInfoPV = elettrodom["map"];
 										}
 									} else if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.WHITEGOOD_APP_TYPE){
+										
 										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
 									} else if ((elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE) || (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.TEMPERATURE_SENSOR_APP_TYPE_2)){
 										Elettrodomestici.lista1ricevuta[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
@@ -387,9 +389,12 @@ Elettrodomestici.ReadCurrentProduction=function(callBack){
 				} else if (result2 != null){
 					if (!isNaN(result2.value)) {
 						
-						Elettrodomestici.potenzaAttuale.value -= result2.value;
+						//Elettrodomestici.potenzaAttuale.value -= result2.value;
 						if (Elettrodomestici.potenzaAttuale.value < 0) {
 							Elettrodomestici.potenzaAttuale.value = 0;
+						}
+						if (Elettrodomestici.potenzaAttuale.value < Elettrodomestici.consumoTotale){
+							Elettrodomestici.potenzaAttuale.value = Elettrodomestici.consumoTotale;
 						}
 					}
 				} 		

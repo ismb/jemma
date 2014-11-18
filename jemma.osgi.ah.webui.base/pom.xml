@@ -54,6 +54,7 @@
 						<Bundle-Vendor>Telecom Italia</Bundle-Vendor>
 						<Bundle-Category>Web UI libs</Bundle-Category>
 						<Bundle-RequiredExecutionEnvironment>OSGi/Minimum-1.2, J2SE-1.3, CDC-1.1/Foundation-1.1</Bundle-RequiredExecutionEnvironment>
+						<Bundle-Classpath>.</Bundle-Classpath>
 					</instructions>
 				</configuration>
 			</plugin>

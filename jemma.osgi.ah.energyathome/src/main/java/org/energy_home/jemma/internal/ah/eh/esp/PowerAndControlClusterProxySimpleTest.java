@@ -250,6 +250,54 @@ public class PowerAndControlClusterProxySimpleTest extends PowerAndControlCluste
 				// TODO Auto-generated method stub
 				return 0;
 			}
+
+			@Override
+			public short getSpin(IEndPointRequestContext context) throws ApplianceException, ServiceClusterException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public boolean getEcoMode(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean getNormalMode(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean getHolidayMode(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean getIceParty(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean getSuperCoolMode(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean getSuperFreezeMode(IEndPointRequestContext context) throws ApplianceException,
+					ServiceClusterException {
+				// TODO Auto-generated method stub
+				return false;
+			}		
 		};
 	}
 	

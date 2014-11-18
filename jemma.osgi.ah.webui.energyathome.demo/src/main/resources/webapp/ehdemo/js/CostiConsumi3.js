@@ -596,10 +596,7 @@ CostiConsumi.GetConsumoMedioCC = function() {
 			if (Main.env == 0)
 				console.log(20, CostiConsumi.MODULE, err);
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in CostiConsumi3.js - in CostiConsumi.GetConsumoMedio method: ',
-								err);
+				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoMedio method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoMedio", err);
 		}
 	} else {
@@ -745,7 +742,7 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 		//inserisco il dato fake
 		CostiConsumi.consumoPrevisto = 0;
 		$("#DettaglioCostoConsumoPrevisto").html('');
-		$("#DettaglioCostoConsumoPrevisto").html(Msg.home["consumoPrevisto"] + ": <b style='color:#605f61;'> n.d."+ Msg.home["labelkWh"] + " </b>");
+		$("#DettaglioCostoConsumoPrevisto").html(Msg.home["consumoPrevisto"] + ": <b style='color:#605f61;'> N.D.</b>");
 	}
 
 	$("#CostiConsumi").css("z-index", "10");
@@ -861,6 +858,14 @@ CostiConsumi.GetSuddivisioneConsumi = function() {
 }
 
 CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
+	
+	/*
+	 * if (ifDataNull) {
+		if (Main.env == 0) console.log(40, CostiConsumi.MODULE, "VisGrafico : nessun dato");
+		$("#DettaglioGraficoConsumoOdierno").html("<div id='ConsumoOdiernoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+		hideSpinner();
+	} else {
+	 */
 
 	var listaConsumi = new Array();
 	var consumiTotale = 0;
@@ -964,8 +969,7 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 								r : 0.7
 							},
 							stops : [[ 0, color ],
-									 [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ]
-									]
+									 [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ]]
 						};
 					});
 
@@ -1030,6 +1034,10 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 			$("#DettaglioSuddivisioneCosti").text("Dati non disponibili");
 		}
 	} else {
+
+		$("#Grafico").show();
+		$("#GraficoConsumoOdierno").hide();
+		$("#DettaglioSuddivisioneCosti").show();
 		$("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
 	}
 }
