@@ -238,6 +238,7 @@ Storico.VisStorico = function(tipo) {
 		$("#MsgStorico").hide();
 		if (Main.env == 0) console.log(40, Storico.MODULE, "VisStorico : nessun dato");
 		$("#StoricoGraph").html("<div id='StoricoVuotoTitolo'>" + titolo + "</div>" + "<div id='StoricoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+		hideSpinner();
 		return;
 	}
 
