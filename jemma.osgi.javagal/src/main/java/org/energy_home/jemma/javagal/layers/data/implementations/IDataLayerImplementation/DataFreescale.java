@@ -2096,6 +2096,7 @@ public class DataFreescale implements IDataLayer {
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus((message.getArray()[lastAsdu + 1] & 0xFF));
+		boolean wasBroadcast = ((message.getArray()[lastAsdu + 2] & 0xFF) == 0x01) ? true : false;
 		// ASK Jump WasBroadcast
 		// Security Status
 		switch ((short) (message.getArray()[lastAsdu + 3] & 0xFF)) {
@@ -2122,33 +2123,36 @@ public class DataFreescale implements IDataLayer {
 
 		if (getGal().getPropertiesManager().getDebugEnabled())
 			LOG.info("Extracted APSDE-DATA.Indication: " + message.ToHexString());
-
 		if ((getGal().getGatewayStatus() == GatewayStatus.GW_RUNNING) && getGal().get_GalNode() != null) {
 
-			if ((node = updateNodeIfExist(messageEvent, messageEvent.getSourceAddress())) == null)
-				return;
+			if (wasBroadcast) {
+				System.out.println("BROADCAST MESSAGE");
+			} else {
 
+				if ((node = updateNodeIfExist(messageEvent, messageEvent.getSourceAddress())) == null)
+					return;
+
+				if (node != null)
+					synchronized (node) {
+						messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
+						messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
+					}
+				else
+					return;
+
+				if (messageEvent.getSourceAddress().getIeeeAddress() == null) {
+					LOG.error("Message discarded IEEE source address not found for Short address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
+
+				if (messageEvent.getSourceAddress().getNetworkAddress() == null) {
+					LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
+					return;
+				}
+
+			}
 		} else
 			return;
-
-		if (node != null)
-			synchronized (node) {
-				messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
-				messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
-			}
-		else
-			return;
-
-		if (messageEvent.getSourceAddress().getIeeeAddress() == null) {
-			LOG.error("Message discarded IEEE source address not found for Short address:" + String.format("%04X", messageEvent.getSourceAddress().getNetworkAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
-			return;
-		}
-
-		if (messageEvent.getSourceAddress().getNetworkAddress() == null) {
-			LOG.error("Message discarded short source address not found for Ieee address:" + String.format("%16X", messageEvent.getSourceAddress().getIeeeAddress()) + " -- ProfileID: " + String.format("%04X", messageEvent.getProfileID()) + " -- ClusterID: " + String.format("%04X", messageEvent.getClusterID()));
-			return;
-		}
-
 		if (messageEvent.getProfileID().equals(0)) {/*
 													 * // profileid == 0 ZDO
 													 * Command

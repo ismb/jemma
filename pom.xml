@@ -31,9 +31,9 @@
 		<!--successfuttly moved to local repo -->
 		<org.eclipse.equinox.ds.version>1.1.1</org.eclipse.equinox.ds.version>
 		<org.eclipse.equinox.device.version>1.0.100</org.eclipse.equinox.device.version>
-		<org.eclipse.osgi.version>3.5.2</org.eclipse.osgi.version>
+		<org.eclipse.osgi.version>3.10.0</org.eclipse.osgi.version>
 		<org.eclipse.core.jobs.version>3.4.100</org.eclipse.core.jobs.version>
-		<org.eclipse.osgi.services.version>3.2.0</org.eclipse.osgi.services.version>
+		<org.eclipse.osgi.services.version>3.4.0</org.eclipse.osgi.services.version>
 		<org.eclipse.osgi.util.version>3.2.0</org.eclipse.osgi.util.version>		
 		<org.apache.commons.logging.version>1.1.1</org.apache.commons.logging.version>
 		<org.eclipse.equinox.util.version>1.0.100</org.eclipse.equinox.util.version>
@@ -57,8 +57,8 @@
 		<org.eclipse.equinox.http.registry.version>1.0.200</org.eclipse.equinox.http.registry.version>
 		<org.eclipse.equinox.http.servlet.version>1.0.200</org.eclipse.equinox.http.servlet.version>
 		<org.eclipse.equinox.http.servletbridge.version>1.1.100</org.eclipse.equinox.http.servletbridge.version>
-		<org.mortbay.jetty.server.version>6.1.23</org.mortbay.jetty.server.version>
-		<org.mortbay.jetty.util.version>6.1.23</org.mortbay.jetty.util.version>
+<!--    <org.mortbay.jetty.server.version>6.1.23</org.mortbay.jetty.server.version>
+		<org.mortbay.jetty.util.version>6.1.23</org.mortbay.jetty.util.version> -->
 		<org.eclipse.equinox.registry.version>3.4.100</org.eclipse.equinox.registry.version>
 		<!--<org.apache.felix.webconsole.version>3.1.8</org.apache.felix.webconsole.version>-->
 		<org.apache.felix.webconsole.version>4.2.2</org.apache.felix.webconsole.version>
@@ -79,7 +79,8 @@
 		<commons.jabsorb.version>1.3.1</commons.jabsorb.version>
 		<maven.license.plugin.version>2.5</maven.license.plugin.version>
 		<maven.clean.plugin.version>2.5</maven.clean.plugin.version>
-		<felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version>
+		<!-- <felix.bundle.plugin.version>2.3.7</felix.bundle.plugin.version> -->
+		<felix.bundle.plugin.version>2.5.3</felix.bundle.plugin.version>
 		
 		<!-- Internal dependencies version properties -->
 		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.4</org.energy-home.jemma.osgi.ah.hac.lib.version>
@@ -144,6 +145,7 @@
 				</includes>
 			</resource>
 		</resources>
+		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
 			    <groupId>org.apache.felix</groupId>
@@ -356,6 +358,80 @@
 		    <artifactId>log4j</artifactId>
 		    <version>1.2.17</version>
 		</dependency>
+		
+		<!-- jetty and restlet -->
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-websocket</artifactId>
+		    <version>8.1.16.v20140903</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-server</artifactId>
+		    <version>8.1.16.v20140903</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-util</artifactId>
+		    <version>8.1.16.v20140903</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.eclipse.jetty</groupId>
+		    <artifactId>jetty-servlet</artifactId>
+		    <version>8.1.16.v20140903</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.osgi</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
+			<version>${org.restlet.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.http.jetty</artifactId>
+			<version>3.0.200</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.equinox.http</groupId>
+			<artifactId>servlet</artifactId>
+			<version>1.0.0-v20070606</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>gogo.command</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>gogo.runtime</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>gogo.shell</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.console</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+<!--  		
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>org.eclipse.equinox.http</artifactId>
+			<version>1.0.301</version>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.eclipse.equinox.http</groupId>
+			<artifactId>jetty</artifactId>
+			<version>1.0.0-v20070607</version>
+		</dependency>-->		
 	</dependencies>
 </project>
 

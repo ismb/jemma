@@ -38,10 +38,14 @@ import org.slf4j.LoggerFactory;
 public class M2MDeviceManager implements M2MDeviceConfigurator {
 	private static final Logger LOG = LoggerFactory.getLogger( M2MDeviceManager.class );
 	
-	private static M2MDeviceManager instance = new M2MDeviceManager();
+	private static M2MDeviceManager instance;
 	private static int referenceCounter = 0;
 
 	public synchronized static M2MDeviceManager get() {
+		if(instance==null)
+		{
+			instance= new M2MDeviceManager();
+		}
 		return instance;
 	}
 

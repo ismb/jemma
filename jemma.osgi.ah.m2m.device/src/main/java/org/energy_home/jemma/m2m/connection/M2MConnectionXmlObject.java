@@ -24,8 +24,17 @@ import org.energy_home.jemma.utils.xml.jaxb.XmlConverter;
 
 public class M2MConnectionXmlObject implements Cloneable {
 
-	private static XmlConverter converterFactory = M2MXmlConverter.getConnectionConverter();
+	private static XmlConverter converterFactory;
+	
+	public M2MConnectionXmlObject()
+	{
+		if(converterFactory==null)
+		{
+			converterFactory= M2MXmlConverter.getConnectionConverter();
+		}
+	}
 
+	
 	public static byte[] getByteArray(Object o) {
 		return converterFactory.getByteArray(o);
 	}

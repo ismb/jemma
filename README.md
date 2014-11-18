@@ -9,6 +9,16 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 
 Tutorials, how-tos and other resources are available on [the project wiki-based documentation](https://github.com/ismb/jemma/wiki/Developers-Documentation).
 
+JEMMA can also be controlled through REST/WebSocket APIs relying on OSGi Device Abstraction Layer. To start interacting with it you need also these bundles:
+
+* [OSGi Device Abstraction Layer](https://github.com/ismb/it.ismb.pert.osgi.dal)
+* [OSGi Device Abstraction Layer functions](https://github.com/ismb/it.ismb.pert.osgi.dal.functions) 
+* [Energy@Home specific OSGi Device Abstraction Layer functions](https://github.com/ismb/it.ismb.pert.osgi.dal.functions.eh) 
+* [The DAL adapter for JEMMA](https://github.com/ivangrimaldi/jemma.osgi.dal): it registers DAL services for JEMMA devices
+* [The DAL web APIs](https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis)
+
+Take a look at [this wiki page](https://github.com/ismb/jemma/wiki/JEMMA-DAL-APIs-functions) to discover functionalities that can be exposed by JEMMA devices
+
 ## License
 
 The JEMMA code-base has been developed since 2010 by [Telecom Italia](http://www.telecomitalia.it/) which holds the Copyright on the original code base.
