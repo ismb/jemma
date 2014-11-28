@@ -1904,6 +1904,8 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			InputStream stream = new FileInputStream(configFile.getPath());
 			this.props.load(stream);
 			stream.close();
+			
+			storePropFile();
 
 		} else {
 

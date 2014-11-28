@@ -775,8 +775,8 @@ CostiConsumi.VisGrafico = function() {
 	
 	var ifDataNull = true;
 
-	var dataConsumi = CostiConsumi.consumoGiornaliero;
-	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
+	var dataConsumi = CostiConsumi.consumoGiornaliero.slice(0);
+	var dataIAC = CostiConsumi.energiaProdottaGiornaliero.slice(0);
 	var dataForecast = CostiConsumi.forecastGiornaliero.slice(0);
 	for (var index = 0; index < dataForecast.length; ++index) {
 	    if(dataForecast[index] == null){
@@ -802,10 +802,10 @@ CostiConsumi.VisGrafico = function() {
 				dataIAC[index] = 0;
 			} else {
 				ifDataNull = false;
+				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
 				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perche' il gateway torna la somma, non il consumo
 				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perche' qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
-				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
 				
 					
 				hours = Main.dataAttuale.getHours();
@@ -950,7 +950,7 @@ CostiConsumi.VisGrafico = function() {
 					tooltip : {
 						formatter : function() {
 							var txt = '<b>' + this.series.name + '</b>: '
-									+ Highcharts.numberFormat(this.y, 1)
+									+ Highcharts.numberFormat(this.y, 2)
 									+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
 							return txt;
 						}

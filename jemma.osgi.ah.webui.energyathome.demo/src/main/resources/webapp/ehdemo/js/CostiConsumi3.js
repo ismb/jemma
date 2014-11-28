@@ -264,7 +264,12 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.push({value: {value : 0}});
 				} else {
-					var val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					var val = 0;
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list.length > 0){
+						val = parseFloat(elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value);
+					} else {
+						elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0] = {value: {value:0}};
+					}
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
 				}
 				CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
@@ -523,6 +528,8 @@ CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
 	if (result) {
 		if (result.list[0] != null) {
 			CostiConsumi.consumoOdierno = (result.list[0] / 1000).toFixed(1);
+			if (CostiConsumi.consumoOdierno < 0)
+				CostiConsumi.consumoOdierno = 0;
 		} else {
 			//inserisco valore fake colorato
 			CostiConsumi.consumoOdierno = 5.6;
@@ -568,6 +575,8 @@ CostiConsumi.DatiProduzioneOdiernoCbCC = function(result, err) {
 		if (result.list[0] != null && CostiConsumi.consumoOdierno!= null) {
 			CostiConsumi.prodOdierno = result.list[0] / 1000;
 			CostiConsumi.consumoOdierno = (CostiConsumi.consumoOdierno - CostiConsumi.prodOdierno).toFixed(1);
+			if (CostiConsumi.consumoOdierno < 0)
+				CostiConsumi.consumoOdierno = 0;
 		}
 	}
 	if(CostiConsumi.consumoOdierno != null){
@@ -685,21 +694,14 @@ CostiConsumi.GetConsumoPrevistoCC = function() {
 	if (InterfaceEnergyHome.mode > 1) {
 		// solo se anche piattaforma
 		try {
-			InterfaceEnergyHome.objService.getForecast(
-					CostiConsumi.DatiConsumoPrevistoCbCC,
-					InterfaceEnergyHome.PID_TOTALE,
-					InterfaceEnergyHome.CONSUMO, start,
-					InterfaceEnergyHome.MONTH);
+			InterfaceEnergyHome.objService.getForecast(CostiConsumi.DatiConsumoPrevistoCbCC, InterfaceEnergyHome.PID_TOTALE, InterfaceEnergyHome.CONSUMO, start, InterfaceEnergyHome.MONTH);
 		} catch (err) {
 			if (Main.env == 0)
 				console.log(20, CostiConsumi.MODULE, "error: ");
 			if (Main.env == 0)
 				console.log(20, CostiConsumi.MODULE, err);
 			if (Main.env == 0)
-				console
-						.log(
-								'exception in CostiConsumi3.js - in CostiConsumi.GetConsumoPrevistoCC method: ',
-								err);
+				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoPrevistoCC method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoPrevistoCC", err);
 		}
 	} else {
@@ -754,11 +756,7 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 		// solo se anche piattaforma
 		try {
 			var start = Main.dataAttuale.getTime();
-			InterfaceEnergyHome.objService.getForecast(
-					CostiConsumi.getCostoPrevisto,
-					InterfaceEnergyHome.PID_TOTALE,
-					InterfaceEnergyHome.PRODUZIONE, start,
-					InterfaceEnergyHome.MONTH);
+			InterfaceEnergyHome.objService.getForecast(CostiConsumi.getCostoPrevisto, InterfaceEnergyHome.PID_TOTALE, InterfaceEnergyHome.PRODUZIONE, start, InterfaceEnergyHome.MONTH);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetConsumoPrevistoCC", err);
 		}
@@ -879,6 +877,16 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 	}
 
 	if (result != null) {
+		
+		//DT
+		if (InterfaceEnergyHome.mode == -1) {
+			$.each(CostiConsumi.listaElettr, function(indexResult, element) {
+				if (!result.map[indexResult]) {
+					result.map[indexResult] = {'javaClass': "java.util.ArrayList", 'list': [0,10,0,10,0,10,10,10,56,80,45,1500,140,563,1200,2063,1052,58,800,400,0,10,1035,500,51]};
+				}
+			});
+		}
+		
 		/*
 		 * Creo l'array di coppie nome-costo, escludendo lo smartInfo e
 		 * calcolando il costo totale
@@ -1232,10 +1240,14 @@ CostiConsumi.getCostoOdierno = function() {
 	var txt;
 	if (CostiConsumi.consumoOdierno != null) {
 		if (CostiConsumi.prodOdierno != null) {
-			CostiConsumi.costoOdierno = (CostiConsumi.consumoOdierno - (CostiConsumi.prodOdierno)) * 0.2;
+			CostiConsumi.costoOdierno = (CostiConsumi.consumoOdierno - (CostiConsumi.prodOdierno * CostiConsumi.MOLTFORDEMO)) * 0.2;
+			if (CostiConsumi.costoOdierno < 0)
+				CostiConsumi.costoOdierno = 0;
 			//CostiConsumi.costoOdierno = (CostiConsumi.consumoOdierno - (CostiConsumi.prodOdierno*10)) * 0.2;
 		} else{
 			CostiConsumi.costoOdierno =  CostiConsumi.consumoOdierno * 0.2;
+			if (CostiConsumi.costoOdierno < 0)
+				CostiConsumi.costoOdierno = 0;
 		}
 		if(isNaN(CostiConsumi.costoOdierno))
 			txt = Msg.home["datoNonDisponibile"];
@@ -1261,7 +1273,9 @@ CostiConsumi.getCostoPrevisto = function(result, err) {
 		CostiConsumi.prodPrevMese = result.list[0];
 		if (CostiConsumi.consumoPrevisto != null) {
 			if (CostiConsumi.prodPrevMese != null) {
-				CostiConsumi.costoPrevMese = (CostiConsumi.consumoPrevisto - (CostiConsumi.prodPrevMese)) * 0.2;
+				CostiConsumi.costoPrevMese = (CostiConsumi.consumoPrevisto - (CostiConsumi.prodPrevMese * CostiConsumi.MOLTFORDEMO)) * 0.2;
+				if (CostiConsumi.costoPrevMese < 0)
+					CostiConsumi.costoPrevMese = 0;
 				//CostiConsumi.costoPrevMese = (CostiConsumi.consumoPrevisto - (CostiConsumi.prodPrevMese*10)) * 0.2;
 			} else{
 				CostiConsumi.costoPrevMese =  CostiConsumi.consumoPrevisto * 0.2;
@@ -1288,7 +1302,9 @@ CostiConsumi.getCostoMediaWeek = function() {
 	var txt;
 	if (CostiConsumi.consumoMediaWeek != null) {
 		if (CostiConsumi.prodMediaWeek != null) {
-			CostiConsumi.costoMediaWeek = (CostiConsumi.consumoMediaWeek - (CostiConsumi.prodMediaWeek)) * 0.2;
+			CostiConsumi.costoMediaWeek = (CostiConsumi.consumoMediaWeek - (CostiConsumi.prodMediaWeek * CostiConsumi.MOLTFORDEMO)) * 0.2;
+			if (CostiConsumi.costoMediaWeek < 0)
+				CostiConsumi.costoMediaWeek = 0;
 			//CostiConsumi.costoMediaWeek = (CostiConsumi.consumoMediaWeek - (CostiConsumi.prodMediaWeek*10)) * 0.2;
 		} else{
 			CostiConsumi.costoMediaWeek =  CostiConsumi.consumoMediaWeek * 0.2;
@@ -1353,6 +1369,8 @@ CostiConsumi.DatiConsumoMediaWeekCb = function(result, err) {
 			}
 		}
 		CostiConsumi.consumoMediaWeek = (consumo_somma/consumi_count)/1000;
+		if (CostiConsumi.consumoMediaWeek < 0)
+			CostiConsumi.consumoMediaWeek = 0;
 		
 		if(isNaN(CostiConsumi.consumoMediaWeek))
 			txt = Msg.home["datoNonDisponibile"];
@@ -1400,8 +1418,11 @@ CostiConsumi.DatiProduzioneMediaWeekCb = function(result, err) {
 		}
 		CostiConsumi.prodMediaWeek = (prod_somma/prod_count)/1000; 
 		
-		if(!isNaN(CostiConsumi.prodMediaWeek) && !isNaN(CostiConsumi.consumoMediaWeek))
+		if(!isNaN(CostiConsumi.prodMediaWeek) && !isNaN(CostiConsumi.consumoMediaWeek)){
 			CostiConsumi.consumoMediaWeek -= CostiConsumi.prodMediaWeek;
+			if (CostiConsumi.consumoMediaWeek < 0)
+				CostiConsumi.consumoMediaWeek = 0;
+		}
 		if(isNaN(CostiConsumi.consumoMediaWeek)){
 			isNull = true;
 			txt = Msg.home["datoNonDisponibile"];
