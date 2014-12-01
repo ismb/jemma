@@ -2,7 +2,6 @@ var potenza = {
 	value : null
 };
 
-
 var CostiConsumi = {
 	MODULE : "CostiConsumi",
 	CONSUMI : 1,
@@ -86,7 +85,7 @@ var CostiConsumi = {
 
 	limitMaxKW : 100000,
 // watt
-	visGraficoCount: -1,
+	visGraficoCount: 3,
 	setImgCount: -1
 }
 
@@ -690,10 +689,12 @@ CostiConsumi.DatiEnergiaProdottaGiornalieroCb = function(result, err) {
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiEnergiaProdottaGiornalieroCb', 'Esco!');
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
-		
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 }
 
 CostiConsumi.GetDatiConsumi = function() {
@@ -761,9 +762,13 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 		}
 	}
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 	
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiConsumoGiornalieroCb', 'Esco!');
@@ -772,8 +777,14 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 CostiConsumi.VisGrafico = function() {
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'VisGrafico', 'Entro!');
-	
+
+	CostiConsumi.visGraficoCount--;
 	var ifDataNull = true;
+	if((CostiConsumi.visGraficoCount < 0)|| (CostiConsumi.visGraficoCount == 0)){
+		CostiConsumi.visGraficoCount = 3;
+	} else if(CostiConsumi.visGraficoCount > 0) {
+		return;
+	}
 
 	var dataConsumi = CostiConsumi.consumoGiornaliero.slice(0);
 	var dataIAC = CostiConsumi.energiaProdottaGiornaliero.slice(0);
@@ -1466,10 +1477,14 @@ CostiConsumi.gestModalWindow = function() {
 CostiConsumi.getDailyPVForecast = function() {
 	if (InterfaceEnergyHome.mode > 0) {
 		InterfaceEnergyHome.objService.getDailyPVForecast(CostiConsumi.getDailyPVForecastCB);
-		InterfaceEnergyHome.objService.getDailyPVForecastDebug();
+		//InterfaceEnergyHome.objService.getDailyPVForecastDebug();
 	} else{
-		CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
-		CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
+		if (InterfaceEnergyHome.mode == -1) {
+			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getDailyPVForecastCB, "EnergiaProdottaGiornalieroSimul");
+		} else {
+			CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
+			CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
+		}
 	}
 }
 
@@ -1483,9 +1498,12 @@ CostiConsumi.getDailyPVForecastCB = function(result, err) {
 		CostiConsumi.forecastGiornaliero = result.list;
 	}
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 }
 
 //esecuzione di un ciclo di aggiornamento dei dati di potenza attuale in casa

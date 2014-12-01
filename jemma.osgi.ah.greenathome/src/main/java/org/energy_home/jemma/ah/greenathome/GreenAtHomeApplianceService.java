@@ -54,7 +54,7 @@ public interface GreenAtHomeApplianceService {
 	public List<String> getPropConfiguration(String lblProps) throws IOException;
 	public Hashtable getPropConfigurationHM(String lblProps) throws IOException;
 	public Hashtable getAllPropConfiguration() throws IOException;
-	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException;
+	//public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException;
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
 

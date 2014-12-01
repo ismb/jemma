@@ -165,11 +165,9 @@
 	var qs = new Querystring();
 	Define.lang = qs.get("lang", "it");
 	if (Define.lang == "en") {
-		document
-				.write('<script language="javascript" type="text/javascript" src="js/utils/MsgEn.js?201305315125"><\/script>');
+		document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgEn.js?201305315125"><\/script>');
 	} else {
-		document
-				.write('<script language="javascript" type="text/javascript" src="js/utils/MsgIt.js?201305315125"><\/script>');
+		document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgIt.js?201305315125"><\/script>');
 	}
 
 	var testTime = qs.get("testtime", "false");
@@ -178,27 +176,21 @@
 <!-- IF FOTOVOLTAICO -->
 <!-- <link rel='stylesheet' type='text/css' href='css/FotoVoltaico.css' /> -->
 <!-- <link rel='stylesheet' type='text/css' href='js/tinybox2/style.css' /> -->
-<script language="javascript" type="text/javascript"
-	src="js/FotoVoltaico.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/FotoVoltaico.js?201305315125"></script>
 <!-- <script language="javascript" type="text/javascript" src="js/utils/jscroller-0.4.js?201305315125"></script> -->
 <!-- <script language="javascript" type="text/javascript" src="js/tinybox2/tinybox.js?201305315125"></script> -->
-<script language="javascript" type="text/javascript"
-	src="js/DefineMenu.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/DefineMenu.js?201305315125"></script>
 <!-- <script language="javascript" type="text/javascript" src="js/startApp.js?201305315125"></script> -->
 <!-- ELSE -->
 <!-- <link rel='stylesheet' type='text/css' href='css/CostiConsumi2.css' /> -->
-<script language="javascript" type="text/javascript"
-	src="js/CostiConsumi1.js?201305315125"></script>
+<!-- script language="javascript" type="text/javascript" src="js/CostiConsumi1.js?201305315125"></script> -->
 <!-- <script language="javascript" type="text/javascript" src="js/DefineMenu.js?201305315125"></script> -->
 <!-- <script language="javascript" type="text/javascript" src="js/startApp.js?201305315125"></script> -->
 <!-- END IF FOTOVOLTAICO -->
 
-<script language="javascript" type="text/javascript"
-	src="js/InterfaceEnergyHome.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/NonDisponibile.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Menu.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/InterfaceEnergyHome.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/NonDisponibile.js?201305315125"></script>
+<script language="javascript" type="text/javascript" src="js/utils/Menu.js?201305315125"></script>
 </head>
 <body onLoad="Main.onLoad()" onUnload="Main.onUnload()">
 	<div id="Container">

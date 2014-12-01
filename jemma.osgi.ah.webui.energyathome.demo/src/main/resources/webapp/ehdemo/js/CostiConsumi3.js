@@ -875,178 +875,192 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 	if (err != null) {
 		InterfaceEnergyHome.GestErrorEH("DatiSuddivisioneConsumiCb", err);
 	}
-
-	if (result != null) {
-		
-		//DT
-		if (InterfaceEnergyHome.mode == -1) {
-			$.each(CostiConsumi.listaElettr, function(indexResult, element) {
-				if (!result.map[indexResult]) {
-					result.map[indexResult] = {'javaClass': "java.util.ArrayList", 'list': [0,10,0,10,0,10,10,10,56,80,45,1500,140,563,1200,2063,1052,58,800,400,0,10,1035,500,51]};
-				}
-			});
-		}
-		
-		/*
-		 * Creo l'array di coppie nome-costo, escludendo lo smartInfo e
-		 * calcolando il costo totale
-		 */
-		$.each(result.map, function(indexResult, element) {
-
-			if (indexResult != CostiConsumi.SmartInfo[InterfaceEnergyHome.ATTR_APP_PID]) {
-
-				if (CostiConsumi.listaElettr[indexResult]) {
-					if ((CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
-						(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34")){
-						if (element.list.length > 0) {
-							var sum = 0;
-							for ( var i = 0; i < element.list.length; i++) {
-								var value = element.list[i];
-								if (value != null) {
-									sum += value;
-								}
-							}
-							consumiTotale += sum;
-							if (sum > 0) {
-								controlSumListaConsumi++;
-							}
-							listaConsumi.push(new Array(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_NAME], sum));
-						}
-					}
-				}
-			} else {
-				var sumSmartInfo = 0;
-				if (Main.env == 0)
-					console.log('sumSmartInfo', sumSmartInfo);
-				for ( var i = 0; i < element.list.length; i++) {
-					var vSmartInfo = element.list[i];
-					if (Main.env == 0)
-						console.log('vSmartInfo', vSmartInfo);
-					if (vSmartInfo != null) {
-						sumSmartInfo += vSmartInfo;
-						if (Main.env == 0)
-							console.log('sumSmartInfo', sumSmartInfo);
-					}
-				}
-				ConsumiSmartinfo += sumSmartInfo;
-				if (Main.env == 0)
-					console.log('ConsumiSmartinfo', ConsumiSmartinfo);
-			}
-		});
-
-		if (ConsumiSmartinfo) {
-			altriConsumi = ConsumiSmartinfo - consumiTotale;
-			if (Main.env == 0)
-				console.log('altriConsumi', altriConsumi);
-		}
-
-		if (altriConsumi > 0) {
-			controlSumListaConsumi++;
-			listaConsumi.push(new Array(Msg.home["altro"], altriConsumi));
-		} else {
-			controlSumListaConsumi++;
-			listaConsumi.push(new Array(Msg.home["altro"], 0));
-		}
-
-		if (controlSumListaConsumi == 0) {
-			// Se tutti gli elementi inseriti in listaConsumi hanno valore 0,
-			// non mostro il grafico.
-			listaConsumi = new Array();
-		}
-		if (Main.env == 0)
-			console.log('listaConsumi', listaConsumi);
-
-		$("#Grafico").show();
-		$("#GraficoConsumoOdierno").hide();
-		$("#DettaglioSuddivisioneCosti").show();
-
-		if (listaConsumi.length > 0) {
-			// Radialize the colors
-			CostiConsumi.renderPieGraph = true;
-			Highcharts.getOptions().colors = $.map(
-					Highcharts.getOptions().colors, function(color) {
-						return {
-							radialGradient : {
-								cx : 0.5,
-								cy : 0.3,
-								r : 0.7
-							},
-							stops : [[ 0, color ],
-									 [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ]]
-						};
-					});
-
-			// Build the chart
-			chartPie = new Highcharts.Chart({
-				chart : {
-					renderTo : 'DettaglioSuddivisioneCosti',
-					events : {
-						load : function(event) {
-							hideSpinner();
-						}
-					},
-					plotBackgroundColor : null,
-					plotBorderWidth : null,
-					plotShadow : false
-				},
-				colors : [ '#9ba4f9', '#003f8f', '#5362f5', '#00868f', '#8de2ff', '#06f1ff', '#00cfdc', '#005b79', '#0032c6', '#0095c6' ],
-				title : {
-					text : ""
-				},
-				tooltip : {
-					formatter : function() {
-						/*
-						 * var modificatore = '1'; 
-						 * for(var i=0;i<2;i++)
-						 * modificatore += "0"; 
-						 * modificatore = parseInt(modificatore,10) 
-						 * var valEuro = Math.round(this.y*(modificatore))/(modificatore);
-						 */
-						return '<b>' + this.point.name + '</b>: ' + Math.floor(this.percentage) + ' % - ' + Math.floor(this.y / 1000) + ' KWh ';
-					}
-				},
-				plotOptions : {
-					pie : {
-						allowPointSelect : true,
-						cursor : 'pointer',
-						dataLabels : {
-							enabled : true,
-							color : '#000',
-							connectorColor : '#000',
-							formatter : function() {
-								return '<b>' + this.point.name + '</b>:<br />' + Math.floor(this.percentage) + ' %';
-							},
-							overflow : 'justify',
-							distance : 9,
-							rotation : 0,
-							style : {
-								color : '#333333',
-								fontSize : '9pt',
-								padding : '5px'
-							}
-						}
-					}
-				},
-				credits : false,
-				series : [{ type : 'pie',
-							name : 'Lista dei consumi',
-							data : listaConsumi}]
-			});
-			hideSpinner();
-		} else {
-			$("#DettaglioSuddivisioneCosti").text("Dati non disponibili");
-		}
-	} else {
-
+	
+	if ((CostiConsumi.listaElettr.length === 0) || (CostiConsumi.listaElettr.length == undefined)){   //if (obj.length === 0)  return true;
+		hideSpinner();
 		$("#Grafico").show();
 		$("#GraficoConsumoOdierno").hide();
 		$("#DettaglioSuddivisioneCosti").show();
 		$("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
+
+	} else {
+
+		if (result != null) {
+			
+			//DT
+			if (InterfaceEnergyHome.mode == -1) {
+				$.each(CostiConsumi.listaElettr, function(indexResult, element) {
+					if (!result.map[indexResult]) {
+						result.map[indexResult] = {'javaClass': "java.util.ArrayList", 'list': [0,10,0,10,0,10,10,10,56,80,45,1500,140,563,1200,2063,1052,58,800,400,0,10,1035,500,51]};
+					}
+				});
+			}
+			
+			/*
+			 * Creo l'array di coppie nome-costo, escludendo lo smartInfo e
+			 * calcolando il costo totale
+			 */
+			$.each(result.map, function(indexResult, element) {
+	
+				if (indexResult != CostiConsumi.SmartInfo[InterfaceEnergyHome.ATTR_APP_PID]) {
+	
+					if (CostiConsumi.listaElettr[indexResult]) {
+						if ((CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "44") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "40") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "45") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "36") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "41") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "35") && 
+							(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "34")){
+							if (element.list.length > 0) {
+								var sum = 0;
+								for ( var i = 0; i < element.list.length; i++) {
+									var value = element.list[i];
+									if (value != null) {
+										sum += value;
+									}
+								}
+								consumiTotale += sum;
+								if (sum > 0) {
+									controlSumListaConsumi++;
+								}
+								listaConsumi.push(new Array(CostiConsumi.listaElettr[indexResult][InterfaceEnergyHome.ATTR_APP_NAME], sum));
+							}
+						}
+					}
+				} else {
+					var sumSmartInfo = 0;
+					if (Main.env == 0)
+						console.log('sumSmartInfo', sumSmartInfo);
+					for ( var i = 0; i < element.list.length; i++) {
+						var vSmartInfo = element.list[i];
+						if (Main.env == 0)
+							console.log('vSmartInfo', vSmartInfo);
+						if (vSmartInfo != null) {
+							sumSmartInfo += vSmartInfo;
+							if (Main.env == 0)
+								console.log('sumSmartInfo', sumSmartInfo);
+						}
+					}
+					ConsumiSmartinfo += sumSmartInfo;
+					if (Main.env == 0)
+						console.log('ConsumiSmartinfo', ConsumiSmartinfo);
+				}
+			});
+	
+			if (ConsumiSmartinfo) {
+				altriConsumi = ConsumiSmartinfo - consumiTotale;
+				if (Main.env == 0)
+					console.log('altriConsumi', altriConsumi);
+			}
+	
+			if (altriConsumi > 0) {
+				controlSumListaConsumi++;
+				listaConsumi.push(new Array(Msg.home["altro"], altriConsumi));
+			} else {
+				controlSumListaConsumi++;
+				listaConsumi.push(new Array(Msg.home["altro"], 0));
+			}
+	
+			if (controlSumListaConsumi == 0) {
+				// Se tutti gli elementi inseriti in listaConsumi hanno valore 0,
+				// non mostro il grafico.
+				listaConsumi = new Array();
+			}
+			if (Main.env == 0)
+				console.log('listaConsumi', listaConsumi);
+	
+			$("#Grafico").show();
+			$("#GraficoConsumoOdierno").hide();
+			$("#DettaglioSuddivisioneCosti").show();
+	
+			if (listaConsumi.length > 0) {
+				// Radialize the colors
+				CostiConsumi.renderPieGraph = true;
+				Highcharts.getOptions().colors = $.map(
+						Highcharts.getOptions().colors, function(color) {
+							return {
+								radialGradient : {
+									cx : 0.5,
+									cy : 0.3,
+									r : 0.7
+								},
+								stops : [[ 0, color ],
+										 [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ]]
+							};
+						});
+	
+				// Build the chart
+				chartPie = new Highcharts.Chart({
+					chart : {
+						renderTo : 'DettaglioSuddivisioneCosti',
+						events : {
+							load : function(event) {
+								hideSpinner();
+							}
+						},
+						plotBackgroundColor : null,
+						plotBorderWidth : null,
+						plotShadow : false
+					},
+					colors : [ '#9ba4f9', '#003f8f', '#5362f5', '#00868f', '#8de2ff', '#06f1ff', '#00cfdc', '#005b79', '#0032c6', '#0095c6' ],
+					title : {
+						text : ""
+					},
+					tooltip : {
+						formatter : function() {
+							/*
+							 * var modificatore = '1'; 
+							 * for(var i=0;i<2;i++)
+							 * modificatore += "0"; 
+							 * modificatore = parseInt(modificatore,10) 
+							 * var valEuro = Math.round(this.y*(modificatore))/(modificatore);
+							 */
+							return '<b>' + this.point.name + '</b>: ' + Math.floor(this.percentage) + ' % - ' + Math.floor(this.y / 1000) + ' KWh ';
+						}
+					},
+					plotOptions : {
+						pie : {
+							allowPointSelect : true,
+							cursor : 'pointer',
+							dataLabels : {
+								enabled : true,
+								color : '#000',
+								connectorColor : '#000',
+								formatter : function() {
+									return '<b>' + this.point.name + '</b>:<br />' + Math.floor(this.percentage) + ' %';
+								},
+								overflow : 'justify',
+								distance : 9,
+								rotation : 0,
+								style : {
+									color : '#333333',
+									fontSize : '9pt',
+									padding : '5px'
+								}
+							}
+						}
+					},
+					credits : false,
+					series : [{ type : 'pie',
+								name : 'Lista dei consumi',
+								data : listaConsumi}]
+				});
+				hideSpinner();
+			} else {
+				
+				$("#Grafico").show();
+				$("#GraficoConsumoOdierno").hide();
+				$("#DettaglioSuddivisioneCosti").show();
+				$("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
+			}
+		} else {
+	
+			$("#Grafico").show();
+			$("#GraficoConsumoOdierno").hide();
+			$("#DettaglioSuddivisioneCosti").show();
+			$("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
+		}
 	}
 }
 
