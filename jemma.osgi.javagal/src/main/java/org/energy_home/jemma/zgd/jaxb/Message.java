@@ -76,8 +76,6 @@ public class Message implements Serializable {
     protected NWKMessageEvent nwkMessage;
     @XmlElement(name = "InterPANMessage", required = true)
     protected InterPANMessageEvent interPANMessage;
-    @XmlElement(name = "MACMessage", required = true)
-    protected MACMessage macMessage;
 
     /**
      * Gets the value of the zclMessage property.
@@ -197,30 +195,6 @@ public class Message implements Serializable {
      */
     public void setInterPANMessage(InterPANMessageEvent value) {
         this.interPANMessage = value;
-    }
-
-    /**
-     * Gets the value of the macMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MACMessage }
-     *     
-     */
-    public MACMessage getMACMessage() {
-        return macMessage;
-    }
-
-    /**
-     * Sets the value of the macMessage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MACMessage }
-     *     
-     */
-    public void setMACMessage(MACMessage value) {
-        this.macMessage = value;
     }
 
 }
