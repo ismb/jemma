@@ -62,8 +62,6 @@ public class Callback implements Serializable {
 
     @XmlElement(name = "Filter")
     protected Filter filter;
-    @XmlElement(name = "Buffer")
-    protected Buffer buffer;
     @XmlElement(name = "Action")
     protected Action action;
 
@@ -92,30 +90,6 @@ public class Callback implements Serializable {
     }
 
     /**
-     * Gets the value of the buffer property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Buffer }
-     *     
-     */
-    public Buffer getBuffer() {
-        return buffer;
-    }
-
-    /**
-     * Sets the value of the buffer property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Buffer }
-     *     
-     */
-    public void setBuffer(Buffer value) {
-        this.buffer = value;
-    }
-
-    /**
      * Gets the value of the action property.
      * 
      * @return
@@ -140,3 +114,4 @@ public class Callback implements Serializable {
     }
 
 }
+

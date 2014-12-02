@@ -386,13 +386,7 @@ public class ObjectFactory implements Serializable{
         return new InterPANMessageEvent();
     }
 
-    /**
-     * Create an instance of {@link Buffer }
-     * 
-     */
-    public Buffer createBuffer() {
-        return new Buffer();
-    }
+
 
     /**
      * Create an instance of {@link Info.Detail }
@@ -578,13 +572,6 @@ public class ObjectFactory implements Serializable{
         return new APSMessage();
     }
 
-    /**
-     * Create an instance of {@link MACMessage }
-     * 
-     */
-    public MACMessage createMACMessage() {
-        return new MACMessage();
-    }
 
     /**
      * Create an instance of {@link ZDPCommand }
@@ -813,3 +800,4 @@ public class ObjectFactory implements Serializable{
     }
 
 }
+
