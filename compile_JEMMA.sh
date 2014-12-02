@@ -32,7 +32,7 @@ fi
 VER=`mvn -v | grep "Apache Maven" | awk '{print $3}'`
 if [ $VER != "3.2.3" ]
 then
-	echo "You have to update Maven to the latest version to avoid compiling error. Check this link http://askubuntu.com/questions/420281/how-to-update-maven-3-0-4-3-1-1"
+	echo "You have to update Maven to the latest version to avoid compile errors. Check this link http://askubuntu.com/questions/420281/how-to-update-maven-3-0-4-3-1-1"
 	exit
 fi
 echo "Start compiling JEMMA"
