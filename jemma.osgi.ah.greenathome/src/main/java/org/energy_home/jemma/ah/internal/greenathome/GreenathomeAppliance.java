@@ -3287,17 +3287,5 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	}
 
-	@Override
-	public String getGitBuildNumber() {
-		Bundle[] allBundles=FrameworkUtil.getBundle(this.getClass()).getBundleContext().getBundles();
-		//find the jemma.osgi.ah.bundle and get property Implementation-Version value
-		for(int i=0;i<allBundles.length;i++)
-		{
-			if(allBundles[i].getSymbolicName().equals("jemma.osgi.ah.app"))
-			{
-				return allBundles[i].getHeaders().get("Implementation-Version");
-			}
-		}
-		return "UNKNOWN VERSION";
-	}
+
 }
