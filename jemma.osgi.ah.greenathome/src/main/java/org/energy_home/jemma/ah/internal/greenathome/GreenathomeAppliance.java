@@ -102,7 +102,6 @@ import org.energy_home.jemma.ah.hac.IManagedAppliance;
 import org.energy_home.jemma.ah.hac.IPeerAppliancesListener;
 import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.ah.hac.IServiceClustersListener;
-import org.energy_home.jemma.ah.hac.ISubscriptionParameters;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
 import org.energy_home.jemma.ah.hac.lib.Appliance;
 import org.energy_home.jemma.ah.hac.lib.ApplianceDescriptor;
@@ -122,8 +121,10 @@ import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3284,5 +3285,18 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		return true;
 
+	}
+
+	@Override
+	public String getGitBuildNumber() {
+		Bundle[] allBundles=FrameworkUtil.getBundle(this.getClass()).getBundleContext().getBundles();
+		for(int i=0;i<allBundles.length;i++)
+		{
+			if(allBundles[i].getSymbolicName().equals("jemma.osgi.ah.app"))
+			{
+				return allBundles[i].getHeaders().get("Implementation-Version");
+			}
+		}
+		return "UNKNOWN VERSION";
 	}
 }

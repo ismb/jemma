@@ -338,4 +338,6 @@ public interface GreenAtHomeApplianceService {
 	
 	public String getDailyPVForecastDebug();
 	
+	public String getGitBuildNumber();
+	
 }

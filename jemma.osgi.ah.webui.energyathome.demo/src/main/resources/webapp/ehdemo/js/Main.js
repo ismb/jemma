@@ -309,6 +309,8 @@ Main.onLoad = function() {
 		if ((mode != "simul") && (mode != "noserver")){
 			GestDate.InitActualDate(Main.InitValue);
 		}
+		var gitVersion=InterfaceEnergyHome.objService.getGitBuildNumber();
+		$("#GitVersionDIV").html('Git version: <a href="https://github.com/ismb/jemma/commit/'+gitVersion+'">'+gitVersion+'</a>');
 	});
 }
 
