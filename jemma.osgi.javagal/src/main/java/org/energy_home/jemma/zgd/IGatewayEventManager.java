@@ -142,7 +142,7 @@ public interface IGatewayEventManager {
 	 * 
 	 * @param _node
 	 *            the Node Descriptor to notify.
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 */
 	public void notifyNodeDescriptor(Status _status, NodeDescriptor _node);
@@ -153,7 +153,7 @@ public interface IGatewayEventManager {
 	 * 
 	 * @param _requestIdentifier
 	 *            identifies the target proxy to notify.
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listener.
 	 * @param _node
 	 *            the Node Descriptor to notify.
@@ -165,7 +165,7 @@ public interface IGatewayEventManager {
 	 * Called to notify Node Descriptor Extended's Event to all relevant
 	 * registered listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 * @param _node
 	 *            the Node Descriptor to notify.
@@ -181,7 +181,7 @@ public interface IGatewayEventManager {
 	 * 
 	 * @param _requestIdentifier
 	 *            identifies the target proxy to notify.
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listener.
 	 * @param _node
 	 *            the Node Descriptor to notify.
@@ -195,7 +195,7 @@ public interface IGatewayEventManager {
 	 * Called to notify WSNNode Discovered's Event to all relevant registered
 	 * listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 * @param _node
 	 *            the discovered WSNNode's descriptor to notify.
@@ -206,7 +206,7 @@ public interface IGatewayEventManager {
 	 * Called to notify WSNNode Removed's Event to all relevant registered
 	 * listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 * @param _node
 	 *            the discovered WSNNode's descriptor to notify.
@@ -218,7 +218,7 @@ public interface IGatewayEventManager {
 	 * 
 	 * @param _requestIdentifier
 	 *            identifies the target proxy to notify.
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listener.
 	 */
 	public void notifyleaveResult(int _requestIdentifier, Status _status);
@@ -227,7 +227,7 @@ public interface IGatewayEventManager {
 	 * Called to notify Leave Result's Event to all relevant registered
 	 * listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 */
 	public void notifyleaveResult(Status _status);
@@ -238,9 +238,9 @@ public interface IGatewayEventManager {
 	 * 
 	 * @param _requestIdentifier
 	 *            identifies the target proxy to notify.
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listener.
-	 * @param address
+	 * @param _address
 	 *            the leaving address to notify to the listener.
 	 */
 	public void notifyleaveResultExtended(int _requestIdentifier,
@@ -250,9 +250,9 @@ public interface IGatewayEventManager {
 	 * Called to notify Leave Result Extended's Event to all relevant registered
 	 * listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
-	 * @param address
+	 * @param _address
 	 *            the leaving address to notify to the listeners.
 	 */
 	public void notifyleaveResultExtended(Status _status, Address _address);
@@ -340,7 +340,7 @@ public interface IGatewayEventManager {
 	 * Called to notify Frequency Agility's Event to all relevant registered
 	 * listeners.
 	 * 
-	 * @param status
+	 * @param _status
 	 *            the status to notify to the listeners.
 	 */
 	public void notifyFrequencyAgility(Status _status);

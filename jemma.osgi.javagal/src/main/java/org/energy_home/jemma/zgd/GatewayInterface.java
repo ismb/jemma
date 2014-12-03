@@ -59,8 +59,7 @@ public interface GatewayInterface {
 	 * @param timeout
 	 *            to receive response
 	 */
-	 short getChannelSync(long timeout) throws Exception,
-			GatewayException;
+	 short getChannelSync(long timeout) throws Exception;
 
 	
 
@@ -71,13 +70,10 @@ public interface GatewayInterface {
 	 * Retrieves the version and the main informations of the GAL. It can be
 	 * used as a way to tell if and when the GAL is running as it does not
 	 * affect the status of the GAL and it is a very light command
-	 * 
-	 * @return
-	 * @throws IOException
+	 *
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	Version getVersion() throws IOException, Exception, GatewayException;
+	Version getVersion() throws  Exception;
 
 	/**
 	 * Retrieves a particular attribute of the database InfoBaseAttribute
@@ -85,13 +81,9 @@ public interface GatewayInterface {
 	 * 
 	 * @param attrId
 	 *            the ID of the attribute to retrieve
-	 * @return
 	 * @throws Exception
-	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	String getInfoBaseAttribute(short attrId) throws Exception,
-			GatewayException;
+	String getInfoBaseAttribute(short attrId) throws Exception;
 
 	/**
 	 * Set a particular attribute of the database InfoBaseAttribute defined in
@@ -99,15 +91,13 @@ public interface GatewayInterface {
 	 * 
 	 * @param attrId
 	 *            the ID of the attribute to retrieve
-	 * @param Value
+	 * @param value
 	 *            to set into the attribute
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void setInfoBaseAttribute(short attrId, String value) throws IOException,
-			Exception, GatewayException;
+	void setInfoBaseAttribute(short attrId, String value) throws
+			Exception;
 
 	/**
 	 * Allows the creation of a callback to receive APS/ZDP/ZCL messages using a
@@ -117,13 +107,11 @@ public interface GatewayInterface {
 	 * @param listener
 	 *            to receive notifications
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
 	long createCallback(Callback callback, APSMessageListener listener)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 	
 	
 	
@@ -134,13 +122,10 @@ public interface GatewayInterface {
 	 * @param callback
 	 * @param listener
 	 *            to receive notifications
-	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	long createCallback(Callback callback, MessageListener listener)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 	
 
 	/**
@@ -154,13 +139,11 @@ public interface GatewayInterface {
 	 * @param listener
 	 *            to receive notifications
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
 	long createAPSCallback(short endpoint, APSMessageListener listener)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows the creation of a callback to receive APS messages. In fact
@@ -170,80 +153,64 @@ public interface GatewayInterface {
 	 * @param listener
 	 *            to receive notifications
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
-	long createAPSCallback(APSMessageListener listener) throws IOException,
-			Exception, GatewayException;
+	long createAPSCallback(APSMessageListener listener) throws
+			Exception;
 
 	/**
 	 * Returns list of all callbacks to which you have previously registered
 	 * 
 	 * @return List<Long>
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
-	List<Long> listCallbacks() throws IOException, Exception, GatewayException;
+	List<Long> listCallbacks() throws  Exception;
 
 	/**
 	 * Returns list of all callbacks to which you have previously registered
 	 * 
 	 * @return CallbackIdentifierList
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 
-	CallbackIdentifierList getlistCallbacks() throws IOException, Exception,
-			GatewayException;
+	CallbackIdentifierList getlistCallbacks() throws  Exception;
 
 	/**
 	 * Allows to remove a callback
 	 * 
 	 * @param callId
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void deleteCallback(long callId) throws IOException, Exception,
-			GatewayException;
+	void deleteCallback(long callId) throws  Exception;
 
 	/**
 	 * Returns the list of associated nodes in the network, and for each node
 	 * gives the short and the IEEE Address
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	Aliases listAddresses() throws IOException, Exception, GatewayException;
+	Aliases listAddresses() throws  Exception;
 
 	/**
 	 * Allows to configure a set of parameters throught the StartupAttributeInfo
 	 * class before to launch the ZigBee network
 	 * @param sai the StartupAttributeInfo
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void configureStartupAttributeSet(StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows to read a set of parameters throught the StartupAttributeInfo
 	 * class
 	 * @param index
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	StartupAttributeInfo readStartupAttributeSet(short index)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows to start/create a ZigBee network using the StartupAttributeInfo
@@ -252,16 +219,14 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param sai
 	 *            the StartupAttributeInfo
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void startGatewayDevice(long timeout, StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
-	Status stopNetworkSync(long timeout) throws Exception, GatewayException;
+	Status stopNetworkSync(long timeout) throws Exception;
 
-	void stopNetwork(long timeout) throws Exception, GatewayException;
+	void stopNetwork(long timeout) throws Exception;
 
 	/**
 	 * Allows to start/create a ZigBee network using the StartupAttributeInfo
@@ -270,25 +235,20 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param sai
 	 *            the StartupAttributeInfo
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	Status startGatewayDeviceSync(long timeout, StartupAttributeInfo sai)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows to start/create a ZigBee network using a set of default values
 	 * inside the GAL
 	 * 
 	 * @param timeout
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
-	void startGatewayDevice(long timeout) throws IOException, Exception,
-			GatewayException;
+	void startGatewayDevice(long timeout) throws Exception;
 
 	
 	
@@ -298,11 +258,9 @@ public interface GatewayInterface {
 	 * the cache of the GAL
 	 * 
 	 * @return WSNNodeList the list of active nodes
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	WSNNodeList readNodeCache() throws IOException, Exception, GatewayException;
+	WSNNodeList readNodeCache() throws  Exception;
 
 	/**
 	 * Activation of the discovery procedures of the nodes in a ZigBee network.
@@ -310,39 +268,31 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param discoveryMask
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 
 	void startNodeDiscovery(long timeout, int discoveryMask)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	void subscribeNodeRemoval(long timeout, int freshnessMask)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Retrieves the local services (the endpoints) on which the GAL is running
 	 * and listening
 	 * 
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	NodeServices getLocalServices() throws IOException, Exception,
-			GatewayException;
+	NodeServices getLocalServices() throws Exception;
 
 	/**
 	 * Returns the list of active endpoints from the cache of the GAL
 	 * 
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	NodeServicesList readServicesCache() throws IOException, Exception,
-			GatewayException;
+	NodeServicesList readServicesCache() throws  Exception;
 
 	/**
 	 * Activation of the discovery procedures of the services (the endpoints) of
@@ -350,12 +300,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param addrOfInterest
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
-	 */
+	 * */
 	void startServiceDiscovery(long timeout, Address addrOfInterest)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Activation of the discovery procedures of the services of a node
@@ -363,13 +311,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param addrOfInterest
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	NodeServices startServiceDiscoverySync(long timeout,
-			Address addrOfInterest) throws IOException, Exception,
-			GatewayException;
+			Address addrOfInterest) throws  Exception;
 
 	
 	/**
@@ -379,12 +324,10 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param addrOfInterest
 	 * @param endpoint
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void getServiceDescriptor(long timeout, Address addrOfInterest,
-			short endpoint) throws IOException, Exception, GatewayException;
+			short endpoint) throws  Exception;
 
 	/**
 	 * Retrieves the informations about the ServiceDescriptor of a specific
@@ -393,37 +336,31 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param addrOfInterest
 	 * @param endpoint
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	ServiceDescriptor getServiceDescriptorSync(long timeout,
-			Address addrOfInterest, short endpoint) throws IOException,
-			Exception, GatewayException;
+			Address addrOfInterest, short endpoint) throws
+			Exception;
 
 	/**
 	 * Retrieves the informations about the NodeDescriptor of a ZigBee node
 	 * 
 	 * @param timeout
 	 * @param addrOfInterest
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void getNodeDescriptor(long timeout, Address addrOfInterest)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Retrieves the informations about the NodeDescriptor of a ZigBee node
 	 * 
 	 * @param timeout
 	 * @param addrOfInterest
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	NodeDescriptor getNodeDescriptorSync(long timeout, Address addrOfInterest)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows the creation of an endpoint to which is associated a
@@ -433,44 +370,35 @@ public interface GatewayInterface {
 	 * @param desc
 	 *            the SimpleDescriptor
 	 * @return
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	short configureEndpoint(long timeout, SimpleDescriptor desc)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows to remove a SimpleDescriptor or an endpoint
 	 * 
 	 * @param endpoint
 	 *            the endpoint to remove
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void clearEndpoint(short endpoint) throws IOException, Exception,
-			GatewayException;
+	void clearEndpoint(short endpoint) throws  Exception;
 
 	/**
 	 * It�s a command to generate the disassociation of all the nodes from the
 	 * network ZigBee
-	 * 
-	 * @throws IOException
+	 *
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void leaveAll() throws IOException, Exception, GatewayException;
+	void leaveAll() throws  Exception;
 
 	/**
 	 * It�s a command to generate the disassociation of all the nodes from the
 	 * network ZigBee
-	 * 
-	 * @throws IOException
+	 *
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	Status leaveAllSync() throws IOException, Exception, GatewayException;
+	Status leaveAllSync() throws  Exception;
 
 	/**
 	 * It�s a command to generate the disassociation of a node from the network
@@ -478,13 +406,11 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param addrOfInterest
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
-	void leave(long timeout, Address addrOfInterest) throws IOException,
-			Exception, GatewayException;
+	void leave(long timeout, Address addrOfInterest) throws
+			Exception;
 
 	
 	/**
@@ -496,12 +422,10 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param addrOfInterest
 	 * @param mask
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	Status leaveSync(long timeout, Address addrOfInterest, int mask)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/*
 	 * It�s a command to generate the disassociation of a node from the network
@@ -514,15 +438,11 @@ public interface GatewayInterface {
 	 * @param addrOfInterest
 	 * 
 	 * @param mask
-	 * 
-	 * @throws IOException
-	 * 
+	 *
 	 * @throws Exception
-	 * 
-	 * @throws GatewayException
 	 */
 	void leave(long timeout, Address addrOfInterest, int mask)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * This command allows to create a binding of a remote node to a prefefined
@@ -530,11 +450,9 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param binding
-	 * @throws IOException
-	 * @throws GatewayException
 	 */
-	void addBinding(long timeout, Binding binding) throws IOException,
-			Exception, GatewayException;
+	void addBinding(long timeout, Binding binding) throws
+			Exception;
 
 	/**
 	 * This command allows to create a binding of a remote node to a prefefined
@@ -542,34 +460,29 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param binding
-	 * @throws IOException
-	 * @throws GatewayException
 	 */
 
 	Status addBindingSync(long timeout, Binding binding)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * This command removes a previously created binding of a remote node
 	 * 
 	 * @param timeout
 	 * @param binding
-	 * @throws IOException
-	 * @throws GatewayException
 	 */
-	void removeBinding(long timeout, Binding binding) throws IOException,
-			Exception, GatewayException;
+	void removeBinding(long timeout, Binding binding) throws
+			Exception;
 
 	/**
 	 * This command removes a previously created binding of a remote node
 	 * 
 	 * @param timeout
 	 * @param binding
-	 * @throws IOException
-	 * @throws GatewayException
+	 * @throws java.lang.Exception
 	 */
-	Status removeBindingSync(long timeout, Binding binding) throws IOException,
-			Exception, GatewayException;
+	Status removeBindingSync(long timeout, Binding binding) throws
+			Exception;
 
 	/**
 	 * This command request a list of all the bindings stored in a remote node,
@@ -577,12 +490,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param aoi
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void getNodeBindings(long timeout, Address aoi) throws IOException,
-			Exception, GatewayException;
+	void getNodeBindings(long timeout, Address aoi) throws
+			Exception;
 
 	/**
 	 * This command request a list of all the bindings stored in a remote node,
@@ -590,12 +501,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param aoi
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	BindingList getNodeBindingsSync(long timeout, Address aoi)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * This command request a list of all the bindings stored in a remote node
@@ -603,12 +512,10 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param aoi
 	 * @param index
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void getNodeBindings(long timeout, Address aoi, short index)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * This command request a list of all the bindings stored in a remote node
@@ -616,13 +523,11 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param aoi
 	 * @param index
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 
 	BindingList getNodeBindingsSync(long timeout, Address aoi,
-			short index) throws IOException, Exception, GatewayException;
+			short index) throws  Exception;
 
 	/**
 	 * Allows the opening of the ZigBee network to all nodes, and for a
@@ -630,12 +535,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param duration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void permitJoinAll(long timeout, short duration) throws IOException,
-			Exception, GatewayException;
+	void permitJoinAll(long timeout, short duration) throws
+			Exception;
 	
 	/**
 	 * Allows the opening of the ZigBee network for all nodes, and for a
@@ -644,12 +547,10 @@ public interface GatewayInterface {
 	 * @param timeout
 	 
 	 * @param duration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	Status permitJoinAllSync(long timeout, short duration)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 
 	/**
@@ -659,12 +560,10 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param addrOfInterest
 	 * @param duration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void permitJoin(long timeout, Address addrOfInterest, short duration)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Allows the opening of the ZigBee network to a single node, and for a
@@ -673,36 +572,29 @@ public interface GatewayInterface {
 	 * @param timeout
 	 * @param addrOfInterest
 	 * @param duration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	Status permitJoinSync(long timeout, Address addrOfInterest, short duration)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Sends an APS message to a node in blocking mode
 	 * 
 	 * @param message
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	@Deprecated
-	void sendAPSMessage(APSMessage message) throws IOException, Exception,
-			GatewayException;
+	void sendAPSMessage(APSMessage message) throws  Exception;
 
 	/**
 	 * Sends an APS message to a node in an asynchronous mode
 	 * 
 	 * @param timeout
 	 * @param message
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void sendAPSMessage(long timeout, APSMessage message) throws IOException,
-			Exception, GatewayException;
+	void sendAPSMessage(long timeout, APSMessage message) throws
+			Exception;
 	
 	
 	/**
@@ -710,12 +602,10 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param message
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void sendInterPANMessage(long timeout, InterPANMessage message) throws IOException,
-			Exception, GatewayException;
+	void sendInterPANMessage(long timeout, InterPANMessage message) throws
+			Exception;
 	
 
 	/**
@@ -724,12 +614,9 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param mode
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	void resetDongle(long timeout, short mode) throws IOException, Exception,
-			GatewayException;
+	void resetDongle(long timeout, short mode) throws  Exception;
 
 	/**
 	 * Resets the GAl with the ability to set whether to delete the
@@ -737,40 +624,32 @@ public interface GatewayInterface {
 	 * 
 	 * @param timeout
 	 * @param mode
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
-	Status resetDongleSync(long timeout, short mode) throws IOException,
-			Exception, GatewayException;
+	Status resetDongleSync(long timeout, short mode) throws
+			Exception;
 
 	/**
 	 * Frequency Agility
 	 * 
 	 * @param timeout
-	 * @param aoi
 	 * @param scanChannel
 	 * @param scanDuration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	Status frequencyAgilitySync(long timeout, short scanChannel,
-			short scanDuration) throws IOException, Exception, GatewayException;
+			short scanDuration) throws  Exception;
 
 	/**
 	 * Frequency Agility
 	 * 
 	 * @param timeout
-	 * @param aoi
 	 * @param scanChannel
 	 * @param scanDuration
-	 * @throws IOException
 	 * @throws Exception
-	 * @throws GatewayException
 	 */
 	void frequencyAgility(long timeout, short scanChannel, short scanDuration)
-			throws IOException, Exception, GatewayException;
+			throws  Exception;
 
 	/**
 	 * Returns the list of neighbor of related nodes of the network
@@ -779,8 +658,8 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	LQIInformation getLQIInformation(Address aoi) throws IOException,
-			Exception, GatewayException;
+	LQIInformation getLQIInformation(Address aoi) throws
+			Exception;
 
 	
 	/**
@@ -790,8 +669,8 @@ public interface GatewayInterface {
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	 LQIInformation getLQIInformation() throws IOException,
-			Exception, GatewayException;
+	 LQIInformation getLQIInformation() throws
+			Exception;
 
 	
 	
@@ -799,25 +678,26 @@ public interface GatewayInterface {
 	 * Sends a ZCL Command to a node in an asynchronous mode
 	 * 
 	 * @param timeout
-	 * @param ZCLCommand
+	 * @param command
 	 * @throws IOException
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	void sendZCLCommand(long timeout, ZCLCommand command) throws IOException,
-			Exception, GatewayException;
+	void sendZCLCommand(long timeout, ZCLCommand command) throws
+			Exception;
 
 	/**
 	 * Sends a ZDP Command to a node in an asynchronous mode
 	 * 
 	 * @param timeout
-	 * @param ZDPCommand
+	 * @param command
 	 * @throws IOException
 	 * @throws Exception
 	 * @throws GatewayException
 	 */
-	void sendZDPCommand(long timeout, ZDPCommand command) throws IOException,
-			Exception, GatewayException;
+	void sendZDPCommand(long timeout, ZDPCommand command) throws
+			Exception;
 
 	
 }
+

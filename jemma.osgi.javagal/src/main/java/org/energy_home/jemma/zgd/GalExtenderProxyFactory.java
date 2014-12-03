@@ -15,12 +15,11 @@
  */
 package org.energy_home.jemma.zgd;
 
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
-
 import org.energy_home.jemma.javagal.layers.PropertiesManager;
 import org.energy_home.jemma.javagal.layers.business.GalController;
+
+import java.math.BigInteger;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Factory class for {@link GalExtenderProxy} objects. Every object created by
@@ -42,8 +41,7 @@ public class GalExtenderProxyFactory {
 	/**
 	 * Uniquely identifies the gal proxy instance.
 	 */
-	private Integer proxyIdentifierSequence = 0;
-
+	private AtomicInteger proxyIdentifierSequence;
 	/**
 	 * Constructs a GalExtender Proxy Factory.
 	 * 
@@ -55,7 +53,7 @@ public class GalExtenderProxyFactory {
 	 *             internal error.
 	 */
 	public GalExtenderProxyFactory(PropertiesManager _prop) throws Exception {
-		proxyIdentifierSequence = 0;
+		proxyIdentifierSequence = new AtomicInteger(0);
 		gal = new GalController(_prop);
 
 	}
@@ -69,12 +67,7 @@ public class GalExtenderProxyFactory {
 	 *             internal error.
 	 */
 	public GatewayInterface createGatewayInterfaceObject() throws Exception {
-		synchronized (proxyIdentifierSequence) {
-			
-		
-		proxyIdentifierSequence++;
-		}
-		return new GalExtenderProxy(proxyIdentifierSequence, gal);
+		return new GalExtenderProxy(proxyIdentifierSequence.addAndGet(1), gal);
 
 	}
 
@@ -94,11 +87,11 @@ public class GalExtenderProxyFactory {
 
 	/**
 	 * Get the ExtendedPanId of the Gal.
-	 * 
-	 * @throws Exception.
+	 *
 	 */
 	public BigInteger getExtendedPanId() {
 		return gal.getPropertiesManager().getExtendedPanId();
 	}
 
 }
+
