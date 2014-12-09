@@ -1902,7 +1902,7 @@ public class GreenathomeAppliance extends Appliance implements ManagedService, H
 		//register this component as ManagedService
 		Dictionary serviceProps=new Hashtable();
 		serviceProps.put(Constants.SERVICE_PID,getServicePID());
-		this.componentContext.getBundleContext().registerService(ManagedService.class, this, serviceProps);
+		this.componentContext.getBundleContext().registerService(ManagedService.class.getName(), this, serviceProps);
 	
 	}
 
