@@ -49,8 +49,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.xml.internal.ws.policy.spi.PolicyAssertionValidator.Fitness;
-
 public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractWebConsolePlugin {
 	private static final long serialVersionUID = -7727225969825874601L;
 
@@ -258,7 +256,7 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 					String gitVersion=getGitBuildNumber();
 					if(gitVersion!=null)
 					{
-						pw.println("Git version: <a href=\"https://github.com/ismb/jemma/commit/\""+gitVersion+">"+gitVersion+"</a>");
+						pw.println("Git version: <a href=\"https://github.com/ismb/jemma/commit/"+gitVersion+"\">"+gitVersion+"</a>");
 					}else{
 						pw.println("Git version: UNKNOWN");
 					}

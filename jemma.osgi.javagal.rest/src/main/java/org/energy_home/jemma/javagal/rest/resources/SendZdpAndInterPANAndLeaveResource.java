@@ -34,10 +34,13 @@ import org.energy_home.jemma.zgd.jaxb.Status;
 import org.energy_home.jemma.zgd.jaxb.ZDPCommand;
 import org.restlet.data.MediaType;
 import org.restlet.data.Parameter;
+import org.restlet.engine.header.Header;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Options;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
+import org.restlet.util.Series;
 
 /**
  * Resource file used to manage the API GET:URL menu. POST:sendZDPCommand.
@@ -51,6 +54,21 @@ public class SendZdpAndInterPANAndLeaveResource extends ServerResource {
 
 	private GatewayInterface proxyGalInterface;
 
+	@Options
+	public void doOptions()
+	{
+		Series<Header> responseHeaders = (Series<Header>) getResponse().getAttributes().get("org.restlet.http.headers");
+		if (responseHeaders == null) {
+			responseHeaders = new Series(Header.class);
+			getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
+		}
+		responseHeaders.add("Access-Control-Allow-Origin", "*");
+		responseHeaders.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+		responseHeaders.add("Access-Control-Allow-Headers", "Content-Type");
+		responseHeaders.add("Access-Control-Max-Age", "60");
+	}
+	
+	
 	@Get
 	public void processGet() {
 		Detail _det = new Detail();
@@ -80,6 +98,15 @@ public class SendZdpAndInterPANAndLeaveResource extends ServerResource {
 		String aoiString = null; // Note aoiString is correct even if we read the addr parameter and we call it aoi
 		Long timeout = -1l;
 		Parameter timeoutParam = getRequest().getResourceRef().getQueryAsForm().getFirst(Resources.URI_PARAM_TIMEOUT);
+		
+		Series<Header> responseHeaders = (Series<Header>) getResponse().getAttributes().get("org.restlet.http.headers");
+		if (responseHeaders == null) {
+		responseHeaders = new Series(Header.class);
+		getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
+		}
+		//allow request from other origins
+		responseHeaders.add(new Header("Access-Control-Allow-Origin", "*"));
+
 		if (timeoutParam == null) {
 			Info info = new Info();
 			Status _st = new Status();

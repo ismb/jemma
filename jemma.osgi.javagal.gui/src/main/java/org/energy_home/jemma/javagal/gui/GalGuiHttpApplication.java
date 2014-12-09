@@ -216,12 +216,20 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 					// this is a restricted area so performs login
 
 					
-					if (request.getMethod() == "POST") {
+					if (request.getMethod() == "POST" && session.getValue("javaGallogon.isDone")==null) {
 						String username64 = request.getParameter("username");
 						String password64 = request.getParameter("password");
 						
-						String username = new String(Base64.decode(username64.getBytes()));
-						String password = new String(Base64.decode(password64.getBytes()));
+						String username=null;
+						String password=null;
+						try{
+							username = new String(Base64.decode(username64.getBytes()));
+							password = new String(Base64.decode(password64.getBytes()));
+						}catch(Exception e)
+						{
+							LOG.error("Error decoding user/password");
+							return false;
+						}
 								
 						if (!allowUser(username, password)) {
 							return redirectToLoginPage(request, response);
@@ -281,7 +289,12 @@ public class GalGuiHttpApplication extends DefaultWebApplication implements Http
 		Object currentCredential = user.getProperties().get("org.energy_home.jemma.username");
 		if (currentCredential == null) {
 			user.getProperties().put("org.energy_home.jemma.username", user.getName().toLowerCase());
-			user.getCredentials().put("org.energy_home.jemma.password", password);
+			try{
+				user.getCredentials().put("org.energy_home.jemma.password", password);
+			}catch(Exception e)
+			{
+				LOG.error("Error setting password");
+			}
 
 		}
 

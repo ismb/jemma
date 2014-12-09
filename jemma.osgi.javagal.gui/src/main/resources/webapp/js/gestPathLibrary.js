@@ -11,6 +11,11 @@ var DEFINEPATH = {
 	leavePath : "/json/net/default/wsnnodes/",
 	permitJoinPath : "/json/net/default/allwsnnodes/permitjoin",
 	simpleDescriptorPath : "/json/net/default/wsnnodes/services",
-	attributeInfoPath : "/json/net/default/ib"
+	attributeInfoPath : "/json/net/default/ib",
 	
+}
+
+var DEFINEURL = {
+	interpanUrl: "http://"+window.location.hostname+":9000/net/default/wsnnodes/0000?timeout=100&urilistener='localhost:1500'"
+		
 }
