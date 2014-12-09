@@ -99,6 +99,9 @@
 		<org.energy-home.jemma.osgi.javagal.version>2.0.1</org.energy-home.jemma.osgi.javagal.version>
 		<org.ops4j.pax.logging.version>1.7.2</org.ops4j.pax.logging.version>
 		<org.slf4j.version>1.7.7</org.slf4j.version>
+		
+		<!-- Allow execution of jgit-buildnumber plugin in ah.app submodule --> 
+		<runOnlyAtExecutionRoot>false</runOnlyAtExecutionRoot>
 	</properties>
 
 	<modules>
