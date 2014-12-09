@@ -8,26 +8,55 @@ Bundle-SymbolicName: jemma.osgi.ah.hac;singleton:=true
 Bundle-Vendor: Telecom Italia
 Bundle-Version: 3.1.3
 Created-By: Apache Maven Bundle Plugin
-Import-Package: javax.xml.parsers,org.apache.commons.codec;version="1.3.
- 0",org.apache.commons.httpclient;version="3.1.0",org.apache.commons.htt
- pclient.methods;version="[3.1,4)",org.apache.felix.bundlerepository;ver
- sion="2.0.0",org.apache.xml.serialize;version="[2.9,3)",org.eclipse.equ
- inox.internal.util.timer;version="[1.0,2)",org.eclipse.osgi.framework.c
- onsole;version="1.0.0",org.energy_home.jemma.ah.cluster.ah;version="3.0
- .1",org.energy_home.jemma.ah.hac;version="3.0.2",org.energy_home.jemma.
- ah.hac.lib;version="3.0.1",org.energy_home.jemma.ah.hac.lib.ext;version
- ="3.4.0",org.osgi.framework;version="1.3.0",org.osgi.service.cm;version
- ="1.2.0",org.osgi.service.component;version="[1.1,2)",org.osgi.service.
- device;version="[1.1,2)",org.osgi.service.event;version="[1.2,2)",org.o
- sgi.service.useradmin;version="[1.1,2)",org.osgi.util.tracker;version="
- [1.4,2)",org.slf4j;version="[1.7.7,2)",org.w3c.dom,org.xml.sax
-Include-Resource: OSGI-INF/cmacommands.xml=OSGI-INF/cmacommands.xml,OSGI
- -INF/connection_admin.xml=OSGI-INF/connection_admin.xml,OSGI-INF/hac.xm
- l=OSGI-INF/hac.xml,OSGI-INF/hacconsole.xml=OSGI-INF/hacconsole.xml,OSGI
- -INF/haclocator.xml=OSGI-INF/haclocator.xml,OSGI-INF/metatype/metatype.
- xml=OSGI-INF/metatype/metatype.xml, xml=xml/
-Private-Package: xml.scenarios,org.energy_home.jemma.ah.internal.hac.lib
- ,org.energy_home.jemma.ah.internal.hac
+Import-Package: org.energy_home.jemma.ah.cluster.ah;version="3.0.1",org.
+ slf4j;version="[1.7.7,2)",org.energy_home.jemma.ah.hac;version="3.0.2",
+ org.energy_home.jemma.ah.hac.lib;version="3.0.1",org.energy_home.jemma.
+ ah.hac.lib.ext;version="3.4.0",org.apache.commons.httpclient;version="3
+ .1.0",org.apache.commons.httpclient.methods;version="[3.1,4)",org.apach
+ e.felix.bundlerepository;version="2.0.0",org.apache.xml.serialize;versi
+ on="[2.9,3)",org.eclipse.equinox.internal.util.timer;version="[1.0,2)",
+ org.eclipse.osgi.framework.console;version="1.0.0",org.osgi.framework;v
+ ersion="1.3.0",org.osgi.service.cm;version="1.2.0",org.osgi.service.com
+ ponent;version="[1.2,2)",org.osgi.service.device;version="[1.1,2)",org.
+ osgi.util.tracker;version="[1.5,2)",org.w3c.dom,org.xml.sax,javax.xml.p
+ arsers,org.apache.commons.codec;version="1.3.0",org.osgi.service.userad
+ min;version="[1.1,2)",org.osgi.service.event;version="[1.3,2)"
+Include-Resource: OSGI-INF/connection_admin.xml=OSGI-INF/connection_admi
+ n.xml,OSGI-INF/haclocator.xml=OSGI-INF/haclocator.xml,OSGI-INF/hac.xml=
+ OSGI-INF/hac.xml,OSGI-INF/hacconsole.xml=OSGI-INF/hacconsole.xml,OSGI-I
+ NF/metatype/metatype.xml=OSGI-INF/metatype/metatype.xml,OSGI-INF/cmacom
+ mands.xml=OSGI-INF/cmacommands.xml, xml=xml/
+Private-Package: org.energy_home.jemma.ah.internal.hac,org.energy_home.j
+ emma.ah.internal.hac.lib,xml.scenarios
+Provide-Capability: osgi.service;effective:=active;objectClass="org.ener
+ gy_home.jemma.ah.hac.lib.ext.IHacService",osgi.service;effective:=activ
+ e;objectClass="org.eclipse.osgi.framework.console.CommandProvider";osgi
+ .command.scope=hac,osgi.service;effective:=active;objectClass="org.ecli
+ pse.osgi.framework.console.CommandProvider";osgi.command.scope=cma;osgi
+ .command.description="Home Automation Core Commands",osgi.service;effec
+ tive:=active;objectClass="org.osgi.service.device.DriverLocator",osgi.s
+ ervice;effective:=active;objectClass="org.energy_home.jemma.ah.hac.lib.
+ ext.IConnectionAdminService"
+Require-Capability: osgi.service;effective:=active;filter:="(objectClass
+ =org.osgi.service.cm.ConfigurationAdmin)",osgi.service;effective:=activ
+ e;resolution:=optional;filter:="(objectClass=org.energy_home.jemma.ah.h
+ ac.lib.ext.IAppliancesProxy)",osgi.service;effective:=active;filter:="(
+ objectClass=org.eclipse.equinox.internal.util.timer.Timer)",osgi.servic
+ e;effective:=active;filter:="(objectClass=javax.xml.parsers.DocumentBui
+ lderFactory)",osgi.service;effective:=active;resolution:=optional;filte
+ r:="(objectClass=org.energy_home.jemma.ah.hac.lib.ext.IHacService)",osg
+ i.service;effective:=active;resolution:=optional;filter:="(objectClass=
+ org.energy_home.jemma.ah.hac.lib.ext.INetworkManager)",osgi.service;eff
+ ective:=active;resolution:=optional;filter:="(objectClass=org.apache.fe
+ lix.bundlerepository.RepositoryAdmin)",osgi.service;effective:=active;r
+ esolution:=optional;filter:="(objectClass=org.osgi.service.device.Drive
+ rLocator)",osgi.service;effective:=active;resolution:=optional;filter:=
+ "(objectClass=org.energy_home.jemma.ah.hac.lib.ext.IConnectionAdminServ
+ ice)",osgi.service;effective:=active;resolution:=optional;filter:="(obj
+ ectClass=org.energy_home.jemma.ah.hac.IApplianceFactory)",osgi.ee;filte
+ r:="(&(osgi.ee=JavaSE)(version=1.6))"
 Service-Component: OSGI-INF/connection_admin.xml,OSGI-INF/hac.xml,OSGI-I
  NF/haclocator.xml,OSGI-INF/hacconsole.xml,OSGI-INF/cmacommands.xml
-Tool: Bnd-1.50.0
+Tool: Bnd-2.3.0.201405100607
+Bundle-ClassPath: .,
+ easymock-2.4.jar

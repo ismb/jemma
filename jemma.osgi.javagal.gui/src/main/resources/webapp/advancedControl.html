@@ -10,6 +10,10 @@
 							myNMMenu.newButton('btnRestartGal2', null, null);
 							myNMMenu.newButton('btnAutomaticScanChannel', null,
 									null);
+							myNMMenu.newButton('resetPhilipsHue', null,
+									null);
+							myNMMenu.newButton('stopResetPhilipsHue', null,
+									null);
 							var timeout = '00002710';
 							$
 									.ajax(
@@ -35,45 +39,47 @@
 																'Are you sure you want to change the network channel?',
 																'Change channel',
 																function(result) {
-																	if (result) {
-
-																		event
-																				.preventDefault();
-																		var ccrTimeOut = '00000014';
-																		var newChannelLbl;
-
-																		newChannelLbl = $(
-																				'#rdRadioChannel :radio:checked')
-																				.val();
-
-																		var opChannelRadio = '0xFE';
-																		$
-																				.ajax(
-																						{
-																							dataType : "json",
-																							url : DEFINEPATH.changeChannelPath
-																									+ 'timeout='
-																									+ ccrTimeOut
-																									+ '&scanChannel='
-																									+ newChannelLbl
-																									+ '&scanDuration='
-																									+ opChannelRadio
-																						})
-																				.done(
-																						function(
-																								data) {
-
-																							if (data.status.code == 0) {
-																								getChannelAndUpdateGui();
-																							}
-
-																						});
-
+																	if(result)
+																	{
+																		changeChannel($(
+																		'#rdRadioChannel :radio:checked')
+																		.val())
 																	}
 																});
 
 											});
 
+							function changeChannel(newChannelLbl) {
+
+								event.preventDefault();
+								var ccrTimeOut = '00000014';
+				
+								var opChannelRadio = '0xFE';
+								$
+										.ajax(
+												{
+													dataType : "json",
+													url : DEFINEPATH.changeChannelPath
+															+ 'timeout='
+															+ ccrTimeOut
+															+ '&scanChannel='
+															+ newChannelLbl
+															+ '&scanDuration='
+															+ opChannelRadio
+												})
+										.done(
+												function(
+														data) {
+
+													if (data.status.code == 0) {
+														getChannelAndUpdateGui();
+													}
+
+												});
+
+							}
+
+							
 							$("#btnAutomaticScanChannel")
 									.click(
 											function(event) {
@@ -277,7 +283,15 @@
 							$('#btnRestartGal2').click(function(event) {
 								fchangeStatuGal('btnRestartGal2');
 							});
-
+							
+							$('#resetPhilipsHue').click(function(event) {
+								resetPhilips();
+							});
+							
+							$('#stopResetPhilipsHue').click(function(event) {
+								stopResetPhilips();
+							});
+							
 							var updateCurrentChannel = function() {
 								var chR = $.jStorage.get("ChannelRadioValue");
 								if (chR != null) {
@@ -354,11 +368,24 @@
 				<tr>
 					<td><br />
 						<div>
-							<b>This functions should be used only by expert users</b>
+							<b>These functions should be used only by expert users</b>
 						</div> <input type="button" id="btnStartGal" class="tnHeaderHome2"
 						title="Start" /> <input type="button" id="btnRestartGal1"
 						class="tnHeaderHome2" title="Total reset" /> <input type="button"
-						id="btnRestartGal2" class="tnHeaderHome2" title="Stop" /></td>
+						id="btnRestartGal2" class="tnHeaderHome2" title="Stop" />
+					</td>	
+				</tr>
+				<tr>
+					<td><br />
+					<p>Click button below to start resetting Philips Hue near your coordinator (&lt;30cm). <i>
+						Warning: This will perform many channel changes on GAL network
+					</i></p>
+					<input type="button" value="Reset Philips HUE"
+						id="resetPhilipsHue" class="tnHeaderHome2" title="Reset Philips" />
+					<input type="button" value="Stop Resetting Philips Hue"
+						id="stopResetPhilipsHue" class="tnHeaderHome2" title="Stop Reset Philips HUE" style="display:none" />
+					<div id="hueResetDiv"></div>
+						</td>
 				</tr>
 			</table>
 		</form>
