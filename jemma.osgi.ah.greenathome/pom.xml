@@ -66,6 +66,7 @@
 							 org.eclipse.core.runtime.jobs,
 							 org.osgi.framework;version="1.3.0",
 							 org.osgi.service.http,
+							 org.osgi.service.cm,
 							 org.osgi.util.tracker,
 							 org.energy_home.jemma.hac.adapter.http,
 							 org.energy_home.jemma.ah.cluster.zigbee.zll,
