@@ -151,11 +151,14 @@ Menu.InitContentMenu = function(contentDiv) {
 								+ "		</div>"
 								+ "</div>";
 			leftOffset += wDiv + 2;
+			
+			//$("#el" + i + "Content" + j + "").css("padding-left", "550px");
 		}
 		Menu.SubMenuHtml = Menu.SubMenuHtml + "</div>";
 	}
 
 	$("#" + contentDiv).html(Menu.SubMenuHtml);
+	$("#" + contentDiv).css('left', '65%');
 
 	// tengo conto della lunghezza dei campi nome per la dimensione del div
 	// le icone restano a distanza costante
@@ -170,9 +173,9 @@ Menu.InitContentMenu = function(contentDiv) {
 	}
 	// rendo visibile il primo sottomenu
 	$("#ContentMenu0").addClass("visibleDiv");
-	for (i = 1; i < Menu.MainMenu.length; i++)
+	for (i = 1; i < Menu.MainMenu.length; i++){
 		$("#ContentMenu" + i).addClass("invisibleDiv");
-
+	}
 }
 
 Menu.OnClickContentMenu = function(valMain, valContent) {

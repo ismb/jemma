@@ -985,11 +985,11 @@ JSONRpcClient._sendRequest = function (client,req)
   try
   {
 
-	  //console.log('********************INVIO DATI*********************');
+	//console.log('********************INVIO DATI*********************');
     console.log('JSONRPC', 'DATA SENT', req);
 	//console.log('********************INVIO DATI*********************');
     http.send(req.data);
-    console.log('JSONRPC', 'DATA received', req);
+    //console.log('JSONRPC', 'DATA received', req);
   }
   catch(e)
   {
@@ -1029,7 +1029,7 @@ JSONRpcClient.prototype._handleResponse = function (http)
     data = http.responseText;
 
 	  //console.log('********************RICEVO DATI*********************');
-      //console.log('JSONRPC', 'DATA RECEIVED', http);
+      console.log('JSONRPC', 'DATA RECEIVED', http);
 	  //console.log('********************RICEVO DATI*********************');
   }
   catch(e)
