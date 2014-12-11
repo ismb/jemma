@@ -119,18 +119,3 @@ public class main {
 	}
 
 }
-
-class JavaGalLogger extends Formatter {
-
-	int lastDotInClassName;
-	String className;
-
-	@Override
-	public String format(LogRecord record) {
-		className = record.getSourceClassName();
-		lastDotInClassName = className.lastIndexOf('.');
-		className = className.substring(lastDotInClassName + 1, className.length());
-		return "\n" + className + " " + record.getSourceMethodName() + ": " + record.getMessage();
-	}
-
-}

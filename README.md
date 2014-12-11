@@ -1,4 +1,6 @@
-# JEMMA - Java Energy ManageMent Application framework
+# JEMMA - Java Energy ManageMent Application framework  
+[![Build Status](https://travis-ci.org/Tinwor/jemma.svg?branch=master)](https://travis-ci.org/Tinwor/jemma)  
+
 
 JEMMA is a open-source (LGPL) framework which implements the [Energy@home specifications](http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf) for energy monitoring and management application. JEMMA currently supports the [ZigBee Home Automation 1.2](http://www.zigbee.org/Standards/ZigBeeHomeAutomation/Overview.aspx) and the [ZigBee Gateway Device](http://www.zigbee.org/Standards/ZigbeeTelecomServices/Features.aspx) standards resulting from of a collaboration between the [Energy@home Association](http://www.energy-home.it/) and the [ZigBee Alliance](http://www.zigbee.org/).
 
