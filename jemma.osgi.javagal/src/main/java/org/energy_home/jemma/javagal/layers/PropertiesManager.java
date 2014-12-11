@@ -92,25 +92,11 @@ public class PropertiesManager {
 	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
 		
-		return (_value.equalsIgnoreCase("0")) ? false : true;
+		return (!_value.equalsIgnoreCase("0"));
 
 	}
-	
-	
-	
 
-	/**
-	 * Gets timeoutForWaitThread.
-	 * 
-	 * @return the timeoutForThread value.
-	 */
-	public int getTimeOutForWaitThread() {
-		String _value = props.getProperty("TimeOutForWaitThread");
-		return Integer.parseInt(_value);
-	}
-	
-	
-	
+
 	/**
 	 * Gets serialDataDebugEnabled property.
 	 * 
@@ -119,7 +105,7 @@ public class PropertiesManager {
 	public boolean getserialDataDebugEnabled() {
 		String _value = props.getProperty("serialDataDebugEnabled");
 		
-		return (_value.equalsIgnoreCase("0")) ? false : true;
+		return (!_value.equalsIgnoreCase("0"));
 
 	}
 	
@@ -483,8 +469,7 @@ public class PropertiesManager {
 	 * @return the StartupControlMode value.
 	 */
 	public short getStartupControlMode() {
-		short startupControlMode = readShortHex("StartupControlMode");
-		return startupControlMode;
+		return readShortHex("StartupControlMode");
 	}
 
 	/**
@@ -505,8 +490,7 @@ public class PropertiesManager {
 	 */
 	public short getStartupSet() {
 
-		short startupSet = readShortHex("StartupSet");
-		return startupSet;
+		return readShortHex("StartupSet");
 	}
 
 	/**
@@ -527,8 +511,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleUri value.
 	 */
 	public String getzgdDongleUri() {
-		String uri = props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
-		return uri;
+		return props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
 	}
 
 	/* zgd.dongle.speed */
@@ -538,8 +521,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleSpeed value.
 	 */
 	public int getzgdDongleSpeed() {
-		int speed = Integer.parseInt(props.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
-		return speed;
+		return Integer.parseInt(props.getProperty(GatewayProperties.ZGD_DONGLE_SPEED_PROP_NAME));
 	}
 
 	/* zgd.dongle.type */
@@ -549,8 +531,7 @@ public class PropertiesManager {
 	 * @return the zgdDongleType value.
 	 */
 	public String getzgdDongleType() {
-		String type = props.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
-		return type;
+		return props.getProperty(GatewayProperties.ZGD_DONGLE_TYPE_PROP_NAME);
 	}
 
 	/* AutoStart */
@@ -560,8 +541,7 @@ public class PropertiesManager {
 	 * @return the AutoStart value.
 	 */
 	public short getAutoStart() {
-		short autostart = readShort("autostart");
-		return autostart;
+		return readShort("autostart");
 	}
 
 	/**
@@ -613,8 +593,7 @@ public class PropertiesManager {
 	 * @return the ExtendedPANId value.
 	 */
 	public BigInteger getExtendedPanId() {
-		BigInteger extendedPanId = new BigInteger(readByteArray("ExtendedPANId", 8));
-		return extendedPanId;
+		return new BigInteger(readByteArray("ExtendedPANId", 8));
 	}
 
 	/* Utility */
@@ -732,3 +711,4 @@ public class PropertiesManager {
 	}
 
 }
+
