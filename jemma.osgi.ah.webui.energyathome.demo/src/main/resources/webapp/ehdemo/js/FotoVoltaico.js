@@ -378,32 +378,56 @@ CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 			CostiConsumi.potenzaAttuale.value = result.value;
 		} else{
 			//prelevare dato smart info
-			$.each(result.list,function(indice, elettrodom) {
-				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
-					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
-						CostiConsumi.SmartInfo = elettrodom["map"];
-						device_value = CostiConsumi.SmartInfo.device_value;
-						if (device_value != undefined) {
-							CostiConsumi.potenzaAttuale.value = device_value.list[0].value.value;
+			if (result.list.length == 0){
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GestNoServerCustomDevice);
+			} else {
+				$.each(result.list, function(indice, elettrodom) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+						if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+							CostiConsumi.SmartInfo = elettrodom["map"];
+							device_value = CostiConsumi.SmartInfo.device_value;
+							if (device_value != undefined) {
+								CostiConsumi.potenzaAttuale.value = device_value.list[0].value.value;
+							}
 						}
+						if (Main.env == 0)
+							console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
 					}
-					if (Main.env == 0)
-						console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
-				}
-			});
+				});
+			}
 		}
 	} else {
 		CostiConsumi.potenzaAttuale.value = null;
 	}
 
-
-
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiPotenzaAttuale', 'Esco!');
 	
-	setImgCount--;
-	if(setImgCount==0)
-		CostiConsumi.GetDatiRete();
+	if (result.list.length != 0) {
+		setImgCount--;
+		if(setImgCount==0)
+			CostiConsumi.GetDatiRete();
+	}
+}
+
+CostiConsumi.GestNoServerCustomDevice = function(res, err)
+{
+	if(!err) {
+		if(res.list.length>0) {
+			$.each(res.list, function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+						CostiConsumi.SmartInfo = elettrodom["map"];
+						CostiConsumi.potenzaAttuale.value = elettrodom["map"]["potenza"];
+					}
+				}
+			});
+			
+			setImgCount--;
+			if(setImgCount==0)
+				CostiConsumi.GetDatiRete();
+		}
+	}
 }
 
 /*
@@ -418,6 +442,8 @@ CostiConsumi.GetDatiProduzione = function() {
 	if (InterfaceEnergyHome.visError != InterfaceEnergyHome.ERR_CONN_SERVER) {
 		// Main.ResetError();
 	}
+	
+	// Real devices ...
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
 			// Cosa mettere al posto di Total Power?
@@ -429,11 +455,16 @@ CostiConsumi.GetDatiProduzione = function() {
 				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
 		}
+	// noserver mode ...
 	} else if (InterfaceEnergyHome.mode == -1) {
-		try {
+		try {	
+			// Legge la configurazione degli appliances ...
+			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.CheckSmartInfo);
+					
 			// Cosa mettere al posto di Total Power?
-			//InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiProduzioneAttuale);
-			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneAttuale, "ProducedPower");
+			// InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiProduzioneAttuale);
+			// InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneAttuale, "ProducedPower");
+			
 		} catch (err) {
 			if (Main.env == 0)
 				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
@@ -477,6 +508,67 @@ CostiConsumi.GetDatiProduzione = function() {
 	}
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'GetDatiProduzione', 'Esco!');
+}
+
+// Se abbiamo uno smartinfo di produzione (ah.category.pid=14) usiamo il valore della 
+// potenza reale, altrimenti lo leggiamo dal file di configurazione noserver.properties
+CostiConsumi.CheckSmartInfo = function(result, err)
+{
+	if (!err) {
+		if(result.list.length > 0) {
+			var found = false;
+			$.each(result.list, function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "14") {
+						// Abbiamo uno smartinfo di produzione
+						found = true;
+					}
+				}
+			});
+			
+			if(found) {
+				try {
+					InterfaceEnergyHome.objService.getAttribute(
+							CostiConsumi.DatiProduzioneAttuale,
+							InterfaceEnergyHome.PRODUZIONE_TOTALE);
+				} catch (err) {
+					if (Main.env == 0)
+						console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
+					InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
+				}
+			} else {
+				// legge gli appliance fittizi da noserver.properties ...
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
+			}
+		} else {
+			// legge gli appliance fittizi da noserver.properties ...
+			InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
+		}
+	}
+}
+
+CostiConsumi.DatiSmartInfo = function(result, err)
+{
+	if(!err) {
+		
+		var power = 0;
+		
+		// Cerca in noserver.properties la potenza dello smartinfo di produzione ...
+		$.each(result.list, function(indice, elettrodom) {
+			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "14") {
+					power = elettrodom["map"]["potenza"];
+				}
+			}
+		});	
+		
+		var produzioneAttuale = new Object();
+		produzioneAttuale.value = power;
+		produzioneAttuale.list = new Array(1);
+		produzioneAttuale.list[0] = power;
+		
+		CostiConsumi.DatiProduzioneAttuale(produzioneAttuale, null);
+	}
 }
 
 /*

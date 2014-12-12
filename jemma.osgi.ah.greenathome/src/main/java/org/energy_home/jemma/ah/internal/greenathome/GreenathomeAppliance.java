@@ -119,8 +119,6 @@ import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.omg.CORBA.CTX_RESTRICT_SCOPE;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
@@ -2022,6 +2020,60 @@ public class GreenathomeAppliance extends Appliance implements ManagedService, H
 			count++;
 			return infos;
 		}
+	}
+	
+	/*
+	 * Gets a dummy list of appliances, read from the properties file noserver.properties.
+	 * 
+	 * the entries expected loook like:
+	 * 
+	 * CustomDevice0_icona=plug
+	 * CustomDevice0_nome=Forno
+	 * CustomDevice0_consumo=1000
+	 * CustomDevice0_location=location
+	 * CustomDevice0_stato=1
+	 * CustomDevice0_connessione=connection
+	 * CustomDevice0_ah.app.type=org.energy_home.jemma.ah.zigbee.whitegood
+	 * CustomDevice0_ah.category.pid=12
+	 * 
+	 * @see org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService#getNoServerCustomDevice()
+	 */
+	
+	public ArrayList<Hashtable<String, String>> getNoServerCustomDevice() throws ApplianceException, ServiceClusterException {
+		
+		ArrayList<Hashtable<String, String>> infos = new ArrayList<Hashtable<String, String>>();
+		
+		try {
+			if(props==null)
+				loadPropFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		int i=0;
+		
+		while(true)
+		{			
+			String icon = (String) props.get("CustomDevice" + i + "_icona");
+			
+			if (icon==null) break;
+			
+			Hashtable<String, String> ht = new Hashtable<String, String>();
+			ht.put("icona", icon);
+			ht.put("nome", (String) props.get("CustomDevice" + i + "_nome"));
+			ht.put("potenza", (String) props.get("CustomDevice" + i + "_potenza"));
+			ht.put("consumo", (String) props.get("CustomDevice" + i + "_consumo"));
+			ht.put("location", (String) props.get("CustomDevice" + i + "_location"));
+			ht.put("stato", (String) props.get("CustomDevice" + i + "_stato"));
+			ht.put("connessione", (String) props.get("CustomDevice" + i + "_connessione"));
+			ht.put("ah.app.type", (String) props.get("CustomDevice" + i + "_ah.app.type"));
+			ht.put("ah.category.pid", (String) props.get("CustomDevice" + i + "_ah.category.pid"));			
+			infos.add(ht);
+			i++;
+		}
+	
+		return infos;
 	}
 
 	public void updateAppliance(Dictionary props) throws ApplianceException {
