@@ -40,11 +40,11 @@ jQuery.extend(jQuery.io, {
 	/*
 	 * Invoca l'url richiesta per effettuare lo scaricamento del file.
 	 */
-	download: function (requestUrl, event) {
-		if (event.preventDefault) {
-			event.preventDefault();
+	download: function (requestUrl, evt) {
+		if (evt.preventDefault) {
+			evt.preventDefault();
 		} else {
-			event.returnValue = false;
+			evt.returnValue = false;
 		}
 		window.location.href = requestUrl;
 	},

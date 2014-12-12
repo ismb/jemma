@@ -1,5 +1,101 @@
 <div id="tplChannelNetwork">
 	<script type="text/javascript">
+		function updateCurrentChannel(){
+			var chR = $.jStorage.get("ChannelRadioValue");
+			if (chR != null) {
+				$('#radioCurrentChannel').text(chR);
+			} else {
+				$('#radioCurrentChannel').text("NULL");
+			}
+		}
+		
+		function getChannelAndUpdateGui() {
+			$
+					.ajax({
+						dataType : "json",
+						url : DEFINEPATH.channelPath
+					})
+					.done(
+							function(data) {
+								if (data.status.code == 0) {
+
+									var newChannel = data.detail.value;
+
+									$.jStorage
+											.set(
+													"ChannelRadioValue",
+													newChannel);
+									$('#spChannelRadioHP')
+											.text(
+													newChannel).css('color',
+													'green');
+									$('#spZigBeeState')
+											.text('RUNNING')
+											.css('color',
+													'green');
+
+									var radioCh = $('#radioChannel'
+											+ newChannel);
+
+									radioCh[0].checked = true;
+									radioCh
+											.button("refresh");
+									updateCurrentChannel();
+								} else {
+									//Visualizzo il messaggio di errore
+									newChannel = $.jStorage
+											.get("ChannelRadioError");
+									$('#spChannelRadioHP')
+											.text(
+													newChannel).css('color',
+													'red');
+									$('#spZigBeeState')
+											.text(
+													'NOT RUNNING')
+											.css('color',
+													'red');
+									updateCurrentChannel();
+
+								}
+
+							});
+		}
+		
+		function changeChannel(newChannelLbl,callback) {
+
+			//event.preventDefault();
+			var ccrTimeOut = '00000014';
+
+			var opChannelRadio = '0xFE';
+			$
+					.ajax(
+							{
+								dataType : "json",
+								url : DEFINEPATH.changeChannelPath
+										+ 'timeout='
+										+ ccrTimeOut
+										+ '&scanChannel='
+										+ newChannelLbl
+										+ '&scanDuration='
+										+ opChannelRadio
+							})
+					.done(
+							function(
+									data) {
+
+								if (data.status.code == 0) {
+									getChannelAndUpdateGui();
+									if(callback!== undefined)
+									{
+										callback();
+									}
+								}
+
+							});
+
+		}
+	
+	
 		$(document)
 				.ready(
 						function() {
@@ -33,7 +129,7 @@
 							$("#rdRadioChannel").buttonset();
 							$("#btnManualScan")
 									.click(
-											function(event) {
+											function(evt) {
 												var result = window
 														.confirm(
 																'Are you sure you want to change the network channel?',
@@ -48,36 +144,6 @@
 																});
 
 											});
-
-							function changeChannel(newChannelLbl) {
-
-								event.preventDefault();
-								var ccrTimeOut = '00000014';
-				
-								var opChannelRadio = '0xFE';
-								$
-										.ajax(
-												{
-													dataType : "json",
-													url : DEFINEPATH.changeChannelPath
-															+ 'timeout='
-															+ ccrTimeOut
-															+ '&scanChannel='
-															+ newChannelLbl
-															+ '&scanDuration='
-															+ opChannelRadio
-												})
-										.done(
-												function(
-														data) {
-
-													if (data.status.code == 0) {
-														getChannelAndUpdateGui();
-													}
-
-												});
-
-							}
 
 							
 							$("#btnAutomaticScanChannel")
@@ -123,57 +189,6 @@
 
 											});
 
-							var getChannelAndUpdateGui = function() {
-								$
-										.ajax({
-											dataType : "json",
-											url : DEFINEPATH.channelPath
-										})
-										.done(
-												function(data) {
-													if (data.status.code == 0) {
-
-														var newChannel = data.detail.value;
-
-														$.jStorage
-																.set(
-																		"ChannelRadioValue",
-																		newChannel);
-														$('#spChannelRadioHP')
-																.text(
-																		newChannel).css('color',
-																		'green');
-														$('#spZigBeeState')
-																.text('RUNNING')
-																.css('color',
-																		'green');
-
-														var radioCh = $('#radioChannel'
-																+ newChannel);
-
-														radioCh[0].checked = true;
-														radioCh
-																.button("refresh");
-														updateCurrentChannel();
-													} else {
-														//Visualizzo il messaggio di errore
-														newChannel = $.jStorage
-																.get("ChannelRadioError");
-														$('#spChannelRadioHP')
-																.text(
-																		newChannel).css('color',
-																		'red');
-														$('#spZigBeeState')
-																.text(
-																		'NOT RUNNING')
-																.css('color',
-																		'red');
-														updateCurrentChannel();
-
-													}
-
-												});
-							}
 
 							var myCPMenu = new jGGCenterPaneMenuChannel();
 							myCPMenu.newButton('btnManualScan', null, null);
@@ -266,7 +281,7 @@
 
 							$('#btnRestartGal1')
 									.click(
-											function(event) {
+											function(evt) {
 												var result = window
 														.confirm(
 																'Resetting the ZigBee network causes removal of all devices. Are you really sure you want to reset?',
@@ -277,29 +292,22 @@
 																	}
 																});
 											});
-							$('#btnStartGal').click(function(event) {
+							$('#btnStartGal').click(function(evt) {
 								fchangeStatuGal('btnStartGal');
 							});
-							$('#btnRestartGal2').click(function(event) {
+							$('#btnRestartGal2').click(function(evt) {
 								fchangeStatuGal('btnRestartGal2');
 							});
 							
-							$('#resetPhilipsHue').click(function(event) {
+							$('#resetPhilipsHue').click(function(evt) {
 								resetPhilips();
 							});
 							
-							$('#stopResetPhilipsHue').click(function(event) {
+							$('#stopResetPhilipsHue').click(function(evt) {
 								stopResetPhilips();
 							});
 							
-							var updateCurrentChannel = function() {
-								var chR = $.jStorage.get("ChannelRadioValue");
-								if (chR != null) {
-									$('#radioCurrentChannel').text(chR);
-								} else {
-									$('#radioCurrentChannel').text("NULL");
-								}
-							}
+							
 							updateCurrentChannel();
 						});
 	</script>
@@ -382,10 +390,24 @@
 					</i></p>
 					<input type="button" value="Reset Philips HUE"
 						id="resetPhilipsHue" class="tnHeaderHome2" title="Reset Philips" />
-					<input type="button" value="Stop Resetting Philips Hue"
-						id="stopResetPhilipsHue" class="tnHeaderHome2" title="Stop Reset Philips HUE" style="display:none" />
-					<div id="hueResetDiv"></div>
-						</td>
+					
+					<div id="reset-hue-dialog" title="Reset Philips HUE"  style="display:none">
+						<span id="confirmation-content"> 
+							<p>
+							<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+							<b>This procedure is only for expert users: use it at your own risk.</b> <br/><br/>
+							This procedure will allow you to reset Philips HUE lamps so you can associate them to your own network <br/>
+							Shut down any Philips HUB around you, put the lamp near the coordinator (&lt;30 cm) and click "Start" when you're ready
+							</p>
+						</span>
+						<span id="resetting-content" style="display:none">
+							<p>Reset In progess. It will be done when your lamp will blink and become red. You can press stop button after that</p>
+							<div id="progressbar"></div>
+							<div id="hueResetDiv"></div>
+							</td>									
+						</span>
+					</div>
+					
 				</tr>
 			</table>
 		</form>
