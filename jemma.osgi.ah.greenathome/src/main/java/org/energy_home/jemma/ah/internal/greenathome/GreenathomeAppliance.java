@@ -1898,7 +1898,7 @@ public class GreenathomeAppliance extends Appliance implements ManagedService, H
 		this.componentContext = ctx;
 		
 		//register this component as ManagedService
-		Dictionary serviceProps=new Hashtable();
+		Dictionary<String, String> serviceProps=new Hashtable<String, String>();
 		serviceProps.put(Constants.SERVICE_PID,getServicePID());
 		this.componentContext.getBundleContext().registerService(ManagedService.class.getName(), this, serviceProps);
 	

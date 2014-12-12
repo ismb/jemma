@@ -600,7 +600,7 @@ CostiConsumi.DatiProduzioneAttuale = function(result, err) {
 		//				console.log('FotoVoltaico', 'SmartInfo - '+CostiConsumi.SmartInfo);
 		//		}
 		//	});
-			CostiConsumi.produzioneAttuale.value = result.list[0] * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
+			CostiConsumi.produzioneAttuale.value = result.value * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
 		} else {
 			CostiConsumi.produzioneAttuale.value = result.value * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
 		}
@@ -878,9 +878,9 @@ CostiConsumi.VisGrafico = function() {
 		return;
 	}
 
-	var dataConsumi = CostiConsumi.consumoGiornaliero.slice(0);
-	var dataIAC = CostiConsumi.energiaProdottaGiornaliero.slice(0);
-	var dataForecast = CostiConsumi.forecastGiornaliero.slice(0);
+	var dataConsumi = (CostiConsumi.consumoGiornaliero == null) ? null : CostiConsumi.consumoGiornaliero.slice(0);
+	var dataIAC = (CostiConsumi.energiaProdottaGiornaliero == null) ? null : CostiConsumi.energiaProdottaGiornaliero.slice(0);
+	var dataForecast = (CostiConsumi.forecastGiornaliero == null) ? null : CostiConsumi.forecastGiornaliero.slice(0);
 	for (var index = 0; index < dataForecast.length; ++index) {
 	    if(dataForecast[index] == null){
 	    	dataForecast[index] = 0;
@@ -1024,7 +1024,7 @@ CostiConsumi.VisGrafico = function() {
 						title : {
 							align : 'high',
 							offset : 0,
-							text : ' KWh',
+							text : ' kWh',
 							rotation : 0,
 							y : -10,
 							style : {
@@ -1054,7 +1054,7 @@ CostiConsumi.VisGrafico = function() {
 						formatter : function() {
 							var txt = '<b>' + this.series.name + '</b>: '
 									+ Highcharts.numberFormat(this.y, 2)
-									+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
+									+ ' kWh<br/>' + Msg.home["time"] + this.x + ':00'
 							return txt;
 						}
 					},
@@ -1134,7 +1134,7 @@ CostiConsumi.VisGrafico = function() {
 					title : {
 						align : 'high',
 						offset : 0,
-						text : ' KWh',
+						text : ' kWh',
 						rotation : 0,
 						y : -10,
 						style : {
@@ -1164,7 +1164,7 @@ CostiConsumi.VisGrafico = function() {
 					formatter : function() {
 						var txt = '<b>' + this.series.name + '</b>: '
 								+ Highcharts.numberFormat(this.y, 2)
-								+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
+								+ ' kWh<br/>' + Msg.home["time"] + this.x + ':00'
 						return txt;
 					}
 				},
@@ -1524,7 +1524,7 @@ CostiConsumi.gestModalWindow = function() {
 					html : "<p class='titoloInfoBox'>"
 							+ Msg.home['costoConsumoAttualeTitleBox']
 							+ "</p><p>" + Msg.home['lblConsO'] + ": "
-							+ CostiConsumi.consumoOdierno + " KWh</p><br>",
+							+ CostiConsumi.consumoOdierno + " kWh</p><br>",
 					animate : true,
 					close : true,
 					width : 305,

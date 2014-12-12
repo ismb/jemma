@@ -1051,6 +1051,7 @@ Storico.VisScelta = function() {
 		if (Main.env == 0) console.log(40, Storico.MODULE, "VisStorico : nessun dato");
 		$("#StoricoGraph").html($(document.createElement('div')).attr('id', 'StoricoVuoto').text(Msg.home["noGrafStorico"]));
 		//$("#StoricoGraph").html("<div id='StoricoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+		hideSpinner();
 		return;
 	}
 
