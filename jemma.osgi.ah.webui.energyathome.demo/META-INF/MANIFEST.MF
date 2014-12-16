@@ -13,9 +13,8 @@ Import-Package: org.energy_home.jemma.ah.hac;version="[3.0,4)",javax.ser
  ervice.component;version="[1.2,2)",org.osgi.service.event;version="[1.3
  ,2)",org.osgi.service.http;version="[1.2,2)",org.osgi.service.useradmin
  ;version="1.1.0",org.osgi.util.tracker;version="[1.5,2)",org.slf4j;vers
- ion="[1.7.7,2)",org.energy_home.jemma.hac.adapter.http;version="[2.0,3)
- ",javax.security.auth.login,org.apache.commons.logging;version="[1.1,2)
- "
+ ion="[1.6,2)",org.energy_home.jemma.hac.adapter.http;version="[2.0,3)",
+ javax.security.auth.login,org.apache.commons.logging;version="[1.1,2)"
 Include-Resource: OSGI-INF/metatype/metatype.xml=OSGI-INF/metatype/metat
  ype.xml,OSGI-INF/energyathome.xml=OSGI-INF/energyathome.xml,webapp/ehde
  mo/conf/index.html=src/main/resources/webapp/ehdemo/conf/index.html,web

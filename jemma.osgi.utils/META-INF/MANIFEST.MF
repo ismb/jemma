@@ -20,25 +20,25 @@ Export-Package: org.energy_home.jemma.osgi.utils.equinox.console;version
  energy_home.jemma.utils.thread;version="1.0.0",org.energy_home.jemma.ut
  ils.xml.jaxb;version="1.0.0";uses:="javax.xml.bind"
 Import-Package: javax.xml.bind,javax.xml.namespace,javax.crypto,javax.cr
- ypto.spec,org.slf4j;version="[1.7.7,2)",org.eclipse.osgi.framework.cons
- ole;version="1.0.0",org.osgi.framework;version="1.3.0",javax.xml.dataty
- pe;resolution:=optional,org.apache.commons.logging;resolution:=optional
- ;version="[1.1,2)",org.apache.http;resolution:=optional,org.apache.http
- .auth;resolution:=optional;version="[4.1,5)",org.apache.http.client;res
- olution:=optional;version="[4.1,5)",org.apache.http.client.methods;reso
- lution:=optional;version="[4.1,5)",org.apache.http.conn;resolution:=opt
- ional;version="[4.1,5)",org.apache.http.conn.scheme;resolution:=optiona
- l;version="[4.1,5)",org.apache.http.conn.ssl;resolution:=optional;versi
- on="[4.1,5)",org.apache.http.impl.auth;resolution:=optional;version="[4
- .1,5)",org.apache.http.impl.client;resolution:=optional;version="[4.1,5
- )",org.apache.http.impl.conn.tsccm;resolution:=optional;version="[4.1,5
- )",org.apache.http.params;resolution:=optional;version="[4.1,5)",org.ap
- ache.http.protocol;resolution:=optional;version="[4.1,5)",org.apache.ht
- tp.util;resolution:=optional;version="[4.1,5)",org.energy_home.jemma.ut
- ils.datetime;resolution:=optional;version="[1.0,2)",org.energy_home.jem
- ma.utils.thread;resolution:=optional;version="[1.0,2)",javax.xml.bind.a
- nnotation.adapters,org.apache.commons.codec;version="[1.3,2)",javax.xml
- .bind.helpers,javax.xml.bind.annotation
+ ypto.spec,org.slf4j;version="[1.6,2)",org.eclipse.osgi.framework.consol
+ e;version="1.0.0",org.osgi.framework;version="1.3.0",javax.xml.datatype
+ ;resolution:=optional,org.apache.commons.logging;resolution:=optional;v
+ ersion="[1.1,2)",org.apache.http;resolution:=optional,org.apache.http.a
+ uth;resolution:=optional;version="[4.1,5)",org.apache.http.client;resol
+ ution:=optional;version="[4.1,5)",org.apache.http.client.methods;resolu
+ tion:=optional;version="[4.1,5)",org.apache.http.conn;resolution:=optio
+ nal;version="[4.1,5)",org.apache.http.conn.scheme;resolution:=optional;
+ version="[4.1,5)",org.apache.http.conn.ssl;resolution:=optional;version
+ ="[4.1,5)",org.apache.http.impl.auth;resolution:=optional;version="[4.1
+ ,5)",org.apache.http.impl.client;resolution:=optional;version="[4.1,5)"
+ ,org.apache.http.impl.conn.tsccm;resolution:=optional;version="[4.1,5)"
+ ,org.apache.http.params;resolution:=optional;version="[4.1,5)",org.apac
+ he.http.protocol;resolution:=optional;version="[4.1,5)",org.apache.http
+ .util;resolution:=optional;version="[4.1,5)",org.energy_home.jemma.util
+ s.datetime;resolution:=optional;version="[1.0,2)",org.energy_home.jemma
+ .utils.thread;resolution:=optional;version="[1.0,2)",javax.xml.bind.ann
+ otation.adapters,javax.xml.bind.helpers,org.apache.commons.codec;versio
+ n="[1.3,2)",javax.xml.bind.annotation
 Include-Resource: JAXBNamespacePrefixMapper-2.2.4.jar=/home/einann/.m2/r
  epository/com/googlecode/jaxb-namespaceprefixmapper-interfaces/JAXBName
  spacePrefixMapper/2.2.4/JAXBNamespacePrefixMapper-2.2.4.jar

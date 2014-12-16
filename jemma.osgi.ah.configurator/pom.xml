@@ -55,7 +55,7 @@
 							 org.energy_home.jemma.ah.hac.lib;version="3.0.1",
 							 org.energy_home.jemma.ah.hac.lib.ext;version="3.0.2",
 							 javax.xml.parsers,
-							 org.slf4j;version="[1.7.7,2)",
+							 org.slf4j;version="[1.6,2)",
 							 org.eclipse.osgi.framework.console,
 							 org.osgi.framework,
 							 org.osgi.service.cm,
@@ -105,11 +105,6 @@
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>org.eclipse.equinox.common</artifactId>
 			<version>${org.eclipse.equinox.common.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xerces</groupId>

@@ -55,7 +55,7 @@
 							 javax.xml.bind.helpers,
 							 javax.xml.namespace,
 							 org.apache.commons.codec,
-							 org.slf4j;version="[1.7.7,2)",
+							 org.slf4j;version="[1.6,2)",
 							 org.eclipse.osgi.framework.console;version="1.0.0",
 							 org.osgi.framework,*;resolution:=optional,
 							 !*
@@ -184,11 +184,6 @@
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
 			<version>${org.eclipse.osgi.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
