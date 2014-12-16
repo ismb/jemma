@@ -28,6 +28,8 @@ import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
@@ -53,6 +55,8 @@ public class WrapperWSNNode {
 	private boolean _discoveryCompleted;
 	private boolean _executingForcePing;
 
+	private static final Logger LOG = LoggerFactory.getLogger(WrapperWSNNode.class);
+	
 	public synchronized boolean is_executingForcePing() {
 		return _executingForcePing;
 	}
@@ -92,21 +96,21 @@ public class WrapperWSNNode {
 
 		this.dead = false;
 		freshnessTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-Freshness[" + networkAdd + "]");
 			}
 		});
 		discoveryTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-Discovery[" + networkAdd + "]");
 			}
 		});
 		forcePingTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-ForcePing[" + networkAdd + "]");
@@ -295,8 +299,7 @@ public class WrapperWSNNode {
 					try {
 						discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 
 					}
 				}
@@ -322,8 +325,7 @@ public class WrapperWSNNode {
 					try {
 						freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 					}
 				}
 			}
@@ -349,9 +351,7 @@ public class WrapperWSNNode {
 					try {
 						forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
-
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 					}
 				}
 			}

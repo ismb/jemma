@@ -272,7 +272,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 											lastNotifiedTimestamp = (attributeValue != null) ? Math.max(attributeValue.getTimestamp(), applianceStatus.getLastSubscriptionRequestTime()) : applianceStatus.getLastSubscriptionRequestTime();
 											if (subscriptionParameters != null && subscriptionParameters.getMaxReportingInterval() > 0) {
 												if (System.currentTimeMillis() - lastNotifiedTimestamp > SUBSCRIPTION_MAX_DELAY_FACTOR * subscriptionParameters.getMaxReportingInterval()) {
-													System.out.println("Subscription reneweing for attribute " + attributeName + ", cluster " + serviceCluster.getName() + "," + " ep " + serviceCluster.getEndPoint().getId() + ", appliance " + appliancePids[i] + " -- parameters- MaxReportInterval: " + subscriptionParameters.getMaxReportingInterval() + " -- MinReportInterval: " + subscriptionParameters.getMinReportingInterval() + " -- ReportChange: " + subscriptionParameters.getReportableChange());
+													LOG.debug("Subscription reneweing for attribute " + attributeName + ", cluster " + serviceCluster.getName() + "," + " ep " + serviceCluster.getEndPoint().getId() + ", appliance " + appliancePids[i] + " -- parameters- MaxReportInterval: " + subscriptionParameters.getMaxReportingInterval() + " -- MinReportInterval: " + subscriptionParameters.getMinReportingInterval() + " -- ReportChange: " + subscriptionParameters.getReportableChange());
 													returnedSubscriptionParameters = serviceCluster.setAttributeSubscription(attributeName, subscriptionParameters, confirmedRequestContext);
 													if (returnedSubscriptionParameters == null) {
 														// Retry subscription
@@ -635,7 +635,7 @@ public abstract class AppliancesBasicProxy extends Appliance implements IApplian
 		}
 		applianceConfigurationMap.put(appliancePid, savedProps);
 		if (installing) {
-			System.out.println("Appliance not yet installed installing" + appliancePid);
+			LOG.debug("Appliance not yet installed installing" + appliancePid);
 
 			LOG.debug("Appliance not yet installed " + appliancePid);
 			ManagedApplianceStatus proxy = new ManagedApplianceStatus(appliance, ManagedApplianceStatus.STATUS_INSTALLING);

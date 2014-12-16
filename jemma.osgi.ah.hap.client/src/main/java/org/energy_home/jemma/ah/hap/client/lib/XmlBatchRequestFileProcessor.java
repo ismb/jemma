@@ -23,8 +23,12 @@ import org.energy_home.jemma.internal.ah.hap.client.HapServiceManager;
 import org.energy_home.jemma.m2m.ContentInstanceItems;
 import org.energy_home.jemma.m2m.ContentInstancesBatchRequest;
 import org.energy_home.jemma.m2m.M2MXmlObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XmlBatchRequestFileProcessor {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(XmlBatchRequestFileProcessor.class);
 
 	private static void execute(String inputDir, String outputDir) {
 		String fileNamePrefix = HapServiceManager.BATCH_REQUESTS_FILE_NAME_PREFIX;
@@ -32,7 +36,8 @@ public class XmlBatchRequestFileProcessor {
 			inputDir = "./";
 		File inputFileDir = new File(inputDir);
 		File outputFileDir = new File(outputDir);
-		System.out.print("Processing files:\ninput dir: " + inputFileDir.getAbsolutePath() + "\noutput dir: "
+		
+		LOG.info("Processing files:\ninput dir: " + inputFileDir.getAbsolutePath() + "\noutput dir: "
 				+ outputFileDir.getAbsolutePath());
 		if (inputFileDir.isDirectory()) {
 			File[] files = inputFileDir.listFiles();

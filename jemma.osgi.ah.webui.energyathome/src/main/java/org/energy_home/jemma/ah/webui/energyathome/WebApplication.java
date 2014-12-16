@@ -21,10 +21,14 @@ import javax.servlet.Servlet;
 
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebApplication {
 	private String rootUrl = "/";
 	private HttpService httpService = null;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(WebApplication.class);
 
 	Vector resources = new Vector();
 	Vector servlets = new Vector();
@@ -66,7 +70,7 @@ public class WebApplication {
 				try {
 					httpService.registerResources(this.toAlias(this.rootUrl + r.getAlias()), r.getPath(), this.getHttpContext());
 				} catch (Throwable e) {
-					System.out.println(e.getMessage());
+					LOG.error("Error registering resources: {}",e);
 					continue;
 				}
 			}
@@ -76,7 +80,7 @@ public class WebApplication {
 				try {
 					httpService.registerServlet(this.toAlias(this.rootUrl + sr.getAlias()), sr.getServlet(), null, this.getHttpContext());
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					LOG.error("Error registering servlet: {}",e);
 					continue;
 				} 
 			}

@@ -89,12 +89,12 @@ public class PropertiesManager {
 	 * 
 	 * @return the DebugEnabled value.
 	 */
-	public boolean getDebugEnabled() {
+/*	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
 		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
-	}
+	}*/
 	
 	
 	

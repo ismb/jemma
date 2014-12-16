@@ -303,7 +303,7 @@ public class ZclServiceCluster extends ServiceCluster implements IZclServiceClus
 				sync = false;
 			}
 
-			System.out.println("Sending Configure reporting: " + zclFrame.toString() + " -- TO:" + device.getIeeeAddress() + " -- Cluster: " + clusterId + " -- Attribute: " + attrName);
+			LOG.debug("Sending Configure reporting: " + zclFrame.toString() + " -- TO:" + device.getIeeeAddress() + " -- Cluster: " + clusterId + " -- Attribute: " + attrName);
 
 			if (sync) {
 				IZclFrame zclResponseFrame = deviceInvoke((short) clusterId, zclFrame);

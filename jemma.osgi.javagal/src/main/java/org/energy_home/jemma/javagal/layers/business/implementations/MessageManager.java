@@ -65,7 +65,6 @@ public class MessageManager {
 		gal = _gal;
 		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
-			@Override
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-MessageManager");
@@ -96,11 +95,7 @@ public class MessageManager {
 	public void APSMessageIndication(final APSMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
-				System.out.println("GAL -- Aps Message Indication in process...");
-
-				if (getGal().getPropertiesManager().getDebugEnabled()) {
-					LOG.debug("Aps Message Indication in process...");
-				}
+				LOG.debug("GAL -- Aps Message Indication in process...");
 
 				for (CallbackEntry ce : getGal().getCallbacks()) {
 
@@ -281,9 +276,8 @@ public class MessageManager {
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
 							}
-							if (getGal().getPropertiesManager().getDebugEnabled()) {
-								LOG.info("READY to CallBack NotifyApsMessage:" + ((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X", cmessage.getDestinationAddress().getNetworkAddress()) : ""));
-							}
+							LOG.debug("READY to CallBack NotifyApsMessage: {}", ((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X", cmessage.getDestinationAddress().getNetworkAddress()) : ""));
+							
 							napml.notifyAPSMessage(cmessage);
 						}
 						// Add it to the list of already notified
@@ -310,9 +304,9 @@ public class MessageManager {
 	public void InterPANMessageIndication(final InterPANMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
-				if (getGal().getPropertiesManager().getDebugEnabled()) {
-					LOG.debug("Aps Message Indication in process...");
-				}
+				
+				LOG.debug("Aps Message Indication in process...");
+		
 
 				for (CallbackEntry ce : getGal().getCallbacks()) {
 

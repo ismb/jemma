@@ -1883,7 +1883,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 		props.put("availability", new Integer(availability));
 		props.put("device_value", attributeValues);
-		System.out.println("Props:" + props.toString());
+		LOG.debug("Props: {}", props.toString());
 		return props;
 	}
 
