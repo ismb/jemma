@@ -36,9 +36,9 @@ Import-Package: javax.xml.bind,javax.xml.namespace,javax.crypto,javax.cr
  he.http.protocol;resolution:=optional;version="[4.1,5)",org.apache.http
  .util;resolution:=optional;version="[4.1,5)",org.energy_home.jemma.util
  s.datetime;resolution:=optional;version="[1.0,2)",org.energy_home.jemma
- .utils.thread;resolution:=optional;version="[1.0,2)",javax.xml.bind.ann
- otation.adapters,javax.xml.bind.helpers,org.apache.commons.codec;versio
- n="[1.3,2)",javax.xml.bind.annotation
+ .utils.thread;resolution:=optional;version="[1.0,2)",org.apache.commons
+ .codec;version="[1.3,2)",javax.xml.bind.annotation.adapters,javax.xml.b
+ ind.annotation,javax.xml.bind.helpers
 Include-Resource: JAXBNamespacePrefixMapper-2.2.4.jar=/home/einann/.m2/r
  epository/com/googlecode/jaxb-namespaceprefixmapper-interfaces/JAXBName
  spacePrefixMapper/2.2.4/JAXBNamespacePrefixMapper-2.2.4.jar

@@ -31,9 +31,9 @@ Import-Package: org.energy_home.jemma.utils.encrypt;version="[1.0.0,1.1.
  onal,org.energy_home.jemma.ah.m2m.device;resolution:=optional;version="
  [1.3,2)",org.energy_home.jemma.m2m;resolution:=optional;version="[1.3,2
  )",org.energy_home.jemma.m2m.connection;resolution:=optional;version="[
- 1.2,2)",javax.xml.namespace,org.apache.commons.codec;version="[1.3,2)",
- javax.xml.bind.helpers,org.energy_home.jemma.utils.datetime;version="1.
- 0.1",javax.xml.bind.annotation.adapters
+ 1.2,2)",javax.xml.bind.helpers,javax.xml.bind.annotation.adapters,org.e
+ nergy_home.jemma.utils.datetime;version="1.0.1",javax.xml.namespace,org
+ .apache.commons.codec;version="[1.3,2)"
 Include-Resource: JAXBNamespacePrefixMapper-2.2.4.jar=/home/einann/.m2/r
  epository/com/googlecode/jaxb-namespaceprefixmapper-interfaces/JAXBName
  spacePrefixMapper/2.2.4/JAXBNamespacePrefixMapper-2.2.4.jar,schemas/m2m

@@ -22,9 +22,9 @@ Import-Package: org.energy_home.jemma.ah.cluster.ah;version="[3.0,4)",or
  ster.measurement;version="[3.0,4)",org.energy_home.jemma.ah.zigbee.zcl.
  cluster.metering;version="[3.1,4)",org.energy_home.jemma.ah.zigbee.zcl.
  cluster.security;version="[3.0,4)",org.energy_home.jemma.ah.zigbee.zcl.
- cluster.zll;version="[1.0,2)",org.osgi.service.cm;version="[1.5,2)",org
- .energy_home.jemma.ah.zigbee,org.energy_home.jemma.ah.cluster.zigbee.se
- curity;version="[3.0,4)"
+ cluster.zll;version="[1.0,2)",org.energy_home.jemma.ah.zigbee,org.energ
+ y_home.jemma.ah.cluster.zigbee.security;version="[3.0,4)",org.osgi.serv
+ ice.cm;version="[1.5,2)"
 Private-Package: org.energy_home.jemma.ah.zigbee.appliances
 Require-Bundle: jemma.osgi.ah.hac.lib
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
