@@ -11,8 +11,7 @@ var Configurazione = {
 	CONN_SERVER_ERR : 1,
 	CONN_AG_ERR : 2,
 	DEFAULT_ICON : Define.config["defaultIcona"],
-	statoImages : [ Define.config["statoVerde"], Define.config["statoGiallo"],
-			Define.config["statoRosso"] ],
+	statoImages : [ Define.config["statoVerde"], Define.config["statoGiallo"], Define.config["statoRosso"] ],
 	TIMEOUT_INQUIRY : 180, // (sercondi) parametro timeout inquiryDevices
 	INQUIRY_GUARD : 20, // (secondi) parametro timeout dopo il quale si smette
 	// di fare polling sui nuovi dispositivi deve essere
@@ -415,13 +414,11 @@ Configurazione.GestConfigurazione = function(result, e) {
 
 	showSpinner();
 
-	InterfaceEnergyHome.getAttribute(Configurazione.getPowerLimitCb,
-			"InstantaneousPowerLimit");
+	InterfaceEnergyHome.getAttribute(Configurazione.getPowerLimitCb, "InstantaneousPowerLimit");
 }
 
 Configurazione.ExitElettrodomestici = function() {
-	InterfaceEnergyHome.removeListener("service.connection",
-			Configurazione.HandleServiceEvent);
+	InterfaceEnergyHome.removeListener("service.connection", Configurazione.HandleServiceEvent);
 	Configurazione.cancelTimeouts();
 	// console.log(90, Configurazione.MODULE, "ExitElettrodomestici");
 }
@@ -449,8 +446,7 @@ Configurazione.DatiCategorie = function(lista) {
 	if (Configurazione.nuovoDispositivo != null) {
 		Configurazione.ConfiguraElettr(Configurazione.nuovoDispositivo);
 	} else {
-		Configurazione
-				.ConfiguraElettr(Configurazione.infoDisp[Configurazione.indSel]);
+		Configurazione.ConfiguraElettr(Configurazione.infoDisp[Configurazione.indSel]);
 	}
 }
 
@@ -494,21 +490,27 @@ Configurazione.GetIcone = function() {
 	Configurazione.icone[9] = "stufa.png";
 	Configurazione.icone[10] = "lockdoor.png";
 	Configurazione.icone[11] = "windowc.png";
+	Configurazione.icone[12] = "temp.png";
 	/*
 	 * Configurazione.icone[10] = "production_meter.png";
 	 * Configurazione.icone[11] = "secondary_meter.png";
-	 * Configurazione.icone[12] = "printer.png"; Configurazione.icone[13] =
-	 * "modem-router.png"; Configurazione.icone[14] =
-	 * "decoder-recorder-player.png"; Configurazione.icone[15] =
-	 * "home_theatre-stereo.png"; Configurazione.icone[16] = "play_station.png";
-	 * Configurazione.icone[17] = "media_center.png"; Configurazione.icone[18] =
-	 * "freezer.png"; Configurazione.icone[19] = "washer_dryer.png";
-	 * Configurazione.icone[20] = "vacuum_cleaner.png"; Configurazione.icone[21] =
-	 * "hair_dryer.png"; Configurazione.icone[22] = "bread_machine.png";
-	 * Configurazione.icone[23] = "coffee_machine.png"; Configurazione.icone[24] =
-	 * "toaster.png"; Configurazione.icone[25] = "food_robot.png";
-	 * Configurazione.icone[26] = "water_purifier.png"; Configurazione.icone[27] =
-	 * "hob.png"; Configurazione.icone[28] = "electric_heater.png";
+	 * Configurazione.icone[12] = "printer.png"; 
+	 * Configurazione.icone[13] = "modem-router.png"; 
+	 * Configurazione.icone[14] = "decoder-recorder-player.png"; 
+	 * Configurazione.icone[15] = "home_theatre-stereo.png"; 
+	 * Configurazione.icone[16] = "play_station.png";
+	 * Configurazione.icone[17] = "media_center.png"; 
+	 * Configurazione.icone[18] = "freezer.png"; 
+	 * Configurazione.icone[19] = "washer_dryer.png";
+	 * Configurazione.icone[20] = "vacuum_cleaner.png"; 
+	 * Configurazione.icone[21] = "hair_dryer.png"; 
+	 * Configurazione.icone[22] = "bread_machine.png";
+	 * Configurazione.icone[23] = "coffee_machine.png"; 
+	 * Configurazione.icone[24] = "toaster.png"; 
+	 * Configurazione.icone[25] = "food_robot.png";
+	 * Configurazione.icone[26] = "water_purifier.png"; 
+	 * Configurazione.icone[27] = "hob.png"; 
+	 * Configurazione.icone[28] = "electric_heater.png";
 	 * Configurazione.icone[29] = "swimming_pool_pump.png";
 	 */
 }
@@ -615,8 +617,7 @@ Configurazione.InseritoDispositivoCb = function(val) {
 
 Configurazione.InserisciDispositivo = function() {
 	// potrebbero essere necessari dei controlli
-	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_NAME] = $(
-			"#NomeElettr").val();
+	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_NAME] = $("#NomeElettr").val();
 	catPid = $("#CategoriaElettr option:selected").val();
 	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_CATEGORY] = catPid;
 	locPid = $("#LocazioneElettr option:selected").val();
@@ -625,11 +626,9 @@ Configurazione.InserisciDispositivo = function() {
 	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_LOCATION] = locPid;
 	var tmp = $("#IconaElettr").attr("src");
 	var j = tmp.lastIndexOf("/");
-	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp
-			.substr(j + 1);
+	Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp.substr(j + 1);
 
-	InterfaceEnergyHome.InstallAppliance(Configurazione.InseritoDispositivoCb,
-			Configurazione.nuovoDispositivo);
+	InterfaceEnergyHome.InstallAppliance(Configurazione.InseritoDispositivoCb, Configurazione.nuovoDispositivo);
 	Configurazione.scheduleGetListaAppliances();
 }
 
@@ -641,8 +640,7 @@ Configurazione.ModificaDispositivoCb = function() {
 
 Configurazione.ModificaDispositivo = function() {
 	// console.log(80, Configurazione.MODULE, "ModificaDispositivo");
-	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_NAME] = $(
-			"#NomeElettr").val();
+	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_NAME] = $("#NomeElettr").val();
 	catPid = $("#CategoriaElettr option:selected").val();
 	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_CATEGORY] = catPid;
 	locPid = $("#LocazioneElettr option:selected").val();
@@ -651,8 +649,7 @@ Configurazione.ModificaDispositivo = function() {
 	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_LOCATION] = locPid;
 	var tmp = $("#IconaElettr").attr("src");
 	var j = tmp.lastIndexOf("/");
-	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp
-			.substr(j + 1);
+	Configurazione.infoDisp[Configurazione.indSel].map[InterfaceEnergyHome.ATTR_APP_ICON] = tmp.substr(j + 1);
 
 	var newConfig = {
 		'javaClass' : Configurazione.infoDisp[Configurazione.indSel].javaClass,
@@ -668,31 +665,24 @@ Configurazione.ModificaDispositivo = function() {
 	newConfig.map["appliance.pid"] = Configurazione.infoDisp[Configurazione.indSel].map["appliance.pid"];
 	newConfig.map["ah.app.type"] = Configurazione.infoDisp[Configurazione.indSel].map["ah.app.type"];
 
-	InterfaceEnergyHome.ModificaDispositivo(
-			Configurazione.ModificaDispositivoCb, newConfig);
+	InterfaceEnergyHome.ModificaDispositivo(Configurazione.ModificaDispositivoCb, newConfig);
 }
 
 Configurazione.EliminatoDispositivo = function(e) {
 	// console.log(80, Configurazione.MODULE, "EliminatoDispositivo");
-	InterfaceEnergyHome
-			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.EliminaElettr = function(ind) {
-	$
-			.dialog(
-					Msg.config["confermaCanc"],
-					{
+	$.dialog(Msg.config["confermaCanc"],{
 						'buttons' : [ Msg.config["OK"], Msg.config["Annulla"] ],
 						'exit' : function(value) {
 							if (value == Msg.config["OK"]) {
-								InterfaceEnergyHome
-										.EliminaDispositivo(
+								InterfaceEnergyHome.EliminaDispositivo(
 												Configurazione.EliminatoDispositivo,
 												Configurazione.infoDisp[ind].map[InterfaceEnergyHome.ATTR_APP_PID]);
 							} else if (value == Msg.config["Annulla"]) {
-								InterfaceEnergyHome
-										.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+								InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 							}
 						}
 					});
@@ -746,8 +736,7 @@ Configurazione.ConfiguraElettr = function(elem) {
 	$("#NomeElettr").val(elem.map[InterfaceEnergyHome.ATTR_APP_NAME]);
 
 	// Configurazione.categorieGroup;
-	var catToView = Configurazione
-			.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_EPS_TYPE]);
+	var catToView = Configurazione.selectCategorie(elem.map[InterfaceEnergyHome.ATTR_APP_EPS_TYPE]);
 	// $("#CategoriaElettr").html(Configurazione.optionsCategorie);
 	$("#CategoriaElettr").html(catToView);
 	catPid = elem.map[InterfaceEnergyHome.ATTR_APP_CATEGORY];
@@ -807,16 +796,11 @@ Configurazione.ConfiguraElettr = function(elem) {
 Configurazione.TrovatoPlug = function() {
 	// console.log(80, Configurazione.MODULE, "Trovato Plug");
 
-	$
-			.dialog(
-					Msg.config["trovatoPlug"],
-					{
-						'buttons' : [ Msg.config["buttonConfigura"],
-								Msg.config["Annulla"] ],
+	$.dialog(Msg.config["trovatoPlug"],{
+						'buttons' : [ Msg.config["buttonConfigura"], Msg.config["Annulla"] ],
 						'exit' : function(value) {
 							if (value == Msg.config["buttonConfigura"]) {
-								InterfaceEnergyHome
-										.GetCategorie(
+								InterfaceEnergyHome.GetCategorie(
 												Configurazione.DatiCategorie,
 												Configurazione.nuovoDispositivo.map[InterfaceEnergyHome.ATTR_APP_PID]);
 							}
@@ -835,14 +819,10 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 			// console.log(80, Configurazione.MODULE, "Nessun device trovato");
 			Configurazione.timerInquiry = null;
 
-			$
-					.dialog(
-							Msg.config["noPlug"],
-							{
+			$.dialog(Msg.config["noPlug"],{
 								'buttons' : [ Msg.config["OK"] ],
 								'exit' : function(value) {
-									InterfaceEnergyHome
-											.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+									InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 								}
 							});
 		} else {
@@ -864,13 +844,11 @@ Configurazione.DatiInquiredDevicesCb = function(lista) {
 
 Configurazione.ControllaInquiry = function() {
 	// console.log(80, Configurazione.MODULE, "Reimposto timeout");
-	InterfaceEnergyHome
-			.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
+	InterfaceEnergyHome.GetInquiredDevices(Configurazione.DatiInquiredDevicesCb);
 }
 
 Configurazione.StopInquiryCb = function(res, e) {
-	InterfaceEnergyHome
-			.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
+	InterfaceEnergyHome.GetListaAppliances(Configurazione.DatiElettrodomesticiCb);
 }
 
 Configurazione.StartInquiryCb = function(res, e) {

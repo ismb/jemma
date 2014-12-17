@@ -170,7 +170,7 @@ function bindService(name) {
 InterfaceEnergyHome.Init = function() {
 	InterfaceEnergyHome.errMessage = null;
 	InterfaceEnergyHome.errCode = 0;
-	if ((InterfaceEnergyHome.mode > 0) != (InterfaceEnergyHome.mode == -1))
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1))
 		return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
 	else
 		return 1;
@@ -540,7 +540,7 @@ InterfaceEnergyHome.BackActualDate = function(result, err) {
 		}
 		retVal = null;
 		if ((err == null) && (result != null)){
-			if (InterfaceEnergyHome.mode > 0) {
+			if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 				retVal = result;
 			} else {
 				retVal = Math.floor(result.list[0]);
@@ -562,9 +562,14 @@ InterfaceEnergyHome.GetActualDate = function(backFunc) {
 			InterfaceEnergyHome.BackActualDate(null, err);
 		}
 	} else{
+		if (InterfaceEnergyHome.mode == -1) {
+			InterfaceEnergyHome.backActualDate(new Date().getTime());
+		} else {
+			InterfaceEnergyHome.backActualDate(new Date().getTime());
+		}
 		// per simulazione ritorno ora di sistema
 		//InterfaceEnergyHome.backActualDate(new Date().getTime());
-		InterfaceEnergyHome.objService.getPropConfiguration(InterfaceEnergyHome.BackActualDate, "ActualDate");
+		//InterfaceEnergyHome.objService.getPropConfiguration(InterfaceEnergyHome.BackActualDate, "ActualDate");
 	}
 }
 

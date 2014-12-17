@@ -15,12 +15,8 @@
  */
 package org.energy_home.jemma.ah.internal.greenathome;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -119,12 +115,12 @@ import org.energy_home.jemma.ah.m2m.device.M2MServiceException;
 import org.energy_home.jemma.hac.adapter.http.AhHttpAdapter;
 import org.energy_home.jemma.hac.adapter.http.HttpImplementor;
 import org.energy_home.jemma.m2m.ContentInstance;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleReference;
-import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +130,7 @@ import org.w3c.dom.NodeList;
 //TODO: check merge, a lot's of changes in this class from 3.3.0
 
 //FIXME consider refactoring/renaming
-public class GreenathomeAppliance extends Appliance implements HttpImplementor, IServiceClustersListener, IPeerAppliancesListener, IManagedAppliance, GreenAtHomeApplianceService, IASZoneClient, ApplianceControlClient, IlluminanceMeasurementClient {
+public class GreenathomeAppliance extends Appliance implements ManagedService, HttpImplementor, IServiceClustersListener, IPeerAppliancesListener, IManagedAppliance, GreenAtHomeApplianceService, IASZoneClient, ApplianceControlClient, IlluminanceMeasurementClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GreenathomeAppliance.class);
 
@@ -150,7 +146,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	private static final String SMARTINFO_APP_TYPE = "org.energy_home.jemma.ah.zigbee.metering";
 	private static final String APPLIANCE_ID_SEPARATOR = "-";
-	private Properties props;
+	private Dictionary props;
 
 	private long lastValidProducedEnergyTime = 0;
 	private double lastProducedEnergy = 0;
@@ -1585,6 +1581,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 
 	private int count = 0;
 
+	private ComponentContext componentContext;
+
+	private ConfigurationAdmin configurationAdmin;
+
 	private String encodeGenericApplianceType(String appType, String endPointType) {
 		String result = appType;
 		if (appType.equals("org.energy_home.jemma.ah.zigbee.generic")) {
@@ -1886,37 +1886,60 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		LOG.debug("Props: {}", props.toString());
 		return props;
 	}
-
-	private void loadPropFile() throws IOException {
-
-		// String _path = "noserver.properties";
-		String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
-		String _path_recovery = "noserver.properties";
-		File f = new File(_path);
-		File f_recovery = new File(_path_recovery);
-		if (!f.exists()) {
-			// f.createNewFile();
-			BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader()).getBundle().getBundleContext();
-			URL _url = bc.getBundle().getResource(_path_recovery);
-			File configFile = new File(_url.getPath());
-
-			this.props = new Properties();
-
-			InputStream stream = new FileInputStream(configFile.getPath());
-			this.props.load(stream);
-			stream.close();
-
-		} else {
-
-			this.props = new Properties();
-
-			InputStream stream = new FileInputStream(_path);
-			this.props.load(stream);
-			stream.close();
-		}
+	
+	protected synchronized void start(ComponentContext ctx){
+		super.start();
+		this.componentContext = ctx;
+		
+		//register this component as ManagedService
+		Dictionary<String, String> serviceProps=new Hashtable<String, String>();
+		serviceProps.put(Constants.SERVICE_PID,getServicePID());
+		this.componentContext.getBundleContext().registerService(ManagedService.class.getName(), this, serviceProps);
+	
 	}
 
-	private void storePropFile() throws IOException {
+	private String getServicePID() {
+		 return "org.energy_home_jemma.greenathome.fakevalues";
+	}
+
+	private Dictionary loadPropFile() throws IOException {
+
+		// String _path = "noserver.properties";
+		//String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
+		String _path_recovery = "noserver.properties";
+		//File f = new File(_path);
+		//File f_recovery = new File(_path_recovery);
+		//if (!f.exists()) {
+			// f.createNewFile();
+			//BundleContext bc = BundleReference.class.cast(GreenathomeAppliance.class.getClassLoader()).getBundle().getBundleContext();
+			
+			BundleContext bc = this.componentContext.getBundleContext();
+			
+			URL _url = bc.getBundle().getResource(_path_recovery);
+			//File configFile = new File(_url.getPath());
+			Properties readProps=new Properties();
+			//this.props = 
+
+			//InputStream stream = new FileInputStream(configFile.getPath());
+			InputStream stream = _url.openStream();
+			readProps.load(stream);
+			stream.close();
+			
+			return readProps;
+			
+			//storePropFile();
+
+		//} else {
+//
+		//	this.props = new Properties();
+//
+		//	InputStream stream = new FileInputStream(_path);
+		//	this.props.load(stream);
+		//	stream.close();
+		//}
+	}
+
+	/*private void storePropFile() throws IOException {
 
 		// String _path = "noserver.properties";
 		String _path = System.getProperty("user.home") + File.separator + "noserver.properties";
@@ -1930,7 +1953,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		out.flush();
 		if (out != null)
 			out.close();
-	}
+	}*/
 
 	/*
 	 * private void storePropFile() throws IOException{
@@ -1991,6 +2014,60 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			count++;
 			return infos;
 		}
+	}
+	
+	/*
+	 * Gets a dummy list of appliances, read from the properties file noserver.properties.
+	 * 
+	 * the entries expected loook like:
+	 * 
+	 * CustomDevice0_icona=plug
+	 * CustomDevice0_nome=Forno
+	 * CustomDevice0_consumo=1000
+	 * CustomDevice0_location=location
+	 * CustomDevice0_stato=1
+	 * CustomDevice0_connessione=connection
+	 * CustomDevice0_ah.app.type=org.energy_home.jemma.ah.zigbee.whitegood
+	 * CustomDevice0_ah.category.pid=12
+	 * 
+	 * @see org.energy_home.jemma.ah.greenathome.GreenAtHomeApplianceService#getNoServerCustomDevice()
+	 */
+	
+	public ArrayList<Hashtable<String, String>> getNoServerCustomDevice() throws ApplianceException, ServiceClusterException {
+		
+		ArrayList<Hashtable<String, String>> infos = new ArrayList<Hashtable<String, String>>();
+		
+		try {
+			if(props==null)
+				loadPropFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		int i=0;
+		
+		while(true)
+		{			
+			String icon = (String) props.get("CustomDevice" + i + "_icona");
+			
+			if (icon==null) break;
+			
+			Hashtable<String, String> ht = new Hashtable<String, String>();
+			ht.put("icona", icon);
+			ht.put("nome", (String) props.get("CustomDevice" + i + "_nome"));
+			ht.put("potenza", (String) props.get("CustomDevice" + i + "_potenza"));
+			ht.put("consumo", (String) props.get("CustomDevice" + i + "_consumo"));
+			ht.put("location", (String) props.get("CustomDevice" + i + "_location"));
+			ht.put("stato", (String) props.get("CustomDevice" + i + "_stato"));
+			ht.put("connessione", (String) props.get("CustomDevice" + i + "_connessione"));
+			ht.put("ah.app.type", (String) props.get("CustomDevice" + i + "_ah.app.type"));
+			ht.put("ah.category.pid", (String) props.get("CustomDevice" + i + "_ah.category.pid"));			
+			infos.add(ht);
+			i++;
+		}
+	
+		return infos;
 	}
 
 	public void updateAppliance(Dictionary props) throws ApplianceException {
@@ -3136,7 +3213,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			if (this.props == null) {
 				loadPropFile();
 			}
-			List<String> rtrn = Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+			List<String> rtrn = Arrays.asList(((String) this.props.get(lblProps)).split("\\s*,\\s*"));
 			return rtrn;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3188,7 +3265,7 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 				lblProps += "YEAR";
 			}
 
-			return Arrays.asList(this.props.getProperty(lblProps).split("\\s*,\\s*"));
+			return Arrays.asList(((String) this.props.get(lblProps)).split("\\s*,\\s*"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3210,10 +3287,10 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 			}
 			if ((lblProps.equals("SuddivisioneConsumi"))) {
 
-				idx = Integer.parseInt(this.props.getProperty("SuddivisioneConsumi"));
+				idx = Integer.parseInt((String) this.props.get("SuddivisioneConsumi"));
 				for (idxC = 0; idxC < idx; idxC++) {
-					lbl = this.props.getProperty("SuddivisioneConsumi" + idxC + "_el").split("\\s*,\\s*");
-					stringToParseInt = this.props.getProperty("SuddivisioneConsumi" + idxC + "_val").split("\\s*,\\s*");
+					lbl = ((String) this.props.get("SuddivisioneConsumi" + idxC + "_el")).split("\\s*,\\s*");
+					stringToParseInt = ((String) this.props.get("SuddivisioneConsumi" + idxC + "_val")).split("\\s*,\\s*");
 					series = new ArrayList<Integer>();
 					for (String s : stringToParseInt) {
 						Integer tmpValue = Integer.parseInt(s);
@@ -3257,35 +3334,33 @@ public class GreenathomeAppliance extends Appliance implements HttpImplementor, 
 		return props;
 	}
 
-	public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException {
 
-		Hashtable props = new Hashtable();
-		String[] lbls = { "ActualDate", "EnergiaProdottaGiornalieroSimul", "EnergiaConsumataGiornalieroSimul", "ConsumoOdiernoSimul", "ConsumoMedio", "ProdottaMedio", "PercIAC2", "PercIAC", "ConsumoMedioSettimanale", "ProdottaMedioSettimanale", "ConsumoAttuale", "ProduzioneAttuale", "ConsumoPrevisto", "Forecast", "SuddivisioneConsumi", "SIEnergyDAY", "SIEnergyWEEK", "SIEnergyMONTH", "SIEnergyYEAR", "SICostDAY", "SICostWEEK", "SICostMONTH", "SICostYEAR", "SIProductionDAY", "SIProductionWEEK", "SIProductionMONTH", "SIProductionYEAR", "DEVEnergyDAY", "DEVEnergyWEEK",
-				"DEVEnergyMONTH", "DEVEnergyYEAR", "DEVCostDAY", "DEVCostWEEK", "DEVCostMONTH", "DEVCostYEAR", "ProducedPower" };
-		int idx, idxC;
-
-		try {
-			JSONObject obj = new JSONObject(jsonVar);
-
-			for (String lbl : lbls) {
-				if ((lbl.equals("SuddivisioneConsumi"))) {
-					// props.put("SuddivisioneConsumi",
-					// getPropConfigurationHM("SuddivisioneConsumi"));
-				} else {
-					String JSONProp = obj.getString(lbl);
-					this.props.setProperty(lbl, JSONProp);
-				}
+	@Override
+	public void updated(Dictionary<String, ?> conf)
+			throws ConfigurationException {
+		
+		if (conf == null){
+			// Configuration not present, load from file in bundle
+			Dictionary defaultProps;
+			try {
+				defaultProps = loadPropFile();
+			
+				configurationAdmin.getConfiguration(getServicePID()).update(defaultProps);
+			} catch (IOException e) {
+				LOG.error("Unable to load  noserver.properties file");
 			}
-
-			storePropFile();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else{
+			//save locally properties
+			this.props=conf;
 		}
-
-		return true;
-
+		//this.props = (Properties)arg0;
 	}
-
-
+	
+	public void bindConfigurationAdmin(ConfigurationAdmin configurationAdmin){
+		this.configurationAdmin=configurationAdmin;
+	}
+	
+	public void unbindConfigurationAdmin(ConfigurationAdmin configurationAdmin){
+		this.configurationAdmin=null;
+	}
 }

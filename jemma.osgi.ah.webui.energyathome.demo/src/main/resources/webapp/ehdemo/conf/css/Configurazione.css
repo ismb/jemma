@@ -132,7 +132,7 @@ input[type=button]:hover {
 	-webkit-border-radius: 4px;
 	padding: 5%;
 	padding-left: 15%;
-	overflow-y:scroll;
+	overflow: hidden;
 	text-align: center;
 }
 
@@ -142,9 +142,9 @@ input[type=button]:hover {
 
 #ConfElettrDiv,#DatiUtente {
 	position: absolute;	
-	left: 5%;
+	left: 15%;
 	width: 75%;
-	height: 80%;
+	height: 100%;
 }
 
 #ConfElettrDiv {
@@ -225,7 +225,7 @@ input[type=button]:hover {
 }
 
 .Form  label {
-	width: 35%;
+	width: 18%;
 	height: 1.2em;
 	font-size: 1.2em;
 	line-height: 1.2em;
@@ -263,7 +263,7 @@ input[type=button]:hover {
 	top: 0%;
 	left: 20%;
 	background-color: white;
-	overflow:scroll;
+	overflow:auto;
 	border: solid 2px #3a8848;
 	border-radius: 4px;
 	-moz-border-radius: 4px; /* firefox */
@@ -290,9 +290,8 @@ input[type=button]:hover {
 	top: 25%;
 	left: 0%;
 	width: 100%;
-	height: 65%;
-	overflow-x: auto;
-	overflow-y: hidden;
+	height: 55%;
+	overflow: auto;
 }
 
 .ElettrVis {

@@ -1,6 +1,6 @@
 var iFrameConfig = {
 	MODULE : "Config",
-	htmlContent: $(document.createElement('div')).attr('id', 'iframeConfig'),
+	htmlContent: $(document.createElement('div')).attr('id', 'iframeConfig').height('100%')
 }
 
 
@@ -14,12 +14,7 @@ iFrameConfig.Init=function(){
 		$("#iframeConfig").show();
 	}
 	
-	$("#iframeConfig").append("<div style=\"width: 100%; height:100%; overflow: hidden;\"><iframe  style=\"width: 100%; height:80%; overflow: hidden; border:none;\" src=\"conf/index_embedded.html\"></iframe></div>");
-	
-	
-	
-	
-	
+	$("#iframeConfig").append("<div style=\"width: 100%; height:100%; overflow: hidden;\"><iframe  style=\"width: 100%; height:100%; overflow: hidden; border:none;\" src=\"conf/index_embedded.html\"></iframe></div>");
 }
 
 iFrameConfig.Exit = function () {

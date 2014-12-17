@@ -1003,7 +1003,8 @@ Storico.VisScelta = function() {
 											  .attr('value', Msg.home["tuttiStorico"])
 											  .append(Msg.home["tuttiStorico"]);*/
 	tutti = "<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"];
-	if (Storico.datiElettr != null) {
+	
+	if (Storico.datiElettr != null && Storico.datiElettr.length > 0) {
 		for (i = 0; i < Storico.datiElettr.length; i++) {
 			// creo elenco dei dispositivi selezionabili
 			if (Storico.datiElettr[i].tipo == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
@@ -1028,8 +1029,10 @@ Storico.VisScelta = function() {
 		listaDisp = tutti + tmp;
 		$("#SceltaDispositivo").html(listaDisp);
 	} else {
-		$("#SceltaDispositivo").html("<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"]);
+		// $("#SceltaDispositivo").html("<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"]);
+		InterfaceEnergyHome.objService.getNoServerCustomDevice(Storico.GestStoricoList);
 	}
+	
 	Storico.periodoScelto = Storico.GIORNO;
 	Storico.tipoUltimoPeriodo = Storico.GIORNO;
 	Storico.dispositivoScelto = Msg.home["tuttiStorico"];
@@ -1051,6 +1054,7 @@ Storico.VisScelta = function() {
 		if (Main.env == 0) console.log(40, Storico.MODULE, "VisStorico : nessun dato");
 		$("#StoricoGraph").html($(document.createElement('div')).attr('id', 'StoricoVuoto').text(Msg.home["noGrafStorico"]));
 		//$("#StoricoGraph").html("<div id='StoricoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+		hideSpinner();
 		return;
 	}
 
@@ -1070,6 +1074,70 @@ Storico.VisScelta = function() {
 
 	// visualizza grafico per valori di default
 	Storico.GetStorico();
+}
+
+Storico.GestStoricoList = function(res, err)
+{
+	if(!err) {
+		if(res.list.length > 0) {
+			
+			var listaDisp = "<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"] ;
+			
+			$.each(res.list, function(indice, elettrodom) {				
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "12" &&
+						elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "14") 
+				{
+					// Qui aggiungo gli elementi della choice associati ai device fake ...
+					var nome = elettrodom["map"]["nome"];						
+					listaDisp += "<br><input class='ButtonScelta' name='Dispositivo' type='radio' value='" + nome + "'>" + nome;
+				}
+			});
+			
+			$("#SceltaDispositivo").html(listaDisp);
+			
+			Storico.periodoScelto = Storico.GIORNO;
+			Storico.tipoUltimoPeriodo = Storico.GIORNO;
+			Storico.dispositivoScelto = Msg.home["tuttiStorico"];
+			if (Main.env == 0) console.log(80, Storico.MODULE, "dispositivoScelto = " + Storico.dispositivoScelto + " periodoScelto = " + Storico.periodoScelto);
+
+			// metto data inizio e fine = ieri
+			Storico.dataFine = new Date(GestDate.GetActualDate().getTime());
+			Storico.dataFine.setDate(Storico.dataFine.getDate() - 1);
+			Storico.dataFine.setHours(23);
+			Storico.dataFine.setMinutes(59);
+			Storico.dataInizio = new Date(Storico.dataFine.getTime());
+			Storico.dataInizio.setHours(0);
+			Storico.dataInizio.setMinutes(0);
+
+			// gestisco caso giorno installazione == oggi, non ho dati nello storico
+			if ((Storico.dataInizio.getTime() < Storico.installData.getTime()) && (Storico.dataFine.getTime() < Storico.installData.getTime())) {
+				$("#Prec").hide();
+				$("#Succ").hide();
+				if (Main.env == 0) console.log(40, Storico.MODULE, "VisStorico : nessun dato");
+				$("#StoricoGraph").html($(document.createElement('div')).attr('id', 'StoricoVuoto').text(Msg.home["noGrafStorico"]));
+				//$("#StoricoGraph").html("<div id='StoricoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
+				hideSpinner();
+				return;
+			}
+
+			// imposta gestione scelta
+			$("input[type=radio][name='Periodo']").change(Storico.SceltaPeriodo);
+			$("input[type=radio][name='Dispositivo']").change(Storico.SceltaDispositivo);
+
+			// gestisce frecce
+			// per funzionare su iPad devo mettere un div sopra l'immagine della freccia
+			// se non non e' cliccabile
+			$("#Prec").click(Storico.Precedente);
+			$("#Succ").click(Storico.Successivo);
+			if (Storico.dataInizio.getTime() < Storico.installData.getTime()){
+				$("#Prec").hide();
+				// $("#Succ").hide();
+			}
+
+			// visualizza grafico per valori di default
+			Storico.GetStorico();
+		}
+	}	
 }
 
 /*******************************************************************************
