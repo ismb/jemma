@@ -2,7 +2,6 @@ var potenza = {
 	value : null
 };
 
-
 var CostiConsumi = {
 	MODULE : "CostiConsumi",
 	CONSUMI : 1,
@@ -86,7 +85,7 @@ var CostiConsumi = {
 
 	limitMaxKW : 100000,
 // watt
-	visGraficoCount: -1,
+	visGraficoCount: 3,
 	setImgCount: -1
 }
 
@@ -379,32 +378,56 @@ CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 			CostiConsumi.potenzaAttuale.value = result.value;
 		} else{
 			//prelevare dato smart info
-			$.each(result.list,function(indice, elettrodom) {
-				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
-					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
-						CostiConsumi.SmartInfo = elettrodom["map"];
-						device_value = CostiConsumi.SmartInfo.device_value;
-						if (device_value != undefined) {
-							CostiConsumi.potenzaAttuale.value = device_value.list[0].value.value;
+			if (result.list.length == 0){
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GestNoServerCustomDevice);
+			} else {
+				$.each(result.list, function(indice, elettrodom) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+						if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+							CostiConsumi.SmartInfo = elettrodom["map"];
+							device_value = CostiConsumi.SmartInfo.device_value;
+							if (device_value != undefined) {
+								CostiConsumi.potenzaAttuale.value = device_value.list[0].value.value;
+							}
 						}
+						if (Main.env == 0)
+							console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
 					}
-					if (Main.env == 0)
-						console.log('COSTICONSUMI3', 'SmartInfo - '+CostiConsumi.SmartInfo);
-				}
-			});
+				});
+			}
 		}
 	} else {
 		CostiConsumi.potenzaAttuale.value = null;
 	}
 
-
-
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiPotenzaAttuale', 'Esco!');
 	
-	setImgCount--;
-	if(setImgCount==0)
-		CostiConsumi.GetDatiRete();
+	if (result.list.length != 0) {
+		setImgCount--;
+		if(setImgCount==0)
+			CostiConsumi.GetDatiRete();
+	}
+}
+
+CostiConsumi.GestNoServerCustomDevice = function(res, err)
+{
+	if(!err) {
+		if(res.list.length>0) {
+			$.each(res.list, function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "12") {
+						CostiConsumi.SmartInfo = elettrodom["map"];
+						CostiConsumi.potenzaAttuale.value = elettrodom["map"]["potenza"];
+					}
+				}
+			});
+			
+			setImgCount--;
+			if(setImgCount==0)
+				CostiConsumi.GetDatiRete();
+		}
+	}
 }
 
 /*
@@ -419,6 +442,8 @@ CostiConsumi.GetDatiProduzione = function() {
 	if (InterfaceEnergyHome.visError != InterfaceEnergyHome.ERR_CONN_SERVER) {
 		// Main.ResetError();
 	}
+	
+	// Real devices ...
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
 			// Cosa mettere al posto di Total Power?
@@ -430,11 +455,16 @@ CostiConsumi.GetDatiProduzione = function() {
 				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
 		}
+	// noserver mode ...
 	} else if (InterfaceEnergyHome.mode == -1) {
-		try {
+		try {	
+			// Legge la configurazione degli appliances ...
+			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.CheckSmartInfo);
+					
 			// Cosa mettere al posto di Total Power?
-			//InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiProduzioneAttuale);
-			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneAttuale, "ProducedPower");
+			// InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiProduzioneAttuale);
+			// InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneAttuale, "ProducedPower");
+			
 		} catch (err) {
 			if (Main.env == 0)
 				console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
@@ -480,6 +510,67 @@ CostiConsumi.GetDatiProduzione = function() {
 		console.log('FotoVoltaico.js', 'GetDatiProduzione', 'Esco!');
 }
 
+// Se abbiamo uno smartinfo di produzione (ah.category.pid=14) usiamo il valore della 
+// potenza reale, altrimenti lo leggiamo dal file di configurazione noserver.properties
+CostiConsumi.CheckSmartInfo = function(result, err)
+{
+	if (!err) {
+		if(result.list.length > 0) {
+			var found = false;
+			$.each(result.list, function(indice, elettrodom) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "14") {
+						// Abbiamo uno smartinfo di produzione
+						found = true;
+					}
+				}
+			});
+			
+			if(found) {
+				try {
+					InterfaceEnergyHome.objService.getAttribute(
+							CostiConsumi.DatiProduzioneAttuale,
+							InterfaceEnergyHome.PRODUZIONE_TOTALE);
+				} catch (err) {
+					if (Main.env == 0)
+						console.log('exception in FotoVoltaico.js - in CostiConsumi.GetDatiProduzione method: ', err);
+					InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
+				}
+			} else {
+				// legge gli appliance fittizi da noserver.properties ...
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
+			}
+		} else {
+			// legge gli appliance fittizi da noserver.properties ...
+			InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
+		}
+	}
+}
+
+CostiConsumi.DatiSmartInfo = function(result, err)
+{
+	if(!err) {
+		
+		var power = 0;
+		
+		// Cerca in noserver.properties la potenza dello smartinfo di produzione ...
+		$.each(result.list, function(indice, elettrodom) {
+			if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
+				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] == "14") {
+					power = elettrodom["map"]["potenza"];
+				}
+			}
+		});	
+		
+		var produzioneAttuale = new Object();
+		produzioneAttuale.value = power;
+		produzioneAttuale.list = new Array(1);
+		produzioneAttuale.list[0] = power;
+		
+		CostiConsumi.DatiProduzioneAttuale(produzioneAttuale, null);
+	}
+}
+
 /*
  * Metodo Positive CallBack di CostiConsumi.GetDatiProduzione
  */
@@ -509,7 +600,7 @@ CostiConsumi.DatiProduzioneAttuale = function(result, err) {
 		//				console.log('FotoVoltaico', 'SmartInfo - '+CostiConsumi.SmartInfo);
 		//		}
 		//	});
-			CostiConsumi.produzioneAttuale.value = result.list[0] * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
+			CostiConsumi.produzioneAttuale.value = result.value * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
 		} else {
 			CostiConsumi.produzioneAttuale.value = result.value * CostiConsumi.MOLTFORDEMO; //aggiungo un moltiplicatore 10 per la demo
 		}
@@ -690,10 +781,12 @@ CostiConsumi.DatiEnergiaProdottaGiornalieroCb = function(result, err) {
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiEnergiaProdottaGiornalieroCb', 'Esco!');
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
-		
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 }
 
 CostiConsumi.GetDatiConsumi = function() {
@@ -761,9 +854,13 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 		}
 	}
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 	
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'DatiConsumoGiornalieroCb', 'Esco!');
@@ -772,12 +869,18 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 CostiConsumi.VisGrafico = function() {
 	if (Main.env == 0)
 		console.log('FotoVoltaico.js', 'VisGrafico', 'Entro!');
-	
-	var ifDataNull = true;
 
-	var dataConsumi = CostiConsumi.consumoGiornaliero;
-	var dataIAC = CostiConsumi.energiaProdottaGiornaliero;
-	var dataForecast = CostiConsumi.forecastGiornaliero.slice(0);
+	CostiConsumi.visGraficoCount--;
+	var ifDataNull = true;
+	if((CostiConsumi.visGraficoCount < 0)|| (CostiConsumi.visGraficoCount == 0)){
+		CostiConsumi.visGraficoCount = 3;
+	} else if(CostiConsumi.visGraficoCount > 0) {
+		return;
+	}
+
+	var dataConsumi = (CostiConsumi.consumoGiornaliero == null) ? null : CostiConsumi.consumoGiornaliero.slice(0);
+	var dataIAC = (CostiConsumi.energiaProdottaGiornaliero == null) ? null : CostiConsumi.energiaProdottaGiornaliero.slice(0);
+	var dataForecast = (CostiConsumi.forecastGiornaliero == null) ? null : CostiConsumi.forecastGiornaliero.slice(0);
 	for (var index = 0; index < dataForecast.length; ++index) {
 	    if(dataForecast[index] == null){
 	    	dataForecast[index] = 0;
@@ -802,10 +905,10 @@ CostiConsumi.VisGrafico = function() {
 				dataIAC[index] = 0;
 			} else {
 				ifDataNull = false;
+				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
 				dataConsumi[index] = (dato  - dataIAC[index]) / 1000; //ci tolgo la prodotta perche' il gateway torna la somma, non il consumo
 				//IMPORTANTE: questo blocco va fatto dopo il blocco dataConsumi perche' qui si aggiunge il *10 che se fatto prima
 				//sballerebbe il calcolo dei consumi
-				dataIAC[index] = (dataIAC[index] / 1000) * 2; //inserisco un fattore di moltiplicazione 10 per la demo
 				
 					
 				hours = Main.dataAttuale.getHours();
@@ -921,7 +1024,7 @@ CostiConsumi.VisGrafico = function() {
 						title : {
 							align : 'high',
 							offset : 0,
-							text : ' KWh',
+							text : ' kWh',
 							rotation : 0,
 							y : -10,
 							style : {
@@ -950,8 +1053,8 @@ CostiConsumi.VisGrafico = function() {
 					tooltip : {
 						formatter : function() {
 							var txt = '<b>' + this.series.name + '</b>: '
-									+ Highcharts.numberFormat(this.y, 1)
-									+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
+									+ Highcharts.numberFormat(this.y, 2)
+									+ ' kWh<br/>' + Msg.home["time"] + this.x + ':00'
 							return txt;
 						}
 					},
@@ -1031,7 +1134,7 @@ CostiConsumi.VisGrafico = function() {
 					title : {
 						align : 'high',
 						offset : 0,
-						text : ' KWh',
+						text : ' kWh',
 						rotation : 0,
 						y : -10,
 						style : {
@@ -1061,7 +1164,7 @@ CostiConsumi.VisGrafico = function() {
 					formatter : function() {
 						var txt = '<b>' + this.series.name + '</b>: '
 								+ Highcharts.numberFormat(this.y, 2)
-								+ ' KWh<br/>' + Msg.home["time"] + this.x + ':00'
+								+ ' kWh<br/>' + Msg.home["time"] + this.x + ':00'
 						return txt;
 					}
 				},
@@ -1421,7 +1524,7 @@ CostiConsumi.gestModalWindow = function() {
 					html : "<p class='titoloInfoBox'>"
 							+ Msg.home['costoConsumoAttualeTitleBox']
 							+ "</p><p>" + Msg.home['lblConsO'] + ": "
-							+ CostiConsumi.consumoOdierno + " KWh</p><br>",
+							+ CostiConsumi.consumoOdierno + " kWh</p><br>",
 					animate : true,
 					close : true,
 					width : 305,
@@ -1466,10 +1569,14 @@ CostiConsumi.gestModalWindow = function() {
 CostiConsumi.getDailyPVForecast = function() {
 	if (InterfaceEnergyHome.mode > 0) {
 		InterfaceEnergyHome.objService.getDailyPVForecast(CostiConsumi.getDailyPVForecastCB);
-		InterfaceEnergyHome.objService.getDailyPVForecastDebug();
+		//InterfaceEnergyHome.objService.getDailyPVForecastDebug();
 	} else{
-		CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
-		CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
+		if (InterfaceEnergyHome.mode == -1) {
+			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getDailyPVForecastCB, "EnergiaProdottaGiornalieroSimul");
+		} else {
+			CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
+			CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
+		}
 	}
 }
 
@@ -1483,9 +1590,12 @@ CostiConsumi.getDailyPVForecastCB = function(result, err) {
 		CostiConsumi.forecastGiornaliero = result.list;
 	}
 	
-	CostiConsumi.visGraficoCount--;
-	if(CostiConsumi.visGraficoCount==0)
+	CostiConsumi.VisGrafico();
+	/*if(CostiConsumi.visGraficoCount==0)
 		CostiConsumi.VisGrafico();
+	else if(CostiConsumi.visGraficoCount < 0)
+		alert('FAULT');
+	*/
 }
 
 //esecuzione di un ciclo di aggiornamento dei dati di potenza attuale in casa

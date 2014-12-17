@@ -5,8 +5,10 @@
 *.orig*
 *.classpath*
 *.project
+*.settings/*
 */.settings/*
 */target/*
 **/m2m/*
 **/.m2m*
 *.gitignore*
+*.bat*

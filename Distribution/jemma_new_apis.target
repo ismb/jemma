@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Jemma" sequenceNumber="32">
-<locations>
-<location path="${resource_loc:/jemma.Distribution}/target/jemma.Distribution-0.2-bin/modules/dependencies" type="Directory"/>
-<location path="/home/einann/dev/temp/temptarget" type="Directory"/>
-</locations>
-</target>

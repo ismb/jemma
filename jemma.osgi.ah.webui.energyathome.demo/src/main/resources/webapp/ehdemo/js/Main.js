@@ -22,7 +22,7 @@ var Main = {
 	appIdSmartInfo: null,
 	secretPassPhrase: "289quaoj0u823qejiak289uq3089sfoswfrwefij489fjqepiadmk",
 	enablePV: null,
-	env: 0  //tipo ambiente (0 = sviluppo con console.log, 1 = sviluppo senza console.log, 2 = produzione)
+	env: 1  //tipo ambiente (0 = sviluppo con console.log, 1 = sviluppo senza console.log, 2 = produzione)
 }
 var indicatoreTermometro = null;
 var suffIndicatoreT = '';

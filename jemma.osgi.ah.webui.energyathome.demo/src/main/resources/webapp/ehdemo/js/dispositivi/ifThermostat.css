@@ -93,9 +93,10 @@
 #ifThermostat  .inline{
     float: left;
     display: block;
+    width:60%;
 }
  #ifThermostat  #temperatura_value{
-    width:70px;
+    width:30%;
     height: 22px;
     max-height: 22px;
     font-size: large;
