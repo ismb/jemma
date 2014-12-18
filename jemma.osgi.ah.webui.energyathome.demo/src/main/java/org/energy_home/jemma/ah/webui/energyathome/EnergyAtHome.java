@@ -221,7 +221,7 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 		String queryString = request.getRequestURI();
 		
 		if (queryString.equals(applicationWebAlias + "/conf") || (queryString.equals(applicationWebAlias + "/conf/"))) {
-			response.sendRedirect(applicationWebAlias + "/conf/index.html");
+			response.sendRedirect(applicationWebAlias + "/conf/index_embedded.html");
 			return true;
 		}
 		else if (queryString.equals(applicationWebAlias) || (queryString.equals(applicationWebAlias + "/"))) {
@@ -277,7 +277,7 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 								if (target != null)
 									response.sendRedirect(target);
 								else {
-									response.sendRedirect(applicationWebAlias + "/conf/index.html");
+									response.sendRedirect(applicationWebAlias + "/conf/index_embedded.html");
 								}
 							} catch (Exception ignored) {
 								return false;
@@ -288,7 +288,7 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 							return true;
 						} else {
 //							session.putValue("login.target", HttpUtils.getRequestURL(request).toString());
-							session.putValue("login.target", applicationWebAlias + "/conf/index.html");
+							session.putValue("login.target", applicationWebAlias + "/conf/index_embedded.html");
 							Object done = session.getValue("logon.isDone");
 							if (done == null) {
 								if (request.getMethod().equals("GET")) {
