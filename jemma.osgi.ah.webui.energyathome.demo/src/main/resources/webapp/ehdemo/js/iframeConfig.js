@@ -5,7 +5,6 @@ var iFrameConfig = {
 
 
 iFrameConfig.Init=function(){
-	
 	var divElettro = $("#iframeConfig");
 
 	if (divElettro.length == 0) {
