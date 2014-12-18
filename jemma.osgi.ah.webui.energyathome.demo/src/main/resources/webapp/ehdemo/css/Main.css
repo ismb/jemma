@@ -125,6 +125,14 @@ span {
 	height: 8%;
 }
 
+#ContentMenuConf {
+	position: absolute;
+	left: 16%;
+	top: 88%;
+	width: 33%;
+	height: 8%;
+}
+
 #Content {
 	position: absolute;
 	left: 15%;

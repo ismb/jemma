@@ -141,18 +141,12 @@ CostiConsumi.Init = function() {
 
 	var divFrecce = $("#FrecceFV");
 	if (divFrecce.length == 0) {
-		$(document.createElement('div')).addClass('divFrecce').attr('id',
-				'FrecceFV').appendTo($("#CostoConsumoSintesi")).show();
-		$(document.createElement('div')).attr('id', 'divFrecceProd').appendTo(
-				$("#FrecceFV"));
-		$(document.createElement('div')).attr('id', 'divFrecceConsumi')
-				.appendTo($("#FrecceFV"));
-		$(document.createElement('div')).attr('id', 'divFrecceRete').appendTo(
-				$("#FrecceFV"));
-		$(document.createElement('div')).attr('id', 'divCentro').appendTo(
-				$("#FrecceFV"));
-		$(document.createElement('img')).attr('id', 'imgCentro').attr('src',
-				"./Resources/Images/center.png").appendTo($("#divCentro"));
+		$(document.createElement('div')).addClass('divFrecce').attr('id', 'FrecceFV').appendTo($("#CostoConsumoSintesi")).show();
+		$(document.createElement('div')).attr('id', 'divFrecceProd').appendTo($("#FrecceFV"));
+		$(document.createElement('div')).attr('id', 'divFrecceConsumi').appendTo($("#FrecceFV"));
+		$(document.createElement('div')).attr('id', 'divFrecceRete').appendTo($("#FrecceFV"));
+		$(document.createElement('div')).attr('id', 'divCentro').appendTo($("#FrecceFV"));
+		$(document.createElement('img')).attr('id', 'imgCentro').attr('src', "./Resources/Images/center.png").appendTo($("#divCentro"));
 	} else {
 		$("#FrecceFV").show();
 		$("#divFrecceProd").show();
@@ -186,8 +180,7 @@ CostiConsumi.GestFotoVoltaico = function() {
 
 	$("#CostiConsumi").show();
 
-	if ((CostiConsumi.mode == CostiConsumi.CONSUMI)
-			|| (CostiConsumi.mode == CostiConsumi.COSTI)) {
+	if ((CostiConsumi.mode == CostiConsumi.CONSUMI) || (CostiConsumi.mode == CostiConsumi.COSTI)) {
 		CostiConsumi.mode = CostiConsumi.FOTOVOLTAICO;
 
 		$("#TitoloCostiConsumi").html(Msg.home["titoloPV"]);
@@ -216,8 +209,7 @@ CostiConsumi.GestFotoVoltaico = function() {
 			var conMeterDiv = document.getElementById('ReteAttualeMeter');
 			conMeterDiv.style.display = 'inline';
 
-			var graphConsOdiernoDiv = document
-					.getElementById('GraficoConsumoOdierno');
+			var graphConsOdiernoDiv = document.getElementById('GraficoConsumoOdierno');
 			graphConsOdiernoDiv.style.display = 'inline';
 		} else {
 			$("#ConsumoAttualeMeter").show();
