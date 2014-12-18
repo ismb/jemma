@@ -93,15 +93,13 @@ public class SerialPortConnectorJssc implements IConnector {
 				try {
 					serialReader = new SerialReader(this);
 					serialPort.addEventListener(serialReader);
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.info("Added SerialPort event listener");
+					LOG.debug("Added SerialPort event listener");
 				} catch (SerialPortException e) {
 					disconnect();
 					throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
 				}
 
-				if (DataLayer.getPropertiesManager().getDebugEnabled())
-					LOG.info("Connection on " + portName + " established");
+				LOG.info("Connection on " + portName + " established");
 
 				setConnected(true);
 
@@ -128,12 +126,11 @@ public class SerialPortConnectorJssc implements IConnector {
 		if (isConnected()) {
 
 			try {
-				if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
-					LOG.info(">>> Sending: " + buff.ToHexString());
+				LOG.debug(">>> Sending: {}", buff.ToHexString());
 				serialPort.writeBytes(buff.getArrayRealSize());
 			} catch (Exception e) {
 
-				LOG.error("Error writing Rs232:" + buff.ToHexString() + " -- Error:" + e.getMessage());
+				LOG.debug("Error writing Rs232: {} -- Error: {}",buff.ToHexString() , e);
 				throw e;
 
 			}
@@ -145,7 +142,6 @@ public class SerialPortConnectorJssc implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	@Override
 	public boolean isConnected() {
 		return connected;
 	}
@@ -154,7 +150,6 @@ public class SerialPortConnectorJssc implements IConnector {
 	 * @throws SerialPortException
 	 * @inheritDoc
 	 */
-	@Override
 	public void disconnect() throws SerialPortException {
 		setConnected(false);
 		serialReader = null;
@@ -170,8 +165,7 @@ public class SerialPortConnectorJssc implements IConnector {
 
 			}
 		}
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("RS232 - Disconnected");
+		LOG.info("RS232 - Disconnected");
 	}
 
 	class SerialReader implements SerialPortEventListener {
@@ -218,24 +212,23 @@ public class SerialPortConnectorJssc implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+		LOG.info("Starting inizialize procedure for: PortName={} -- Speed={}", commport , boudrate);
+		LOG.info("DefaultTimeout: {}", DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
 
 		setIgnoreMessage(true);
 		DataLayer.cpuReset();
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Waiting 3,5 seconds after command CPUReset...");
+		LOG.info("Waiting 3,5 seconds after command CPUReset...");
 		Thread.sleep(3500);
 		disconnect();
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Clear buffer after CPUReset...");
+		LOG.info("Clear buffer after CPUReset...");
 		DataLayer.clearBuffer();
 		setIgnoreMessage(false);
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+		LOG.debug("Starting inizialize procedure for: PortName={} -- Speed={}", commport , boudrate);
+		LOG.debug("DefaultTimeout: {}", DataLayer.getPropertiesManager().getCommandTimeoutMS());
+
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
@@ -243,8 +236,7 @@ public class SerialPortConnectorJssc implements IConnector {
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
 		else {
-			if (DataLayer.getPropertiesManager().getDebugEnabled())
-				LOG.info("Connected: PortName=" + commport + "Speed=" + boudrate);
+			LOG.info("Connected: PortName=" + commport + "Speed=" + boudrate);
 
 		}
 	}

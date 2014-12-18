@@ -11,11 +11,11 @@ Bundle-Version: 1.0.2
 Created-By: Apache Maven Bundle Plugin
 Import-Package: org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)"
  ,org.energy_home.jemma.ah.zigbee.zcl.lib;version="[3.0,4)",org.osgi.fra
- mework;version="1.3.0",org.slf4j;version="[1.7.7,2)",org.osgi.service.d
- evice;version="1.1.0",org.energy_home.jemma.ah.hac;version="[3.0,4)",or
- g.energy_home.jemma.ah.zigbee,org.energy_home.jemma.ah.cluster.zigbee.s
- ecurity;version="[3.0,4)",org.osgi.service.cm;version="[1.5,2)",org.ene
- rgy_home.jemma.ah.cluster.ah;version="[3.0,4)"
+ mework;version="1.3.0",org.slf4j;version="[1.6,2)",org.osgi.service.dev
+ ice;version="1.1.0",org.energy_home.jemma.ah.hac;version="[3.0,4)",org.
+ energy_home.jemma.ah.cluster.ah;version="[3.0,4)",org.energy_home.jemma
+ .ah.zigbee,org.energy_home.jemma.ah.cluster.zigbee.security;version="[3
+ .0,4)",org.osgi.service.cm;version="[1.5,2)"
 Private-Package: org.energy_home.jemma.ah.zigbee.appliances.generic
 Require-Bundle: jemma.osgi.ah.hac.lib
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"

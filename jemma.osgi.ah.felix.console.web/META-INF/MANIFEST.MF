@@ -11,10 +11,10 @@ Created-By: Apache Maven Bundle Plugin
 Import-Package: org.energy_home.jemma.ah.hac.lib;version="[3.0.0,3.1.0)"
  ,org.energy_home.jemma.ah.hac.lib.ext;version="[3.4.0,3.5.0)",org.energ
  y_home.jemma.ah.hac;version="[3.0.0,3.1.0)",javax.servlet;version="[2.5
- ,3)",javax.servlet.http;version="[2.5,3)",org.slf4j;version="[1.7.7,2)"
- ,org.apache.felix.webconsole;version="[3.1,4)",org.osgi.framework;versi
- on="[1.8,2)",javax.management,org.energy_home.jemma.ah.cluster.ah;versi
- on="[3.0,4)"
+ ,3)",javax.servlet.http;version="[2.5,3)",org.slf4j;version="[1.6,2)",o
+ rg.apache.felix.webconsole;version="[3.1,4)",org.osgi.framework;version
+ ="[1.8,2)",javax.management,org.energy_home.jemma.ah.cluster.ah;version
+ ="[3.0,4)"
 Include-Resource: OSGI-INF/HacWebCommandProvider.xml=OSGI-INF/HacWebComm
  andProvider.xml
 Private-Package: org.energy_home.jemma.ah.felix.console.web

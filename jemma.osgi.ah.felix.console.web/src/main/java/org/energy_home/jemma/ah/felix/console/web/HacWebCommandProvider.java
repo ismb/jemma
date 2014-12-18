@@ -254,6 +254,7 @@ public class HacWebCommandProvider extends org.apache.felix.webconsole.AbstractW
 					}
 					pw.println("<br/>");
 					String gitVersion=getGitBuildNumber();
+					LOG.debug("GIT VERSION: {}",gitVersion);
 					if(gitVersion!=null)
 					{
 						pw.println("Git version: <a href=\"https://github.com/ismb/jemma/commit/"+gitVersion+"\">"+gitVersion+"</a>");

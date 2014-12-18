@@ -64,7 +64,7 @@
 							 javax.servlet.http,
 							 javax.servlet.resources,
 							 org.apache.commons.codec.binary,
-							 org.slf4j;version="[1.7.7,2)",
+							 org.slf4j;version="[1.6,2)",
 							 org.apache.http;version="4.1.0",
 							 org.apache.http.util;version="4.1.0",
 							 org.apache.http.entity;version="4.1.0",
@@ -126,11 +126,6 @@
 			<version>${org.eclipse.equinox.util.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>org.apache.commons.httpclient</artifactId>
 			<version>${org.apache.commons.httpclient.version}</version>
@@ -150,28 +145,5 @@
 			<artifactId>javax.servlet</artifactId>
 			<version>${javax.servlet.version}</version>
 		</dependency>
-
-<!-- 
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>org.eclipse.equinox.http.registry</artifactId>
-			<version>${org.eclipse.equinox.http.registry.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>org.eclipse.equinox.http.servlet</artifactId>
-			<version>${org.eclipse.equinox.http.servlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>org.eclipse.equinox.http.servletbridge</artifactId>
-			<version>${org.eclipse.equinox.http.servletbridge.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>org.eclipse.equinox.registry</artifactId>
-			<version>${org.eclipse.equinox.registry.version}</version>
-		</dependency>
- -->
 	</dependencies>
 </project>

@@ -16,9 +16,13 @@
 package org.energy_home.jemma.ah.zigbee;
 
 import org.energy_home.jemma.ah.internal.zigbee.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZclFrame implements IZclFrame {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ZclFrame.class);
+	
 	byte[] data;
 
 	int pos = 0;
@@ -49,7 +53,7 @@ public class ZclFrame implements IZclFrame {
 	public ZclFrame(byte[] data) {
 		this.data = data;
 		if (data.length < 3)
-			System.out.println("FIXME: check size, NOW IS INCORRECT!!!");
+			LOG.debug("FIXME: check size, NOW IS INCORRECT!!!");
 		// throw new ZclException("Frame too short");
 
 		if (isManufacturerSpecific())

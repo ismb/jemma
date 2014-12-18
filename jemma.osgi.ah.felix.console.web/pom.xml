@@ -49,7 +49,7 @@
 							 org.energy_home.jemma.ah.hac;version="[3.0.0,3.1.0)",
 							 javax.servlet,
 							 javax.servlet.http,
-							 org.slf4j;version="[1.7.7,2)",
+							 org.slf4j;version="[1.6,2)",
 							 org.apache.felix.webconsole,
 							 org.osgi.framework,*
 						</Import-Package>
@@ -90,11 +90,6 @@
 			<version>${org.eclipse.equinox.util.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet</artifactId>
 			<version>${javax.servlet.version}</version>
@@ -119,13 +114,6 @@
 			<artifactId>org.apache.felix.webconsole.plugins.upnp</artifactId>
 			<version>${org.apache.felix.webconsole.plugins.upnp.version}</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr</artifactId>
-			<version>${org.apache.felix.scr.version}</version>
-		</dependency> 
-		-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>org.apache.commons.io</artifactId>

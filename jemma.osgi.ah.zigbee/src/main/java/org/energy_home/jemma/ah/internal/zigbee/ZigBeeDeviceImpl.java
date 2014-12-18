@@ -194,7 +194,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 
-		System.out.println("Sending a ZCLFrame with Key:" + hash + " -- for CLuster:" + clusterId + " --- TO:" + this.getIeeeAddress());
+		LOG.debug("Sending a ZCLFrame with Key:" + hash + " -- for CLuster:" + clusterId + " --- TO:" + this.getIeeeAddress());
 		long key = new Long(hash);
 		SynchronousQueue sq = new SynchronousQueue();
 
@@ -271,7 +271,7 @@ public class ZigBeeDeviceImpl implements ZigBeeDevice, TimerListener {
 
 		long hash = calculateTxRxHash(clusterId, zclFrame);
 
-		System.out.println("Received a ZCLFrame with Key:" + hash + " for clusterId: " + clusterId + " --- Data:" + zclFrame.toString());
+		LOG.debug("Received a ZCLFrame with Key:" + hash + " for clusterId: " + clusterId + " --- Data:" + zclFrame.toString());
 		if (LOG.isDebugEnabled() && zigbeeManager.isRxTxLogEnabled())
 			this.logZclMessage(false, hash, (short) this.service.getSimpleDescriptor().getApplicationProfileIdentifier().intValue(), clusterId, zclFrame);
 

@@ -73,34 +73,25 @@ public class ZdoManager /* implements APSMessageListener */{
 
 		/* MGMT_LQI_Response */
 		if (message.getClusterID() == 0x8031) {
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a MGMT_LQI_Response");
-			}
+			LOG.debug("Extracted APS With a MGMT_LQI_Response");
 
 		}
 		/* MGMT_LQI_Request */
 		else if (message.getClusterID() == 0x0031) {
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a MGMT_LQI_Request");
-			}
+			LOG.debug("Extracted APS With a MGMT_LQI_Request");
 		}
 		/* Node_Desc_req */
 		else if (message.getClusterID() == 0x0002) {
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a Node_Desc_req");
-			}
+			LOG.debug("Extracted APS With a Node_Desc_req");
 		}
 		/* Node_Desc_rsp */
 		else if (message.getClusterID() == 0x8002) {
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
 				LOG.debug("Extracted APS With a Node_Desc_rsp");
-			}
 		}
 		/* Leave_rsp */
 		else if (message.getClusterID() == 0x8034) {
-			if (getGal().getPropertiesManager().getDebugEnabled()) {
-				LOG.debug("Extracted APS With a Leave_rsp");
-			}
+			LOG.debug("Extracted APS With a Leave_rsp");
+			
 			WSNNode _nodeRemoved = new WSNNode();
 			Address _add = message.getSourceAddress();
 			_nodeRemoved.setAddress(_add);
@@ -165,11 +156,11 @@ public class ZdoManager /* implements APSMessageListener */{
 			synchronized (getGal().getNetworkcache()) {
 				if ((getGal().getFromNetworkCache(_Node)) == null) {
 					/* id not exist */
-					if (getGal().getPropertiesManager().getDebugEnabled()){
+					if (LOG.isDebugEnabled()){
 						String shortAdd = (_Node.get_node().getAddress().getNetworkAddress() != null) ? String.format("%04X", _Node.get_node().getAddress().getNetworkAddress()): "NULL";
 						String IeeeAdd = (_Node.get_node().getAddress().getIeeeAddress() != null) ? String.format("%08X", _Node.get_node().getAddress().getIeeeAddress()): "NULL";
 						
-						LOG.info("Adding node from [ZDP Announcement] into the NetworkCache IeeeAddress:" + IeeeAdd + " --- Short:" + shortAdd );
+						LOG.debug("Adding node from [ZDP Announcement] into the NetworkCache IeeeAddress: {} --- Short: {}",IeeeAdd , shortAdd );
 					}
 					getGal().getNetworkcache().add(_Node);
 					if (!_Node.isSleepyOrEndDevice()) {
@@ -186,17 +177,14 @@ public class ZdoManager /* implements APSMessageListener */{
 
 					Status _s = new Status();
 					_s.setCode((short) 0x00);
-					System.out.println("\n\rNodeDiscovered From ZDP Device_announcement:" + String.format("%04X", _Node.get_node().getAddress().getNetworkAddress()) + "\n\r");
+					LOG.debug("\n\rNodeDiscovered From ZDP Device_announcement: {} ", String.format("%04X", _Node.get_node().getAddress().getNetworkAddress()) + "\n\r");
 					
 					try {
 						getGal().get_gatewayEventManager().nodeDiscovered(_s, _Node.get_node());
 					} catch (Exception e) {
 
-						LOG.error("Error on Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
+						LOG.error("Error on Received ZDP Device_announcement: {}", _Node.get_node().getAddress().getNetworkAddress() + "--" + e.getMessage());
 
-					}
-					if (getGal().getPropertiesManager().getDebugEnabled()) {
-						LOG.debug("Received ZDP Device_announcement: " + _Node.get_node().getAddress().getNetworkAddress());
 					}
 				}
 			}

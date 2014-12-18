@@ -8,10 +8,10 @@ Bundle-Version: 1.0
 Created-By: Apache Maven Bundle Plugin
 Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
  on="[2.5,3)",org.osgi.service.useradmin;version="[1.1,2)",javax.securit
- y.auth.login,org.slf4j;version="[1.7.7,2)",org.osgi.framework;version="
- [1.5,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.service.
- event;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)",org.osg
- i.util.tracker;version="1.4.2"
+ y.auth.login,org.slf4j;version="[1.6,2)",org.osgi.framework;version="[1
+ .5,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.service.ev
+ ent;version="[1.2,2)",org.osgi.service.http;version="[1.2,2)",org.osgi.
+ util.tracker;version="1.4.2"
 Include-Resource: OSGI-INF/javagalwebgui.xml=OSGI-INF/javagalwebgui.xml,
  webapp/cache.manifest=src/main/resources/webapp/cache.manifest,webapp/h
  ome.html=src/main/resources/webapp/home.html,webapp/zigbeeNetworkInfo.h

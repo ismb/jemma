@@ -31,10 +31,10 @@ Export-Package: org.energy_home.jemma.ah.cluster.ah;version="3.0.1";uses
  on="3.4.0";uses:="org.energy_home.jemma.ah.cluster.ah,org.energy_home.j
  emma.ah.hac,org.energy_home.jemma.ah.hac.lib,org.osgi.framework"
 Import-Package: org.eclipse.osgi.framework.console;version="1.0.0",org.s
- lf4j;version="[1.7.7,2)",org.osgi.framework;version="1.5.0",org.osgi.se
- rvice.cm;version="1.2.0",org.osgi.service.component;version="1.1.0",org
- .osgi.service.device;version="[1.1,2)",org.osgi.service.event;version="
- 1.2.0",org.osgi.util.tracker;version="[1.5,2)"
+ lf4j;version="[1.6,2)",org.osgi.framework;version="1.5.0",org.osgi.serv
+ ice.cm;version="1.2.0",org.osgi.service.component;version="1.1.0",org.o
+ sgi.service.device;version="[1.1,2)",org.osgi.service.event;version="1.
+ 2.0",org.osgi.util.tracker;version="[1.5,2)"
 Include-Resource: OSGI-INF/common_services.xml=OSGI-INF/common_services.
  xml,OSGI-INF/application_proxy.xml=OSGI-INF/application_proxy.xml
 Private-Package: org.energy_home.jemma.ah.hac.lib.internal

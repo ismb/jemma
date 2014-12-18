@@ -57,7 +57,7 @@
 							gnu.io;version="1.0.0";resolution:=optional,
 							org.apache.commons.lang3;version="3.3.2",
 							jssc;resolution:=optional,
-							org.slf4j;version="[1.7.7,2)",
+							org.slf4j;version="[1.6,2)",
 							org.osgi.framework,
 							org.osgi.util.tracker;version="1.4.2",*
 						</Import-Package>
@@ -83,13 +83,6 @@
 			<artifactId>org.eclipse.osgi.services</artifactId>
 			<version>${org.eclipse.osgi.services.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>javax.xml</artifactId>

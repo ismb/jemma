@@ -59,7 +59,7 @@
 						<Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
 						<Bundle-Activator>org.energy_home.jemma.javagal.rest.Activator</Bundle-Activator>
 						<Import-Package> org.energy_home.jemma.zgd;version="1.4.1",
-							 org.slf4j;version="[1.7.7,2)",
+							 org.slf4j;version="[1.6,2)",
 							 org.energy_home.jemma.zgd.jaxb;version="1.0.4",
 							 org.osgi.framework;version="[1.5,2)",
 							 org.osgi.util.tracker;version="1.4.2",
@@ -90,11 +90,6 @@
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
 			<version>${org.eclipse.osgi.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${org.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.energy-home</groupId>

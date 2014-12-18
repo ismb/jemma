@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class ManageMapPanId {
 	String filename;
 	GalController gal;
-	private static final Logger logger = LoggerFactory.getLogger(ManageMapPanId.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ManageMapPanId.class);
 
 	public ManageMapPanId(GalController _gal) {
 		try {
@@ -131,8 +131,7 @@ public class ManageMapPanId {
 			Enumeration<?> e = properties.propertyNames();
 			while (e.hasMoreElements()) {
 				String key = (String) e.nextElement();
-				if (gal.getPropertiesManager().getDebugEnabled())
-					logger.info(key + " -- " + properties.getProperty(key));
+				LOG.debug("{} -- {}",key , properties.getProperty(key));
 			}
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

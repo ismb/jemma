@@ -21,9 +21,14 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PersistentProperties extends Properties {	
 	private URL url;
 	private Properties properties = null;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PersistentProperties.class);
 	
 	public void PersistentProperties1(URL url) throws Exception {
 		this.url = url;
@@ -47,8 +52,7 @@ public class PersistentProperties extends Properties {
 		try {
 			this.sync();
 		} catch (Exception e) {
-			System.out.println("unable to write preferences");
-			e.printStackTrace();
+			LOG.error("Unable to write preferences {}",e);
 		}		
 	}
 	
@@ -57,8 +61,7 @@ public class PersistentProperties extends Properties {
 		try {
 			this.sync();
 		} catch (Exception e) {
-			System.out.println("unable to write preferences");
-			e.printStackTrace();
+			LOG.error("Unable to write preferences {}",e);
 		}
 	}
 	
