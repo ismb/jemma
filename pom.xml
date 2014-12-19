@@ -283,9 +283,9 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>localRepository</id>
-			<name>Local repository</name>
-			<url>http://130.192.85.149:8888/maven</url>
+			<id>JemmaRepository</id>
+			<name>JEMMA Maven repository</name>
+			<url>http://ismb.github.io/jemma-maven-repository/maven</url>
 		</repository>
 		<repository>
 			<id>maven-Jaxb</id>
