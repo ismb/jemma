@@ -989,7 +989,9 @@ JSONRpcClient._sendRequest = function (client,req)
     console.log('JSONRPC', 'DATA SENT', req);
 	//console.log('********************INVIO DATI*********************');
     http.send(req.data);
-    //console.log('JSONRPC', 'DATA received', req);
+    console.log('JSONRPC - http', http);
+    console.log('JSONRPC - req', req);
+    //console.log('JSONRPC - res', res);
   }
   catch(e)
   {

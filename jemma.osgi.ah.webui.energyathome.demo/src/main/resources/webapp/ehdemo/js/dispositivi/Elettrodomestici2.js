@@ -686,7 +686,7 @@ Elettrodomestici.refreshDevices=function(){
 			$("#device_"+i+ " .StatoElettrodomestico .lblFirstValue").text(Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].label);
 			$("#device_"+i+ " .StatoElettrodomestico .lblMeasure").text(Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].value + " " + Elettrodomestici.listaElettrodomestici[i]["measure"]["principal"].unity);
 			$("#device_"+i+ " .StatoElettrodomestico .posizione_value").text(Elettrodomestici.locazioni[Elettrodomestici.listaElettrodomestici[i].location]);
-			var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i]);
+			var icona_src= "Resources/Images/Devices/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i]);
 			$("#device_"+i+ " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);
 			
 			$("#device_"+i).click(function(){
@@ -775,7 +775,7 @@ Elettrodomestici.loadInterfaccia=function(nome,pid, cat_id, index,interfaccia_sr
 		
 		$("#Interfaccia").data("pid",pid);
 		$("#Interfaccia").data("current_index",index);
-		var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[index]);
+		var icona_src= "Resources/Images/Devices/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[index]);
 		$("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
 		$("#Interfaccia").fadeIn(200);
 		if (Elettrodomestici.interfaccia!=null) {

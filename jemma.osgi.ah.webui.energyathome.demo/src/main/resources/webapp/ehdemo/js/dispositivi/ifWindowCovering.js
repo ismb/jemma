@@ -150,7 +150,7 @@ ifWindowCovering.gestSlider=function(){
 ifWindowCovering.updateIcon=function(){
 
     var i= $("#Interfaccia").data("current_index");
-    var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i], ifWindowCovering.stato);
+    var icona_src= "Resources/Images/Devices/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i], ifWindowCovering.stato);
     
     $("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
     $("#device_" + ifWindowCovering.counterPositionDevice + " .IconaElettrodomestico .icona-dispositivo").attr("src",icona_src);

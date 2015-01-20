@@ -122,7 +122,7 @@ var InterfaceEnergyHome = {
 }
 
 function bindService(name) {
-
+	
 	// crea client
 	if (InterfaceEnergyHome.jsonrpc == null) {
 		try {
@@ -163,17 +163,24 @@ function bindService(name) {
 		}
 		return null;
 	}
-
 	return null;
 }
 
 InterfaceEnergyHome.Init = function() {
-	InterfaceEnergyHome.errMessage = null;
-	InterfaceEnergyHome.errCode = 0;
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1))
-		return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
-	else
-		return 1;
+	try {
+		InterfaceEnergyHome.errMessage = null;
+		InterfaceEnergyHome.errCode = 0;
+		if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
+			return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
+		} else {
+			return 1;
+		}
+	} catch (err) {
+		console.log("ERRORE! => ");
+		console.log(err);
+		InterfaceEnergyHome.GestErrorEH(null, err);
+	}
+	return 1;
 }
 
 // abortisce tutte le eventuali chiamate in corso
