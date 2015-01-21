@@ -109,7 +109,7 @@ InterfaceEnergyHome.Init = function() {
 	InterfaceEnergyHome.errMessage = null;
 	InterfaceEnergyHome.errCode = 0;
 	
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		InterfaceEnergyHome.attachToService();
 	} else {
 		// creates fake methods!
@@ -439,8 +439,7 @@ InterfaceEnergyHome.GetCategorie = function (backFunc, pid)
 	InterfaceEnergyHome.backGetCategories= backFunc;
 	Log.alert(80, InterfaceEnergyHome.MODULE, "GetCategorie");
 	
-	if (InterfaceEnergyHome.mode > 0)
-	{
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getCategories(InterfaceEnergyHome.BackGetCategories, pid);
 		} catch (err) {
@@ -497,7 +496,7 @@ InterfaceEnergyHome.GetInquiredDevices = function (backFunc)
 {
 	InterfaceEnergyHome.backInquiredDevices = backFunc;
 	Log.alert(80,  InterfaceEnergyHome.MODULE, "GetInquiredDevices");
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getInquiredDevices(InterfaceEnergyHome.BackInquiredDevices);
 		} catch (err) {
@@ -590,7 +589,7 @@ InterfaceEnergyHome.EliminaDispositivo = function (backFunc, pid)
 	InterfaceEnergyHome.backEliminaDispositivo = backFunc;
 	Log.alert(80, InterfaceEnergyHome.MODULE, "EliminaDispositivo");
 	
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.removeDevice(InterfaceEnergyHome.BackEliminaDispositivo, pid);
 		} catch (err) {
@@ -686,7 +685,7 @@ InterfaceEnergyHome.GetLocazioni = function (backFunc)
 	InterfaceEnergyHome.backGetLocazioni = backFunc;
 	Log.alert(80, InterfaceEnergyHome.MODULE, "GetLocazioni");
 	
-	if (InterfaceEnergyHome.mode > 0) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
 			InterfaceEnergyHome.objService.getLocations(InterfaceEnergyHome.BackGetLocazioni);
 		} catch (err) {
