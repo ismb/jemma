@@ -78,7 +78,7 @@
 					</instructions>
 				</configuration>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
 				<version>1.5</version>
@@ -113,7 +113,6 @@
 							<arguments>-extension -b ${project.basedir}/src/main/resources/schemas/jaxb_m2m_connection_bindings.xml</arguments>
 						</configuration>
 					</execution>
-					<!-- IT IS NOT POSSIBLE TO USE CLASSES AUTOGENERATION BECAUSE THEY INCLUDE METHODS WITH SOME LOGIC INSIDE!!!!! NOT JUST ANNOTATED CLASSES!
 					<execution>
 						<id>ah_xjc</id>
 						<goals>
@@ -127,9 +126,9 @@
 							<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
-					</execution> -->
+					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
