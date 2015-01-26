@@ -21,7 +21,7 @@ ifThermostat.updateIcon=function(stato){
                 stato=null;
         }
         var i= $("#Interfaccia").data("current_index");
-        var icona_src= "Resources/Images/Devices2/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i],stato);
+        var icona_src= "Resources/Images/Devices/"+Elettrodomestici.getIcon(Elettrodomestici.listaElettrodomestici[i],stato);
         
         $("#Interfaccia .icona .icona-dispositivo").attr("src",icona_src);
         
