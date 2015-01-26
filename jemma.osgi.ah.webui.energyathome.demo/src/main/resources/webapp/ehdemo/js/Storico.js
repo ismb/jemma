@@ -286,7 +286,7 @@ Storico.VisStorico = function(tipo) {
 				Storico.datiConsumoNulli = true;
 			}
 		} else {
-			if ((limitOdierno) && (i > limitOdierno)){
+			if ((limitOdierno) && (i >= limitOdierno)){
 				/*if (dati2[i] == null) {
 					dati2[i] = 0;
 				}*/
@@ -310,7 +310,7 @@ Storico.VisStorico = function(tipo) {
 					Storico.datiCostoNulli = true;
 				}
 			} else {
-				if ((limitOdierno) && (i > limitOdierno)){
+				if ((limitOdierno) && (i >= limitOdierno)){
 					dati2[i] = 0;
 					//dati1[i] = 0;
 				} else {
@@ -1127,8 +1127,8 @@ Storico.GestStoricoList = function(res, err)
 			// gestisce frecce
 			// per funzionare su iPad devo mettere un div sopra l'immagine della freccia
 			// se non non e' cliccabile
-			$("#Prec").click(Storico.Precedente);
-			$("#Succ").click(Storico.Successivo);
+			//$("#Prec").click(Storico.Precedente);
+			//$("#Succ").click(Storico.Successivo);
 			if (Storico.dataInizio.getTime() < Storico.installData.getTime()){
 				$("#Prec").hide();
 				// $("#Succ").hide();

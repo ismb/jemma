@@ -10,8 +10,8 @@ var Menu = {
 	ContentHtml : null,
 	sfondoElImg : Define.menu["sfondoButton"],
 	MainMenu : null,
-	SubMenuHtml : null
-
+	SubMenuHtml : null,
+	timercheckObjService: null
 }
 
 /**
@@ -75,7 +75,7 @@ Menu.Init = function(mainDiv, contentDiv) {
 	Menu.InitContentMenu(contentDiv);
 	//Menu.OnClickMainMenu(0);
 	if (Main.env == 0) console.log('CostiConsumi', CostiConsumi);
-	CostiConsumi.Init();
+	CostiConsumi.Init();  
 }
 
 Menu.OnClickMainMenu = function(val) {
