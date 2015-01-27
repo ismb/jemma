@@ -127,8 +127,6 @@ function bindService(name) {
 	if (InterfaceEnergyHome.jsonrpc == null) {
 		try {
 			InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/demo/JSON-RPC");
-			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/energyathome/JSON-RPC");
-			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("http://10.38.3.25/demo/JSON-RPC");
 			InterfaceEnergyHome.jsonrpc.http_max_spare = 4;
 			JSONRpcClient.toplevel_ex_handler = function(e) {
 			};
