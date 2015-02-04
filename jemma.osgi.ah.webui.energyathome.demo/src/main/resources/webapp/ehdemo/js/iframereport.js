@@ -78,7 +78,7 @@ iFrameReport.GetElettrodomestici = function() {
 
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(iFrameReport.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(iFrameReport.DatiElettrodomesticiCB);
 		} catch (err) {
 			//if (Main.env == 0) console.log('exception in iFrameReport.js - in iFrameReport.GetElettrodomestici method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);

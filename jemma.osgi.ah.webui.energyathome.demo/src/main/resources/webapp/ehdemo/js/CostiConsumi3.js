@@ -106,6 +106,9 @@ CostiConsumi.GestConsumi = function() {
 	}
 	if (CostiConsumi.consumoGiornaliero == null) {
 		CostiConsumi.GetDatiConsumiCC();
+	}
+	
+	if (CostiConsumi.consumoMedio == null) {
 		CostiConsumi.GetConsumoMedioCC();
 	}
 	
@@ -157,7 +160,8 @@ CostiConsumi.GestConsumi = function() {
 
 	if (InterfaceEnergyHome.mode == -1) {
 		// per test
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
+		CostiConsumi.getMoltForCost(fakeValues.MoltForCost, null);
 	} else {
 		//chiamo la funzione per i costi che sono ricavati dai consumi
 		CostiConsumi.getCostoOdierno();
@@ -184,7 +188,8 @@ CostiConsumi.GestIndicatoriCC = function() {
 		CostiConsumi.VisIndicatoreConsumiCC();
 		CostiConsumi.VisIndicatoreCostiCC();
 	} else {
-		CostiConsumi.timerIndicatoriCC = setInterval(CostiConsumi.GestIndicatoriCC, 500);
+		if (CostiConsumi.timerIndicatoriCC == null)
+			CostiConsumi.timerIndicatoriCC = setInterval(CostiConsumi.GestIndicatoriCC, 500);
 	}
 }
 
@@ -221,7 +226,7 @@ CostiConsumi.GetElettrodomestici = function() {
 
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);
 		}
@@ -397,7 +402,8 @@ CostiConsumi.GetDatiConsumiCC = function() {
 		}
 	} else {
 		// per test,
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCbCC, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoGiornalieroCbCC(fakeValues.energiaConsumata, null);
 	}
 }
 
@@ -430,7 +436,8 @@ CostiConsumi.GetConsumoOdiernoCC = function() {
 		}
 	} else {
 		// per test		
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoOdiernoCbCC, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoOdiernoCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoOdiernoCbCC(fakeValues.energiaConsumata, null);
 	}
 }
 
@@ -481,7 +488,8 @@ CostiConsumi.GetProduzioneOdiernoCC = function() {
 		}
 	} else {
 		if (InterfaceEnergyHome.mode == -1) {
-			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
+			//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
+			CostiConsumi.DatiProduzioneOdiernoCbCC(fakeValues.energiaProdotta, null);
 		} else {
 			$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ": <b>" + CostiConsumi.consumoOdierno + " kWh </b>");
 		}
@@ -532,7 +540,8 @@ CostiConsumi.GetConsumoMedioCC = function() {
 		}
 	} else {
 		// per test
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMedioCbCC, "ConsumoMedio");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMedioCbCC, "ConsumoMedio");
+		CostiConsumi.DatiConsumoMedioCbCC(fakeValues.ConsumoMedio, null);
 	}
 };
 
@@ -625,7 +634,8 @@ CostiConsumi.GetConsumoPrevistoCC = function() {
 		}
 	} else {
 		// per test
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoPrevistoCbCC, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoPrevistoCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoPrevistoCbCC(fakeValues.energiaConsumata, null);
 	}
 }
 
@@ -675,8 +685,8 @@ CostiConsumi.getForecast = function(){
 			InterfaceEnergyHome.GestErrorEH("GetConsumoPrevistoCC", err);
 		}
 	} else {
-		debugger;
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getCostoPrevisto, "Forecast");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getCostoPrevisto, "Forecast");
+		CostiConsumi.getCostoPrevisto(fakeValues.Forecast, null);
 	}
 }
 
@@ -750,9 +760,8 @@ CostiConsumi.GetSuddivisioneConsumi = function() {
 		}
 	} else {
 		// per test
-		// var ind = Math.round(Math.random() * SuddivisioneConsumi.length);
-		//CostiConsumi.DatiSuddivisioneConsumiCb(SuddivisioneConsumi, null);  
-		InterfaceEnergyHome.objService.getPropConfigurationHM(CostiConsumi.DatiSuddivisioneConsumiCb, "SuddivisioneConsumi");
+		//InterfaceEnergyHome.objService.getPropConfigurationHM(CostiConsumi.DatiSuddivisioneConsumiCb, "SuddivisioneConsumi");
+		CostiConsumi.DatiSuddivisioneConsumiCb(fakeValues.SuddivisioneConsumi, null);
 	}
 }
 
@@ -771,7 +780,8 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 	
 	if(CostiConsumi.listaElettr == null || Object.keys(CostiConsumi.listaElettr).length==0) {
 		// Questa parte disegna il grafico con i dati presi dal file noserver.properties ...		
-		InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GraphNoServerCustomDevice);
+		//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GraphNoServerCustomDevice);
+		CostiConsumi.GraphNoServerCustomDevice(fakeValues.noServerCustomDevice, null);
 	} else {
 		if (result != null) {
 			//DT
@@ -884,11 +894,6 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 					},
 					tooltip : {
 						formatter : function() {
-							/* var modificatore = '1'; 
-							 * for(var i=0;i<2;i++)
-							 * modificatore += "0"; 
-							 * modificatore = parseInt(modificatore,10) 
-							 * var valEuro = Math.round(this.y*(modificatore))/(modificatore); */
 							return '<b>' + this.point.name + '</b>: ' + Math.floor(this.percentage) + ' % - ' + Math.floor(this.y / 1000) + ' kWh ';
 						}
 					},
@@ -1384,9 +1389,8 @@ CostiConsumi.GetConsumoMediaWeek = function() {
 		}
 	} else {
 		// per test
-		//var ret_finto = ConsumoMedioSettimanale;
-		//CostiConsumi.DatiConsumoMediaWeekCb(ret_finto, null);
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMediaWeekCb, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMediaWeekCb, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoMediaWeekCb(fakeValues.energiaConsumata, null);
 	}
 };
 
@@ -1450,9 +1454,10 @@ CostiConsumi.DatiConsumoMediaWeekCb = function(result, err) {
 					InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("BackConsumoMediaWeek", err);
-		}
+		} 
 	} else{
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneMediaWeekCb, "ProdottaMedioSettimanale");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneMediaWeekCb, "ProdottaMedioSettimanale");
+		CostiConsumi.DatiProduzioneMediaWeekCb(fakeValues.ProdottaMedioSettimanale, null);
 	}
 };
 

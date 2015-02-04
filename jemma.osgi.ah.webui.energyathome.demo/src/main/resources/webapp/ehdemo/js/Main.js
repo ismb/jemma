@@ -209,7 +209,7 @@ Main.setEnablePV = function(result, e){
 		
 		addCSSinDocument('css/FotoVoltaico.css');
 		addCSSinDocument('js/tinybox2/style.css');
-		addJavaScriptinDocument('js/FotoVoltaico_new.js?201305315125');
+		addJavaScriptinDocument('js/FotoVoltaico.js?201305315125');
 		addJavaScriptinDocument('js/utils/jscroller-0.4.js?201305315125');
 		addJavaScriptinDocument('js/tinybox2/tinybox.js?201305315125');
 		addJavaScriptinDocument('js/DefineMenu.js?201305315125');

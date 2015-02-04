@@ -298,7 +298,7 @@ CostiConsumi.GetDatiPotenza = function() {
 	}
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiPotenzaAttuale);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiPotenzaAttuale);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenza", err);
 		}
@@ -399,7 +399,7 @@ CostiConsumi.GetDatiProduzione = function() {
 	} else if (InterfaceEnergyHome.mode == -1) {
 		try {	
 			// Legge la configurazione degli appliances ...
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.CheckSmartInfo);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.CheckSmartInfo);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
 		}
