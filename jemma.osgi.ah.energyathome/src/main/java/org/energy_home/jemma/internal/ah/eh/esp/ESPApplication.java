@@ -84,6 +84,7 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 
 	public static final String APPLIANCE_ID_SEPARATOR = "-";
 
+	public static final String OVERLOAD_RISK_IF_APPLIANCE_STARTS = "ah/eh/overload/OVERLOAD_RISK_IF_APPLIANCE_STARTS";
 	public static final String NO_OVERLOAD_WARNING = "ah/eh/overload/NO_OVERLOAD";
 	public static final String CONTRACTUAL_POWER_THRESHOLD_WARNING = "ah/eh/overload/CONTRACTUAL_WARNING";
 	public static final String FIRST_POWER_THRESHOLD_WARNING = "ah/eh/overload/FIRST_WARNING";
@@ -335,24 +336,28 @@ public class ESPApplication extends HttpServlet implements IApplicationService, 
 	private OverloadStatus currentOverloadStatus = OverloadStatus.NoOverloadWarning;
 
 	public void notifyOverloadStatusUpdate(OverloadStatus status) {
+		LOG.info("Sending Overload Status Update message: {}",status);
 		currentOverloadStatus = status;
 		try {
 			switch (status) {
-			case NoOverloadWarning:
-				eventsDispatcherService.postEvent(NO_OVERLOAD_WARNING, null);
-				break;
-			case ContractualPowerThresholdWarning:
-				eventsDispatcherService.postEvent(CONTRACTUAL_POWER_THRESHOLD_WARNING, null);
-				break;
-			case FirstPowerThresholdWarning:
-				eventsDispatcherService.postEvent(FIRST_POWER_THRESHOLD_WARNING, null);
-				break;
-			case SecondPowerThresholdWarning:
-				eventsDispatcherService.postEvent(SECOND_POWER_THRESHOLD_WARNING, null);
-				break;
-
-			default:
-				break;
+				case NoOverloadWarning:
+					eventsDispatcherService.postEvent(NO_OVERLOAD_WARNING, null);
+					break;
+				case OverLoadRiskIfApplianceStarts:
+					eventsDispatcherService.postEvent(OVERLOAD_RISK_IF_APPLIANCE_STARTS, null);
+					break;
+				case ContractualPowerThresholdWarning:
+					eventsDispatcherService.postEvent(CONTRACTUAL_POWER_THRESHOLD_WARNING, null);
+					break;
+				case FirstPowerThresholdWarning:
+					eventsDispatcherService.postEvent(FIRST_POWER_THRESHOLD_WARNING, null);
+					break;
+				case SecondPowerThresholdWarning:
+					eventsDispatcherService.postEvent(SECOND_POWER_THRESHOLD_WARNING, null);
+					break;
+	
+				default:
+					break;
 			}
 		} catch (Exception e) {
 			LOG.error("notifyStatusUpdate exception", e);

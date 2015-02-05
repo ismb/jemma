@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
+import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener.OverloadStatus;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileState;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstraints;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
@@ -169,7 +170,16 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		
 		// check potential overload
 		float available = getCurrentAvailablePower();
-		if (maxPeakPower >= available) powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
+		if (maxPeakPower >= available)
+		{
+			IOverloadStatusListener overloadListener= getOverloadStatusListener();
+			if(overloadListener!=null)
+			{
+				overloadListener.notifyOverloadStatusUpdate(OverloadStatus.OverLoadRiskIfApplianceStarts);
+			}
+			currentOverloadStatus=OverloadStatus.OverLoadRiskIfApplianceStarts;
+			powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
+		}
 		
 		return cost;
 	}

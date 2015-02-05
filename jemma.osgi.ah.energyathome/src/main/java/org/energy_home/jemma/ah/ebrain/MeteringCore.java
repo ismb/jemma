@@ -128,7 +128,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 
 	protected ICloudServiceProxy cloudProxy = dummyCloudProxy;
 
-	private OverloadStatus currentOverloadStatus = OverloadStatus.NoOverloadWarning;
+	protected OverloadStatus currentOverloadStatus = OverloadStatus.NoOverloadWarning;
 	private IOverloadStatusListener overloadStatusListener = dummyOverloadListener;
 
 	protected DailyTariff dailyTariff;
@@ -289,7 +289,7 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 						if (smartInfoProduction != appliance) {
 							// TODO: ADDED BY MARCO -- SALTARE QUESTO PASSO SE L APPLIANCE NON SUPPORTA IL METER CLUSTER, MEGLIO SE SI ESEGUE UN CONTROLLO SULLA PRESENZA DEL CLUSTER METERING 0x0702
 							if ((appliance.getApplianceType() == DeviceType.WINDOW_COVERING) || (appliance.getApplianceType() == DeviceType.DOOR_LOCK))
-								return;
+								continue;
 
 							
 							// TODO: check merge, different values in 3.3.0
@@ -320,6 +320,8 @@ public class MeteringCore implements IMeteringListener, DeviceListener {
 
 		// Send requests to smart infos depending on current polling frequency
 		try {
+			LOG.debug("lastSmartInfoPollingTime:{}",lastSmartInfoPollingTime);
+			LOG.debug("smartInfoPollingTimeInterval:{}",smartInfoPollingTimeInterval);
 			if (System.currentTimeMillis() - lastSmartInfoPollingTime >= smartInfoPollingTimeInterval) {
 				if (smartInfoExchange != null && smartInfoExchange.isAvailable()) {
 					smartInfoExchange.setNextTotalEnergyValidValues(1);
