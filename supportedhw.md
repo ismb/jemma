@@ -9,7 +9,9 @@ Check out [this page](https://github.com/ismb/jemma/wiki/Verified-Hardware) for 
 
 Template:
 
-| Name | Vendor | Description | Status |  Notes |
+| Model | Vendor | Description | Status |  Notes |
+
+| Model (with web link) | Vendor (with web link) | Description | Status |  Notes |
 
 -->
 
@@ -18,7 +20,7 @@ Template:
 
 ### ZigBee Dongles
 
-| Name | Vendor | Description | Status |  Notes |
+| Model | Vendor | Description | Status |  Notes |
 | :---:|:------:|:------------|:----:|:------|
 | [Flexkey](http://www.flexgrid.it/eng/prodotti/flexkey.html) | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexKey is the most compact Zigbee USB Dongle available on the market today. Due to its outstanding RF performance enables covers secure and reliable wireless connectivity between internal and external environment.  | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.0.1) | - |
 | [MC1322x](http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=MC13226V) | [Freescale](http://www.freescale.com/) | Advanced ZigBee compliant Platform-in-Package(PiP) for the 2.4 GHz IEEE 802.15.4 Standard | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.0.1) | - |
@@ -28,7 +30,7 @@ Template:
 
 ### Gateways
 
-| Name | Vendor | Description | Status |  Notes |
+| Model | Vendor | Description | Status |  Notes |
 | :---:|:------:|:------------|:----:|:------|
 | [FlexGateway](http://www.flexgrid.it/eng/prodotti/flexgateway.html) | [FlexGrid](http://www.flexgrid.it/home_eng.html) | FlexGateway is a versatile Ethernet gateway that allows bridging between Ethernet and the classic HAN - Home Area Network and acting as coordinator ZigBee Home Automation in the network. | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.0.1) |  - |
 | Gemino Reference Design | [Gemino S.R.L.](http://www.gemino-srl.com/) | Application gateway for M2M applications based on the Ikanos Vx185 DSL processor. | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.2) |  Press release available [here](http://www.energy-home.it/SitePages/News%20and%20Events/NewsDetail.aspx?FilterField1=ID&FilterValue1=35) |
@@ -36,7 +38,7 @@ Template:
 
 ### Zigbee Devices
 
-| Name | Vendor | Description | Status |  Notes |
+| Model | Vendor | Description | Status |  Notes |
 | :---:|:------:|:------------|:----:|:------|
 | 4Noks Smart Plug  | [4Noks](http://4-noks.com/) | A ZigBee-compatible smart plug. | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.2) | - |
 | [Bitron Home 902010/27 Temperature/Humidity Sensor](http://media.bitronvideo.eu/bitronhome/Bitron_Home_ZigBee_Clusters_and_Attributes_-_en_0814.pdf) | [Bitron Home](http://www.bitronvideo.eu/), [Urmet Group](http://www.urmet.it) | Wireless temperature / humidity sensor with display | <img src="http://ismb.github.io/jemma/images/verified.png" alt="verified"> (v0.2)  |  - |
@@ -67,7 +69,7 @@ Template:
 
 Initial support for IP devices is expected in [release 1.0](https://github.com/ismb/jemma/wiki/Milestone-1.0). Full Architectural support through the DAL will be instead introduced in 2015. This table includes a number of products which have been preliminary tested stand-alone but not yet fully integrated in JEMMA.
 
-| Name | Vendor | Description | Status |  Notes |
+| Model | Vendor | Description | Status |  Notes |
 | :---:|:------:|:------------|:----:|:------|
 | [SerComm RC8261](http://www.sercomm.com/contpage.aspx?langid=1&type=prod3&L1id=2&L2id=3&L3id=9&Prodid=101) | [SerComm](http://www.sercomm.com/) | Wireless Pan/Tilt IP Camera | <img src="http://ismb.github.io/jemma/images/shouldwork.png" alt="should work"> (v0.2) |  Support for Pan/Tilt control integrated; to be generalized through the DAL in [release 1.0](https://github.com/ismb/jemma/wiki/Milestone-1.0) |
 
