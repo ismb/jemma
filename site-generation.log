@@ -1,4 +1,4 @@
-Auto-generated site: 201411211626
+Auto-generated site: 201502071311
 
 ##########################
 Git status
@@ -14,11 +14,46 @@ Changes not staged for commit:
 	modified:   index.md
 	modified:   site-generation.log
 
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	Distribution/
+	jemma.launch/
+	jemma.osgi.ah.adapter.http/
+	jemma.osgi.ah.app/
+	jemma.osgi.ah.configurator/
+	jemma.osgi.ah.energyathome/
+	jemma.osgi.ah.felix.console.web/
+	jemma.osgi.ah.greenathome/
+	jemma.osgi.ah.hac.lib/
+	jemma.osgi.ah.hac/
+	jemma.osgi.ah.hap.client/
+	jemma.osgi.ah.io/
+	jemma.osgi.ah.m2m.device/
+	jemma.osgi.ah.upnp.energyathome/
+	jemma.osgi.ah.webui.base/
+	jemma.osgi.ah.webui.energyathome.demo/
+	jemma.osgi.ah.webui.energyathome/
+	jemma.osgi.ah.zigbee.appliances.generic/
+	jemma.osgi.ah.zigbee.appliances/
+	jemma.osgi.ah.zigbee/
+	jemma.osgi.javagal.gui/
+	jemma.osgi.javagal.json/
+	jemma.osgi.javagal.rest/
+	jemma.osgi.javagal/
+	jemma.osgi.utils/
+
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit d63e5e3b6963e848aa94883f08260f4f0c6ea898
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Fri Nov 21 16:26:51 2014 +0100
+
+    link updated
 
 commit cbb3942b19e15d4d2d1997b35d774073d9c63460
 Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
@@ -43,10 +78,4 @@ Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
 Date:   Mon Oct 20 10:16:53 2014 +0200
 
     Added Hackathon references to index
-
-commit 83cd92852cb5b4ee677a2127188be04044e3e70b
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Tue Oct 7 18:33:45 2014 +0200
-
-    Modified UBISYS devices icons
 
