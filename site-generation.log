@@ -1,4 +1,4 @@
-Auto-generated site: 201502091124
+Auto-generated site: 201502091128
 
 ##########################
 Git status
@@ -11,6 +11,7 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
+	modified:   credits.md
 	modified:   site-generation.log
 
 Untracked files:
@@ -48,6 +49,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit 3f8c396a6875131b55848de8fbec9e94b9a859bd
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Feb 9 11:24:33 2015 +0100
+
+    whops
+
 commit 1ed3611f810182a4e1001f394f16b6668f53ca9b
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:23:55 2015 +0100
@@ -71,10 +78,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Sat Feb 7 13:24:56 2015 +0100
 
     minor table modification
-
-commit 2c99d8a09ecd89c6638a2077fd44f746a372b6bd
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Sat Feb 7 13:11:39 2015 +0100
-
-    removed reference to hackathon from home
 

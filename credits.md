@@ -20,7 +20,7 @@ ISMB acknowledges that the JEMMA Open Source Project was partially supported by 
 
 ### Development Team
 
-The JEMMA open source community is animated by a team @ *[ISMB](http://www.ismb.it/)* including <a href="http://www.ismb.it/ivan.grimaldi" target="_parent">Ivan Grimaldi</a>, <a href="http://www.ismb.it/node/1590" target="_parent">Giampiero Bono</a>, <a href="http://www.ismb.it/riccardo.tomasi" target="_parent">Riccardo Tomasi</a>. 
+The JEMMA open source community is animated by a team @ *[ISMB](http://www.ismb.it/)* and Telecom Italia including Ivan Grimaldi, <a href="http://www.ismb.it/riccardo.tomasi" target="_parent">Riccardo Tomasi</a>, <a href="http://www.ismb.it" target="_parent">Fabio Baravalle</a>. 
 
 The official place where all JEMMA related discussions are held is the [JEMMA General Maling list](devteam.html)
 
