@@ -1,4 +1,4 @@
-Auto-generated site: 201502091122
+Auto-generated site: 201502091124
 
 ##########################
 Git status
@@ -11,9 +11,7 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   components.md
 	modified:   site-generation.log
-	modified:   versions.md
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
@@ -50,6 +48,18 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit 1ed3611f810182a4e1001f394f16b6668f53ca9b
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Feb 9 11:23:55 2015 +0100
+
+    tables fix
+
+commit f3ca72ac0aa3a09df7adf452b25c53d99ff71799
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Feb 9 11:23:04 2015 +0100
+
+    bugfix (table in wrong page)
+
 commit b248f6aed7d49195872efd78f29bb15c5ccd84f4
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:20:07 2015 +0100
@@ -67,16 +77,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Sat Feb 7 13:11:39 2015 +0100
 
     removed reference to hackathon from home
-
-commit d63e5e3b6963e848aa94883f08260f4f0c6ea898
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Fri Nov 21 16:26:51 2014 +0100
-
-    link updated
-
-commit cbb3942b19e15d4d2d1997b35d774073d9c63460
-Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
-Date:   Sun Nov 16 18:58:24 2014 +0100
-
-    Added latest jemma test results
 
