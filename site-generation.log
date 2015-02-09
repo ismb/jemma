@@ -1,19 +1,25 @@
-Auto-generated site: 201502071324
+Auto-generated site: 201502091119
 
 ##########################
 Git status
 ##########################
 
 On branch gh-pages
-Your branch is ahead of 'origin/gh-pages' by 1 commit.
-  (use "git push" to publish your local commits)
+Your branch is up-to-date with 'origin/gh-pages'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   components.md
 
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
+	modified:   credits.md
+	modified:   header.template
 	modified:   site-generation.log
-	modified:   supportedhw.md
+	modified:   versions.md
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
@@ -44,11 +50,16 @@ Untracked files:
 	jemma.osgi.javagal/
 	jemma.osgi.utils/
 
-no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 417c225821867734d5f4bfcc2a19aee61e1dabac
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Sat Feb 7 13:24:56 2015 +0100
+
+    minor table modification
 
 commit 2c99d8a09ecd89c6638a2077fd44f746a372b6bd
 Author: riccardo <riccardo.to@gmail.com>
@@ -73,10 +84,4 @@ Author: ivangrimaldi <ivan.grimaldi.to@gmail.com>
 Date:   Thu Nov 13 17:29:48 2014 +0100
 
     Added javagal rest apis docs
-
-commit a72732747d7f552616e0472c3f61e59b0a526bf9
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Oct 20 10:38:33 2014 +0200
-
-    changed link to hackathon
 

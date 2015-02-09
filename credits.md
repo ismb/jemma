@@ -14,6 +14,10 @@ Telecom Italia acknowledges that the JEMMA Open Source Project was partially sup
 
 - Intrepid, FP7 ICT European project, for the home energy management and control algorithms
 
+ISMB acknowledges that the JEMMA Open Source Project was partially supported by the following public projects:
+
+- [GreenCom](http://www.greencom-project.eu/), FP7 ICT European Project (Contract No. 318213), for all developments related to the DAL (Device Abstraction Layer)
+
 ### Development Team
 
 The JEMMA open source community is animated by a team @ *[ISMB](http://www.ismb.it/)* including <a href="http://www.ismb.it/ivan.grimaldi" target="_parent">Ivan Grimaldi</a>, <a href="http://www.ismb.it/node/1590" target="_parent">Giampiero Bono</a>, <a href="http://www.ismb.it/riccardo.tomasi" target="_parent">Riccardo Tomasi</a>. 
