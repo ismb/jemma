@@ -323,7 +323,7 @@ CostiConsumi.GetElettrodomestici = function() {
 
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
 			//if (Main.env == 0) console.log('exception in CostiConsumi1.js - in CostiConsumi.GetElettrodomestici method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);

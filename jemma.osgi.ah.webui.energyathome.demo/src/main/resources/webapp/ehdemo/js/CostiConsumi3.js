@@ -7,17 +7,12 @@ var consumoMaxIcon;
 var consumoMaxNome;
 
 CostiConsumi.GestConsumi = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GestConsumi', 'Entro!');
 
 	$("#CostiConsumi").show();
-
-	if ((CostiConsumi.mode == CostiConsumi.COSTI)
-			|| (CostiConsumi.mode == CostiConsumi.FOTOVOLTAICO)) {
+	if ((CostiConsumi.mode == CostiConsumi.COSTI) || (CostiConsumi.mode == CostiConsumi.FOTOVOLTAICO)) {
 
 		CostiConsumi.mode = CostiConsumi.CONSUMI;
 		$("#TitoloCostiConsumi").html(Msg.home["titoloConsumi"]);
-
 		$('#consigliTurnOn').hide();
 
 		if (Main.enablePV) {
@@ -42,7 +37,6 @@ CostiConsumi.GestConsumi = function() {
 			$("#Grafico2").hide();
 
 			$("#CostoTConsumoMax").show();
-
 			$("#DatiCostoConsumo").show();
 			$("#Indicatore").show();
 			$("#DatiCosti").show();
@@ -101,8 +95,10 @@ CostiConsumi.GestConsumi = function() {
 	
 	//dati da mostrare nel cruscotto
 	CostiConsumi.GetConsumoOdiernoCC();
+	CostiConsumi.GetProduzioneOdiernoCC();
 	CostiConsumi.GetConsumoPrevistoCC();
 	CostiConsumi.GetConsumoMediaWeek();
+	CostiConsumi.getForecast();
 	
 	// ottenimento dati sui consumi
 	if (CostiConsumi.timerPotenzaCC == null) {
@@ -111,6 +107,13 @@ CostiConsumi.GestConsumi = function() {
 	if (CostiConsumi.consumoGiornaliero == null) {
 		CostiConsumi.GetDatiConsumiCC();
 	}
+	
+	if (CostiConsumi.consumoMedio == null) {
+		CostiConsumi.GetConsumoMedioCC();
+	}
+	
+	CostiConsumi.GestIndicatoriCC();
+	/*
 	//popolamento cruscotto consumi
 	$("#DettaglioCostoConsumoOdierno").html('');
 	if (CostiConsumi.consumoOdierno != null) {
@@ -133,7 +136,7 @@ CostiConsumi.GestConsumi = function() {
 		$("#DettaglioCostoConsumoMediaWeek").html(Msg.home["consumoDayWeek"] + ": <b>" + Msg.home["datoNonDisponibile"] + "</b>");
 	}
 	
-	//popolamento cruscotto consumi
+	//popolamento cruscotto costi
 	$("#DettaglioCostiOdierno").html('');
 	if (CostiConsumi.costoOdierno != null) {
 		$("#DettaglioCostiOdierno").html(Msg.home["costoFinora"] + ": <b>" + (CostiConsumi.costoOdierno).toFixed(2) + " € </b>");
@@ -153,11 +156,19 @@ CostiConsumi.GestConsumi = function() {
 		$("#DettaglioCostiMediaWeek").html(Msg.home["costoDayWeek"] + ": <b>" + (CostiConsumi.costoMediaWeek).toFixed(2) + " €</b>");
 	} else {
 		$("#DettaglioCostiMediaWeek").html(Msg.home["costoDayWeek"] + ": <b>" + Msg.home["datoNonDisponibile"] + "</b>");
+	}*/
+
+	if (InterfaceEnergyHome.mode == -1) {
+		// per test
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
+		CostiConsumi.getMoltForCost(fakeValues.MoltForCost, null);
+	} else {
+		//chiamo la funzione per i costi che sono ricavati dai consumi
+		CostiConsumi.getCostoOdierno();
 	}
 
 	/* Verifico la connessione al server e carico gli RSS feed */
-	if (InterfaceEnergyHome.mode == 0
-			|| InterfaceEnergyHome.visError == InterfaceEnergyHome.ERR_CONN_SERVER) {
+	if (InterfaceEnergyHome.mode == 0 || InterfaceEnergyHome.visError != InterfaceEnergyHome.ERR_CONN_SERVER) {
 		CostiConsumi.InitfeedSim();
 	} else {
 		var script = document.createElement("script");
@@ -165,14 +176,24 @@ CostiConsumi.GestConsumi = function() {
 		script.type = "text/javascript";
 		document.body.appendChild(script);
 	}
+}
 
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GestConsumi', 'Esco!');
+
+CostiConsumi.GestIndicatoriCC = function() {
+	if (CostiConsumi.consumoGiornaliero != null && CostiConsumi.consumoMedio != null) {
+
+		clearInterval(CostiConsumi.timerIndicatoriCC);
+		CostiConsumi.timerIndicatoriCC = null;
+		
+		CostiConsumi.VisIndicatoreConsumiCC();
+		CostiConsumi.VisIndicatoreCostiCC();
+	} else {
+		if (CostiConsumi.timerIndicatoriCC == null)
+			CostiConsumi.timerIndicatoriCC = setInterval(CostiConsumi.GestIndicatoriCC, 500);
+	}
 }
 
 CostiConsumi.ExitConsumi = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'ExitConsumi', 'Entro!');
 
 	if (CostiConsumi.timerPotenzaCC != null) {
 		clearInterval(CostiConsumi.timerPotenzaCC);
@@ -199,21 +220,14 @@ CostiConsumi.ExitConsumi = function() {
 
 	Main.ResetError();
 	$("#CostiConsumi").hide();
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'ExitConsumi', 'Esco!');
 }
 
 CostiConsumi.GetElettrodomestici = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetElettrodomestici', 'Entro!');
 
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(CostiConsumi.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetElettrodomestici method: ',err);
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);
 		}
 	} else {
@@ -229,18 +243,11 @@ CostiConsumi.GetElettrodomestici = function() {
 		}
 		CostiConsumi.DatiElettrodomesticiCB(val, null);
 	}
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetElettrodomestici', 'Esco!');
 }
 
 CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiElettrodomesticiCB', 'Entro!');
 
 	if (err != null) {
-		if (Main.env == 0)
-			console.log('exception in CostiConsumi3.js - in CostiConsumi.DatiElettrodomesticiCB method: ', err);
 		InterfaceEnergyHome.GestErrorEH("DatiElettrodomestici", err);
 	}
 	if ((err == null) && (result != null)) {
@@ -255,8 +262,6 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 				}
 				CostiConsumi.SmartInfo = elettrodom["map"];
 				Main.appIdSmartInfo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
-				//if (Main.env == 0) console.log('COSTICONSUMI3', 'SmartInfo - ');
-				//if (Main.env == 0) console.log(CostiConsumi.SmartInfo);
 			} else {
 				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] == undefined){
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE] = {list: new Array()};
@@ -271,23 +276,15 @@ CostiConsumi.DatiElettrodomesticiCB = function(result, err) {
 					elettrodom["map"][InterfaceEnergyHome.ATTR_APP_VALUE].list[0].value.value = val;
 				}
 				CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]] = elettrodom["map"];
-				//if (Main.env == 0) console.log('COSTICONSUMI3', 'Eldo - ');
-				//if (Main.env == 0) console.log(CostiConsumi.listaElettr[elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID]]);
-				//if (Main.env == 0) console.log(elettrodom["map"]);
 			}
 		});
 	}
 
 	CostiConsumi.DatiMaxElettr();
 	CostiConsumi.SetConsumoImgCC();
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiElettrodomesticiCB', 'Esco!');
 }
 
 CostiConsumi.DatiMaxElettr = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiMaxElettr', 'Entro!');
-
 	// eventuale trascodifica dato cerco l'elettrodomestico con consumo
 	// istantaneo maggiore, escluso smart info
 	var listaFiltrata = $.map(CostiConsumi.listaElettr, function(elettro, index) {
@@ -340,14 +337,10 @@ CostiConsumi.DatiMaxElettr = function() {
 	})
 	CostiConsumi.maxConsumoElettr = listaFiltrata[0];
 	CostiConsumi.VisConsumoMaggiore();
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiMaxElettr', 'Esco!');
 }
 
 // visualizza elettrodomestico che in questo momento sta consumando di piu'
 CostiConsumi.VisConsumoMaggiore = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'VisConsumoMaggiore', 'Entro!');
 
 	if (CostiConsumi.maxConsumoElettr != null) {
 
@@ -376,30 +369,20 @@ CostiConsumi.VisConsumoMaggiore = function() {
 			$("#ConsumoMaggioreImg").height(CostiConsumi.dimMaxDispImg);
 		}
 	} else {
-		
 		// Questo ramo viene ora gestito dal caso noserver ...
-		// $("#DettaglioConsumoMaggiore").html(
-		//		"<span id='MsgConsumoMaggiore'></span>");
+		// $("#DettaglioConsumoMaggiore").html("<span id='MsgConsumoMaggiore'></span>");
 		// $("#MsgConsumoMaggiore").text(Msg.home["noMaxDisp"]);
 	}
 
 	if (!CostiConsumi.suddivisioneCostiRender) {
 		CostiConsumi.GetSuddivisioneConsumi();
 	}
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'VisConsumoMaggiore', 'Esco!');
 }
-
 
 /*******************************************************************************
  * sezione consumi
  ******************************************************************************/
-
 CostiConsumi.GetDatiConsumiCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetDatiConsumiCC', 'Entro!');
-
 	Main.ResetError();
 
 	start = new Date(Main.dataAttuale.getTime());
@@ -415,31 +398,16 @@ CostiConsumi.GetDatiConsumiCC = function() {
 					InterfaceEnergyHome.CONSUMO, start.getTime(), end,
 					InterfaceEnergyHome.HOUR, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log(80, CostiConsumi.MODULE, "err = ");
-			if (Main.env == 0)
-				console.log(80, CostiConsumi.MODULE, err);
-			if (Main.env == 0)
-				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetDatiConsumiCC method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiConsumoGiornaliero", err);
 		}
 	} else {
-		// per test, copio per il numero ore attuale
-		//hours = Main.dataAttuale.getHours();
-		//val = ConsumoGiornaliero;
-		//val.list = val.list.slice(0, hours);
-		
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCbCC, "EnergiaConsumataGiornalieroSimul");
-
-		//CostiConsumi.DatiConsumoGiornalieroCbCC(val, null);
+		// per test,
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoGiornalieroCbCC(fakeValues.energiaConsumata, null);
 	}
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetDatiConsumiCC', 'Esco!');
 }
 
 CostiConsumi.DatiConsumoGiornalieroCbCC = function(result, err) {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoGiornalieroCbCC', 'Entro!');
 
 	if (err != null) {
 		InterfaceEnergyHome.GestErrorEH("DatiConsumoGiornaliero", err);
@@ -448,17 +416,9 @@ CostiConsumi.DatiConsumoGiornalieroCbCC = function(result, err) {
 	if ((err == null) && (result != null)) {
 		CostiConsumi.consumoGiornaliero = result.list;
 	}
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoGiornalieroCbCC', 'Esco!');
-
-	//prendo il medio per poi farci il VIS
-	CostiConsumi.GetConsumoMedioCC();
 }
 
 CostiConsumi.GetConsumoOdiernoCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoOdierno', 'Entro!');
 	var start = Main.dataAttuale.getTime();
 	var indConsumoOdierno = 0;
 	var attuale, oraAttuale, minAttuale, consumo, val, consumoLista;
@@ -472,27 +432,16 @@ CostiConsumi.GetConsumoOdiernoCC = function() {
 								InterfaceEnergyHome.CONSUMO, start, start,
 								InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, "error: ");
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, err);
-			if (Main.env == 0)
-				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoOdiernoCC method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoOdiernoCC", err);
 		}
 	} else {
 		// per test		
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoOdiernoCbCC, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoOdiernoCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoOdiernoCbCC(fakeValues.energiaConsumata, null);
 	}
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoOdiernoCC', 'Esco!');
 }
 
 CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoOdiernoCbCC', 'Entro!');
 
 	if (err != null) {
 		InterfaceEnergyHome.GestErrorEH("DatiConsumoOdiernoCbCC", err);
@@ -521,7 +470,10 @@ CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
 		//inserisco valore fake colorato
 		CostiConsumi.consumoOdierno = 5.6;
 	}
+}
 
+CostiConsumi.GetProduzioneOdiernoCC = function() {
+	
 	if (InterfaceEnergyHome.mode > 1) {
 		// solo se anche piattaforma
 		try {
@@ -532,22 +484,17 @@ CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
 					InterfaceEnergyHome.PRODUZIONE, start, start,
 					InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, err);
+			InterfaceEnergyHome.GestErrorEH("GetConsumoOdiernoCC", err);
 		}
 	} else {
 		if (InterfaceEnergyHome.mode == -1) {
-			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
+			//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
+			CostiConsumi.DatiProduzioneOdiernoCbCC(fakeValues.energiaProdotta, null);
 		} else {
 			$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ": <b>" + CostiConsumi.consumoOdierno + " kWh </b>");
 		}
 	}
-	
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoOdiernoCbCC', 'Esco!');
 };
-
-
 
 CostiConsumi.DatiProduzioneOdiernoCbCC = function(result, err) {
 	
@@ -576,19 +523,9 @@ CostiConsumi.DatiProduzioneOdiernoCbCC = function(result, err) {
 	if(CostiConsumi.consumoOdierno != null){
 		$("#DettaglioCostoConsumoOdierno").html(Msg.home["consumoFinora"] + ": <b>" + CostiConsumi.consumoOdierno + " kWh </b>");
 	}
-
-	if (InterfaceEnergyHome.mode == -1) {
-		// per test
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
-	} else {
-		//chiamo la funzione per i costi che sono ricavati dai consumi
-		CostiConsumi.getCostoOdierno();
-	}
 };
 
 CostiConsumi.GetConsumoMedioCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoMedioCC', 'Entro!');
 
 	var weekDay = Main.dataAttuale.getDay() + 1; // js comincia da 0, java da 1
 	if (InterfaceEnergyHome.mode > 1) {
@@ -599,25 +536,16 @@ CostiConsumi.GetConsumoMedioCC = function() {
 					InterfaceEnergyHome.PID_TOTALE,
 					InterfaceEnergyHome.CONSUMO, weekDay);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, "error: ");
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, err);
-			if (Main.env == 0)
-				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoMedio method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoMedio", err);
 		}
 	} else {
 		// per test
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMedioCbCC, "ConsumoMedio");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMedioCbCC, "ConsumoMedio");
+		CostiConsumi.DatiConsumoMedioCbCC(fakeValues.ConsumoMedio, null);
 	}
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoMedioCC', 'Esco!');
 };
 
 CostiConsumi.DatiConsumoMedioCbCC = function(result, err) {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoMedioCbCC', 'Entro!');
 
 	if (err != null)
 		InterfaceEnergyHome.GestErrorEH("DatiConsumoMedioCC", err);
@@ -625,46 +553,32 @@ CostiConsumi.DatiConsumoMedioCbCC = function(result, err) {
 	if ((err == null) && (result != null)) {
 		CostiConsumi.consumoMedio = result.list;
 	}
-	//avendo il medio ed il giornaliero posso far partire il visindicatore
-	CostiConsumi.VisIndicatoreConsumiCC();
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoMedioCbCC', 'Esco');
 };
 
 CostiConsumi.VisIndicatoreConsumiCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Entro!');
-
+	
 	var arrayMedio = new Array();
 	if (CostiConsumi.consumoGiornaliero && CostiConsumi.consumoMedio) {
 		arrayMedio = CostiConsumi.consumoMedio.slice(0, CostiConsumi.consumoGiornaliero.length);
 	}
 
 	var perc = 1;
-	var Totodierno = null;
-	var Totmedio = null;
+	var Totodierno = 0;
+	var Totmedio = 0;
 	if ((CostiConsumi.consumoMedio != null) && (CostiConsumi.consumoGiornaliero != null)) {  // && (CostiConsumi.consumoOdierno != null)) {
 		Totodierno = 0;
 		Totmedio = 0;
 
 		$.each(CostiConsumi.consumoGiornaliero, function(index, consumo) {
 			if (consumo != null) {
-				var tmoConsumo = consumo * 1;
+				var tmpConsumo = consumo * 1;
 				var tmpMedio = arrayMedio[index] * 1;
-				Totodierno += tmoConsumo;
+				Totodierno += tmpConsumo;
 				Totmedio += tmpMedio;
 			}
 		});
 		if (Totodierno != null && Totmedio > 0) {
 			perc = Totodierno / Totmedio;
-
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Totmedio = ' + Totmedio);
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Totodierno = ' + Totodierno);
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'perc = ' + perc);
 
 			if (perc > 2) {
 				perc = 2;
@@ -672,18 +586,9 @@ CostiConsumi.VisIndicatoreConsumiCC = function() {
 		}
 		$('#ConsumoIndicatoreImg').gaugePV("value", perc);
 	}
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Esco!');
-	CostiConsumi.VisIndicatoreCostiCC(perc);
 }
 
-CostiConsumi.VisIndicatoreCostiCC = function(perc) {
-	//perc = Math.max(0, perc + (Math.random()-0.5)*0.2); //aggiungo uno scostamento randomico del +- 10% dal consumo
-	//perc = Math.min(2, perc); //evito che sia > della soglia max
-	//$('#CostoIndicatoreImg').gaugePV("value", perc);
-	
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Entro!');
+CostiConsumi.VisIndicatoreCostiCC = function() {
 
 	var arrayMedio = new Array();
 	if (CostiConsumi.consumoGiornaliero && CostiConsumi.consumoMedio) {
@@ -691,29 +596,22 @@ CostiConsumi.VisIndicatoreCostiCC = function(perc) {
 	}
 
 	var perc = 1;
-	var Totodierno = null;
-	var Totmedio = null;
+	var Totodierno = 0;
+	var Totmedio = 0;
 	if ((CostiConsumi.consumoMedio != null) && (CostiConsumi.consumoGiornaliero != null) && (CostiConsumi.prodOdierno != null)) {  // && (CostiConsumi.consumoOdierno != null)) {
 		Totodierno = 0;
 		Totmedio = 0;
 
 		$.each(CostiConsumi.consumoGiornaliero, function(index, consumo) {
 			if (consumo != null) {
-				var tmoConsumo = consumo * 1;
+				var tmpConsumo = consumo * 1;
 				var tmpMedio = arrayMedio[index] * 1;
-				Totodierno += tmoConsumo;
+				Totodierno += tmpConsumo;
 				Totmedio += tmpMedio;
 			}
 		});
 		if (Totodierno != null && Totmedio > 0) {
 			perc = (Totodierno - (CostiConsumi.prodOdierno*1000)) / Totmedio;
-
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Totmedio = ' + Totmedio);
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'Totodierno = ' + Totodierno);
-			if (Main.env == 0)
-				console.log('CostiConsumi3.js', 'VisIndicatoreConsumiCC', 'perc = ' + perc);
 
 			if (perc > 2) {
 				perc = 2;
@@ -724,8 +622,6 @@ CostiConsumi.VisIndicatoreCostiCC = function(perc) {
 }
 
 CostiConsumi.GetConsumoPrevistoCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoPrevistoCC', 'Entro!');
 
 	var start = Main.dataAttuale.getTime();
 
@@ -734,37 +630,19 @@ CostiConsumi.GetConsumoPrevistoCC = function() {
 		try {
 			InterfaceEnergyHome.objService.getForecast(CostiConsumi.DatiConsumoPrevistoCbCC, InterfaceEnergyHome.PID_TOTALE, InterfaceEnergyHome.CONSUMO, start, InterfaceEnergyHome.MONTH);
 		} catch (err) {
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, "error: ");
-			if (Main.env == 0)
-				console.log(20, CostiConsumi.MODULE, err);
-			if (Main.env == 0)
-				console.log('exception in CostiConsumi3.js - in CostiConsumi.GetConsumoPrevistoCC method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetConsumoPrevistoCC", err);
 		}
 	} else {
 		// per test
-
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoPrevistoCbCC, "EnergiaConsumataGiornalieroSimul");
-		//var val = ConsumoPrevisto;
-		//CostiConsumi.DatiConsumoPrevistoCbCC(val, null);
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoPrevistoCbCC, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoPrevistoCbCC(fakeValues.energiaConsumata, null);
 	}
-
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'GetConsumoPrevistoCC', 'Esco!');
-	
 }
 
 CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoPrevistoCbCC', 'Entro!');
 	var txt;
 
 	if (err != null) {
-		if (Main.env == 0)
-			console.log(20, CostiConsumi.MODULE, "error: ");
-		if (Main.env == 0)
-			console.log(20, CostiConsumi.MODULE, err);
 		InterfaceEnergyHome.GestErrorEH("DatiConsumoPrevistoCbCC", err);
 	}
 	
@@ -794,10 +672,10 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 	}
 
 	$("#CostiConsumi").css("z-index", "10");
+}
 
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'DatiConsumoPrevistoCbCC', 'Esco!');
-	
+CostiConsumi.getForecast = function(){
+
 	if (InterfaceEnergyHome.mode > 1) {
 		// solo se anche piattaforma
 		try {
@@ -807,13 +685,12 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 			InterfaceEnergyHome.GestErrorEH("GetConsumoPrevistoCC", err);
 		}
 	} else {
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getCostoPrevisto, "Forecast");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getCostoPrevisto, "Forecast");
+		CostiConsumi.getCostoPrevisto(fakeValues.Forecast, null);
 	}
 }
 
 CostiConsumi.SetConsumoImgCC = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'SetConsumoImgCC', 'Entro!');
 
 	$("#ValConsumoAttuale").html('');
 	if (CostiConsumi.potenzaAttuale.value == null) {
@@ -836,8 +713,7 @@ CostiConsumi.SetConsumoImgCC = function() {
 
 		if (CostiConsumi.timerBlink == null) {
 			$("#ValConsumoAttuale").addClass("invisibleDiv")
-			CostiConsumi.timerBlink = setInterval("CostiConsumi.BlinkVal()",
-					CostiConsumi.TIMER_BLINK);
+			CostiConsumi.timerBlink = setInterval(CostiConsumi.BlinkVal, CostiConsumi.TIMER_BLINK);
 		}
 	} else {
 		clearInterval(CostiConsumi.timerBlink);
@@ -848,27 +724,19 @@ CostiConsumi.SetConsumoImgCC = function() {
 
 	$('#ConsumoAttualeMeter').speedometer("valueCons", val, "kW");
 
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'SetConsumoImgCC', 'Esco!');
 	//imposto timer aggiornamento potenza e max elettrodomestico
 	if (CostiConsumi.timerPotenzaCC == null) {
-		CostiConsumi.timerPotenzaCC = setInterval("CostiConsumi.GetElettrodomestici()", CostiConsumi.TIMER_UPDATE_POWER_METER);
+		CostiConsumi.timerPotenzaCC = setInterval(CostiConsumi.GetElettrodomestici, CostiConsumi.TIMER_UPDATE_POWER_METER);
 	}
 }
 
 CostiConsumi.BlinkVal = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'BlinkVal', 'Entro!');
 	$("#ValConsumoAttuale").toggleClass("invisibleDiv");
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'BlinkVal', 'Esco!');
-
 }
 
 /*******************************************************************************
  * sezione grafico a torta
  ******************************************************************************/
-
 CostiConsumi.GetSuddivisioneConsumi = function() {
 
 	//showSpinner();
@@ -892,21 +760,12 @@ CostiConsumi.GetSuddivisioneConsumi = function() {
 		}
 	} else {
 		// per test
-		// var ind = Math.round(Math.random() * SuddivisioneConsumi.length);
-		//CostiConsumi.DatiSuddivisioneConsumiCb(SuddivisioneConsumi, null);  
-		InterfaceEnergyHome.objService.getPropConfigurationHM(CostiConsumi.DatiSuddivisioneConsumiCb, "SuddivisioneConsumi");
+		//InterfaceEnergyHome.objService.getPropConfigurationHM(CostiConsumi.DatiSuddivisioneConsumiCb, "SuddivisioneConsumi");
+		CostiConsumi.DatiSuddivisioneConsumiCb(fakeValues.SuddivisioneConsumi, null);
 	}
 }
 
 CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
-	
-	/*
-	 * if (ifDataNull) {
-		if (Main.env == 0) console.log(40, CostiConsumi.MODULE, "VisGrafico : nessun dato");
-		$("#DettaglioGraficoConsumoOdierno").html("<div id='ConsumoOdiernoVuoto'>" + Msg.home["noGrafStorico"] + "</div>");
-		hideSpinner();
-	} else {
-	 */
 
 	var listaConsumi = new Array();
 	var consumiTotale = 0;
@@ -919,22 +778,12 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 		InterfaceEnergyHome.GestErrorEH("DatiSuddivisioneConsumiCb", err);
 	}
 	
-	// if ((CostiConsumi.listaElettr.length === 0) || (CostiConsumi.listaElettr.length == undefined)) {   //if (obj.length === 0)  return true;
-		
 	if(CostiConsumi.listaElettr == null || Object.keys(CostiConsumi.listaElettr).length==0) {
-		// hideSpinner();
-		// $("#Grafico").show();
-		// $("#GraficoConsumoOdierno").hide();
-		// $("#DettaglioSuddivisioneCosti").show();
-		// $("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
-		
 		// Questa parte disegna il grafico con i dati presi dal file noserver.properties ...		
-		InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GraphNoServerCustomDevice);
-		
+		//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GraphNoServerCustomDevice);
+		CostiConsumi.GraphNoServerCustomDevice(fakeValues.noServerCustomDevice, null);
 	} else {
-
 		if (result != null) {
-			
 			//DT
 			if (InterfaceEnergyHome.mode == -1) {
 				$.each(CostiConsumi.listaElettr, function(indexResult, element) {
@@ -978,28 +827,18 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 					}
 				} else {
 					var sumSmartInfo = 0;
-					if (Main.env == 0)
-						console.log('sumSmartInfo', sumSmartInfo);
 					for ( var i = 0; i < element.list.length; i++) {
 						var vSmartInfo = element.list[i];
-						if (Main.env == 0)
-							console.log('vSmartInfo', vSmartInfo);
 						if (vSmartInfo != null) {
 							sumSmartInfo += vSmartInfo;
-							if (Main.env == 0)
-								console.log('sumSmartInfo', sumSmartInfo);
 						}
 					}
 					ConsumiSmartinfo += sumSmartInfo;
-					if (Main.env == 0)
-						console.log('ConsumiSmartinfo', ConsumiSmartinfo);
 				}
 			});
 	
 			if (ConsumiSmartinfo) {
 				altriConsumi = ConsumiSmartinfo - consumiTotale;
-				if (Main.env == 0)
-					console.log('altriConsumi', altriConsumi);
 			}
 	
 			if ((altriConsumi == 0) && (InterfaceEnergyHome.mode == -1)) {
@@ -1012,12 +851,9 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 			}
 	
 			if (controlSumListaConsumi == 0) {
-				// Se tutti gli elementi inseriti in listaConsumi hanno valore 0,
-				// non mostro il grafico.
+				// Se tutti gli elementi inseriti in listaConsumi hanno valore 0, non mostro il grafico.
 				listaConsumi = new Array();
 			}
-			if (Main.env == 0)
-				console.log('listaConsumi', listaConsumi);
 	
 			$("#Grafico").show();
 			$("#GraficoConsumoOdierno").hide();
@@ -1058,13 +894,6 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 					},
 					tooltip : {
 						formatter : function() {
-							/*
-							 * var modificatore = '1'; 
-							 * for(var i=0;i<2;i++)
-							 * modificatore += "0"; 
-							 * modificatore = parseInt(modificatore,10) 
-							 * var valEuro = Math.round(this.y*(modificatore))/(modificatore);
-							 */
 							return '<b>' + this.point.name + '</b>: ' + Math.floor(this.percentage) + ' % - ' + Math.floor(this.y / 1000) + ' kWh ';
 						}
 					},
@@ -1097,14 +926,12 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 				});
 				hideSpinner();
 			} else {
-				
 				$("#Grafico").show();
 				$("#GraficoConsumoOdierno").hide();
 				$("#DettaglioSuddivisioneCosti").show();
 				$("#DettaglioSuddivisioneCosti").html("<div id='SuddivisioneCostiVuoto'>" + Msg.home["suddivisioneVuoto"] + "</div>");
 			}
 		} else {
-	
 			$("#Grafico").show();
 			$("#GraficoConsumoOdierno").hide();
 			$("#DettaglioSuddivisioneCosti").show();
@@ -1270,15 +1097,10 @@ CostiConsumi.VisMaxConsumoNoServer = function() {
 }
 
 /** Funzione lanciata al caricamento dello script google per gli RSS * */
-
 CostiConsumi.loadFeed = function() {
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'loadFeed', 'Entro!');
 	google.load("feeds", "1", {
 		"callback" : CostiConsumi.launchFeed
 	});
-	if (Main.env == 0)
-		console.log('CostiConsumi3.js', 'loadFeed', 'Esco!');
 }
 
 CostiConsumi.launchFeed = function() {
@@ -1288,7 +1110,6 @@ CostiConsumi.launchFeed = function() {
 /*******************************************************************************
  * gestisce il caricamento degli RSS feed nell'array CostiConsumi.notizie
  ******************************************************************************/
-
 CostiConsumi.Initfeed = function(channel) {
 	var feed;
 
@@ -1387,7 +1208,6 @@ CostiConsumi.Initfeed = function(channel) {
 }
 
 /* Funziona che visualizza gli RSS feed contenuti nella variabile notizie */
-
 CostiConsumi.caricafeed = function() {
 
 	$(".dettaglioNews,.titoloNews").removeAttr("threedots");
@@ -1424,7 +1244,6 @@ CostiConsumi.caricafeed = function() {
 /*******************************************************************************
  * gestisce la simulazione degli RSS feed nel div Suggerimenti
  ******************************************************************************/
-
 CostiConsumi.InitfeedSim = function() {
 	if (typeof NotizieSimul !== 'undefined') {
 		CostiConsumi.notizie = NotizieSimul;
@@ -1452,7 +1271,6 @@ CostiConsumi.InitfeedSim = function() {
 /*******************************************************************************
  * avvia le richieste per i costi
  ******************************************************************************/
-
 CostiConsumi.getMoltForCost = function(result, err) {
 	var txt;
 	if (err != null) {
@@ -1465,7 +1283,6 @@ CostiConsumi.getMoltForCost = function(result, err) {
 	
 	CostiConsumi.getCostoOdierno();
 }
-
 
 CostiConsumi.getCostoOdierno = function() {
 	
@@ -1548,6 +1365,7 @@ CostiConsumi.getCostoMediaWeek = function() {
 	$("#DettaglioCostiMediaWeek").html('');
 	$("#DettaglioCostiMediaWeek").html(Msg.home["costoDayWeek"] + ": <b>" + txt + "</b>");
 };
+
 /**
  * Ottengo il consumo medio giornaliero dell'ultima settimana
  */
@@ -1571,9 +1389,8 @@ CostiConsumi.GetConsumoMediaWeek = function() {
 		}
 	} else {
 		// per test
-		//var ret_finto = ConsumoMedioSettimanale;
-		//CostiConsumi.DatiConsumoMediaWeekCb(ret_finto, null);
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMediaWeekCb, "EnergiaConsumataGiornalieroSimul");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoMediaWeekCb, "EnergiaConsumataGiornalieroSimul");
+		CostiConsumi.DatiConsumoMediaWeekCb(fakeValues.energiaConsumata, null);
 	}
 };
 
@@ -1637,9 +1454,10 @@ CostiConsumi.DatiConsumoMediaWeekCb = function(result, err) {
 					InterfaceEnergyHome.DAY, true, InterfaceEnergyHome.DELTA);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("BackConsumoMediaWeek", err);
-		}
+		} 
 	} else{
-		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneMediaWeekCb, "ProdottaMedioSettimanale");
+		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneMediaWeekCb, "ProdottaMedioSettimanale");
+		CostiConsumi.DatiProduzioneMediaWeekCb(fakeValues.ProdottaMedioSettimanale, null);
 	}
 };
 
@@ -1682,7 +1500,6 @@ CostiConsumi.DatiProduzioneMediaWeekCb = function(result, err) {
 	
 	CostiConsumi.getCostoMediaWeek();
 };
-
 
 var NotizieSimul = [
 {	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
