@@ -116,18 +116,29 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 
 	
 	public float calculatePowerProfilePrice(String applianceId, short powerProfileID, int delay) {
+		LOG.info("Trying to calculate price for appliance {}, starting in {}",
+				applianceId,
+				delay);
 		if (delay < 0 || delay > PowerProfileTimeConstraints.MAX_SCHEDULING_DELAY)
+		{
+			LOG.error("Invalid time delay!");
 			throw new IllegalArgumentException("Invalid Time Delay " + delay);
-		
+		}
 		WhiteGoodInfo appliance = getWhiteGoodInfo(applianceId);
 		PowerProfileInfo ppi = getOrRetrievePowerProfile(appliance, powerProfileID);
 		
-		if (ppi == null) throw new IllegalStateException(powerProfileID + " Profile ID Unknown.");
+		if (ppi == null)
+		{
+			LOG.error("Unable to get power profile with ID {}",powerProfileID);
+			throw new IllegalStateException(powerProfileID + " Profile ID Unknown.");
+		}
 		
 		// check that the appliance is running
 		if (ppi.getProfileCurrentState().isApplianceStarted())
+		{
+			LOG.error("The appliance {} has already started, can't calculate price",applianceId);
 			throw new IllegalStateException("Cannot Calculate Price of a Running Appliance - " + PowerProfileState.getNameOf(ppi.getProfileCurrentState()));
-
+		}
 		
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, delay);
@@ -169,16 +180,22 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		LOG.debug("cost " + cost);
 		
 		// check potential overload
-		float available = getCurrentAvailablePower();
-		if (maxPeakPower >= available)
+		try
 		{
-			IOverloadStatusListener overloadListener= getOverloadStatusListener();
-			if(overloadListener!=null)
+			float available = getCurrentAvailablePower();
+			if (maxPeakPower >= available)
 			{
-				overloadListener.notifyOverloadStatusUpdate(OverloadStatus.OverLoadRiskIfApplianceStarts);
+				IOverloadStatusListener overloadListener= getOverloadStatusListener();
+				if(overloadListener!=null)
+				{
+					overloadListener.notifyOverloadStatusUpdate(OverloadStatus.OverLoadRiskIfApplianceStarts);
+				}
+				currentOverloadStatus=OverloadStatus.OverLoadRiskIfApplianceStarts;
+				powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
 			}
-			currentOverloadStatus=OverloadStatus.OverLoadRiskIfApplianceStarts;
-			powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
+		}catch(Throwable t)
+		{
+			LOG.error("Unable to check available power and check overload risk: {}",t);
 		}
 		
 		return cost;
