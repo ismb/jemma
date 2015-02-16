@@ -142,4 +142,8 @@ public class BasicAppliance implements IAppliance {
 	public final IEndPoint getEndPoint(int id) {
 		return (IEndPoint) endPoints.get(new Integer(id));
 	}
+
+	public String getAddressString() {
+		return "BASIC APPLIANCE";
+	}
 }

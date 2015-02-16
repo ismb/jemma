@@ -85,6 +85,19 @@ public class AppliancesInitializationManager {
 		subscribe(serviceCluster, ApplianceControlServer.ATTR_StartTime_NAME, installing);
 		subscribe(serviceCluster, ApplianceControlServer.ATTR_FinishTime_NAME, installing);
 		subscribe(serviceCluster, ApplianceControlServer.ATTR_RemainingTime_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_CycleTarget0_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_CycleTarget1_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_TemperatureTarget0_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_TemperatureTarget1_NAME, installing);
+		
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_EcoMode_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_HolidayMode_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_IceParty_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_SuperCoolMode_NAME, installing);
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_SuperFreezeMode_NAME, installing);
+		
+		subscribe(serviceCluster, ApplianceControlServer.ATTR_RemoteControl_NAME, installing);
+		
 	}
 	
 	private void initSimpleMeteringCluster(IServiceCluster serviceCluster, boolean installing) {

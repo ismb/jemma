@@ -152,6 +152,14 @@ public interface IAppliance {
 	 *         case of a driver appliance, also the associated physical device
 	 */
 	public String getPid();
+	
+	/**
+	 * Returns the String representation of the device address
+	 * in case the appliance is a driver for a real device. 
+	 * To be implemented by each Driver
+	 * @return
+	 */
+	public String getAddressString();
 
 	/**
 	 * Returns a set of properties associated to a specific appliance type; if a
