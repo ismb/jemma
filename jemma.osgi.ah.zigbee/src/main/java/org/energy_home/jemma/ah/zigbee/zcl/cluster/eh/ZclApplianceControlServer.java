@@ -76,9 +76,11 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 				ATTR_EcoMode_NAME, new ZclDataTypeBoolean(), null, true, 1));
 		attributesMapByName.put(ATTR_HolidayMode_NAME, new ZclAttributeDescriptor(15, //EcoMode attribute id: 0x000f
 				ATTR_HolidayMode_NAME, new ZclDataTypeBoolean(), null, true, 1));
+		attributesMapByName.put(ATTR_RemoteControl_NAME, new ZclAttributeDescriptor(18, //RemoteControl attribute id: 0x0012
+				ATTR_RemoteControl_NAME, new ZclDataTypeBoolean(), null, true, 1));
 		attributesMapByName.put(ATTR_IceParty_NAME, new ZclAttributeDescriptor(20, //IceParty attribute id: 0x0014
 				ATTR_IceParty_NAME, new ZclDataTypeBoolean(), null, true, 1));
-		
+
 	}
 
 	public ZclApplianceControlServer() throws ApplianceException {
