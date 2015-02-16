@@ -266,7 +266,7 @@ public class DataFreescale implements IDataLayer {
 	public void processMessages(ByteArrayObject message) throws Exception {
 
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-			LOG.info("Processing message: " + message.ToHexString());
+			LOG.debug("Processing message: " + message.ToHexString());
 		short _command = (short) DataManipulation.toIntFromShort(message.getArray()[0], message.getArray()[1]);
 
 		/* APSDE-DATA.Indication */
@@ -3788,7 +3788,7 @@ public class DataFreescale implements IDataLayer {
 	
 	public void notifyFrame(final ByteArrayObject frame) {
 		if (getGal().getPropertiesManager().getserialDataDebugEnabled())
-			LOG.info("<<< Received data:" + frame.ToHexString());
+			LOG.debug("<<< Received data:" + frame.ToHexString());
 		try {
 			getDataFromSerialComm().put(frame);
 		} catch (InterruptedException e) {
