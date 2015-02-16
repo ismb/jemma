@@ -864,6 +864,7 @@ public class GreenathomeAppliance extends Appliance implements ManagedService, H
 	 * # removeDevice(org.energy_home.jemma.ah.hac.IAppliance)
 	 */
 	public synchronized void removeDevice(String appliancePid) throws ApplianceException {
+		LOG.debug("Received a request to remove appliance with PID {}",appliancePid);
 		synchronized (lockGatH) {
 			if (this.hacService != null) {
 				// !!! Energy@home webui compatibility
