@@ -116,9 +116,6 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 
 	
 	public float calculatePowerProfilePrice(String applianceId, short powerProfileID, int delay) {
-		LOG.info("Trying to calculate price for appliance {}, starting in {}",
-				applianceId,
-				delay);
 		if (delay < 0 || delay > PowerProfileTimeConstraints.MAX_SCHEDULING_DELAY)
 		{
 			LOG.error("Invalid time delay!");
@@ -127,11 +124,7 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		WhiteGoodInfo appliance = getWhiteGoodInfo(applianceId);
 		PowerProfileInfo ppi = getOrRetrievePowerProfile(appliance, powerProfileID);
 		
-		if (ppi == null)
-		{
-			LOG.error("Unable to get power profile with ID {}",powerProfileID);
-			throw new IllegalStateException(powerProfileID + " Profile ID Unknown.");
-		}
+		if (ppi == null) throw new IllegalStateException(powerProfileID + " Profile ID Unknown.");
 		
 		// check that the appliance is running
 		if (ppi.getProfileCurrentState().isApplianceStarted())
@@ -262,21 +255,25 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 			ec.setPowerThreshold(powerThresholds.getContractualThreshold());
 			
 			float[] forecast;
+			
 			if (smartInfoProduction != null) {
-
-				List<Float> hourlyData = getCloudServiceProxy().retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
-				if (hourlyData != null && hourlyData.size() > SolarIrradianceProfile.MINIMUM_INTERPOLATION_HOURS) {
-					// set current value as most accurate than any forecast (obvious)
-					hourlyData.set(0, super.getIstantaneousProducedPower());
-					forecast = SolarIrradianceProfile.interpolate(hourlyData);
-				
-				} else {
-					// fall back if the retrieved values are unavailable
-					float maxProducedPower = super.getPeakProducedPower();
-					if (sky == null) sky = new SolarIrradianceProfile(maxProducedPower, EnergyAllocator.NUMBER_OF_DAYS_HORIZON, SkyCover.ClearSky);
-					forecast = sky.getSeries();
+				try{
+					List<Float> hourlyData = getCloudServiceProxy().retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
+					if (hourlyData != null && hourlyData.size() > SolarIrradianceProfile.MINIMUM_INTERPOLATION_HOURS) {
+						// set current value as most accurate than any forecast (obvious)
+						hourlyData.set(0, super.getIstantaneousProducedPower());
+						forecast = SolarIrradianceProfile.interpolate(hourlyData);
+					
+					} else {
+						// fall back if the retrieved values are unavailable
+						float maxProducedPower = super.getPeakProducedPower();
+						if (sky == null) sky = new SolarIrradianceProfile(maxProducedPower, EnergyAllocator.NUMBER_OF_DAYS_HORIZON, SkyCover.ClearSky);
+						forecast = sky.getSeries();
+					}
+					ec.setEnergyForecast(forecast);
+				}catch(Throwable t){
+					LOG.error("Error retreiving Energy production forecast from cloud, switching to default scheduling mode");
 				}
-				ec.setEnergyForecast(forecast);
 			}
 
 			ParticleSwarmScheduler swarm = new ParticleSwarmScheduler(ppi, ec, SCHEDULER_SWARM_SIZE);
