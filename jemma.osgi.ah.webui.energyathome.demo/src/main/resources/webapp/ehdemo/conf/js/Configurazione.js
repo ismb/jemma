@@ -701,6 +701,8 @@ Configurazione.selectCategorie = function(types) {
 	var typeAlreadyUsed = new Array();
 	var catArray, indexCC = null;
 
+/*	Old loop to filter categories according to attached driver.
+	disabled to ease new devices integration/test
 	for (t in types) {
 		var tp = types[t];
 		for (confT in Configurazione.categorieGroup) {
@@ -714,7 +716,7 @@ Configurazione.selectCategorie = function(types) {
 			}
 		}
 
-	}
+	}*/
 	if (returnList == '') {
 		catArray = Configurazione.categorieGroup['ah.ep.zigbee.Generic'];
 		for (var iC = 0; iC <= catArray.length; iC++) {
