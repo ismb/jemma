@@ -1999,7 +1999,9 @@ public class GreenathomeAppliance extends Appliance implements ManagedService, H
 				for (int j = 1; j < endPoints.length; j++) {
 					try {
 						// skip ESP and core appliance
-						if (peerAppliance.getDescriptor().getType().equals("ah.app.EnergyServicePortal") || peerAppliance.getPid().equals("ah.app.core"))
+						//old if commented out by ivan
+						//if (peerAppliance.getDescriptor().getType().equals("ah.app.EnergyServicePortal") || peerAppliance.getPid().equals("ah.app.core"))
+						if(!peerAppliance.isDriver())
 							continue;
 						props = this.getApplianceConfiguration(peerAppliance, j);
 						if (props != null)

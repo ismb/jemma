@@ -77,7 +77,7 @@
 		<category icon="other.png" name="Ubisys Dimmable Light" pid="43"/>
 		<category icon="other.png" name="Window Covering" pid="44"/>
 		<category icon="other.png" name="Window Covering Controller" pid="45"/>
-		
+		<category icon="dishwasher.png" name="Indesit Dish Washer" pid="46"/>
 		
     </categories>
 	<rules>
