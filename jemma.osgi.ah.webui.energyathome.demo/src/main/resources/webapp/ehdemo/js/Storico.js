@@ -725,10 +725,11 @@ Storico.DatiCostoStorico = function(val) {
 
 Storico.DatiProduzioneStorico = function(val) {
 	if (Main.env == 0) console.log('datiCosti Costi dal server', val);
+	/*
 	if (val != null){
 		for (var i=0;i<val.length;i++)
 			val[i] = val[i] * 10;
-	}
+	}*/
 	
 	Storico.datiProduzione = val;
 	if (val == null){
@@ -753,13 +754,6 @@ Storico.GetStorico = function() {
 	Storico.device = Storico.GetDispId(Storico.dispositivoScelto);
 	if (Main.env == 0) console.log(80, Storico.MODULE, "Periodo: pid = " + Storico.device + " inizio = " + Storico.dataInizio.toString() + " fine = " + Storico.dataFine.toString());
 
-	// Nella prima fase del trial gestisco solo i dati del consumo
-	/*
-	 * if (InterfaceEnergyHome.mode == InterfaceEnergyHome.MODE_FULL)
-	 * InterfaceEnergyHome.GetStorico("Consumo", Storico.device,
-	 * Storico.dataInizio, Storico.dataFine, Storico.periodoScelto,
-	 * Storico.DatiConsumoStorico); else
-	 */
 	if (Main.enablePV){
 		//ToDo: evitare se device diverso da SmartInfo
 		if ((Storico.device == 0) || (Storico.device == null)){
@@ -780,7 +774,11 @@ Storico.GetDispId = function(nomeElettr) {
 				if (Storico.datiElettr[i].tipo == InterfaceEnergyHome.SMARTINFO_APP_TYPE){
 					rtnResult =  null;
 				} else {
-					rtnResult =  Storico.datiElettr[i].pid;
+					if (InterfaceEnergyHome.mode == -1) {
+						rtnResult = 1;
+					} else {
+						rtnResult = Storico.datiElettr[i].pid;
+					}
 				}
 			}
 		}
@@ -1030,7 +1028,8 @@ Storico.VisScelta = function() {
 		$("#SceltaDispositivo").html(listaDisp);
 	} else {
 		// $("#SceltaDispositivo").html("<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"]);
-		InterfaceEnergyHome.objService.getNoServerCustomDevice(Storico.GestStoricoList);
+		//InterfaceEnergyHome.objService.getNoServerCustomDevice(Storico.GestStoricoList);
+		Storico.GestStoricoList(fakeValues.noServerCustomDevice, null);
 	}
 	
 	Storico.periodoScelto = Storico.GIORNO;
@@ -1080,18 +1079,28 @@ Storico.GestStoricoList = function(res, err)
 {
 	if(!err) {
 		if(res.list.length > 0) {
+
+			var tmpArr = new Array();
 			
 			var listaDisp = "<input class='ButtonScelta' name='Dispositivo' type='radio' checked='checked' value='" + Msg.home["tuttiStorico"] + "'>" + Msg.home["tuttiStorico"] ;
-			
-			$.each(res.list, function(indice, elettrodom) {				
+			var arrElettr = new Array();
+			$.each(res.list, function(indice, elettrodom) {		
+				var nomeTmp = elettrodom["map"]["nome"];								
 				if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "12" &&
 						elettrodom["map"][InterfaceEnergyHome.ATTR_APP_CATEGORY] != "14") 
 				{
 					// Qui aggiungo gli elementi della choice associati ai device fake ...
-					var nome = elettrodom["map"]["nome"];						
-					listaDisp += "<br><input class='ButtonScelta' name='Dispositivo' type='radio' value='" + nome + "'>" + nome;
+					listaDisp += "<br><input class='ButtonScelta' name='Dispositivo' type='radio' value='" + nomeTmp + "'>" + nomeTmp;
+					
 				}
+				var tmpObj = new Object();
+				tmpObj.nome = nomeTmp;
+				tmpObj.pid = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
+				tmpObj.tipo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE];
+				tmpArr.push(tmpObj);
 			});
+			
+			Storico.DatiElettr(tmpArr);
 			
 			$("#SceltaDispositivo").html(listaDisp);
 			

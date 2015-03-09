@@ -30,7 +30,7 @@ iFrameForum.GetElettrodomestici = function() {
 
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(iFrameForum.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(iFrameForum.DatiElettrodomesticiCB);
 		} catch (err) {
 			//if (Main.env == 0) console.log('exception in iFrameForum.js - in iFrameForum.GetElettrodomestici method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);

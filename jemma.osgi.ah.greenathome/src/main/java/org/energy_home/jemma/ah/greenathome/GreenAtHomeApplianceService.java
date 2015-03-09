@@ -48,15 +48,10 @@ public interface GreenAtHomeApplianceService {
 	
 	//added for demo
 	//public Vector getInfosDemo();
-	//added for read prop file for demo
-	public List<String> getPropConfiguration(String lblProps) throws IOException;
-	public Hashtable getPropConfigurationHM(String lblProps) throws IOException;
-	public Hashtable getAllPropConfiguration() throws IOException;
-	//public Boolean setAllPropConfiguration(String jsonVar) throws JSONException, IOException;
 
 	public ArrayList getAppliancesConfigurations() throws ApplianceException, ServiceClusterException;
 	
-	public ArrayList<Hashtable<String, String>> getNoServerCustomDevice() throws ApplianceException, ServiceClusterException;
+	//public ArrayList<Hashtable<String, String>> getNoServerCustomDevice() throws ApplianceException, ServiceClusterException;
 
 	//public Hashtable getInfo(IAppliance peerAppliance) throws ApplianceException, ServiceClusterException;
 

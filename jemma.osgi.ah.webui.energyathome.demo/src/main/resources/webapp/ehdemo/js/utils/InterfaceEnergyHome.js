@@ -152,7 +152,7 @@ InterfaceEnergyHome.Init = function() {
 			callback(appliance, null);
 		}
 		
-		service.getAppliancesConfigurations = function(callback) {
+		service.getAppliancesConfigurationsDemo = function(callback) {
 			callback(ListaElettr, null);
 		}
 		
@@ -401,7 +401,7 @@ InterfaceEnergyHome.GetListaAppliances = function (backFunc)
 	InterfaceEnergyHome.backListaAppliances = backFunc;
 	Log.alert(20, InterfaceEnergyHome.MODULE, "GetListaAppliances");
 	try {
-		InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackListaAppliances);
+		InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackListaAppliances);
 	} catch (err) {
 		console.log("ERRORE! => ");
 		console.log(err);
@@ -998,7 +998,7 @@ InterfaceEnergyHome.GetMaxElettr = function (backFunc)
 	InterfaceEnergyHome.backMaxElettr = backFunc;
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackMaxElettr);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackMaxElettr);
 		} catch (err) {
 			console.log("ERRROE ");
 			console.log(err);
@@ -1228,7 +1228,7 @@ InterfaceEnergyHome.GetPotenzaAttuale = function (backFunc)
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
 			//InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome.BackPotenzaAttuale, InterfaceEnergyHome.POTENZA_TOTALE);
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackPotenzaAttuale);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackPotenzaAttuale);
 		} catch (err) {
 			console.log("ERRROE ");
 			console.log(err);
@@ -1320,7 +1320,7 @@ InterfaceEnergyHome.GetListaElettr = function (backFunc)
 	
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackListaElettr);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackListaElettr);
 		} catch (err) {
 			console.log("ERRROE ");
 			console.log(err);
@@ -1370,7 +1370,7 @@ InterfaceEnergyHome.GetElettrStorico = function (backFunc)
 	
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackElettrStorico);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackElettrStorico);
 		} catch (err) {
 			console.log("ERRROE ");
 			console.log(err);

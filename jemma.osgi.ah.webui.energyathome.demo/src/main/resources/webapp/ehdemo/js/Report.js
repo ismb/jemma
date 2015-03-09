@@ -456,7 +456,7 @@ Report.GetElettrodomestici = function() {
 
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(Report.DatiElettrodomesticiCB);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(Report.DatiElettrodomesticiCB);
 		} catch (err) {
 			//if (Main.env == 0) console.log('exception in Report.js - in Report.GetElettrodomestici method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetMaxElettr", err);

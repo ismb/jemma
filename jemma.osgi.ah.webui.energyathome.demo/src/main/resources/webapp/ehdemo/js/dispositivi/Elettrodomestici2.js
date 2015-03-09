@@ -118,7 +118,7 @@ Elettrodomestici.getCategoryIndex=function(name){
 Elettrodomestici.GetDevicesInfos=function(callBack){
 	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
 		try {
-			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurations(function(result, err, req) {   //getInfosDemo(function(result, err, req) {
+			Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(function(result, err, req) {   //getInfosDemo(function(result, err, req) {
 				if (Elettrodomestici.requestCB == result.id){
 					Elettrodomestici.requestCB = null;
 					hideSpinnerElettro();
