@@ -300,7 +300,7 @@ var Msg = {
 		43 : "Attenuatore di luce Ubisys",
 		44 : "Tapparella finestra",
 		45 : "Controllore Tapparella finestra",
-		50 : "Lavastoviglie Indesits"
+		46 : "Lavastoviglie Indesit"
 		
 			
 	}
