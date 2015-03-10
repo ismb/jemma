@@ -158,7 +158,7 @@ CostiConsumi.GestConsumi = function() {
 		$("#DettaglioCostiMediaWeek").html(Msg.home["costoDayWeek"] + ": <b>" + Msg.home["datoNonDisponibile"] + "</b>");
 	}*/
 
-	if (InterfaceEnergyHome.mode == -1) {
+	if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 		// per test
 		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
 		CostiConsumi.getMoltForCost(fakeValues.MoltForCost, null);
@@ -224,7 +224,7 @@ CostiConsumi.ExitConsumi = function() {
 
 CostiConsumi.GetElettrodomestici = function() {
 
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)){
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
@@ -448,7 +448,7 @@ CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
 	}
 	CostiConsumi.consumoOdierno = 0;
 	if (result) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var ora = new Date();
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);
@@ -487,7 +487,7 @@ CostiConsumi.GetProduzioneOdiernoCC = function() {
 			InterfaceEnergyHome.GestErrorEH("GetConsumoOdiernoCC", err);
 		}
 	} else {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
 			CostiConsumi.DatiProduzioneOdiernoCbCC(fakeValues.energiaProdotta, null);
 		} else {
@@ -501,7 +501,7 @@ CostiConsumi.DatiProduzioneOdiernoCbCC = function(result, err) {
 	//solo se ho una produzione valida la sottraggo al consumo per ottenere il consumo finale
 	CostiConsumi.prodOdierno = 0;
 	if (result) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var ora = new Date();
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);
@@ -647,7 +647,7 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 	}
 	
 	//test
-	if (InterfaceEnergyHome.mode == -1) {
+	if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 		//result = result.list[0];
 		var tmpResult = 0;
 		$.each(result.list, function(index, element) {
@@ -785,7 +785,7 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 	} else {
 		if (result != null) {
 			//DT
-			if (InterfaceEnergyHome.mode == -1) {
+			if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 				$.each(CostiConsumi.listaElettr, function(indexResult, element) {
 					if (!result.map[indexResult]) {
 						result.map[indexResult] = {'javaClass': "java.util.ArrayList", 'list': [0,10,0,10,0,10,10,10,56,80,45,1500,140,563,1200,2063,1052,58,800,400,0,10,1035,500,51]};
@@ -841,7 +841,7 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 				altriConsumi = ConsumiSmartinfo - consumiTotale;
 			}
 	
-			if ((altriConsumi == 0) && (InterfaceEnergyHome.mode == -1)) {
+			if ((altriConsumi == 0) && ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 				altriConsumi = Math.floor(consumiTotale/6);
 				controlSumListaConsumi++;
 				listaConsumi.push(new Array(Msg.home["altro"], altriConsumi));
@@ -1079,7 +1079,8 @@ CostiConsumi.VisMaxConsumoNoServer = function() {
 					DefinePath.imgDispPath + consumoMaxIcon);
 	// il consumo e' in watt
 	$("#TestoConsumoMaggiore")
-			.text(consumoMaxNome + " (" + Math.round(consumoMaxValue) + " Wh)");
+			//.text(consumoMaxNome + " (" + Math.round(consumoMaxValue) + " Wh)");
+			.text(consumoMaxNome + " (" + Math.round(consumoMaxValue/1000) + " kWh)");
 	
 	if (CostiConsumi.dimMaxDispImg == -1) {
 		wDiv = $("#ConsumoMaggioreImg").width();
@@ -1403,7 +1404,7 @@ CostiConsumi.DatiConsumoMediaWeekCb = function(result, err) {
 	}
 
 	if (result != null) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var tmpResult = 0;
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);

@@ -454,3 +454,426 @@ var NotizieSimul = [
 	title : "Bonus 55% esteso al 2020. Ecco il piano di Clini presentato al Cipe"
 },
 ];
+
+
+//this property represents a fake response returned Green@Home, to be used in mode=noservernodev
+var AppliancesConfigurationFake={
+	    "fixups": [
+	               [
+	                   [
+	                       "list",
+	                       4,
+	                       "map",
+	                       "category"
+	                   ],
+	                   [
+	                       "list",
+	                       0,
+	                       "map",
+	                       "category"
+	                   ]
+	               ],
+	               [
+	                   [
+	                       "list",
+	                       5,
+	                       "map",
+	                       "category"
+	                   ],
+	                   [
+	                       "list",
+	                       0,
+	                       "map",
+	                       "category"
+	                   ]
+	               ],
+	               [
+	                   [
+	                       "list",
+	                       7,
+	                       "map",
+	                       "category"
+	                   ],
+	                   [
+	                       "list",
+	                       0,
+	                       "map",
+	                       "category"
+	                   ]
+	               ],
+	               [
+	                   [
+	                       "list",
+	                       8,
+	                       "map",
+	                       "category"
+	                   ],
+	                   [
+	                       "list",
+	                       0,
+	                       "map",
+	                       "category"
+	                   ]
+	               ]
+	           ],
+	           "id": 16,
+	           "result": {
+	               "javaClass": "java.util.ArrayList",
+	               "list": [
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605269,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605317,
+	                                           "value": true,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "category": {
+	                               "name": "Jolly Smart Plug",
+	                               "iconName": "jolly_smart_plug.png",
+	                               "javaClass": "org.energy_home.jemma.ah.hac.lib.ext.Category",
+	                               "pid": "13"
+	                           },
+	                           "ah.category.pid": "13",
+	                           "appliance.pid": "ah.app.3521399293210526040-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "LED Lavastoviglie rosso",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605318,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605365,
+	                                           "value": false,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "category": {
+	                               "name": "Coffee Machine",
+	                               "iconName": "coffee_machine.png",
+	                               "javaClass": "org.energy_home.jemma.ah.hac.lib.ext.Category",
+	                               "pid": "27"
+	                           },
+	                           "ah.category.pid": "27",
+	                           "appliance.pid": "ah.app.3521399293210526123-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "Macchina caffe",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605365,
+	                                           "value": 5,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "category": {
+	                               "name": "Indesit Oven",
+	                               "iconName": "oven.png",
+	                               "javaClass": "org.energy_home.jemma.ah.hac.lib.ext.Category",
+	                               "pid": "38"
+	                           },
+	                           "ah.category.pid": "38",
+	                           "appliance.pid": "ah.app.22731331059870400-1",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.whitegood",
+	                           "ah.icon": "forno.png",
+	                           "ah.app.name": "Forno",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.WhiteGoods"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605366,
+	                                           "value": 4.800000190734863,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "category": {
+	                               "name": "Indesit Dish Washer",
+	                               "iconName": "dishwasher.png",
+	                               "javaClass": "org.energy_home.jemma.ah.hac.lib.ext.Category",
+	                               "pid": "46"
+	                           },
+	                           "ah.category.pid": "46",
+	                           "appliance.pid": "ah.app.3521399293213672255-1",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.whitegood",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "Lavastoviglie",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.WhiteGoods"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605366,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605366,
+	                                           "value": false,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "ah.category.pid": "13",
+	                           "appliance.pid": "ah.app.3521399293210526119-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "LED forno bianco",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605366,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605416,
+	                                           "value": false,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "ah.category.pid": "13",
+	                           "appliance.pid": "ah.app.3521399293210526121-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "LED macchina caffÃ¨",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605417,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "category": {
+	                               "name": "Meter",
+	                               "iconName": "meter.png",
+	                               "javaClass": "org.energy_home.jemma.ah.hac.lib.ext.Category",
+	                               "pid": "12"
+	                           },
+	                           "ah.category.pid": "12",
+	                           "appliance.pid": "ah.app.3521399293210526113-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.metering",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "Smart Info",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.MeteringDevice"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605418,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605466,
+	                                           "value": true,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "ah.category.pid": "13",
+	                           "appliance.pid": "ah.app.3521399293210526051-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "LED Forno rosso",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   },
+	                   {
+	                       "map": {
+	                           "device_value": {
+	                               "javaClass": "java.util.LinkedList",
+	                               "list": [
+	                                   {
+	                                       "name": "IstantaneousDemands",
+	                                       "value": {
+	                                           "timestamp": 1426004605466,
+	                                           "value": 0,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   },
+	                                   {
+	                                       "name": "OnOffState",
+	                                       "value": {
+	                                           "timestamp": 1426004605466,
+	                                           "value": true,
+	                                           "javaClass": "org.energy_home.jemma.ah.hac.lib.AttributeValue"
+	                                       },
+	                                       "javaClass": "org.energy_home.jemma.ah.internal.greenathome.AttributeValueExtended"
+	                                   }
+	                               ]
+	                           },
+	                           "ah.category.pid": "13",
+	                           "appliance.pid": "ah.app.3521399293210526124-8",
+	                           "ah.location.pid": "7",
+	                           "ah.app.type": "org.energy_home.jemma.ah.zigbee.smartplug",
+	                           "ah.icon": "plug.png",
+	                           "ah.app.name": "LED lavastoviglie bianco",
+	                           "ah.app.eps.types": [
+	                               "ah.ep.common",
+	                               "ah.ep.zigbee.SmartPlug"
+	                           ],
+	                           "availability": 2
+	                       },
+	                       "javaClass": "java.util.Hashtable"
+	                   }
+	               ]
+	           }
+	       };
