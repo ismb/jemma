@@ -119,12 +119,13 @@
 
 #ifIndesitWM  .label{
     display: block;
-    font-size: large;
+    font-size: 1.5vw;
+    text-align: center;
 }
 
 #ifIndesitWM  .dato{
     display: block;
-    font-size: large;
+    font-size: 1.5vw;
     font-weight: bold;
     color: #ccc;
 }
@@ -164,7 +165,7 @@
 }
 
 #ifIndesitWM .icona_row{
-    text-align: center;
+    text-align: left;
     
 }
 

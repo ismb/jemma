@@ -386,13 +386,15 @@ CostiConsumi.GetDatiPotenza = function() {
 	if (InterfaceEnergyHome.visError != InterfaceEnergyHome.ERR_CONN_SERVER) {
 		Main.ResetError();
 	}
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1) ) {
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiPotenzaAttuale);
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenza", err);
 		}
-	} else {
+	} else if(InterfaceEnergyHome.mode == -2) {
+		CostiConsumi.GestNoServerCustomDevice(fakeValues.noServerCustomDevice, null);
+	} else{
 		// per test
 		if (CostiConsumi.potenzaAttuale.value == null) {
 			CostiConsumi.potenzaAttuale.value = 0;
@@ -410,17 +412,16 @@ CostiConsumi.GetDatiPotenza = function() {
  * Metodo Positive CallBack di CostiConsumi.GetDatiPotenza
  */
 CostiConsumi.DatiPotenzaAttuale = function(result, err) {
-
 	if (err != null) {
 		InterfaceEnergyHome.GestErrorEH("DatiPotenzaAttuale", err);
 		CostiConsumi.potenzaAttuale.value = 0;
 	} else if (result != null) {
+		console.debug(InterfaceEnergyHome.mode );
 		if (InterfaceEnergyHome.mode == 0){
 			CostiConsumi.potenzaAttuale.value = result.value;
 		} else{
 			//prelevare dato smart info
-			if (result.list.length == 0){
-				console.log(fakeValues);
+			if (InterfaceEnergyHome.mode == -2){
 				//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GestNoServerCustomDevice);  //Da sostituire con lettura OBJNOSERVER già settato nell'Init!
 				CostiConsumi.GestNoServerCustomDevice(fakeValues.noServerCustomDevice, null);
 			} else {
@@ -495,33 +496,34 @@ CostiConsumi.GetDatiProduzione = function() {
 		} catch (err) {
 			InterfaceEnergyHome.GestErrorEH("GetDatiProduzione", err);
 		}
+	
 	} else {
-		// per test
-		var powerProduction = '2';
-		Main.contatoreProd = powerProduction;
-		switch (Main.contatoreProd) {
-		case '0':
-			CostiConsumi.produzioneAttuale.value = 1000;
-			break;
-		case '1':
-			CostiConsumi.produzioneAttuale.value = 2000;
-			break;
-		case '2':
-			CostiConsumi.produzioneAttuale.value = 3000;
-			break;
-		case '3':
-			CostiConsumi.produzioneAttuale.value = 4000;
-			break;
-		case '4':
-			CostiConsumi.produzioneAttuale.value = 5000;
-			break;
-		case '5':
-			CostiConsumi.produzioneAttuale.value = 6000;
-			break;
-		default:
-			CostiConsumi.produzioneAttuale.value = 0;
-			break;
-		}
+			// per test
+			var powerProduction = '2';
+			Main.contatoreProd = powerProduction;
+			switch (Main.contatoreProd) {
+			case '0':
+				CostiConsumi.produzioneAttuale.value = 1000;
+				break;
+			case '1':
+				CostiConsumi.produzioneAttuale.value = 2000;
+				break;
+			case '2':
+				CostiConsumi.produzioneAttuale.value = 3000;
+				break;
+			case '3':
+				CostiConsumi.produzioneAttuale.value = 4000;
+				break;
+			case '4':
+				CostiConsumi.produzioneAttuale.value = 5000;
+				break;
+			case '5':
+				CostiConsumi.produzioneAttuale.value = 6000;
+				break;
+			default:
+				CostiConsumi.produzioneAttuale.value = 0;
+				break;
+			}
 
 		CostiConsumi.DatiProduzioneAttuale(CostiConsumi.produzioneAttuale, null);
 	}

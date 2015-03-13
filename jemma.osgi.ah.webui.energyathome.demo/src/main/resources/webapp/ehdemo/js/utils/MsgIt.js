@@ -160,7 +160,12 @@ var Msg = {
 		"lblConsO" : "Consumo Odierno",
 		"lblProdA" : "Produzione Attuale",
 		"lblPotA" : "Potenza Attuale",
-		"oldBrowser" : "VERSIONE DEL BROWSER NON ADATTA! Si prega di aggiornare il browser con l'ultima versione."
+		"oldBrowser" : "VERSIONE DEL BROWSER NON ADATTA! Si prega di aggiornare il browser con l'ultima versione.",
+		//box consumi nella tab "dispositivi"
+		"consumptionsSummary":"Riepilogo consumi",
+		"devicesConsumption":"Consumo dispositivi",
+		"otherConsumption":"Altri consumi",
+		"totalConsumption":"Consumo totale"
 	},
 	community : {
 		"titoloForum" : "FORUM ENERGY@HOME",

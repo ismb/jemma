@@ -11,8 +11,48 @@ ifBase.init=function(clusters){
         ifBase.stato=-1;
 
         $( "#onoff" ).click(function( event ) {
-                event.preventDefault();
-                var myId= "#"+$(this).attr("id");
+        	
+        	event.preventDefault();
+
+        	 var myId= "#"+$(this).attr("id");
+        	
+        	//fake behavior
+    		if(InterfaceEnergyHome.mode==-2)
+    		{
+    			var pid=$("#Interfaccia").data("pid");
+    			var i= $("#Interfaccia").data("current_index");
+    			if(ifBase.stato==1)
+    			{
+    				
+    				$(myId).addClass("OFF");
+                    $(myId).removeClass("ON");
+    				ifBase.stato=0;
+    				Elettrodomestici.listaElettrodomestici[i].stato=0;
+    				updateFakeDeviceValueByNameAndPID("OnOffState",pid,false);
+    				updateFakeDeviceConsumptionByPid(pid,0);
+    				Elettrodomestici.update();
+
+    				
+    			}else{
+    				msg="ON"
+    				$(myId).addClass("ON");
+                    $(myId).removeClass("OFF");
+    				ifBase.stato=1
+    				Elettrodomestici.listaElettrodomestici[i].stato=1;
+    				updateFakeDeviceValueByNameAndPID("OnOffState",pid,true);
+    				updateFakeDeviceConsumptionByPid(pid,35);
+    				Elettrodomestici.update();
+    			}
+    			
+    			 ifBase.updateIcon(ifBase.stato);
+    			
+    			//$("#device_"+i+" .StatoElettrodomestico .row .stato").html(msg);
+    			
+    			return;
+    		}
+        	
+                
+               
                 var i = $("#Interfaccia").data("current_index");
                 if (ifBase.stato==1) {
                     
@@ -146,9 +186,12 @@ ifBase.update= function(now){
         
         var class_stato="NP"
         var _stato="";
-        
+               
         if (Elettrodomestici.listaElettrodomestici[i].connessione==2) {
                 
+        		console.debug("STATOOO!");
+        		console.debug(Elettrodomestici.listaElettrodomestici[i].stato==1)
+        	
                 if (Elettrodomestici.listaElettrodomestici[i].stato==1){
                         _stato="ON";
                         class_stato="ON";

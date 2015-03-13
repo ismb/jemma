@@ -1072,7 +1072,7 @@ CostiConsumi.GraphNoServerCustomDevice = function(res, err)
 //Visualizza l'elettrodomestico simulato con il maggiore consumo ...
 CostiConsumi.VisMaxConsumoNoServer = function() {
 		
-	$("#DettaglioConsumoMaggiore").html("<span id='TestoConsumoMaggiore'></span><img id='ConsumoMaggioreImg' src=''>");
+	$("#DettaglioConsumoMaggiore").html("<table><tr><td><img id='ConsumoMaggioreImg' align='center' src=''></td><td><span id='TestoConsumoMaggiore'></span></td></tr></table>");
 
 	// metto immagine del device che sta consumando di piu'
 	$("#ConsumoMaggioreImg").attr("src",
@@ -1080,8 +1080,8 @@ CostiConsumi.VisMaxConsumoNoServer = function() {
 	// il consumo e' in watt
 	$("#TestoConsumoMaggiore")
 			//.text(consumoMaxNome + " (" + Math.round(consumoMaxValue) + " Wh)");
-			.text(consumoMaxNome + " (" + Math.round(consumoMaxValue/1000) + " kWh)");
-	
+			.html(consumoMaxNome + "<br/> (" + Math.round(consumoMaxValue/1000) + " kWh)");
+/*	
 	if (CostiConsumi.dimMaxDispImg == -1) {
 		wDiv = $("#ConsumoMaggioreImg").width();
 		hDiv = $("#ConsumoMaggioreImg").height();
@@ -1095,6 +1095,7 @@ CostiConsumi.VisMaxConsumoNoServer = function() {
 	}
 	$("#ConsumoMaggioreImg").width(CostiConsumi.dimMaxDispImg);
 	$("#ConsumoMaggioreImg").height(CostiConsumi.dimMaxDispImg);
+	*/
 }
 
 /** Funzione lanciata al caricamento dello script google per gli RSS * */

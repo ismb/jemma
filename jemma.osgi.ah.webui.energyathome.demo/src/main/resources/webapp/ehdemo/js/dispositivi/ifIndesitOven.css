@@ -119,7 +119,8 @@
 
 #ifIndesitOven  .label{
     display: block;
-    font-size: large;
+	font-size: 1.5vw;
+    text-align: center;
 }
 
 #ifIndesitOven  .dato{

@@ -147,7 +147,12 @@ var Msg = {
 		"lblConsO" : "Today's consumption",
 		"lblProdA" : "Current production",
 		"lblPotA" : "Current power",
-		"oldBrowser" : "VERSION OF THE BROWSER DOES NOT FIT! Please upgrade your browser to the latest version."
+		"oldBrowser" : "VERSION OF THE BROWSER DOES NOT FIT! Please upgrade your browser to the latest version.",
+		//box consumi nella tab "dispositivi"
+		"consumptionsSummary":"Consumptions summary",
+		"devicesConsumption":"Devices consumption",
+		"otherConsumption":"Other consumption",
+		"totalConsumption":"Total consumption"
 	},
 	community : {
 		"titoloForum" : "ENERGY@HOME FORUM",

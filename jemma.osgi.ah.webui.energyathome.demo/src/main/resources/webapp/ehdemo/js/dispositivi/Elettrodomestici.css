@@ -7,7 +7,7 @@
     padding: 10px;
     background-color: #333;
     font-family: Arial, sans-serif;
-    font-size: 12px;
+    font-size: 1vw;
     position: relative;
     top: 4%;
     float: right;
@@ -251,6 +251,7 @@
     display: block;
     width: 60%;
     height: 98%;
+    font-size: 1vw;
     overflow: hidden;
 }
 .StatoElettrodomestico .row .right{
