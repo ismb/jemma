@@ -954,11 +954,13 @@ Storico.Precedente = function() {
 
 // imposta periodo successivo in base al tipo di periodo scelto ed esegue richiesta
 Storico.Successivo = function() {
+	
 	if (Main.env == 0) console.log(20, Storico.MODULE, "=========== Successivo: periodoScelto = " + Storico.periodoScelto);
 	switch (Storico.periodoScelto) {
 		case Storico.GIORNO:
 			Storico.dataInizio.setDate(Storico.dataInizio.getDate() + 1);
 			Storico.dataFine.setDate(Storico.dataFine.getDate() + 1);
+			
 			break;
 		case Storico.SETTIMANA:
 			Storico.dataInizio.setDate(Storico.dataInizio.getDate() + 7);
@@ -986,6 +988,9 @@ Storico.Successivo = function() {
 	} else {
 		$("#Succ").show();
 	}
+	console.debug(Storico.periodoScelto)
+	console.debug(Storico.dataInizio);
+	console.debug(Storico.dataFine);
 	Storico.GetStorico();
 }
 

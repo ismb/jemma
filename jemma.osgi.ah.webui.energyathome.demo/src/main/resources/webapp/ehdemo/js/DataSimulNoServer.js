@@ -413,7 +413,7 @@ var DataSim = new Date (2012,2,25,22,56);
 var NotizieSimul = [
 {	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
 	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
-	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
+	title : "Fotovoltaico: ecci il pannello con il record di efficienza"
 },
 {	description : "Un volumetto scaricabile online ricco di consigli utili per risparmiare dai 700 ai 1000 euro all'anno in bolletta con piccoli ...",
 	link : "http://gogreen.virgilio.it/news/green-trends/eco-risparmio-arriva-manuale-ridurre-costi-acqua-luce-gas_6274.html?pmk=rss",

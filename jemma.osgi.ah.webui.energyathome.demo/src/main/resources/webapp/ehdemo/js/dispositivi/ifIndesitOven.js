@@ -143,7 +143,7 @@ ifIndesitOven.update= function(now){
         //in case of mode noservernodev: fake values
         if(InterfaceEnergyHome.mode==-2)
         {
-        	var program=1;
+        	var program=6;
         	ifIndesitOven.programma=program;
         	s_programmi=ifIndesitOven.programmi[program];
         	$(".val_program").text("Program: "+s_programmi);
