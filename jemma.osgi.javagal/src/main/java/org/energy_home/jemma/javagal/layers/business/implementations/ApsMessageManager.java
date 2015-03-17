@@ -70,7 +70,6 @@ public class ApsMessageManager {
 
 		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
-			@Override
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-APSMessageIndication");
@@ -100,12 +99,8 @@ public class ApsMessageManager {
 	public void APSMessageIndication(final APSMessageEvent message) {
 		executor.execute(new Runnable() {
 			public void run() {
+				LOG.debug("GAL-Aps Message Indication in process...");
 
-				
-
-				if (getGal().getPropertiesManager().getDebugEnabled()) {
-					LOG.info("Aps Message Indication in process...");
-				}
 
 				for (CallbackEntry ce : getGal().getCallbacks()) {
 
@@ -245,9 +240,9 @@ public class ApsMessageManager {
 												// next
 												// iteration in the for
 												// cycle
-												if ((asdep != mdep) && (mdep != ((byte)0xFF))) {
-													
-														continue;
+												if ((asdep != mdep) && (mdep != ((byte) 0xFF))) {
+
+													continue;
 												}
 											}
 										}
@@ -285,9 +280,9 @@ public class ApsMessageManager {
 							synchronized (message) {
 								cmessage = SerializationUtils.clone(message);
 							}
-							if (getGal().getPropertiesManager().getDebugEnabled()) {
-								LOG.info("READY to CallBack NotifyApsMessage:" + ((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X", cmessage.getDestinationAddress().getNetworkAddress()) : ""));
-							}
+							
+							LOG.debug("READY to CallBack NotifyApsMessage: {}",((cmessage.getDestinationAddress().getNetworkAddress() != null) ? String.format("%04X", cmessage.getDestinationAddress().getNetworkAddress()) : ""));
+							
 							napml.notifyAPSMessage(cmessage);
 						}
 						// Add it to the list of already notified
@@ -296,9 +291,7 @@ public class ApsMessageManager {
 					}
 				}
 
-				if (getGal().getPropertiesManager().getDebugEnabled()) {
-					LOG.info("Aps Message Indication done!");
-				}
+				LOG.debug("Aps Message Indication done!");
 			}
 		});
 

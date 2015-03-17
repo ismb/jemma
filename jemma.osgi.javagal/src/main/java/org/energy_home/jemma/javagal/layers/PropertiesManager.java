@@ -89,12 +89,12 @@ public class PropertiesManager {
 	 * 
 	 * @return the DebugEnabled value.
 	 */
-	public boolean getDebugEnabled() {
+/*	public boolean getDebugEnabled() {
 		String _value = props.getProperty("debugEnabled");
 		
 		return (_value.equalsIgnoreCase("0")) ? false : true;
 
-	}
+	}*/
 	
 	
 	
@@ -530,6 +530,29 @@ public class PropertiesManager {
 		String uri = props.getProperty(GatewayProperties.ZGD_DONGLE_URI_PROP_NAME);
 		return uri;
 	}
+	
+	/**
+	 * Return if or not dump on filesystem serial packets
+	 * @return if or not dump on filesystem serial packets
+	 */
+	public boolean getzgdDump()
+	{
+		String dump = props.getProperty("dump");
+		if(dump == null)
+			return false;
+		return dump.equals("true") ? true : false;
+	}
+	
+	/**
+	 * Return directory where dump serial packets
+	 * @return directory where dump serial packets
+	 */
+	public String getDirDump()
+	{
+		String dirpath = props.getProperty("dumpDir");
+		return dirpath;
+	}
+	
 
 	/* zgd.dongle.speed */
 	/**

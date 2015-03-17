@@ -127,14 +127,9 @@ public class DataManipulation {
 	 * @return the converted sub array
 	 */
 	public static byte[] subByteArray(byte[] array, int start, int stop) {
-		byte[] toReturn = new byte[stop - start + 1];
-		for (int i = start; i <= stop; i++) {
-			toReturn[i - start] = (byte) array[i];
-		}
+		byte[] toReturn = new byte[(stop-start)+1];
+		System.arraycopy(array, start, toReturn, 0, ((stop-start)+1));
 		return toReturn;
-		
-		//return Arrays.copyOfRange(array, start,stop);
-		
 	}
 
 	/**
@@ -253,23 +248,9 @@ public class DataManipulation {
 		return toReturn;
 	}
 
-	public static String convertListShortToString(ArrayBlockingQueue<Byte> arr) {
-		StringBuilder sb = new StringBuilder();
-		
-			for (Byte s : arr) {
-				sb.append(String.format("%02X", s));
-			}
-		
-		return sb.toString();
-	}
+	
 
-	public static String convertArrayShortToString(short[] arr) {
-		StringBuilder sb = new StringBuilder();
-		for (Short s : arr) {
-			sb.append(String.format("%02X", s.byteValue()));
-		}
-		return sb.toString();
-	}
+	
 
 	public static String convertArrayBytesToString(byte[] arr) {
 		StringBuilder sb = new StringBuilder();

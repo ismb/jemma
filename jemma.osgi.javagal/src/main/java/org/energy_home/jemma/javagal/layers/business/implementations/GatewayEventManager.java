@@ -85,12 +85,10 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 */
 	public GatewayEventManager(GalController _gal) {
 		gal = _gal;
-		if (gal.getPropertiesManager().getDebugEnabled())
-			LOG.info("Creating Executor for GatewayEventManager with:" + getGal().getPropertiesManager().getNumberOfThreadForAnyPool() + " threads");
+		LOG.debug("Creating Executor for GatewayEventManager with: {} threads", getGal().getPropertiesManager().getNumberOfThreadForAnyPool());
 
 		executor = Executors.newFixedThreadPool(getGal().getPropertiesManager().getNumberOfThreadForAnyPool(), new ThreadFactory() {
 
-			@Override
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-EventManager");
@@ -408,6 +406,8 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeDiscovered(final Status status, final WSNNode node) throws Exception {
+		
+		
 		executor.execute(new Runnable() {
 			public void run() {
 				for (GatewayDeviceEventEntry<?> gl : getGal().getListGatewayEventListener()) {
@@ -440,7 +440,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeRemoved(final Status status, final WSNNode node) throws Exception {
-		System.out.println("\n\rNodeDiscovered :" + String.format("%04X", node.getAddress().getNetworkAddress())  + "\n\r");
+		LOG.debug("\n\rNodeDiscovered :" + String.format("%04X", node.getAddress().getNetworkAddress())  + "\n\r");
 
 		executor.execute(new Runnable() {
 			public void run() {
@@ -657,7 +657,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void notifyZDPEvent(final ZDPMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
@@ -680,7 +679,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void notifyZCLEvent(final ZCLMessage message) {
 		executor.execute(new Runnable() {
 			public void run() {
@@ -701,7 +699,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void notifyFrequencyAgility(final Status status) {
 		executor.execute(new Runnable() {
 			public void run() {
@@ -721,7 +718,6 @@ public class GatewayEventManager implements IGatewayEventManager {
 
 	}
 
-	@Override
 	public void notifyInterPANMessageEvent(InterPANMessageEvent message) {
 		// TODO Auto-generated method stub
 

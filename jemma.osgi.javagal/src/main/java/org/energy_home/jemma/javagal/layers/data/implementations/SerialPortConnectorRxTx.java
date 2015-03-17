@@ -17,6 +17,8 @@ package org.energy_home.jemma.javagal.layers.data.implementations;
 
 import gnu.io.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -106,8 +108,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 					try {
 						serialReader = new SerialReader(this);
 						serialPort.addEventListener(serialReader);
-						if (DataLayer.getPropertiesManager().getDebugEnabled())
-							LOG.info("Added SerialPort event listener");
+						LOG.debug("Added SerialPort event listener");
 					} catch (TooManyListenersException e) {
 						disconnect();
 						throw new Exception("Error Too Many Listeners Exception on  serial port:" + e.getMessage());
@@ -115,8 +116,8 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 					in = serialPort.getInputStream();
 					ou = serialPort.getOutputStream();
-					if (DataLayer.getPropertiesManager().getDebugEnabled())
-						LOG.info("Connection on " + portName + " established");
+					
+					LOG.info("Connection on " + portName + " established");
 
 					setConnected(true);
 
@@ -156,9 +157,14 @@ public class SerialPortConnectorRxTx implements IConnector {
 		if (isConnected()) {
 			if (ou != null) {
 				try {
-					if (DataLayer.getPropertiesManager().getserialDataDebugEnabled())
-						LOG.info(">>> Sending: " + buff.ToHexString());
+					LOG.debug(">>> Sending: " + buff.ToHexString());
 					ou.write(buff.getArray(), 0, buff.getCount(true));
+					if(DataLayer.getPropertiesManager().getzgdDump())
+					{
+						String directory = DataLayer.getPropertiesManager().getDirDump();
+						String fileName = System.currentTimeMillis() + "-w.bin";
+						dumpToFile(directory + File.separator + fileName, buff.getArray());
+					}
 					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 
 				} catch (Exception e) {
@@ -178,7 +184,6 @@ public class SerialPortConnectorRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	@Override
 	public boolean isConnected() {
 		return connected;
 	}
@@ -186,7 +191,6 @@ public class SerialPortConnectorRxTx implements IConnector {
 	/**
 	 * @inheritDoc
 	 */
-	@Override
 	public void disconnect() throws IOException {
 		System.setProperty("gnu.io.rxtx.SerialPorts", "");
 		setConnected(false);
@@ -212,8 +216,7 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 			}
 		}
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("RS232 - Disconnected");
+		LOG.info("RS232 - Disconnected");
 	}
 
 	class SerialReader implements SerialPortEventListener {
@@ -235,6 +238,12 @@ public class SerialPortConnectorRxTx implements IConnector {
 						in.read(bufferOriginal);
 						ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
 						_caller.getDataLayer().notifyFrame(frame);
+						if(DataLayer.getPropertiesManager().getzgdDump())
+						{
+							String directory = DataLayer.getPropertiesManager().getDirDump();
+							String fileName = System.currentTimeMillis() + "-r.bin";
+							dumpToFile(directory + File.separator + fileName, bufferOriginal);
+						}
 					}
 				}
 
@@ -260,24 +269,20 @@ public class SerialPortConnectorRxTx implements IConnector {
 	 * @inheritDoc
 	 */
 	public void initialize() throws Exception {
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+		LOG.info("Starting inizialize procedure for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
 
 		setIgnoreMessage(true);
 		DataLayer.cpuReset();
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Waiting 3,5 seconds after command CPUReset...");
+		LOG.info("Waiting 3,5 seconds after command CPUReset...");
 		Thread.sleep(3500);
 		disconnect();
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Clear buffer after CPUReset...");
+		LOG.info("Clear buffer after CPUReset...");
 		DataLayer.clearBuffer();
 		setIgnoreMessage(false);
-		if (DataLayer.getPropertiesManager().getDebugEnabled())
-			LOG.info("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
+		LOG.debug("Re-Starting inizialize procedure after CPUReset for: PortName=" + commport + " -- Speed=" + boudrate + " -- DefaultTimeout:" + DataLayer.getPropertiesManager().getCommandTimeoutMS());
 		if (!connect(commport, boudrate)) {
 			throw new Exception("Unable to connect to serial port!");
 		}
@@ -285,10 +290,23 @@ public class SerialPortConnectorRxTx implements IConnector {
 		if (_status.getCode() != GatewayConstants.SUCCESS)
 			throw new Exception("Errorn on SetMode:" + _status.getMessage());
 		else {
-			if (DataLayer.getPropertiesManager().getDebugEnabled())
-				LOG.info("Connected: PortName=" + commport + "Speed=" + boudrate);
+			LOG.info("Connected: PortName=" + commport + "Speed=" + boudrate);
 
 		}
 	}
+	
+	/**
+	 * Dump byte array on file
+	 * @param filepath name of file
+	 * @param buffer the buffer to dump
+	 * @throws IOException if file doesn't exist or some problem occurs during opening
+	 */
+	public void dumpToFile(String filepath, byte[] buffer) 
+			throws IOException
+	{
+		FileOutputStream fos = new FileOutputStream(filepath);
+		fos.write(buffer);
+		fos.close();
+	}	
 
 }

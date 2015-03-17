@@ -28,6 +28,8 @@ import org.energy_home.jemma.javagal.layers.business.GalController;
 import org.energy_home.jemma.zgd.jaxb.NodeDescriptor;
 import org.energy_home.jemma.zgd.jaxb.NodeServices;
 import org.energy_home.jemma.zgd.jaxb.WSNNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class used to encapsulate any ZigBee Node. This class manage the Timers for
@@ -53,6 +55,8 @@ public class WrapperWSNNode {
 	private boolean _discoveryCompleted;
 	private boolean _executingForcePing;
 
+	private static final Logger LOG = LoggerFactory.getLogger(WrapperWSNNode.class);
+	
 	public synchronized boolean is_executingForcePing() {
 		return _executingForcePing;
 	}
@@ -92,21 +96,21 @@ public class WrapperWSNNode {
 
 		this.dead = false;
 		freshnessTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-Freshness[" + networkAdd + "]");
 			}
 		});
 		discoveryTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-Discovery[" + networkAdd + "]");
 			}
 		});
 		forcePingTPool = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-			@Override
+			
 			public Thread newThread(Runnable r) {
 
 				return new Thread(r, "THPool-ForcePing[" + networkAdd + "]");
@@ -119,36 +123,22 @@ public class WrapperWSNNode {
 	public boolean equals(Object o) {
 		if (o instanceof WrapperWSNNode) {
 			WrapperWSNNode node = (WrapperWSNNode) o;
-
-			if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getNetworkAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getNetworkAddress() != null) {
-				if (node.get_node().getAddress().getNetworkAddress().intValue() == this.get_node().getAddress().getNetworkAddress().intValue())
-					return true;
-				else
-					return false;
-			} else if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getIeeeAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getIeeeAddress() != null) {
+			if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getIeeeAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getIeeeAddress() != null) {
 				if (node.get_node().getAddress().getIeeeAddress().longValue() == this.get_node().getAddress().getIeeeAddress().longValue())
 					return true;
 				else
 					return false;
-			} else {
-				try {
-					throw new Exception("Error in WrapperNode EQUALS");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			} else if (node.get_node() != null && node.get_node().getAddress() != null && node.get_node().getAddress().getNetworkAddress() != null && this.get_node() != null && this.get_node().getAddress() != null && this.get_node().getAddress().getNetworkAddress() != null) {
+				if (node.get_node().getAddress().getNetworkAddress().intValue() == this.get_node().getAddress().getNetworkAddress().intValue())
+					return true;
+				else
 					return false;
-				}
-			}
-		} else {
-			try {
-				throw new Exception("Error in WrapperNode EQUALS");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} else {
 				return false;
 			}
+		} else {
+			return false;
 		}
-
 	}
 
 	public synchronized NodeDescriptor getNodeDescriptor() {
@@ -266,11 +256,11 @@ public class WrapperWSNNode {
 	}
 
 	/**
-	 * Check if the Node is a sleepy device
+	 * Check if the Node is a sleepy end device or end device
 	 */
-	public synchronized boolean isSleepy() {
+	public synchronized boolean isSleepyOrEndDevice() {
 		if ((_node != null) && (_node.getCapabilityInformation() != null)) {
-			if (_node.getCapabilityInformation().isReceiverOnWhenIdle())
+			if (_node.getCapabilityInformation().isDeviceIsFFD())
 				return false;
 			else
 				return true;
@@ -309,8 +299,7 @@ public class WrapperWSNNode {
 					try {
 						discoveryJob = discoveryTPool.schedule(new DiscoveryJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 
 					}
 				}
@@ -336,8 +325,7 @@ public class WrapperWSNNode {
 					try {
 						freshnessJob = freshnessTPool.schedule(new FreshnessJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 					}
 				}
 			}
@@ -363,9 +351,7 @@ public class WrapperWSNNode {
 					try {
 						forcePingJob = forcePingTPool.schedule(new ForcePingJob(), seconds, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						System.out.print(e.getMessage());
-						e.printStackTrace();
-
+						LOG.error("Error scheduling thread: {}",e.getMessage());
 					}
 				}
 			}
