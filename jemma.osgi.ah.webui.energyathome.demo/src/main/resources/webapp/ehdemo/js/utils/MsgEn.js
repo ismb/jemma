@@ -298,6 +298,7 @@ var Msg = {
 		42 : "Ubisys Drimmer Switch",
 		43 : "Ubisys Dimmable Light",
 		44 : "Window Covering",
-		45 : "Window Covering Controller"
+		45 : "Window Covering Controller",
+		46 : "Indesit Dish Washer"
 	}
 }

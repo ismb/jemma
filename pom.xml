@@ -131,6 +131,7 @@
 		<module>jemma.osgi.ah.zigbee</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>jemma.osgi.ah.zigbee.appliances</module>
+		<module>jemma.osgi.ah.demo.fakevalues</module>
 		<!--<module>jemma.osgi.zgd</module>-->
 		<module>Distribution</module>
 	</modules>

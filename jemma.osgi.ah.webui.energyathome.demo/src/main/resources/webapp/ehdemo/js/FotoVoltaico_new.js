@@ -2,22 +2,6 @@ var potenza = {
 	value : null
 };
 
-var fakeValues = {
-	data : null,
-	noServerCustomDevice : {list: new Array()},
-	energiaProdotta: {list: new Array()},
-	energiaConsumata: {list: new Array()},
-	previsioneEnergiaProdotta: {list: new Array()},
-	prodottaMedio: {list: new Array()},
-	ProdottaMedioSettimanale: {list: new Array()},
-	ConsumoMedio: {list: new Array()},
-	IAC: {list: new Array()},
-	Forecast: {list: new Array()},
-	MoltForCost: {list: new Array()},
-	SuddivisioneConsumi: {map: {}},
-	Storico: {map: {}}
-};
-
 var CostiConsumi = {
 	MODULE : "CostiConsumi",
 	CONSUMI : 1,
@@ -47,7 +31,6 @@ var CostiConsumi = {
 	timerPotenza : null,
 	timerPotenza2 : null,
 	timerPotenzaCC : null,
-	timerIndicatoriCC : null,
 	TIMER_UPDATE_POWER_METER : 5000, // Ogni 5"
 	TIMER_UPDATE_PROD_POWER_METER : 60000, // Ogni 1'
 	timerBlink : null,
@@ -147,7 +130,6 @@ CostiConsumi.Init = function() {
 		$("#divFrecceRete").show();
 		$("#divCentro").show();
 	}
-	
 	if ($('#DettaglioGraficoProduzioneOdierno').length == 0) {
 		$('#CostoConsumoInfo').append($('#Grafico').clone().attr('id', 'Grafico2'));
 		$('#Grafico2').children().each(function() {
@@ -159,85 +141,13 @@ CostiConsumi.Init = function() {
 			});
 		});
 	}
-	
-	// Qui inserisco la chiamata alla servlet del nuovo buindle 
-	// per scaricare tutto l'object che definisce e valorizza i 
-	// i dati per la gestione della funzionalità mode=noserver
-	var urlFake = "/fakevalues";
-	$.ajax({
-		url : urlFake,
-		type : 'GET'})
-	.done(function(data) {
-		console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-		console.log(data);
-		fakeValues.data = data;
-		$.each(data, function(indice, value) {
-			if (indice.substring(0, 12) == 'CustomDevice'){
-				var indexListArray = indice.substring(12, 13);
-				var indexObj = indice.substring(14);
-				if (fakeValues.noServerCustomDevice.list[indexListArray] == null){
-								fakeValues.noServerCustomDevice.list[indexListArray] = {map: {
-									'ah.app.type': null,
-									'ah.category.pid': null,
-									'connessione': null,
-									'consumo': null,
-									'icona': null,
-									'location': null,
-									'nome': null,
-									'potenza': null,
-									'stato': null
-								}}; 
-				}
-				eval("fakeValues.noServerCustomDevice.list[indexListArray].map['"+indexObj+"']='"+value+"'");
-			} else if (indice.substring(0) == 'EnergiaProdottaGiornalieroSimul'){
-				fakeValues.energiaProdotta.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				});
-			} else if (indice.substring(0) == 'EnergiaConsumataGiornalieroSimul'){
-				fakeValues.energiaConsumata.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				});
-			} else if (indice.substring(0) == 'ConsumoMedio'){
-				fakeValues.ConsumoMedio.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				});
-			} else if (indice.substring(0) == 'PrevisioneEnergiaProdottaGiornalieroSimul'){
-				fakeValues.previsioneEnergiaProdotta.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				}); 
-			} else if (indice.substring(0) == 'ProdottaMedio'){
-				fakeValues.prodottaMedio.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				}); 
-			} else if (indice.substring(0) == 'ProdottaMedioSettimanale'){
-				fakeValues.ProdottaMedioSettimanale.list = value.split(" , ").map(function(item) {
-				    return parseInt(item, 10);
-				}); 
-			} else if (indice.substring(0) == 'percIAC'){ 
-				fakeValues.IAC.list[0] = parseFloat(value, 10);
-			} else if (indice.substring(0) == 'Forecast'){
-				fakeValues.Forecast.list[0] = parseInt(value, 10); 
-			} else if (indice.substring(0) == 'MoltForCost'){
-				fakeValues.MoltForCost.list[0] = parseInt(value, 10);
-			} else if (indice.substring(0) == 'SuddivisioneConsumi'){
-				for (var i=0; i<value; i++){
-					eval("fakeValues.SuddivisioneConsumi.map[data['SuddivisioneConsumi"+i+"_el']] = {list: new Array()}");
-					eval("fakeValues.SuddivisioneConsumi.map[data['SuddivisioneConsumi"+i+"_el']].list = data['SuddivisioneConsumi"+i+"_val'].split(' , ').map(function(item) {return parseInt(item, 10);});");
-				}
-			} else if (indice.substring(0, 2) == 'SI'){
-				eval("fakeValues.Storico.map['"+indice+"'] = {list: new Array()}");
-				eval("fakeValues.Storico.map['"+indice+"'].list = data['"+indice+"'].split(' , ').map(function(item) {return parseInt(item, 10);});");
-			} else if (indice.substring(0, 4) == 'DEVE'){
-				eval("fakeValues.Storico.map['"+indice+"'] = {list: new Array()}");
-				eval("fakeValues.Storico.map['"+indice+"'].list = data['"+indice+"'].split(' , ').map(function(item) {return parseInt(item, 10);});");
-			}
-		}); 
-		
-		CostiConsumi.GestOnClickMainMenu();
-	});
+	CostiConsumi.GestOnClickMainMenu();
 }
 
 CostiConsumi.GestOnClickMainMenu = function() {
+	//TODO: Qui inserisco la chiamata alla servlet del nuovo buindle 
+	//		per scaricare tutto l'object che definisce e valorizza i 
+	//		i dati per la gestione della funzionalità mode=noserver
 	
 	if (InterfaceEnergyHome.objService == null){
 		if (Menu.timercheckObjService == null){
@@ -420,9 +330,7 @@ CostiConsumi.DatiPotenzaAttuale = function(result, err) {
 		} else{
 			//prelevare dato smart info
 			if (result.list.length == 0){
-				console.log(fakeValues);
-				//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GestNoServerCustomDevice);  //Da sostituire con lettura OBJNOSERVER già settato nell'Init!
-				CostiConsumi.GestNoServerCustomDevice(fakeValues.noServerCustomDevice, null);
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.GestNoServerCustomDevice);  //Da sostituire con lettura OBJNOSERVER già settato nell'Init!
 			} else {
 				$.each(result.list, function(indice, elettrodom) {
 					if (elettrodom["map"][InterfaceEnergyHome.ATTR_APP_TYPE] == InterfaceEnergyHome.SMARTINFO_APP_TYPE) {
@@ -552,13 +460,11 @@ CostiConsumi.CheckSmartInfo = function(result, err){
 				}
 			} else {
 				// legge gli appliance fittizi da noserver.properties ...
-				//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
-				CostiConsumi.DatiSmartInfo(fakeValues.noServerCustomDevice, null);
+				InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
 			}
 		} else {
 			// legge gli appliance fittizi da noserver.properties ...
-			//InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
-			CostiConsumi.DatiSmartInfo(fakeValues.noServerCustomDevice, null);
+			InterfaceEnergyHome.objService.getNoServerCustomDevice(CostiConsumi.DatiSmartInfo);
 		}
 	}
 }
@@ -695,14 +601,11 @@ CostiConsumi.GetDatiEnergiaProdotta = function() {
 			InterfaceEnergyHome.GestErrorEH("GetDatiEnergiaProdotta", err);
 		}
 	} else {
-		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiEnergiaProdottaGiornalieroCb, "EnergiaProdottaGiornalieroSimul");
-		CostiConsumi.DatiEnergiaProdottaGiornalieroCb(fakeValues.energiaProdotta, null);
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiEnergiaProdottaGiornalieroCb, "EnergiaProdottaGiornalieroSimul");
 	}
 }
 
 CostiConsumi.DatiEnergiaProdottaGiornalieroCb = function(result, err) {
-	console.log("========================================================");
-	console.log(result);
 
 	if (err != null) {
 		InterfaceEnergyHome.GestErrorEH("DatiEnergiaProdottaGiornalieroCb", err);
@@ -745,8 +648,7 @@ CostiConsumi.GetDatiConsumi = function() {
 			InterfaceEnergyHome.GestErrorEH("GetDatiConsumoGiornaliero", err);
 		}
 	} else {
-		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCb, "EnergiaConsumataGiornalieroSimul");
-		CostiConsumi.DatiConsumoGiornalieroCb(fakeValues.energiaConsumata, null);
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiConsumoGiornalieroCb, "EnergiaConsumataGiornalieroSimul");
 	}
 }
 
@@ -771,6 +673,7 @@ CostiConsumi.DatiConsumoGiornalieroCb = function(result, err) {
 			}
 		}
 	}
+	
 	
 	CostiConsumi.VisGrafico();
 }
@@ -1084,8 +987,7 @@ CostiConsumi.GetDatiProduzioneIAC = function() {
 		}
 	} else {
 		// per test
-		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiPercIAC, "percIAC");
-		CostiConsumi.DatiPercIAC(fakeValues.IAC, null);
+		InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiPercIAC, "percIAC");
 	}
 }
 
@@ -1344,8 +1246,7 @@ CostiConsumi.getDailyPVForecast = function() {
 		InterfaceEnergyHome.objService.getDailyPVForecast(CostiConsumi.getDailyPVForecastCB);
 	} else{
 		if (InterfaceEnergyHome.mode == -1) {
-			//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getDailyPVForecastCB, "PrevisioneEnergiaProdottaGiornalieroSimul");
-			CostiConsumi.getDailyPVForecastCB(fakeValues.previsioneEnergiaProdotta, null);
+			InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getDailyPVForecastCB, "PrevisioneEnergiaProdottaGiornalieroSimul");
 		} else {
 			CostiConsumi.forecastGiornaliero = ForecastGiornaliero;
 			CostiConsumi.getDailyPVForecastCB({list:CostiConsumi.forecastGiornaliero}, null);
