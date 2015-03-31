@@ -1420,7 +1420,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	public void dongleResetResult(final Status status) {
 
 		MyThread thr = new MyThread(this) {
-			@Override
+
 			public void run() {
 				Object parameter = this.getParameter();
 				if (status.getCode() == GatewayConstants.SUCCESS) {

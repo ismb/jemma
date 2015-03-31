@@ -162,7 +162,7 @@ public class DataFreescale implements IDataLayer {
 
 	public void initialize() {
 		Thread thrAnalizer = new Thread() {
-			@Override
+
 			public void run() {
 				while (!getDestroy()) {
 					try {
@@ -242,7 +242,7 @@ public class DataFreescale implements IDataLayer {
 							try {
 								processMessages(toProcess);
 							} catch (Exception e) {
-								LOG.error("Error on processMessages: " + e.getMessage());
+								LOG.error("Error on processMessages: {}" ,e);
 							}
 						}
 					});

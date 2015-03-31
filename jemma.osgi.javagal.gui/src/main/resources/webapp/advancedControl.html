@@ -104,6 +104,7 @@
 							myNMMenu.newButton('btnStartGal', null, null);
 							myNMMenu.newButton('btnRestartGal1', null, null);
 							myNMMenu.newButton('btnRestartGal2', null, null);
+							myNMMenu.newButton('btnRecoveryGal', null, null);
 							myNMMenu.newButton('btnAutomaticScanChannel', null,
 									null);
 							myNMMenu.newButton('resetPhilipsHue', null,
@@ -244,6 +245,13 @@
 											+ "&startMode=" + startMode;
 									errorMsg = 'Error in restart in NVM mode: ';
 									break;
+								case 'btnRecoveryGal':
+									console.debug("Recovery gal button")
+									type = 'GET';
+									url = DEFINEPATH.recoveryGalPath;
+									errorMsg='Error recoverying GAL';
+									data='';
+									break;
 
 								}
 
@@ -297,6 +305,11 @@
 							});
 							$('#btnRestartGal2').click(function(evt) {
 								fchangeStatuGal('btnRestartGal2');
+							});
+							
+							$('#btnRecoveryGal').click(function(evt) {
+								console.debug("CALLING RECOVERY GAL");
+								fchangeStatuGal('btnRecoveryGal');
 							});
 							
 							$('#resetPhilipsHue').click(function(evt) {
@@ -381,6 +394,7 @@
 						title="Start" /> <input type="button" id="btnRestartGal1"
 						class="tnHeaderHome2" title="Total reset" /> <input type="button"
 						id="btnRestartGal2" class="tnHeaderHome2" title="Stop" />
+						<input type="button" id="btnRecoveryGal" class="tnHeaderHome2" title="Recovery GAL" value="Recovery GAL" />
 					</td>	
 				</tr>
 				<tr>

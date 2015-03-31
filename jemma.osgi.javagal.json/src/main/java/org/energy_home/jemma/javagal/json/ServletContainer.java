@@ -29,6 +29,7 @@ import org.energy_home.jemma.javagal.json.servlet.getInfoBaseAttributesServlet;
 import org.energy_home.jemma.javagal.json.servlet.localServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeDescriptorAndServicesServlet;
 import org.energy_home.jemma.javagal.json.servlet.nodeServicesServlet;
+import org.energy_home.jemma.javagal.json.servlet.recoveryGalServlet;
 import org.energy_home.jemma.javagal.json.servlet.resetServlet;
 import org.energy_home.jemma.javagal.json.servlet.startUpServlet;
 import org.energy_home.jemma.javagal.json.servlet.versionServlet;
@@ -118,7 +119,7 @@ public class ServletContainer implements HttpSessionListener{
 			 */
 			service.registerServlet(prefix + Resources.NWT_ROOT_URI + ResourcePathURIs.INFOBASE, new getInfoBaseAttributesServlet(gatewayInterface), null, null);
 			
-			
+			service.registerServlet(prefix + Resources.GW_ROOT_URI + ResourcePathURIs.RECOVERY, new recoveryGalServlet(gatewayInterface), null, null);
 			
 			
 		} catch (ServletException e) {
