@@ -1193,7 +1193,7 @@ CostiConsumi.SetConsumoImg = function() {
 		} else {
 			val = CostiConsumi.potenzaAttuale.value;
 			//$("#ValConsumoAttuale").html((val / 1000.0).toFixed(3) + " kW");
-			$("#ValConsumoAttuale").html((val) + " W");
+			$("#ValConsumoAttuale").html((val.toFixed(1)) + " W");
 		}
 	}
 
@@ -1223,7 +1223,7 @@ CostiConsumi.SetConsumoImg = function() {
 		} else {
 			valRete = CostiConsumi.reteAttuale.value;
 			//$("#ValReteAttuale").html((valRete / 1000.0).toFixed(3) + " kW");
-			$("#ValReteAttuale").html((valRete) + " W");
+			$("#ValReteAttuale").html((valRete.toFixed(1)) + " W");
 		}
 	}
 
