@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -195,6 +196,7 @@ public class GalController {
 
 					/* Used for reset GAL */
 					resetGateway();
+					
 					/* End of reset section */
 					if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
 						LOG.error("Re-creating DataLayer Object for FreeScale chip");
@@ -2621,11 +2623,54 @@ public class GalController {
 			LOG.error("Starting reset...");
 			/* Stop all timers */
 			synchronized (getNetworkcache()) {
-				for (WrapperWSNNode x : getNetworkcache()) {
+				for (Iterator<WrapperWSNNode> it= getNetworkcache().iterator();it.hasNext();) {
+					WrapperWSNNode x=it.next();
 					x.abortTimers();
 				}
 			}
 			LOG.error("Stopped all timers");
+			
+			List<WrapperWSNNode> wsnWrappers=getNetworkcache();
+			Iterator<WrapperWSNNode> wsnWrappersIterator=wsnWrappers.iterator();
+			
+			//remove all nodes from the cache and notify network manager
+			while(wsnWrappersIterator.hasNext())
+			{
+				WrapperWSNNode nodeWrapper = wsnWrappersIterator.next();
+				//Clear device keypair
+				try{
+					Status _st1 = getDataLayer().ClearDeviceKeyPairSet(getPropertiesManager().getCommandTimeoutMS(),
+							nodeWrapper.get_node().getAddress());
+				}catch(Exception e){
+					LOG.error("Error ong Clearing device Keyset for device {} - Exception: {}",
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()),
+							e);
+				}
+				
+				//Clear neighbor table entries
+				try{
+					Status _st0 = getDataLayer().ClearNeighborTableEntry(getPropertiesManager().getCommandTimeoutMS(),
+							nodeWrapper.get_node().getAddress());
+				} catch (Exception e1) {
+					LOG.error("Error on ClearNeighborTableEntry for node: {} - Exception: {}", 
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()), 
+							e1); 
+				}
+				
+				//notify the networkmanager of node removal
+				Status s = new Status();
+				s.setCode((short) GatewayConstants.SUCCESS);
+				try{
+					this.get_gatewayEventManager().nodeRemoved(s, nodeWrapper.get_node());
+				}catch(Exception e){
+					LOG.error("Error notifying node {} removal, Exception: {}",
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()),
+							e);
+				}
+				
+				
+			}
+			
 			getNetworkcache().clear();
 			
 			/* Stop discovery and freshness */
