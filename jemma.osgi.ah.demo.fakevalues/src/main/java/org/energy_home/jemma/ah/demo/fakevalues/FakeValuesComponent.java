@@ -45,8 +45,7 @@ public class FakeValuesComponent extends HttpServlet implements ManagedService {
 		try {
 			httpService.registerServlet(fakeDataServletAlias, this, null, null);
 		} catch (Exception e) {	
-			log.error("Unable to register servlet for fake values");
-			e.printStackTrace();
+			log.error("Unable to register servlet for fake values",e);
 		}
 	}
 	

@@ -35,9 +35,12 @@ import org.energy_home.jemma.ah.hac.IAppliance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceNoParam extends HttpServlet {
 
+	private final static Logger LOG=LoggerFactory.getLogger(ServiceNoParam.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletBinder httpAdapter = null;
@@ -66,11 +69,9 @@ public class ServiceNoParam extends HttpServlet {
 			}
 			resp.getOutputStream().print(response.toString());
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error creating JSON object",e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error creating JSON object",e);
 		}
 		
 		/*

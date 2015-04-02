@@ -108,8 +108,7 @@ public class ZdoManager /* implements APSMessageListener */{
 						try {
 							getGal().get_gatewayEventManager().nodeRemoved(_s, _nodeRemoved);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							LOG.error("Error invoking nodeRemoved callback in GatewayEventManager",e);
 						}
 					}
 				

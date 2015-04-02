@@ -82,9 +82,8 @@ public class Activator implements BundleActivator {
 		} catch (Exception e) {
 			if (_fac!= null)
 				_fac.destroyGal();
-			LOG.error("Error Creating Gal Osgi");
+			LOG.error("Error Creating Gal Osgi",e);
 			
-			e.printStackTrace();
 		}
 	}
 
@@ -135,8 +134,7 @@ public class Activator implements BundleActivator {
 				((GalExtenderProxy) gatewayInterface).deleteProxy();
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("Error deleting proxy from GAL",e);
 			}
 
 			LOG.info("Called UngetService!");

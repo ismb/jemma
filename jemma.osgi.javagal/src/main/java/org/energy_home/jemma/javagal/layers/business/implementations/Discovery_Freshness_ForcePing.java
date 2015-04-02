@@ -278,10 +278,10 @@ public class Discovery_Freshness_ForcePing {
 
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.error("Interrupted thread that was executing LQI ping",e);
 			} catch (Exception e) {
 				manageError(function, startIndex, __currentNodeWrapper, e);
-				e.printStackTrace();
+				LOG.error("Error executing startLQI");
 			}
 		}
 	}

@@ -171,8 +171,7 @@ public class DataFreescale implements IDataLayer {
 						if (z.getArray() != null)
 							processAllRaw(z);
 					} catch (Exception e) {
-						LOG.error("Error on processAllRaw:" + e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error on processAllRaw:",e);
 
 					}
 				}
@@ -2079,7 +2078,7 @@ public class DataFreescale implements IDataLayer {
 										messageEvent.getSourceAddressMode());
 							}
 						}catch(Exception e){
-							LOG.error("Error setting source address ( mode {} ) details to messageEvent {}",
+							LOG.error("Error setting source address ( mode {} ) details to messageEvent",
 									messageEvent.getSourceAddressMode(),
 									e);
 						}

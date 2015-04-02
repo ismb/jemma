@@ -1364,14 +1364,11 @@ public class GalController {
 									try {
 										deleteCallback(x.getCallbackIdentifier());
 									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									} catch (GatewayException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									}
 							}
 						}
