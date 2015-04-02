@@ -440,7 +440,7 @@ public class GatewayEventManager implements IGatewayEventManager {
 	 * {@inheritDoc}
 	 */
 	public void nodeRemoved(final Status status, final WSNNode node) throws Exception {
-		LOG.debug("\n\rNodeDiscovered :" + String.format("%04X", node.getAddress().getNetworkAddress())  + "\n\r");
+		LOG.debug("\n\rNodeRemoved :" + String.format("%04X", node.getAddress().getNetworkAddress())  + "\n\r");
 
 		executor.execute(new Runnable() {
 			public void run() {

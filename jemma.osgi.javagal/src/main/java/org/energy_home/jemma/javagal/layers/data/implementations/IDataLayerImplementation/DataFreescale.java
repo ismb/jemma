@@ -2063,8 +2063,26 @@ public class DataFreescale implements IDataLayer {
 
 				if (node != null)
 					synchronized (node) {
-						messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
-						messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
+						try{
+							if(node.get_node().getAddress().getIeeeAddress()!=null)
+							{
+								messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
+							}else{
+								LOG.error("IEEEAddress was null in node object. SuourceAddressMode was: {}",
+										messageEvent.getSourceAddressMode());
+							}
+							if(node.get_node().getAddress().getNetworkAddress()!=null)
+							{
+								messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
+							}else{
+								LOG.error("NetworkAddress was null in node object. SuourceAddressMode was: {}",
+										messageEvent.getSourceAddressMode());
+							}
+						}catch(Exception e){
+							LOG.error("Error setting source address ( mode {} ) details to messageEvent {}",
+									messageEvent.getSourceAddressMode(),
+									e);
+						}
 					}
 				else
 					return;
