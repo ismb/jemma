@@ -164,7 +164,9 @@ public class MeteringClusterProxy extends ServiceClusterProxy implements SimpleM
 			IEndPointRequestContext context = getApplicationRequestContext(deviceProxy, true);
 			value = sms.getIstantaneousDemand(context);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Error reading IstantaneousDemand from appliance {} , Exception:{}",
+					applianceId,
+					e);
 		}
 		return value;
 	}

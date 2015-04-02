@@ -212,7 +212,7 @@ public class Discovery_Freshness_ForcePing {
 						parameters.add(function);
 
 						Runnable thr = new MyRunnable(parameters) {
-							@Override
+							
 							public void run() {
 								List<Object> parameters = (List<Object>) (this.getParameter());
 								Short _indexLqi = (Short) parameters.get(0);
