@@ -20,11 +20,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -130,6 +133,29 @@ public class GalController {
 		return manageMapPanId;
 	}
 
+	private void scheduleResetTimerTask()
+	{
+		TimerTask timerTask=new TimerTask() {
+			
+			public void run() {
+				try {
+					recoveryGAL();
+				} catch (Exception e) {
+					LOG.error("Error invoking recoveryGAL",e);
+				}
+			}
+		};
+		Timer timer=new Timer();
+	
+		//start at 00:05 every day, from tomorrow
+		Calendar cal=Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 00);
+		cal.set(Calendar.MINUTE, 05);
+		cal.add(Calendar.DAY_OF_YEAR, 1);
+		
+		timer.scheduleAtFixedRate(timerTask, cal.getTime(), 24 * 60 * 60 * 1000);
+	}
+	
 	/**
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
 	 * also for the Rest Api
@@ -141,6 +167,10 @@ public class GalController {
 		/* Used for reset GAL */
 		resetGateway();
 		/* End of reset section */
+		
+		//schedule a daily GAL recovery
+		scheduleResetTimerTask();
+		
 		if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
 			DataLayer = new DataFreescale(this);
 			DataLayer.initialize();
