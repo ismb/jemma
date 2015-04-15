@@ -133,6 +133,9 @@ public class GalController {
 		return manageMapPanId;
 	}
 
+	/**
+	* A method that schedules a network recovery on GAL every day at 00:05
+	**/
 	private void scheduleResetTimerTask()
 	{
 		TimerTask timerTask=new TimerTask() {
