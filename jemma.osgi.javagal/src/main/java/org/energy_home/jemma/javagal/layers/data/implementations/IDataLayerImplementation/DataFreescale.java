@@ -1983,6 +1983,18 @@ public class DataFreescale implements IDataLayer {
 			return;
 		}
 
+		/**
+		 * FIXME: error interpreting SRC address according to mode. Check APSDE-data indication format from specs:
+		 * sourceAddressMode:
+		 *  0x00 = reserved
+			0x01 = reserved
+			0x02 = 16-bit short address for
+			SrcAddress and SrcEndpoint present
+			0x03 = 64-bit extended address for
+			SrcAddress and SrcEndpoint present
+			0x04 – 0xff = reserved
+		 */
+
 		Address sourceAddress = new Address();
 		messageEvent.setSourceAddressMode((long) (message.getArray()[7] & 0xFF));
 
@@ -2023,6 +2035,7 @@ public class DataFreescale implements IDataLayer {
 		messageEvent.setProfileID(DataManipulation.toIntFromShort(message.getArray()[12], message.getArray()[11]));
 		messageEvent.setClusterID(DataManipulation.toIntFromShort(message.getArray()[14], message.getArray()[13]));
 
+		
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus((message.getArray()[lastAsdu + 1] & 0xFF));
