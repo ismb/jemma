@@ -6,7 +6,7 @@ Bundle-Name: Java Gal
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: jemma.osgi.javagal;singleton:=true
 Bundle-Vendor: Telecom Italia
-Bundle-Version: 2.0.5
+Bundle-Version: 2.0.6
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.energy_home.jemma.zgd;version="1.4.1";uses:="org.ene
  rgy_home.jemma.zgd.jaxb",org.energy_home.jemma.zgd.jaxb;version="1.0.4"

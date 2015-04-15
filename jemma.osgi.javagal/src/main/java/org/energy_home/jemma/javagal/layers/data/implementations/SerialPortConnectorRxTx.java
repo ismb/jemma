@@ -17,6 +17,8 @@ package org.energy_home.jemma.javagal.layers.data.implementations;
 
 import gnu.io.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -159,6 +161,12 @@ public class SerialPortConnectorRxTx implements IConnector {
 					synchronized(ou)
 					{
 						ou.write(buff.getArray(), 0, buff.getCount(true));
+						if(DataLayer.getPropertiesManager().getzgdDump())
+							{
+							String directory = DataLayer.getPropertiesManager().getDirDump();
+							String fileName = System.currentTimeMillis() + "-w.bin";
+							dumpToFile(directory + File.separator + fileName, buff.getArray());
+							}
 					}
 					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 
@@ -234,6 +242,12 @@ public class SerialPortConnectorRxTx implements IConnector {
 							in.read(bufferOriginal);
 							ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
 							_caller.getDataLayer().notifyFrame(frame);
+							if(DataLayer.getPropertiesManager().getzgdDump())
+								{
+								String directory = DataLayer.getPropertiesManager().getDirDump();
+								String fileName = System.currentTimeMillis() + "-r.bin";
+								dumpToFile(directory + File.separator + fileName, bufferOriginal);
+								}
 						}
 					}
 				}
@@ -285,5 +299,19 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 		}
 	}
+	
+	/**
+	 * Dump byte array on file
+	 * @param filepath name of file
+	 * @param buffer the buffer to dump
+	 * @throws IOException if file doesn't exist or some problem occurs during opening
+	 */
+	public void dumpToFile(String filepath, byte[] buffer) 
+			throws IOException
+	{
+		FileOutputStream fos = new FileOutputStream(filepath);
+		fos.write(buffer);
+		fos.close();
+	}	
 
 }
