@@ -98,7 +98,7 @@ Elettrodomestici.GetDatiPotenzaElettr = function() {
 	if (InterfaceEnergyHome.mode > 0) {
 		try {
 			//InterfaceEnergyHome.objService.getAttribute(Elettrodomestici.GetElettrodomestici, InterfaceEnergyHome.POTENZA_TOTALE);
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(Elettrodomestici.GetElettrodomestici);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(Elettrodomestici.GetElettrodomestici);
 		} catch (err) {
 			if (Main.env == 0) console.log('exception in Elettrodomestici.js - in Elettrodomestici.GetDatiPotenzaElettr method: ', err);
 			InterfaceEnergyHome.GestErrorEH("GetDatiPotenzaElettr", err);
@@ -149,7 +149,7 @@ Elettrodomestici.GetElettrodomestici = function(result, err) {
 		showSpinnerElettro();
 		if (InterfaceEnergyHome.mode > 0) {
 			try {
-				Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurations(Elettrodomestici.DatiElettrodomestici);
+				Elettrodomestici.requestCB = InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(Elettrodomestici.DatiElettrodomestici);
 			} catch (err) {
 				InterfaceEnergyHome.GestErrorEH("Dispositivi", err);
 			}

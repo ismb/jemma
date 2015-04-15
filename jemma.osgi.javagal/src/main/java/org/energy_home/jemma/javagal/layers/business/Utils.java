@@ -15,6 +15,8 @@
  */
 package org.energy_home.jemma.javagal.layers.business;
 
+import org.energy_home.jemma.zgd.jaxb.Address;
+
 /**
  * Utilities class. Provides convenient methods to manipulate data (conversion,
  * reversing, truncating and so on).
@@ -206,4 +208,10 @@ public class Utils {
 		return copy;
 	}
 
+	public static String getAddressString(Address address)
+	{
+		String networkAddress=address.getNetworkAddress()==null?"NULL":String.format("%04X", address.getNetworkAddress());
+		String ieeeAddress=address.getIeeeAddress()==null?"NULL":String.format("%16X", address.getIeeeAddress());
+		return "{ NWK: "+networkAddress+" , IEEE: "+ieeeAddress+" }";
+	}
 }

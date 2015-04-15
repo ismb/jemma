@@ -14,7 +14,7 @@ JEMMA can also be controlled through REST/WebSocket APIs relying on OSGi Device 
 * [OSGi Device Abstraction Layer](https://github.com/ismb/it.ismb.pert.osgi.dal)
 * [OSGi Device Abstraction Layer functions](https://github.com/ismb/it.ismb.pert.osgi.dal.functions) 
 * [Energy@Home specific OSGi Device Abstraction Layer functions](https://github.com/ismb/it.ismb.pert.osgi.dal.functions.eh) 
-* [The DAL adapter for JEMMA](https://github.com/ivangrimaldi/jemma.osgi.dal): it registers DAL services for JEMMA devices
+* [The DAL adapter for JEMMA](https://github.com/ismb/jemma.osgi.dal): it registers DAL services for JEMMA devices
 * [The DAL web APIs](https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis)
 
 Take a look at [this wiki page](https://github.com/ismb/jemma/wiki/JEMMA-DAL-APIs-functions) to discover functionalities that can be exposed by JEMMA devices
@@ -33,5 +33,5 @@ Information on how to contribute can be found [here](https://github.com/ismb/jem
 ## Linked projects
 
 
-[ZCL cluster generator](https://github.com/nport/jemma.ah.zigbee.zcl.compiler/) - A code generator which creates jemma zcl proxy classes from xml descriptions.
-[Simple command provider](https://github.com/ivangrimaldi/jemma.osgi.commandprovider) - A simple OSGi CommandProvider demonstrating JEMMA device APIs usage
+- [ZCL cluster generator](https://github.com/nport/jemma.ah.zigbee.zcl.compiler/) - A code generator which creates jemma zcl proxy classes from xml descriptions.
+- [Simple command provider](https://github.com/ivangrimaldi/jemma.osgi.commandprovider) - A simple OSGi CommandProvider demonstrating JEMMA device APIs usage

@@ -122,13 +122,11 @@ var InterfaceEnergyHome = {
 }
 
 function bindService(name) {
-
+	
 	// crea client
 	if (InterfaceEnergyHome.jsonrpc == null) {
 		try {
 			InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/demo/JSON-RPC");
-			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("/energyathome/JSON-RPC");
-			//InterfaceEnergyHome.jsonrpc = new JSONRpcClient("http://10.38.3.25/demo/JSON-RPC");
 			InterfaceEnergyHome.jsonrpc.http_max_spare = 4;
 			JSONRpcClient.toplevel_ex_handler = function(e) {
 			};
@@ -163,17 +161,24 @@ function bindService(name) {
 		}
 		return null;
 	}
-
 	return null;
 }
 
 InterfaceEnergyHome.Init = function() {
-	InterfaceEnergyHome.errMessage = null;
-	InterfaceEnergyHome.errCode = 0;
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1))
-		return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
-	else
-		return 1;
+	try {
+		InterfaceEnergyHome.errMessage = null;
+		InterfaceEnergyHome.errCode = 0;
+		if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))){
+			return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
+		} else {
+			return 1;
+		}
+	} catch (err) {
+		console.log("ERRORE! => ");
+		console.log(err);
+		InterfaceEnergyHome.GestErrorEH(null, err);
+	}
+	return 1;
 }
 
 // abortisce tutte le eventuali chiamate in corso
@@ -339,9 +344,9 @@ InterfaceEnergyHome.GetElettrStorico = function(backFunc) {
 	InterfaceEnergyHome.backElettrStorico = backFunc;
 	//console.log(80, InterfaceEnergyHome.MODULE, "GetElettrStorico");
 
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
+	if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 		try {
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome.BackElettrStorico);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackElettrStorico);
 		} catch (err) {
 			console.log("ERRORE! => ");
 			console.log(err);
@@ -374,12 +379,18 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 	var paramTr, param1, param2;
 
 	InterfaceEnergyHome.backStorico = backFunc;
+	var lbl1ForNoServberP = null;
+	var lbl2ForNoServberP = null;
+	var lbl3ForNoServberP = (pid == null) ? 'SI' : 'DEV';
 	//console.log(80, InterfaceEnergyHome.MODULE, "GetStorico");
 	if (tipo == "Costo"){
+		lbl1ForNoServberP = null;
 		param1 = InterfaceEnergyHome.COSTO;
 	} else if (tipo == "Produzione"){
+		lbl1ForNoServberP = 'Production';
 		param1 = InterfaceEnergyHome.PRODUZIONE;
 	} else{
+		lbl1ForNoServberP = 'Energy';
 		param1 = InterfaceEnergyHome.CONSUMO;
 	}
 	//TODO: check merge, following commented block was not in 3.3.0
@@ -391,23 +402,24 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		paramTr = Tracing.QT_IERI;
 	} else if (intervallo == 0) {*/
 	if (intervallo == 0) {
+		lbl2ForNoServberP = 'DAY';
 		param2 = InterfaceEnergyHome.HOUR;
-		// dataInizio.setHours(0);
-		// dataFine.setHours(23);
-		// dataFine.setMinutes(30);
 		paramTr = Tracing.QT_IERI;
 	} else if (intervallo == 3) {
+		lbl2ForNoServberP = 'YEAR';
 		param2 = InterfaceEnergyHome.MONTH;
 		paramTr = Tracing.QT_ANNO;
 	} else {
 		param2 = InterfaceEnergyHome.DAY;
 		if (intervallo == 1){
+			lbl2ForNoServberP = 'WEEK';
 			paramTr = Tracing.QT_SETT;
 		} else {
+			lbl2ForNoServberP = 'MONTH';
 			paramTr = Tracing.QT_MESE;
 		}
 	}
-	Tracing.Trace(Tracing.HISTORY, Tracing.QUERY, paramTr, pid);
+	//Tracing.Trace(Tracing.HISTORY, Tracing.QUERY, paramTr, pid);
 	// solo se anche piattaforma
 	if (InterfaceEnergyHome.mode > 1) {
 		try {
@@ -423,92 +435,14 @@ InterfaceEnergyHome.GetStorico = function(tipo, pid, dataInizio, dataFine, inter
 		// per test
 		
 		try {
-			InterfaceEnergyHome.objService.getPropStoricoConfiguration(InterfaceEnergyHome.BackStorico, pid, param1, paramTr);
+			//InterfaceEnergyHome.objService.getPropStoricoConfiguration(InterfaceEnergyHome.BackStorico, pid, param1, paramTr);
+			var tmpIndex = lbl3ForNoServberP+lbl1ForNoServberP+lbl2ForNoServberP;
+			InterfaceEnergyHome.BackStorico(fakeValues.Storico.map[tmpIndex], null);
 		} catch (err) {
 			console.log("ERRORE! => ");
 			console.log(err);
 			InterfaceEnergyHome.BackStorico(null, err);
 		}
-		/*i = new Date(dataInizio.getTime(0));
-		i.setHours(0);
-		i.setMinutes(0);
-		i.setSeconds(0);
-		i.setMilliseconds(0);
-		f = new Date(dataFine.getTime(0));
-		f.setHours(0);
-		f.setMinutes(0);
-		f.setSeconds(0);
-		f.setMilliseconds(0);
-		diff = f - i;
-		g = Math.floor(diff / (24 * 60 * 60 * 1000)) + 1;
-
-		//console.log(20, InterfaceEnergyHome.MODULE, "   diff = " + diff + "  giorni = " + g);
-		//TODO: check merge, following commented block was not in 3.3.0
-		if (intervallo == -1) {
-			if (tipo == "Costo"){
-				val = StoricoCostoO;
-			} else if (tipo == "Produzione"){
-				val = StoricoProduzioneO;
-			} else {
-				val = StoricoConsumoO;
-			}
-		} else if (intervallo == 0) {
-		if (intervallo == 0) {
-			if (tipo == "Costo"){
-				val = StoricoCostoI;
-			} else if (tipo == "Produzione"){
-				val = StoricoProduzioneI;
-			} else {
-				val = StoricoConsumoI;
-			}
-		} else if (intervallo == 1) {
-			if (tipo == "Costo"){
-				val = {"list" : StoricoCostoS.list.slice(0, g)};
-			} else if (tipo == "Produzione"){
-				val = {"list" : StoricoProduzioneS.list.slice(0, g)};
-			} else {
-				val = {"list" : StoricoConsumoS.list.slice(0, g)};
-			}
-		} else if (intervallo == 2) {
-			if (tipo == "Costo"){
-				val = {"list" : StoricoCostoM.list.slice(0, g)};
-			} else if (tipo == "Produzione"){
-				val = {"list" : StoricoProduzioneM.list.slice(0, g)};
-			} else {
-				val = {"list" : StoricoConsumoM.list.slice(0, g)};
-			}
-		} else {
-			i = dataInizio.getMonth();
-			f = dataFine.getMonth();
-			g = f - i + 1;
-			if (tipo == "Costo"){
-				val = {"list" : StoricoCostoA.list.slice(0, g)};
-			} else if (tipo == "Produzione"){
-				val = {"list" : StoricoProduzioneA.list.slice(0, g)};
-			} else {
-				val = {"list" : StoricoConsumoA.list.slice(0, g)};
-			}
-		}
-		
-		 * da rivedere !!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-		 * if (pid !="homeauto") { 
-		 * //se e' un singolo elettrodomestico prendo una percentuale 
-		 * // cerco
-		 * percentuale perc = 100; 
-		 * for (j = 0; j < StoricoElettr.length; j++) {
-		 * 		if (StoricoElettr[j].id == pid) { 
-		 * 			perc = StoricoElettr[j].perc;
-		 * 			break; 
-		 * 		} 
-		 * } 
-		 * valP = {"list":[]}; 
-		 * for (j = 0; j < val.list.length; j++)
-		 * 		valP.list[j] = val.list[j] * perc / 100;
-		 * InterfaceEnergyHome.BackStorico(valP, null); 
-		 * } else {}
-		
-		InterfaceEnergyHome.BackStorico(val, null);
-		*/
 	}
 }
 
@@ -540,7 +474,7 @@ InterfaceEnergyHome.BackActualDate = function(result, err) {
 		}
 		retVal = null;
 		if ((err == null) && (result != null)){
-			if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
+			if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 				retVal = result;
 			} else {
 				retVal = Math.floor(result.list[0]);
@@ -562,7 +496,7 @@ InterfaceEnergyHome.GetActualDate = function(backFunc) {
 			InterfaceEnergyHome.BackActualDate(null, err);
 		}
 	} else{
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			InterfaceEnergyHome.backActualDate(new Date().getTime());
 		} else {
 			InterfaceEnergyHome.backActualDate(new Date().getTime());

@@ -110,6 +110,7 @@ var Msg = {
 		"statoDisp" : [ "OFF", "ON", "NOT CONNECTED" ],
 		"nessunDisp" : "NO APPLIANCES FOUND",
 		"nonDisponibile" : "Function not yet available",
+		"nonDisponibileUtente" : "Function unavailable for this user (\"demo\")",
 		"titoloStorico" : "DATA HISTORY",
 		"periodoStorico" : "PERIOD",
 		"dispStorico" : "APPLIANCE",
@@ -147,7 +148,12 @@ var Msg = {
 		"lblConsO" : "Today's consumption",
 		"lblProdA" : "Current production",
 		"lblPotA" : "Current power",
-		"oldBrowser" : "VERSION OF THE BROWSER DOES NOT FIT! Please upgrade your browser to the latest version."
+		"oldBrowser" : "VERSION OF THE BROWSER DOES NOT FIT! Please upgrade your browser to the latest version.",
+		//box consumi nella tab "dispositivi"
+		"consumptionsSummary":"Consumptions summary",
+		"devicesConsumption":"Devices consumption",
+		"otherConsumption":"Other consumption",
+		"totalConsumption":"Total consumption"
 	},
 	community : {
 		"titoloForum" : "ENERGY@HOME FORUM",
@@ -173,6 +179,7 @@ var Msg = {
 		"tariffaOra" : "Hour",
 		"titoloInfo" : "INFORMATION",
 		"titoloTestoInfo" : '<span style="font-family:verdana, arial, sans-serif"><strong>Energy@home</strong> <span style="color:rgb(174, 201, 59)"><strong>is a no-profit association</strong></span> that, for the benefit of the environment, aims at developing &amp; <span style="color:rgb(58, 153, 71)">promoting technologies and services for energy efficiency</span> in the home based upon device to device communication.</span>',
+		"membriEH" : "Membri di Energy@Home:",
 		"testoInfo" : "The Energy@Home trial will last about a year and you'll be able to control your electrical consumes.<br><br>"
 				+ "We suggest you to pay attention to the current tariff and try to save energy and money, consuming during the lower cost tariff.<br><br>"
 				+ "You can have a use suggestion every day and you can also control your consume and cost trend in the history screen",
@@ -298,6 +305,7 @@ var Msg = {
 		42 : "Ubisys Drimmer Switch",
 		43 : "Ubisys Dimmable Light",
 		44 : "Window Covering",
-		45 : "Window Covering Controller"
+		45 : "Window Covering Controller",
+		46 : "Indesit Dish Washer"
 	}
 }

@@ -106,6 +106,25 @@ ifIndesitWM.update = function(now) {
 
 	var class_stato = "NP"
 	var _stato = "";
+	
+	
+	if(InterfaceEnergyHome.mode==-2)
+	{
+		ifIndesitWM.cycle = 1;
+		s_ciclo = ifIndesitWM.cicli[ifIndesitWM.cycle];
+		$(".val_cycle").text("CYCLE: " + s_ciclo);
+		
+		msg = "60&deg;C";
+		$(".val_temperature").html(msg);
+		
+		_msg = ifIndesitWM.minutesToString(260);
+		$(".val_duration").text(_msg);
+		
+		msg = ifIndesitWM.stati[3];
+		$(".val_status").text(msg);
+		
+		return;
+	}
 
 	if (Elettrodomestici.listaElettrodomestici[i].connessione == 2) {
 		if (Elettrodomestici.listaElettrodomestici[i].stato == 1) {
@@ -168,7 +187,7 @@ ifIndesitWM.update = function(now) {
 					msg = "ERRORE";
 				} else {
 					ifIndesitWM.temperature = result;
-					msg = "" + result + " &deg; C";
+					msg = "" + result + "&deg;C";
 				}
 			}
 			$(".val_temperature").html(msg);

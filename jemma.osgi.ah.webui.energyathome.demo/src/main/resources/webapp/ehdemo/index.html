@@ -1,338 +1,273 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-
-<head>
-<title>Energy@Home</title>
-<!-- head profile="http://www.w3.org/2005/10/profile"  -->
-
-<meta http-equiv="Cache-Control"
-	content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Expires" content="0" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<link rel='shortcut icon' href='Resources/Images/eh_bianca.ico' />
-<link rel='icon' href='Resources/Images/eh_bianca.ico' />
-<link rel='stylesheet' type='text/css' href='js/other/spinner.css' />
-<link rel='stylesheet' type='text/css' href='css/Main.css' />
-<link rel='stylesheet' type='text/css' href='css/Menu.css' />
-<!--<link rel='stylesheet' type='text/css' href='css/Elettrodomestici.css' />-->
-<link rel='stylesheet' type='text/css' href='css/Storico.css' />
-<link rel='stylesheet' type='text/css' href='css/Community.css' />
-<link rel='stylesheet' type='text/css' href='css/Trial.css' />
-<link rel='stylesheet' type='text/css' href='css/jquery.jqplot.css' />
-<link rel='stylesheet' type='text/css' href='css/Configurazioni.css' />
-<link rel='stylesheet' type='text/css' href='css/Report.css' />
-
-<link rel="stylesheet" type='text/css' href="js/farbtastic/farbtastic.css" />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/Elettrodomestici.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampada.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampadaMac.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifBase.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifThermostat.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLockDoor.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitWM.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitFridge.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitOven.css' />
-<link rel='stylesheet' type='text/css' href='js/dispositivi/ifWindowCovering.css' />
-
-<link rel="stylesheet" href="css/e@h-theme/jquery-ui-1.8.19.custom.css">
-
-<!-- Of course it is advisable to have touch icons ready for each device -->
-<link rel="apple-touch-icon"
-	href="Resources/Images/energy@home-icon-iphone.png">
-<link rel="apple-touch-icon" sizes="72x72"
-	href="Resources/Images/energy@home-icon-ipad.png">
-<link rel="apple-touch-icon" sizes="114x114"
-	href="Resources/Images/energy@home-icon-iphone4.png">
-<link rel="shortcut icon"
-	href="Resources/Images/energy@home-icon-addressbar.png" />
-<link rel="apple-touch-startup-image" sizes="1004x768"
-	href="./startup-icon-ipod.png" />
-<link rel="apple-touch-startup-image" href="./startup-icon-iphone.png" />
-
-<script type="text/javascript">
-	var localDate = new Date();
-	var localTime = localDate.getTime();
-</script>
-
-<script language="javascript" type="text/javascript"
-	src="js/jsonrpc.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/hmac-sha256.js?201305315125"></script>
-<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/jqplot/excanvas.min.js?201305315125"></script><![endif]-->
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery-1.7.1.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery-ui-1.8.19.custom.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/other/spinner.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/jquery.jqplot.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.barRenderer.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqgauge/gauge.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqgauge/gaugePV.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jqspeedometer/speedometer.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/DefinePath.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Tracing.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Define.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/GestDate.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Log.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Lang.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/jquery/jquery.ThreeDots.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/cloud-carousel.1.0.5.min.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/plot/highcharts.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/plot/highstock.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Utils.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/utils/Tools.js?201305315125"></script>
-<script language="javascript" type="text/javascript"
-	src="js/Main.js?201305315125"></script>
-<!--<script language="javascript" type="text/javascript" src="js/plot/grid.js"></script>-->
-<!--<script language="javascript" type="text/javascript" src="js/jquery/jquery.corner.js"></script>-->
-<!--<script language="javascript" type="text/javascript" src="js/jquery.mousewheel.js"></script>-->
-<script language="javascript" type="text/javascript" src="js/tinycolor/tinycolor-min.js"></script>
-<script language="javascript" type="text/javascript" src="js/farbtastic/farbtastic.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampada.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampadaMac.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifBase.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifThermostat.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifLockDoor.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitWM.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitFridge.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitOven.js"></script>
-<script language="javascript" type="text/javascript" src="js/dispositivi/ifWindowCovering.js"></script>
-
-<script type="text/javascript">
-	var w = window.innerWidth;
-	var h = window.innerHeight;
-
-	if (!(w || h)) {
-		// IE
-		w = window.document.documentElement.clientWidth;
-		h = window.document.documentElement.clientHeight;
-	}
-
-	// minimo rapporto e dimensioni
-	rapp = w / h;
-	if (rapp > 1.8) {
-		rapp = 1.8; //w = h * 1.8;
-	} else if (rapp < 1) {
-		rapp = 1.2; //w = h;
-	}
-	w = Math.floor(w);
-	h = Math.floor(h);
-
-	document
-			.write("<style type='text/css'> #Container {position:relative;background: transparent;width: "
-					+ w
-					+ "px;height: "
-					+ h
-					+ "px;margin-left: auto;margin-right: auto;text-align: center;}<\/style>");
-
-	Main.screenW = w;
-	Main.screenH = h;
-
-	var qs = new Querystring();
-	Define.lang = qs.get("lang", "it");
-	if (Define.lang == "en") {
-		document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgEn.js?201305315125"><\/script>');
-	} else {
-		document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgIt.js?201305315125"><\/script>');
-	}
-
-	var testTime = qs.get("testtime", "false");
-</script>
-
-<!-- IF FOTOVOLTAICO -->
-<!-- <link rel='stylesheet' type='text/css' href='css/FotoVoltaico.css' /> -->
-<!-- <link rel='stylesheet' type='text/css' href='js/tinybox2/style.css' /> -->
-<script language="javascript" type="text/javascript" src="js/FotoVoltaico.js?201305315125"></script>
-<!-- <script language="javascript" type="text/javascript" src="js/utils/jscroller-0.4.js?201305315125"></script> -->
-<!-- <script language="javascript" type="text/javascript" src="js/tinybox2/tinybox.js?201305315125"></script> -->
-<script language="javascript" type="text/javascript" src="js/DefineMenu.js?201305315125"></script>
-<!-- <script language="javascript" type="text/javascript" src="js/startApp.js?201305315125"></script> -->
-<!-- ELSE -->
-<!-- <link rel='stylesheet' type='text/css' href='css/CostiConsumi2.css' /> -->
-<!-- script language="javascript" type="text/javascript" src="js/CostiConsumi1.js?201305315125"></script> -->
-<!-- <script language="javascript" type="text/javascript" src="js/DefineMenu.js?201305315125"></script> -->
-<!-- <script language="javascript" type="text/javascript" src="js/startApp.js?201305315125"></script> -->
-<!-- END IF FOTOVOLTAICO -->
-
-<script language="javascript" type="text/javascript" src="js/InterfaceEnergyHome.js?201305315125"></script>
-<script language="javascript" type="text/javascript" src="js/NonDisponibile.js?201305315125"></script>
-<script language="javascript" type="text/javascript" src="js/utils/Menu.js?201305315125"></script>
-</head>
-<body onLoad="Main.onLoad()" onUnload="Main.onUnload()">
-	<div id="Container">
-		<div id="Header">
-			<img id="LogoImg" src="./Resources/Images/E@HLogo.png">
-			<div id="userID"></div>
-		</div>
-		<div id="HeaderSep">
-			<img id="HeaderSepImg" src="./Resources/Images/header_sep.png">
-		</div>
-		<div id="ContentMain"></div>
-		<div id="CostiConsumi" class="Content">
-			<div id='TitoloCostiConsumi' class='ContentTitle'></div>
-			<div id='CostoConsumoSintesi' class='box'>
-				<div id='CostoConsumoAttuale' class='pvSingleBox'>
-					<div id='CostoConsumoAttualeTitolo' class='boxTitles'></div>
-					<span id='ValConsumoAttuale' class='values'></span>
-					<div id='ConsumoAttualeMeter' class='meter'></div>
-					<img id='CostoAttualeImg'> <span id='DettaglioCosto'></span>
-				</div>
-
-				<div id='ProduzioneAttuale' class='pvSingleBox'>
-					<div id='ProduzioneAttualeTitolo' class='boxTitles'></div>
-					<span id='ValProduzioneAttuale' class='values'></span>
-					<div id='ProduzioneAttualeMeter' class='meter'></div>
-					<!-- id='ProduzioneAttualeImg' -->
-					<span id='DettaglioProduzione'></span>
-				</div>
-
-				<div id='ReteAttuale' class='pvSingleBox'>
-					<div id='ReteAttualeTitolo' class='boxTitles'></div>
-					<span id='ValReteAttuale' class='values'></span>
-					<div id='ReteAttualeMeter' class='meter'></div>
-					<!-- id='ReteAttualeImg' -->
-					<span id='DettaglioRete'></span>
-				</div>
-				<div id='DatiCostoConsumo' class='consSingleBox'>
-					<div id='DatiCostoConsumoHead'>
-						<img id="HouseImg" src="./Resources/Images/house_green.png">
-						<span id='DatiCostoConsumoTitolo'></span>
-					</div>
-					<div id='CostoConsumoOdierno'>
-						<div id='DettaglioCostoConsumoOdierno' class="Dettagli"></div>
-					</div>
-					<div id='CostoConsumoPrevisto'>
-						<div id='DettaglioCostoConsumoPrevisto' class="Dettagli"></div>
-					</div>
-					<div id='CostoConsumoMediaWeek'>
-						<div id='DettaglioCostoConsumoMediaWeek' class="Dettagli"></div>
-					</div>
-				</div>
-				<div id='Indicatore' class='consSingleBox IndicatoreCONS'>
-					<div id='IndicatoreTitolo' class="boxTitles"></div>
-					<div id='ConsumoIndicatoreImg' class='IndicatoreImg'></div>
-					<div id='CostoIndicatoreImg' class='IndicatoreImg'></div>
-				</div>
-				<div id='DatiCosti' class='consSingleBox'>
-					<div id='DatiCostiHead'>
-						<img id="HouseImg" src="./Resources/Images/euro.png">
-						<span id='DatiCostiTitolo'></span>
-					</div>
-					<div id='CostiOdierno'>
-						<div id='DettaglioCostiOdierno' class="Dettagli"></div>
-					</div>
-					<div id='CostiPrevisto'>
-						<div id='DettaglioCostiPrevisto' class="Dettagli"></div>
-					</div>
-					<div id='CostiMediaWeek'>
-						<div id='DettaglioCostiMediaWeek' class="Dettagli"></div>
-					</div>
-				</div>
-				<div id='IndicatorePV'>
-					<div id='IndicatoreTitoloPV' class='TitoloDettaglio IndicatoreTitoloPV'></div>
-					<div id='PVConsumoIACIndicatoreImg' class='IndicatoreImg'></div>
-				</div>
-			</div>
-			<div id='CostoConsumoInfo' class='box'>
-				<span id='InfoTitolo' class='TitoloDettaglio'> </span>
-				<div id='Grafico' class='chartSingleBox'>
-					<div id='GraficoConsumoOdierno'>
-						<!-- <div id='LabelKWH'></div> -->
-						<!-- <div id='LabelOra'></div> -->
-						<div id='DettaglioGraficoConsumoOdierno'></div>
-					</div>
-					<div id='GraficoSuddivisioneCosti'>
-						<div id='TitoloSuddivisioneCosti'></div>
-						<div id='DettaglioSuddivisioneCosti'></div>
-					</div>
-				</div>
-				<div id='CostoTConsumoMax' class='chartSingleBox'>
-					<span id='CostoTConsumoMaxTitolo'> </span>
-					<div id='DettaglioConsumoMaggiore'></div>
-					<div id='TariffaImgDiv'>
-						<img id='TariffaImg'>
-					</div>
-					<div id='TariffaPos'></div>
-				</div>
-				<div id='InfoFeed'>
-					<div id='InfoFeedTitolo' style='display: none;'>
-						<button id='nextNews'>next</button>
-						<button id='backNews'>go back</button>
-					</div>
-					<div id='InfoFeedDettaglio'>
-						<div id='PrimaNews'>
-							<a target='_blank'>
-								<div class='titoloNews'>
-									<span class='ellipsis_text'> </span>
-								</div>
-							</a>
-							<div class='dettaglioNews'>
-								<span class='ellipsis_text'> </span>
-							</div>
-						</div>
-						<div id='SecondaNews'>
-							<a target='_blank'>
-								<div class='titoloNews'>
-									<span class='ellipsis_text'> </span>
-								</div>
-							</a>
-							<div class='dettaglioNews'>
-								<span class='ellipsis_text'> </span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="Registra" style="display: none;"></div>
-		<div id="iframeReport" style="display: none;"></div>
-		<div id="iframeForum" style="display: none;"></div>
-		<div id="iframeOverload" style="display: none;"></div>
-		<div id="MainMenu"></div>
+	<head>
+		<title>Energy@Home</title>
+		<!-- head profile="http://www.w3.org/2005/10/profile"  -->
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Expires" content="0" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		
-		<div id="ContentMenu"></div>
-		<div id="Timestamp">
-			<span id="Ora"></span> <img id="ClockImg"
-				src="./Resources/Images/orologio.png"> <span id="Data"></span>
-		</div>
-		<div id="ErrorMsgDIV"></div>
+		<link rel='shortcut icon' href='Resources/Images/eh_bianca.ico' />
+		<link rel='icon' href='Resources/Images/eh_bianca.ico' />
 		
-	</div>
+		<link rel='stylesheet' type='text/css' href='js/other/spinner.css' />
+		<link rel='stylesheet' type='text/css' href='css/Main.css' />
+		<link rel='stylesheet' type='text/css' href='css/Menu.css' />
+		<link rel='stylesheet' type='text/css' href='css/Storico.css' />
+		<link rel='stylesheet' type='text/css' href='css/Community.css' />
+		<link rel='stylesheet' type='text/css' href='css/Trial.css' />
+		<link rel='stylesheet' type='text/css' href='css/jquery.jqplot.css' />
+		<link rel='stylesheet' type='text/css' href='css/Configurazioni.css' />
+		<link rel='stylesheet' type='text/css' href='css/Report.css' />
+		<link rel="stylesheet" type='text/css' href="js/farbtastic/farbtastic.css" />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/Elettrodomestici.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampada.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLampadaMac.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifBase.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifThermostat.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifLockDoor.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitWM.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitFridge.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifIndesitOven.css' />
+		<link rel='stylesheet' type='text/css' href='js/dispositivi/ifWindowCovering.css' />
+		<link rel="stylesheet" href="css/e@h-theme/jquery-ui-1.8.19.custom.css">
+		
+		<!-- Of course it is advisable to have touch icons ready for each device -->
+		<link rel="apple-touch-icon" href="Resources/Images/energy@home-icon-iphone.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="Resources/Images/energy@home-icon-ipad.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="Resources/Images/energy@home-icon-iphone4.png">
+		<link rel="shortcut icon" href="Resources/Images/energy@home-icon-addressbar.png" />
+		<link rel="apple-touch-startup-image" sizes="1004x768" href="./startup-icon-ipod.png" />
+		<link rel="apple-touch-startup-image" href="./startup-icon-iphone.png" />
+		
+		<script type="text/javascript">
+			var localDate = new Date();
+			var localTime = localDate.getTime();
+		</script>
+		<script language="javascript" type="text/javascript" src="js/jsonrpc.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/hmac-sha256.js?201305315125"></script>
+		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/jqplot/excanvas.min.js?201305315125"></script><![endif]-->
+		<script language="javascript" type="text/javascript" src="js/jquery/jquery-1.7.1.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jquery/jquery-ui-1.8.19.custom.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/other/spinner.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/jquery.jqplot.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.lineLabels.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqgauge/gauge.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqgauge/gaugePV.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jqspeedometer/speedometer.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/DefinePath.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Tracing.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Define.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/GestDate.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Log.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Lang.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/jquery/jquery.ThreeDots.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/cloud-carousel.1.0.5.min.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/plot/highcharts.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/plot/highstock.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Utils.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Tools.js?20150312"></script>
+		<script language="javascript" type="text/javascript" src="js/Main.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/tinycolor/tinycolor-min.js"></script>
+		<script language="javascript" type="text/javascript" src="js/farbtastic/farbtastic.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampada.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifLampadaMac.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifBase.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifThermostat.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifLockDoor.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitWM.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitFridge.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifIndesitOven.js"></script>
+		<script language="javascript" type="text/javascript" src="js/dispositivi/ifWindowCovering.js"></script>
+		
+		<script type="text/javascript">
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+		
+			if (!(w || h)) {
+				// IE
+				w = window.document.documentElement.clientWidth;
+				h = window.document.documentElement.clientHeight;
+			}
+		
+			// minimo rapporto e dimensioni
+			rapp = w / h;
+			if (rapp > 1.8) {
+				rapp = 1.8; //w = h * 1.8;
+			} else if (rapp < 1) {
+				rapp = 1.2; //w = h;
+			}
+			w = Math.floor(w);
+			h = Math.floor(h);
+		
+			document.write("<style type='text/css'> #Container {position:relative;background: transparent;width: "
+							+ w + "px;height: "	+ h	+ "px;margin-left: auto;margin-right: auto;text-align: center;}<\/style>");
+		
+			Main.screenW = w;
+			Main.screenH = h;
+		
+			var qs = new Querystring();
+			Define.lang = qs.get("lang", "it");
+			if (Define.lang == "en") {
+				document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgEn.js?201305315125"><\/script>');
+			} else {
+				document.write('<script language="javascript" type="text/javascript" src="js/utils/MsgIt.js?201305315125"><\/script>');
+			}
+			var testTime = qs.get("testtime", "false");
+		</script>
+		
+		<script language="javascript" type="text/javascript" src="js/FotoVoltaico.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/DefineMenu.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/InterfaceEnergyHome.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/NonDisponibile.js?201305315125"></script>
+		<script language="javascript" type="text/javascript" src="js/utils/Menu.js?201305315125"></script>
+	</head>
+	<body onLoad="Main.onLoad()" onUnload="Main.onUnload()">
+		<div id="Container">
+			<div id="Header">
+				<img id="LogoImg" src="./Resources/Images/E@HLogo.png">
+				<div id="userID"></div>
+			</div>
+			<div id="HeaderSep">
+				<img id="HeaderSepImg" src="./Resources/Images/header_sep.png">
+			</div>
+			<div id="ContentMain"></div>
+			<div id="CostiConsumi" class="Content"  style="font-size: 1vw">
+				<div id='TitoloCostiConsumi' class='ContentTitle'></div>
+				<div id='CostoConsumoSintesi' class='box'>
+					<div id='CostoConsumoAttuale' class='pvSingleBox'>
+						<div id='CostoConsumoAttualeTitolo' class='boxTitles'></div>
+						<span id='ValConsumoAttuale' class='values'></span>
+						<div id='ConsumoAttualeMeter' class='meter'></div>
+						<img id='CostoAttualeImg'> <span id='DettaglioCosto'></span>
+					</div>
 	
-</body>
+					<div id='ProduzioneAttuale' class='pvSingleBox'>
+						<div id='ProduzioneAttualeTitolo' class='boxTitles'></div>
+						<span id='ValProduzioneAttuale' class='values'></span>
+						<div id='ProduzioneAttualeMeter' class='meter'></div>
+						<!-- id='ProduzioneAttualeImg' -->
+						<span id='DettaglioProduzione'></span>
+					</div>
+	
+					<div id='ReteAttuale' class='pvSingleBox'>
+						<div id='ReteAttualeTitolo' class='boxTitles'></div>
+						<span id='ValReteAttuale' class='values'></span>
+						<div id='ReteAttualeMeter' class='meter'></div>
+						<!-- id='ReteAttualeImg' -->
+						<span id='DettaglioRete'></span>
+					</div>
+					<div id='DatiCostoConsumo' class='consSingleBox'>
+						<div id='DatiCostoConsumoHead'>
+							<img id="HouseImg" src="./Resources/Images/house_green.png">
+							<span id='DatiCostoConsumoTitolo'></span>
+						</div>
+						<div id='CostoConsumoOdierno'>
+							<div id='DettaglioCostoConsumoOdierno' class="Dettagli"></div>
+						</div>
+						<div id='CostoConsumoPrevisto'>
+							<div id='DettaglioCostoConsumoPrevisto' class="Dettagli"></div>
+						</div>
+						<div id='CostoConsumoMediaWeek'>
+							<div id='DettaglioCostoConsumoMediaWeek' class="Dettagli"></div>
+						</div>
+					</div>
+					<div id='Indicatore' class='consSingleBox IndicatoreCONS'>
+						<div id='IndicatoreTitolo' class="boxTitles"></div>
+						<div id='ConsumoIndicatoreImg' class='IndicatoreImg'></div>
+						<div id='CostoIndicatoreImg' class='IndicatoreImg'></div>
+					</div>
+					<div id='DatiCosti' class='consSingleBox'>
+						<div id='DatiCostiHead'>
+							<img id="HouseImg" src="./Resources/Images/euro.png">
+							<span id='DatiCostiTitolo'></span>
+						</div>
+						<div id='CostiOdierno'>
+							<div id='DettaglioCostiOdierno' class="Dettagli"></div>
+						</div>
+						<div id='CostiPrevisto'>
+							<div id='DettaglioCostiPrevisto' class="Dettagli"></div>
+						</div>
+						<div id='CostiMediaWeek'>
+							<div id='DettaglioCostiMediaWeek' class="Dettagli"></div>
+						</div>
+					</div>
+					<div id='IndicatorePV'>
+						<div id='IndicatoreTitoloPV' class='TitoloDettaglio IndicatoreTitoloPV'></div>
+						<div id='PVConsumoIACIndicatoreImg' class='IndicatoreImg'></div>
+					</div>
+				</div>
+				<div id='CostoConsumoInfo' class='box'>
+					<span id='InfoTitolo' class='TitoloDettaglio'> </span>
+					<div id='Grafico' class='chartSingleBox'>
+						<div id='GraficoConsumoOdierno'>
+							<!-- <div id='LabelKWH'></div> -->
+							<!-- <div id='LabelOra'></div> -->
+							<div id='DettaglioGraficoConsumoOdierno'></div>
+						</div>
+						<div id='GraficoSuddivisioneCosti'>
+							<div id='TitoloSuddivisioneCosti'></div>
+							<div id='DettaglioSuddivisioneCosti'></div>
+						</div>
+					</div>
+					<div id='CostoTConsumoMax' class='chartSingleBox'>
+						<span id='CostoTConsumoMaxTitolo'> </span>
+						<div id='DettaglioConsumoMaggiore'></div>
+						<div id='TariffaImgDiv'>
+							<img id='TariffaImg'>
+						</div>
+						<div id='TariffaPos'></div>
+					</div>
+					<div id='InfoFeed'>
+						<div id='InfoFeedTitolo' style='display: none;'>
+							<button id='nextNews'>next</button>
+							<button id='backNews'>go back</button>
+						</div>
+						<div id='InfoFeedDettaglio' style='margin-top:5px; font-size: 1vw'>
+							<div id='PrimaNews'>
+								<a target='_blank'>
+									<div class='titoloNews'>
+										<span class='ellipsis_text'> </span>
+									</div>
+								</a>
+								<div class='dettaglioNews'>
+									<span class='ellipsis_text'> </span>
+								</div>
+							</div>
+							<div id='SecondaNews'>
+								<a target='_blank'>
+									<div class='titoloNews'>
+										<span class='ellipsis_text'> </span>
+									</div>
+								</a>
+								<div class='dettaglioNews'>
+									<span class='ellipsis_text'> </span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="Registra" style="display: none;"></div>
+			<div id="iframeReport" style="display: none;"></div>
+			<div id="iframeForum" style="display: none;"></div>
+			<div id="iframeOverload" style="display: none;"></div>
+			<div id="MainMenu"></div>
+			<div id="ContentMenu"></div>
+			<div id="Timestamp">
+				<span id="Ora"></span> <img id="ClockImg"
+					src="./Resources/Images/orologio.png"> <span id="Data"></span>
+			</div>
+			<div id="ErrorMsgDIV"></div>
+		</div>
+	</body>
 </html>
-

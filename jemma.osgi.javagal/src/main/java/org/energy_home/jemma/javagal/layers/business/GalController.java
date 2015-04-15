@@ -20,10 +20,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -130,6 +134,32 @@ public class GalController {
 	}
 
 	/**
+	* A method that schedules a network recovery on GAL every day at 00:05
+	**/
+	private void scheduleResetTimerTask()
+	{
+		TimerTask timerTask=new TimerTask() {
+			
+			public void run() {
+				try {
+					recoveryGAL();
+				} catch (Exception e) {
+					LOG.error("Error invoking recoveryGAL",e);
+				}
+			}
+		};
+		Timer timer=new Timer();
+	
+		//start at 00:05 every day, from tomorrow
+		Calendar cal=Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 00);
+		cal.set(Calendar.MINUTE, 05);
+		cal.add(Calendar.DAY_OF_YEAR, 1);
+		
+		timer.scheduleAtFixedRate(timerTask, cal.getTime(), 24 * 60 * 60 * 1000);
+	}
+	
+	/**
 	 * Initialize the DataLayer class, with the relative RS-232 conection Used,
 	 * also for the Rest Api
 	 */
@@ -138,29 +168,12 @@ public class GalController {
 		LOG.debug("Gal Version: " + getVersion().getManufacturerVersion());
 
 		/* Used for reset GAL */
-		if (DataLayer != null) {
-			LOG.debug("Starting reset...");
-			/* Stop all timers */
-			synchronized (getNetworkcache()) {
-				for (WrapperWSNNode x : getNetworkcache()) {
-					x.abortTimers();
-
-				}
-			}
-			getNetworkcache().clear();
-			/* Stop discovery and freshness */
-
-			/* Destroy Gal Node */
-			set_GalNode(null);
-
-			setGatewayStatus(GatewayStatus.GW_READY_TO_START);
-
-			if (DataLayer.getIKeyInstance().isConnected())
-				DataLayer.getIKeyInstance().disconnect();
-			DataLayer.destroy();
-			LOG.debug("Reset done!");
-		}
+		resetGateway();
 		/* End of reset section */
+		
+		//schedule a daily GAL recovery
+		scheduleResetTimerTask();
+		
 		if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
 			DataLayer = new DataFreescale(this);
 			DataLayer.initialize();
@@ -171,14 +184,10 @@ public class GalController {
 				DataLayer.getIKeyInstance().disconnect();
 				throw e;
 			}
-		} else
-			try {
-				// FIXME why trow and catch directly in the same place ?
-				throw new Exception("No Platform found!");
-			} catch (Exception e) {
-				LOG.error("Caught No Platform found", e);
-			}
-
+		} else {
+			LOG.error("No Platform found for ZigBee dongle");
+			throw new Exception("No platform found for ZigBee dongle");
+		}
 		/*
 		 * Check if is auto-start mode is set to true into the configuration
 		 * file
@@ -209,70 +218,36 @@ public class GalController {
 	 * recovery of the GAL,
 	 */
 	public void recoveryGAL() throws Exception {
+		LOG.debug("Current number of threads: {}", Thread.getAllStackTraces().size());
 		MyRunnable thr = new MyRunnable(this) {
-			@Override
+			
 			public void run() {
-				String filenamelog = System.getProperty("user.home") + File.separator + "GalLog.log";
-				BufferedWriter bufferFileWriter = null;
 
 				try {
-					LOG.error("\n\r********GAL node is not responding...Starting recovery procedue. Wait...");
-					LOG.error("\n\r********STARTING RECOVERY...");
-
-					/* Gal is not Responding */
-					File f = new File(filenamelog);
-					if (!f.exists())
-						try {
-							f.createNewFile();
-						} catch (IOException e2) {
-							LOG.error("\n\rError creating file log: " + filenamelog);
-						}
-
-					FileWriter fileWriter = new FileWriter(f, true);
-					bufferFileWriter = new BufferedWriter(fileWriter);
-					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "STARTING RECOVERY");
+					LOG.error("********GAL node is not responding or recovery procedure was invoked...Starting recovery procedue. Wait...");
+					LOG.error("********STARTING RECOVERY...");
 
 					/* Used for reset GAL */
-					if (DataLayer != null) {
-						LOG.debug("Starting reset...");
-						/* Stop all timers */
-						synchronized (getNetworkcache()) {
-							for (WrapperWSNNode x : getNetworkcache()) {
-								x.abortTimers();
-
-							}
-						}
-						getNetworkcache().clear();
-						/* Stop discovery and freshness */
-
-						/* Destroy Gal Node */
-						set_GalNode(null);
-
-						setGatewayStatus(GatewayStatus.GW_READY_TO_START);
-
-						if (DataLayer.getIKeyInstance().isConnected())
-							DataLayer.getIKeyInstance().disconnect();
-						DataLayer.destroy();
-						LOG.debug("Reset done!");
-					}
+					resetGateway();
+					
 					/* End of reset section */
 					if (PropertiesManager.getzgdDongleType().equalsIgnoreCase("freescale")) {
+						LOG.error("Re-creating DataLayer Object for FreeScale chip");
 						DataLayer = new DataFreescale((GalController) this.getParameter());
+						LOG.error("Initializing data Layer");
 						DataLayer.initialize();
 						try {
-
 							DataLayer.getIKeyInstance().initialize();
 						} catch (Exception e) {
+							LOG.error("Exception Initializing DataLayer: {}",e);
 							DataLayer.getIKeyInstance().disconnect();
 							throw e;
 						}
-					} else
-						try {
-							throw new Exception("No Platform found!");
-						} catch (Exception e) {
-							LOG.error("Caught No Platform found", e);
-						}
-
+					} else{
+						LOG.error("No Platform found for ZigBee dongle");
+						throw new Exception("No platform found for ZigBee dongle");
+						
+					}
 					if (DataLayer.getIKeyInstance().isConnected()) {
 						short _EndPoint = 0;
 						if (lastEndPoint == null) {
@@ -298,23 +273,19 @@ public class GalController {
 
 							LOG.info("***Gateway is ready now... Current GAL Status: " + getGatewayStatus().toString() + "***");
 						}
+					}else{
+						LOG.error("DataLayer instance was not connected, Endpoints not configured");
 					}
 					LOG.error("********RECOVERY DONE!");
 
-					fileWriter.append("\n\r" + new Date(System.currentTimeMillis()).toString() + "RECOVERY DONE!");
 					return;
 				} catch (Exception e1) {
 					LOG.error("Error resetting GAL");
-				} finally {
-					try {
-						bufferFileWriter.close();
-					} catch (IOException e) {
-						LOG.error("Error closing file: {}", filenamelog);
-					}
-				}
+				} 
 
 			}
 		};
+		LOG.error("Starting recoveryGAL thread");
 		new Thread(thr).start();
 	}
 
@@ -1426,14 +1397,11 @@ public class GalController {
 									try {
 										deleteCallback(x.getCallbackIdentifier());
 									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									} catch (GatewayException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
+										LOG.error("Error deleting callback",e);
 									}
 							}
 						}
@@ -2677,6 +2645,81 @@ public class GalController {
 					return __indexOnList;
 			}
 			return -1;
+		}
+	}
+
+	private void resetGateway() throws Exception{
+		if (DataLayer != null) {
+			LOG.error("Starting reset...");
+			/* Stop all timers */
+			synchronized (getNetworkcache()) {
+				for (Iterator<WrapperWSNNode> it= getNetworkcache().iterator();it.hasNext();) {
+					WrapperWSNNode x=it.next();
+					x.abortTimers();
+				}
+			}
+			LOG.error("Stopped all timers");
+			
+			List<WrapperWSNNode> wsnWrappers=getNetworkcache();
+			Iterator<WrapperWSNNode> wsnWrappersIterator=wsnWrappers.iterator();
+			
+			//remove all nodes from the cache and notify network manager
+			while(wsnWrappersIterator.hasNext())
+			{
+				WrapperWSNNode nodeWrapper = wsnWrappersIterator.next();
+				//Clear device keypair
+				try{
+					Status _st1 = getDataLayer().ClearDeviceKeyPairSet(getPropertiesManager().getCommandTimeoutMS(),
+							nodeWrapper.get_node().getAddress());
+				}catch(Exception e){
+					LOG.error("Error ong Clearing device Keyset for device {} - Exception: {}",
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()),
+							e);
+				}
+				
+				//Clear neighbor table entries
+				try{
+					Status _st0 = getDataLayer().ClearNeighborTableEntry(getPropertiesManager().getCommandTimeoutMS(),
+							nodeWrapper.get_node().getAddress());
+				} catch (Exception e1) {
+					LOG.error("Error on ClearNeighborTableEntry for node: {} - Exception: {}", 
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()), 
+							e1); 
+				}
+				
+				//notify the networkmanager of node removal
+				Status s = new Status();
+				s.setCode((short) GatewayConstants.SUCCESS);
+				try{
+					this.get_gatewayEventManager().nodeRemoved(s, nodeWrapper.get_node());
+				}catch(Exception e){
+					LOG.error("Error notifying node {} removal, Exception: {}",
+							Utils.getAddressString(nodeWrapper.get_node().getAddress()),
+							e);
+				}
+				
+				
+			}
+			
+			getNetworkcache().clear();
+			
+			/* Stop discovery and freshness */
+
+			/* Destroy Gal Node */
+			set_GalNode(null);
+
+			setGatewayStatus(GatewayStatus.GW_READY_TO_START);
+
+			LOG.error("Now Gateway have been set as ready to start and the GalNode have been set to null");
+			
+			if (DataLayer.getIKeyInstance().isConnected())
+			{
+				LOG.error("DataLayer instance was connected, disconnecting");
+				DataLayer.getIKeyInstance().disconnect();
+			}
+			LOG.error("Destroying DataLayer");
+			DataLayer.destroy();
+			LOG.debug("Reset done!");
 		}
 	}
 

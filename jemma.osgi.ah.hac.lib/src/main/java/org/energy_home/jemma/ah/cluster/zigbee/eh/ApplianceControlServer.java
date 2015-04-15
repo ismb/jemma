@@ -36,6 +36,7 @@ public interface ApplianceControlServer {
 	final static String ATTR_EcoMode_NAME="EcoMode";
 	final static String ATTR_HolidayMode_NAME = "HolidayMode";
 	final static String ATTR_IceParty_NAME = "IceParty";
+	final static String ATTR_RemoteControl_NAME = "RemoteControl";
 	
 	final static String CMD_CommandExecution_NAME = "CommandExecution";
 	final static String CMD_SignalState_NAME = "SignalState";

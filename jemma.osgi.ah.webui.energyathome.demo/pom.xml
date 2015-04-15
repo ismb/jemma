@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.webui.energyathome.demo</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.0.44</version>
+	<version>1.0.45</version>
 	<name>Energy@Home Web Application Demo</name>
 
 	<properties>
@@ -46,7 +46,6 @@
 						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Require-Bundle>jemma.osgi.ah.webui.base;bundle-version="2.0.2"</Require-Bundle>
 						<Import-Package>org.energy_home.jemma.ah.hac,
 							 javax.servlet,
 							 javax.servlet.http,

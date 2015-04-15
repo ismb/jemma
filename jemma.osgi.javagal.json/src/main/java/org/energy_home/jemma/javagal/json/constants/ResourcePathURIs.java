@@ -21,7 +21,8 @@ public interface ResourcePathURIs {
 	public static final String NETWORKS = "/networks";
 	public static final String RESET = "/reset";
 	public static final String STARTUP = "/startup";
-
+	public static final String RECOVERY = "/recovery";
+	
 	public static final String CALLBACKS = "/callbacks";
 	public static final String NEWCALLBACKS = "/newcallbacks";
 	public static final String SERVICES = "/services";

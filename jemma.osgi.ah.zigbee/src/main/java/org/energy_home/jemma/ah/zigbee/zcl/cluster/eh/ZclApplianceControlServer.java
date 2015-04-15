@@ -25,6 +25,8 @@ import org.energy_home.jemma.ah.cluster.zigbee.eh.WriteAttributeRecord;
 import org.energy_home.jemma.ah.hac.ApplianceException;
 import org.energy_home.jemma.ah.hac.IEndPointRequestContext;
 import org.energy_home.jemma.ah.hac.ServiceClusterException;
+import org.energy_home.jemma.ah.hac.IServiceCluster;
+import org.energy_home.jemma.ah.hac.lib.EndPoint;
 import org.energy_home.jemma.ah.internal.zigbee.ZclAttributeDescriptor;
 import org.energy_home.jemma.ah.zigbee.IZclFrame;
 import org.energy_home.jemma.ah.zigbee.ZCL;
@@ -76,9 +78,11 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 				ATTR_EcoMode_NAME, new ZclDataTypeBoolean(), null, true, 1));
 		attributesMapByName.put(ATTR_HolidayMode_NAME, new ZclAttributeDescriptor(15, //EcoMode attribute id: 0x000f
 				ATTR_HolidayMode_NAME, new ZclDataTypeBoolean(), null, true, 1));
+		attributesMapByName.put(ATTR_RemoteControl_NAME, new ZclAttributeDescriptor(18, //RemoteControl attribute id: 0x0012
+				ATTR_RemoteControl_NAME, new ZclDataTypeBoolean(), null, true, 1));
 		attributesMapByName.put(ATTR_IceParty_NAME, new ZclAttributeDescriptor(20, //IceParty attribute id: 0x0014
 				ATTR_IceParty_NAME, new ZclDataTypeBoolean(), null, true, 1));
-		
+
 	}
 
 	public ZclApplianceControlServer() throws ApplianceException {
@@ -98,15 +102,43 @@ public class ZclApplianceControlServer extends ZclServiceCluster implements Appl
 		IZclFrame responseZclFrame = null;
 		ZigBeeDevice device = getZigBeeDevice();
 		int statusCode = ZCL.SUCCESS;
-		ApplianceControlClient c = ((ApplianceControlClient) getSinglePeerCluster((ApplianceControlClient.class.getName())));
+
 		switch (commandId) {
 		case 1:
-			responseZclFrame = parseSignalStateNotification(c, zclFrame);
+			try {
+				IServiceCluster[] serviceClusters = ((EndPoint) endPoint)
+						.getPeerServiceClusters(ApplianceControlClient.class.getName());
+				if (serviceClusters == null) {
+					throw new ServiceClusterException("No appliances connected");
+				} else if (serviceClusters.length == 0) {
+					throw new ServiceClusterException("Service Clusters List is empty!!!");
+				}
+	
+				short ApplianceStatus = ZclDataTypeEnum8.zclParse(zclFrame);
+				short RemoteEnableFlags = ZclDataTypeUI8.zclParse(zclFrame);
+				int ApplianceStatus2 = ZclDataTypeUI24.zclParse(zclFrame);
+	
+				for (int i = 0; i < serviceClusters.length; i++) {
+					
+						ApplianceControlClient o = (ApplianceControlClient) serviceClusters[i];
+					
+						o.execSignalStateNotification(ApplianceStatus, RemoteEnableFlags, ApplianceStatus2,
+								endPoint.getDefaultRequestContext());
+				}
+
+			} catch (Throwable e) {
+					// ignore the exeption
+				e.printStackTrace();
+			}
+
+
+			responseZclFrame = null;
 			break;
-			
+
 		default:
 			throw new ZclException(ZCL.UNSUP_CLUSTER_COMMAND);
 		}
+
 		
 		if (responseZclFrame == null) {
 			if (!zclFrame.isDefaultResponseDisabled()) {

@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.energy_home.jemma.ah.ebrain.EnergyPhaseInfo.EnergyPhaseScheduleTime;
+import org.energy_home.jemma.ah.ebrain.IOverloadStatusListener.OverloadStatus;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileState;
 import org.energy_home.jemma.ah.ebrain.PowerProfileInfo.PowerProfileTimeConstraints;
 import org.energy_home.jemma.ah.ebrain.algo.DailyTariff;
@@ -116,8 +117,10 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 	
 	public float calculatePowerProfilePrice(String applianceId, short powerProfileID, int delay) {
 		if (delay < 0 || delay > PowerProfileTimeConstraints.MAX_SCHEDULING_DELAY)
+		{
+			LOG.error("Invalid time delay!");
 			throw new IllegalArgumentException("Invalid Time Delay " + delay);
-		
+		}
 		WhiteGoodInfo appliance = getWhiteGoodInfo(applianceId);
 		PowerProfileInfo ppi = getOrRetrievePowerProfile(appliance, powerProfileID);
 		
@@ -125,8 +128,10 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		
 		// check that the appliance is running
 		if (ppi.getProfileCurrentState().isApplianceStarted())
+		{
+			LOG.error("The appliance {} has already started, can't calculate price",applianceId);
 			throw new IllegalStateException("Cannot Calculate Price of a Running Appliance - " + PowerProfileState.getNameOf(ppi.getProfileCurrentState()));
-
+		}
 		
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, delay);
@@ -168,8 +173,23 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 		LOG.debug("cost " + cost);
 		
 		// check potential overload
-		float available = getCurrentAvailablePower();
-		if (maxPeakPower >= available) powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
+		try
+		{
+			float available = getCurrentAvailablePower();
+			if (maxPeakPower >= available)
+			{
+				IOverloadStatusListener overloadListener= getOverloadStatusListener();
+				if(overloadListener!=null)
+				{
+					overloadListener.notifyOverloadStatusUpdate(OverloadStatus.OverLoadRiskIfApplianceStarts);
+				}
+				currentOverloadStatus=OverloadStatus.OverLoadRiskIfApplianceStarts;
+				powerControlProxy.notifyOverloadWarning(applianceId, IPowerAndControlProxy.OVERALL_POWER_POTENTIALLY_ABOVE_AVAILABLE_POWER_LEVEL_ON_START);
+			}
+		}catch(Throwable t)
+		{
+			LOG.error("Unable to check available power and check overload risk: {}",t);
+		}
 		
 		return cost;
 	}
@@ -235,21 +255,25 @@ public class EnergyBrainCore extends MeteringCore implements IPowerAndControlLis
 			ec.setPowerThreshold(powerThresholds.getContractualThreshold());
 			
 			float[] forecast;
+			
 			if (smartInfoProduction != null) {
-
-				List<Float> hourlyData = getCloudServiceProxy().retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
-				if (hourlyData != null && hourlyData.size() > SolarIrradianceProfile.MINIMUM_INTERPOLATION_HOURS) {
-					// set current value as most accurate than any forecast (obvious)
-					hourlyData.set(0, super.getIstantaneousProducedPower());
-					forecast = SolarIrradianceProfile.interpolate(hourlyData);
-				
-				} else {
-					// fall back if the retrieved values are unavailable
-					float maxProducedPower = super.getPeakProducedPower();
-					if (sky == null) sky = new SolarIrradianceProfile(maxProducedPower, EnergyAllocator.NUMBER_OF_DAYS_HORIZON, SkyCover.ClearSky);
-					forecast = sky.getSeries();
+				try{
+					List<Float> hourlyData = getCloudServiceProxy().retrieveHourlyProducedEnergyForecast(smartInfoProduction.getApplianceId());
+					if (hourlyData != null && hourlyData.size() > SolarIrradianceProfile.MINIMUM_INTERPOLATION_HOURS) {
+						// set current value as most accurate than any forecast (obvious)
+						hourlyData.set(0, super.getIstantaneousProducedPower());
+						forecast = SolarIrradianceProfile.interpolate(hourlyData);
+					
+					} else {
+						// fall back if the retrieved values are unavailable
+						float maxProducedPower = super.getPeakProducedPower();
+						if (sky == null) sky = new SolarIrradianceProfile(maxProducedPower, EnergyAllocator.NUMBER_OF_DAYS_HORIZON, SkyCover.ClearSky);
+						forecast = sky.getSeries();
+					}
+					ec.setEnergyForecast(forecast);
+				}catch(Throwable t){
+					LOG.error("Error retreiving Energy production forecast from cloud, switching to default scheduling mode");
 				}
-				ec.setEnergyForecast(forecast);
 			}
 
 			ParticleSwarmScheduler swarm = new ParticleSwarmScheduler(ppi, ec, SCHEDULER_SWARM_SIZE);

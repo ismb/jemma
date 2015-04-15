@@ -156,7 +156,7 @@ InterfaceEnergyHome2.Init = function()
 			callback(appliance, null);
 		}
 		
-		service.getAppliancesConfigurations = function(callback) {
+		service.getAppliancesConfigurationsDemo = function(callback) {
 			callback(ListaElettr, null);
 		}
 		
@@ -408,7 +408,7 @@ InterfaceEnergyHome2.GetListaAppliances = function (backFunc)
 	Log.alert(20, InterfaceEnergyHome2.MODULE, "GetListaAppliances");
 	try
 	{
-		InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome2.BackListaAppliances);
+		InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome2.BackListaAppliances);
 	}
 	catch (err)
 	{
@@ -1100,7 +1100,7 @@ InterfaceEnergyHome2.GetMaxElettr = function (backFunc)
 	{
 		try
 		{
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome2.BackMaxElettr);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome2.BackMaxElettr);
 		}
 		catch (err)
 		{
@@ -1370,7 +1370,7 @@ InterfaceEnergyHome2.GetPotenzaAttuale = function (backFunc)
 		try
 		{
 			//InterfaceEnergyHome.objService.getAttribute(InterfaceEnergyHome2.BackPotenzaAttuale, InterfaceEnergyHome2.POTENZA_TOTALE);
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome2.BackPotenzaAttuale);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome2.BackPotenzaAttuale);
 		}
 		catch (err)
 		{
@@ -1476,7 +1476,7 @@ InterfaceEnergyHome2.GetListaElettr = function (backFunc)
 	{
 		try
 		{
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome2.BackListaElettr);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome2.BackListaElettr);
 		}
 		catch (err)
 		{
@@ -1540,7 +1540,7 @@ InterfaceEnergyHome2.GetElettrStorico = function (backFunc)
 	{
 		try
 		{
-			InterfaceEnergyHome.objService.getAppliancesConfigurations(InterfaceEnergyHome2.BackElettrStorico);
+			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome2.BackElettrStorico);
 		}
 		catch (err)
 		{

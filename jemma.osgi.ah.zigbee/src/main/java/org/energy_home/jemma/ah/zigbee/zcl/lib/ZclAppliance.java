@@ -219,4 +219,9 @@ public abstract class ZclAppliance extends DriverAppliance implements IZclApplia
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public String getAddressString()
+	{
+		return nodeMacAddress;
+	}
 }

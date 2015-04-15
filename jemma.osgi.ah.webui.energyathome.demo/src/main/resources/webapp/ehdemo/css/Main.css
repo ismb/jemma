@@ -191,9 +191,8 @@ span {
 }
 
 #NonDisponibile {
-	position: absolute;
 	color: #abd037;
-	font-size: 2.0em;
+	font-size: 2.0vw;
 	text-align:center;
 	overflow: hidden;
 	padding-top:20%;

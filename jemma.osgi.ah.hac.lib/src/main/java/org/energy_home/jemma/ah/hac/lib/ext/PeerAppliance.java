@@ -127,5 +127,9 @@ public class PeerAppliance implements IAppliance {
 	public String toString() {
 		return getPid();
 	}
+
+	public String getAddressString() {
+		return managedAppliance.getAddressString();
+	}
 	
 }

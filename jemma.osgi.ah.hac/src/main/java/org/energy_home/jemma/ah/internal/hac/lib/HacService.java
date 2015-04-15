@@ -808,6 +808,17 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 				try {
 					Configuration configuration = this.getApplianceCAConfiguration(appliancePid);
 					if (configuration != null) {
+						LOG.info("Deleting appliance configuration, PID: {}, Address:{}",
+								appliance.getPid(),
+								appliance.getAddressString());
+						Dictionary props=configuration.getProperties();
+						if(props!=null && props.get("ah.app.name")!=null)
+						{
+							LOG.info("Appliance name that is going to be removed:{}",
+								configuration.getProperties().get("ah.app.name"));
+						}else{
+							LOG.warn("Removed a configuration of an appliance without a name!");
+						}
 						configuration.delete();
 					}
 					return true;
@@ -821,11 +832,18 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	}
 
 	public boolean removeDevice(IManagedAppliance device) {
+		LOG.debug("Going to remove appliance, PID: {}, Address: {}",
+				device.getPid(),
+				device.getAddressString());
 		synchronized (lockHacService) {
 			if (appliances.contains(device)) {
 				appliances.remove(device);
+				LOG.info("Appliance removed, PID: {}, Address:{}",
+						device.getPid(),
+						device.getAddressString());
 				return true;
 			}
+			LOG.info("Appliance {} was not in appliances list so it was not removed", device.getPid());
 			return false;
 		}
 	}
@@ -1735,19 +1753,26 @@ public class HacService implements TimerListener, FrameworkListener, IHacService
 	}
 	
 	public void installAppliance(String appliancePid) throws HacException {
+		LOG.info("Going to install an appliance with PID: {}",appliancePid);
 		synchronized (lockHacService) {
 			IManagedAppliance appliance = (IManagedAppliance) this.pid2appliance.get(appliancePid);
 			if (appliance == null) {
+				LOG.error("Error installing appliance with PID {} , pid2appliance.get failed"
+						,appliancePid);
 				throw new HacException("an appliance can be installed only if has been already created");
 			}
 
 			if (!this.installingAppliances.contains(appliance)) {
+				LOG.error("Error installing appliance with PID {} , appliance not in 'installing' queue",
+						appliancePid);
 				throw new HacException("an appliance can be installed only if has been already created");
 			}
 
 			try {
 				Configuration c = this.getApplianceCAConfiguration(appliancePid);
 				if (c == null) {
+					LOG.error("Error installing appliance with PID {} , configuration could not be found",
+							appliancePid);
 					throw new HacException("an appliance can be installed only if has been already created");
 				}
 				Dictionary props = c.getProperties();

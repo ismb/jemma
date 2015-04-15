@@ -16,7 +16,7 @@
 package org.energy_home.jemma.ah.ebrain;
 
 public interface IOverloadStatusListener {
-	public enum OverloadStatus {NoOverloadWarning, ContractualPowerThresholdWarning, 
+	public enum OverloadStatus {NoOverloadWarning,OverLoadRiskIfApplianceStarts, ContractualPowerThresholdWarning, 
 		FirstPowerThresholdWarning, SecondPowerThresholdWarning};
 	
 	public void notifyOverloadStatusUpdate(OverloadStatus status);	

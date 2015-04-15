@@ -64,9 +64,9 @@ var Configurazione = {
 				33 ],
 		"ah.ep.zigbee.Generic" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 				14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-				30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ],
+				30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,46 ],
 		"ah.ep.zigbee.MeteringDevice" : [ 12, 14, 15 ],
-		"ah.ep.zigbee.WhiteGoods" : [ 37, 38, 39 ],
+		"ah.ep.zigbee.WhiteGoods" : [ 37, 38, 39, 46 ],
 		"ah.ep.zigbee.ColorLight" : [ 43, 34, 35 ],
 		"ah.ep.zigbee.OnOffLight" : [ 43, 34, 35 ],
 		"ah.ep.zigbee.DimmableLight" : [ 42 ],
@@ -701,6 +701,8 @@ Configurazione.selectCategorie = function(types) {
 	var typeAlreadyUsed = new Array();
 	var catArray, indexCC = null;
 
+/*	Old loop to filter categories according to attached driver.
+	disabled to ease new devices integration/test
 	for (t in types) {
 		var tp = types[t];
 		for (confT in Configurazione.categorieGroup) {
@@ -714,7 +716,7 @@ Configurazione.selectCategorie = function(types) {
 			}
 		}
 
-	}
+	}*/
 	if (returnList == '') {
 		catArray = Configurazione.categorieGroup['ah.ep.zigbee.Generic'];
 		for (var iC = 0; iC <= catArray.length; iC++) {

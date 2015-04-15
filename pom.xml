@@ -89,14 +89,14 @@
 		<org.energy-home.jemma.osgi.ah.m2m.device.version>1.2.15</org.energy-home.jemma.osgi.ah.m2m.device.version>
 		<org.energy-home.jemma.osgi.ah.hap.client.version>1.2.15</org.energy-home.jemma.osgi.ah.hap.client.version>
 		<org.energy-home.jemma.osgi.utils.version>1.0.6</org.energy-home.jemma.osgi.utils.version>
-		<org.energy-home.jemma.osgi.ah.energyathome.version>2.2.25</org.energy-home.jemma.osgi.ah.energyathome.version>
-		<org.energy-home.jemma.osgi.ah.adapter.http.version>2.0.2</org.energy-home.jemma.osgi.ah.adapter.http.version>
+		<org.energy-home.jemma.osgi.ah.energyathome.version>2.2.30</org.energy-home.jemma.osgi.ah.energyathome.version>
+		<org.energy-home.jemma.osgi.ah.adapter.http.version>2.0.3</org.energy-home.jemma.osgi.ah.adapter.http.version>
 		<org.energy-home.jemma.osgi.ah.configurator.version>1.0.7</org.energy-home.jemma.osgi.ah.configurator.version>
 		<org.energy-home.jemma.osgi.device.zgd.version>1.1.15</org.energy-home.jemma.osgi.device.zgd.version>
 		<!--<org.energy-home.jemma.osgi.zgd.version>1.4.1</org.energy-home.jemma.osgi.zgd.version>-->
 		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.26</org.energy-home.jemma.osgi.ah.zigbee.version>
 		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.12</org.energy-home.jemma.osgi.ah.webui.base.version>
-		<org.energy-home.jemma.osgi.javagal.version>2.0.1</org.energy-home.jemma.osgi.javagal.version>
+		<org.energy-home.jemma.osgi.javagal.version>2.0.5</org.energy-home.jemma.osgi.javagal.version>
 		<org.ops4j.pax.logging.version>1.7.2</org.ops4j.pax.logging.version>
 		
 		<!-- SLF4j APIs now provided by PAX Logging -->
@@ -131,6 +131,7 @@
 		<module>jemma.osgi.ah.zigbee</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>jemma.osgi.ah.zigbee.appliances</module>
+		<module>jemma.osgi.ah.demo.fakevalues</module>
 		<!--<module>jemma.osgi.zgd</module>-->
 		<module>Distribution</module>
 	</modules>

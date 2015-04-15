@@ -3,6 +3,7 @@ var DEFINEPATH = {
 	infoForRestartGal : "/json/startup?", 
 	startGalPath : "/json/startup?", 
 	reStartGalPath : "/json/reset?", 
+	recoveryGalPath : "/json/recovery",
 	versionPath : "/json/version",
 	viewDevicePath : "/json/net/default/wsnnodes?mode=cache",
 	detailDevicePath : "/json/net/default/wsnnodes/nodedescriptorservicelist", 

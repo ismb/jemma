@@ -156,7 +156,10 @@ public class SerialPortConnectorRxTx implements IConnector {
 			if (ou != null) {
 				try {
 					LOG.debug(">>> Sending: " + buff.ToHexString());
-					ou.write(buff.getArray(), 0, buff.getCount(true));
+					synchronized(ou)
+					{
+						ou.write(buff.getArray(), 0, buff.getCount(true));
+					}
 					// ou.flush();// TODO FLUSH PROBLEM INTO THE FLEX-GATEWAY
 
 				} catch (Exception e) {
@@ -222,14 +225,16 @@ public class SerialPortConnectorRxTx implements IConnector {
 
 		public void serialEvent(SerialPortEvent event) {
 			try {
-
-				if ((event.getEventType() == SerialPortEvent.DATA_AVAILABLE) && !getIgnoreMessage()) {
-					int numberOfBytes = in.available();
-					if (numberOfBytes > 0) {
-						byte[] bufferOriginal = new byte[numberOfBytes];
-						in.read(bufferOriginal);
-						ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
-						_caller.getDataLayer().notifyFrame(frame);
+				synchronized(in)
+				{
+					if ((event.getEventType() == SerialPortEvent.DATA_AVAILABLE) && !getIgnoreMessage()) {
+						int numberOfBytes = in.available();
+						if (numberOfBytes > 0) {
+							byte[] bufferOriginal = new byte[numberOfBytes];
+							in.read(bufferOriginal);
+							ByteArrayObject frame = new ByteArrayObject(bufferOriginal, numberOfBytes);
+							_caller.getDataLayer().notifyFrame(frame);
+						}
 					}
 				}
 

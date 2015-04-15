@@ -123,6 +123,7 @@ var Msg = {
 		"statoDisp" : [ "SPENTO", "ACCESO", "NON CONNESSO", "STAND-BY" ],
 		"nessunDisp" : "NESSUN DISPOSITIVO TROVATO",
 		"nonDisponibile" : "Funzione non ancora disponibile",
+		"nonDisponibileUtente" : "Funzione non disponibile per questo utente (\"demo\")",
 		"titoloStorico" : "STORICO DEI DATI",
 		"periodoStorico" : "PERIODO",
 		"dispStorico" : "DISPOSITIVO",
@@ -160,7 +161,12 @@ var Msg = {
 		"lblConsO" : "Consumo Odierno",
 		"lblProdA" : "Produzione Attuale",
 		"lblPotA" : "Potenza Attuale",
-		"oldBrowser" : "VERSIONE DEL BROWSER NON ADATTA! Si prega di aggiornare il browser con l'ultima versione."
+		"oldBrowser" : "VERSIONE DEL BROWSER NON ADATTA! Si prega di aggiornare il browser con l'ultima versione.",
+		//box consumi nella tab "dispositivi"
+		"consumptionsSummary":"Riepilogo consumi",
+		"devicesConsumption":"Consumo dispositivi",
+		"otherConsumption":"Altri consumi",
+		"totalConsumption":"Consumo totale"
 	},
 	community : {
 		"titoloForum" : "FORUM ENERGY@HOME",
@@ -180,7 +186,8 @@ var Msg = {
 		"tariffaAlta" : "Tariffa Alta",
 		"tariffaOra" : "Ora",
 		"titoloInfo" : "INFORMAZIONI",
-		"titoloTestoInfo" : "COSA DEVI SAPERE SUL TRIAL",
+		"titoloTestoInfo" : "Clicca qui per maggiori informazioni sul trial",
+		"membriEH" : "Membri di Energy@Home:" ,
 		"testoInfo" : "Il trial Energy@Home avra' la durata di un anno circa e ti consentira' di controllare i tuoi consumi elettrici.<br><br>Ti suggeriamo di guardare con attenzione le tariffe in uso e di provare a risparmiare, consumando nelle fasce a minor costo.<br><br>Potrai anche confrontare i tuoi consumi con quelli degli altri partecipanti al trial e darci i tuoi suggerimenti andando nella community.",
 		"titoloContatti" : "CONTATTI",
 		"titoloTestoContatti" : "SE VUOI CONTATTARCI",
@@ -299,7 +306,8 @@ var Msg = {
 		42 : "Regolatore intensità Ubisys",
 		43 : "Attenuatore di luce Ubisys",
 		44 : "Tapparella finestra",
-		45 : "Controllore Tapparella finestra"
+		45 : "Controllore Tapparella finestra",
+		46 : "Lavastoviglie Indesit"
 		
 			
 	}
