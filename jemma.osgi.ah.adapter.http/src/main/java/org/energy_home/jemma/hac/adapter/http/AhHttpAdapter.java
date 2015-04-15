@@ -161,9 +161,9 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			httpService.registerServlet(jsonRpcUrl, jsonRpcServlet, null, httpContext);
 
 		} catch (ServletException e) {
-			e.printStackTrace();
+			LOG.error("Servlet Exception, unable to register servlets",e);
 		} catch (NamespaceException e) {
-			e.printStackTrace();
+			LOG.error("NameSpace Exception, unable to register servlets",e);
 		}
 		LOG.debug("registered http resources");
 	}
@@ -246,7 +246,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 									try {
 										v.add(outer.get(k));
 									} catch (JSONException e) {
-										e.printStackTrace();
+										LOG.error("Error creating JSON Object",e);
 									}
 								}
 
@@ -423,7 +423,7 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 			try {
 				queue.put(event);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.error("Interrupted put in BlockingQueue",e);
 			}
 		} else {
 			LOG.trace("received event: " + event.getTopic());

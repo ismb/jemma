@@ -282,6 +282,11 @@ Main.onLoad = function() {
 					GestDate.InitActualDate(Main.InitValue);
 				});
 				InterfaceEnergyHome.mode = -1;
+			} else if(mode == "noservernodev"){
+				LazyScript.load("js/DataSimulNoServer.js", function() {
+					GestDate.InitActualDate(Main.InitValue);
+				});
+				InterfaceEnergyHome.mode = -2;
 			} else {
 				InterfaceEnergyHome.mode = 2;
 			}
@@ -306,7 +311,7 @@ Main.onLoad = function() {
 
 		Main.dataMinima = new Date("January 1, 2010 00:00:00").getTime();
 
-		if ((mode != "simul") && (mode != "noserver")){
+		if ((mode != "simul") && (mode != "noserver") && (mode!="noservernodev")){
 			GestDate.InitActualDate(Main.InitValue);
 		}
 	});

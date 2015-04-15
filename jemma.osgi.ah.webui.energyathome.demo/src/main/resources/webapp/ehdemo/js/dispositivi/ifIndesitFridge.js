@@ -65,7 +65,19 @@ ifIndesitFridge.update= function(now){
         }
         
                 
-        
+        if(InterfaceEnergyHome.mode==-2)
+        {
+        	msg="4&deg;C";	
+        	$(".val_temperature_fridge").html(msg);
+        	
+        	msg="-18&deg;C";	
+        	$(".val_temperature_freezer").html(msg);
+        	
+        	msg="On";	
+        	$(".val_status").html(msg);
+        	
+        	return;
+        }
 
         if (ifIndesitFridge.isBusy) {
                 return;

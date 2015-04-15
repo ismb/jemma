@@ -23,7 +23,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma.osgi.ah.demo.fakevalues</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.1</version>
+	<version>0.1.1</version>
 	<name>Fake values provider for demos</name>
 	
 	<properties>

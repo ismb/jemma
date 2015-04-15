@@ -321,8 +321,10 @@ public class EnergyAtHome extends WebApplication implements HttpImplementor, Htt
 	}
 
 	private boolean redirectToLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String redirect = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		/*String redirect = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 				+ applicationWebAlias + "/conf/login.html";
+		*/
+		String redirect=applicationWebAlias+"/conf/login.html";
 		response.sendRedirect(redirect);
 		return true;
 	}

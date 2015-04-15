@@ -158,7 +158,7 @@ CostiConsumi.GestConsumi = function() {
 		$("#DettaglioCostiMediaWeek").html(Msg.home["costoDayWeek"] + ": <b>" + Msg.home["datoNonDisponibile"] + "</b>");
 	}*/
 
-	if (InterfaceEnergyHome.mode == -1) {
+	if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 		// per test
 		//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.getMoltForCost, "MoltForCost");
 		CostiConsumi.getMoltForCost(fakeValues.MoltForCost, null);
@@ -224,7 +224,7 @@ CostiConsumi.ExitConsumi = function() {
 
 CostiConsumi.GetElettrodomestici = function() {
 
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
+	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)){
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(CostiConsumi.DatiElettrodomesticiCB);
 		} catch (err) {
@@ -448,7 +448,7 @@ CostiConsumi.DatiConsumoOdiernoCbCC = function(result, err) {
 	}
 	CostiConsumi.consumoOdierno = 0;
 	if (result) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var ora = new Date();
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);
@@ -487,7 +487,7 @@ CostiConsumi.GetProduzioneOdiernoCC = function() {
 			InterfaceEnergyHome.GestErrorEH("GetConsumoOdiernoCC", err);
 		}
 	} else {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			//InterfaceEnergyHome.objService.getPropConfiguration(CostiConsumi.DatiProduzioneOdiernoCbCC, "EnergiaProdottaGiornalieroSimul");
 			CostiConsumi.DatiProduzioneOdiernoCbCC(fakeValues.energiaProdotta, null);
 		} else {
@@ -501,7 +501,7 @@ CostiConsumi.DatiProduzioneOdiernoCbCC = function(result, err) {
 	//solo se ho una produzione valida la sottraggo al consumo per ottenere il consumo finale
 	CostiConsumi.prodOdierno = 0;
 	if (result) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var ora = new Date();
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);
@@ -647,7 +647,7 @@ CostiConsumi.DatiConsumoPrevistoCbCC = function(result, err) {
 	}
 	
 	//test
-	if (InterfaceEnergyHome.mode == -1) {
+	if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 		//result = result.list[0];
 		var tmpResult = 0;
 		$.each(result.list, function(index, element) {
@@ -785,7 +785,7 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 	} else {
 		if (result != null) {
 			//DT
-			if (InterfaceEnergyHome.mode == -1) {
+			if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 				$.each(CostiConsumi.listaElettr, function(indexResult, element) {
 					if (!result.map[indexResult]) {
 						result.map[indexResult] = {'javaClass': "java.util.ArrayList", 'list': [0,10,0,10,0,10,10,10,56,80,45,1500,140,563,1200,2063,1052,58,800,400,0,10,1035,500,51]};
@@ -841,7 +841,7 @@ CostiConsumi.DatiSuddivisioneConsumiCb = function(result, err) {
 				altriConsumi = ConsumiSmartinfo - consumiTotale;
 			}
 	
-			if ((altriConsumi == 0) && (InterfaceEnergyHome.mode == -1)) {
+			if ((altriConsumi == 0) && ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 				altriConsumi = Math.floor(consumiTotale/6);
 				controlSumListaConsumi++;
 				listaConsumi.push(new Array(Msg.home["altro"], altriConsumi));
@@ -1072,15 +1072,16 @@ CostiConsumi.GraphNoServerCustomDevice = function(res, err)
 //Visualizza l'elettrodomestico simulato con il maggiore consumo ...
 CostiConsumi.VisMaxConsumoNoServer = function() {
 		
-	$("#DettaglioConsumoMaggiore").html("<span id='TestoConsumoMaggiore'></span><img id='ConsumoMaggioreImg' src=''>");
+	$("#DettaglioConsumoMaggiore").html("<table><tr><td><img id='ConsumoMaggioreImg' align='center' src=''></td><td><span id='TestoConsumoMaggiore'></span></td></tr></table>");
 
 	// metto immagine del device che sta consumando di piu'
 	$("#ConsumoMaggioreImg").attr("src",
 					DefinePath.imgDispPath + consumoMaxIcon);
 	// il consumo e' in watt
 	$("#TestoConsumoMaggiore")
-			.text(consumoMaxNome + " (" + Math.round(consumoMaxValue) + " Wh)");
-	
+			//.text(consumoMaxNome + " (" + Math.round(consumoMaxValue) + " Wh)");
+			.html(consumoMaxNome + "<br/> (" + Math.round(consumoMaxValue/1000) + " kWh)");
+/*	
 	if (CostiConsumi.dimMaxDispImg == -1) {
 		wDiv = $("#ConsumoMaggioreImg").width();
 		hDiv = $("#ConsumoMaggioreImg").height();
@@ -1094,6 +1095,7 @@ CostiConsumi.VisMaxConsumoNoServer = function() {
 	}
 	$("#ConsumoMaggioreImg").width(CostiConsumi.dimMaxDispImg);
 	$("#ConsumoMaggioreImg").height(CostiConsumi.dimMaxDispImg);
+	*/
 }
 
 /** Funzione lanciata al caricamento dello script google per gli RSS * */
@@ -1403,7 +1405,7 @@ CostiConsumi.DatiConsumoMediaWeekCb = function(result, err) {
 	}
 
 	if (result != null) {
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			var tmpResult = 0;
 			$.each(result.list, function(index, element) {
 				element = Math.floor(element);
@@ -1502,46 +1504,29 @@ CostiConsumi.DatiProduzioneMediaWeekCb = function(result, err) {
 };
 
 var NotizieSimul = [
-{	description : "Sale al 20,3% la percentuale di elettricit&agrave; convertita da ogni singola cella fotovoltaica. E ora la primatista Suntech punta al",
-	link : "http://gogreen.virgilio.it/news/green-design/fotovoltaico-pannello-record-efficienza_6276.html?pmk=rss",
-	title : "Fotovoltaico: ecco il pannello con il record di efficienza"
+{	description : "Un breve video che fornisce pratici suggerimenti per l’uso e la scelta dei dispositivi elettronici al fine del risparmio energetico domestico.",
+	link : "https://energyhomenews.wordpress.com/2013/08/08/efficienza-energetica-domestica/",
+	title : "Efficienza Energetica Domestica"
 },
-{	description : "Un volumetto scaricabile online ricco di consigli utili per risparmiare dai 700 ai 1000 euro all'anno in bolletta con piccoli ...",
-	link : "http://gogreen.virgilio.it/news/green-trends/eco-risparmio-arriva-manuale-ridurre-costi-acqua-luce-gas_6274.html?pmk=rss",
-	title : "Eco risparmio: arriva il manuale per ridurre i costi di acqua, luce e gas"
+{	description : ".. aprire la finestra in un ambiente riscaldato ha lo stesso effetto di un buco in un secchio pieno d’acqua! Apri le finestre per brevi periodi! (Fonte: Progetto BECA – Balanced European Conservation Approach, Politecnico di Torino)",
+	link : "https://energyhomenews.wordpress.com/2013/06/20/usa-consapevolmente-le-finestre-per-ventilare-gli-ambienti/",
+	title : "Usa consapevolmente le finestre per ventilare gli ambienti …"
 },
-{	description : "In piazza le associazioni delle rinnovabili. hanno chiesto al governo, come un appello pubblicato sui giornali, di rivedere il ...",
-	link : "http://gogreen.virgilio.it/news/green-economy/rinnovabili-mobilitazione-durera_6273.html?pmk=rss",
-	title : "Rinnovabili, la mobilitazione partita da Roma e sui giornali durer&agrave;"
+{	description : "Impostare il termostato a 20°, invece che 22°, ti permette di risparmiare fino al 15% sulla tua bolletta termica annuale ...",
+	link : "https://energyhomenews.wordpress.com/2013/06/17/in-inverno-tenere-in-casa-una-temperatura-di-20-gradi/",
+	title : "In inverno tenere in casa una temperatura di 20 gradi"
 },
-{	description : "L'appuntamento &egrave; il 28 aprile alle 15 presso i Fori Imperiali. L'obiettivo finale &egrave; quello di ottenere pi&ugrave; sicurezza per i ...",
-	link : "http://gogreen.virgilio.it/eventi/salvaciclisti_6272.html?pmk=rss",
-	title : "Salvaciclisti"
+{	description : "Durante le ore notturne imposta il termostato a 16 gradi e abbassa le tapparelle appena fa buio...",
+	link : "https://energyhomenews.wordpress.com/2013/05/28/risparmia-sul-riscaldamento/",
+	title : "Risparmia sul riscaldamento…"
 },
-{	description : "A ridosso della decisione itaiana di prorogare o meno la sospensione dell'impiego di alcuni tipi di agrofarmaci, si pubblica la ...",
-	link : "http://gogreen.virgilio.it/news/ambiente-energia/pesticidi-api-governo-decide-sospensioni_6271.html?pmk=rss",
-	title : "Pesticidi e api: il governo decide sulla sospensione degli agrofarmaci"
+{	description : "… con una piccola spesa, pari a 10 € a cassonetto, puoi marginare i ponti termici, evitando inutili sprechi di energia...",
+	link : "https://energyhomenews.wordpress.com/2013/05/22/isolare-il-cassonetto-degli-avvolgibili/",
+	title : "Isolare il cassonetto degli avvolgibili …"
 },
-{	description : "Estrarre lo shale gas, grande alternativa al petrolio in questa fase in cui il prezzo del barile &egrave; caro, genera piccoli sismi ...",
-	link : "http://gogreen.virgilio.it/news/ambiente-energia/terremoti-locali-estrazione-scisto_6270.html?pmk=rss",
-	title : "Terremoti: a generare quelli locali &egrave; pure l'estrazione dello scisto"
-},
-{	description : "Confermato il taglio degli incentivi del 32-36% e il registro obbligatorio per gli impianti di potenza superiore ai 12 ...",
-	link : "http://gogreen.virgilio.it/news/ambiente-energia/quinto-conto-energia-testo-decreto.html?pmk=rss",
-	title : "Quinto conto energia, il testo del decreto"
-},
-{	description : "Lanciata dalla Philips Usa, fa luce per 60 watt consumando da 10 e tende a durare due decadi. Il prodotto rivoluzionario ...",
-	link : "http://gogreen.virgilio.it/news/green-design/lampadina-eco-rivoluzionaria-dura-20-anni-costa-46-euro_6267.html?pmk=rss",
-	title : "Lampadina eco: dura 20 anni e consuma poco, ma per ora costa 46 euro"
-},
-{
-	description : "A fronte di una sensibile contrazione del mercato dell'automotive - soprattutto nel comparto delle auto di lusso - aumentano ...",
-	link : "http://gogreen.virgilio.it/news/ambiente-energia/ferrari-maserati-garage-25mln-italiani-bici.html?pmk=rss",
-	title : "Ferrari e Maserati in garage e 25mln di italiani passano alla bici"
-},
-{
-	description : "Il ministro dell'ambiente ha presentato il piano nazionale antiemissioni di Co2. Carbon tax, 55%, smart grid e smart cities tra ...",
-	link : "http://gogreen.virgilio.it/news/green-economy/bonus-55-esteso-2020-piano-clini-presentato-cipe_6263.html?pmk=rss",
-	title : "Bonus 55% esteso al 2020. Ecco il piano di Clini presentato al Cipe"
-},
+{	description : "Usa la lavastoviglie a pieno carico e non utilizzare l’asciugatura con aria calda …",
+	link : "https://energyhomenews.wordpress.com/2013/05/20/usa-la-lavastoviglie-a-pieno-carico/",
+	title : "Usa la lavastoviglie a pieno carico …"
+}
+
 ];

@@ -162,7 +162,7 @@ public class DataFreescale implements IDataLayer {
 
 	public void initialize() {
 		Thread thrAnalizer = new Thread() {
-			@Override
+
 			public void run() {
 				while (!getDestroy()) {
 					try {
@@ -171,8 +171,7 @@ public class DataFreescale implements IDataLayer {
 						if (z.getArray() != null)
 							processAllRaw(z);
 					} catch (Exception e) {
-						LOG.error("Error on processAllRaw:" + e.getMessage());
-						e.printStackTrace();
+						LOG.error("Error on processAllRaw:",e);
 
 					}
 				}
@@ -242,7 +241,7 @@ public class DataFreescale implements IDataLayer {
 							try {
 								processMessages(toProcess);
 							} catch (Exception e) {
-								LOG.error("Error on processMessages: " + e.getMessage());
+								LOG.error("Error on processMessages: {}" ,e);
 							}
 						}
 					});
@@ -1984,6 +1983,18 @@ public class DataFreescale implements IDataLayer {
 			return;
 		}
 
+		/**
+		 * FIXME: error interpreting SRC address according to mode. Check APSDE-data indication format from specs:
+		 * sourceAddressMode:
+		 *  0x00 = reserved
+			0x01 = reserved
+			0x02 = 16-bit short address for
+			SrcAddress and SrcEndpoint present
+			0x03 = 64-bit extended address for
+			SrcAddress and SrcEndpoint present
+			0x04 – 0xff = reserved
+		 */
+
 		Address sourceAddress = new Address();
 		messageEvent.setSourceAddressMode((long) (message.getArray()[7] & 0xFF));
 
@@ -2024,6 +2035,7 @@ public class DataFreescale implements IDataLayer {
 		messageEvent.setProfileID(DataManipulation.toIntFromShort(message.getArray()[12], message.getArray()[11]));
 		messageEvent.setClusterID(DataManipulation.toIntFromShort(message.getArray()[14], message.getArray()[13]));
 
+		
 		int lastAsdu = 16 + message.getArray()[15] - 1;
 		messageEvent.setData(DataManipulation.subByteArray(message.getArray(), 16, lastAsdu));
 		messageEvent.setAPSStatus((message.getArray()[lastAsdu + 1] & 0xFF));
@@ -2063,8 +2075,26 @@ public class DataFreescale implements IDataLayer {
 
 				if (node != null)
 					synchronized (node) {
-						messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
-						messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
+						try{
+							if(node.get_node().getAddress().getIeeeAddress()!=null)
+							{
+								messageEvent.getSourceAddress().setIeeeAddress(BigInteger.valueOf(node.get_node().getAddress().getIeeeAddress().longValue()));
+							}else{
+								LOG.error("IEEEAddress was null in node object. SuourceAddressMode was: {}",
+										messageEvent.getSourceAddressMode());
+							}
+							if(node.get_node().getAddress().getNetworkAddress()!=null)
+							{
+								messageEvent.getSourceAddress().setNetworkAddress(new Integer(node.get_node().getAddress().getNetworkAddress()));
+							}else{
+								LOG.error("NetworkAddress was null in node object. SuourceAddressMode was: {}",
+										messageEvent.getSourceAddressMode());
+							}
+						}catch(Exception e){
+							LOG.error("Error setting source address ( mode {} ) details to messageEvent",
+									messageEvent.getSourceAddressMode(),
+									e);
+						}
 					}
 				else
 					return;

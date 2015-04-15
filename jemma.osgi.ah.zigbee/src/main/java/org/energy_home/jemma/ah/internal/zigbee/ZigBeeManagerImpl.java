@@ -886,7 +886,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 				InstallationStatus installingDevice = getInstallingDevice(a);
 				if (installingDevice == null) {
 					Exception st = new Exception();
-					st.printStackTrace();
+					LOG.error("installingDevice was null, printing stacktrace",st);
 				}
 
 				if ((status.getCode() != GatewayConstants.SUCCESS) || (installingDevice == null)) {
@@ -1420,7 +1420,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 	public void dongleResetResult(final Status status) {
 
 		MyThread thr = new MyThread(this) {
-			@Override
+
 			public void run() {
 				Object parameter = this.getParameter();
 				if (status.getCode() == GatewayConstants.SUCCESS) {
@@ -1513,8 +1513,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 							// start gateway device
 							gateway.startGatewayDevice(0);
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							LOG.error("Exception in dongleResetResult",e);
 						}
 					}
 
@@ -1577,8 +1576,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 		try {
 			gateway.setGatewayEventListener(this);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LOG.error("Error setting myself as Gateway event listener",e1);
 			// FIXME: what I have to do here?
 		}
 
@@ -1648,7 +1646,7 @@ public class ZigBeeManagerImpl implements TimerListener, APSMessageListener, Gat
 					}
 				}
 			} catch (ConcurrentModificationException e) {
-				e.printStackTrace();
+				LOG.error("Error unregistering a device service because of concurrent modification",e);
 				return;
 			}
 		}

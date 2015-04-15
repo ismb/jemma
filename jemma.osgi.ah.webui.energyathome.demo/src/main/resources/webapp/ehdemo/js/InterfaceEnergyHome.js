@@ -168,7 +168,7 @@ InterfaceEnergyHome.Init = function() {
 	try {
 		InterfaceEnergyHome.errMessage = null;
 		InterfaceEnergyHome.errCode = 0;
-		if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)){
+		if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))){
 			return InterfaceEnergyHome.objService = bindService(InterfaceEnergyHome.serviceName);
 		} else {
 			return 1;
@@ -344,7 +344,7 @@ InterfaceEnergyHome.GetElettrStorico = function(backFunc) {
 	InterfaceEnergyHome.backElettrStorico = backFunc;
 	//console.log(80, InterfaceEnergyHome.MODULE, "GetElettrStorico");
 
-	if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
+	if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 		try {
 			InterfaceEnergyHome.objService.getAppliancesConfigurationsDemo(InterfaceEnergyHome.BackElettrStorico);
 		} catch (err) {
@@ -474,7 +474,7 @@ InterfaceEnergyHome.BackActualDate = function(result, err) {
 		}
 		retVal = null;
 		if ((err == null) && (result != null)){
-			if ((InterfaceEnergyHome.mode > 0) || (InterfaceEnergyHome.mode == -1)) {
+			if ((InterfaceEnergyHome.mode > 0) || ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2))) {
 				retVal = result;
 			} else {
 				retVal = Math.floor(result.list[0]);
@@ -496,7 +496,7 @@ InterfaceEnergyHome.GetActualDate = function(backFunc) {
 			InterfaceEnergyHome.BackActualDate(null, err);
 		}
 	} else{
-		if (InterfaceEnergyHome.mode == -1) {
+		if ((InterfaceEnergyHome.mode == -1) || (InterfaceEnergyHome.mode == -2)) {
 			InterfaceEnergyHome.backActualDate(new Date().getTime());
 		} else {
 			InterfaceEnergyHome.backActualDate(new Date().getTime());

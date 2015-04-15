@@ -68,18 +68,15 @@ public class PropertiesManager {
 		try {
 			in = _url.openStream();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LOG.error("Error opening stream",e1);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LOG.error("Error opening stream",e1);
 		}
 		try {
 			props = new Properties();
 			props.load(in);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error loading properties from inputstream",e);
 		}
 		LOG.debug("PropertiesManager - Costructor - Configuration file loaded!");
 	}

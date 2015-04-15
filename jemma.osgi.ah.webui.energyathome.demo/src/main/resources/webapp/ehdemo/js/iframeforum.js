@@ -5,6 +5,11 @@ var iFrameForum = {
 }
 
 iFrameForum.Init = function () {
+	if(InterfaceEnergyHome.mode==-2)
+	{
+		NonDisponibile.GestNDUser();
+		return;
+	}
 	$("#iframeForum").show();
 	//$("#iframeForum").css("display","show");
 	
@@ -12,6 +17,12 @@ iFrameForum.Init = function () {
 }
 
 iFrameForum.Exit = function () {
+	
+	if(InterfaceEnergyHome.mode==-2)
+	{
+		NonDisponibile.ExitND();
+		return;
+	}
 	
 	$("#iframeForum iframe").empty();
 	$("#iframeForum").html(null);
@@ -67,6 +78,12 @@ iFrameForum.DatiElettrodomesticiCB = function(result, err) {
 				Main.appIdSmartInfo = elettrodom["map"][InterfaceEnergyHome.ATTR_APP_PID];
 			}
 		});
+	}
+	
+	if(InterfaceEnergyHome.mode==-2)
+	{
+		$("#iframeForum").html("<iframe id='iframeFrm' src='"+iFrameForum.forumURL+"' width='100%' height='100%' onload='iFrameForum.VisIFrame()' frameborder='0'>Contenuto alternativo per i browser che non leggono gli iframe.</iframe>");
+		return;
 	}
 	
 	var hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, Main.secretPassPhrase);

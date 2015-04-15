@@ -18,7 +18,8 @@ ifLampada.init=function(_clusters, i){
         
         
         //fiz immagine lampadina
-        
+		console.debug(_clusters);
+	
         //$("#ifLampada #bg img").css("width","auto");
         $("#ifLampada #bg").width($("#ifLampada #bg").height());
         
@@ -81,7 +82,14 @@ ifLampada.init=function(_clusters, i){
                 ifLampada.isBusy=true;
             },
             stop: function(event, ui ){
-                ifLampada.isBusy=false;
+            	
+            	ifLampada.isBusy=false;
+            	if(InterfaceEnergyHome.mode==-2)
+            	{
+            		$("#device_"+ifLampada.counterPositionDevice+ " .StatoElettrodomestico .lblMeasure").text(ifLampada.lum + " %");
+            		return;
+            	}
+                
                 
                 var pid=$("#Interfaccia").data("pid");
                 var value=Math.round(ifLampada.lum/100*254);
@@ -112,11 +120,51 @@ ifLampada.init=function(_clusters, i){
                 event.preventDefault();
                 var myId= "#"+$(this).attr("id");
                 var i = $("#Interfaccia").data("current_index");
+                
+                if(InterfaceEnergyHome.mode==-2)
+                {
+                	if(ifLampada.stato==1)
+                	{
+                		 $('#bg').css( "background-color","#333" );
+                         
+                         $(myId).addClass("OFF");
+                         $(myId).removeClass("ON");
+                         
+                         $('#lum').slider("value",0);
+                         $('#lum_perc').html(0+"%");
+                         
+                     	$("#device_" + i + " .StatoElettrodomestico .stato").text("OFF");
+                     	
+                         $("#device_" + i).removeClass("ONOFF");
+                         $("#device_" + i).removeClass("OFF");
+                         $("#device_" + i).removeClass("ON");
+                         $("#device_" + i).addClass("ONOFF");
+                         ifLampada.stato=0;
+                	}else{
+                		$('#bg').css( "background-color",ifLampada.colorePercepito.toHexString() );
+                        $('#lum').slider("value",ifLampada.lum);
+                        
+                        $(myId).addClass("ON");
+                        $(myId).removeClass("OFF");
+                        $('#lum_perc').html(ifLampada.lum+"%");
+                       
+                    	$("#device_" + i + " .StatoElettrodomestico .stato").text("ON");
+                    	
+                        $("#device_" + i).removeClass("ONOFF");
+                        $("#device_" + i).removeClass("OFF");
+                        $("#device_" + i).removeClass("ON");
+                        $("#device_" + i).addClass("ON");
+                        ifLampada.stato=1;
+                	}
+                	return;
+                }
+                
                 if (ifLampada.stato==1) {
    
                         var pid=$("#Interfaccia").data("pid");
                         if (pid==undefined)
                                 return;
+                        
                         
                         InterfaceEnergyHome.objService.setDeviceState(function(result, err){
                                 if (err!=null) {
@@ -209,6 +257,7 @@ ifLampada.init=function(_clusters, i){
         }).bind('selectstart', function(){ return false; });
         
         if( ifLampada.clusters!=null){
+        	console.debug(ifLampada.clusters);
                 if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.general.LevelControlServer"]!=true )
                         $( "#lum" ).slider("disable");
                 
@@ -251,6 +300,10 @@ ifLampada.init=function(_clusters, i){
                                 ifLampada.isBusy=true;
                         });
                         ifLampada.fb.onStop(function(){
+                        				if(InterfaceEnergyHome.mode==-2)
+                        				{
+                        					return;
+                        				}
                                         ifLampada.isBusy=false;
                                         var rc= ifLampada.coloreReale.toHsl();
                                         var h=Math.round(rc.h/360*254);
@@ -297,7 +350,6 @@ ifLampada.toColorePercepito=function(color){
 };
 
 ifLampada.update= function(now){
-        
         
         
         var t= new Date().getTime();
@@ -399,6 +451,11 @@ ifLampada.sync=function(){
         
         if (ifLampada.clusters==null) {
                 return;
+        }
+        
+        if(InterfaceEnergyHome.mode==-2)
+        {
+        	return;
         }
         
         if(ifLampada.clusters["org.energy_home.jemma.ah.cluster.zigbee.zll.ColorControlServer"]==true && ifLampada.stato!=-1){

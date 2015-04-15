@@ -78,12 +78,11 @@ ifIndesitOven.init=function(_clusters){
 
 ifIndesitOven.update= function(now){
         
-        
-        
         var t= new Date().getTime();
         var i= $("#Interfaccia").data("current_index");
         //console.log("index:"+i);
         var device= Elettrodomestici.listaElettrodomestici[i];
+
         var consumo=Elettrodomestici.listaElettrodomestici[i].consumo;
         if (consumo!="n.a.") {
                 consumo=Math.round(Elettrodomestici.listaElettrodomestici[i].consumo)+"W";
@@ -98,9 +97,6 @@ ifIndesitOven.update= function(now){
                         return;
                 }
         }
-        
-                
-        
 
         if (ifIndesitOven.isBusy) {
                 return;
@@ -135,7 +131,7 @@ ifIndesitOven.update= function(now){
         if (class_stato=="NP") {
                 
         }
-
+/*
 	if(ifIndesitOven.stato==0){
                
         }
@@ -143,7 +139,32 @@ ifIndesitOven.update= function(now){
                
         }
         
-        
+  */      
+        //in case of mode noservernodev: fake values
+        if(InterfaceEnergyHome.mode==-2)
+        {
+        	var program=6;
+        	ifIndesitOven.programma=program;
+        	s_programmi=ifIndesitOven.programmi[program];
+        	$(".val_program").text("Program: "+s_programmi);
+        	
+        	var temper=200;
+        	ifIndesitOven.temperature=temper;
+			msg=""+temper+"&deg;C";
+			$(".val_temperature").html(msg);
+
+			$(".val_label_duration").text("Timer:");
+			ifIndesitOven.duration=400;
+			_msg=ifIndesitOven.minutesToString(ifIndesitOven.duration);
+			$(".val_duration").text(_msg);
+
+
+			ifIndesitOven.appliance_status=2;		
+			msg=ifIndesitOven.stati[ifIndesitOven.appliance_status];
+			$(".val_status").text(msg);
+			
+        	return;
+        }
         
         var pid=$("#Interfaccia").data("pid");
         //Aggiorno i valori dello slider e del colore
@@ -153,9 +174,8 @@ ifIndesitOven.update= function(now){
         
         
         if(ifIndesitOven.clusters["org.energy_home.jemma.ah.cluster.zigbee.eh.ApplianceControlServer"]==true /*&& ifIndesitOven.stato!=-1*/){
-                
-                //Elettrodomestici.addSpinner("#Interfaccia", "#0a0a0a");
-		
+        
+      
 		
 		//CICLO
 		InterfaceEnergyHome.objService.applianceControlGetCycleTarget0(function(result, err){

@@ -212,7 +212,7 @@ public class Discovery_Freshness_ForcePing {
 						parameters.add(function);
 
 						Runnable thr = new MyRunnable(parameters) {
-							@Override
+							
 							public void run() {
 								List<Object> parameters = (List<Object>) (this.getParameter());
 								Short _indexLqi = (Short) parameters.get(0);
@@ -278,10 +278,10 @@ public class Discovery_Freshness_ForcePing {
 
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.error("Interrupted thread that was executing LQI ping",e);
 			} catch (Exception e) {
 				manageError(function, startIndex, __currentNodeWrapper, e);
-				e.printStackTrace();
+				LOG.error("Error executing startLQI");
 			}
 		}
 	}
@@ -432,18 +432,19 @@ public class Discovery_Freshness_ForcePing {
 	 * Manage the error on Lqi_Request or Lqi_response
 	 */
 	private void manageError(TypeFunction function, short startIndex, WrapperWSNNode __currentNodeWrapper, Exception e) {
+		LOG.error("Trying to manage an Error, start index: {} , stack trace: {}",startIndex,e);
 		/* Check if the node exist o cache or is already deleted */
 		if (getGal().getFromNetworkCache(__currentNodeWrapper) != null) {
 			__currentNodeWrapper.set_numberOfAttempt();
 			LOG.error("Error on Lqi( {} ) request for node: {}",function,
 					Utils.getAddressString(__currentNodeWrapper.get_node().getAddress()) 
 					+ " - Error message: " + e.getMessage() 
-					+ " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt());
-
+					+ " - NumberOfAttempt:" + __currentNodeWrapper.get_numberOfAttempt()
+					+ "Keep Alive Number of attempts:"+getGal().getPropertiesManager().getKeepAliveNumberOfAttempt());
 			if (__currentNodeWrapper.get_numberOfAttempt() >= getGal().getPropertiesManager().getKeepAliveNumberOfAttempt()) {
 				/* Check if is the GAL node that is not responding */
 				if (__currentNodeWrapper.get_node().getAddress().getNetworkAddress().equals(getGal().get_GalNode().get_node().getAddress().getNetworkAddress())) {
-
+					LOG.error("Calling recoveryGal");
 					try {
 						getGal().recoveryGAL();
 					} catch (Exception e1) {

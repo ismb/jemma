@@ -7,7 +7,7 @@ Tools.addCSSinDocument = function(url){
 	var cssNode = document.createElement('link');
 	cssNode.type = 'text/css';
 	cssNode.rel = 'stylesheet';
-	cssNode.href = url;
+	cssNode.href = url+"?"+new Date().getTime();
 	cssNode.media = 'screen';
 	headID.appendChild(cssNode);
 }
@@ -63,7 +63,7 @@ LazyScript.load = function(urlscr, callback) {
 		if ($.inArray(urlscr, LazyScript.foglio) == -1) {
 			LazyScript.foglio.push(urlscr);
 			var script = document.createElement("script");
-			script.src = urlscr;
+			script.src = urlscr+"?"+new Date().getTime();
 			script.type = "text/javascript";
 			$("head")[0].appendChild(script);
 
@@ -87,3 +87,4 @@ LazyScript.load = function(urlscr, callback) {
 		alert(e);
 	}
 }
+

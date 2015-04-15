@@ -617,5 +617,9 @@ public class GalExtenderProxy implements IGalExtender {
 		return gal.createCallback(this.getProxyIdentifier(), callback, listener);
 
 	}
-
+	
+	public void recoveryGal() throws Exception
+	{
+		gal.recoveryGAL();
+	}
 }
