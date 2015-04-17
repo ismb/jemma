@@ -55,7 +55,6 @@
 	 <exclude>org.energy-home:jemma.osgi.ah.energyathome</exclude>
 	 <exclude>org.energy-home:jemma.osgi.ah.hap.client</exclude>
 	 <exclude>org.energy-home:jemma.osgi.ah.zigbee</exclude>
-	 <exclude>org.energy-home:jemma.osgi.javagal</exclude>
 	 <exclude>org.energy-home:jemma.osgi.ah.zigbee.appliances</exclude>
       </excludes>
     </dependencySet>

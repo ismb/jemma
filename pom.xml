@@ -116,7 +116,6 @@
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
-		<module>jemma.osgi.javagal</module>
 		<module>jemma.osgi.javagal.rest</module>
 		<module>jemma.osgi.javagal.gui</module>
 		<module>jemma.osgi.javagal.json</module>
@@ -311,6 +310,16 @@
 			<version>${org.eclipse.osgi.util.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>org.eclipse.core.jobs</artifactId>
 			<version>${org.eclipse.core.jobs.version}</version>
@@ -426,18 +435,29 @@
 			<artifactId>org.eclipse.equinox.console</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-<!--  		
+		<!-- FIXME: dependendcies added to be able to run JavaGAL which is being downloaded from maven.
+			in this pom only APIs bundles should be included in the future. 
+			Another pom downloading target platform and implementations should be defined
+		-->
 		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>org.eclipse.equinox.http</artifactId>
-			<version>1.0.301</version>
-		</dependency>	
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.rxtx</groupId>
+			<artifactId>org.rxtx</artifactId>
+			<version>1.0.0</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>jssc</groupId>
+			<artifactId>jssc</artifactId>
+			<version>2.8.0</version>
+			<optional>true</optional>
+		</dependency>
 		
-		<dependency>
-			<groupId>org.eclipse.equinox.http</groupId>
-			<artifactId>jetty</artifactId>
-			<version>1.0.0-v20070607</version>
-		</dependency>-->		
 	</dependencies>
 </project>
 
