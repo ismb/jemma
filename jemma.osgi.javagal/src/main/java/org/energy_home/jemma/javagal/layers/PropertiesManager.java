@@ -148,7 +148,14 @@ public class PropertiesManager {
 	}
 	
 	
-	
+	public Boolean getzgdDump() {
+        	String value = props.getProperty("dump");
+        	return ((value == null) ? false : (!value.equalsIgnoreCase("0")));
+    	}
+
+    	public String getDirDump() {
+        	return props.getProperty("dumpDir");
+    	}
 	
 
 	/**
