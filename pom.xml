@@ -126,7 +126,6 @@
 		<module>jemma.osgi.ah.webui.energyathome</module>
 		<module>jemma.osgi.ah.webui.energyathome.demo</module>
 		<module>jemma.osgi.ah.adapter.http</module>
-		<module>jemma.osgi.ah.app</module>
 		<module>jemma.osgi.ah.zigbee</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>jemma.osgi.ah.zigbee.appliances</module>
