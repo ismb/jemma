@@ -1,4 +1,4 @@
-Auto-generated site: 201505291553
+Auto-generated site: 201505291753
 
 ##########################
 Git status
@@ -10,7 +10,7 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   resources.md
+	modified:   components.md
 	modified:   site-generation.log
 
 Untracked files:
@@ -48,6 +48,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit f4831ab4e009069f5a3e678ff66f9b3403137546
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Fri May 29 15:55:03 2015 +0200
+
+    added links to documentation
+
 commit da23989b79ae7f0fcb8dbdfa26847ac8d077b359
 Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Mar 23 12:02:12 2015 +0100
@@ -71,10 +77,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:23:55 2015 +0100
 
     tables fix
-
-commit f3ca72ac0aa3a09df7adf452b25c53d99ff71799
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Feb 9 11:23:04 2015 +0100
-
-    bugfix (table in wrong page)
 
