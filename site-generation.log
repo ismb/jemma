@@ -1,4 +1,4 @@
-Auto-generated site: 201503231202
+Auto-generated site: 201505291553
 
 ##########################
 Git status
@@ -6,13 +6,12 @@ Git status
 
 On branch gh-pages
 Your branch is up-to-date with 'origin/gh-pages'.
-
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
+	modified:   resources.md
 	modified:   site-generation.log
-	modified:   supportedhw.md
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
@@ -22,6 +21,7 @@ Untracked files:
 	jemma.osgi.ah.adapter.http/
 	jemma.osgi.ah.app/
 	jemma.osgi.ah.configurator/
+	jemma.osgi.ah.demo.fakevalues/
 	jemma.osgi.ah.energyathome/
 	jemma.osgi.ah.felix.console.web/
 	jemma.osgi.ah.greenathome/
@@ -40,7 +40,6 @@ Untracked files:
 	jemma.osgi.javagal.gui/
 	jemma.osgi.javagal.json/
 	jemma.osgi.javagal.rest/
-	jemma.osgi.javagal/
 	jemma.osgi.utils/
 
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -48,6 +47,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit da23989b79ae7f0fcb8dbdfa26847ac8d077b359
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Mar 23 12:02:12 2015 +0100
+
+    added centralite HW
 
 commit ea49824013329ebd771732450359960435c90d71
 Author: riccardo <riccardo.to@gmail.com>
@@ -72,10 +77,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:23:04 2015 +0100
 
     bugfix (table in wrong page)
-
-commit b248f6aed7d49195872efd78f29bb15c5ccd84f4
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Feb 9 11:20:07 2015 +0100
-
-    Major Website update to cope with components/etc.
 

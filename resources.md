@@ -4,6 +4,10 @@ Papers and Resources
 
 <!--<span style="color:red;">**This page is under construction**</span>: We expect to update this page along with the release of JEMMA [version 0.0.2](http://github.com/ismb/jemma/wiki/Milestone-0.0.2).-->
 
+### Tutorials and HOWTOs
+
+The overall JEMMA Documentation is available on the [Project Wiki](https://github.com/ismb/jemma/wiki/Developers-Documentation).
+
 ### Standards and related documents
 
 - <a href="http://www.energy-home.it/Documents/Technical%20Specifications/E@H_specification_ver0.95.pdf" target="_parent">Energy@home specifications *(v0.95)*</a>
