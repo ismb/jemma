@@ -21,19 +21,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
 
-import org.energy_home.jemma.ah.hac.IAppliance;
-import org.energy_home.jemma.ah.hac.IAttributeValue;
-import org.energy_home.jemma.ah.hac.ICategory;
-import org.energy_home.jemma.ah.hac.ILocation;
-import org.energy_home.jemma.ah.hac.IServiceCluster;
 import org.energy_home.jemma.hac.adapter.http.contexts.UserAdminBasicHttpContext;
 import org.energy_home.jemma.hac.adapter.http.impl.HacHttpContext;
 import org.energy_home.jemma.hac.adapter.http.impl.SecureBasicHttpContext;
@@ -50,6 +42,8 @@ import org.osgi.service.http.NamespaceException;
 import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
@@ -298,123 +292,8 @@ public class AhHttpAdapter implements EventHandler, HttpServletBinder, HttpImple
 	}
 
 	private String resultToJSON(Object o) {
-		String out = "";
-
-		if (o == null) {
-			out = "null"; // legacy with void returning methods in python
-		} else if ((o instanceof List) || (o instanceof Vector)) {
-			out += "[ ";
-			Iterator it = ((List) o).iterator();
-			boolean first = true;
-
-			while (it.hasNext()) {
-				if (!first) {
-					out += ", ";
-				} else {
-					first = false;
-				}
-				Object e = it.next();
-
-				out += this.resultToJSON(e);
-			}
-			out += " ]";
-		} else if (o instanceof Enumeration) {
-			out += "[ ";
-			boolean first = true;
-
-			Enumeration e = (Enumeration) o;
-
-			while (e.hasMoreElements()) {
-				if (!first) {
-					out += ", ";
-				} else {
-					first = false;
-				}
-
-				out += this.resultToJSON(e);
-			}
-			out += " ]";
-		} else if (o instanceof Hashtable) {
-			Hashtable ht = (Hashtable) o;
-			Enumeration keys = ht.keys();
-			boolean first = true;
-			out = "{ ";
-			while (keys.hasMoreElements()) {
-				if (first) {
-					first = false;
-				} else {
-					out += ", ";
-				}
-
-				Object key = keys.nextElement();
-				Object value = ht.get(key);
-
-				if (value instanceof String) {
-					out += "\"" + key.toString() + "\"" + ": " + "\"" + ht.get(key).toString() + "\"";
-				} else {
-					out += "\"" + key.toString() + "\": " + this.resultToJSON(value);
-				}
-			}
-
-			out += " }";
-		} else if (o instanceof String) {
-			// log.debug("traduco " + o);
-			out = "\"" + o.toString() + "\"";
-		} else if (o instanceof Integer) {
-			out = o.toString();
-		} else if (o instanceof Double) {
-			out = o.toString();
-		} else if (o instanceof ICategory) {
-			ICategory category = (ICategory) o;
-			out = "{ \"name\": \"" + category.getName() + "\", \"icon\": \"" + category.getIconName() + "\" }";
-		} else if (o instanceof ILocation) {
-			ILocation location = (ILocation) o;
-			// log.debug("traduco " + location.getName());
-			out = "{ " + "\"name\": \"" + _(location.getName()) + "\", " + "\"icon\": \"" + location.getIconName() + "\", "
-					+ "\"pid\": \"" + location.getPid() + "\"" + "}";
-		} else if (o instanceof IAppliance) {
-			out += "\"" + ((IAppliance) o).getPid() + "\"";
-		} else if (o instanceof IServiceCluster) {
-			out += "\"" + ((IServiceCluster) o).getEndPoint().getAppliance().getPid() + "\"";
-		} else if (o instanceof IAttributeValue) {
-			IAttributeValue v = (IAttributeValue) o;
-			Object value = v.getValue();
-			if (value instanceof String)
-				out += "{ \"type\": \"string\", \"value\": " + "\"" + value.toString() + "\" }";
-			else
-				out += "{ \"type\": \"double\", \"value\": " + value.toString() + " }";
-		} else if (o instanceof byte[]) {
-			out += "\"" + byteToHex((byte[]) o) + "\"";
-		} else if (o.getClass().isArray()) {
-			Object[] o1 = (Object[]) o;
-
-			out += "[ ";
-			boolean first = true;
-
-			for (int i = 0; i < o1.length; i++) {
-				if (!first) {
-					out += ", ";
-				} else {
-					first = false;
-				}
-				out += this.resultToJSON(o1[i]);
-			}
-			out += " ]";
-		} else {
-			out = "\"" + o.toString() + "\"";
-		}
-		return out;
-	}
-
-	/**
-	 * Translates the passed string
-	 * 
-	 * @param name
-	 * @return
-	 */
-
-	public static String _(String key) {
-		return key;
+		Gson gson = new Gson();
+		return gson.toJson(o);
 	}
 
 	public void handleEvent(Event event) {
