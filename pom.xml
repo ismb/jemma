@@ -109,7 +109,6 @@
 	<modules>
 		<module>jemma.launch</module>
 		<module>jemma.osgi.ah.hac.lib</module>
-		<module>jemma.osgi.ah.configurator</module>
 		<module>jemma.osgi.utils</module>
 		<module>jemma.osgi.ah.m2m.device</module>
 		<module>jemma.osgi.ah.hac</module>
@@ -120,7 +119,6 @@
 		<module>jemma.osgi.javagal.gui</module>
 		<module>jemma.osgi.javagal.json</module>
 		<module>jemma.osgi.ah.felix.console.web</module>
-		<module>jemma.osgi.ah.energyathome</module>
 		<module>jemma.osgi.ah.greenathome</module>
 		<module>jemma.osgi.ah.webui.base</module>
 		<module>jemma.osgi.ah.webui.energyathome</module>
@@ -129,7 +127,6 @@
 		<module>jemma.osgi.ah.zigbee</module>
 		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
 		<module>jemma.osgi.ah.zigbee.appliances</module>
-		<module>jemma.osgi.ah.demo.fakevalues</module>
 		<!--<module>jemma.osgi.zgd</module>-->
 		<module>Distribution</module>
 	</modules>
