@@ -46,7 +46,8 @@ def main(argv):
 	print "the following text can be pasted in the main readme.md or in the jemma website"
 	print "------------------------------------------\n\n"
 	
-	print "| Project | Description | | :------:|:------------|"
+	print "| Project | Description |"
+	print "| :------:|:------------|"
 	tree = ET.parse(listfile)
 	root = tree.getroot()
 	for child in root:
