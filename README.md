@@ -9,7 +9,8 @@ More information are available on the [JEMMA Website](http://jemma.energy-home.o
 JEMMA is a modular framework. To better handle development of each module, bundle developments are spread in a number of separate GitHub projects.
 The following table summarizes the current official JEMMA bundles.
 
-| Project | Description | | :------:|:------------|
+| Project | Description |
+| :------:|:------------|
 | [ismb/jemma](https://github.com/ismb/jemma) | The core set of JEMMA components|
 | [ismb/it.ismb.pert.osgi.dal](https://github.com/ismb/it.ismb.pert.osgi.dal) | OSGi Device Abstraction Layer Implementation|
 | [ismb/it.ismb.pert.osgi.dal.functions](https://github.com/ismb/it.ismb.pert.osgi.dal.functions) | OSGi Device Abstraction Layer Generic Functions|
