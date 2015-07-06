@@ -1,4 +1,4 @@
-Auto-generated site: 201505291753
+Auto-generated site: 201507061852
 
 ##########################
 Git status
@@ -17,10 +17,9 @@ Untracked files:
   (use "git add <file>..." to include in what will be committed)
 
 	Distribution/
+	envfolder/
 	jemma.launch/
-	jemma.osgi.ah.adapter.http/
 	jemma.osgi.ah.app/
-	jemma.osgi.ah.configurator/
 	jemma.osgi.ah.demo.fakevalues/
 	jemma.osgi.ah.energyathome/
 	jemma.osgi.ah.felix.console.web/
@@ -48,6 +47,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit ff2b89af917340264f19fc6c53e48baefd371ba2
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Fri May 29 17:53:09 2015 +0200
+
+    added javagal to components list
+
 commit f4831ab4e009069f5a3e678ff66f9b3403137546
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Fri May 29 15:55:03 2015 +0200
@@ -71,10 +76,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:24:33 2015 +0100
 
     whops
-
-commit 1ed3611f810182a4e1001f394f16b6668f53ca9b
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Feb 9 11:23:55 2015 +0100
-
-    tables fix
 
