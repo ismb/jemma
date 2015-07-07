@@ -1,4 +1,4 @@
-Auto-generated site: 201507061852
+Auto-generated site: 201507071940
 
 ##########################
 Git status
@@ -17,7 +17,6 @@ Untracked files:
   (use "git add <file>..." to include in what will be committed)
 
 	Distribution/
-	envfolder/
 	jemma.launch/
 	jemma.osgi.ah.app/
 	jemma.osgi.ah.demo.fakevalues/
@@ -47,6 +46,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 Git log (first 30 lines)
 ##########################
 
+commit 89d48b71140980c0793227846c4e104c165afb0a
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Mon Jul 6 18:52:49 2015 +0200
+
+    updated component list
+
 commit ff2b89af917340264f19fc6c53e48baefd371ba2
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Fri May 29 17:53:09 2015 +0200
@@ -70,10 +75,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Feb 9 11:28:36 2015 +0100
 
     credits update
-
-commit 3f8c396a6875131b55848de8fbec9e94b9a859bd
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Feb 9 11:24:33 2015 +0100
-
-    whops
 
