@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<subprojects>
+	<subproject>
+		<name>ismb/jemma</name>
+		<description>The core set of JEMMA components</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/it.ismb.pert.osgi.dal</name>
+		<description>OSGi Device Abstraction Layer Implementation</description>
+		<checkout>yes</checkout>
+		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+	</subproject>
+	<subproject>
+		<name>ismb/it.ismb.pert.osgi.dal.functions</name>
+		<description>OSGi Device Abstraction Layer Generic Functions</description>
+		<checkout>yes</checkout>
+		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+	</subproject>
+	<subproject>
+		<name>ismb/it.ismb.pert.osgi.dal.functions.eh</name>
+		<description>OSGi Device Abstraction Layer Energy@Home-specific Functions</description>
+		<checkout>yes</checkout>
+		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.dal</name>
+		<description>JEMMA adapter for Device Abstraction Layer</description>
+		<checkout>yes</checkout>
+		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+	</subproject>
+	<subproject>
+		<name>ismb/it.ismb.pert.osgi.dal.web-apis</name>
+		<description>REST and WebSocket access to Devices, Functions and Events available in OSGi Device Abstraction Layer</description>
+		<checkout>yes</checkout>
+		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.javagal</name>
+		<description>Java-based ZigBee Gateway Abstraction Layer Implementation</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma-maven-repository</name>
+		<description>Support project used to store binary dependencies for JEMMA.</description>
+		<checkout>no</checkout>
+		<mavenbuild>no</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.greenathome</name>
+		<description>Greenathome Appliance</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.felix.console.web</name>
+		<description>Apache web console plugin for Jemma</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.demo.fakevalues</name>
+		<description>Fake devices for JEMMA testing/tutorials</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.energyathome</name>
+		<description>Energy@Home Home Automation bundle</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.configurator</name>
+		<description>jemma.osgi.ah.configurator</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.adapter.http</name>
+		<description>JEMMA HTTP AH Adapter</description>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+</subprojects>
