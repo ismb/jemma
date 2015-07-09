@@ -108,18 +108,6 @@
 
 	<modules>
 		<module>jemma.launch</module>
-		<module>jemma.osgi.ah.m2m.device</module>
-		<module>jemma.osgi.ah.hap.client</module>
-		<module>jemma.osgi.ah.upnp.energyathome</module>
-		<module>jemma.osgi.ah.io</module>
-		<module>jemma.osgi.ah.webui.base</module>
-		<module>jemma.osgi.ah.webui.energyathome</module>
-		<module>jemma.osgi.ah.webui.energyathome.demo</module>
-		<module>jemma.osgi.ah.app</module>
-		<module>jemma.osgi.ah.zigbee</module>
-		<module>jemma.osgi.ah.zigbee.appliances.generic</module>
-		<module>jemma.osgi.ah.zigbee.appliances</module>
-		<!--<module>jemma.osgi.zgd</module>-->
 		<module>Distribution</module>
 	</modules>
 
