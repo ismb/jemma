@@ -189,5 +189,43 @@
 		<checkout>yes</checkout>
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.io</name>
+		<description>This bundles implements a state machine to properly handle FlexGateway's leds</description>
+		<version>1.0.16</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.hap.client</name>
+		<description>A service adding a reliable layer to transfer data from the platform to the provisioning server</description>
+		<version>1.2.15</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.m2m.device</name>
+		<description>Exposes stateless XML Rest API to send data and to perform queries.</description>
+		<version>1.2.15</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.upnp.energyathome</name>
+		<description>This bundle allows UPnP discovery.</description>
+		<version>1.0.1</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name></name>
+		<description></description>
+		<version></version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>	
 </subprojects>
+
+	
+	
 
