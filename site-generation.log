@@ -1,4 +1,4 @@
-Auto-generated site: 201507071940
+Auto-generated site: 201507091719
 
 ##########################
 Git status
@@ -13,38 +13,17 @@ Changes not staged for commit:
 	modified:   components.md
 	modified:   site-generation.log
 
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-	Distribution/
-	jemma.launch/
-	jemma.osgi.ah.app/
-	jemma.osgi.ah.demo.fakevalues/
-	jemma.osgi.ah.energyathome/
-	jemma.osgi.ah.felix.console.web/
-	jemma.osgi.ah.greenathome/
-	jemma.osgi.ah.hac.lib/
-	jemma.osgi.ah.hac/
-	jemma.osgi.ah.hap.client/
-	jemma.osgi.ah.io/
-	jemma.osgi.ah.m2m.device/
-	jemma.osgi.ah.upnp.energyathome/
-	jemma.osgi.ah.webui.base/
-	jemma.osgi.ah.webui.energyathome.demo/
-	jemma.osgi.ah.webui.energyathome/
-	jemma.osgi.ah.zigbee.appliances.generic/
-	jemma.osgi.ah.zigbee.appliances/
-	jemma.osgi.ah.zigbee/
-	jemma.osgi.javagal.gui/
-	jemma.osgi.javagal.json/
-	jemma.osgi.javagal.rest/
-	jemma.osgi.utils/
-
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit d7cefd1a18cba5004beab8f9142bd41c010dd9e9
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Tue Jul 7 19:40:59 2015 +0200
+
+    updated table
 
 commit 89d48b71140980c0793227846c4e104c165afb0a
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
@@ -69,10 +48,4 @@ Author: riccardo <riccardo.to@gmail.com>
 Date:   Mon Mar 23 12:02:12 2015 +0100
 
     added centralite HW
-
-commit ea49824013329ebd771732450359960435c90d71
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Feb 9 11:28:36 2015 +0100
-
-    credits update
 
