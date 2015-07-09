@@ -108,18 +108,10 @@
 
 	<modules>
 		<module>jemma.launch</module>
-		<module>jemma.osgi.ah.hac.lib</module>
-		<module>jemma.osgi.utils</module>
 		<module>jemma.osgi.ah.m2m.device</module>
-		<module>jemma.osgi.ah.hac</module>
 		<module>jemma.osgi.ah.hap.client</module>
 		<module>jemma.osgi.ah.upnp.energyathome</module>
 		<module>jemma.osgi.ah.io</module>
-		<module>jemma.osgi.javagal.rest</module>
-		<module>jemma.osgi.javagal.gui</module>
-		<module>jemma.osgi.javagal.json</module>
-		<module>jemma.osgi.ah.felix.console.web</module>
-		<module>jemma.osgi.ah.greenathome</module>
 		<module>jemma.osgi.ah.webui.base</module>
 		<module>jemma.osgi.ah.webui.energyathome</module>
 		<module>jemma.osgi.ah.webui.energyathome.demo</module>

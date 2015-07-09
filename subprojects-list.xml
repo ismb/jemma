@@ -98,4 +98,53 @@
 		<checkout>yes</checkout>
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.hac.lib</name>
+		<description>JEMMA Home Automation Core libraries</description>
+		<version>3.1.4</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.hac</name>
+		<description>JEMMA Home Automation Core services</description>
+		<version>3.1.3</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.javagal.rest</name>
+		<description>JavaGAL REST interfaces</description>
+		<version>1.0</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.javagal.json</name>
+		<description>JavaGAL JSON interfaces</description>
+		<version>1.0.1</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.javagal.gui</name>
+		<description>JavaGAL Web GUI</description>
+		<version>1.0.5</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.utils</name>
+		<description>JEMMA utils for OSGi environemnt</description>
+		<version>1.0.6</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>ismb/jemma.osgi.ah.greenathome</name>
+		<description>Green@home appliance services</description>
+		<version>2.1.20</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
 </subprojects>
