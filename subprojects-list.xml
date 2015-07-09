@@ -141,13 +141,6 @@
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
 	<subproject>
-		<name>ismb/jemma.osgi.ah.greenathome</name>
-		<description>Green@home appliance services</description>
-		<version>2.1.20</version>
-		<checkout>yes</checkout>
-		<mavenbuild>yes</mavenbuild>
-	</subproject>
-	<subproject>
 		<name>jemma.osgi.ah.webui.energyathome.base</name>
 		<description>This bundles base common utilities to the web interfaces.</description>
 		<version>2.0.12</version>

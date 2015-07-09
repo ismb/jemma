@@ -61,13 +61,6 @@ if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal
 	exit
 fi
-cd ismb/it.ismb.pert.osgi.dal
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal
-	exit
-fi
 # Subproject ismb/it.ismb.pert.osgi.dal.functions
 
 cd $ABSENVFOLDER
@@ -81,13 +74,6 @@ else
 fi
 if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions
-	exit
-fi
-cd ismb/it.ismb.pert.osgi.dal.functions
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.functions
 	exit
 fi
 # Subproject ismb/it.ismb.pert.osgi.dal.functions.eh
@@ -105,13 +91,6 @@ if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions.eh
 	exit
 fi
-cd ismb/it.ismb.pert.osgi.dal.functions.eh
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.functions.eh
-	exit
-fi
 # Subproject ismb/jemma.osgi.dal
 
 cd $ABSENVFOLDER
@@ -127,13 +106,6 @@ if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/jemma.osgi.dal
 	exit
 fi
-cd ismb/jemma.osgi.dal
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/jemma.osgi.dal
-	exit
-fi
 # Subproject ismb/it.ismb.pert.osgi.dal.web-apis
 
 cd $ABSENVFOLDER
@@ -147,13 +119,6 @@ else
 fi
 if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.web-apis
-	exit
-fi
-cd ismb/it.ismb.pert.osgi.dal.web-apis
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.web-apis
 	exit
 fi
 # Subproject ismb/jemma.osgi.javagal
@@ -191,13 +156,6 @@ else
 fi
 if [ $? -ne 0 ]; then
 	echo Checkout failed for project ismb/jemma-maven-repository
-	exit
-fi
-cd ismb/jemma-maven-repository
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/jemma-maven-repository
 	exit
 fi
 # Subproject ismb/jemma.osgi.ah.greenathome
@@ -462,28 +420,6 @@ mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
 	echo Maven build failed for project ismb/jemma.osgi.utils
-	exit
-fi
-# Subproject ismb/jemma.osgi.ah.greenathome
-
-cd $ABSENVFOLDER
-if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/jemma.osgi.ah.greenathome.git ismb/jemma.osgi.ah.greenathome
-elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/jemma.osgi.ah.greenathome.git ismb/jemma.osgi.ah.greenathome
-else
-	echo unknown mode, exiting
-	exit
-fi
-if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/jemma.osgi.ah.greenathome
-	exit
-fi
-cd ismb/jemma.osgi.ah.greenathome
-mvn clean package eclipse:eclipse -Declipse.pde install
-
-if [ $? -ne 0 ]; then
-	echo Maven build failed for project ismb/jemma.osgi.ah.greenathome
 	exit
 fi
 # Subproject jemma.osgi.ah.webui.energyathome.base

@@ -31,7 +31,6 @@ The following table summarizes the current official JEMMA bundles.
 | [ismb/jemma.osgi.javagal.json](https://github.com/ismb/jemma.osgi.javagal.json) | JavaGAL JSON interfaces | 1.0.1 |
 | [ismb/jemma.osgi.javagal.gui](https://github.com/ismb/jemma.osgi.javagal.gui) | JavaGAL Web GUI | 1.0.5 |
 | [ismb/jemma.osgi.utils](https://github.com/ismb/jemma.osgi.utils) | JEMMA utils for OSGi environemnt | 1.0.6 |
-| [ismb/jemma.osgi.ah.greenathome](https://github.com/ismb/jemma.osgi.ah.greenathome) | Green@home appliance services | 2.1.20 |
 | [jemma.osgi.ah.webui.energyathome.base](https://github.com/jemma.osgi.ah.webui.energyathome.base) | This bundles base common utilities to the web interfaces. | 2.0.12 |
 | [jemma.osgi.ah.webui.energyathome](https://github.com/jemma.osgi.ah.webui.energyathome) | This bundle provides a web interface to configure appliances and the entire system. | 1.0.60 |
 | [jemma.osgi.ah.webui.energyathome.demo](https://github.com/jemma.osgi.ah.webui.energyathome.demo) | This bundle provides a web interface to configure appliances and the entire system. | 1.0.45 |
