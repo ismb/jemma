@@ -147,4 +147,47 @@
 		<checkout>yes</checkout>
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.webui.energyathome.base</name>
+		<description>This bundles base common utilities to the web interfaces.</description>
+		<version>2.0.12</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.webui.energyathome</name>
+		<description>This bundle provides a web interface to configure appliances and the entire system.</description>
+		<version>1.0.60</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.webui.energyathome.demo</name>
+		<description>This bundle provides a web interface to configure appliances and the entire system.</description>
+		<version>1.0.45</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.zigbee</name>
+		<description>ZigBee Network Manager</description>
+		<version>2.1.26</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.zigbee.appliances</name>
+		<description>This bundle is a generic driver for ZigBee Home Automation devices used by the driver locator when a device is discovered to support all its clusters.</description>
+		<version>1.0.2</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
+	<subproject>
+		<name>jemma.osgi.ah.zigbee.appliances.generic</name>
+		<description>This bundle is a generic driver for ZigBee Home Automation devices used by the driver locator when a device is discovered to support all its clusters.</description>
+		<version>1.0.2</version>
+		<checkout>yes</checkout>
+		<mavenbuild>yes</mavenbuild>
+	</subproject>
 </subprojects>
+
