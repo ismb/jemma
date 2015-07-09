@@ -218,9 +218,9 @@
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
 	<subproject>
-		<name></name>
-		<description></description>
-		<version></version>
+		<name>jemma.osgi.ah.app</name>
+		<description>This bundle is just a placeholder for the whole framework version</description>
+		<version>3.3.0</version>
 		<checkout>yes</checkout>
 		<mavenbuild>yes</mavenbuild>
 	</subproject>	

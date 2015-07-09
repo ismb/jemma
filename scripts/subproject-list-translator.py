@@ -30,7 +30,7 @@ def main(argv):
 	HELPTEXT+="\n"
 	HELPTEXT+="Syntax:\n"
 	HELPTEXT+="\n"
-	HELPTEXT+="./subproject-list-translator.py ../subprojects-list.xml -m ssh\n"
+	HELPTEXT+="./subproject-list-translator.py ../subprojects-list.xml -i <inputfile> -c <command>\n"
 	HELPTEXT+="\n"
 	HELPTEXT+="Examples:\n"
 	HELPTEXT+="\n"
