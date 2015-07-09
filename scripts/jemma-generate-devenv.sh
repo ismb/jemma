@@ -35,9 +35,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma
+	exit
+fi
 cd ismb/jemma
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma
+	exit
+fi
 # Subproject ismb/it.ismb.pert.osgi.dal
 
 cd $ABSENVFOLDER
@@ -49,9 +57,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal
+	exit
+fi
 cd ismb/it.ismb.pert.osgi.dal
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal
+	exit
+fi
 # Subproject ismb/it.ismb.pert.osgi.dal.functions
 
 cd $ABSENVFOLDER
@@ -63,9 +79,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions
+	exit
+fi
 cd ismb/it.ismb.pert.osgi.dal.functions
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.functions
+	exit
+fi
 # Subproject ismb/it.ismb.pert.osgi.dal.functions.eh
 
 cd $ABSENVFOLDER
@@ -77,9 +101,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions.eh
+	exit
+fi
 cd ismb/it.ismb.pert.osgi.dal.functions.eh
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.functions.eh
+	exit
+fi
 # Subproject ismb/jemma.osgi.dal
 
 cd $ABSENVFOLDER
@@ -91,9 +123,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.dal
+	exit
+fi
 cd ismb/jemma.osgi.dal
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.dal
+	exit
+fi
 # Subproject ismb/it.ismb.pert.osgi.dal.web-apis
 
 cd $ABSENVFOLDER
@@ -105,9 +145,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.web-apis
+	exit
+fi
 cd ismb/it.ismb.pert.osgi.dal.web-apis
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/it.ismb.pert.osgi.dal.web-apis
+	exit
+fi
 # Subproject ismb/jemma.osgi.javagal
 
 cd $ABSENVFOLDER
@@ -119,9 +167,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.javagal
+	exit
+fi
 cd ismb/jemma.osgi.javagal
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.javagal
+	exit
+fi
 # Subproject ismb/jemma-maven-repository
 
 cd $ABSENVFOLDER
@@ -133,9 +189,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma-maven-repository
+	exit
+fi
 cd ismb/jemma-maven-repository
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma-maven-repository
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.greenathome
 
 cd $ABSENVFOLDER
@@ -147,9 +211,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.greenathome
+	exit
+fi
 cd ismb/jemma.osgi.ah.greenathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.greenathome
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.felix.console.web
 
 cd $ABSENVFOLDER
@@ -161,9 +233,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.felix.console.web
+	exit
+fi
 cd ismb/jemma.osgi.ah.felix.console.web
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.felix.console.web
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.demo.fakevalues
 
 cd $ABSENVFOLDER
@@ -175,9 +255,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.demo.fakevalues
+	exit
+fi
 cd ismb/jemma.osgi.ah.demo.fakevalues
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.demo.fakevalues
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.energyathome
 
 cd $ABSENVFOLDER
@@ -189,9 +277,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.energyathome
+	exit
+fi
 cd ismb/jemma.osgi.ah.energyathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.energyathome
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.configurator
 
 cd $ABSENVFOLDER
@@ -203,9 +299,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.configurator
+	exit
+fi
 cd ismb/jemma.osgi.ah.configurator
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.configurator
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.adapter.http
 
 cd $ABSENVFOLDER
@@ -217,9 +321,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.adapter.http
+	exit
+fi
 cd ismb/jemma.osgi.ah.adapter.http
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.adapter.http
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.hac.lib
 
 cd $ABSENVFOLDER
@@ -231,9 +343,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.hac.lib
+	exit
+fi
 cd ismb/jemma.osgi.ah.hac.lib
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.hac.lib
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.hac
 
 cd $ABSENVFOLDER
@@ -245,9 +365,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.hac
+	exit
+fi
 cd ismb/jemma.osgi.ah.hac
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.hac
+	exit
+fi
 # Subproject ismb/jemma.osgi.javagal.rest
 
 cd $ABSENVFOLDER
@@ -259,9 +387,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.javagal.rest
+	exit
+fi
 cd ismb/jemma.osgi.javagal.rest
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.javagal.rest
+	exit
+fi
 # Subproject ismb/jemma.osgi.javagal.json
 
 cd $ABSENVFOLDER
@@ -273,9 +409,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.javagal.json
+	exit
+fi
 cd ismb/jemma.osgi.javagal.json
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.javagal.json
+	exit
+fi
 # Subproject ismb/jemma.osgi.javagal.gui
 
 cd $ABSENVFOLDER
@@ -287,9 +431,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.javagal.gui
+	exit
+fi
 cd ismb/jemma.osgi.javagal.gui
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.javagal.gui
+	exit
+fi
 # Subproject ismb/jemma.osgi.utils
 
 cd $ABSENVFOLDER
@@ -301,9 +453,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.utils
+	exit
+fi
 cd ismb/jemma.osgi.utils
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.utils
+	exit
+fi
 # Subproject ismb/jemma.osgi.ah.greenathome
 
 cd $ABSENVFOLDER
@@ -315,9 +475,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project ismb/jemma.osgi.ah.greenathome
+	exit
+fi
 cd ismb/jemma.osgi.ah.greenathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.ah.greenathome
+	exit
+fi
 # Subproject jemma.osgi.ah.webui.energyathome.base
 
 cd $ABSENVFOLDER
@@ -329,9 +497,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.webui.energyathome.base
+	exit
+fi
 cd jemma.osgi.ah.webui.energyathome.base
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.webui.energyathome.base
+	exit
+fi
 # Subproject jemma.osgi.ah.webui.energyathome
 
 cd $ABSENVFOLDER
@@ -343,9 +519,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.webui.energyathome
+	exit
+fi
 cd jemma.osgi.ah.webui.energyathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.webui.energyathome
+	exit
+fi
 # Subproject jemma.osgi.ah.webui.energyathome.demo
 
 cd $ABSENVFOLDER
@@ -357,9 +541,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.webui.energyathome.demo
+	exit
+fi
 cd jemma.osgi.ah.webui.energyathome.demo
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.webui.energyathome.demo
+	exit
+fi
 # Subproject jemma.osgi.ah.zigbee
 
 cd $ABSENVFOLDER
@@ -371,9 +563,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.zigbee
+	exit
+fi
 cd jemma.osgi.ah.zigbee
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.zigbee
+	exit
+fi
 # Subproject jemma.osgi.ah.zigbee.appliances
 
 cd $ABSENVFOLDER
@@ -385,9 +585,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.zigbee.appliances
+	exit
+fi
 cd jemma.osgi.ah.zigbee.appliances
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.zigbee.appliances
+	exit
+fi
 # Subproject jemma.osgi.ah.zigbee.appliances.generic
 
 cd $ABSENVFOLDER
@@ -399,9 +607,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.zigbee.appliances.generic
+	exit
+fi
 cd jemma.osgi.ah.zigbee.appliances.generic
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.zigbee.appliances.generic
+	exit
+fi
 # Subproject jemma.osgi.ah.io
 
 cd $ABSENVFOLDER
@@ -413,9 +629,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.io
+	exit
+fi
 cd jemma.osgi.ah.io
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.io
+	exit
+fi
 # Subproject jemma.osgi.ah.hap.client
 
 cd $ABSENVFOLDER
@@ -427,9 +651,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.hap.client
+	exit
+fi
 cd jemma.osgi.ah.hap.client
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.hap.client
+	exit
+fi
 # Subproject jemma.osgi.ah.m2m.device
 
 cd $ABSENVFOLDER
@@ -441,9 +673,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.m2m.device
+	exit
+fi
 cd jemma.osgi.ah.m2m.device
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.m2m.device
+	exit
+fi
 # Subproject jemma.osgi.ah.upnp.energyathome
 
 cd $ABSENVFOLDER
@@ -455,9 +695,17 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.upnp.energyathome
+	exit
+fi
 cd jemma.osgi.ah.upnp.energyathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.upnp.energyathome
+	exit
+fi
 # Subproject jemma.osgi.ah.app
 
 cd $ABSENVFOLDER
@@ -469,8 +717,16 @@ else
 	echo unknown mode, exiting
 	exit
 fi
+if [ $? -ne 0 ]; then
+	echo Checkout failed for project jemma.osgi.ah.app
+	exit
+fi
 cd jemma.osgi.ah.app
 mvn clean package eclipse:eclipse -Declipse.pde install
 
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project jemma.osgi.ah.app
+	exit
+fi
 
 echo Your new environment is available in folder $ENVFOLDER

@@ -172,9 +172,17 @@ def main(argv):
 			print "\techo unknown mode, exiting"
 			print "\texit"
 			print "fi"
+			print "if [ $? -ne 0 ]; then"
+			print "\techo Checkout failed for project " + name
+			print "\texit"
+			print "fi"			
 			print "cd " + name
 			print MAVENBUILDCMD
 			print ""
+			print "if [ $? -ne 0 ]; then"
+			print "\techo Maven build failed for project " + name
+			print "\texit"
+			print "fi"			
 		else:
 			print "unreachable code"
 		
