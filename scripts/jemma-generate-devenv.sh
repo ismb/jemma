@@ -422,246 +422,246 @@ if [ $? -ne 0 ]; then
 	echo Maven build failed for project ismb/jemma.osgi.utils
 	exit
 fi
-# Subproject jemma.osgi.ah.webui.energyathome.base
+# Subproject ismb/jemma.osgi.ah.webui.base
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.webui.energyathome.base.git jemma.osgi.ah.webui.energyathome.base
+	git clone https://github.com/ismb/jemma.osgi.ah.webui.base.git ismb/jemma.osgi.ah.webui.base
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.webui.energyathome.base.git jemma.osgi.ah.webui.energyathome.base
+	git clone git@github.com:ismb/jemma.osgi.ah.webui.base.git ismb/jemma.osgi.ah.webui.base
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.webui.energyathome.base
+	echo Checkout failed for project ismb/jemma.osgi.ah.webui.base
 	exit
 fi
-cd jemma.osgi.ah.webui.energyathome.base
+cd ismb/jemma.osgi.ah.webui.base
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.webui.energyathome.base
+	echo Maven build failed for project ismb/jemma.osgi.ah.webui.base
 	exit
 fi
-# Subproject jemma.osgi.ah.webui.energyathome
+# Subproject ismb/jemma.osgi.ah.webui.energyathome
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.webui.energyathome.git jemma.osgi.ah.webui.energyathome
+	git clone https://github.com/ismb/jemma.osgi.ah.webui.energyathome.git ismb/jemma.osgi.ah.webui.energyathome
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.webui.energyathome.git jemma.osgi.ah.webui.energyathome
+	git clone git@github.com:ismb/jemma.osgi.ah.webui.energyathome.git ismb/jemma.osgi.ah.webui.energyathome
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.webui.energyathome
+	echo Checkout failed for project ismb/jemma.osgi.ah.webui.energyathome
 	exit
 fi
-cd jemma.osgi.ah.webui.energyathome
+cd ismb/jemma.osgi.ah.webui.energyathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.webui.energyathome
+	echo Maven build failed for project ismb/jemma.osgi.ah.webui.energyathome
 	exit
 fi
-# Subproject jemma.osgi.ah.webui.energyathome.demo
+# Subproject ismb/jemma.osgi.ah.webui.energyathome.demo
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.webui.energyathome.demo.git jemma.osgi.ah.webui.energyathome.demo
+	git clone https://github.com/ismb/jemma.osgi.ah.webui.energyathome.demo.git ismb/jemma.osgi.ah.webui.energyathome.demo
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.webui.energyathome.demo.git jemma.osgi.ah.webui.energyathome.demo
+	git clone git@github.com:ismb/jemma.osgi.ah.webui.energyathome.demo.git ismb/jemma.osgi.ah.webui.energyathome.demo
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.webui.energyathome.demo
+	echo Checkout failed for project ismb/jemma.osgi.ah.webui.energyathome.demo
 	exit
 fi
-cd jemma.osgi.ah.webui.energyathome.demo
+cd ismb/jemma.osgi.ah.webui.energyathome.demo
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.webui.energyathome.demo
+	echo Maven build failed for project ismb/jemma.osgi.ah.webui.energyathome.demo
 	exit
 fi
-# Subproject jemma.osgi.ah.zigbee
+# Subproject ismb/jemma.osgi.ah.zigbee
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.zigbee.git jemma.osgi.ah.zigbee
+	git clone https://github.com/ismb/jemma.osgi.ah.zigbee.git ismb/jemma.osgi.ah.zigbee
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.zigbee.git jemma.osgi.ah.zigbee
+	git clone git@github.com:ismb/jemma.osgi.ah.zigbee.git ismb/jemma.osgi.ah.zigbee
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.zigbee
+	echo Checkout failed for project ismb/jemma.osgi.ah.zigbee
 	exit
 fi
-cd jemma.osgi.ah.zigbee
+cd ismb/jemma.osgi.ah.zigbee
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.zigbee
+	echo Maven build failed for project ismb/jemma.osgi.ah.zigbee
 	exit
 fi
-# Subproject jemma.osgi.ah.zigbee.appliances
+# Subproject ismb/jemma.osgi.ah.zigbee.appliances
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.zigbee.appliances.git jemma.osgi.ah.zigbee.appliances
+	git clone https://github.com/ismb/jemma.osgi.ah.zigbee.appliances.git ismb/jemma.osgi.ah.zigbee.appliances
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.zigbee.appliances.git jemma.osgi.ah.zigbee.appliances
+	git clone git@github.com:ismb/jemma.osgi.ah.zigbee.appliances.git ismb/jemma.osgi.ah.zigbee.appliances
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.zigbee.appliances
+	echo Checkout failed for project ismb/jemma.osgi.ah.zigbee.appliances
 	exit
 fi
-cd jemma.osgi.ah.zigbee.appliances
+cd ismb/jemma.osgi.ah.zigbee.appliances
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.zigbee.appliances
+	echo Maven build failed for project ismb/jemma.osgi.ah.zigbee.appliances
 	exit
 fi
-# Subproject jemma.osgi.ah.zigbee.appliances.generic
+# Subproject ismb/jemma.osgi.ah.zigbee.appliances.generic
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.zigbee.appliances.generic.git jemma.osgi.ah.zigbee.appliances.generic
+	git clone https://github.com/ismb/jemma.osgi.ah.zigbee.appliances.generic.git ismb/jemma.osgi.ah.zigbee.appliances.generic
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.zigbee.appliances.generic.git jemma.osgi.ah.zigbee.appliances.generic
+	git clone git@github.com:ismb/jemma.osgi.ah.zigbee.appliances.generic.git ismb/jemma.osgi.ah.zigbee.appliances.generic
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.zigbee.appliances.generic
+	echo Checkout failed for project ismb/jemma.osgi.ah.zigbee.appliances.generic
 	exit
 fi
-cd jemma.osgi.ah.zigbee.appliances.generic
+cd ismb/jemma.osgi.ah.zigbee.appliances.generic
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.zigbee.appliances.generic
+	echo Maven build failed for project ismb/jemma.osgi.ah.zigbee.appliances.generic
 	exit
 fi
-# Subproject jemma.osgi.ah.io
+# Subproject ismb/jemma.osgi.ah.io
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.io.git jemma.osgi.ah.io
+	git clone https://github.com/ismb/jemma.osgi.ah.io.git ismb/jemma.osgi.ah.io
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.io.git jemma.osgi.ah.io
+	git clone git@github.com:ismb/jemma.osgi.ah.io.git ismb/jemma.osgi.ah.io
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.io
+	echo Checkout failed for project ismb/jemma.osgi.ah.io
 	exit
 fi
-cd jemma.osgi.ah.io
+cd ismb/jemma.osgi.ah.io
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.io
+	echo Maven build failed for project ismb/jemma.osgi.ah.io
 	exit
 fi
-# Subproject jemma.osgi.ah.hap.client
+# Subproject ismb/jemma.osgi.ah.hap.client
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.hap.client.git jemma.osgi.ah.hap.client
+	git clone https://github.com/ismb/jemma.osgi.ah.hap.client.git ismb/jemma.osgi.ah.hap.client
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.hap.client.git jemma.osgi.ah.hap.client
+	git clone git@github.com:ismb/jemma.osgi.ah.hap.client.git ismb/jemma.osgi.ah.hap.client
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.hap.client
+	echo Checkout failed for project ismb/jemma.osgi.ah.hap.client
 	exit
 fi
-cd jemma.osgi.ah.hap.client
+cd ismb/jemma.osgi.ah.hap.client
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.hap.client
+	echo Maven build failed for project ismb/jemma.osgi.ah.hap.client
 	exit
 fi
-# Subproject jemma.osgi.ah.m2m.device
+# Subproject ismb/jemma.osgi.ah.m2m.device
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.m2m.device.git jemma.osgi.ah.m2m.device
+	git clone https://github.com/ismb/jemma.osgi.ah.m2m.device.git ismb/jemma.osgi.ah.m2m.device
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.m2m.device.git jemma.osgi.ah.m2m.device
+	git clone git@github.com:ismb/jemma.osgi.ah.m2m.device.git ismb/jemma.osgi.ah.m2m.device
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.m2m.device
+	echo Checkout failed for project ismb/jemma.osgi.ah.m2m.device
 	exit
 fi
-cd jemma.osgi.ah.m2m.device
+cd ismb/jemma.osgi.ah.m2m.device
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.m2m.device
+	echo Maven build failed for project ismb/jemma.osgi.ah.m2m.device
 	exit
 fi
-# Subproject jemma.osgi.ah.upnp.energyathome
+# Subproject ismb/jemma.osgi.ah.upnp.energyathome
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.upnp.energyathome.git jemma.osgi.ah.upnp.energyathome
+	git clone https://github.com/ismb/jemma.osgi.ah.upnp.energyathome.git ismb/jemma.osgi.ah.upnp.energyathome
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.upnp.energyathome.git jemma.osgi.ah.upnp.energyathome
+	git clone git@github.com:ismb/jemma.osgi.ah.upnp.energyathome.git ismb/jemma.osgi.ah.upnp.energyathome
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.upnp.energyathome
+	echo Checkout failed for project ismb/jemma.osgi.ah.upnp.energyathome
 	exit
 fi
-cd jemma.osgi.ah.upnp.energyathome
+cd ismb/jemma.osgi.ah.upnp.energyathome
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.upnp.energyathome
+	echo Maven build failed for project ismb/jemma.osgi.ah.upnp.energyathome
 	exit
 fi
-# Subproject jemma.osgi.ah.app
+# Subproject ismb/jemma.osgi.ah.app
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/jemma.osgi.ah.app.git jemma.osgi.ah.app
+	git clone https://github.com/ismb/jemma.osgi.ah.app.git ismb/jemma.osgi.ah.app
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:jemma.osgi.ah.app.git jemma.osgi.ah.app
+	git clone git@github.com:ismb/jemma.osgi.ah.app.git ismb/jemma.osgi.ah.app
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project jemma.osgi.ah.app
+	echo Checkout failed for project ismb/jemma.osgi.ah.app
 	exit
 fi
-cd jemma.osgi.ah.app
+cd ismb/jemma.osgi.ah.app
 mvn clean package eclipse:eclipse -Declipse.pde install
 
 if [ $? -ne 0 ]; then
-	echo Maven build failed for project jemma.osgi.ah.app
+	echo Maven build failed for project ismb/jemma.osgi.ah.app
 	exit
 fi
 
