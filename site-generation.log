@@ -1,4 +1,4 @@
-Auto-generated site: 201507091719
+Auto-generated site: 201507091831
 
 ##########################
 Git status
@@ -13,11 +13,24 @@ Changes not staged for commit:
 	modified:   components.md
 	modified:   site-generation.log
 
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	Distribution/
+	envfolder/
+	jemma.launch/
+
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit fff9f6575849e9780deeefefe27507972238c8c5
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Thu Jul 9 17:19:02 2015 +0200
+
+    updated component list
 
 commit d7cefd1a18cba5004beab8f9142bd41c010dd9e9
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
@@ -42,10 +55,4 @@ Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Fri May 29 15:55:03 2015 +0200
 
     added links to documentation
-
-commit da23989b79ae7f0fcb8dbdfa26847ac8d077b359
-Author: riccardo <riccardo.to@gmail.com>
-Date:   Mon Mar 23 12:02:12 2015 +0100
-
-    added centralite HW
 
