@@ -20,7 +20,7 @@ def signal_handler(signal, frame):
 def main(argv):
 	signal.signal(signal.SIGINT, signal_handler)
 
-	ERRTEXT = "See the python source file header for help.\n"
+	ERRTEXT = "For help, type: ./subproject-list-translator.py --help\n"
 	
 	HELPTEXT="\nThis script has been developed for core JEMMA developers.\n\n"
 	HELPTEXT+="It helps the information included in the subproject-list.xml file into:\n"
@@ -40,7 +40,7 @@ def main(argv):
 	HELPTEXT+="	Generate markdown table:\n"
 	HELPTEXT+="	./subproject-list-translator.py -i ../subprojects-list.xml -c md\n"
 	HELPTEXT+="\n"
-	HELPTEXT+="	geenrate pom-style dependencies:\n"
+	HELPTEXT+="	Generate pom-style dependencies:\n"
 	HELPTEXT+="	./subproject-list-translator.py - ../subprojects-list.xml -c pom\n"
 	HELPTEXT+="\n"
 	HELPTEXT+="Options:\n"
