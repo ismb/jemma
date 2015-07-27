@@ -3,6 +3,6 @@
 
 <target name="Jemma" sequenceNumber="28">
 <locations>
-<location path="${resource_loc:/jemma.Distribution}/target/jemma.Distribution-0.9.4-bin/modules/dependencies" type="Directory"/>
+<location path="${resource_loc:/jemma.Distribution}/target/jemma.Distribution-1.0.0-rc0-bin/modules/dependencies" type="Directory"/>
 </locations>
 </target>

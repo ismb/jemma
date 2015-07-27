@@ -22,7 +22,7 @@
 	<groupId>org.energy-home</groupId>
 	<artifactId>jemma</artifactId>
 	<packaging>pom</packaging>
-	<version>0.9.4</version>
+	<version>1.0.0-rc0</version>
 	<name>JEMMA</name>
 
 	<properties>
@@ -31,27 +31,49 @@
 		
 		<!-- Internal dependencies version properties -->
 		
-		<!--
-		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.4</org.energy-home.jemma.osgi.ah.hac.lib.version>
-		<org.energy-home.jemma.osgi.ah.hac.version>3.1.3</org.energy-home.jemma.osgi.ah.hac.version>
-		<org.energy-home.jemma.osgi.ah.felix.console.web.version>1.0.9</org.energy-home.jemma.osgi.ah.felix.console.web.version>
-		<org.energy-home.jemma.osgi.ah.m2m.device.version>1.2.15</org.energy-home.jemma.osgi.ah.m2m.device.version>
-		<org.energy-home.jemma.osgi.ah.hap.client.version>1.2.15</org.energy-home.jemma.osgi.ah.hap.client.version>
-		<org.energy-home.jemma.osgi.utils.version>1.0.6</org.energy-home.jemma.osgi.utils.version>
-		<org.energy-home.jemma.osgi.ah.energyathome.version>2.2.30</org.energy-home.jemma.osgi.ah.energyathome.version>
-		<org.energy-home.jemma.osgi.ah.adapter.http.version>2.0.3</org.energy-home.jemma.osgi.ah.adapter.http.version>
-		<org.energy-home.jemma.osgi.ah.configurator.version>1.0.7</org.energy-home.jemma.osgi.ah.configurator.version>
-		<org.energy-home.jemma.osgi.device.zgd.version>1.1.15</org.energy-home.jemma.osgi.device.zgd.version>
-		<org.energy-home.jemma.osgi.zgd.version>1.4.1</org.energy-home.jemma.osgi.zgd.version>
-		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.26</org.energy-home.jemma.osgi.ah.zigbee.version>
-		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.12</org.energy-home.jemma.osgi.ah.webui.base.version>
-		<org.energy-home.jemma.osgi.javagal.version>2.0.6</org.energy-home.jemma.osgi.javagal.version>
+		<org.energy-home.jemma.osgi.ah.app.version>3.3.1</org.energy-home.jemma.osgi.ah.app.version>
+		<org.energy-home.jemma.osgi.ah.adapter.http.version>2.0.4</org.energy-home.jemma.osgi.ah.adapter.http.version>
+		<org.energy-home.jemma.osgi.ah.configurator.version>1.0.8</org.energy-home.jemma.osgi.ah.configurator.version>
+		<org.energy-home.jemma.osgi.ah.demo.fakevalues.version>0.1.2</org.energy-home.jemma.osgi.ah.demo.fakevalues.version>
+		<org.energy-home.jemma.osgi.ah.energyathome.version>2.2.31</org.energy-home.jemma.osgi.ah.energyathome.version>
+		<org.energy-home.jemma.osgi.ah.felix.console.web.version>1.0.10</org.energy-home.jemma.osgi.ah.felix.console.web.version>
+		<org.energy-home.jemma.osgi.ah.greenathome.version>2.1.21</org.energy-home.jemma.osgi.ah.greenathome.version>
+		<org.energy-home.jemma.osgi.ah.hac.version>3.1.4</org.energy-home.jemma.osgi.ah.hac.version>
+		<org.energy-home.jemma.osgi.ah.hac.lib.version>3.1.5</org.energy-home.jemma.osgi.ah.hac.lib.version>
+		<org.energy-home.jemma.osgi.ah.hap.client.version>1.2.16</org.energy-home.jemma.osgi.ah.hap.client.version>
+		<org.energy-home.jemma.osgi.ah.io.version>1.0.17</org.energy-home.jemma.osgi.ah.io.version>
+		<org.energy-home.jemma.osgi.ah.m2m.device.version>1.2.16</org.energy-home.jemma.osgi.ah.m2m.device.version>
+		<org.energy-home.jemma.osgi.ah.upnp.energyathome.version>1.0.2</org.energy-home.jemma.osgi.ah.upnp.energyathome.version>
+		<org.energy-home.jemma.osgi.ah.webui.base.version>2.0.13</org.energy-home.jemma.osgi.ah.webui.base.version>
+		<org.energy-home.jemma.osgi.ah.webui.energyathome.version>1.0.61</org.energy-home.jemma.osgi.ah.webui.energyathome.version>
+		<org.energy-home.jemma.osgi.ah.webui.energyathome.demo.version>1.0.46</org.energy-home.jemma.osgi.ah.webui.energyathome.demo.version>
+		<org.energy-home.jemma.osgi.ah.zigbee.version>2.1.27</org.energy-home.jemma.osgi.ah.zigbee.version>
+		<org.energy-home.jemma.osgi.ah.zigbee.appliances.version>1.0.3</org.energy-home.jemma.osgi.ah.zigbee.appliances.version>
+		<org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version>1.0.3</org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version>
+		<org.energy-home.jemma.osgi.javagal.version>2.0.9</org.energy-home.jemma.osgi.javagal.version>
+		<org.energy-home.jemma.osgi.javagal.gui.version>1.0.6</org.energy-home.jemma.osgi.javagal.gui.version>
+		<org.energy-home.jemma.osgi.javagal.json.version>1.0.2</org.energy-home.jemma.osgi.javagal.json.version>
+		<org.energy-home.jemma.osgi.javagal.rest.version>1.0.1</org.energy-home.jemma.osgi.javagal.rest.version>
+		<org.energy-home.jemma.osgi.utils.version>1.0.7</org.energy-home.jemma.osgi.utils.version>
 		
+		<!-- TODO: These are still to be mavenized-->
+		
+		<!-- 
+		
+		NOTE by Riccardo: I would like to mavenize this before v1.0.0
+		@Ivan: shall we rename them to org.energy-home.<something>  first ?
+		
+		jemma.osgi.dal
+		it.ismb.pert.osgi.dal
+		it.ismb.pert.osgi.dal.functions
+		it.ismb.pert.osgi.dal.functions.eh
+		it.ismb.pert.osgi.dal.web-apis
 		-->
 		
 		<!-- External dependencies version properties -->
 		
 		<com.google.code.gson.version>2.2.4</com.google.code.gson.version>
+		<com.googlecode.jaxb-namespaceprefixmapper-interfaces>2.2.4</com.googlecode.jaxb-namespaceprefixmapper-interfaces>
 		<edu.emory.mathcs.backport.version>1.2.0</edu.emory.mathcs.backport.version>
 		<javax.servlet2.version>2.5.0</javax.servlet2.version>
 		<javax.servlet3.version>3.0.0</javax.servlet3.version>
@@ -64,6 +86,7 @@
 		<org.apache.commons.commons-lang3.version>3.3.2</org.apache.commons.commons-lang3.version>
 		<org.apache.commons.httpclient.version>3.1.0</org.apache.commons.httpclient.version>
 		<org.apache.commons.io.version>1.4</org.apache.commons.io.version>
+		<org.apache.commons.logging.version>1.1.1</org.apache.commons.logging.version>
 		<org.apache.felix.bundlerepository.version>1.6.6</org.apache.felix.bundlerepository.version>		
 		<org.apache.felix.gogo.shell.version>0.10.0</org.apache.felix.gogo.shell.version>
 		<org.apache.felix.gogo.command.version>0.10.0</org.apache.felix.gogo.command.version>
@@ -86,6 +109,7 @@
 		<org.eclipse.equinox.event.version>1.1.101</org.eclipse.equinox.event.version>
 		<org.eclipse.equinox.http.jetty.version>3.0.200</org.eclipse.equinox.http.jetty.version>
 		<org.eclipse.equinox.http.servlet.version>1.0.0-v20070606</org.eclipse.equinox.http.servlet.version>
+		<org.eclipse.equinox.osgi.version>3.1.1</org.eclipse.equinox.osgi.version>
 		<org.eclipse.equinox.preferences.version>3.2.301</org.eclipse.equinox.preferences.version>
 		<org.eclipse.equinox.useradmin.version>1.1.100</org.eclipse.equinox.useradmin.version>
 		<org.eclipse.equinox.util.version>1.0.100</org.eclipse.equinox.util.version>
@@ -93,13 +117,15 @@
 		<org.eclipse.osgi.version>3.10.0</org.eclipse.osgi.version>
 		<org.eclipse.osgi.services.version>3.4.0</org.eclipse.osgi.services.version>
 		<org.eclipse.osgi.util.version>3.2.0</org.eclipse.osgi.util.version>
+		<org.jabsorb.jabsorb.version>1.3.2</org.jabsorb.jabsorb.version>
 		<org.json.version>1.0.0</org.json.version>
 		<org.json.simple.version>1.1</org.json.simple.version>
 		<org.ops4j.pax.confman.pax-confman-propsloader.version>0.2.3</org.ops4j.pax.confman.pax-confman-propsloader.version>
 		<org.ops4j.pax.logging.version>1.7.2</org.ops4j.pax.logging.version>
-		<org.osgi.compendium.version>4.1.0</org.osgi.compendium.version>
-		<org.osgi.core.version>4.1.0</org.osgi.core.version>
+		<org.osgi.compendium.version>4.2.0</org.osgi.compendium.version>
+		<org.osgi.core.version>4.2.0</org.osgi.core.version>
 		<org.ow2.chameleon.commons.jabsorb.version>1.3.1</org.ow2.chameleon.commons.jabsorb.version>
+		<org.restlet.osgi.version>2.1.6</org.restlet.osgi.version>
 		<org.restlet.ext.servlet.version>2.1.6</org.restlet.ext.servlet.version>
 		<org.restlet.ext.xml.version>2.1.6</org.restlet.ext.xml.version>
 		<org.rxtx.version>1.0.0</org.rxtx.version>
@@ -200,6 +226,129 @@
 		</repository>
 	</repositories>
 	<dependencies>
+	
+		<!-- Internal dependencies  -->
+		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.adapter.http</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.adapter.http.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.app</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.app.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.configurator</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.configurator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.demo.fakevalues</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.demo.fakevalues.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.felix.console.web</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.felix.console.web.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.greenathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.greenathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hap.client</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hap.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.io</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.m2m.device</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.m2m.device.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.upnp.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.upnp.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.base</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.energyathome.demo</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.energyathome.demo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee.appliances.generic</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.gui</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.gui.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.json</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.json.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.rest</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.rest.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.utils</artifactId>
+			<version>${org.energy-home.jemma.osgi.utils.version}</version>
+		</dependency>
 		
 		<!-- External dependencies -->
 		
@@ -475,16 +624,16 @@
 			<artifactId>pax-logging-service</artifactId>
 			<version>${org.ops4j.pax.logging.version}</version>
 		</dependency>
+		<!--<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>${org.osgi.compendium.version}</version>
+		</dependency>-->		
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>${org.osgi.core.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>${org.osgi.compendium.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.ow2.chameleon</groupId>
 			<artifactId>commons.jabsorb</artifactId>		

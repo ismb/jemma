@@ -51,3 +51,9 @@ echo "org.energy_home.jemma.javagal.password=password"
 echo "org.energy_home.jemma.ah.configuration.file=EmptyConfig"
 
 echo "org.ops4j.pax.logging.DefaultServiceLog.level=DEBUG"
+
+# FIXME: this should be generalized
+
+echo "osgi.instance.area=file:/home/pi/tmp/"
+echo "user.home=/home/pi/tmp"
+echo "org.energy_home.jemma.m2m.device.configDir=/home/pi/tmp/"
