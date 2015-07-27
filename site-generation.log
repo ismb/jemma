@@ -1,11 +1,12 @@
-Auto-generated site: 201507091831
+Auto-generated site: 201507272208
 
 ##########################
 Git status
 ##########################
 
-On branch gh-pages
+Sul branch gh-pages
 Your branch is up-to-date with 'origin/gh-pages'.
+
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
@@ -17,7 +18,6 @@ Untracked files:
   (use "git add <file>..." to include in what will be committed)
 
 	Distribution/
-	envfolder/
 	jemma.launch/
 
 no changes added to commit (use "git add" and/or "git commit -a")
@@ -25,6 +25,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit db108f4075bb22871c68384b5ee52fedeef2ffd0
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Thu Jul 9 18:31:46 2015 +0200
+
+    working version list
 
 commit fff9f6575849e9780deeefefe27507972238c8c5
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
@@ -49,10 +55,4 @@ Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Fri May 29 17:53:09 2015 +0200
 
     added javagal to components list
-
-commit f4831ab4e009069f5a3e678ff66f9b3403137546
-Author: Riccardo Tomasi <riccardo.to@gmail.com>
-Date:   Fri May 29 15:55:03 2015 +0200
-
-    added links to documentation
 
