@@ -149,6 +149,7 @@
 			<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>2.10</version>
 			<configuration>
 				<!-- Workaround for http://jira.codehaus.org/browse/MECLIPSE-94 -->
 				<eclipseProjectDir>..</eclipseProjectDir>
