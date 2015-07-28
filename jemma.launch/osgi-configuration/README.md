@@ -1,0 +1,1 @@
+Folder used to store OSGi runtime configuration

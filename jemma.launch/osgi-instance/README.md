@@ -1,0 +1,1 @@
+In this folder, file org.energy_home.jemma.ah.zigbee.properties is used to determine whether the GAL should use Flexkey NVM or set up a new network
