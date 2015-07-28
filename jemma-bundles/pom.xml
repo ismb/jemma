@@ -61,6 +61,16 @@
 		
 		<dependency>
 			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.drafts.org.osgi.osgi.service.dal</artifactId>
+			<version>${org.energy-home.jemma.drafts.org.osgi.osgi.service.dal.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.drafts.org.osgi.osgi.service.dal.functions</artifactId>
+			<version>${org.energy-home.jemma.drafts.org.osgi.osgi.service.dal.functions.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.adapter.http</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.adapter.http.version}</version>
 		</dependency>
@@ -153,7 +163,22 @@
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.zigbee.appliances.generic</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.adapter</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.adapter.version}</version>
 		</dependency>			
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.functions.eh</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.functions.eh.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.web-apis</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.web-apis.version}</version>
+		</dependency>							
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.javagal</artifactId>

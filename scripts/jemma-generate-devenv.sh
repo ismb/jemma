@@ -46,79 +46,114 @@ if [ $? -ne 0 ]; then
 	echo Maven build failed for project ismb/jemma
 	exit
 fi
-# Subproject ismb/jemma.osgi.dal
+# Subproject ismb/jemma.osgi.dal.adapter
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/jemma.osgi.dal.git ismb/jemma.osgi.dal
+	git clone https://github.com/ismb/jemma.osgi.dal.adapter.git ismb/jemma.osgi.dal.adapter
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/jemma.osgi.dal.git ismb/jemma.osgi.dal
+	git clone git@github.com:ismb/jemma.osgi.dal.adapter.git ismb/jemma.osgi.dal.adapter
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/jemma.osgi.dal
+	echo Checkout failed for project ismb/jemma.osgi.dal.adapter
 	exit
 fi
-# Subproject ismb/it.ismb.pert.osgi.dal
+cd ismb/jemma.osgi.dal.adapter
+mvn clean package eclipse:eclipse -Declipse.pde install
+
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.dal.adapter
+	exit
+fi
+# Subproject ismb/jemma.drafts.org.osgi.osgi.service.dal
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/it.ismb.pert.osgi.dal.git ismb/it.ismb.pert.osgi.dal
+	git clone https://github.com/ismb/jemma.drafts.org.osgi.osgi.service.dal.git ismb/jemma.drafts.org.osgi.osgi.service.dal
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/it.ismb.pert.osgi.dal.git ismb/it.ismb.pert.osgi.dal
+	git clone git@github.com:ismb/jemma.drafts.org.osgi.osgi.service.dal.git ismb/jemma.drafts.org.osgi.osgi.service.dal
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal
+	echo Checkout failed for project ismb/jemma.drafts.org.osgi.osgi.service.dal
 	exit
 fi
-# Subproject ismb/it.ismb.pert.osgi.dal.functions
+cd ismb/jemma.drafts.org.osgi.osgi.service.dal
+mvn clean package eclipse:eclipse -Declipse.pde install
+
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.drafts.org.osgi.osgi.service.dal
+	exit
+fi
+# Subproject ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/it.ismb.pert.osgi.dal.functions.git ismb/it.ismb.pert.osgi.dal.functions
+	git clone https://github.com/ismb/jemma.drafts.org.osgi.osgi.service.dal.functions.git ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/it.ismb.pert.osgi.dal.functions.git ismb/it.ismb.pert.osgi.dal.functions
+	git clone git@github.com:ismb/jemma.drafts.org.osgi.osgi.service.dal.functions.git ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions
+	echo Checkout failed for project ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
 	exit
 fi
-# Subproject ismb/it.ismb.pert.osgi.dal.functions.eh
+cd ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
+mvn clean package eclipse:eclipse -Declipse.pde install
+
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.drafts.org.osgi.osgi.service.dal.functions
+	exit
+fi
+# Subproject ismb/jemma.osgi.dal.functions.eh
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/it.ismb.pert.osgi.dal.functions.eh.git ismb/it.ismb.pert.osgi.dal.functions.eh
+	git clone https://github.com/ismb/jemma.osgi.dal.functions.eh.git ismb/jemma.osgi.dal.functions.eh
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/it.ismb.pert.osgi.dal.functions.eh.git ismb/it.ismb.pert.osgi.dal.functions.eh
+	git clone git@github.com:ismb/jemma.osgi.dal.functions.eh.git ismb/jemma.osgi.dal.functions.eh
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.functions.eh
+	echo Checkout failed for project ismb/jemma.osgi.dal.functions.eh
 	exit
 fi
-# Subproject ismb/it.ismb.pert.osgi.dal.web-apis
+cd ismb/jemma.osgi.dal.functions.eh
+mvn clean package eclipse:eclipse -Declipse.pde install
+
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.dal.functions.eh
+	exit
+fi
+# Subproject ismb/jemma.osgi.dal.web-apis
 
 cd $ABSENVFOLDER
 if  [ $MODE == 'https' ]; then
-	git clone https://github.com/ismb/it.ismb.pert.osgi.dal.web-apis.git ismb/it.ismb.pert.osgi.dal.web-apis
+	git clone https://github.com/ismb/jemma.osgi.dal.web-apis.git ismb/jemma.osgi.dal.web-apis
 elif [ $MODE == 'ssh' ]; then
-	git clone git@github.com:ismb/it.ismb.pert.osgi.dal.web-apis.git ismb/it.ismb.pert.osgi.dal.web-apis
+	git clone git@github.com:ismb/jemma.osgi.dal.web-apis.git ismb/jemma.osgi.dal.web-apis
 else
 	echo unknown mode, exiting
 	exit
 fi
 if [ $? -ne 0 ]; then
-	echo Checkout failed for project ismb/it.ismb.pert.osgi.dal.web-apis
+	echo Checkout failed for project ismb/jemma.osgi.dal.web-apis
+	exit
+fi
+cd ismb/jemma.osgi.dal.web-apis
+mvn clean package eclipse:eclipse -Declipse.pde install
+
+if [ $? -ne 0 ]; then
+	echo Maven build failed for project ismb/jemma.osgi.dal.web-apis
 	exit
 fi
 # Subproject ismb/jemma.osgi.ah.adapter.http
