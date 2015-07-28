@@ -141,7 +141,7 @@
 	</properties>
 
 	<modules>
-		<module>equinox-runtime</module>
+		<module>jemma-equinox-runtime</module>
 		<module>jemma-bundles</module>
 	</modules>
 	<build>
