@@ -1,12 +1,11 @@
-Auto-generated site: 201507272208
+Auto-generated site: 201507281437
 
 ##########################
 Git status
 ##########################
 
-Sul branch gh-pages
+On branch gh-pages
 Your branch is up-to-date with 'origin/gh-pages'.
-
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
@@ -25,6 +24,12 @@ no changes added to commit (use "git add" and/or "git commit -a")
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit bb0ca2ec3e8e27670301762777c100fec69d3e90
+Author: riccardo <riccardo.to@gmail.com>
+Date:   Mon Jul 27 22:09:08 2015 +0200
+
+    aligned versions
 
 commit db108f4075bb22871c68384b5ee52fedeef2ffd0
 Author: Riccardo Tomasi <riccardo.to@gmail.com>
@@ -49,10 +54,4 @@ Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Mon Jul 6 18:52:49 2015 +0200
 
     updated component list
-
-commit ff2b89af917340264f19fc6c53e48baefd371ba2
-Author: Riccardo Tomasi <riccardo.to@gmail.com>
-Date:   Fri May 29 17:53:09 2015 +0200
-
-    added javagal to components list
 
