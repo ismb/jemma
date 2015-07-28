@@ -141,74 +141,21 @@
 	</properties>
 
 	<modules>
-		<module>jemma.launch</module>
 		<module>equinox-runtime</module>
 		<module>jemma-bundles</module>
 	</modules>
-<!--
 	<build>
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>OSGI-INF/**</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>./src/main/resources</directory>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-		</resources>
-		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
-			    <groupId>org.apache.felix</groupId>
-			    <artifactId>maven-bundle-plugin</artifactId>
-			    <version>${felix.bundle.plugin.version}</version>
-			    <extensions>true</extensions>
-			    <configuration>
-				<supportedProjectTypes>
-				      <supportedProjectType>jar</supportedProjectType>
-				      <supportedProjectType>bundle</supportedProjectType>
-				      <supportedProjectType>war</supportedProjectType>
-			        </supportedProjectTypes>
-				<manifestLocation>META-INF</manifestLocation>
-				<instructions>
-				    <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-				    <Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
-				    <_removeheaders>Bnd-LastModified, Built-By, Build-Jdk</_removeheaders>
-				</instructions>version
-			    </configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>8.1.16.v20140903
-				    <source>1.6</source>
-				    <target>1.6</target>
-					<encoding>UTF-8</encoding>
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<descriptors>
-						<descriptor>src/assemble/bin.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>${maven.clean.plugin.version}</version>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<configuration>
+				<!-- Workaround for http://jira.codehaus.org/browse/MECLIPSE-94 -->
+				<eclipseProjectDir>..</eclipseProjectDir>
+			</configuration>	  
 			</plugin>
 		</plugins>
-	</build> -->
+	</build>
 	<repositories>
 		<repository>
 			<id>JemmaRepository</id>
