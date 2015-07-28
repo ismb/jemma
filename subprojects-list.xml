@@ -8,39 +8,39 @@
 		<mavenbuild>yes</mavenbuild>
 	</subproject>
 	<subproject>
-		<name>ismb/jemma.osgi.dal</name>
-		<description>JEMMA adapter for Device Abstraction Layer</description>
-		<version>1.1.0</version>
+		<name>ismb/jemma.osgi.dal.adapter</name>
+		<description>JEMMA Dal Adapter</description>
+		<version>1.1.1</version>
 		<checkout>yes</checkout>
-		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+		<mavenbuild>yes</mavenbuild> 
 	</subproject>	
 	<subproject>
-		<name>ismb/it.ismb.pert.osgi.dal</name>
-		<description>OSGi Device Abstraction Layer Implementation</description>
-		<version>1.0.0</version>
+		<name>ismb/jemma.drafts.org.osgi.osgi.service.dal</name>
+		<description>Dal Base Classes (draft)</description>
+		<version>1.0.1</version>
 		<checkout>yes</checkout>
-		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+		<mavenbuild>yes</mavenbuild>
 	</subproject>	
 	<subproject>
-		<name>ismb/it.ismb.pert.osgi.dal.functions</name>
-		<description>OSGi Device Abstraction Layer Generic Functions</description>
-		<version>1.0.0</version>
+		<name>ismb/jemma.drafts.org.osgi.osgi.service.dal.functions</name>
+		<description>Dal Base Functions (draft)</description>
+		<version>1.0.1</version>
 		<checkout>yes</checkout>
-		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+		<mavenbuild>yes</mavenbuild>
 	</subproject>	
 	<subproject>
-		<name>ismb/it.ismb.pert.osgi.dal.functions.eh</name>
-		<description>OSGi Device Abstraction Layer Energy@Home-specific Functions</description>
-		<version>1.0.0</version>
+		<name>ismb/jemma.osgi.dal.functions.eh</name>
+		<description>DAL Classes Functions for Energy@home devicess</description>
+		<version>1.0.1</version>
 		<checkout>yes</checkout>
-		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+		<mavenbuild>yes</mavenbuild>
 	</subproject>	
 	<subproject>
-		<name>ismb/it.ismb.pert.osgi.dal.web-apis</name>
-		<description>REST and WebSocket access to Devices, Functions and Events available in OSGi Device Abstraction Layer</description>
-		<version>2.0.0</version>
+		<name>ismb/jemma.osgi.dal.web-apis</name>
+		<description>JEMMA REST and WebSocket API to access Devices, Functions and Events available in OSGi Device Abstraction Layer</description>
+		<version>2.0.1</version>
 		<checkout>yes</checkout>
-		<mavenbuild>no</mavenbuild> <!--this has not yet been mavenized -->
+		<mavenbuild>yes</mavenbuild>
 	</subproject>
 	<subproject>
 		<name>ismb/jemma.osgi.ah.adapter.http</name>
