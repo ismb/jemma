@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of JEMMA - http://jemma.energy-home.org
+    (C) Copyright 2013 Telecom Italia (http://www.telecomitalia.it)
+
+    JEMMA is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) version 3
+    or later as published by the Free Software Foundation, which accompanies
+    this distribution and is available at http://www.gnu.org/licenses/lgpl.html
+
+    JEMMA is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License (LGPL) for more details.
+
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.energy-home</groupId>
+	<artifactId>jemma-bundles</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+	<name>JEMMA bundles</name>
+
+	<parent>
+		<groupId>org.energy-home</groupId>
+		<artifactId>jemma</artifactId>
+		<version>1.0.0-rc0</version>
+	</parent>
+
+	<properties>
+		<main.dir>${project.parent.basedir}</main.dir>	
+	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				  <groupId>org.apache.felix</groupId>
+				  <artifactId>maven-bundle-plugin</artifactId>
+				  <version>${felix.bundle.plugin.version}</version>
+				  <extensions>true</extensions>
+			</plugin>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+
+<!-- JEMMA bundles list  -->
+		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.drafts.org.osgi.osgi.service.dal</artifactId>
+			<version>${org.energy-home.jemma.drafts.org.osgi.osgi.service.dal.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.drafts.org.osgi.osgi.service.dal.functions</artifactId>
+			<version>${org.energy-home.jemma.drafts.org.osgi.osgi.service.dal.functions.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.adapter.http</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.adapter.http.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.app</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.app.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.configurator</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.configurator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.demo.fakevalues</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.demo.fakevalues.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.felix.console.web</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.felix.console.web.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.greenathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.greenathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hac.lib</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hac.lib.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.hap.client</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.hap.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.io</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.io.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.m2m.device</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.m2m.device.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.upnp.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.upnp.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.base</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.energyathome</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.energyathome.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.webui.energyathome.demo</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.webui.energyathome.demo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.ah.zigbee.appliances.generic</artifactId>
+			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.adapter</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.adapter.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.functions.eh</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.functions.eh.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.dal.web-apis</artifactId>
+			<version>${org.energy-home.jemma.osgi.dal.web-apis.version}</version>
+		</dependency>							
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.gui</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.gui.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.json</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.json.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.javagal.rest</artifactId>
+			<version>${org.energy-home.jemma.osgi.javagal.rest.version}</version>
+		</dependency>			
+		<dependency>
+			<groupId>org.energy-home</groupId>
+			<artifactId>jemma.osgi.utils</artifactId>
+			<version>${org.energy-home.jemma.osgi.utils.version}</version>
+		</dependency>
+	</dependencies>
+</project>
