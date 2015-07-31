@@ -14,7 +14,7 @@ VERSION=${VERSION/<version>/}
 VERSION=${VERSION/<\/version>/} 
 VERSION="$(echo -e "${VERSION}" | tr -d '[[:space:]]')"
 
-RELEASE_FOLDER_NAME=./release-$VERSION-$DATE
+RELEASE_FOLDER_NAME=./jemma-release-$VERSION-$DATE
 
 rm -rf $RELEASE_FOLDER_NAME
 mkdir $RELEASE_FOLDER_NAME
