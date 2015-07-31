@@ -48,3 +48,6 @@ org.ops4j.pax.logging.DefaultServiceLog.level=DEBUG
 osgi.instance.area=file:./osgi-instance-area/
 user.home=./osgi-instance-area/
 org.energy_home.jemma.m2m.device.configDir=./osgi-instance-area/
+
+#Pax-conf-style configurations should go in the folder specified below
+bundles.configuration.location=./bundle-configurations/

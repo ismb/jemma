@@ -29,6 +29,7 @@ chmod +x $RELEASE_FOLDER_NAME/*.bat
 
 mkdir $RELEASE_FOLDER_NAME/osgi-instance-area
 mkdir $RELEASE_FOLDER_NAME/configuration
+mkdir $RELEASE_FOLDER_NAME/bundle-configurations
 
 bash ./scripts/generate_configini.sh ./scripts/config.ini.template $RELEASE_FOLDER_NAME/plugins/ > $RELEASE_FOLDER_NAME/configuration/config.ini
 
