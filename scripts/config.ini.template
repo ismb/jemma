@@ -15,13 +15,13 @@ org.osgi.service.http.port=1024
 it.telecomitalia.ah.driver.autoinstall=true
 
 zgd.dongle.uri=/dev/ttyUSB0
-zgd.dongle.speed=115200"
-zgd.dongle.type=freescale"
+zgd.dongle.speed=115200
+zgd.dongle.type=freescale
 
 org.osgi.service.http.port=8080
 org.eclipse.equinox.http.jetty.http.port=8080
 org.eclipse.equinox.http.jetty.https.enabled=false
-org.eclipse.equinox.http.jetty.https.port=443"
+org.eclipse.equinox.http.jetty.https.port=443
 
 org.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 org.apache.commons.logging.simplelog.defaultlog=debug
