@@ -27,7 +27,7 @@ while read LINE; do
 		        echo "plugins/$x@start,\\"
 		done
 	else
-		echo $LINE
+		echo "$LINE"
 	fi
 
   
