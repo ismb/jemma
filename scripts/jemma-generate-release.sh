@@ -20,7 +20,7 @@ rm -rf $RELEASE_FOLDER_NAME
 mkdir $RELEASE_FOLDER_NAME
 mkdir $RELEASE_FOLDER_NAME/plugins
 cp jemma-equinox-runtime/target/dependency/*.jar $RELEASE_FOLDER_NAME/plugins/
-cp jemma-bundles/target/dependency/jemma* $RELEASE_FOLDER_NAME/plugins/
+cp jemma-bundles/target/dependency/* $RELEASE_FOLDER_NAME/plugins/
 cp jemma-equinox-runtime/target/dependency/org.eclipse.osgi-3.10.0.jar $RELEASE_FOLDER_NAME/
 cp scripts/start*.sh $RELEASE_FOLDER_NAME/
 chmod +x $RELEASE_FOLDER_NAME/*.sh

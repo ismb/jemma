@@ -49,6 +49,9 @@
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+						  <excludeTransitive>true</excludeTransitive>
+						</configuration>								
 					</execution>
 				</executions>
 			</plugin>
