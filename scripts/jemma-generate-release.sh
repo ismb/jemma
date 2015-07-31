@@ -1,100 +1,32 @@
 #!/bin/bash
 
-# This scripts must be executed in a top level folder including all jemma sub-projects
-# A good place is the ismb folder that you can find inside envfolder when you use the jemma-generate-devenv.sh script
-
+# This scripts must be executed inside the **jemma** folder resulting from a fresh clone of the *releases* branch .
 # Note: this is just a quick and dirty script for internal use - OSGi has more standard ways to do this
 
 # typically launched as
-#	-  ./jemma/scripts/jemma-generate-release.sh 
+#	-  ./scripts/jemma-generate-release.sh 
 
-# with all the source code directories available in the current folder.
+mvn clean package
 
-CMD='mvn clean package'
+RELEASE_FOLDER_NAME=./release
 
-for d in  `ls`;
-do
-	if [ -d "$d" ]
-	then
-		cd $d
-		if [ -e "pom.xml" ]
-			then
-			echo -e '\n\n****************************************'
-			echo running [$CMD] in [$d]
-			echo -e '****************************************\n'
-			$CMD
-		else
-			echo -e '\n\n****************************************'
-			echo "Skipping [$d] (probably this must be exported manually)"
-			echo -e '****************************************\n'		
-		fi
-		cd ..
-	fi
+rm -rf $RELEASE_FOLDER_NAME
+mkdir $RELEASE_FOLDER_NAME
+mkdir $RELEASE_FOLDER_NAME/plugins
+cp jemma-equinox-runtime/target/dependency/*.jar $RELEASE_FOLDER_NAME/plugins/
+cp jemma-bundles/target/dependency/* $RELEASE_FOLDER_NAME/plugins/
+cp jemma-equinox-runtime/target/dependency/org.eclipse.osgi-3.10.0.jar $RELEASE_FOLDER_NAME/
+cp scripts/start*.sh $RELEASE_FOLDER_NAME/
+chmod +x $RELEASE_FOLDER_NAME/*.sh
+cp scripts/start*.bat $RELEASE_FOLDER_NAME/
+chmod +x release/*.bat
 
-done
+mkdir $RELEASE_FOLDER_NAME/osgi-instance-area
+mkdir $RELEASE_FOLDER_NAME/configuration
 
-rm -rf target
-mkdir target
-mkdir target/plugins
-cp jemma/Distribution/target/jemma.Distribution-*-bin/modules/dependencies/*.jar target/plugins/
-cp jemma/Distribution/target/jemma.Distribution-*-bin/modules/dependencies/org.eclipse.osgi-3.10.0.jar target/
-cp jemma/scripts/start*.sh target/
-chmod +x target/*.sh
-cp jemma/scripts/start*.bat target/
-chmod +x target/*.bat
+bash ../scripts/generate_configini.sh ../scripts/config.ini.template | tee $RELEASE_FOLDER_NAME/configuration/config.ini
 
-
-cd target
-mkdir configuration
-bash ../jemma/scripts/generate_configini.sh | tee configuration/config.ini
-
-cd ..
-
-
-for d in  `ls`;
-do
-	if [ -d "$d" ]
-	then
-		if [ -e "$d/pom.xml" ]
-			then
-
-			echo -e '\n\n****************************************'
-			echo copying jar from [$d] 
-			echo -e '****************************************\n'
-			cp $d/target/*.jar target/plugins
-		else
-			echo -e '\n\n****************************************'
-			echo "Skipping [$d] (probably this must be exported manually)"
-			echo -e '****************************************\n'		
-		fi
-	fi
-
-done
-
-
-
-echo  -e "\n\nYour distribution is now available in the target folder, ready to be zipped."
-
-echo -e '\n\n****************************************'
-echo "The following bundles must probably be exported manually"
-echo -e '****************************************\n'
-
-for d in  `ls`;
-do
-	if [ -d "$d" ]
-	then
-		cd $d
-		if [ ! -e "pom.xml" ]
-			then
-			echo "- $d"
-		fi
-		cd ..
-	fi
-
-done
-
-echo  -e "\n\n(after this is done remember to copy generated bundles in the target/plugins directory and run generate_configini.sh properly from the target directory)"
-echo -e "example: bash ../jemma/scripts/generate_configini.sh | tee configuration/config.ini"
+echo  -e "\n\nYour distribution is now available in the $RELEASE_FOLDER_NAME folder, ready to be zipped."
 
 
 
