@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
-# This script has been developed for core JEMMA developers
+# This script is only used by core JEMMA developers
+#
 # For help, type:
 # ./subprojects-list.xml --help 
 #
-# Tested with Linux only"
-# Made by: Riccardo <tomasi@ismb.it>"
+# Tested with Linux only
+# Made by: "Riccardo <tomasi@ismb.it>"
 
 import sys, getopt
 import os.path
