@@ -32,8 +32,9 @@ mkdir $RELEASE_FOLDER_NAME/configuration
 mkdir $RELEASE_FOLDER_NAME/bundle-configurations
 
 bash ./scripts/generate_configini.sh ./scripts/config.ini.template $RELEASE_FOLDER_NAME/plugins/ > $RELEASE_FOLDER_NAME/configuration/config.ini
+zip -r $RELEASE_FOLDER_NAME.zip $RELEASE_FOLDER_NAME
 
-echo  -e "\n\nYour distribution is now available in the $RELEASE_FOLDER_NAME folder, ready to be zipped."
+echo  -e "\n\nYour distribution is now available in the $RELEASE_FOLDER_NAME folder and as $RELEASE_FOLDER_NAME.zip "
 
 
 
