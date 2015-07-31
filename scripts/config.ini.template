@@ -1,6 +1,6 @@
 #Please remember to modify relevant parameters below before deployment
 
-osgi.bundles=
+
 CONFIG-INI-TEMPLATE-PUT-PLUGINS_HERE
 
 osgi.bundles.defaultStartLevel=4

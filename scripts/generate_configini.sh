@@ -22,6 +22,7 @@ fi
 while read LINE; do
 	if [ "$LINE" == "CONFIG-INI-TEMPLATE-PUT-PLUGINS_HERE" ]
 	then
+		echo -n "osgi.bundles="
 		for x in `ls $2`;
 		do
 		        echo "plugins/$x@start,\\"
