@@ -15,6 +15,12 @@ do
 		echo -e '****************************************\n'
 		cd $d
 		$CMD
+		if [ $? -eq 0 ]; then
+			:
+		else
+			echo running [$CMD] in [$d] FAILED. Exiting.
+			exit
+		fi		
 		cd ..
 	fi
 
