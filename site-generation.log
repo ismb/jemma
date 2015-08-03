@@ -1,4 +1,4 @@
-Auto-generated site: 201507281437
+Auto-generated site: 201508031738
 
 ##########################
 Git status
@@ -16,14 +16,23 @@ Changes not staged for commit:
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
 
-	Distribution/
-	jemma.launch/
+	.project
+	jemma-bundles/
+	jemma-equinox-runtime/
+	jemma-release-1.0.0-rc0-20150803.zip
+	jemma-release-1.0.0-rc0-20150803/
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
 ##########################
 Git log (first 30 lines)
 ##########################
+
+commit 91f064627015ec04326bbf2d4a612a5a169ebfc1
+Author: Riccardo Tomasi <riccardo.to@gmail.com>
+Date:   Tue Jul 28 14:37:50 2015 +0200
+
+    added component lists
 
 commit bb0ca2ec3e8e27670301762777c100fec69d3e90
 Author: riccardo <riccardo.to@gmail.com>
@@ -48,10 +57,4 @@ Author: Riccardo Tomasi <riccardo.to@gmail.com>
 Date:   Tue Jul 7 19:40:59 2015 +0200
 
     updated table
-
-commit 89d48b71140980c0793227846c4e104c165afb0a
-Author: Riccardo Tomasi <riccardo.to@gmail.com>
-Date:   Mon Jul 6 18:52:49 2015 +0200
-
-    updated component list
 
