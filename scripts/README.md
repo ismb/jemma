@@ -41,21 +41,6 @@ The following scripts scans through all the projects and builds them all.
 ./jemma/scripts/jemma-build-all.sh 
 ```
 
-# Making a release
-
-Released version are kept on the *releases* branch, where stable versions are tagged. 
-
-In order to make a new binary release the following steps must be followed:
-
-- verify that the current master of all project correctly builds on jenkins.
-- generate all the stable binaries from all jemma projects. 
-- For all projects for whom the version number has been advanced, a new binary should be generated and deployed to the jemma maven repository.
-- all versions in the pom.xml files in the ismb/jemma project should be advanced accordingly
-- the ismb/jemma configuration with the new version should be tested on jenkins.
-- merge the current *master* branch with the *releases* branch
-- tag the current version of the *releases* branch with the correct version number, making a jemma release.
-- generate a binary distribution following the procedure in the ```script/jemma-generate-release.sh``` script source.
-- upload the binary on github
 
 
 
