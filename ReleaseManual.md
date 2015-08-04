@@ -90,4 +90,14 @@ The same test should be done by unpacking and starting the binary distribution.
 ### Tagging
 
 After succesfull jenkin test, tag the current version of the *master* branch with the correct version number, making a jemma release.
-The associated binary distribution file can be uploaded as binary, attached to the source release.
+
+You shall also tag all subprojects. Example:
+
+```
+./jemma/scripts/run-in-all-subfolders.sh git tag -a jemma-1.0.0-rc1 -m 'tagging for jemma release 1.0.0-rc1'
+```
+
+The associated binary distribution file can be uploaded as binary, attached to the release.
+For major releases, we can also attach a tarball of the envfolder.
+
+
