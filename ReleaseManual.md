@@ -98,6 +98,12 @@ You shall also tag all subprojects. Example:
 ```
 
 The associated binary distribution file can be uploaded as binary, attached to the release.
-For major releases, we can also attach a tarball of the envfolder.
+
+For major releases, we can also attach a tarball of the envfolder to have the full sources saved.
+*Important note:* remember to remove jemma-maven-repository and all .git files from the sources zip. E.g. :
+
+```
+find . -name .git -exec rm -rf {} +
+```
 
 
