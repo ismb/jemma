@@ -168,12 +168,13 @@
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.zigbee.appliances</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.version}</version>
-		</dependency>		
-		<dependency>
+		</dependency>	
+<!-- use at your own risk this generic driver, can conflict with specific ones -->	
+<!--		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.ah.zigbee.appliances.generic</artifactId>
 			<version>${org.energy-home.jemma.osgi.ah.zigbee.appliances.generic.version}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.energy-home</groupId>
 			<artifactId>jemma.osgi.dal.adapter</artifactId>

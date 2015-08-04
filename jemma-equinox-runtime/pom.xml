@@ -337,12 +337,12 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>${org.osgi.compendium.version}</version>
-		</dependency>-->		
+		</dependency>		
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>${org.osgi.core.version}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.ow2.chameleon</groupId>
 			<artifactId>commons.jabsorb</artifactId>		
