@@ -8,6 +8,8 @@ The JEMMA code-base has been developed since 2010 by <a href="http://www.telecom
 
 Telecom Italia acknowledges that the JEMMA Open Source Project was partially supported by the following public projects:
 
+- <a href="http://www.mas2tering.eu/" target="_parent">MAS²TERING</a> (Multi-Agent Systems and Secured coupling of Telecom and Enrgy gRIds for Next Generation smartgrid services) co-funded by the European Union under the FP7 programme
+
 - <a href="http://www.eitictlabs.eu/" target="_parent">KIC EIT ICT Labs</a>, Activity A13030 SecSES - Secure Energy Systems, year 2013, for software developments related to the smart home gateway and the cloud platform
 
 - eKitchen, Ministry of Economic Development Industria 2015, years 2012-2014, for software developments related to the software framework that abstract the home devices
